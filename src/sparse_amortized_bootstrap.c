@@ -313,7 +313,7 @@ void sparse_mul(TRLWE * p, uint64_t * a, uint64_t a_idx, SAB_Key sab){
 
 uint64_t odd_mod_switch(uint64_t in, uint64_t prec){
   const uint64_t bit_size = sizeof(uint64_t) * 8;
-  const uint64_t round_offset = 1UL << (bit_size - prec - 1);
+  const uint64_t round_offset = 1ULL << (bit_size - prec - 1);
   const uint64_t val = (in + round_offset)>>(bit_size - prec);
   if(val&1){
     return val;

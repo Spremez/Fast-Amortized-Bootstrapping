@@ -548,9 +548,77 @@ void test_sab_microbench(){
   );
 }
 
+#if defined(SAB_PVW_KERNEL_TEST)
+static bool check_mat_trgsw_identity_lane(int r){
+  const int N = 1024, k = 1, l = 1, bg_bit = 23, prec = 3;
+  const int rows = (k + r) * l;
+  PVW_TMLWE_Key key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -50));
+  MAT_TRGSW_Key mat_key = mat_trgsw_new_key(key, l, bg_bit);
+  TorusPolynomial * msg = polynomial_new_array_of_torus_polynomials(N, r);
+  TorusPolynomial * phase_in = polynomial_new_array_of_torus_polynomials(N, r);
+  TorusPolynomial * phase_out = polynomial_new_array_of_torus_polynomials(N, r);
+
+  for (size_t lane = 0; lane < r; lane++){
+    for (size_t i = 0; i < N; i++){
+      msg[lane]->coeffs[i] = int2torus((i + lane) & 3, prec);
+    }
+  }
+
+  PVW_TMLWE in = pvmtmlwe_new_sample(msg, key);
+  PVW_TMLWE out = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE_DFT out_dft = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
+  MAT_TRGSW_DFT selector = mat_trgsw_alloc_new_DFT_sample(l, bg_bit, k, r, N);
+  MAT_TRGSW_MUL_SCRATCH scratch = mat_trgsw_alloc_mul_scratch(rows, N);
+
+  mat_trgsw_monomial_DFT_sample(selector, 1, 0, mat_key);
+  mat_trgsw_mul_pvmtmlwe_DFT(out_dft, in, selector, scratch);
+  pvmtmlwe_from_DFT(out, out_dft);
+  pvmtmlwe_phase(phase_in, in, key);
+  pvmtmlwe_phase(phase_out, out, key);
+
+  bool pass = true;
+  for (size_t lane = 0; lane < r; lane++){
+    for (size_t i = 0; i < N; i++){
+      const uint64_t expected = torus2int(phase_in[lane]->coeffs[i], prec);
+      const uint64_t got = torus2int(phase_out[lane]->coeffs[i], prec);
+      if(got != expected){
+        printf("MAT_TRGSW identity fail r=%d lane=%" PRIu64 " coeff=%" PRIu64 ": %" PRIu64 " != %" PRIu64 "\n",
+               r, (uint64_t) lane, (uint64_t) i, got, expected);
+        pass = false;
+        break;
+      }
+    }
+    if(!pass) break;
+  }
+
+  free_mat_trgsw_mul_scratch(scratch);
+  free_mat_trgsw_DFT(selector);
+  free_pvmtmlwe_DFT(out_dft);
+  free_pvmtmlwe(out);
+  free_pvmtmlwe(in);
+  free_array_of_polynomials(phase_out, r);
+  free_array_of_polynomials(phase_in, r);
+  free_array_of_polynomials(msg, r);
+  free_mat_trgsw_key(mat_key);
+  free_pvmtmlwe_key(key);
+  return pass;
+}
+
+void test_mat_trgsw_kernel(){
+  bool pass = true;
+  pass &= check_mat_trgsw_identity_lane(1);
+  pass &= check_mat_trgsw_identity_lane(2);
+  pass &= check_mat_trgsw_identity_lane(4);
+  printf("MAT_TRGSW kernel test: %s\n", pass ? "Pass" : "Fail");
+  if(!pass) exit(1);
+}
+#endif
+
 int main(int argc, char const *argv[])
 {
-#if defined(SAB_MICROBENCH)
+#if defined(SAB_PVW_KERNEL_TEST)
+  test_mat_trgsw_kernel();
+#elif defined(SAB_MICROBENCH)
   test_sab_microbench();
 #elif defined(TERNARY)
   test_sab_tern();

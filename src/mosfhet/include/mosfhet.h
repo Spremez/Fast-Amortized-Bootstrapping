@@ -191,6 +191,12 @@ typedef struct _MAT_TRGSW_Key{
   int T,Q;
 } * MAT_TRGSW_Key;
 
+typedef struct _MAT_TRGSW_MUL_SCRATCH{
+  TorusPolynomial * dec;
+  DFT_Polynomial * dec_dft;
+  int rows;
+} * MAT_TRGSW_MUL_SCRATCH;
+
 /* Registers */
 
 typedef struct _TRGSW_REG{
@@ -593,6 +599,7 @@ void pvmtmlwe_save_DFT_sample(FILE * fd, PVW_TMLWE_DFT c);
 PVW_TMLWE_DFT pvmtmlwe_load_new_DFT_sample(FILE * fd, int k, int r, int N);
 void pvmtmlwe_load_DFT_sample(FILE * fd, PVW_TMLWE_DFT c);
 void free_pvmtmlwe(void * p_v);
+void free_pvmtmlwe_DFT(void * p_v);
 void free_pvmtmlwe_array(void * p_v, int count);
 PVW_TMLWE_Key pvmtmlwe_alloc_key(int N, int k, int r, double sigma);
 PVW_TMLWE_Key pvmtmlwe_new_bounded_key(int N, int k, int r, uint64_t bound, double sigma);
@@ -649,6 +656,20 @@ void pvmtmlwe_torus_packing_many_LUT(PVW_TMLWE out, Torus ** in, int lut_size, i
 void pvmtmlwe_tensor_prod(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2, int precision, PVW_TMLWE_KS_Key rl_key);
 void pvmtmlwe_tensor_prod_FFT(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2, int precision, PVW_TMLWE_KS_Key rl_key);
 void pvmtmlwe_eval_automorphism(PVW_TMLWE out, PVW_TMLWE in, uint64_t gen, PVW_TMLWE_KS_Key ks_key);
+
+/* MAT_TRGSW */
+MAT_TRGSW_Key mat_trgsw_new_key(PVW_TMLWE_Key trlwe_key, int l, int Bg_bit);
+void free_mat_trgsw_key(MAT_TRGSW_Key key);
+MAT_TRGSW mat_trgsw_alloc_new_sample(int l, int Bg_bit, int k, int r, int N);
+MAT_TRGSW_DFT mat_trgsw_alloc_new_DFT_sample(int l, int Bg_bit, int k, int r, int N);
+void free_mat_trgsw(void * p_v);
+void free_mat_trgsw_DFT(void * p_v);
+void mat_trgsw_monomial_sample(MAT_TRGSW out, int64_t m, int e, MAT_TRGSW_Key key);
+void mat_trgsw_to_DFT(MAT_TRGSW_DFT out, MAT_TRGSW in);
+void mat_trgsw_monomial_DFT_sample(MAT_TRGSW_DFT out, int64_t m, int e, MAT_TRGSW_Key key);
+MAT_TRGSW_MUL_SCRATCH mat_trgsw_alloc_mul_scratch(int rows, int N);
+void free_mat_trgsw_mul_scratch(MAT_TRGSW_MUL_SCRATCH scratch);
+void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT selector, MAT_TRGSW_MUL_SCRATCH scratch);
 
 #ifdef __cplusplus
 }

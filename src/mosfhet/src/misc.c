@@ -17,7 +17,7 @@ Torus double2torus(double x){
 /* return round(in[i] * 2^log_scale) */
 uint64_t torus2int(Torus x, int log_scale){
   const uint64_t bit_size = sizeof(Torus) * 8;
-  const Torus round_offset = 1UL << (bit_size - log_scale - 1);
+  const Torus round_offset = 1ULL << (bit_size - log_scale - 1);
   return (x + round_offset)>>(bit_size - log_scale);
 }
 

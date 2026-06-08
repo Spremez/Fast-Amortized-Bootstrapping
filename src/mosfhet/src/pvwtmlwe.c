@@ -113,6 +113,19 @@ void free_pvmtmlwe(void * p_v){
   free(p);
 }
 
+void free_pvmtmlwe_DFT(void * p_v){
+  const PVW_TMLWE_DFT p = (PVW_TMLWE_DFT) p_v;
+  for (size_t i = 0; i < p->k; i++){
+    free_DFT_polynomial(p->a[i]);
+  }
+  for (size_t i = 0; i < p->r; i++){
+    free_DFT_polynomial(p->b[i]);
+  }
+  free(p->a);
+  free(p->b);
+  free(p);
+}
+
 void free_pvmtmlwe_array(void * p_v, int count){
   for (size_t i = 0; i < count; i++){
     free_pvmtmlwe(((void **)p_v)[i]);
@@ -299,7 +312,7 @@ void free_pvmtmlwe_key(PVW_TMLWE_Key key){
   for (size_t i = 0; i < key->k; i++){
     for (size_t j = 0; j < key->r; j++){
       free_polynomial(key->s[i][j]);
-      free_polynomial(key->s_dft[i][j]);
+      free_DFT_polynomial(key->s_dft[i][j]);
     }
     free(key->s[i]);
     free(key->s_dft[i]);
@@ -746,13 +759,13 @@ void pvmtmlwe_keyswitch(PVW_TMLWE out, PVW_TMLWE in, PVW_TMLWE_KS_Key ks_key){
 /*We do NOT use this function in our new algorithm!*/
 void pvmtmlwe_decompose(TorusPolynomial * out, PVW_TMLWE in, int Bg_bit, int l){
   const int k = in->k, r = in->r, N = in->b[0]->N;
-  const uint64_t half_Bg = (1UL << (Bg_bit - 1));
-  const uint64_t h_mask = (1UL << Bg_bit) - 1;
+  const uint64_t half_Bg = (1ULL << (Bg_bit - 1));
+  const uint64_t h_mask = (1ULL << Bg_bit) - 1;
   const uint64_t word_size = sizeof(Torus)*8;
 
   uint64_t offset = 0;
   for (size_t i = 0; i < l; i++){
-    offset += (1UL << (word_size - i * Bg_bit - 1));
+    offset += (1ULL << (word_size - i * Bg_bit - 1));
   }
   
   for (size_t i = 0; i < l; i++) {

@@ -311,7 +311,7 @@ void circuit_bootstrap(TRGSW out, TLWE in, Bootstrap_Key key, Generic_KS_Key ksk
   TRLWE tv = trlwe_alloc_new_sample(key->k, key->N);
   TLWE tmp_out = tlwe_alloc_sample(out->samples[0]->b->N);
   for (size_t i = 0; i < out->l; i++){
-    Torus _0h[2] = {0, 1UL << (bit_len - (i + 1) * out->Bg_bit)};
+    Torus _0h[2] = {0, 1ULL << (bit_len - (i + 1) * out->Bg_bit)};
     trlwe_torus_packing(tv, _0h, 2);
     functional_bootstrap(tmp_out, tv, in, key, 2);
     trlwe_priv_keyswitch(out->samples[i], tmp_out, kska);
@@ -536,4 +536,3 @@ void full_domain_functional_bootstrap(TLWE out, TRLWE tv, TLWE in, Bootstrap_Key
   free_tlwe(ct_sign);
   free_tlwe(in2);
 }
-

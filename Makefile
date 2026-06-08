@@ -65,6 +65,9 @@ $(BUILD_DIR)/pvwtlwe.o: $(MOSFHET_DIR)/src/pvwtlwe.c | setup
 $(BUILD_DIR)/pvwtmlwe.o: $(MOSFHET_DIR)/src/pvwtmlwe.c | setup
 	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
 
+$(BUILD_DIR)/mattrgsw.o: $(MOSFHET_DIR)/src/mattrgsw.c | setup
+	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
+
 $(BUILD_DIR)/fips202.o: $(MOSFHET_DIR)/src/sha3/fips202.c | setup
 	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
 

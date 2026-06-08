@@ -606,13 +606,13 @@ void trlwe_from_DFT(TRLWE out, TRLWE_DFT in){
 
 void trlwe_decompose(TorusPolynomial * out, TRLWE in, int Bg_bit, int l){
   const int k = in->k, N = in->b->N;
-  const uint64_t half_Bg = (1UL << (Bg_bit - 1));
-  const uint64_t h_mask = (1UL << Bg_bit) - 1;
+  const uint64_t half_Bg = (1ULL << (Bg_bit - 1));
+  const uint64_t h_mask = (1ULL << Bg_bit) - 1;
   const uint64_t word_size = sizeof(Torus)*8;
 
   uint64_t offset = 0;
   for (size_t i = 0; i < l; i++){
-    offset += (1UL << (word_size - i * Bg_bit - 1));
+    offset += (1ULL << (word_size - i * Bg_bit - 1));
   }
   
   for (size_t i = 0; i < l; i++) {

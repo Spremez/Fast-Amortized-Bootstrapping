@@ -54,12 +54,12 @@ void free_array_of_polynomials(void * p, int size){
 
 void polynomial_decompose(TorusPolynomial * out, TorusPolynomial in, int Bg_bit, int l){
   const int N = in->N, bit_size = sizeof(Torus)*8;
-  const uint64_t half_Bg = (1UL << (Bg_bit - 1));
-  const uint64_t h_mask = (1UL << Bg_bit) - 1;
+  const uint64_t half_Bg = (1ULL << (Bg_bit - 1));
+  const uint64_t h_mask = (1ULL << Bg_bit) - 1;
 
   uint64_t offset = 0;
   for (size_t i = 0; i < l; i++){
-    offset += (1UL << (bit_size - i * Bg_bit - 1));
+    offset += (1ULL << (bit_size - i * Bg_bit - 1));
   }
   
   for (size_t i = 0; i < l; i++) {

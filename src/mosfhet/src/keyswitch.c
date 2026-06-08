@@ -24,7 +24,7 @@ TRLWE_KS_Key trlwe_new_KS_key(TRLWE_Key out_key, TRLWE_Key in_key, int t, int ba
     res->s[i] = (TRLWE_DFT *) safe_malloc(sizeof(TRLWE_DFT) * t);
     for (size_t j = 0; j < t; j++){
       for (size_t i2 = 0; i2 < N_in; i2++){
-        dec_poly->coeffs[i2] = in_key->s[i]->coeffs[i2] * (1UL << (bit_size - (j + 1) * base_bit));
+        dec_poly->coeffs[i2] = in_key->s[i]->coeffs[i2] * (1ULL << (bit_size - (j + 1) * base_bit));
       }
       trlwe_sample(tmp, dec_poly, out_key);
       res->s[i][j] = trlwe_alloc_new_DFT_sample(out_key->k, N_out);
@@ -228,7 +228,7 @@ LUT_Packing_KS_Key trlwe_new_packing_KS_key(TRLWE_Key out_key, TLWE_Key in_key, 
       for (size_t j = 0; j < t; j++){
         res->s[i][e][j] = (TRLWE*) safe_malloc(sizeof(TRLWE*) * (base - 1));
         for (size_t k = 0; k < base - 1; k++){
-          const Torus dec_key = in_key->s[i] * (k + 1) * (1UL << (bit_size - (j + 1) * base_bit));
+          const Torus dec_key = in_key->s[i] * (k + 1) * (1ULL << (bit_size - (j + 1) * base_bit));
           res->s[i][e][j][k] = _MACRO_trlwe_new_sample(0, out_key);
           for (size_t q = e*(N/torus_base); q < (e+1)*(N/torus_base); q++) res->s[i][e][j][k]->b->coeffs[q] += dec_key;
         }
@@ -311,8 +311,8 @@ void free_trlwe_packing_ks_key(LUT_Packing_KS_Key key){
 
 void trlwe_packing_keyswitch(TRLWE out, TLWE * in, LUT_Packing_KS_Key ks_key){
   const int bit_size = sizeof(Torus)*8, N = out->b->N, torus_base = ks_key->torus_base;
-  const Torus prec_offset = 1UL << (bit_size - (1 + ks_key->base_bit * ks_key->t));
-  const Torus mask = (1UL << ks_key->base_bit) - 1;
+  const Torus prec_offset = 1ULL << (bit_size - (1 + ks_key->base_bit * ks_key->t));
+  const Torus mask = (1ULL << ks_key->base_bit) - 1;
   assert(out->k == ks_key->s[0][0][0][0]->k);
   assert(out->b->N == ks_key->s[0][0][0][0]->b->N);
 
@@ -349,7 +349,7 @@ Generic_KS_Key trlwe_new_packing1_KS_key(TRLWE_Key out_key, TLWE_Key in_key, int
     for (size_t j = 0; j < t; j++){
       res->s[i][j] = (TRLWE*) safe_malloc(sizeof(TRLWE*) * (base - 1));
       for (size_t k = 0; k < base - 1; k++){
-        const Torus dec_key = in_key->s[i] * (k + 1) * (1UL << (bit_size - (j + 1) * base_bit));
+        const Torus dec_key = in_key->s[i] * (k + 1) * (1ULL << (bit_size - (j + 1) * base_bit));
         res->s[i][j][k] = _MACRO_trlwe_new_sample(0, out_key);
         res->s[i][j][k]->b->coeffs[0] += dec_key;
       }
@@ -426,8 +426,8 @@ Generic_KS_Key trlwe_load_new_generic_ks_key(FILE * fd){
 
 void trlwe_packing1_keyswitch(TRLWE out, TLWE in, Generic_KS_Key ks_key){
   const int bit_size = sizeof(Torus)*8;
-  const Torus prec_offset = 1UL << (bit_size - (1 + ks_key->base_bit * ks_key->t));
-  const Torus mask = (1UL << ks_key->base_bit) - 1;
+  const Torus prec_offset = 1ULL << (bit_size - (1 + ks_key->base_bit * ks_key->t));
+  const Torus mask = (1ULL << ks_key->base_bit) - 1;
   assert(out->k == ks_key->s[0][0][0]->k);
   assert(out->b->N == ks_key->s[0][0][0]->b->N);
 
@@ -532,7 +532,7 @@ Generic_KS_Key trlwe_new_priv_SK_KS_key(TRLWE_Key out_key, TLWE_Key in_key, int 
     for (size_t j = 0; j < t; j++){
       res->s[i][j] = (TRLWE*) safe_malloc(sizeof(TRLWE*) * (base - 1));
       for (size_t k = 0; k < base - 1; k++){
-        const Torus dec_key = s_i * (k + 1) * (1UL << (bit_size - (j + 1) * base_bit));
+        const Torus dec_key = s_i * (k + 1) * (1ULL << (bit_size - (j + 1) * base_bit));
         res->s[i][j][k] = _MACRO_trlwe_new_sample(0, out_key);
         for (size_t e = 0; e < out_key->s[0]->N; e++){
           res->s[i][j][k]->b->coeffs[e] += (-out_key->s[0]->coeffs[e])*dec_key;
@@ -545,8 +545,8 @@ Generic_KS_Key trlwe_new_priv_SK_KS_key(TRLWE_Key out_key, TLWE_Key in_key, int 
 
 void trlwe_priv_keyswitch(TRLWE out, TLWE in, Generic_KS_Key ks_key){
   const int bit_size = sizeof(Torus)*8;
-  const Torus prec_offset = 1UL << (bit_size - (1 + ks_key->base_bit * ks_key->t));
-  const Torus mask = (1UL << ks_key->base_bit) - 1;
+  const Torus prec_offset = 1ULL << (bit_size - (1 + ks_key->base_bit * ks_key->t));
+  const Torus mask = (1ULL << ks_key->base_bit) - 1;
   assert(out->k == ks_key->s[0][0][0]->k);
   assert(out->b->N == ks_key->s[0][0][0]->b->N);
 
