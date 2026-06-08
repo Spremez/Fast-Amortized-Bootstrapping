@@ -113,16 +113,28 @@ void * safe_malloc(size_t size){
 }
 
 void * safe_aligned_malloc(size_t size){
+  #ifdef _WIN32
+  // Existing callers release this pointer with free(), so keep Windows portable builds free-compatible.
+  void *ptr = malloc(size);
+  #else
   void * ptr;
   #ifdef AVX512_OPT
   int err = posix_memalign(&ptr, 64, size);
   #else
   int err = posix_memalign(&ptr, 32, size);
   #endif
+  #endif
+  #ifndef _WIN32
   if (err || (!ptr && (size > 0))) {
     perror("aligned malloc failed!");
     exit(EXIT_FAILURE);
   }
+  #else
+  if (!ptr && (size > 0)) {
+    perror("aligned malloc failed!");
+    exit(EXIT_FAILURE);
+  }
+  #endif
   // memset(ptr, 0, size);
   return ptr;
 }

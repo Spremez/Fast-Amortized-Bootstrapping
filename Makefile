@@ -17,11 +17,11 @@ OBJ_MOSFHET := $(OBJ_MOSFHET:.s=.o)
 
 .PHONY: all clean setup
 
+all: main
+
 # Setup: create build directory
 setup:
 	mkdir -p $(BUILD_DIR)
-
-all: main
 
 # Compile project objects to build directory
 $(BUILD_DIR)/%.o: ./src/%.c | setup
@@ -62,10 +62,16 @@ $(BUILD_DIR)/register.o: $(MOSFHET_DIR)/src/register.c | setup
 $(BUILD_DIR)/pvwtlwe.o: $(MOSFHET_DIR)/src/pvwtlwe.c | setup
 	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
 
+$(BUILD_DIR)/pvwtmlwe.o: $(MOSFHET_DIR)/src/pvwtmlwe.c | setup
+	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
+
 $(BUILD_DIR)/fips202.o: $(MOSFHET_DIR)/src/sha3/fips202.c | setup
 	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
 
 $(BUILD_DIR)/karatsuba.o: $(MOSFHET_DIR)/src/fft/karatsuba.c | setup
+	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
+
+$(BUILD_DIR)/ffnt.o: $(MOSFHET_DIR)/src/fft/ffnt/ffnt.c | setup
 	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
 
 $(BUILD_DIR)/aes_rng.o: $(MOSFHET_DIR)/src/rnd/aes_rng.c | setup
