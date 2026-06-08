@@ -2,6 +2,7 @@
 //#include <sab.h>
 #include <benchmark_util.h>
 #include <sab_profile.h>
+#include <inttypes.h>
 
 // #define PRINT_POLY
 
@@ -499,9 +500,59 @@ void test_sab_lwe(){
   // trlwe_print(rlwe_out, input_key, msg_prec);
 }
 
+void test_sab_microbench(){
+  const uint64_t in_N = 2048, in_k = 1, out_N = 2048, out_k = 1;
+  const uint64_t l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2;
+  const uint64_t t_ks = 12, b_ks = 1, h_in = 39, msg_prec = 3;
+  const uint64_t target_r_prec = 7;
+  const uint64_t ep_reps = 2000, cmux_reps = 2000, monomial_reps = 5;
+  const double sigma_in = pow(2, -15);
+  const double sigma_out = pow(2, -50);
+
+  printf("SAB microbench with binary SET_2_3_2048 shape\n");
+  printf("Reps: external_product=%" PRIu64 ", CMUX=%" PRIu64 ", RGSW_monomial_mul=%" PRIu64 "\n",
+         ep_reps, cmux_reps, monomial_reps);
+
+  TRLWE_Key input_key;
+  uint64_t rs_attempts = RS_sparse_binary_key(&input_key, in_N, in_k, h_in, sigma_in, target_r_prec);
+  TRLWE_Key out_key = trlwe_new_ternary_key(out_N, out_k, 512, sigma_out);
+  TRLWE_Key packing_key = trlwe_new_ternary_key(in_N, in_k, 256, pow(2, -44));
+  TRGSW_Key output_key = trgsw_new_key(out_key, l, bg_bit);
+  const uint64_t r_prec = get_min_prec(input_key);
+  printf("Max monomial distance (log B): %" PRIu64 "\n", r_prec);
+  printf("Rejection Sampling Attempts: %" PRIu64 "\n", rs_attempts);
+
+  SAB_Key sab = new_sparse_amortized_bootstrapping(input_key, packing_key, output_key, msg_prec,
+      b_packing, ell_packing, t_ks, b_ks, h_in, r_prec, false, false, false);
+
+  TRLWE ep_in = trlwe_new_sample(NULL, out_key);
+  TRLWE_DFT ep_out = trlwe_alloc_new_DFT_sample(out_k, out_N);
+  MEASURE_BOOTSTRAP_TIME("", ep_reps, "Microbench trgsw_mul_trlwe_DFT",
+    trgsw_mul_trlwe_DFT(ep_out, ep_in, sab->s[0][0][0]);
+  );
+
+  TRLWE cmux_out = trlwe_new_noiseless_trivial_sample(NULL, out_k, out_N);
+  TRLWE cmux_in1 = trlwe_new_sample(NULL, out_key);
+  TRLWE cmux_in2 = trlwe_new_sample(NULL, out_key);
+  MEASURE_BOOTSTRAP_TIME("", cmux_reps, "Microbench CMUX",
+    CMUX(cmux_out, cmux_in1, cmux_in2, sab->s[0][0][0], sab);
+  );
+
+  TRLWE rlwe_in = trlwe_new_sample(NULL, input_key);
+  TRLWE tv = trlwe_new_noiseless_trivial_sample(NULL, out_k, out_N);
+  tv->b->coeffs[1] += int2torus(1, msg_prec);
+  TRLWE * acc = trlwe_alloc_new_sample_array(in_N, out_k, out_N);
+  setup_tv_xb(acc, rlwe_in->b->coeffs, tv, sab);
+  MEASURE_BOOTSTRAP_TIME("", monomial_reps, "Microbench RGSW_monomial_mul",
+    RGSW_monomial_mul(acc, sab->s[0][0], sab);
+  );
+}
+
 int main(int argc, char const *argv[])
 {
-#if defined(TERNARY)
+#if defined(SAB_MICROBENCH)
+  test_sab_microbench();
+#elif defined(TERNARY)
   test_sab_tern();
 #elif defined(ARBITRARY)
   test_sab_arbitrary();

@@ -14,6 +14,10 @@ SAB_PROFILE ?= false
 ifeq ($(SAB_PROFILE),true)
 	FLAGS += -DSAB_PROFILE
 endif
+SAB_MICROBENCH ?= false
+ifeq ($(SAB_MICROBENCH),true)
+	FLAGS += -DSAB_MICROBENCH
+endif
 LIBS = 
 LD_LIBS =
 BUILD_LIBS = 
