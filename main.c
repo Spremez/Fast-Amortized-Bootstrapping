@@ -549,6 +549,16 @@ void test_sab_microbench(){
 }
 
 #if defined(SAB_PVW_KERNEL_TEST)
+static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
+  const int N = in->s[0][lane]->N;
+  TRLWE_Key out = trlwe_alloc_key(N, in->k, in->sigma);
+  for (size_t i = 0; i < in->k; i++){
+    polynomial_copy_torus_polynomial(out->s[i], in->s[i][lane]);
+    polynomial_copy_DFT_polynomial(out->s_dft[i], in->s_dft[i][lane]);
+  }
+  return out;
+}
+
 static bool check_mat_trgsw_identity_lane(int r){
   const int N = 1024, k = 1, l = 1, bg_bit = 23, prec = 3;
   const int rows = (k + r) * l;
@@ -604,13 +614,120 @@ static bool check_mat_trgsw_identity_lane(int r){
   return pass;
 }
 
+static bool check_mat_trgsw_scalar_equivalence(void){
+  const int N = 1024, k = 1, r = 1, l = 1, bg_bit = 23, prec = 3;
+  const int rows = (k + r) * l;
+
+  PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -50));
+  TRLWE_Key scalar_key = trlwe_key_from_pvmtmlwe_lane(pvw_key, 0);
+  MAT_TRGSW_Key mat_key = mat_trgsw_new_key(pvw_key, l, bg_bit);
+  TRGSW_Key scalar_trgsw_key = trgsw_new_key(scalar_key, l, bg_bit);
+
+  TorusPolynomial * msg = polynomial_new_array_of_torus_polynomials(N, r);
+  for (size_t i = 0; i < N; i++){
+    msg[0]->coeffs[i] = int2torus(i & 3, prec);
+  }
+
+  PVW_TMLWE pvw_in = pvmtmlwe_new_sample(msg, pvw_key);
+  TRLWE scalar_in = trlwe_alloc_new_sample(k, N);
+  polynomial_copy_torus_polynomial(scalar_in->a[0], pvw_in->a[0]);
+  polynomial_copy_torus_polynomial(scalar_in->b, pvw_in->b[0]);
+
+  MAT_TRGSW_DFT mat_selector = mat_trgsw_alloc_new_DFT_sample(l, bg_bit, k, r, N);
+  TRGSW_DFT scalar_selector = trgsw_alloc_new_DFT_sample(l, bg_bit, k, N);
+  PVW_TMLWE_DFT pvw_out_dft = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
+  TRLWE_DFT scalar_out_dft = trlwe_alloc_new_DFT_sample(k, N);
+  PVW_TMLWE pvw_out = pvmtmlwe_alloc_new_sample(k, r, N);
+  TRLWE scalar_out = trlwe_alloc_new_sample(k, N);
+  MAT_TRGSW_MUL_SCRATCH scratch = mat_trgsw_alloc_mul_scratch(rows, N);
+  TorusPolynomial * pvw_phase = polynomial_new_array_of_torus_polynomials(N, r);
+  TorusPolynomial scalar_phase = polynomial_new_torus_polynomial(N);
+
+  mat_trgsw_monomial_DFT_sample(mat_selector, 1, 0, mat_key);
+  trgsw_monomial_DFT_sample(scalar_selector, 1, 0, scalar_trgsw_key);
+  mat_trgsw_mul_pvmtmlwe_DFT(pvw_out_dft, pvw_in, mat_selector, scratch);
+  trgsw_mul_trlwe_DFT(scalar_out_dft, scalar_in, scalar_selector);
+  pvmtmlwe_from_DFT(pvw_out, pvw_out_dft);
+  trlwe_from_DFT(scalar_out, scalar_out_dft);
+  pvmtmlwe_phase(pvw_phase, pvw_out, pvw_key);
+  trlwe_phase(scalar_phase, scalar_out, scalar_key);
+
+  bool pass = true;
+  for (size_t i = 0; i < N; i++){
+    const uint64_t pvw_val = torus2int(pvw_phase[0]->coeffs[i], prec);
+    const uint64_t scalar_val = torus2int(scalar_phase->coeffs[i], prec);
+    if(pvw_val != scalar_val){
+      printf("MAT_TRGSW scalar equivalence fail coeff=%" PRIu64 ": %" PRIu64 " != %" PRIu64 "\n",
+             (uint64_t) i, pvw_val, scalar_val);
+      pass = false;
+      break;
+    }
+  }
+
+  free_array_of_polynomials(pvw_phase, r);
+  free_polynomial(scalar_phase);
+  free_mat_trgsw_mul_scratch(scratch);
+  free_pvmtmlwe(pvw_out);
+  free_trlwe(scalar_out);
+  free_pvmtmlwe_DFT(pvw_out_dft);
+  free_trlwe(scalar_out_dft);
+  free_mat_trgsw_DFT(mat_selector);
+  free_trgsw(scalar_selector);
+  free_trlwe(scalar_in);
+  free_pvmtmlwe(pvw_in);
+  free_array_of_polynomials(msg, r);
+  free_trgsw_key(scalar_trgsw_key);
+  free_mat_trgsw_key(mat_key);
+  free_trlwe_key(scalar_key);
+  free_pvmtmlwe_key(pvw_key);
+  return pass;
+}
+
+static void bench_mat_trgsw_kernel_lane(int r){
+  const int N = 2048, k = 1, l = 1, bg_bit = 23;
+  const int rows = (k + r) * l;
+  const uint64_t reps = 1000;
+  PVW_TMLWE_Key key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -50));
+  MAT_TRGSW_Key mat_key = mat_trgsw_new_key(key, l, bg_bit);
+  MAT_TRGSW_DFT selector = mat_trgsw_alloc_new_DFT_sample(l, bg_bit, k, r, N);
+  PVW_TMLWE in = pvmtmlwe_new_sample(NULL, key);
+  PVW_TMLWE_DFT out = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
+  MAT_TRGSW_MUL_SCRATCH scratch = mat_trgsw_alloc_mul_scratch(rows, N);
+
+  mat_trgsw_monomial_DFT_sample(selector, 1, 0, mat_key);
+  for (size_t i = 0; i < 10; i++){
+    mat_trgsw_mul_pvmtmlwe_DFT(out, in, selector, scratch);
+  }
+
+  uint64_t total_us = 0;
+  for (size_t i = 0; i < reps; i++){
+    const uint64_t start = get_time();
+    mat_trgsw_mul_pvmtmlwe_DFT(out, in, selector, scratch);
+    total_us += get_time() - start;
+  }
+  printf("MAT_TRGSW microbench r=%d reps=%" PRIu64 " avg_us=%" PRIu64 " lane_avg_us=%" PRIu64 "\n",
+         r, reps, total_us / reps, total_us / (reps * r));
+
+  free_mat_trgsw_mul_scratch(scratch);
+  free_pvmtmlwe_DFT(out);
+  free_pvmtmlwe(in);
+  free_mat_trgsw_DFT(selector);
+  free_mat_trgsw_key(mat_key);
+  free_pvmtmlwe_key(key);
+}
+
 void test_mat_trgsw_kernel(){
   bool pass = true;
   pass &= check_mat_trgsw_identity_lane(1);
   pass &= check_mat_trgsw_identity_lane(2);
   pass &= check_mat_trgsw_identity_lane(4);
+  pass &= check_mat_trgsw_scalar_equivalence();
   printf("MAT_TRGSW kernel test: %s\n", pass ? "Pass" : "Fail");
   if(!pass) exit(1);
+
+  bench_mat_trgsw_kernel_lane(1);
+  bench_mat_trgsw_kernel_lane(2);
+  bench_mat_trgsw_kernel_lane(4);
 }
 #endif
 

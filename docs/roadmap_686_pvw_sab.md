@@ -1,0 +1,402 @@
+# Roadmap: Accelerating 2025/686 SAB with PVW/MAT_TRGSW Lanes
+
+Date: 2026-06-08
+
+## Overall Objective
+
+Accelerate the sparse amortized bootstrapping (SAB) algorithm used for the
+2025/686 target by adding a new `sab_pvw_*` path that batches multiple
+independent LUT/bootstrap lanes with a PVW/MAT_TRGSW external-product layout
+inspired by `D:\projects\mbfhe-mb`.
+
+The scalar SAB path must remain intact. All PVW work is added beside the
+existing implementation until correctness, noise, and performance evidence are
+strong enough to compare against the scalar baseline.
+
+## Research Hypothesis
+
+Status: experimental.
+
+For workloads where several LUT/SAB lanes share the same input mask/control
+schedule, replacing repeated scalar CMUX/external-product work with a
+multi-body PVW/MAT_TRGSW path should improve throughput. The expected gain is
+not from changing the SAB monomial schedule, but from batching lane bodies and
+sharing decomposition/FFT/control-flow overhead across `r` lanes.
+
+This hypothesis is falsifiable:
+
+- If `r=2/4/8` PVW lanes do not improve throughput on WSL/Linux `spqlios` or
+  AVX paths, the algorithmic change is not useful for 686 acceleration.
+- If PVW correctness or noise degrades relative to scalar SAB beyond the target
+  parameter tolerance, the optimization is not acceptable.
+- If the main bottleneck moves to allocation, key size, extract, or packing KS,
+  the next optimization target must change before claiming SAB acceleration.
+
+## Fixed Design Choices
+
+- Performance platform: WSL/Linux. Windows + FFNT is correctness smoke only.
+- Optimization target: throughput for multiple LUT/SAB lanes.
+- Meaning of `r`: number of independent LUT/SAB lanes sharing one control/key
+  schedule. It is not accumulator-index packing.
+- Integration style: add `sab_pvw_*` APIs; do not replace
+  `sab_rlwe_bootstrap(...)` until all gates pass.
+- Kernel style: use MOSFHET-native structures first. Import mbfhe-mb semantics,
+  not its memory model.
+
+## Non-Goals
+
+- Do not claim paper-level novelty before literature and ablation checks.
+- Do not optimize Windows FFNT timing.
+- Do not rely on existing PVW TLWE code paths with known layout risks unless
+  they receive dedicated tests.
+- Do not enable include-zero or arbitrary-key paths as primary targets before
+  binary/ternary target paths are stable.
+
+## Stage 0: Baseline and Platform
+
+Goal:
+
+Fix the current project enough to build and establish the performance platform.
+
+Why:
+
+All later speedup claims require a stable scalar baseline and a fixed platform.
+
+Artifacts:
+
+- Baseline commit.
+- Build commands.
+- Parameter records.
+- WSL/Linux toolchain snapshot.
+
+Verification:
+
+- Windows: `make FFT_LIB=ffnt ...` builds and can run smoke tests.
+- WSL/Linux: `make FFT_LIB=spqlios ...` builds and full `main` passes.
+
+Current status:
+
+- Complete.
+- Baseline commits exist through `4537798`.
+- Later WSL/Linux `spqlios` full SAB smoke also passes.
+
+## Stage 1: 686 SAB Protocol and Cost Map
+
+Goal:
+
+Write the current SAB call graph, external-product count model, and parameter
+bookkeeping.
+
+Why:
+
+PVW batching must target the actual repeated unit. Without the call graph and
+cost model, it is easy to replace the wrong layer.
+
+Artifacts:
+
+- `docs/protocol_map.md`
+- `docs/cost_model.md`
+
+Verification:
+
+- External-product counts match instrumentation. Example:
+  `SET_2_3_2048` binary uses `(h+1)*rho*N = 40*7*2048 = 573440`
+  scalar TRGSW external products per bootstrap.
+
+Current status:
+
+- Complete enough for engineering.
+- Some old Chinese docs are mojibake, so future summaries should use ASCII or
+  UTF-8-verified files.
+
+## Stage 2: Bottleneck Measurement
+
+Goal:
+
+Prove the target bottleneck is blind rotation / sparse multiplication /
+RGSW monomial multiplication / CMUX rather than setup, extract, packing KS, or
+memory allocation.
+
+Why:
+
+PVW batching is only justified if external-product and CMUX/RGSW inclusive cost
+dominates.
+
+Artifacts:
+
+- `docs/profile_baseline.md`
+- `docs/stage2_measurements.md`
+- Profiling instrumentation in `sab_profile.*`
+- `SAB_MICROBENCH=true`
+
+Verification:
+
+- Full profile call counts match the cost model.
+- CMUX/RGSW inclusive time dominates full `sab_rlwe_bootstrap`.
+- Setup/extract/KS are not primary bottlenecks.
+
+Current status:
+
+- Complete enough to proceed.
+- Measurement showed raw `trgsw_mul_trlwe_DFT` is important but insufficient
+  alone; PVW must batch at CMUX/RGSW layer.
+
+## Stage 3: Independent PVW/MAT_TRGSW Kernel
+
+Goal:
+
+Implement and validate a MOSFHET-native matrix external-product kernel before
+touching SAB hot paths.
+
+Why:
+
+SAB integration must not be mixed with low-level kernel bring-up. The kernel
+needs its own correctness and performance evidence.
+
+Artifacts:
+
+- `src/mosfhet/src/mattrgsw.c`
+- `MAT_TRGSW_MUL_SCRATCH`
+- `SAB_PVW_KERNEL_TEST=true`
+- `docs/stage3_pvw_kernel_status.md`
+
+Verification gates:
+
+- `ENABLE_PVW_TMLWE=true` links.
+- Identity selector passes for `r=1/2/4`.
+- `r=1` scalar equivalence against `trgsw_mul_trlwe_DFT(...)`.
+- PVW external-product microbench for `r=1/2/4`, no allocation in timed loop.
+
+Current status:
+
+- Partially complete.
+- Implemented identity tests and WSL/Linux `spqlios` smoke.
+- Remaining execution target: scalar equivalence and PVW microbench.
+
+## Stage 4: SAB-PVW State Design
+
+Goal:
+
+Design the lane state and invariants for `sab_pvw_*`.
+
+Why:
+
+The SAB accumulator is currently an array of scalar TRLWE samples. PVW needs a
+multi-body state where each body represents one independent lane, while the
+selector schedule remains shared.
+
+Artifacts:
+
+- `docs/sab_pvw_state_design.md`
+- New structs for PVW SAB temporary state.
+- No behavioral change to scalar SAB.
+
+Required invariant:
+
+For every CMUX/NCMUX step `t` and lane `q`:
+
+```text
+phase(acc_pvw.body[q] after step t)
+==
+phase(acc_scalar[q] after the same scalar SAB step t)
+```
+
+Verification:
+
+- Deterministic isolated CMUX/NCMUX tests for `r=1/2/4`.
+- No changes in scalar SAB outputs.
+
+Decision gate:
+
+- Choose first integration granularity:
+  - isolated CMUX only;
+  - `RGSW_monomial_mul` lane batching;
+  - full `sparse_mul` lane batching.
+
+Recommended decision:
+
+Start with isolated CMUX, then RGSW monomial, then sparse_mul.
+
+## Stage 5: `sab_pvw_*` Hot-Path Integration
+
+Goal:
+
+Add a new PVW SAB route that batches `r` independent LUT/SAB lanes under the
+same sparse input/control schedule.
+
+Why:
+
+This is the first stage that can demonstrate practical SAB throughput
+improvement.
+
+Artifacts:
+
+- `sab_pvw_*` API and implementation files.
+- PVW selector/key generation from scalar selector schedule.
+- PVW versions of CMUX/NCMUX and RGSW monomial multiplication.
+- Per-lane extract/output support.
+
+Verification:
+
+- Small deterministic tests pass before target parameters.
+- For each lane, PVW SAB output matches scalar SAB output under identical key,
+  input, and LUT.
+- Existing `sab_rlwe_bootstrap(...)` output remains unchanged.
+
+Failure handling:
+
+- If isolated CMUX passes but RGSW fails, debug monomial schedule and
+  lane-state rotation.
+- If RGSW passes but full sparse_mul fails, debug `sub_a` and final monomial
+  step.
+
+## Stage 6: Noise and Correctness Evaluation
+
+Goal:
+
+Prove that PVW speed does not come from unacceptable correctness degradation.
+
+Why:
+
+Bootstrapping changes are invalid if failure probability or noise growth
+becomes worse without explanation.
+
+Artifacts:
+
+- Noise measurement hooks.
+- Multi-seed correctness logs.
+- Failure records for each parameter set.
+
+Verification:
+
+- Same LUT, input, key, and seed schedule: scalar and PVW lane outputs agree.
+- Noise per stage is comparable or explained.
+- Multi-seed failure rate is not worse than baseline within the accepted
+  target threshold.
+
+Decision gate:
+
+- Define the minimum seed count and accepted failure threshold before claiming
+  any final result.
+
+Recommended starting point:
+
+- Correctness: at least 50 seeds for engineering signal.
+- Paper-grade evidence: more seeds, confidence intervals, and clear failure
+  model.
+
+## Stage 7: Performance Evaluation
+
+Goal:
+
+Measure whether PVW SAB actually accelerates 2025/686 on the target platform.
+
+Metrics:
+
+- Bootstrap latency.
+- Throughput per lane.
+- Scaling over `r`.
+- Key size.
+- Memory peak.
+- Key generation time.
+- External-product microbench.
+- CMUX/RGSW/sparse_mul profile breakdown.
+
+Verification:
+
+- WSL/Linux `spqlios` or explicit AVX path.
+- Same parameters, comparable compiler flags, same instrumentation mode.
+- Report median/mean/stddev and repeat count.
+
+Minimum success:
+
+- Stable throughput improvement for target parameter sets.
+- No correctness/noise regression.
+
+Failure handling:
+
+- If raw kernel is faster but full SAB is not, inspect allocation, conversion,
+  extract, and memory bandwidth.
+- If scaling saturates early, measure memory bandwidth and DFT conversion reuse.
+
+## Stage 8: Ablation and Variant Analysis
+
+Goal:
+
+Understand why PVW succeeds or fails and whether variants are worth pursuing.
+
+Candidate variants:
+
+- `r=2/4/8` lane counts.
+- Shared scratch pools vs per-call scratch.
+- Batch only CMUX, batch RGSW monomial, or batch full sparse_mul.
+- Different FFT backends.
+- Compressed key or PRNG variants after correctness is stable.
+
+Verification:
+
+- One variable changed per ablation.
+- Same parameter set and seed policy.
+- Record negative results.
+
+## Stage 9: Literature and Novelty Check
+
+Goal:
+
+Decide whether the result is a paper contribution or an engineering
+optimization.
+
+Why:
+
+The implementation idea comes from mbfhe-mb/PVW-style matrix external products,
+so novelty must be checked carefully.
+
+Artifacts:
+
+- Related-work matrix focused on multi-body/PVW external products and amortized
+  bootstrapping.
+- Claim support map.
+- Contribution statements with evidence tags.
+
+Verification:
+
+- No paper claim is marked ready until supported by literature, theory, and
+  experiment records.
+
+Decision gate:
+
+- If novelty is weak but engineering speedup is real, position it as an
+  implementation/system optimization.
+- If a new SAB-specific batching invariant or complexity improvement is
+  demonstrably novel, prepare paper-grade evidence.
+
+## Stage 10: Final Paper/Report Package
+
+Goal:
+
+Produce a reproducible report or paper section from validated artifacts.
+
+Artifacts:
+
+- Reproducibility pack.
+- Final result tables.
+- Method description.
+- Limitations and failure cases.
+- Claim-to-evidence mapping.
+
+Verification:
+
+- Every result has command, commit hash, platform, parameters, and log pointer.
+- Every claim has supporting evidence.
+
+## Immediate Execution Plan
+
+The next executable step is Stage 3 completion:
+
+1. Add scalar equivalence test for `r=1`.
+2. Add PVW external-product microbench for `r=1/2/4`.
+3. Run WSL/Linux `spqlios` kernel test and default SAB smoke.
+4. Commit the Stage 3 completion increment.
+
+After that, begin Stage 4 by writing `sab_pvw_state_design.md` and adding
+isolated PVW CMUX lane-state tests.

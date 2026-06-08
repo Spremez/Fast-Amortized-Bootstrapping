@@ -72,6 +72,23 @@ Result:
 MAT_TRGSW kernel test: Pass
 ```
 
+Updated WSL/Linux spqlios kernel smoke after scalar-equivalence and microbench
+were added:
+
+```bash
+make FFT_LIB=spqlios ENABLE_PVW_TMLWE=true SAB_PVW_KERNEL_TEST=true
+./main
+```
+
+Result:
+
+```text
+MAT_TRGSW kernel test: Pass
+MAT_TRGSW microbench r=1 reps=1000 avg_us=11 lane_avg_us=11
+MAT_TRGSW microbench r=2 reps=1000 avg_us=23 lane_avg_us=11
+MAT_TRGSW microbench r=4 reps=1000 avg_us=40 lane_avg_us=10
+```
+
 WSL/Linux spqlios default SAB smoke:
 
 ```bash
@@ -86,22 +103,30 @@ Bootstrapping time: 14,979,850us +- 265187.920517
 Pass
 ```
 
+Updated default SAB smoke after the Stage 3 test additions:
+
+```text
+Bootstrapping time: 13,751,139us +- 88946.746622
+Pass
+```
+
 The WSL command output also includes host-side localhost/NAT warning text before
 or after program output; it is not emitted by this program and did not affect
 the exit code.
 
 ## Remaining Stage 3 Work
 
-- Add a scalar equivalence test for `r=1` against `trgsw_mul_trlwe_DFT(...)`
-  using matched PVW/scalar keys.
-- Add a microbench for `mat_trgsw_mul_pvmtmlwe_DFT(...)` with fixed `r` values
-  and no allocation in the timed region.
+- Improve the microbench report to collect multiple trials and expose median,
+  min, max, and standard deviation.
+- Add a scalar baseline microbench in the same standalone target so the raw
+  `r=1` MAT_TRGSW cost can be compared directly with `trgsw_mul_trlwe_DFT(...)`
+  in the same process.
 - Keep `pvmtmlwe_keyswitch(...)` as a known aborting stub; the current matrix
   external product path does not call it.
 
 ## Stage 4/5 Entry Condition
 
-The project can now start designing `sab_pvw_*` lane state and CMUX/NCMUX
-integration, but should not replace scalar SAB yet. The next change should add
-PVW lane state beside the existing SAB state and compare scalar vs PVW lane
-phase after each isolated CMUX step.
+The project can now start Stage 4 state design and isolated CMUX/NCMUX lane
+tests, but should not replace scalar SAB yet. The next change should add PVW
+lane state beside the existing SAB state and compare scalar vs PVW lane phase
+after each isolated CMUX step.

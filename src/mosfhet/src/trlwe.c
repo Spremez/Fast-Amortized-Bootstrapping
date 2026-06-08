@@ -240,8 +240,10 @@ TRLWE_Key trlwe_load_new_key(FILE * fd){
 void free_trlwe_key(TRLWE_Key key){
   for (size_t i = 0; i < key->k; i++){
     free_polynomial(key->s[i]);
+    free_DFT_polynomial(key->s_dft[i]);
   }
   free(key->s);
+  free(key->s_dft);
   free(key);
 }
 
