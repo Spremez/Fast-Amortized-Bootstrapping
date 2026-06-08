@@ -69,6 +69,28 @@ typedef struct _TLWE_KS_Key_m{
   int base_bit, t, n;
 } * TLWE_KS_Key_m;
 
+/* PVWTLWE */
+typedef struct _PVW_TLWE {
+  Torus * a, * b;
+  int n,r;
+} * PVW_TLWE;
+
+typedef struct _PVW_TLWE_Key{
+  Integer ** s;
+  int n,r;
+  double sigma;
+} * PVW_TLWE_Key;
+
+typedef struct _PVW_TLWE_KS_Key{
+  PVW_TLWE *** s;
+  int base_bit, t, n,r;
+} * PVW_TLWE_KS_Key;
+
+typedef struct _PVW_TLWE_KS_Key_m{
+  PVW_TLWE ** s;
+  int base_bit, t, n;
+} * PVW_TLWE_KS_Key_m;
+
 /* TRLWE */
 typedef struct _TRLWE{
   TorusPolynomial * a, b;
@@ -102,6 +124,41 @@ typedef struct _Generic_KS_Key {
   int base_bit, t, n, include_b;
 } * Generic_KS_Key;
 
+/* PVW_TMLWE */
+typedef struct _PVW_TMLWE{
+  TorusPolynomial * a, * b;
+  int r;
+  int k;
+} * PVW_TMLWE;
+
+typedef struct _PVW_TMLWE_DFT{
+  DFT_Polynomial * a, * b;
+  int k,r;
+} * PVW_TMLWE_DFT;
+
+typedef struct _PVW_TMLWE_Key{
+  IntPolynomial ** s;
+  DFT_Polynomial ** s_dft;
+  int k,r;
+  double sigma;
+} * PVW_TMLWE_Key;
+
+typedef struct _PVW_TMLWE_KS_Key {
+  PVW_TMLWE_DFT ** s;
+  int base_bit, t, k;
+} * PVW_TMLWE_KS_Key;
+
+typedef struct _PVW_LUT_Packing_KS_Key {
+  PVW_TMLWE **** s;
+  int base_bit, t, torus_base, n;
+} * PVW_LUT_Packing_KS_Key;
+
+typedef struct _PVW_Generic_KS_Key {
+  PVW_TMLWE *** s;
+  int base_bit, t, n, include_b;
+} * PVW_Generic_KS_Key;
+
+
 /* TRGSW */
 typedef struct _TRGSW {
   TRLWE * samples;
@@ -118,11 +175,33 @@ typedef struct _TRGSW_Key{
   int l, Bg_bit;
 } * TRGSW_Key;
 
+/* MAT_TRGSW */
+typedef struct _MAT_TRGSW {
+  PVW_TMLWE * samples;
+  int T,Q;
+} * MAT_TRGSW;
+
+typedef struct _MAT_TRGSW_DFT{
+  PVW_TMLWE_DFT * samples;
+  int T,Q;
+} * MAT_TRGSW_DFT;
+
+typedef struct _MAT_TRGSW_Key{
+  PVW_TMLWE_Key trlwe_key;
+  int T,Q;
+} * MAT_TRGSW_Key;
+
 /* Registers */
 
 typedef struct _TRGSW_REG{
   TRGSW_DFT positive, negative;
 } * TRGSW_REG;
+
+/* MAT_TRGSW Registers */
+
+typedef struct _MAT_TRGSW_REG{
+  MAT_TRGSW_DFT positive, negative; 
+} * MAT_TRGSW_REG;
 
 /* Bootstrap */
 
@@ -138,6 +217,21 @@ typedef struct _Bootstrap_GA_Key{
   TRLWE_KS_Key * ak;
   int n, k, N, Bg_bit, l, unfolding;
 } * Bootstrap_GA_Key;
+
+/* BATCH_Bootstrap */
+
+typedef struct _BATCH_Bootstrap_Key{
+  TRGSW_DFT * s;
+  TRGSW * su;
+  int n, k, N, Bg_bit, l, unfolding;
+} * BATCH_Bootstrap_Key;
+
+typedef struct _BATCH_Bootstrap_GA_Key{
+  TRGSW_DFT * s;
+  TRGSW * su;
+  TRLWE_KS_Key * ak;
+  int n, k, N, Bg_bit, l, unfolding;
+} * BATCH_Bootstrap_GA_Key;
 
 /* Functions */
 
@@ -233,6 +327,7 @@ void tlwe_mul(TLWE out, TLWE in1, TLWE in2, int delta, Generic_KS_Key ksk, TRLWE
 void tlwe_scale_subto(TLWE out, TLWE in1, Torus in2);
 TLWE_KS_Key_m tlwe_new_KS_key_no_precomp(TLWE_Key out_key, TLWE_Key in_key, int t, int base_bit);
 void tlwe_keyswitch_no_precomp(TLWE out, TLWE in, TLWE_KS_Key_m ks_key);
+
 
 
 /* TRLWE */
@@ -452,6 +547,107 @@ void blind_rotate_ga(TRLWE tv, Torus * a, TRGSW_DFT * s, TRLWE_KS_Key * ak, int 
 void functional_bootstrap_wo_extract_ga(TRLWE out, TRLWE tv, TLWE in, Bootstrap_GA_Key key, int torus_base);
 void functional_bootstrap_ga(TLWE out, TRLWE tv, TLWE in, Bootstrap_GA_Key key, int torus_base);
 void free_bootstrap_key_ga(Bootstrap_GA_Key key);
+
+/* PVW_TLWE */
+PVW_TLWE pvwtlwe_alloc_sample(int n, int r);
+PVW_TLWE * pvwtlwe_alloc_sample_array(int count, int n, int r);
+PVW_TLWE pvwtlwe_new_noiseless_trivial_sample(Torus * m, int n, int r);
+void pvwtlwe_noiseless_trivial_sample(PVW_TLWE out, Torus * m);
+void free_pvwtlwe_array(PVW_TLWE * p, int count);
+void free_pvwtlwe(PVW_TLWE p);
+void pvwtlwe_save_sample(FILE * fd, PVW_TLWE c);
+PVW_TLWE pvwtlwe_load_new_sample(FILE * fd, int n, int r);
+void pvwtlwe_load_sample(FILE * fd, PVW_TLWE c);
+PVW_TLWE_Key pvwtlwe_alloc_key(int n, int r, double sigma);
+PVW_TLWE_Key pvwtlwe_new_binary_key(int n, int r, double sigma);
+PVW_TLWE_Key pvwtlwe_new_bounded_key(int n, int r, uint64_t bound, double sigma);
+void pvwtlwe_save_key(FILE * fd, PVW_TLWE_Key key);
+PVW_TLWE_Key pvwtlwe_load_new_key(FILE * fd);
+void free_pvwtlwe_key(PVW_TLWE_Key key);
+void pvwtlwe_sample(PVW_TLWE out, Torus * m, PVW_TLWE_Key key);
+void pvwtlwe_copy(PVW_TLWE out, PVW_TLWE in);
+PVW_TLWE pvwtlwe_new_sample(Torus * m, PVW_TLWE_Key key);
+void pvwtlwe_phase(Torus * out, PVW_TLWE c, PVW_TLWE_Key key);
+void pvwtlwe_add(PVW_TLWE out, PVW_TLWE in1, PVW_TLWE in2);
+void pvwtlwe_scale(PVW_TLWE out, PVW_TLWE in1, Torus in2);
+void pvwtlwe_scale_addto(PVW_TLWE out, PVW_TLWE in1, Torus in2);
+void pvwtlwe_scale_subto(PVW_TLWE out, PVW_TLWE in1, Torus in2);
+void pvwtlwe_addto(PVW_TLWE out, PVW_TLWE in);
+void pvwtlwe_sub(PVW_TLWE out, PVW_TLWE in1, PVW_TLWE in2);
+void pvwtlwe_negate(PVW_TLWE out, PVW_TLWE in);
+void pvwtlwe_subto(PVW_TLWE out, PVW_TLWE in);
+PVW_TLWE_KS_Key pvwtlwe_new_KS_key(PVW_TLWE_Key out_key, PVW_TLWE_Key in_key, int t, int base_bit);
+void free_pvwtlwe_ks_key(PVW_TLWE_KS_Key key);
+PVW_TLWE_KS_Key pvwtlwe_load_new_KS_key(FILE * fd, int n_outkey, int r_outkey);
+void pvwtlwe_save_KS_key(FILE * fd, PVW_TLWE_KS_Key key);
+void pvwtlwe_keyswitch(PVW_TLWE out, PVW_TLWE in, PVW_TLWE_KS_Key ks_key);
+
+/* PVW_TMLWE */
+PVW_TMLWE pvmtmlwe_alloc_new_sample(int k, int r, int N);
+void pvmtmlwe_save_sample(FILE * fd, PVW_TMLWE c);
+void pvmtmlwe_load_sample(FILE * fd, PVW_TMLWE c);
+PVW_TMLWE pvmtmlwe_load_new_sample(FILE * fd, int k, int r, int N);
+PVW_TMLWE_DFT * pvmtmlwe_alloc_new_DFT_sample_array(int count, int k, int r, int N);
+PVW_TMLWE_DFT pvmtmlwe_alloc_new_DFT_sample(int k, int r, int N);
+void pvmtmlwe_save_DFT_sample(FILE * fd, PVW_TMLWE_DFT c);
+PVW_TMLWE_DFT pvmtmlwe_load_new_DFT_sample(FILE * fd, int k, int r, int N);
+void pvmtmlwe_load_DFT_sample(FILE * fd, PVW_TMLWE_DFT c);
+void free_pvmtmlwe(void * p_v);
+void free_pvmtmlwe_array(void * p_v, int count);
+PVW_TMLWE_Key pvmtmlwe_alloc_key(int N, int k, int r, double sigma);
+PVW_TMLWE_Key pvmtmlwe_new_bounded_key(int N, int k, int r, uint64_t bound, double sigma);
+PVW_TMLWE_Key pvmtmlwe_new_binary_key(int N, int k, int r, double sigma);
+void pvwtmlwe_gen_sparse_array(uint64_t * out, uint64_t size, uint64_t h, bool ternary, bool gaussian, double key_sigma);
+PVW_TMLWE_Key pvmtmlwe_new_ternary_key(int N, int k, int r, int h, double sigma);
+PVW_TMLWE_Key pvmtmlwe_new_sparse_binary_key(int N, int k, int r, int h, double sigma);
+PVW_TMLWE_Key pvmtmlwe_new_sparse_gaussian_key(int N, int k, int r, int h, double key_sigma, double noise_sigma);
+PVW_TMLWE_Key pvmtmlwe_new_sparse_generic_key(int N, int k, int r, int h, uint64_t key_bound, double noise_sigma);
+PVW_TMLWE_Key pvmtmlwe_new_gaussian_key(int N, int k, int r, double key_sigma, double noise_sigma);
+void pvmtmlwe_save_key(FILE * fd, PVW_TMLWE_Key key);
+PVW_TMLWE_Key pvmtmlwe_load_new_key(FILE * fd);
+void free_pvmtmlwe_key(PVW_TMLWE_Key key);
+void pvmtmlwe_noiseless_trivial_sample(PVW_TMLWE out, TorusPolynomial * m);
+PVW_TMLWE pvmtmlwe_new_noiseless_trivial_sample(TorusPolynomial * m, int k, int r, int N);
+void pvmtmlwe_noiseless_trivial_DFT_sample(PVW_TMLWE_DFT out, DFT_Polynomial * m);
+PVW_TMLWE_DFT pvmtmlwe_new_noiseless_trivial_DFT_sample(DFT_Polynomial * m, int k, int r, int N);
+void pvmtmlwe_sample(PVW_TMLWE out, TorusPolynomial * m, PVW_TMLWE_Key key);
+PVW_TMLWE pvmtmlwe_new_sample(TorusPolynomial * m, PVW_TMLWE_Key key);
+void pvmtmlwe_phase(TorusPolynomial * out, PVW_TMLWE in, PVW_TMLWE_Key key);
+void print_pvmtmlwe_msg(PVW_TMLWE in, uint64_t prec, PVW_TMLWE_Key key);
+uint64_t _debug_pvmtmlwe_decrypt_exp_sample(PVW_TMLWE c, uint64_t prec, PVW_TMLWE_Key key);
+void pvmtmlwe_DFT_phase(TorusPolynomial * out, PVW_TMLWE_DFT in, PVW_TMLWE_Key key);
+void pvmtmlwe_add(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2);
+void pvmtmlwe_copy(PVW_TMLWE out, PVW_TMLWE in);
+void pvmtmlwe_negate(PVW_TMLWE out, PVW_TMLWE in);
+void pvmtmlwe_DFT_copy(PVW_TMLWE_DFT out, PVW_TMLWE_DFT in);
+void pvmtmlwe_addto(PVW_TMLWE out, PVW_TMLWE in);
+void pvmtmlwe_DFT_add(PVW_TMLWE_DFT out, PVW_TMLWE_DFT in1, PVW_TMLWE_DFT in2);
+void pvmtmlwe_DFT_sub(PVW_TMLWE_DFT out, PVW_TMLWE_DFT in1, PVW_TMLWE_DFT in2);
+void pvmtmlwe_DFT_addto(PVW_TMLWE_DFT out, PVW_TMLWE_DFT in);
+void pvmtmlwe_sub(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2);
+void pvmtmlwe_subto(PVW_TMLWE out, PVW_TMLWE in);
+void pvmtmlwe_DFT_mul_by_polynomial(PVW_TMLWE_DFT out, PVW_TMLWE_DFT in, DFT_Polynomial in2);
+void pvmtmlwe_DFT_mul_addto_by_polynomial(PVW_TMLWE_DFT out, PVW_TMLWE_DFT in, DFT_Polynomial in2);
+void pvmtmlwe_mul_by_xai(PVW_TMLWE out, PVW_TMLWE in, int a);
+void pvmtmlwe_mul_by_xai_addto(PVW_TMLWE out, PVW_TMLWE in, int a);
+void pvmtmlwe_mul_by_xai_minus_1(PVW_TMLWE out, PVW_TMLWE in, int a);
+void pvmtmlwe_extract_pvmtlwe_key(PVW_TLWE_Key out, PVW_TMLWE_Key in);
+void pvmtmlwe_extract_pvmtlwe(PVW_TLWE out, PVW_TMLWE in, int idx);
+void pvmtmlwe_extract_pvmtlwe_addto(PVW_TLWE out, PVW_TMLWE in, int idx);
+void pvmtmlwe_extract_pvmtlwe_subto(PVW_TLWE out, PVW_TMLWE in, int idx);
+void pvmtmlwe_mv_extract_pvmtlwe(PVW_TLWE * out, PVW_TMLWE in, int amount);
+void pvmtmlwe_mv_extract_pvmtlwe_scaling(PVW_TLWE out, PVW_TMLWE in, int scale);
+void pvmtmlwe_mv_extract_pvmtlwe_scaling_addto(PVW_TLWE out, PVW_TMLWE in, int scale);
+void pvmtmlwe_mv_extract_pvmtlwe_scaling_subto(PVW_TLWE out, PVW_TMLWE in, int scale);
+void pvmtmlwe_to_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in);
+void pvmtmlwe_from_DFT(PVW_TMLWE out, PVW_TMLWE_DFT in);
+void pvmtmlwe_decompose(TorusPolynomial * out, PVW_TMLWE in, int Bg_bit, int l);
+void pvmtmlwe_torus_packing(PVW_TMLWE out, Torus ** in, int size);
+void pvmtmlwe_LUT_packing(PVW_TMLWE out, uint64_t ** in, uint64_t in_prec, uint64_t out_prec);
+void pvmtmlwe_torus_packing_many_LUT(PVW_TMLWE out, Torus ** in, int lut_size, int n_luts);
+void pvmtmlwe_tensor_prod(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2, int precision, PVW_TMLWE_KS_Key rl_key);
+void pvmtmlwe_tensor_prod_FFT(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2, int precision, PVW_TMLWE_KS_Key rl_key);
+void pvmtmlwe_eval_automorphism(PVW_TMLWE out, PVW_TMLWE in, uint64_t gen, PVW_TMLWE_KS_Key ks_key);
 
 #ifdef __cplusplus
 }

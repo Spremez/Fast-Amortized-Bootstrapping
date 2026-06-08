@@ -4,14 +4,17 @@ DEBUG_FLAGS = -O1 -g $(FLAGS)
 INCLUDE_DIRS = $(addprefix $(MOSFHET_DIR), /include)
 OPT_FLAGS = -O3 -fwhole-program -flto  $(FLAGS)
 LIB_FLAGS = -O3 $(FLAGS)
-__SRC = keyswitch.c bootstrap.c bootstrap_ga.c tlwe.c trlwe.c  trgsw.c misc.c	polynomial.c register.c sha3/fips202.c fft/karatsuba.c
+__SRC = keyswitch.c bootstrap.c bootstrap_ga.c tlwe.c trlwe.c trgsw.c misc.c polynomial.c register.c pvwtlwe.c pvwtmlwe.c sha3/fips202.c fft/karatsuba.c
 LIBS = 
 LD_LIBS =
 BUILD_LIBS = 
 TEST_FLAGS = $(OPT_FLAGS)
-FFT_LIB = spqlios_avx512
-A_PRNG = vaes
-ENABLE_VAES = true
+# FFT_LIB = spqlios_avx512
+# A_PRNG = vaes
+# ENABLE_VAES = true
+FFT_LIB = spqlios
+A_PRNG = none
+ENABLE_VAES = false
 
 ifeq ($(A_PRNG),shake)
 	FLAGS += -DUSE_SHAKE -DUSE_COMPRESSED_TRLWE
