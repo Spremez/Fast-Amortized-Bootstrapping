@@ -1,4 +1,5 @@
 #include <sab.h>
+#include <sab_profile.h>
 
 uint64_t get_min_prec(TRLWE_Key key){
   const uint64_t N = key->s[0]->N;
@@ -206,90 +207,108 @@ SAB_Key copy_SAB_key(SAB_Key sab_key){
 }
 
 void CMUX(TRLWE out, TRLWE in1, TRLWE in2, TRGSW_DFT selector, SAB_Key sab){
-  trlwe_sub(sab->tmp->rlwe, in2, in1); // B - A
-  trgsw_mul_trlwe_DFT(sab->tmp->rlwe_dft, sab->tmp->rlwe, selector);  // S(B - A)
-  trlwe_from_DFT(sab->tmp->rlwe, sab->tmp->rlwe_dft); 
-  trlwe_add(out, sab->tmp->rlwe, in1); // S(B - A) + A 
+  SAB_PROFILE_TIME(SAB_PROF_CMUX, {
+    trlwe_sub(sab->tmp->rlwe, in2, in1); // B - A
+    trgsw_mul_trlwe_DFT(sab->tmp->rlwe_dft, sab->tmp->rlwe, selector);  // S(B - A)
+    trlwe_from_DFT(sab->tmp->rlwe, sab->tmp->rlwe_dft);
+    trlwe_add(out, sab->tmp->rlwe, in1); // S(B - A) + A
+  });
 }
 
 void NCMUX(TRLWE out, TRLWE in1, TRLWE in2, TRGSW_DFT selector, SAB_Key sab){
-  trlwe_eval_automorphism(sab->tmp->rlwe, in2, 2*in2->b->N - 1, sab->aut_minus1);
-  CMUX(out, in1, sab->tmp->rlwe, selector, sab);
+  SAB_PROFILE_TIME(SAB_PROF_NCMUX, {
+    trlwe_eval_automorphism(sab->tmp->rlwe, in2, 2*in2->b->N - 1, sab->aut_minus1);
+    CMUX(out, in1, sab->tmp->rlwe, selector, sab);
+  });
 }
 
 // p0 <- p0 * X^e
 void RGSW_monomial_mul(TRLWE * p0, TRGSW_DFT * e, SAB_Key sab){
-  const uint32_t r_prec = sab->r_prec, in_N = sab->in_N;  
-  TRLWE * p[2] = {p0, sab->tmp->rlwe_poly2};
-  for (size_t i = 0; i < r_prec; i++){
-    const uint64_t power = 1ULL << i;
-    const uint64_t out = (i+1)&1, in = out^1;
-    for (size_t j = 0; j < power; j++){
-      NCMUX(p[out][j], p[in][j], p[in][in_N - power + j], e[i], sab);
+  SAB_PROFILE_TIME(SAB_PROF_RGSW_MONOMIAL_MUL, {
+    const uint32_t r_prec = sab->r_prec, in_N = sab->in_N;
+    TRLWE * p[2] = {p0, sab->tmp->rlwe_poly2};
+    for (size_t i = 0; i < r_prec; i++){
+      const uint64_t power = 1ULL << i;
+      const uint64_t out = (i+1)&1, in = out^1;
+      for (size_t j = 0; j < power; j++){
+        NCMUX(p[out][j], p[in][j], p[in][in_N - power + j], e[i], sab);
+      }
+      for (size_t j = 0; j < in_N - power; j++){
+        CMUX(p[out][j + power], p[in][j + power], p[in][j], e[i], sab);
+      }
     }
-    for (size_t j = 0; j < in_N - power; j++){
-      CMUX(p[out][j + power], p[in][j + power], p[in][j], e[i], sab);
+    if(p[r_prec&1]!=p0){
+      for (size_t i = 0; i < in_N; i++){
+        trlwe_copy(p0[i], p[r_prec&1][i]);
+      }
     }
-  }
-  if(p[r_prec&1]!=p0){
-    for (size_t i = 0; i < in_N; i++){
-      trlwe_copy(p0[i], p[r_prec&1][i]);
-    }
-  }
+  });
 }
 
 void sub_a_ga(TRLWE * p, uint64_t * a, uint64_t key_idx, SAB_Key sab){
-  for (size_t i = 0; i < sab->in_N; i++){
-    assert(a[i] != 0);
-    const uint64_t w_inv = inverse_mod_2N(a[i], sab->out_N);
-    assert(w_inv != 0);
-    trlwe_eval_automorphism(sab->tmp->rlwe, p[i], w_inv, sab->aut_ksk[(w_inv - 1)>>1]);
-    trgsw_mul_trlwe_DFT(sab->tmp->rlwe_dft, sab->tmp->rlwe, sab->s_coff[0][key_idx]);
-    trlwe_from_DFT(sab->tmp->rlwe, sab->tmp->rlwe_dft);
-    trlwe_eval_automorphism(p[i], sab->tmp->rlwe, a[i], sab->aut_ksk[(a[i] - 1)>>1]);
-  }
+  SAB_PROFILE_TIME(SAB_PROF_SUB_A_GA, {
+    for (size_t i = 0; i < sab->in_N; i++){
+      assert(a[i] != 0);
+      const uint64_t w_inv = inverse_mod_2N(a[i], sab->out_N);
+      assert(w_inv != 0);
+      trlwe_eval_automorphism(sab->tmp->rlwe, p[i], w_inv, sab->aut_ksk[(w_inv - 1)>>1]);
+      trgsw_mul_trlwe_DFT(sab->tmp->rlwe_dft, sab->tmp->rlwe, sab->s_coff[0][key_idx]);
+      trlwe_from_DFT(sab->tmp->rlwe, sab->tmp->rlwe_dft);
+      trlwe_eval_automorphism(p[i], sab->tmp->rlwe, a[i], sab->aut_ksk[(a[i] - 1)>>1]);
+    }
+  });
 }
 
 void sub_a(TRLWE * p, uint64_t * a, uint64_t key_idx, SAB_Key sab){
-  if(sab->gaussian_secret) return sub_a_ga(p, a, key_idx, sab);
-  for (size_t i = 0; i < sab->in_N; i++){
-    if(sab->include_zeros){
-      trlwe_mul_by_xai_minus_1(sab->tmp->rlwe, p[i], a[i]);
-      trgsw_mul_trlwe_DFT(sab->tmp->rlwe_dft, sab->tmp->rlwe, sab->s_coff[0][key_idx]);
-      trlwe_from_DFT(sab->tmp->rlwe, sab->tmp->rlwe_dft);
-      trlwe_addto(p[i], sab->tmp->rlwe);
-    }else if (sab->ternary_secret){
-      trlwe_mul_by_xai(sab->tmp->rlwe, p[i], a[i]);
-      trlwe_copy(p[i], sab->tmp->rlwe);
-      trlwe_mul_by_xai_minus_1(sab->tmp->rlwe, p[i], -2*a[i]);
-      trgsw_mul_trlwe_DFT(sab->tmp->rlwe_dft, sab->tmp->rlwe, sab->s_sign[0][key_idx]);
-      trlwe_from_DFT(sab->tmp->rlwe, sab->tmp->rlwe_dft);
-      trlwe_addto(p[i], sab->tmp->rlwe);
+  SAB_PROFILE_TIME(SAB_PROF_SUB_A, {
+    if(sab->gaussian_secret){
+      sub_a_ga(p, a, key_idx, sab);
     }else{
-      trlwe_mul_by_xai(sab->tmp->rlwe, p[i], a[i]);
-      trlwe_copy(p[i], sab->tmp->rlwe);
+      for (size_t i = 0; i < sab->in_N; i++){
+        if(sab->include_zeros){
+          trlwe_mul_by_xai_minus_1(sab->tmp->rlwe, p[i], a[i]);
+          trgsw_mul_trlwe_DFT(sab->tmp->rlwe_dft, sab->tmp->rlwe, sab->s_coff[0][key_idx]);
+          trlwe_from_DFT(sab->tmp->rlwe, sab->tmp->rlwe_dft);
+          trlwe_addto(p[i], sab->tmp->rlwe);
+        }else if (sab->ternary_secret){
+          trlwe_mul_by_xai(sab->tmp->rlwe, p[i], a[i]);
+          trlwe_copy(p[i], sab->tmp->rlwe);
+          trlwe_mul_by_xai_minus_1(sab->tmp->rlwe, p[i], -2*a[i]);
+          trgsw_mul_trlwe_DFT(sab->tmp->rlwe_dft, sab->tmp->rlwe, sab->s_sign[0][key_idx]);
+          trlwe_from_DFT(sab->tmp->rlwe, sab->tmp->rlwe_dft);
+          trlwe_addto(p[i], sab->tmp->rlwe);
+        }else{
+          trlwe_mul_by_xai(sab->tmp->rlwe, p[i], a[i]);
+          trlwe_copy(p[i], sab->tmp->rlwe);
+        }
+      }
     }
-  }
+  });
 }
 
 // p = p * x^{-as}
 void sparse_mul(TRLWE * p, uint64_t * a, uint64_t a_idx, SAB_Key sab){ 
-  #ifdef MEASURE_NOISE
-  TorusPolynomial __debug_poly = polynomial_new_torus_polynomial(p[0]->b->N);
-  #endif
-  for (size_t i = 0; i < sab->h; i++){
-    RGSW_monomial_mul(p, sab->s[a_idx][i], sab);
+  SAB_PROFILE_TIME(SAB_PROF_SPARSE_MUL, {
     #ifdef MEASURE_NOISE
-    for (size_t j = 0; j < sab->in_N; j++){
-      trlwe_phase(__debug_poly, p[j], __gbl_rlwe_key);
-      ARRAY_LOG_BY_PREC(__debug_poly->coeffs, sab->b_prec, __debug_poly->N);
-    }
-    printf("Sparse mul -- h: %ld - ", i);
-    print_reset_noise();
+    TorusPolynomial __debug_poly = polynomial_new_torus_polynomial(p[0]->b->N);
     #endif
-    sub_a(p, a, i, sab);
-  }
-  RGSW_monomial_mul(p, sab->s[a_idx][sab->h], sab);
+    for (size_t i = 0; i < sab->h; i++){
+      RGSW_monomial_mul(p, sab->s[a_idx][i], sab);
+      #ifdef MEASURE_NOISE
+      for (size_t j = 0; j < sab->in_N; j++){
+        trlwe_phase(__debug_poly, p[j], __gbl_rlwe_key);
+        ARRAY_LOG_BY_PREC(__debug_poly->coeffs, sab->b_prec, __debug_poly->N);
+      }
+      printf("Sparse mul -- h: %ld - ", i);
+      print_reset_noise();
+      #endif
+      sub_a(p, a, i, sab);
+    }
+    RGSW_monomial_mul(p, sab->s[a_idx][sab->h], sab);
+    #ifdef MEASURE_NOISE
+    free_polynomial(__debug_poly);
+    #endif
+  });
 }
 
 uint64_t odd_mod_switch(uint64_t in, uint64_t prec){
@@ -312,16 +331,18 @@ void mod_switch_a(uint64_t * out, uint64_t * in, uint64_t prec, uint64_t size, b
 
 
 void sab_blind_rotate(TRLWE * out, TRLWE in, SAB_Key sab){
-  uint64_t * a = (uint64_t *) safe_malloc(sizeof(uint64_t)*sab->in_N); 
-  const uint64_t log_N2 = (uint64_t) log2(2*sab->out_N);
-  assert(sab->in_k == 1); // TODO: add mul X^N for k > 1
-  for (size_t i = 0; i < sab->in_k; i++){
-    // mod switch a
-    mod_switch_a(a, in->a[i]->coeffs, log_N2, sab->in_N, sab->gaussian_secret);
-    // compute -s[i]*a[i]
-    sparse_mul(out, a, i, sab);
-  }
-  free(a);
+  SAB_PROFILE_TIME(SAB_PROF_BLIND_ROTATE, {
+    uint64_t * a = (uint64_t *) safe_malloc(sizeof(uint64_t)*sab->in_N);
+    const uint64_t log_N2 = (uint64_t) log2(2*sab->out_N);
+    assert(sab->in_k == 1); // TODO: add mul X^N for k > 1
+    for (size_t i = 0; i < sab->in_k; i++){
+      // mod switch a
+      mod_switch_a(a, in->a[i]->coeffs, log_N2, sab->in_N, sab->gaussian_secret);
+      // compute -s[i]*a[i]
+      sparse_mul(out, a, i, sab);
+    }
+    free(a);
+  });
 }
 
 TRLWE * setup_single_tv(uint64_t * b, TRLWE tv, SAB_Key sab){
@@ -336,65 +357,79 @@ TRLWE * setup_single_tv(uint64_t * b, TRLWE tv, SAB_Key sab){
 
 // compute acc = tv * X^b * X^N 
 void setup_tv_xb(TRLWE * acc, uint64_t * b, TRLWE tv, SAB_Key sab){
-  const int N = sab->out_N, log_N2 = (int) log2(N*2);
-  const uint64_t prec_offset = 1ULL << (64 - sab->b_prec - 1);
-  for (size_t i = 0; i < sab->in_N; i++){
-    trlwe_mul_by_xai(acc[i], tv, torus2int(b[i] + prec_offset, log_N2));
-  }
+  SAB_PROFILE_TIME(SAB_PROF_SETUP_TV_XB, {
+    const int N = sab->out_N, log_N2 = (int) log2(N*2);
+    const uint64_t prec_offset = 1ULL << (64 - sab->b_prec - 1);
+    for (size_t i = 0; i < sab->in_N; i++){
+      trlwe_mul_by_xai(acc[i], tv, torus2int(b[i] + prec_offset, log_N2));
+    }
+  });
 }
 
 void sab_rlwe_bootstrap_wo_extract(TRLWE * out, TRLWE in, TRLWE tv, SAB_Key sab){
-  setup_tv_xb(out, in->b->coeffs, tv, sab);
-  sab_blind_rotate(out, in, sab);
+  SAB_PROFILE_TIME(SAB_PROF_BOOTSTRAP_WO_EXTRACT, {
+    setup_tv_xb(out, in->b->coeffs, tv, sab);
+    sab_blind_rotate(out, in, sab);
+  });
 }
 
 void sab_rlwe_to_lwe_bootstrap(TLWE * out, TRLWE in, TRLWE tv, SAB_Key sab){
   sab_rlwe_bootstrap_wo_extract(sab->tmp->rlwe_poly1, in, tv, sab);
-  for (size_t i = 0; i < sab->in_N; i++){
-    trlwe_extract_tlwe(out[i], sab->tmp->rlwe_poly1[i], 0);
-  }
+  SAB_PROFILE_TIME(SAB_PROF_EXTRACT, {
+    for (size_t i = 0; i < sab->in_N; i++){
+      trlwe_extract_tlwe(out[i], sab->tmp->rlwe_poly1[i], 0);
+    }
+  });
 }
 
 void sab_rlwe_bootstrap(TRLWE out, TRLWE in, TRLWE tv, SAB_Key sab){
-  #ifdef MEASURE_NOISE
-  TorusPolynomial __debug_poly = polynomial_new_torus_polynomial(in->b->N);
-  trlwe_phase(__debug_poly, in, __gbl_rlwe_key_in);
-  ARRAY_LOG_BY_PREC(__debug_poly->coeffs, sab->b_prec, __debug_poly->N);
-  printf("Bootstrapping input -- ");
-  print_reset_noise();
-  #endif
-  sab_rlwe_bootstrap_wo_extract(sab->tmp->rlwe_poly1, in, tv, sab);
-  #ifdef MEASURE_NOISE
-  reset_noise();
-  #endif
-  for (size_t i = 0; i < sab->in_N; i++){
-    trlwe_extract_tlwe(sab->tmp->extracted_poly[i], sab->tmp->rlwe_poly1[i], 0);
+  SAB_PROFILE_TIME(SAB_PROF_BOOTSTRAP, {
     #ifdef MEASURE_NOISE
-    const uint64_t mod_mask = (1ULL<<(sab->b_prec - 1)) - 1;
-    // if(torus2int(DECRYPTION_FUNCTION(sab->tmp->extracted_poly[i]), sab->b_prec) != (i&mod_mask)){
-    //   printf("%lu: %lu != %lu\n", i, torus2int(DECRYPTION_FUNCTION(sab->tmp->extracted_poly[i]), sab->b_prec), i&mod_mask);
-    // }
-    DECRYPT_LOG_BY_PREC(sab->tmp->extracted_poly[i], sab->b_prec);
+    TorusPolynomial __debug_poly = polynomial_new_torus_polynomial(in->b->N);
+    trlwe_phase(__debug_poly, in, __gbl_rlwe_key_in);
+    ARRAY_LOG_BY_PREC(__debug_poly->coeffs, sab->b_prec, __debug_poly->N);
+    printf("Bootstrapping input -- ");
+    print_reset_noise();
     #endif
-  }
-  #ifdef MEASURE_NOISE
-  printf("After bootstrapping (LWE noise) -- ");
-  print_reset_noise();
-  #endif
-  trlwe_full_packing_keyswitch(sab->tmp->rlwe_in, sab->tmp->extracted_poly, sab->in_N, sab->packing_key);
-  #ifdef MEASURE_NOISE
-  trlwe_phase(__debug_poly, sab->tmp->rlwe_in, __gbl_rlwe_key_packing);
-  ARRAY_LOG_BY_PREC(__debug_poly->coeffs, sab->b_prec, __debug_poly->N);
-  printf("After repacking -- ");
-  print_reset_noise();
-  #endif
-  trlwe_keyswitch(out, sab->tmp->rlwe_in, sab->hw_reducing_key);
-  #ifdef MEASURE_NOISE
-  trlwe_phase(__debug_poly, out, __gbl_rlwe_key_in);
-  ARRAY_LOG_BY_PREC(__debug_poly->coeffs, sab->b_prec, __debug_poly->N);
-  printf("After HW KS -- ");
-  print_reset_noise();
-  #endif
+    sab_rlwe_bootstrap_wo_extract(sab->tmp->rlwe_poly1, in, tv, sab);
+    #ifdef MEASURE_NOISE
+    reset_noise();
+    #endif
+    SAB_PROFILE_TIME(SAB_PROF_EXTRACT, {
+      for (size_t i = 0; i < sab->in_N; i++){
+        trlwe_extract_tlwe(sab->tmp->extracted_poly[i], sab->tmp->rlwe_poly1[i], 0);
+        #ifdef MEASURE_NOISE
+        const uint64_t mod_mask = (1ULL<<(sab->b_prec - 1)) - 1;
+        // if(torus2int(DECRYPTION_FUNCTION(sab->tmp->extracted_poly[i]), sab->b_prec) != (i&mod_mask)){
+        //   printf("%lu: %lu != %lu\n", i, torus2int(DECRYPTION_FUNCTION(sab->tmp->extracted_poly[i]), sab->b_prec), i&mod_mask);
+        // }
+        DECRYPT_LOG_BY_PREC(sab->tmp->extracted_poly[i], sab->b_prec);
+        #endif
+      }
+    });
+    #ifdef MEASURE_NOISE
+    printf("After bootstrapping (LWE noise) -- ");
+    print_reset_noise();
+    #endif
+    SAB_PROFILE_TIME(SAB_PROF_PACKING_KS, {
+      trlwe_full_packing_keyswitch(sab->tmp->rlwe_in, sab->tmp->extracted_poly, sab->in_N, sab->packing_key);
+    });
+    #ifdef MEASURE_NOISE
+    trlwe_phase(__debug_poly, sab->tmp->rlwe_in, __gbl_rlwe_key_packing);
+    ARRAY_LOG_BY_PREC(__debug_poly->coeffs, sab->b_prec, __debug_poly->N);
+    printf("After repacking -- ");
+    print_reset_noise();
+    #endif
+    SAB_PROFILE_TIME(SAB_PROF_HW_KS, {
+      trlwe_keyswitch(out, sab->tmp->rlwe_in, sab->hw_reducing_key);
+    });
+    #ifdef MEASURE_NOISE
+    trlwe_phase(__debug_poly, out, __gbl_rlwe_key_in);
+    ARRAY_LOG_BY_PREC(__debug_poly->coeffs, sab->b_prec, __debug_poly->N);
+    printf("After HW KS -- ");
+    print_reset_noise();
+    #endif
+  });
 }
 
 void sab_LUT_packing(TRLWE out, uint64_t * in, SAB_Key sab){

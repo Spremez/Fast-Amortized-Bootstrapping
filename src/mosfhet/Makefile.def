@@ -10,6 +10,10 @@ ENABLE_PVW_TMLWE ?= false
 ifeq ($(ENABLE_PVW_TMLWE),true)
 	__SRC += pvwtmlwe.c
 endif
+SAB_PROFILE ?= false
+ifeq ($(SAB_PROFILE),true)
+	FLAGS += -DSAB_PROFILE
+endif
 LIBS = 
 LD_LIBS =
 BUILD_LIBS = 

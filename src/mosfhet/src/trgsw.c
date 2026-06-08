@@ -1,4 +1,9 @@
 #include "mosfhet.h"
+#ifdef SAB_PROFILE
+#include <sab_profile.h>
+#else
+#define SAB_PROFILE_TIME(EVENT, ...) do { __VA_ARGS__; } while (0)
+#endif
 
 void free_trgsw(void * p_v){
   TRGSW p = (TRGSW) p_v;
@@ -382,33 +387,38 @@ void trgsw_mul_trlwe_DFT_1(TRLWE_DFT out, TRLWE in1, TRGSW_DFT in2){
 }
 
 void trgsw_mul_trlwe_DFT(TRLWE_DFT out, TRLWE in1, TRGSW_DFT in2){
-  const int N = in1->b->N, l = in2->l;
-  if(in1->k > 1) return trgsw_mul_trlwe_DFT_1(out, in1, in2);
-  assert(in1->k == 1);
-  TorusPolynomial dec_trlwe = polynomial_new_torus_polynomial(N);
-  DFT_Polynomial dec_trlwe_DFT = polynomial_new_DFT_polynomial(N); 
+  SAB_PROFILE_TIME(SAB_PROF_TRGSW_MUL_TRLWE_DFT, {
+    const int N = in1->b->N, l = in2->l;
+    if(in1->k > 1){
+      trgsw_mul_trlwe_DFT_1(out, in1, in2);
+    }else{
+      assert(in1->k == 1);
+      TorusPolynomial dec_trlwe = polynomial_new_torus_polynomial(N);
+      DFT_Polynomial dec_trlwe_DFT = polynomial_new_DFT_polynomial(N);
 
-  polynomial_decompose_i(dec_trlwe, in1->a[0], in2->Bg_bit, in2->l, 0);
-  polynomial_torus_to_DFT(dec_trlwe_DFT, dec_trlwe);
-  polynomial_mul_DFT(out->a[0], dec_trlwe_DFT, in2->samples[0]->a[0]);
-  polynomial_mul_DFT(out->b, dec_trlwe_DFT, in2->samples[0]->b);
+      polynomial_decompose_i(dec_trlwe, in1->a[0], in2->Bg_bit, in2->l, 0);
+      polynomial_torus_to_DFT(dec_trlwe_DFT, dec_trlwe);
+      polynomial_mul_DFT(out->a[0], dec_trlwe_DFT, in2->samples[0]->a[0]);
+      polynomial_mul_DFT(out->b, dec_trlwe_DFT, in2->samples[0]->b);
 
-  for (size_t j = 1; j < l; j++){
-    polynomial_decompose_i(dec_trlwe, in1->a[0], in2->Bg_bit, in2->l, j);
-    polynomial_torus_to_DFT(dec_trlwe_DFT, dec_trlwe);
-    polynomial_mul_addto_DFT(out->a[0], dec_trlwe_DFT, in2->samples[j]->a[0]);
-    polynomial_mul_addto_DFT(out->b, dec_trlwe_DFT, in2->samples[j]->b);
-  }
+      for (size_t j = 1; j < l; j++){
+        polynomial_decompose_i(dec_trlwe, in1->a[0], in2->Bg_bit, in2->l, j);
+        polynomial_torus_to_DFT(dec_trlwe_DFT, dec_trlwe);
+        polynomial_mul_addto_DFT(out->a[0], dec_trlwe_DFT, in2->samples[j]->a[0]);
+        polynomial_mul_addto_DFT(out->b, dec_trlwe_DFT, in2->samples[j]->b);
+      }
 
-  for (size_t j = 0; j < l; j++){
-    polynomial_decompose_i(dec_trlwe, in1->b, in2->Bg_bit, in2->l, j);
-    polynomial_torus_to_DFT(dec_trlwe_DFT, dec_trlwe);
-    polynomial_mul_addto_DFT(out->a[0], dec_trlwe_DFT, in2->samples[j+l]->a[0]);
-    polynomial_mul_addto_DFT(out->b, dec_trlwe_DFT, in2->samples[j+l]->b);
-  }
+      for (size_t j = 0; j < l; j++){
+        polynomial_decompose_i(dec_trlwe, in1->b, in2->Bg_bit, in2->l, j);
+        polynomial_torus_to_DFT(dec_trlwe_DFT, dec_trlwe);
+        polynomial_mul_addto_DFT(out->a[0], dec_trlwe_DFT, in2->samples[j+l]->a[0]);
+        polynomial_mul_addto_DFT(out->b, dec_trlwe_DFT, in2->samples[j+l]->b);
+      }
 
-  free_polynomial(dec_trlwe);
-  free_polynomial(dec_trlwe_DFT);
+      free_polynomial(dec_trlwe);
+      free_polynomial(dec_trlwe_DFT);
+    }
+  });
 }
 
 void trgsw_mul_DFT(TRGSW_DFT out, TRGSW in1, TRGSW_DFT in2){

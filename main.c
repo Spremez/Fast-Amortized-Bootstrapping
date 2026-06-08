@@ -1,8 +1,16 @@
 #include <sab_b.h>
 //#include <sab.h>
 #include <benchmark_util.h>
+#include <sab_profile.h>
 
 // #define PRINT_POLY
+
+#define MEASURE_BOOTSTRAP_TIME(NAME, REP, MSG, CODE) \
+  do { \
+    SAB_PROFILE_RESET(); \
+    MEASURE_TIME(NAME, REP, MSG, CODE); \
+    SAB_PROFILE_PRINT(); \
+  } while (0)
 
 void tlwe_print(TLWE c, TLWE_Key key, uint64_t prec){
   printf("%lu", torus2int(tlwe_phase(c, key), prec));
@@ -124,7 +132,7 @@ void test_sab_br(){
 
 
   TRLWE * rlwe_acc = trlwe_alloc_new_sample_array(sab->in_N, sab->out_k, sab->out_N);
-  MEASURE_TIME("", 10, "SAB", 
+  MEASURE_BOOTSTRAP_TIME("", 10, "SAB",
     sab_rlwe_bootstrap_wo_extract(rlwe_acc, rlwe_in, rlwe_tv, sab);
   );
 
@@ -230,7 +238,7 @@ void test_sab(){
   // TRLWE rlwe_out = trlwe_alloc_new_sample(in_k, in_N);
   // printf("in: "); trlwe_print(rlwe_in, input_key, msg_prec);
   // printf("tv: "); trlwe_print(rlwe_tv, out_key, msg_prec);
-  MEASURE_TIME("", reps, "Bootstrapping time", 
+  MEASURE_BOOTSTRAP_TIME("", reps, "Bootstrapping time",
     sab_rlwe_bootstrap(rlwe_in, rlwe_in, rlwe_tv, sab);
   );
   TorusPolynomial res_poly = polynomial_new_torus_polynomial(in_N);
@@ -344,7 +352,7 @@ void test_sab_tern(){
   // TRLWE rlwe_out = trlwe_alloc_new_sample(in_k, in_N);
   // printf("in: "); trlwe_print(rlwe_in, input_key, msg_prec);
   // printf("tv: "); trlwe_print(rlwe_tv, out_key, msg_prec);
-  MEASURE_TIME("", reps, "Bootstrapping time", 
+  MEASURE_BOOTSTRAP_TIME("", reps, "Bootstrapping time",
     sab_rlwe_bootstrap(rlwe_in, rlwe_in, rlwe_tv, sab);
   );
   TorusPolynomial res_poly = polynomial_new_torus_polynomial(in_N);
@@ -429,7 +437,7 @@ void test_sab_arbitrary(){
   // TRLWE rlwe_out = trlwe_alloc_new_sample(in_k, in_N);
   // printf("in: "); trlwe_print(rlwe_in, input_key, msg_prec);
   // printf("tv: "); trlwe_print(rlwe_tv, out_key, msg_prec);
-  MEASURE_TIME("", reps, "Bootstrapping time", 
+  MEASURE_BOOTSTRAP_TIME("", reps, "Bootstrapping time",
     sab_rlwe_bootstrap(rlwe_in, rlwe_in, rlwe_tv, sab);
   );
   TorusPolynomial res_poly = polynomial_new_torus_polynomial(in_N);
@@ -471,7 +479,7 @@ void test_sab_lwe(){
 
   printf("in: "); trlwe_print(rlwe_in, input_key, msg_prec);
   printf("tv: "); trlwe_print(rlwe_tv, out_key, msg_prec);
-  MEASURE_TIME("", 1, "SAB LWE", 
+  MEASURE_BOOTSTRAP_TIME("", 1, "SAB LWE",
     sab_rlwe_to_lwe_bootstrap(sab->tmp->extracted_poly, rlwe_in, rlwe_tv, sab);
   );
   TLWE_Key extracted_key = tlwe_alloc_key(out_N*out_k, output_key->trlwe_key->sigma);
