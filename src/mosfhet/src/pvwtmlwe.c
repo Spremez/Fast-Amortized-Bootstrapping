@@ -682,7 +682,7 @@ void pvmtmlwe_mv_extract_pvmtlwe(PVW_TLWE * out, PVW_TMLWE in, int amount){
   }
   for (size_t i = amount/2; i < amount; i++){
     pvmtmlwe_extract_pvmtlwe(out[i], in, N - 1 - (i - amount/2));
-    pvmtlwe_negate(out[i], out[i]);
+    pvwtlwe_negate(out[i], out[i]);
   }
 }
 
@@ -734,6 +734,15 @@ void pvmtmlwe_from_DFT(PVW_TMLWE out, PVW_TMLWE_DFT in){
     polynomial_DFT_to_torus(out->b[i], in->b[i]);
   }
 }
+
+void pvmtmlwe_keyswitch(PVW_TMLWE out, PVW_TMLWE in, PVW_TMLWE_KS_Key ks_key){
+  (void) out;
+  (void) in;
+  (void) ks_key;
+  fprintf(stderr, "pvmtmlwe_keyswitch is not implemented\n");
+  abort();
+}
+
 /*We do NOT use this function in our new algorithm!*/
 void pvmtmlwe_decompose(TorusPolynomial * out, PVW_TMLWE in, int Bg_bit, int l){
   const int k = in->k, r = in->r, N = in->b[0]->N;

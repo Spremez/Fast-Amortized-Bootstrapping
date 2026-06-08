@@ -642,6 +642,7 @@ void pvmtmlwe_mv_extract_pvmtlwe_scaling_subto(PVW_TLWE out, PVW_TMLWE in, int s
 void pvmtmlwe_to_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in);
 void pvmtmlwe_from_DFT(PVW_TMLWE out, PVW_TMLWE_DFT in);
 void pvmtmlwe_decompose(TorusPolynomial * out, PVW_TMLWE in, int Bg_bit, int l);
+void pvmtmlwe_keyswitch(PVW_TMLWE out, PVW_TMLWE in, PVW_TMLWE_KS_Key ks_key);
 void pvmtmlwe_torus_packing(PVW_TMLWE out, Torus ** in, int size);
 void pvmtmlwe_LUT_packing(PVW_TMLWE out, uint64_t ** in, uint64_t in_prec, uint64_t out_prec);
 void pvmtmlwe_torus_packing_many_LUT(PVW_TMLWE out, Torus ** in, int lut_size, int n_luts);
