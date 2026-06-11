@@ -3,7 +3,7 @@
 #include <benchmark_util.h>
 #include <sab_profile.h>
 #include <inttypes.h>
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 #include <sab_pvw.h>
 #endif
 
@@ -551,7 +551,7 @@ void test_sab_microbench(){
   );
 }
 
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
   const int N = in->s[0][lane]->N;
   TRLWE_Key out = trlwe_alloc_key(N, in->k, in->sigma);
@@ -580,6 +580,10 @@ static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
 
 #ifndef SAB_PVW_NOISE_MAX_LOG2_GAP
 #define SAB_PVW_NOISE_MAX_LOG2_GAP 4.0
+#endif
+
+#ifndef SAB_PVW_RESOURCE_R
+#define SAB_PVW_RESOURCE_R 2
 #endif
 
 typedef struct {
@@ -619,6 +623,129 @@ static double stddev_double(const double * values, int count, double mean){
     sq_sum += diff * diff;
   }
   return sqrt(sq_sum / (count - 1));
+}
+
+static uint64_t read_proc_status_kb(const char * key){
+  FILE * fd = fopen("/proc/self/status", "r");
+  if(fd == NULL) return 0;
+  char line[256];
+  uint64_t value = 0;
+  const size_t key_len = strlen(key);
+  while(fgets(line, sizeof(line), fd) != NULL){
+    if(strncmp(line, key, key_len) == 0 && line[key_len] == ':'){
+      char * p = line + key_len + 1;
+      while(*p == ' ' || *p == '\t') p++;
+      value = strtoull(p, NULL, 10);
+      break;
+    }
+  }
+  fclose(fd);
+  return value;
+}
+
+static void print_resource_rss(const char * label, int r, const char * mode){
+  printf("SAB_PVW_RESOURCE rss target_full r=%d mode=%s label=%s vmrss_kb=%" PRIu64
+         " vmhwm_kb=%" PRIu64 "\n",
+         r, mode, label, read_proc_status_kb("VmRSS"),
+         read_proc_status_kb("VmHWM"));
+}
+
+static uint64_t bytes_torus_polynomial(int N){
+  return sizeof(struct _TorusPolynomial) + sizeof(Torus) * (uint64_t) N;
+}
+
+static uint64_t bytes_dft_polynomial(int N){
+  return sizeof(struct _DFT_Polynomial) + sizeof(double) * (uint64_t) N;
+}
+
+static uint64_t bytes_trlwe_sample(int k, int N){
+  return sizeof(struct _TRLWE) + sizeof(TorusPolynomial) * (uint64_t) k
+      + ((uint64_t) k + 1) * bytes_torus_polynomial(N);
+}
+
+static uint64_t bytes_trlwe_dft_sample(int k, int N){
+  return sizeof(struct _TRLWE_DFT) + sizeof(DFT_Polynomial) * (uint64_t) k
+      + ((uint64_t) k + 1) * bytes_dft_polynomial(N);
+}
+
+static uint64_t bytes_pvmtmlwe_sample(int k, int r, int N){
+  return sizeof(struct _PVW_TMLWE)
+      + sizeof(TorusPolynomial) * ((uint64_t) k + (uint64_t) r)
+      + ((uint64_t) k + (uint64_t) r) * bytes_torus_polynomial(N);
+}
+
+static uint64_t bytes_pvmtmlwe_dft_sample(int k, int r, int N){
+  return sizeof(struct _PVW_TMLWE_DFT)
+      + sizeof(DFT_Polynomial) * ((uint64_t) k + (uint64_t) r)
+      + ((uint64_t) k + (uint64_t) r) * bytes_dft_polynomial(N);
+}
+
+static uint64_t bytes_trgsw_dft_sample(int l, int k, int N){
+  const uint64_t rows = (uint64_t) l * ((uint64_t) k + 1);
+  return sizeof(struct _TRGSW_DFT) + sizeof(TRLWE_DFT) * rows
+      + rows * bytes_trlwe_dft_sample(k, N);
+}
+
+static uint64_t bytes_mat_trgsw_dft_sample(int l, int k, int r, int N){
+  const uint64_t rows = (uint64_t) l * ((uint64_t) k + (uint64_t) r);
+  return sizeof(struct _MAT_TRGSW_DFT) + sizeof(PVW_TMLWE_DFT) * rows
+      + rows * bytes_pvmtmlwe_dft_sample(k, r, N);
+}
+
+static uint64_t bytes_trlwe_ks_key(int in_k, int t, int out_k, int out_N){
+  return sizeof(struct _TRLWE_KS_Key) + sizeof(TRLWE_DFT *) * (uint64_t) in_k
+      + sizeof(TRLWE_DFT) * (uint64_t) in_k * (uint64_t) t
+      + (uint64_t) in_k * (uint64_t) t
+          * bytes_trlwe_dft_sample(out_k, out_N);
+}
+
+static uint64_t bytes_pvmtmlwe_ks_key(int in_k, int t, int out_k, int r,
+    int out_N){
+  return sizeof(struct _PVW_TMLWE_KS_Key)
+      + sizeof(PVW_TMLWE_DFT *) * (uint64_t) in_k
+      + sizeof(PVW_TMLWE_DFT) * (uint64_t) in_k * (uint64_t) t
+      + (uint64_t) in_k * (uint64_t) t
+          * bytes_pvmtmlwe_dft_sample(out_k, r, out_N);
+}
+
+static uint64_t estimate_scalar_sab_public_key_bytes(int in_N, int in_k,
+    int out_N, int out_k, int h, int r_prec, int l, int ell_packing,
+    int t_ks){
+  const uint64_t selector_ptr_bytes =
+      sizeof(TRGSW_DFT ***) * (uint64_t) in_k
+      + sizeof(TRGSW_DFT **) * (uint64_t) in_k * ((uint64_t) h + 1)
+      + sizeof(TRGSW_DFT) * (uint64_t) in_k * ((uint64_t) h + 1)
+          * (uint64_t) r_prec;
+  const uint64_t selector_bytes =
+      (uint64_t) in_k * ((uint64_t) h + 1) * (uint64_t) r_prec
+      * bytes_trgsw_dft_sample(l, out_k, out_N);
+  const uint64_t aut_bytes = bytes_trlwe_ks_key(out_k, l, out_k, out_N);
+  const uint64_t packing_bytes = bytes_trlwe_ks_key(out_N * out_k,
+      ell_packing, in_k, in_N);
+  const uint64_t hw_bytes = bytes_trlwe_ks_key(in_k, t_ks, in_k, in_N);
+  return sizeof(struct _SAB_Key) + selector_ptr_bytes + selector_bytes
+      + aut_bytes + packing_bytes + hw_bytes;
+}
+
+static uint64_t estimate_pvw_sab_public_key_bytes(int in_N, int in_k,
+    int out_N, int out_k, int lanes, int h, int r_prec, int l,
+    int ell_packing, int t_ks){
+  const uint64_t selector_ptr_bytes =
+      sizeof(MAT_TRGSW_DFT ***) * (uint64_t) in_k
+      + sizeof(MAT_TRGSW_DFT **) * (uint64_t) in_k * ((uint64_t) h + 1)
+      + sizeof(MAT_TRGSW_DFT) * (uint64_t) in_k * ((uint64_t) h + 1)
+          * (uint64_t) r_prec;
+  const uint64_t selector_bytes =
+      (uint64_t) in_k * ((uint64_t) h + 1) * (uint64_t) r_prec
+      * bytes_mat_trgsw_dft_sample(l, out_k, lanes, out_N);
+  const uint64_t aut_bytes = bytes_pvmtmlwe_ks_key(out_k, l, out_k, lanes,
+      out_N);
+  const uint64_t packing_bytes = (uint64_t) lanes
+      * bytes_trlwe_ks_key(out_N * out_k, ell_packing, in_k, in_N);
+  const uint64_t hw_bytes = bytes_trlwe_ks_key(in_k, t_ks, in_k, in_N);
+  return sizeof(struct _SAB_PVW_Key) + sizeof(struct _MAT_TRGSW_Key)
+      + sizeof(TRLWE_KS_Key) * (uint64_t) lanes + selector_ptr_bytes
+      + selector_bytes + aut_bytes + packing_bytes + hw_bytes;
 }
 
 static uint64_t torus_abs_diff(Torus lhs, Torus rhs){
@@ -2606,6 +2733,101 @@ void test_sab_pvw_target_bench(){
   free_trlwe_key(input_key);
 }
 
+void test_sab_pvw_resource(){
+  const int r = SAB_PVW_RESOURCE_R;
+  const int in_N = 2048, in_k = 1, out_N = 2048, out_k = 1;
+  const int l = 1, bg_bit = 23, prec = 3, h = 39, r_prec = 7;
+  const int h_out = 512, h_packing = 256;
+  const int ell_packing = 2, b_packing = 14, ell_hw = 12, b_hw = 1;
+  const char * mode = getenv("SAB_PVW_RESOURCE_MODE");
+  uint64_t distances[39];
+
+  if(mode == NULL || mode[0] == '\0') mode = "both";
+  const bool run_pvw = strcmp(mode, "pvw") == 0 || strcmp(mode, "both") == 0;
+  const bool run_scalar = strcmp(mode, "scalar") == 0 || strcmp(mode, "both") == 0;
+  if(r < 1 || (!run_pvw && !run_scalar)){
+    printf("SAB_PVW_RESOURCE invalid config r=%d mode=%s\n", r, mode);
+    exit(1);
+  }
+
+  for (size_t idx = 0; idx < (size_t) h; idx++){
+    distances[idx] = idx < 8 ? 52 : 51;
+  }
+
+  printf("SAB_PVW_RESOURCE config target_full r=%d mode=%s in_N=%d out_N=%d h=%d r_prec=%d ell_packing=%d b_packing=%d ell_hw=%d b_hw=%d\n",
+         r, mode, in_N, out_N, h, r_prec, ell_packing, b_packing,
+         ell_hw, b_hw);
+
+  uint64_t begin = get_time();
+  TRLWE_Key input_key = test_binary_key_from_distances(in_N, in_k,
+      distances, h, pow(2, -15));
+  const uint64_t input_keygen_us = get_time() - begin;
+
+  begin = get_time();
+  TRLWE_Key packing_key = trlwe_new_ternary_key(in_N, in_k, h_packing,
+      pow(2, -44));
+  const uint64_t packing_keygen_us = get_time() - begin;
+
+  begin = get_time();
+  PVW_TMLWE_Key pvw_key = pvmtmlwe_new_ternary_key(out_N, out_k, r, h_out,
+      pow(2, -50));
+  const uint64_t pvw_secret_keygen_us = get_time() - begin;
+
+  const uint64_t scalar_one_key_bytes = estimate_scalar_sab_public_key_bytes(
+      in_N, in_k, out_N, out_k, h, r_prec, l, ell_packing, ell_hw);
+  const uint64_t scalar_repeated_key_bytes = scalar_one_key_bytes * (uint64_t) r;
+  const uint64_t pvw_key_bytes = estimate_pvw_sab_public_key_bytes(in_N, in_k,
+      out_N, out_k, r, h, r_prec, l, ell_packing, ell_hw);
+
+  printf("SAB_PVW_RESOURCE base_keygen target_full r=%d input_keygen_us=%" PRIu64
+         " packing_keygen_us=%" PRIu64 " pvw_secret_keygen_us=%" PRIu64 "\n",
+         r, input_keygen_us, packing_keygen_us, pvw_secret_keygen_us);
+  printf("SAB_PVW_RESOURCE key_bytes target_full r=%d pvw_estimated_key_bytes=%" PRIu64
+         " scalar_one_estimated_key_bytes=%" PRIu64
+         " scalar_repeated_estimated_key_bytes=%" PRIu64
+         " pvw_vs_scalar_repeated_ratio=%.6f estimate_scope=public_bootstrap_key_excludes_secret_keys_and_tmp\n",
+         r, pvw_key_bytes, scalar_one_key_bytes, scalar_repeated_key_bytes,
+         scalar_repeated_key_bytes == 0 ? 0.0
+             : (double) pvw_key_bytes / (double) scalar_repeated_key_bytes);
+  print_resource_rss("after_base_keys", r, mode);
+
+  if(run_pvw){
+    begin = get_time();
+    SAB_PVW_Key pvw_sab = sab_pvw_new_binary_full_key(input_key, packing_key,
+        pvw_key, prec, b_packing, ell_packing, ell_hw, b_hw, h, r_prec, l,
+        bg_bit);
+    const uint64_t pvw_sab_keygen_us = get_time() - begin;
+    printf("SAB_PVW_RESOURCE keygen target_full r=%d mode=pvw pvw_sab_keygen_us=%" PRIu64 "\n",
+           r, pvw_sab_keygen_us);
+    print_resource_rss("after_pvw_sab_keygen", r, "pvw");
+    (void) pvw_sab;
+  }
+
+  if(run_scalar){
+    SAB_Key * scalar_sabs = (SAB_Key *) safe_malloc(sizeof(SAB_Key) * r);
+    TRGSW_Key * scalar_trgsw_keys = (TRGSW_Key *) safe_malloc(sizeof(TRGSW_Key) * r);
+    TRLWE_Key * scalar_keys = (TRLWE_Key *) safe_malloc(sizeof(TRLWE_Key) * r);
+    begin = get_time();
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      scalar_keys[lane] = trlwe_key_from_pvmtmlwe_lane(pvw_key, lane);
+      scalar_trgsw_keys[lane] = trgsw_new_key(scalar_keys[lane], l, bg_bit);
+      scalar_sabs[lane] = new_sparse_amortized_bootstrapping(input_key,
+          packing_key, scalar_trgsw_keys[lane], prec, b_packing, ell_packing,
+          ell_hw, b_hw, h, r_prec, false, false, false);
+    }
+    const uint64_t scalar_sab_keygen_us = get_time() - begin;
+    printf("SAB_PVW_RESOURCE keygen target_full r=%d mode=scalar scalar_repeated_sab_keygen_us=%" PRIu64
+           " scalar_lane_avg_keygen_us=%.3f\n",
+           r, scalar_sab_keygen_us, (double) scalar_sab_keygen_us / r);
+    print_resource_rss("after_scalar_repeated_sab_keygen", r, "scalar");
+    (void) scalar_sabs;
+    (void) scalar_trgsw_keys;
+    (void) scalar_keys;
+  }
+
+  printf("SAB_PVW_RESOURCE target_full gate: Pass\n");
+}
+
 void test_sab_pvw_noise(){
   const int r = SAB_PVW_NOISE_R, trials = SAB_PVW_NOISE_TRIALS;
   const int in_N = 2048, in_k = 1, out_N = 2048, out_k = 1;
@@ -2821,6 +3043,8 @@ int main(int argc, char const *argv[])
 {
 #if defined(SAB_PVW_TARGET_TEST)
   test_sab_pvw_target_full();
+#elif defined(SAB_PVW_RESOURCE_TEST)
+  test_sab_pvw_resource();
 #elif defined(SAB_PVW_NOISE_TEST)
   test_sab_pvw_noise();
 #elif defined(SAB_PVW_BENCH)

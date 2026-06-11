@@ -1,0 +1,5 @@
+backend,r,mode,keygen_us,keygen_lane_avg_us,estimated_key_bytes,estimated_key_bytes_ratio_vs_scalar_repeated,internal_vmhwm_kb,time_max_rss_kb,source_log,time_log,notes
+spqlios,2,pvw,1207914,603957.000,310883736,1.013617,382460,382740,repro/stage7_resource_r2/pvw.log,repro/stage7_resource_r2/pvw.time.log,public bootstrap key estimate excludes secret keys and tmp scratch
+spqlios,2,scalar_repeated,977019,488509.500,306707216,1.000000,386832,387268,repro/stage7_resource_r2/scalar.log,repro/stage7_resource_r2/scalar.time.log,public bootstrap key estimate excludes secret keys and tmp scratch
+spqlios,4,pvw,2207852,551963.000,653500424,1.065349,769056,769208,repro/stage7_resource_r4/pvw.log,repro/stage7_resource_r4/pvw.time.log,public bootstrap key estimate excludes secret keys and tmp scratch
+spqlios,4,scalar_repeated,1871878,467969.500,613414432,1.000000,771008,771208,repro/stage7_resource_r4/scalar.log,repro/stage7_resource_r4/scalar.time.log,public bootstrap key estimate excludes secret keys and tmp scratch

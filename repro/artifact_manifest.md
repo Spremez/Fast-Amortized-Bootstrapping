@@ -11,6 +11,8 @@ Code artifacts:
   - `SAB_PVW_BENCH`
   - `SAB_PVW_BENCH_R`
   - `SAB_PVW_BENCH_REPS`
+  - `SAB_PVW_RESOURCE_TEST`
+  - `SAB_PVW_RESOURCE_R`
   - `SAB_PVW_NOISE_TEST`
   - `SAB_PVW_NOISE_R`
   - `SAB_PVW_NOISE_TRIALS`
@@ -66,3 +68,12 @@ Repro artifacts:
   `repro/stage6_seed_sweep_r4_10/seed_6862034.log`
 - `repro/stage7_pvw_bench_r4_reps3/main.log`
 - `repro/stage7_full_bench_summary.csv`
+- `repro/stage7_resource_r2/pvw.log`
+- `repro/stage7_resource_r2/pvw.time.log`
+- `repro/stage7_resource_r2/scalar.log`
+- `repro/stage7_resource_r2/scalar.time.log`
+- `repro/stage7_resource_r4/pvw.log`
+- `repro/stage7_resource_r4/pvw.time.log`
+- `repro/stage7_resource_r4/scalar.log`
+- `repro/stage7_resource_r4/scalar.time.log`
+- `repro/stage7_resource_summary.csv`

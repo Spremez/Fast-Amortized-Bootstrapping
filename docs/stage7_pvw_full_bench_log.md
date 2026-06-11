@@ -167,6 +167,52 @@ Notes:
   backend/SIMD comparison, but backend separation is not complete until the
   same benchmark matrix is repeated on another backend or AVX path.
 
+## Resource Metrics
+
+The resource gate records PVW and repeated-scalar key generation time,
+estimated public bootstrapping-key bytes, and peak RSS for the same target
+shape. It uses a dedicated build flag:
+
+```text
+SAB_PVW_RESOURCE_TEST=true
+SAB_PVW_RESOURCE_R=<lane count>
+```
+
+Runtime mode selects the measured path:
+
+```bash
+SAB_PVW_RESOURCE_MODE=pvw ./main
+SAB_PVW_RESOURCE_MODE=scalar ./main
+```
+
+The key-byte estimate includes DFT selector material, automorphism keys,
+packing keys, and HW-reducing keys. It excludes secret keys and temporary
+scratch buffers. RSS is captured both internally from `/proc/self/status`
+(`VmHWM`) and externally with `/usr/bin/time -v`.
+
+Machine-readable table:
+
+- `repro/stage7_resource_summary.csv`
+
+| backend | r | mode | keygen us | key bytes | key bytes vs scalar | internal HWM KB | time max RSS KB |
+|---|---:|---|---:|---:|---:|---:|---:|
+| spqlios | 2 | PVW | 1,207,914 | 310,883,736 | 1.013617x | 382,460 | 382,740 |
+| spqlios | 2 | scalar repeated | 977,019 | 306,707,216 | 1.000000x | 386,832 | 387,268 |
+| spqlios | 4 | PVW | 2,207,852 | 653,500,424 | 1.065349x | 769,056 | 769,208 |
+| spqlios | 4 | scalar repeated | 1,871,878 | 613,414,432 | 1.000000x | 771,008 | 771,208 |
+
+Resource interpretation:
+
+- PVW keygen is slower than repeated scalar keygen in these recorded runs:
+  about `1.236x` at `r=2` and `1.179x` at `r=4`.
+- Estimated PVW public bootstrapping-key bytes are slightly larger than
+  repeated scalar: `1.013617x` at `r=2`, `1.065349x` at `r=4`.
+- Peak RSS is close between the two paths and slightly lower for PVW in these
+  runs, but RSS should be treated as an implementation/process measurement, not
+  a serialized key-size proof.
+- The current speedup claim must therefore be stated as a throughput gain with
+  modest key-size/keygen overhead, not as a memory or keygen improvement.
+
 ## Scalar Baseline Regression
 
 Command:
@@ -194,6 +240,17 @@ Sparse bootstrapping with binary keys
 Message precision: 3 - Repetitions: 3
 Max monomial distance (log B): 7
 Bootstrapping time: 12,275,965 us +- 562,656.030284
+Pass
+```
+
+Latest scalar baseline after adding the resource-metrics harness:
+
+```text
+Sparse bootstrapping with binary keys
+Message precision: 3 - Repetitions: 3
+Max monomial distance (log B): 7
+Rejection Sampling Attempts: 483
+Bootstrapping time: 11,474,114 us +- 79,414.682534
 Pass
 ```
 
@@ -226,5 +283,4 @@ Before claiming final SAB acceleration:
 
 - repeat the benchmark across multiple runs and report variance;
 - separate algorithmic gain from backend/SIMD effects;
-- record key size, memory peak, and key generation time.
-- add memory/key-size/keygen rows for `r=2` and `r=4`.
+- repeat resource metrics if allocator, key layout, or backend changes.

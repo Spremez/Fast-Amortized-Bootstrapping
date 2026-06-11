@@ -468,9 +468,16 @@ Current status:
   - repeated scalar full bootstrap average: `46,330,045.333 us` for 4 lanes
     (`730,057.630 us` stddev);
   - throughput speedup: `1.300x`, speedup stddev `0.028`.
+- Resource metrics are now recorded for `r=2` and `r=4`:
+  - `r=2`: PVW estimated key bytes are `1.013617x` repeated scalar; PVW
+    keygen is about `1.236x` repeated scalar; peak RSS is comparable
+    (`382,740 KB` PVW vs `387,268 KB` scalar by `/usr/bin/time -v`).
+  - `r=4`: PVW estimated key bytes are `1.065349x` repeated scalar; PVW
+    keygen is about `1.179x` repeated scalar; peak RSS is comparable
+    (`769,208 KB` PVW vs `771,208 KB` scalar by `/usr/bin/time -v`).
 - Detailed result is recorded in `docs/stage7_pvw_full_bench_log.md`.
 - This is not final performance evidence yet because repeated benchmark
-  campaigns, memory/key-size, keygen time, and backend separation remain open.
+  campaigns and backend separation remain open.
 
 Failure handling:
 
