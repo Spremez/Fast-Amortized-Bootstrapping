@@ -32,4 +32,6 @@
 - [x] Add Stage 8 repeated backend/SIMD sensitivity matrix.
 - [x] Add Stage 8 implementation-variant decision record.
 - [x] Add Stage 8 clear-elision kernel and correctness gates.
-- [ ] Add Stage 8 clear-elision repeated full-output A/B benchmark.
+- [x] Add Stage 8 clear-elision repeated `r=4` full-output A/B benchmark.
+- [ ] Add Stage 8 clear-elision `r=2` repeated full-output A/B benchmark.
+- [ ] Add Stage 8 clear-elision Stage 6 noise sweep if used for final claim.

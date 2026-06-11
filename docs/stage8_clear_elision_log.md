@@ -124,12 +124,12 @@ Artifact:
 - The small `r=1/2/4` correctness gates, target-shape PVW gate, and default
   scalar SAB smoke all pass.
 - Kernel-level timings remain noisy and should be treated as smoke evidence.
-- A full Stage 7/8 repeated A/B matrix must be rerun after this change before
-  claiming any new full SAB speedup number for the clear-elision variant.
+- A full Stage 7/8 repeated A/B matrix must be rerun after this change for each
+  lane count before claiming new final full SAB speedup numbers.
 
-## Next Gate
+## r=4 Full-Output Benchmark
 
-Run the target-shape full-output benchmark after clear-elision:
+Command:
 
 ```bash
 STAGE7_BENCH_OUT_DIR=repro/stage8_clear_elision_bench_r4_reps2_runs3 \
@@ -137,5 +137,34 @@ SAB_PVW_BENCH_R=4 SAB_PVW_BENCH_REPS=2 STAGE7_BENCH_RUNS=3 \
 bash scripts/run_stage7_bench_sweep.sh
 ```
 
-`r=4` should be prioritized because it is the strongest and most stable lane
-count across `spqlios` and `spqlios_avx512`.
+Machine-readable tables:
+
+- `repro/stage8_clear_elision_bench_r4_reps2_runs3/summary.csv`
+- `repro/stage8_clear_elision_bench_summary.csv`
+
+Result:
+
+| variant | backend | r | runs | reps/run | PVW mean us | scalar repeated mean us | speedup mean | sample stddev | range |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| pre-variant | spqlios | 4 | 3 | 2 | 35,402,965.167 | 46,436,548.167 | 1.312x | 0.014 | 1.302x-1.328x |
+| clear-elision | spqlios | 4 | 3 | 2 | 35,044,592.833 | 46,848,311.333 | 1.337x | 0.012 | 1.323x-1.345x |
+
+Interpretation:
+
+- Every clear-elision process-level run passed the full-output correctness gate.
+- The `r=4` clear-elision sweep is stable and positive.
+- Compared with the earlier pre-variant `spqlios` r=4 sweep, PVW average time
+  is about `1.010x` lower and the speedup ratio rises from `1.312x` to
+  `1.337x`.
+- This is encouraging but not a strict paired variant A/B because the
+  pre-variant and clear-elision measurements are from separate process
+  campaigns and commits. Treat it as Stage 8 engineering evidence, not a final
+  paper-grade optimization claim.
+
+## Remaining Gates
+
+- Repeat `r=2` after clear-elision if the smaller-lane setting remains a target.
+- Rerun Stage 6 noise sweeps if clear-elision becomes part of the final claimed
+  implementation.
+- Repeat resource metrics only if key layout or allocation changes; this variant
+  does not change key material.

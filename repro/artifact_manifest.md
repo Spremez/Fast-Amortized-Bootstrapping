@@ -112,3 +112,8 @@ Repro artifacts:
 - `repro/stage8_clear_elision_target_spqlios/main.log`
 - `repro/stage8_clear_elision_scalar_spqlios/main.log`
 - `repro/stage8_clear_elision_summary.csv`
+- `repro/stage8_clear_elision_bench_r4_reps2_runs3/summary.csv`
+- `repro/stage8_clear_elision_bench_r4_reps2_runs3/run_0.log`
+- `repro/stage8_clear_elision_bench_r4_reps2_runs3/run_1.log`
+- `repro/stage8_clear_elision_bench_r4_reps2_runs3/run_2.log`
+- `repro/stage8_clear_elision_bench_summary.csv`

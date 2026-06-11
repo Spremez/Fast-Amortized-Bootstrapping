@@ -544,6 +544,15 @@ Current status:
   - default scalar SAB smoke.
 - Full repeated A/B performance must be rerun after clear-elision before
   assigning a new full SAB speedup number to this variant.
+- The first clear-elision repeated full-output A/B is recorded for WSL/Linux
+  `spqlios`, target-shape `r=4`, `reps=2`, `runs=3`:
+  - all runs passed;
+  - PVW mean `35,044,592.833 us`;
+  - repeated scalar mean `46,848,311.333 us`;
+  - speedup mean `1.337x`, sample stddev `0.012`, range `1.323x-1.345x`.
+- Compared with the earlier pre-variant `r=4` `spqlios` sweep (`1.312x` mean),
+  this is a modest positive engineering signal, but not a strict paired
+  variant A/B.
 
 ## Stage 9: Literature and Novelty Check
 

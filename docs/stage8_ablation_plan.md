@@ -260,8 +260,10 @@ Current decision:
   decomposition, key material, or SAB protocol.
 - The kernel/small-API gate, target-shape PVW correctness gate, and scalar
   baseline gate pass after the change.
-- Full repeated A/B performance for the clear-elision variant remains pending,
-  so no new full SAB speedup claim is attached to the variant yet.
+- Full repeated A/B performance for `r=4` is recorded: `1.337x` speedup mean,
+  sample stddev `0.012`, range `1.323x-1.345x`.
+- `r=2` clear-elision performance and Stage 6 noise sweeps remain pending, so
+  clear-elision is not yet a final paper-grade implementation claim.
 
 Failure handling:
 
@@ -301,7 +303,7 @@ Gate:
    than kernel/RGSW evidence suggests.
 4. Choose exactly one kernel variant for implementation, starting with
    clear-elision or small-r specialization. Clear-elision is implemented and
-   correctness-gated; repeated full-output A/B remains pending.
+   correctness-gated; repeated full-output A/B is recorded for `r=4`.
 5. Repeat Stage 6 noise and Stage 7 performance gates for any variant that
    changes arithmetic code.
 
