@@ -286,16 +286,20 @@ Current status:
   `h=2`, `r_prec=3`, `in_N=16`.
 - The binary sparse test now materializes MAT selectors from a deterministic
   binary input-key schedule instead of hand-built PVW selectors.
+- Added and verified small `sab_pvw_bootstrap_wo_extract_binary(...)`
+  correctness for `r=1/2/4`, `h=2`, `r_prec=3`, `in_N=16`, `out_N=1024`.
 - Detailed results are recorded in `docs/stage5_pvw_rgsw_monomial_log.md`.
 - Binary sparse results are recorded in `docs/stage5_pvw_sparse_mul_log.md`.
+- No-extract bootstrap results are recorded in
+  `docs/stage5_pvw_bootstrap_wo_extract_log.md`.
 
 Remaining limitation:
 
 - The PVW path is not yet connected to full `sab_pvw_*` bootstrapping.
 - Binary `sparse_mul` is verified only on the small API-skeleton test shape,
   not yet on target `h=39, in_N=2048`.
-- `setup_tv_xb`, extraction, packing KS, and HW-reducing KS are still scalar
-  only.
+- `setup_tv_xb` and binary blind rotation now have a small PVW gate, but target
+  shape, extraction, packing KS, and HW-reducing KS are still not integrated.
 - Ternary/include-zero/gaussian `sub_a` branches remain out of scope for the
   current binary target.
 
@@ -450,10 +454,10 @@ Verification:
 The next executable step remains inside Stage 5:
 
 1. Add PVW setup for multiple independent lane accumulators without replacing
-   `setup_tv_xb`.
+   `setup_tv_xb`. Done for the small no-extract gate.
 2. Add a small `sab_pvw_bootstrap_wo_extract` or equivalent test-only wrapper
-   using the existing `SAB_PVW_Key` and binary sparse path.
-3. Run small full bootstrapping correctness with per-lane output comparison:
+   using the existing `SAB_PVW_Key` and binary sparse path. Done for binary.
+3. Move from small no-extract correctness to per-lane extract/output comparison:
 
 ```text
 phase(out_pvw_lane[q])
@@ -461,5 +465,5 @@ phase(out_pvw_lane[q])
 phase(out_scalar[q])
 ```
 
-4. Only after small full `sab_pvw_*` correctness passes, scale to target
+4. Only after extract-aware `sab_pvw_*` correctness passes, scale to target
    `SET_2_3_2048`, then run noise and performance A/B.

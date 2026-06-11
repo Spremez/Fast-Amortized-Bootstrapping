@@ -88,6 +88,7 @@ SAB_PVW_Key sab_pvw_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key
   res->tmp->rotated = pvmtmlwe_alloc_new_sample(out_k, lanes, out_N);
   res->tmp->tmlwe_poly2 = pvmtmlwe_alloc_new_sample_array(in_N, out_k, lanes, out_N);
   res->tmp->scratch = mat_trgsw_alloc_mul_scratch((out_k + lanes) * l, out_N);
+  res->tmp->a_mod = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
   return res;
 }
 
@@ -104,6 +105,7 @@ void free_sab_pvw_key(SAB_PVW_Key sab){
   }
   free(sab->s);
   free_mat_trgsw_mul_scratch(sab->tmp->scratch);
+  free(sab->tmp->a_mod);
   free_pvmtmlwe_array(sab->tmp->tmlwe_poly2, sab->in_N);
   free_pvmtmlwe(sab->tmp->rotated);
   free_pvmtmlwe(sab->tmp->tmlwe);
@@ -168,4 +170,30 @@ void sab_pvw_sparse_mul_binary(PVW_TMLWE * p, const uint64_t * a,
     sab_pvw_sub_a_binary(p, a, sab);
   }
   sab_pvw_RGSW_monomial_mul(p, sab->s[a_idx][sab->h], sab);
+}
+
+void sab_pvw_setup_tv_xb(PVW_TMLWE * acc, const uint64_t * b,
+    PVW_TMLWE tv, SAB_PVW_Key sab){
+  const int log_N2 = (int) log2(2 * sab->out_N);
+  const uint64_t prec_offset = 1ULL << (64 - sab->b_prec - 1);
+  for (size_t idx = 0; idx < sab->in_N; idx++){
+    pvmtmlwe_mul_by_xai(acc[idx], tv, torus2int(b[idx] + prec_offset, log_N2));
+  }
+}
+
+void sab_pvw_blind_rotate_binary(PVW_TMLWE * out, TRLWE in, SAB_PVW_Key sab){
+  if(sab->in_k != 1) sab_pvw_die("only in_k=1 is supported");
+  const uint64_t log_N2 = (uint64_t) log2(2 * sab->out_N);
+  for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
+    for (size_t idx = 0; idx < sab->in_N; idx++){
+      sab->tmp->a_mod[idx] = torus2int(in->a[key_idx]->coeffs[idx], log_N2);
+    }
+    sab_pvw_sparse_mul_binary(out, sab->tmp->a_mod, key_idx, sab);
+  }
+}
+
+void sab_pvw_bootstrap_wo_extract_binary(PVW_TMLWE * out, TRLWE in,
+    PVW_TMLWE tv, SAB_PVW_Key sab){
+  sab_pvw_setup_tv_xb(out, in->b->coeffs, tv, sab);
+  sab_pvw_blind_rotate_binary(out, in, sab);
 }

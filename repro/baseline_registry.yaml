@@ -11,3 +11,8 @@ variants:
     command: make FFT_LIB=spqlios SAB_PVW_KERNEL_TEST=true KEY=BINARY PARAM=SET_2_3 -j$(nproc) && ./main
     status: stage5_correctness_gate
     notes: Tests r=1/2/4 small-shape API skeleton; not a full bootstrapping speedup claim.
+  - id: sab_pvw_api_bootstrap_wo_extract_gate
+    description: PVW/MAT_TRGSW shared-mask setup plus binary blind-rotate no-extract lane-equivalence gate.
+    command: make FFT_LIB=spqlios SAB_PVW_KERNEL_TEST=true KEY=BINARY PARAM=SET_2_3 -j$(nproc) && ./main
+    status: stage5_correctness_gate
+    notes: Tests r=1/2/4 small no-extract bootstrapping boundary; extraction, packing, noise, and performance remain open.

@@ -167,5 +167,7 @@ The isolated binary `sparse_mul` gate has passed and the first `sab_pvw_*`
 context/API skeleton now owns the PVW side of that check. See
 `docs/stage5_pvw_sparse_mul_log.md`.
 
-The next gate is small full bootstrapping correctness, starting with PVW
+The next gate was small no-extract bootstrapping correctness, starting with PVW
 `setup_tv_xb`/blind-rotate output comparison before extraction and packing KS.
+That gate now passes for `r=1/2/4`; see
+`docs/stage5_pvw_bootstrap_wo_extract_log.md`.

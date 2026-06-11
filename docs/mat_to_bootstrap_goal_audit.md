@@ -269,16 +269,26 @@ Do not claim final bootstrapping speedup yet.
    - target-size `h=39, in_N=2048` and full bootstrapping output extraction are
      still not integrated.
 
-4. Key and selector materialization:
+4. Stage 5 no-extract bootstrapping:
+   - `sab_pvw_setup_tv_xb`, `sab_pvw_blind_rotate_binary`, and
+     `sab_pvw_bootstrap_wo_extract_binary` are implemented;
+   - small binary no-extract gate passes for `r=1/2/4`, `h=2`, `r_prec=3`,
+     `in_N=16`, `out_N=1024`;
+   - scalar reference covers the same hot-path sequence without constructing
+     packing/HW keys;
+   - extraction, packing KS, HW KS, target shape, noise, and performance remain
+     unresolved.
+
+5. Key and selector materialization:
    - define MAT selector generation from scalar selector schedule;
    - record memory/key-size impact;
    - avoid runtime materialization in hot loops.
 
-5. Output/extract path:
+6. Output/extract path:
    - implement per-lane extraction from PVW bodies;
    - keep packing keyswitch and HW-reducing keyswitch comparable.
 
-6. Allocation and scratch management:
+7. Allocation and scratch management:
    - preallocate PVW/SAB scratch per bootstrap call or per context;
    - no allocation in CMUX/RGSW/sparse_mul hot loops.
 
@@ -353,7 +363,7 @@ speedup. Current evidence proves only:
 Required next milestone:
 
 ```text
-Stage 5 small full `sab_pvw_*` bootstrapping correctness using the existing
+Stage 5 extract-aware `sab_pvw_*` correctness using the existing no-extract
 API skeleton.
 ```
 

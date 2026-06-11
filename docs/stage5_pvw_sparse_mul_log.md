@@ -141,12 +141,28 @@ FFNT is used here only as a correctness/portability smoke check.
 ## Stage 5 Handoff
 
 The `sab_pvw_*` context/API skeleton now exists and the binary sparse gate uses
-it. The next required step is full small-shape bootstrapping integration:
+it. The small-shape no-extract bootstrap gate now also uses it:
 
 ```text
 PVW key/context -> MAT selector schedule -> PVW accumulator array ->
-setup_tv_xb -> binary sparse_mul -> per-lane extraction/output comparison
+setup_tv_xb -> binary sparse_mul -> per-lane accumulator comparison
 ```
 
-Only after that full bootstrapping path passes correctness can performance,
-noise, and throughput claims be evaluated.
+Current checked no-extract boundary:
+
+```text
+setup_tv_xb -> binary blind_rotate/sparse_mul -> accumulator array
+```
+
+Result under WSL/Linux `spqlios`:
+
+```text
+SAB_PVW API bootstrap_wo_extract binary lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW API bootstrap_wo_extract binary lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW API bootstrap_wo_extract binary lane equivalence r=4 h=2 r_prec=3: Pass
+```
+
+The scalar reference for this gate executes the same scalar setup,
+`RGSW_monomial_mul`, and binary `sub_a` hot-path sequence without constructing
+packing or HW-reducing keys. Full extraction, packing KS, HW KS, target-size
+parameters, noise, and throughput claims remain future gates.

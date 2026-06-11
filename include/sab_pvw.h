@@ -5,6 +5,7 @@ typedef struct _sab_pvw_tmp_pool{
   PVW_TMLWE_DFT tmlwe_dft;
   PVW_TMLWE tmlwe, rotated, * tmlwe_poly2;
   MAT_TRGSW_MUL_SCRATCH scratch;
+  uint64_t * a_mod;
 } * sab_pvw_tmp_pool;
 
 typedef struct _SAB_PVW_Key{
@@ -29,3 +30,8 @@ void sab_pvw_RGSW_monomial_mul(PVW_TMLWE * p0, MAT_TRGSW_DFT * e,
 void sab_pvw_sub_a_binary(PVW_TMLWE * p, const uint64_t * a, SAB_PVW_Key sab);
 void sab_pvw_sparse_mul_binary(PVW_TMLWE * p, const uint64_t * a,
     uint64_t a_idx, SAB_PVW_Key sab);
+void sab_pvw_setup_tv_xb(PVW_TMLWE * acc, const uint64_t * b,
+    PVW_TMLWE tv, SAB_PVW_Key sab);
+void sab_pvw_blind_rotate_binary(PVW_TMLWE * out, TRLWE in, SAB_PVW_Key sab);
+void sab_pvw_bootstrap_wo_extract_binary(PVW_TMLWE * out, TRLWE in,
+    PVW_TMLWE tv, SAB_PVW_Key sab);
