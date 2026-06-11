@@ -96,3 +96,6 @@ Repro artifacts:
 - `repro/stage8_r_scaling_r1_reps2_runs3/run_1.log`
 - `repro/stage8_r_scaling_r1_reps2_runs3/run_2.log`
 - `repro/stage8_r_scaling_summary.csv`
+- `repro/stage8_backend_avx512_r2_reps1_runs1/summary.csv`
+- `repro/stage8_backend_avx512_r2_reps1_runs1/run_0.log`
+- `repro/stage8_backend_sensitivity_summary.csv`

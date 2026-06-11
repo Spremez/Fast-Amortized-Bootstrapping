@@ -525,6 +525,11 @@ Current status:
 - `r=1` mean speedup is `1.022x` with sample stddev `0.063` and range
   `0.975x-1.094x`, matching the expectation that one lane has no stable MAT
   advantage.
+- First AVX512 backend sensitivity smoke for target-shape `r=2`, `reps=1`
+  passed correctness and produced `1.056x`. Absolute time improved for both
+  scalar repeated and PVW, but relative PVW speedup was smaller than the
+  primary `spqlios` sweep, reinforcing the need to separate backend/SIMD gains
+  from same-backend algorithmic gains.
 
 ## Stage 9: Literature and Novelty Check
 

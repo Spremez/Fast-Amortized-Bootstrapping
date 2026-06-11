@@ -28,5 +28,6 @@
 - [x] Add Stage 7 portable FFNT target-shape backend smoke.
 - [ ] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.
 - [x] Add Stage 8 `r=1` full-output negative-control log.
-- [ ] Add Stage 8 backend/SIMD sensitivity matrix.
+- [x] Add Stage 8 initial backend/SIMD sensitivity smoke.
+- [ ] Add Stage 8 repeated backend/SIMD sensitivity matrix.
 - [ ] Add Stage 8 implementation-variant decision record.
