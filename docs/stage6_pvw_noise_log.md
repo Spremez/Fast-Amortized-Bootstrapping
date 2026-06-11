@@ -17,8 +17,8 @@ for:
 
 This is still an engineering gate. The recorded 50-seed `r=2` campaign is
 useful correctness/noise evidence, but it is not a paper-grade failure-rate
-experiment. `r=4` target-shape coverage and stage-level noise probes still need
-to be run.
+experiment. `r=4` has only a one-seed target-shape smoke, and stage-level noise
+probes still need to be run.
 
 ## Code Artifacts
 
@@ -318,6 +318,43 @@ Interpretation:
   final-output correctness/noise, but it does not cover `r=4`, stage-level
   noise probes, or a formal paper-grade failure model.
 
+## r=4 Target-Shape Smoke
+
+After the `r=2` 50-seed campaign, the same target-shape final-output
+correctness/noise gate was run once with `r=4` to check memory/runtime
+viability before planning a larger `r=4` campaign.
+
+Command:
+
+```bash
+STAGE6_SWEEP_OUT_DIR=repro/stage6_seed_sweep_r4_smoke \
+  SAB_PVW_NOISE_R=4 \
+  bash scripts/run_stage6_seed_sweep.sh 6862025
+```
+
+Generated artifacts:
+
+- `repro/stage6_seed_sweep_r4_smoke/summary.csv`
+- `repro/stage6_seed_sweep_r4_smoke/seed_6862025.log`
+
+Summary:
+
+```text
+seed,status,points,pvw_failures,scalar_failures,pair_failures,pvw_log2_sigma_torus,scalar_log2_sigma_torus,pair_log2_sigma_torus,pvw_minus_scalar_log2,max_allowed_log2_gap
+6862025,Pass,8192,0,0,0,-8.411,-7.870,-7.530,-0.541,4.000
+```
+
+Interpretation:
+
+- `r=4` target-shape final-output gate passed for seed `6862025`.
+- PVW final-output failures: `0 / 8192`.
+- Scalar final-output failures: `0 / 8192`.
+- PVW-vs-scalar pair failures: `0 / 8192`.
+- PVW-minus-scalar final-output noise gap was `-0.541` log2 units, within the
+  current engineering threshold of `4.0`.
+- This is a viability smoke only. It does not replace a multi-seed `r=4`
+  correctness/noise campaign.
+
 ## Scalar Baseline After Stage 6 Gate
 
 Command:
@@ -378,7 +415,8 @@ These are platform/toolchain observations, not algorithm failures:
 
 ## Remaining Work
 
-- Repeat Stage 6 for `r=4` after confirming memory and runtime are acceptable.
+- Expand `r=4` from the one-seed smoke to a multi-seed correctness/noise
+  campaign after choosing an acceptable runtime budget.
 - Add stage-level noise probes before/after blind rotation, extract, packing
   KS, and HW KS if a final paper claim needs more than final-output noise.
 - If this becomes a paper claim, expand beyond the 50-seed engineering

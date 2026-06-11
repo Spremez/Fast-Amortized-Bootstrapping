@@ -17,6 +17,7 @@
 - [x] Add Stage 6 seed-sweep automation and 3-seed smoke log.
 - [x] Add Stage 6 10-seed correctness/noise run log.
 - [x] Add Stage 6 50+ seed correctness/noise campaign log.
-- [ ] Add Stage 6 `r=4` target-shape correctness/noise run log.
+- [x] Add Stage 6 `r=4` target-shape smoke log.
+- [ ] Add Stage 6 `r=4` multi-seed correctness/noise campaign log.
 - [ ] Add Stage 6 stage-level noise probe logs.
 - [ ] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.

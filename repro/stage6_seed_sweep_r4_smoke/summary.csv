@@ -1,0 +1,2 @@
+seed,status,points,pvw_failures,scalar_failures,pair_failures,pvw_log2_sigma_torus,scalar_log2_sigma_torus,pair_log2_sigma_torus,pvw_minus_scalar_log2,max_allowed_log2_gap
+6862025,Pass,8192,0,0,0,-8.411,-7.870,-7.530,-0.541,4.000
