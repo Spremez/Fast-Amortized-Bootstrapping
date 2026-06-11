@@ -34,8 +34,8 @@ Current evidence:
   `1.337x` at `r=4`;
 - `r=2` clear-elision deterministic noise/correctness: `50` seeds,
   `204800` points, PVW/scalar/pair failures all `0`;
-- `r=4` clear-elision deterministic noise/correctness: `10` seeds,
-  `81920` points, PVW/scalar/pair failures all `0`.
+- `r=4` clear-elision deterministic noise/correctness: `50` seeds,
+  `409600` points, PVW/scalar/pair failures all `0`.
 
 ## Initial Literature Map
 
@@ -90,9 +90,9 @@ Required before upgrading that claim:
 
 ## Stage 9 Next Decisions
 
-- Decide whether to invest in `r=4` 50+ seed noise evidence before paper
-  positioning. It is not needed for engineering Stage 8, but it would strengthen
-  the most stable speedup lane count.
+- `r=4` 50-seed noise evidence is now available. If the project targets a
+  paper claim, the next evidence upgrade should be statistical treatment and
+  stage-level noise probes rather than another small deterministic sweep.
 - Decide whether Stage 9 should target a paper contribution or a rigorous
   engineering report. The current evidence supports the latter; the former
   requires deeper related-work exclusion and statistical treatment.

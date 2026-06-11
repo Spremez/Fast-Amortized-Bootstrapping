@@ -19,7 +19,6 @@
 - [x] Add Stage 6 50+ seed correctness/noise campaign log.
 - [x] Add Stage 6 `r=4` target-shape smoke log.
 - [x] Add Stage 6 `r=4` 10-seed correctness/noise campaign log.
-- [ ] Decide whether Stage 6 `r=4` needs a 50+ seed campaign.
 - [ ] Add Stage 6 stage-level noise probe logs.
 - [x] Add Stage 7 `r=4` target-shape full SAB A/B benchmark run.
 - [x] Add Stage 7 `r=2`/`r=4` full SAB benchmark summary table.
@@ -37,5 +36,6 @@
 - [x] Add Stage 8 clear-elision Stage 6-style noise smoke.
 - [x] Add Stage 8 clear-elision initial deterministic 10-seed noise sweeps for `r=2`/`r=4`.
 - [x] Expand Stage 8 clear-elision `r=2` noise sweep to 50 seeds if used for final claim.
+- [x] Add Stage 8 clear-elision `r=4` 50-seed noise campaign.
 - [x] Record Stage 8 engineering exit assessment.
 - [x] Add Stage 9 initial literature/novelty scan.

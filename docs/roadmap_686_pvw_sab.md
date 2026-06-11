@@ -411,8 +411,10 @@ Remaining limitation:
   is not a formal paper-grade failure-rate claim.
 - Noise is currently measured at final output. Stage-level noise probes before
   and after blind rotation, extract, packing KS, and HW KS remain open.
-- `r=4` target-shape correctness/noise has a 10-seed engineering sweep, but
-  not a paper-grade failure-rate campaign.
+- The earlier Stage 6 pre-variant `r=4` record is a 10-seed engineering sweep.
+  The current Stage 8 clear-elision `r=4` path now has 50 deterministic seeds,
+  but neither record is a formal paper-grade failure-rate campaign without
+  statistical treatment.
 
 Recommended starting point:
 
@@ -561,11 +563,11 @@ Current status:
 - Clear-elision deterministic seed sweeps are now recorded:
   - `r=2`, seeds `6862025-6862074`, total points `204800`, PVW/scalar/pair
     failures all `0`, gap range `[-0.470, 0.636]`, average gap `-0.0039`;
-  - `r=4`, seeds `6862025-6862034`, total points `81920`, PVW/scalar/pair
-    failures all `0`, gap range `[-0.541, 0.510]`, average gap `-0.2026`.
-- The `r=2` clear-elision sweep now reaches the planned 50-seed engineering
-  gate. A formal paper-grade failure-rate result still needs statistical
-  treatment beyond this engineering campaign.
+  - `r=4`, seeds `6862025-6862074`, total points `409600`, PVW/scalar/pair
+    failures all `0`, gap range `[-0.541, 0.636]`, average gap `-0.0313`.
+- The `r=2` and `r=4` clear-elision sweeps now reach the planned 50-seed
+  engineering gate. A formal paper-grade failure-rate result still needs
+  statistical treatment beyond this engineering campaign.
 - Full SAB performance gain separation is now recorded in
   `docs/stage8_gain_separation.md` and
   `repro/stage8_full_bootstrap_gain_separation.csv`:
@@ -574,9 +576,8 @@ Current status:
   - `spqlios_avx512` improves absolute time but reduces the relative PVW
     speedup to `1.099x` at `r=2` and `1.249x` at `r=4`, so backend/SIMD
     effects are not counted as algorithmic gain.
-- Stage 8 is complete at the engineering-evidence level as of commit
-  `d5a6b1b`. Remaining `r=4` 50+ seed expansion and stage-level noise probes
-  are paper-strengthening tasks rather than blockers for Stage 9.
+- Stage 8 is complete at the engineering-evidence level. Remaining stage-level
+  noise probes are paper-strengthening tasks rather than blockers for Stage 9.
 
 ## Stage 9: Literature and Novelty Check
 

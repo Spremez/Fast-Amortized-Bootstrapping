@@ -273,8 +273,8 @@ Current decision:
 - Stage 6-style noise gates after the arithmetic-code change pass for the
   current engineering bar: `r=2` has a 50-seed deterministic sweep with
   `0 / 204800` PVW failures and gap range `[-0.470, 0.636]`; `r=4` has a
-  10-seed deterministic sweep with `0 / 81920` PVW failures and gap range
-  `[-0.541, 0.510]`.
+  50-seed deterministic sweep with `0 / 409600` PVW failures and gap range
+  `[-0.541, 0.636]`.
 
 Failure handling:
 
@@ -333,7 +333,7 @@ Stage 8 is complete only when:
 - the next Stage 9 novelty/literature task can distinguish engineering speedup
   from a defensible algorithmic contribution.
 
-Exit assessment as of commit `d5a6b1b`:
+Exit assessment after the clear-elision seed-sweep expansion:
 
 | criterion | status | evidence |
 |---|---|---|
@@ -343,7 +343,7 @@ Exit assessment as of commit `d5a6b1b`:
 | Negative/inconclusive preservation | Pass | `r=1` negative control and backend-sensitive `r=2` AVX512 result are retained in `repro/` |
 | Algorithm/backend separation | Pass | `docs/stage8_gain_separation.md`, `repro/stage8_full_bootstrap_gain_separation.csv` |
 
-Stage 8 is therefore complete at the engineering-evidence level. Remaining
-items such as `r=4` 50+ seed expansion and stage-level noise probes are
-paper-strengthening tasks, not blockers for entering Stage 9 novelty and
-literature analysis.
+Stage 8 is therefore complete at the engineering-evidence level. The `r=4`
+50-seed expansion has also been completed. Remaining items such as stage-level
+noise probes are paper-strengthening tasks, not blockers for Stage 9 novelty
+and literature analysis.

@@ -194,6 +194,9 @@ SAB_PVW_NOISE_R=2 bash scripts/run_stage6_seed_sweep_range.sh 6862035 40
 
 STAGE6_SWEEP_OUT_DIR=repro/stage8_clear_elision_seed_sweep_r4_10 \
 SAB_PVW_NOISE_R=4 bash scripts/run_stage6_seed_sweep_range.sh 6862025 10
+
+STAGE6_SWEEP_OUT_DIR=repro/stage8_clear_elision_seed_sweep_r4_40_more \
+SAB_PVW_NOISE_R=4 bash scripts/run_stage6_seed_sweep_range.sh 6862035 40
 ```
 
 Machine-readable table:
@@ -203,7 +206,7 @@ Machine-readable table:
 | variant | backend | r | seeds | points | failures | gap range | average gap |
 |---|---|---:|---:|---:|---:|---:|---:|
 | clear-elision | spqlios | 2 | 50 | 204,800 | 0 / 0 / 0 | -0.470 to 0.636 | -0.0039 |
-| clear-elision | spqlios | 4 | 10 | 81,920 | 0 / 0 / 0 | -0.541 to 0.510 | -0.2026 |
+| clear-elision | spqlios | 4 | 50 | 409,600 | 0 / 0 / 0 | -0.541 to 0.636 | -0.0313 |
 
 Artifacts:
 
@@ -218,9 +221,15 @@ Artifacts:
 - `repro/stage8_clear_elision_seed_sweep_r4_10/summary.csv`
 - `repro/stage8_clear_elision_seed_sweep_r4_10/seed_6862025.log` through
   `repro/stage8_clear_elision_seed_sweep_r4_10/seed_6862034.log`
+- `repro/stage8_clear_elision_seed_sweep_r4_50_aggregate.csv`
+- `repro/stage8_clear_elision_seed_sweep_r4_40_more/summary.csv`
+- `repro/stage8_clear_elision_seed_sweep_r4_40_more/seed_6862035.log`
+  through
+  `repro/stage8_clear_elision_seed_sweep_r4_40_more/seed_6862074.log`
 
-- The `r=2` clear-elision sweep now matches the earlier pre-variant 50-seed
-  engineering gate. It is enough for Stage 8 engineering evidence, but a final
-  paper-grade failure-rate claim still needs explicit statistical treatment.
+- The `r=2` and `r=4` clear-elision sweeps now both meet the 50-seed
+  engineering gate. They are enough for Stage 8 engineering evidence, but a
+  final paper-grade failure-rate claim still needs explicit statistical
+  treatment.
 - Repeat resource metrics only if key layout or allocation changes; this variant
   does not change key material.

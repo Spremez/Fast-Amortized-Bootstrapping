@@ -134,6 +134,10 @@ Repro artifacts:
 - `repro/stage8_clear_elision_seed_sweep_r4_10/summary.csv`
 - `repro/stage8_clear_elision_seed_sweep_r4_10/seed_6862025.log` through
   `repro/stage8_clear_elision_seed_sweep_r4_10/seed_6862034.log`
+- `repro/stage8_clear_elision_seed_sweep_r4_50_aggregate.csv`
+- `repro/stage8_clear_elision_seed_sweep_r4_40_more/summary.csv`
+- `repro/stage8_clear_elision_seed_sweep_r4_40_more/seed_6862035.log`
+  through `repro/stage8_clear_elision_seed_sweep_r4_40_more/seed_6862074.log`
 - `repro/stage8_clear_elision_seed_sweep_summary.csv`
 - `docs/stage8_gain_separation.md`
 - `repro/stage8_full_bootstrap_gain_separation.csv`
