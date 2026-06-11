@@ -636,7 +636,7 @@ void pvmtmlwe_extract_pvmtlwe_key(PVW_TLWE_Key out, PVW_TMLWE_Key in){
   for (size_t i = 0; i < k; i++){
     for (size_t j = 0; j < r; j++){
       for (size_t l = 0; l < N; l++){
-        out->s[i*N+l][j] = in->s[i][j]->coeffs[l];
+        out->s[j][i*N+l] = in->s[i][j]->coeffs[l];
       }
     }
   }

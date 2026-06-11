@@ -288,10 +288,12 @@ Current status:
   binary input-key schedule instead of hand-built PVW selectors.
 - Added and verified small `sab_pvw_bootstrap_wo_extract_binary(...)`
   correctness for `r=1/2/4`, `h=2`, `r_prec=3`, `in_N=16`, `out_N=1024`.
+- Added and verified PVW TLWE extraction correctness for the same small shape.
 - Detailed results are recorded in `docs/stage5_pvw_rgsw_monomial_log.md`.
 - Binary sparse results are recorded in `docs/stage5_pvw_sparse_mul_log.md`.
 - No-extract bootstrap results are recorded in
   `docs/stage5_pvw_bootstrap_wo_extract_log.md`.
+- Extract results are recorded in `docs/stage5_pvw_extract_log.md`.
 
 Remaining limitation:
 
@@ -299,7 +301,7 @@ Remaining limitation:
 - Binary `sparse_mul` is verified only on the small API-skeleton test shape,
   not yet on target `h=39, in_N=2048`.
 - `setup_tv_xb` and binary blind rotation now have a small PVW gate, but target
-  shape, extraction, packing KS, and HW-reducing KS are still not integrated.
+  shape, packing KS, and HW-reducing KS are still not integrated.
 - Ternary/include-zero/gaussian `sub_a` branches remain out of scope for the
   current binary target.
 
@@ -457,7 +459,8 @@ The next executable step remains inside Stage 5:
    `setup_tv_xb`. Done for the small no-extract gate.
 2. Add a small `sab_pvw_bootstrap_wo_extract` or equivalent test-only wrapper
    using the existing `SAB_PVW_Key` and binary sparse path. Done for binary.
-3. Move from small no-extract correctness to per-lane extract/output comparison:
+3. Move from small no-extract correctness to per-lane extract/output comparison.
+   Done for extracted TLWE phase comparison.
 
 ```text
 phase(out_pvw_lane[q])
@@ -465,5 +468,5 @@ phase(out_pvw_lane[q])
 phase(out_scalar[q])
 ```
 
-4. Only after extract-aware `sab_pvw_*` correctness passes, scale to target
-   `SET_2_3_2048`, then run noise and performance A/B.
+4. Add packing/HW-KS-aware comparison, then scale to target `SET_2_3_2048`,
+   then run noise and performance A/B.

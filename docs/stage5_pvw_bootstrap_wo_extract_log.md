@@ -110,11 +110,16 @@ Pass
 
 The default build does not link `sab_pvw.o`.
 
+## Extract-Aware Status
+
+The next gate, PVW TLWE extraction from the no-extract accumulator array, now
+passes for the same small shape. See `docs/stage5_pvw_extract_log.md`.
+
 ## Next Gate
 
-The next Stage 5 gate is target-shape or extraction-aware integration:
+The next Stage 5 gate is packing/HW-KS-aware integration:
 
 ```text
-bootstrap_wo_extract small gate -> target-shape wo_extract gate ->
-per-lane extract -> packing/HW KS comparison -> full SAB A/B benchmark
+bootstrap_wo_extract small gate -> per-lane extract ->
+packing/HW KS comparison -> target-shape gate -> full SAB A/B benchmark
 ```

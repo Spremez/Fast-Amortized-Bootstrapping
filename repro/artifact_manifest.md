@@ -13,6 +13,7 @@ Documentation artifacts:
 - `docs/mat_to_bootstrap_goal_audit.md`
 - `docs/stage5_pvw_sparse_mul_log.md`
 - `docs/stage5_pvw_bootstrap_wo_extract_log.md`
+- `docs/stage5_pvw_extract_log.md`
 - `docs/stage5_pvw_rgsw_monomial_log.md`
 
 Repro artifacts:

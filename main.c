@@ -1405,6 +1405,35 @@ static bool compare_pvw_scalar_array_phases(const char * label, int r, int count
   return pass;
 }
 
+static bool compare_pvwtlwe_scalar_array_phases(const char * label, int r,
+    int count, int prec, PVW_TLWE * pvw_arr, PVW_TLWE_Key pvw_key,
+    TLWE ** scalar_arr, TLWE_Key * scalar_keys){
+  Torus * pvw_phase = (Torus *) safe_malloc(sizeof(Torus) * r);
+  bool pass = true;
+
+  for (size_t idx = 0; idx < (size_t) count; idx++){
+    pvwtlwe_phase(pvw_phase, pvw_arr[idx], pvw_key);
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      const Torus scalar_phase = tlwe_phase(scalar_arr[lane][idx],
+          scalar_keys[lane]);
+      const uint64_t pvw_val = torus2int(pvw_phase[lane], prec);
+      const uint64_t scalar_val = torus2int(scalar_phase, prec);
+      if(pvw_val != scalar_val){
+        printf("SAB_PVW %s extracted phase fail idx=%" PRIu64
+               " r=%d lane=%" PRIu64 ": %" PRIu64 " != %" PRIu64 "\n",
+               label, (uint64_t) idx, r, (uint64_t) lane,
+               pvw_val, scalar_val);
+        pass = false;
+        break;
+      }
+    }
+    if(!pass) break;
+  }
+
+  free(pvw_phase);
+  return pass;
+}
+
 static void isolated_pvw_RGSW_monomial_step(PVW_TMLWE * out, PVW_TMLWE * in,
     MAT_TRGSW_DFT selector, int in_N, int power,
     MAT_TRGSW_MUL_SCRATCH scratch, PVW_TMLWE rotated,
@@ -2060,7 +2089,35 @@ static bool check_pvw_bootstrap_wo_extract_binary_lane_equivalence(int r){
   printf("SAB_PVW API bootstrap_wo_extract binary lane equivalence r=%d h=%d r_prec=%d: %s\n",
          r, h, r_prec, pass ? "Pass" : "Fail");
 
+  PVW_TLWE_Key pvw_extracted_key = pvwtlwe_alloc_key(out_N * out_k, r,
+      pvw_key->sigma);
+  pvmtmlwe_extract_pvmtlwe_key(pvw_extracted_key, pvw_key);
+  PVW_TLWE * pvw_extracted = pvwtlwe_alloc_sample_array(in_N,
+      out_N * out_k, r);
+  sab_pvw_extract_pvwtlwe(pvw_extracted, pvw_out, pvw_sab);
+
+  TLWE_Key * scalar_extracted_keys = (TLWE_Key *) safe_malloc(sizeof(TLWE_Key) * r);
+  TLWE ** scalar_extracted = (TLWE **) safe_malloc(sizeof(TLWE *) * r);
   for (size_t lane = 0; lane < (size_t) r; lane++){
+    scalar_extracted_keys[lane] = tlwe_alloc_key(out_N * out_k,
+        scalar_keys[lane]->sigma);
+    trlwe_extract_tlwe_key(scalar_extracted_keys[lane], scalar_keys[lane]);
+    scalar_extracted[lane] = tlwe_alloc_sample_array(in_N, out_N * out_k);
+    for (size_t idx = 0; idx < (size_t) in_N; idx++){
+      trlwe_extract_tlwe(scalar_extracted[lane][idx], scalar_out[lane][idx], 0);
+    }
+  }
+
+  const bool extract_pass = compare_pvwtlwe_scalar_array_phases(
+      "bootstrap_extract binary", r, in_N, prec, pvw_extracted,
+      pvw_extracted_key, scalar_extracted, scalar_extracted_keys);
+  pass &= extract_pass;
+  printf("SAB_PVW API extract binary lane equivalence r=%d h=%d r_prec=%d: %s\n",
+         r, h, r_prec, extract_pass ? "Pass" : "Fail");
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    free_tlwe_array(scalar_extracted[lane], in_N);
+    free_tlwe_key(scalar_extracted_keys[lane]);
     for (size_t idx = 0; idx < (size_t) (h + 1) * r_prec; idx++){
       free_trgsw(scalar_selectors[lane][idx]);
     }
@@ -2075,6 +2132,10 @@ static bool check_pvw_bootstrap_wo_extract_binary_lane_equivalence(int r){
     free_trlwe_ks_key(scalar_aut_minus1[lane]);
     free_trlwe_key(scalar_keys[lane]);
   }
+  free(scalar_extracted);
+  free(scalar_extracted_keys);
+  free_pvwtlwe_array(pvw_extracted, in_N);
+  free_pvwtlwe_key(pvw_extracted_key);
   free(scalar_tv);
   free(scalar_tmp_dft);
   free(scalar_tmp);

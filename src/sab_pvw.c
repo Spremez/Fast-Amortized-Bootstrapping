@@ -197,3 +197,9 @@ void sab_pvw_bootstrap_wo_extract_binary(PVW_TMLWE * out, TRLWE in,
   sab_pvw_setup_tv_xb(out, in->b->coeffs, tv, sab);
   sab_pvw_blind_rotate_binary(out, in, sab);
 }
+
+void sab_pvw_extract_pvwtlwe(PVW_TLWE * out, PVW_TMLWE * in, SAB_PVW_Key sab){
+  for (size_t idx = 0; idx < sab->in_N; idx++){
+    pvmtmlwe_extract_pvmtlwe(out[idx], in[idx], 0);
+  }
+}

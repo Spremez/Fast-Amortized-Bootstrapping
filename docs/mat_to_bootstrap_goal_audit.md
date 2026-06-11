@@ -279,16 +279,24 @@ Do not claim final bootstrapping speedup yet.
    - extraction, packing KS, HW KS, target shape, noise, and performance remain
      unresolved.
 
-5. Key and selector materialization:
+5. Stage 5 extraction:
+   - `sab_pvw_extract_pvwtlwe` is implemented;
+   - `pvmtmlwe_extract_pvmtlwe_key` is fixed to match the `PVW_TLWE_Key`
+     `s[lane][index]` layout;
+   - extracted PVW TLWE phase matches repeated scalar TLWE extraction for
+     `r=1/2/4`, `h=2`, `r_prec=3`, `in_N=16`, `out_N=1024`;
+   - packing KS, HW KS, target shape, noise, and performance remain unresolved.
+
+6. Key and selector materialization:
    - define MAT selector generation from scalar selector schedule;
    - record memory/key-size impact;
    - avoid runtime materialization in hot loops.
 
-6. Output/extract path:
-   - implement per-lane extraction from PVW bodies;
+7. Output/packing path:
+   - decide how extracted PVW lanes connect to packing keyswitch;
    - keep packing keyswitch and HW-reducing keyswitch comparable.
 
-7. Allocation and scratch management:
+8. Allocation and scratch management:
    - preallocate PVW/SAB scratch per bootstrap call or per context;
    - no allocation in CMUX/RGSW/sparse_mul hot loops.
 
@@ -363,7 +371,7 @@ speedup. Current evidence proves only:
 Required next milestone:
 
 ```text
-Stage 5 extract-aware `sab_pvw_*` correctness using the existing no-extract
+Stage 5 packing/HW-KS-aware `sab_pvw_*` correctness using the existing extract
 API skeleton.
 ```
 

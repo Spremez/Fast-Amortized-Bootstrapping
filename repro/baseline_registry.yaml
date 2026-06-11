@@ -16,3 +16,8 @@ variants:
     command: make FFT_LIB=spqlios SAB_PVW_KERNEL_TEST=true KEY=BINARY PARAM=SET_2_3 -j$(nproc) && ./main
     status: stage5_correctness_gate
     notes: Tests r=1/2/4 small no-extract bootstrapping boundary; extraction, packing, noise, and performance remain open.
+  - id: sab_pvw_api_extract_gate
+    description: PVW TLWE extraction lane-equivalence gate after PVW no-extract bootstrapping.
+    command: make FFT_LIB=spqlios SAB_PVW_KERNEL_TEST=true KEY=BINARY PARAM=SET_2_3 -j$(nproc) && ./main
+    status: stage5_correctness_gate
+    notes: Tests extracted TLWE phase for r=1/2/4 small shape; packing/HW KS, noise, and performance remain open.

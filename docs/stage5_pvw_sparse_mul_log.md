@@ -166,3 +166,7 @@ The scalar reference for this gate executes the same scalar setup,
 `RGSW_monomial_mul`, and binary `sub_a` hot-path sequence without constructing
 packing or HW-reducing keys. Full extraction, packing KS, HW KS, target-size
 parameters, noise, and throughput claims remain future gates.
+
+Status update: the extraction-aware gate now passes for the same small shape;
+see `docs/stage5_pvw_extract_log.md`. Packing KS, HW KS, target-size
+parameters, noise, and throughput claims remain future gates.
