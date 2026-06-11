@@ -83,6 +83,10 @@ without depending on a PVW automorphism keyswitch implementation. Full encrypted
 NCMUX compatibility remains a Stage 5/6 integration requirement because the
 scalar SAB path currently uses `trlwe_eval_automorphism(..., aut_minus1)`.
 
+Status update: Stage 5 adds PVW TMLWE automorphism/key-switch support and
+verifies full encrypted multibit `RGSW_monomial_mul` lane equivalence. Stage 4
+remains the historical raw-NCMUX gate.
+
 ## Correctness Gate
 
 The Stage 4 gate passes only if every lane decrypts to the same torus message as

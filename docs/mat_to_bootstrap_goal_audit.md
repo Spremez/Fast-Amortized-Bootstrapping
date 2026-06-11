@@ -255,8 +255,9 @@ Do not claim final bootstrapping speedup yet.
    - isolated scheduler tests now pass for `r=1/2/4`;
    - encrypted one-bit selector tests pass for selector bit `0/1`;
    - trivial-selector multibit tests pass for selector bits `{1,0,1}`;
-   - full encrypted multibit equivalence is still blocked by the PVW
-     automorphism/key-switch boundary.
+   - full encrypted multibit tests pass for selector bits `{1,0,1}`;
+   - PVW TMLWE automorphism/key-switch is implemented and verified against the
+     scalar automorphism oracle.
 
 3. Stage 5 `sparse_mul` batching:
    - batch across independent LUT/SAB lanes only when they share sparse secret
@@ -347,7 +348,7 @@ speedup. Current evidence proves only:
 Required next milestone:
 
 ```text
-Stage 5 full encrypted RGSW_monomial_mul lane equivalence.
+Stage 5 isolated binary sparse_mul lane equivalence.
 ```
 
 Only after Stage 5 and full `sab_pvw_*` integration can the work claim anything

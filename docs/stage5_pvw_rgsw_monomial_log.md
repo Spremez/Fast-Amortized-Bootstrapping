@@ -31,7 +31,7 @@ The production scalar `RGSW_monomial_mul(...)`, `sparse_mul(...)`, and
 The Stage 5 isolated test covers `r=1/2/4` and uses the same PVW lane state as
 Stage 4.
 
-Two correctness gates are checked:
+Three correctness gates are checked:
 
 1. `r_prec=1`, encrypted selector bit `0` and `1`
    - validates the RGSW array scheduler with real encrypted scalar TRGSW and
@@ -44,6 +44,28 @@ Two correctness gates are checked:
      non-wrap CMUX positions across several RGSW bit steps;
    - intentionally keeps selectors trivial so every intermediate state remains
      a valid trivial accumulator under the raw automorphism test model.
+
+3. `r_prec=3`, selector bits `{1,0,1}` with encrypted selectors and encrypted
+   accumulator inputs
+   - validates PVW automorphism/key-switch for the NCMUX branch;
+   - uses scalar `trlwe_eval_automorphism(...)` as the oracle for every lane;
+   - verifies full encrypted multibit `RGSW_monomial_mul` lane equivalence.
+
+## PVW Automorphism Key-Switch
+
+This stage adds PVW TMLWE key-switch support:
+
+```text
+pvmtmlwe_new_KS_key(...)
+pvmtmlwe_new_automorphism_KS_key(...)
+pvmtmlwe_keyswitch(...)
+free_pvmtmlwe_ks_key(...)
+```
+
+The key-switch follows the scalar `trlwe_keyswitch(...)` pattern: decompose
+each input mask polynomial, multiply the decomposition by a PVW_TMLWE_DFT
+key-switch sample, accumulate in DFT form, transform back to torus form, and
+subtract from the trivial sample carrying the input bodies.
 
 ## WSL/Linux spqlios Correctness Gate
 
@@ -61,12 +83,15 @@ Result:
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=1 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=1 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=1 r_prec=3: Pass
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=1 r_prec=3: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=2 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=2 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=2 r_prec=3: Pass
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=2 r_prec=3: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=4 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=4 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=4 r_prec=3: Pass
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=4 r_prec=3: Pass
 ```
 
 ## Default Scalar SAB Smoke
@@ -106,12 +131,15 @@ Result:
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=1 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=1 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=1 r_prec=3: Pass
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=1 r_prec=3: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=2 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=2 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=2 r_prec=3: Pass
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=2 r_prec=3: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=4 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=4 r_prec=1: Pass
 SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=4 r_prec=3: Pass
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=4 r_prec=3: Pass
 MAT_TRGSW/PVW staged kernel test: Pass
 ```
 
@@ -119,28 +147,22 @@ FFNT is used here only as a correctness/portability smoke check.
 
 ## Current Limitation
 
-This stage proves the PVW lane-state scheduler and MAT selector layout for
-RGSW monomial bit steps, but it does not yet prove full encrypted multi-bit
-`RGSW_monomial_mul` equivalence.
+This stage now proves full encrypted multibit `RGSW_monomial_mul` equivalence
+for the isolated test shape. It still does not connect that implementation to
+the production `sparse_mul(...)` or `sab_rlwe_bootstrap(...)` path.
 
-The missing piece is still the encrypted NCMUX automorphism boundary:
+The next missing piece is the `sparse_mul` boundary:
 
 ```text
-pvmtmlwe_eval_automorphism -> pvmtmlwe_keyswitch(...)
+RGSW_monomial_mul -> sub_a -> final RGSW_monomial_mul
 ```
 
-`pvmtmlwe_keyswitch(...)` is currently an aborting stub, so the production PVW
-path must not call it. The next engineering decision is whether to implement
-PVW automorphism keyswitch or restructure the PVW SAB lane schedule so this
-operation is avoided or delayed.
+The `sub_a` step has binary, ternary, include-zero, and gaussian branches. The
+first PVW integration target should remain the binary branch used by
+`SET_2_3_2048`; other branches need separate equivalence gates.
 
 ## Stage 5 Handoff
 
-The next required gate before `sparse_mul` is one of:
-
-1. implement and test PVW automorphism/key-switch for encrypted NCMUX; or
-2. design an equivalent lane-state schedule that does not require
-   `pvmtmlwe_keyswitch(...)` in the RGSW hot path.
-
-Only after that can Stage 5 claim full encrypted `RGSW_monomial_mul`
-equivalence and move to `sparse_mul`.
+The next required gate is isolated binary `sparse_mul` lane equivalence. It
+should reuse the verified PVW `RGSW_monomial_mul` path and add a PVW version of
+binary `sub_a` before connecting anything to full `sab_pvw_*`.

@@ -36,6 +36,10 @@ Known limitation:
   to implement PVW automorphism/key-switch support or avoid that boundary by a
   different lane-state schedule.
 
+Status update: Stage 5 implements PVW TMLWE automorphism/key-switch and verifies
+full encrypted multibit `RGSW_monomial_mul` lane equivalence. This Stage 4 note
+records the earlier boundary rather than the current project state.
+
 ## WSL/Linux spqlios Correctness Gate
 
 Command:
@@ -124,3 +128,6 @@ CMUX/NCMUX lane state -> RGSW monomial bit steps -> sparse_mul -> sab_pvw_*
 The main unresolved design decision is the encrypted NCMUX automorphism
 boundary. The existing PVW keyswitch stub must not be called from a production
 path.
+
+Status update: this design decision is resolved in Stage 5 for the isolated
+RGSW monomial path. The next unresolved boundary is binary `sparse_mul`.

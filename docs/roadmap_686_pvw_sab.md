@@ -270,19 +270,21 @@ Verification:
 
 Current status:
 
-- Partially complete at the isolated `RGSW_monomial_mul` scheduler level.
+- Complete at the isolated full encrypted `RGSW_monomial_mul` level.
 - Implemented under `SAB_PVW_KERNEL_TEST`, so production scalar
   `RGSW_monomial_mul`, `sparse_mul`, and `sab_rlwe_bootstrap` are unchanged.
 - Verified `r=1/2/4` for:
   - `r_prec=1` encrypted selector bit `0/1`;
-  - `r_prec=3` trivial-selector multibit schedule `{1,0,1}`.
+  - `r_prec=3` trivial-selector multibit schedule `{1,0,1}`;
+  - `r_prec=3` full encrypted multibit schedule `{1,0,1}`.
+- Added PVW TMLWE automorphism/key-switch support for NCMUX.
 - Detailed results are recorded in `docs/stage5_pvw_rgsw_monomial_log.md`.
 
 Remaining limitation:
 
-- Full encrypted multibit `RGSW_monomial_mul` still requires a PVW
-  automorphism/key-switch strategy for NCMUX. The current PVW keyswitch function
-  is an aborting stub and must not be used in production.
+- The PVW path is not yet connected to `sparse_mul` or full
+  `sab_rlwe_bootstrap`.
+- The next isolated boundary is binary `sub_a` and final `sparse_mul`.
 
 Failure handling:
 
@@ -434,11 +436,11 @@ Verification:
 
 The next executable step remains inside Stage 5:
 
-1. Resolve the encrypted NCMUX automorphism boundary:
-   - implement PVW automorphism/key-switch; or
-   - design a lane-state schedule that avoids calling `pvmtmlwe_keyswitch(...)`.
-2. Then verify the invariant for full encrypted multibit
-   `RGSW_monomial_mul`:
+1. Implement an isolated PVW binary `sub_a` test path for the `SET_2_3_2048`
+   branch.
+2. Compose verified PVW `RGSW_monomial_mul` + binary `sub_a` into isolated
+   `sparse_mul` lane equivalence.
+3. Verify the invariant after each `sparse_mul` phase:
 
 ```text
 phase(acc_pvw.body[q] after step t)
@@ -446,5 +448,5 @@ phase(acc_pvw.body[q] after step t)
 phase(acc_scalar[q] after the same scalar step t)
 ```
 
-3. Only after full encrypted `RGSW_monomial_mul` passes, move to `sparse_mul`
-   and then full `sab_pvw_*` integration.
+4. Only after isolated binary `sparse_mul` passes, move to `sab_pvw_*`
+   context/API integration.

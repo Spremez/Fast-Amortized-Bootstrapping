@@ -748,12 +748,94 @@ void pvmtmlwe_from_DFT(PVW_TMLWE out, PVW_TMLWE_DFT in){
   }
 }
 
+PVW_TMLWE_KS_Key pvmtmlwe_new_KS_key(PVW_TMLWE_Key out_key, PVW_TMLWE_Key in_key, int t, int base_bit){
+  const int bit_size = sizeof(Torus) * 8;
+  const int N_out = out_key->s[0][0]->N;
+  const int N_in = in_key->s[0][0]->N;
+  assert(N_out == N_in);
+  assert(out_key->r == in_key->r);
+
+  PVW_TMLWE_KS_Key res = (PVW_TMLWE_KS_Key) safe_malloc(sizeof(*res));
+  res->base_bit = base_bit;
+  res->t = t;
+  res->k = in_key->k;
+
+  TorusPolynomial * dec_poly = polynomial_new_array_of_torus_polynomials(N_in, in_key->r);
+  PVW_TMLWE tmp = pvmtmlwe_alloc_new_sample(out_key->k, out_key->r, N_out);
+
+  res->s = (PVW_TMLWE_DFT **) safe_malloc(sizeof(PVW_TMLWE_DFT *) * in_key->k);
+  for (size_t i = 0; i < (size_t) in_key->k; i++){
+    res->s[i] = (PVW_TMLWE_DFT *) safe_malloc(sizeof(PVW_TMLWE_DFT) * t);
+    for (size_t j = 0; j < (size_t) t; j++){
+      const Torus scale = 1ULL << (bit_size - (j + 1) * base_bit);
+      for (size_t lane = 0; lane < (size_t) in_key->r; lane++){
+        for (size_t coeff = 0; coeff < (size_t) N_in; coeff++){
+          dec_poly[lane]->coeffs[coeff] = in_key->s[i][lane]->coeffs[coeff] * scale;
+        }
+      }
+      pvmtmlwe_sample(tmp, dec_poly, out_key);
+      res->s[i][j] = pvmtmlwe_alloc_new_DFT_sample(out_key->k, out_key->r, N_out);
+      pvmtmlwe_to_DFT(res->s[i][j], tmp);
+    }
+  }
+
+  free_pvmtmlwe(tmp);
+  free_array_of_polynomials(dec_poly, in_key->r);
+  return res;
+}
+
+PVW_TMLWE_KS_Key pvmtmlwe_new_automorphism_KS_key(PVW_TMLWE_Key key, uint64_t gen, int t, int base_bit){
+  const int N = key->s[0][0]->N;
+  PVW_TMLWE_Key key2 = pvmtmlwe_alloc_key(N, key->k, key->r, key->sigma);
+  for (size_t i = 0; i < (size_t) key->k; i++){
+    for (size_t lane = 0; lane < (size_t) key->r; lane++){
+      polynomial_permute(key2->s[i][lane], key->s[i][lane], gen);
+      polynomial_torus_to_DFT(key2->s_dft[i][lane], key2->s[i][lane]);
+    }
+  }
+  PVW_TMLWE_KS_Key res = pvmtmlwe_new_KS_key(key, key2, t, base_bit);
+  free_pvmtmlwe_key(key2);
+  return res;
+}
+
+void free_pvmtmlwe_ks_key(PVW_TMLWE_KS_Key key){
+  for (size_t i = 0; i < (size_t) key->k; i++){
+    for (size_t j = 0; j < (size_t) key->t; j++){
+      free_pvmtmlwe_DFT(key->s[i][j]);
+    }
+    free(key->s[i]);
+  }
+  free(key->s);
+  free(key);
+}
+
 void pvmtmlwe_keyswitch(PVW_TMLWE out, PVW_TMLWE in, PVW_TMLWE_KS_Key ks_key){
-  (void) out;
-  (void) in;
-  (void) ks_key;
-  fprintf(stderr, "pvmtmlwe_keyswitch is not implemented\n");
-  abort();
+  const int N = out->b[0]->N;
+  assert(out->k == ks_key->s[0][0]->k);
+  assert(out->r == ks_key->s[0][0]->r);
+  assert(out->b[0]->N == ks_key->s[0][0]->b[0]->N);
+
+  TorusPolynomial dec_in_a = polynomial_new_torus_polynomial(N);
+  DFT_Polynomial tmp = polynomial_new_DFT_polynomial(N);
+  PVW_TMLWE_DFT acc = pvmtmlwe_alloc_new_DFT_sample(out->k, out->r, N);
+  PVW_TMLWE as = pvmtmlwe_alloc_new_sample(out->k, out->r, N);
+
+  pvmtmlwe_noiseless_trivial_DFT_sample(acc, NULL);
+  for (size_t i = 0; i < (size_t) in->k; i++){
+    for (size_t j = 0; j < (size_t) ks_key->t; j++){
+      polynomial_decompose_i(dec_in_a, in->a[i], ks_key->base_bit, ks_key->t, j);
+      polynomial_torus_to_DFT(tmp, dec_in_a);
+      pvmtmlwe_DFT_mul_addto_by_polynomial(acc, ks_key->s[i][j], tmp);
+    }
+  }
+  pvmtmlwe_from_DFT(as, acc);
+  pvmtmlwe_noiseless_trivial_sample(out, in->b);
+  pvmtmlwe_subto(out, as);
+
+  free_pvmtmlwe(as);
+  free_pvmtmlwe_DFT(acc);
+  free_polynomial(tmp);
+  free_polynomial(dec_in_a);
 }
 
 /*We do NOT use this function in our new algorithm!*/
