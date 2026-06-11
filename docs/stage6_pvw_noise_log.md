@@ -17,8 +17,9 @@ for:
 
 This is still an engineering gate. The recorded 50-seed `r=2` campaign and
 10-seed `r=4` campaign are useful correctness/noise evidence, but they are not
-paper-grade failure-rate experiments. Stage-level noise probes still need to be
-run.
+paper-grade failure-rate experiments. A later initial stage-level probe is
+recorded in `docs/stage9_stage_noise_probe.md`; it should be treated as
+smoke-level explanatory evidence, not as a formal failure-rate campaign.
 
 ## Code Artifacts
 
@@ -475,7 +476,7 @@ These are platform/toolchain observations, not algorithm failures:
 
 - Decide whether to extend `r=4` beyond the 10-seed engineering campaign before
   using it for paper-level claims.
-- Add stage-level noise probes before/after blind rotation, extract, packing
-  KS, and HW KS if a final paper claim needs more than final-output noise.
+- Expand the Stage 9 stage-level noise probe beyond `trials=1` if a final paper
+  claim needs more than final-output noise.
 - If this becomes a paper claim, expand beyond the 50-seed engineering
   campaign with a stated failure model and confidence interval.

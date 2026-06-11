@@ -19,7 +19,7 @@
 - [x] Add Stage 6 50+ seed correctness/noise campaign log.
 - [x] Add Stage 6 `r=4` target-shape smoke log.
 - [x] Add Stage 6 `r=4` 10-seed correctness/noise campaign log.
-- [ ] Add Stage 6 stage-level noise probe logs.
+- [x] Add Stage 9 initial stage-level noise probe logs for `r=2`/`r=4`.
 - [x] Add Stage 7 `r=4` target-shape full SAB A/B benchmark run.
 - [x] Add Stage 7 `r=2`/`r=4` full SAB benchmark summary table.
 - [x] Add Stage 7 keygen/key-size/RSS resource metrics for `r=2`/`r=4`.
@@ -40,3 +40,4 @@
 - [x] Record Stage 8 engineering exit assessment.
 - [x] Add Stage 9 initial literature/novelty scan.
 - [x] Add Stage 9 statistical evidence check for 50-seed zero-failure sweeps.
+- [x] Add Stage 9 stage-level noise smoke summary.

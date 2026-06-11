@@ -11,6 +11,11 @@ Machine-readable table:
 
 - `repro/stage9_failure_rate_summary.csv`
 
+Related stage-local smoke evidence:
+
+- `docs/stage9_stage_noise_probe.md`
+- `repro/stage9_stage_noise_summary.csv`
+
 ## Inputs
 
 | variant | backend | r | seeds | points | PVW/scalar/pair failures | gap range | avg gap |
@@ -68,4 +73,6 @@ Required before a stronger paper claim:
   than correlated output points from the same run;
 - run enough independent trials to make the one-sided upper bound meaningful
   for that target;
-- keep stage-level noise probes separate from final-output correctness.
+- keep stage-level noise probes separate from final-output correctness. The
+  current stage-level probe is useful engineering evidence, but its `trials=1`
+  smoke configuration does not change the failure-rate bounds above.

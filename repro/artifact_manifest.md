@@ -17,6 +17,7 @@ Code artifacts:
   - `SAB_PVW_NOISE_R`
   - `SAB_PVW_NOISE_TRIALS`
   - `SAB_PVW_NOISE_MAX_LOG2_GAP`
+  - `SAB_PVW_STAGE_NOISE_TEST`
   - `MOSFHET_DETERMINISTIC_RNG`
   - `MOSFHET_TEST_RNG_SEED`
 - `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
@@ -39,6 +40,10 @@ Documentation artifacts:
 - `docs/stage7_pvw_full_bench_log.md`
 - `docs/stage8_ablation_plan.md`
 - `docs/stage8_clear_elision_log.md`
+- `docs/stage8_gain_separation.md`
+- `docs/stage9_novelty_scan.md`
+- `docs/stage9_statistical_evidence.md`
+- `docs/stage9_stage_noise_probe.md`
 
 Repro artifacts:
 
@@ -139,9 +144,9 @@ Repro artifacts:
 - `repro/stage8_clear_elision_seed_sweep_r4_40_more/seed_6862035.log`
   through `repro/stage8_clear_elision_seed_sweep_r4_40_more/seed_6862074.log`
 - `repro/stage8_clear_elision_seed_sweep_summary.csv`
-- `docs/stage8_gain_separation.md`
 - `repro/stage8_full_bootstrap_gain_separation.csv`
-- `docs/stage9_novelty_scan.md`
 - `repro/stage9_literature_matrix.csv`
-- `docs/stage9_statistical_evidence.md`
 - `repro/stage9_failure_rate_summary.csv`
+- `repro/stage9_stage_noise_r2_trials1/main.log`
+- `repro/stage9_stage_noise_r4_trials1/main.log`
+- `repro/stage9_stage_noise_summary.csv`

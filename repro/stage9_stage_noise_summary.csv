@@ -1,0 +1,11 @@
+variant,backend,r,trials,stage,points,pair_failures,pair_log2_sigma_torus,pair_log2_max_abs_torus,gate,source_log
+clear-elision,spqlios,2,1,blind_rotate_coeff0,4096,0,-14.932,-13.023,PASS,repro/stage9_stage_noise_r2_trials1/main.log
+clear-elision,spqlios,2,1,extract,4096,0,-14.932,-13.023,PASS,repro/stage9_stage_noise_r2_trials1/main.log
+clear-elision,spqlios,2,1,materialize_tlwe,4096,0,-14.932,-13.023,PASS,repro/stage9_stage_noise_r2_trials1/main.log
+clear-elision,spqlios,2,1,packing_ks,4096,0,-14.932,-13.026,PASS,repro/stage9_stage_noise_r2_trials1/main.log
+clear-elision,spqlios,2,1,hw_ks,4096,0,-8.044,-6.280,PASS,repro/stage9_stage_noise_r2_trials1/main.log
+clear-elision,spqlios,4,1,blind_rotate_coeff0,8192,0,-15.142,-12.944,PASS,repro/stage9_stage_noise_r4_trials1/main.log
+clear-elision,spqlios,4,1,extract,8192,0,-15.142,-12.944,PASS,repro/stage9_stage_noise_r4_trials1/main.log
+clear-elision,spqlios,4,1,materialize_tlwe,8192,0,-15.142,-12.944,PASS,repro/stage9_stage_noise_r4_trials1/main.log
+clear-elision,spqlios,4,1,packing_ks,8192,0,-15.142,-12.963,PASS,repro/stage9_stage_noise_r4_trials1/main.log
+clear-elision,spqlios,4,1,hw_ks,8192,0,-8.046,-6.037,PASS,repro/stage9_stage_noise_r4_trials1/main.log

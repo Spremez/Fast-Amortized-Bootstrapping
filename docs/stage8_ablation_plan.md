@@ -344,6 +344,7 @@ Exit assessment after the clear-elision seed-sweep expansion:
 | Algorithm/backend separation | Pass | `docs/stage8_gain_separation.md`, `repro/stage8_full_bootstrap_gain_separation.csv` |
 
 Stage 8 is therefore complete at the engineering-evidence level. The `r=4`
-50-seed expansion has also been completed. Remaining items such as stage-level
-noise probes are paper-strengthening tasks, not blockers for Stage 9 novelty
+50-seed expansion has also been completed. An initial Stage 9 stage-level noise
+probe is now recorded for `r=2` and `r=4`; larger multi-seed stage-noise
+campaigns remain paper-strengthening tasks, not blockers for Stage 9 novelty
 and literature analysis.

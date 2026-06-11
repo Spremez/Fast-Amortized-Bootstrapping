@@ -409,8 +409,11 @@ Remaining limitation:
 
 - The 50-seed campaign is enough for the planned `r=2` engineering gate, but it
   is not a formal paper-grade failure-rate claim.
-- Noise is currently measured at final output. Stage-level noise probes before
-  and after blind rotation, extract, packing KS, and HW KS remain open.
+- Final-output noise is covered by deterministic sweeps. A first stage-level
+  probe is now recorded in `docs/stage9_stage_noise_probe.md`; it checks
+  blind-rotation coefficient 0, extract, TLWE materialization, packing KS, and
+  HW-KS boundaries for `r=2` and `r=4` with zero pair failures. This is still a
+  smoke-level probe, not a paper-grade multi-seed stage-noise campaign.
 - The earlier Stage 6 pre-variant `r=4` record is a 10-seed engineering sweep.
   The current Stage 8 clear-elision `r=4` path now has 50 deterministic seeds,
   but neither record is a formal paper-grade failure-rate campaign without
@@ -576,8 +579,9 @@ Current status:
   - `spqlios_avx512` improves absolute time but reduces the relative PVW
     speedup to `1.099x` at `r=2` and `1.249x` at `r=4`, so backend/SIMD
     effects are not counted as algorithmic gain.
-- Stage 8 is complete at the engineering-evidence level. Remaining stage-level
-  noise probes are paper-strengthening tasks rather than blockers for Stage 9.
+- Stage 8 is complete at the engineering-evidence level. Stage 9 now includes
+  an initial stage-level noise probe; multi-seed stage-noise expansion remains
+  a paper-strengthening task.
 
 ## Stage 9: Literature and Novelty Check
 
@@ -617,6 +621,11 @@ Current status:
 - Initial statistical evidence check is recorded in
   `docs/stage9_statistical_evidence.md` and
   `repro/stage9_failure_rate_summary.csv`.
+- Initial stage-level noise probe is recorded in
+  `docs/stage9_stage_noise_probe.md` and
+  `repro/stage9_stage_noise_summary.csv`. The `r=2` and `r=4` smoke gates
+  passed with zero pair failures across blind-rotation coefficient 0, extract,
+  materialized TLWE, packing KS, and HW-KS boundaries.
 - Current safe claim level is engineering/systems optimization. A paper-level
   algorithmic novelty claim remains unverified until the related work is read at
   algorithm-step level, and a paper-grade failure-rate claim remains unsupported
@@ -643,25 +652,21 @@ Verification:
 
 ## Immediate Execution Plan
 
-The next executable step remains inside Stage 5:
+The implementation path has reached Stage 9 engineering evidence. The next
+decision is whether to finish a rigorous engineering report or invest in
+paper-grade evidence.
 
-1. Add PVW setup for multiple independent lane accumulators without replacing
-   `setup_tv_xb`. Done for the small no-extract gate.
-2. Add a small `sab_pvw_bootstrap_wo_extract` or equivalent test-only wrapper
-   using the existing `SAB_PVW_Key` and binary sparse path. Done for binary.
-3. Move from small no-extract correctness to per-lane extract/output comparison.
-   Done for extracted TLWE phase comparison.
+Recommended next steps:
 
-```text
-phase(out_pvw_lane[q])
-==
-phase(out_scalar[q])
-```
-
-4. Add packing/HW-KS-aware comparison. Done on the small binary skeleton by
-   materializing each PVW TLWE lane and reusing existing scalar full packing KS
-   plus HW-reducing KS.
-5. Scale the PVW binary path to target `SET_2_3_2048`. Done for a deterministic
-   `r=2` full-output correctness gate.
-6. Run broader Stage 6 correctness/noise checks, then repeat Stage 7 full
-   performance A/B with the stronger correctness/noise evidence attached.
+1. Expand the stage-level noise probe beyond `trials=1` only if stage-local
+   noise is needed for the final claim.
+2. Read the closest related work at algorithm-step level before making any
+   novelty claim stronger than implementation/systems optimization.
+3. Prepare Stage 10 claim-to-evidence tables that separate:
+   - same-backend full SAB algorithmic speedup;
+   - backend/SIMD absolute timing effects;
+   - final-output multi-seed correctness/noise;
+   - stage-level smoke evidence;
+   - resource cost and key-size overhead.
+4. If a paper claim is desired, define the failure-rate target and independent
+   trial unit before running larger campaigns.

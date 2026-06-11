@@ -36,6 +36,9 @@ Current evidence:
   `204800` points, PVW/scalar/pair failures all `0`;
 - `r=4` clear-elision deterministic noise/correctness: `50` seeds,
   `409600` points, PVW/scalar/pair failures all `0`.
+- clear-elision stage-level smoke probes for `r=2` and `r=4`: zero pair
+  failures at blind-rotation coefficient 0, extract, TLWE materialization,
+  packing KS, and HW-KS boundaries.
 
 ## Initial Literature Map
 
@@ -90,12 +93,16 @@ Required before upgrading that claim:
 
 ## Stage 9 Next Decisions
 
-- `r=4` 50-seed noise evidence is now available. If the project targets a
-  paper claim, the next evidence upgrade should be statistical treatment and
-  stage-level noise probes rather than another small deterministic sweep.
+- `r=4` 50-seed noise evidence and initial stage-level noise probes are now
+  available. If the project targets a paper claim, the next evidence upgrade
+  should be deeper related-work exclusion plus multi-seed independent
+  statistics, not another single smoke run.
 - Initial statistical treatment is recorded in
   `docs/stage9_statistical_evidence.md`. It supports the engineering
   correctness/noise gate, but not a paper-grade failure-rate claim.
+- Initial stage-level noise evidence is recorded in
+  `docs/stage9_stage_noise_probe.md`. It is useful for explaining where the
+  PVW/scalar pair delta grows, but it is not a paper-grade failure-rate result.
 - Decide whether Stage 9 should target a paper contribution or a rigorous
   engineering report. The current evidence supports the latter; the former
   requires deeper related-work exclusion and statistical treatment.
