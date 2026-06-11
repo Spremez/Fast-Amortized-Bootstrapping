@@ -396,11 +396,15 @@ Current status:
 
 - Initial target-shape full-output A/B benchmark added under
   `SAB_PVW_BENCH=true`.
-- First WSL/Linux `spqlios` result for `SET_2_3_2048` shape, `r=2`,
-  `h=39`, `r_prec=7`, `reps=3`:
-  - PVW full bootstrap average: `20,329,962.667 us` for 2 lanes;
-  - repeated scalar full bootstrap average: `24,774,453.000 us` for 2 lanes;
-  - throughput speedup: `1.219x`.
+- Benchmark is now configurable with `SAB_PVW_BENCH_R` and
+  `SAB_PVW_BENCH_REPS`, and prints per-pair samples plus mean/stddev.
+- Latest WSL/Linux `spqlios` result for `SET_2_3_2048` shape, `r=2`,
+  `h=39`, `r_prec=7`, paired `reps=5`:
+  - PVW full bootstrap average: `20,407,053.000 us` for 2 lanes
+    (`673,527.822 us` stddev);
+  - repeated scalar full bootstrap average: `24,304,453.600 us` for 2 lanes
+    (`693,984.847 us` stddev);
+  - throughput speedup: `1.191x`, speedup stddev `0.067`.
 - Detailed result is recorded in `docs/stage7_pvw_full_bench_log.md`.
 - This is not final performance evidence yet because multi-seed/noise,
   repeated benchmark variance, memory/key-size, and backend separation remain

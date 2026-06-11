@@ -562,6 +562,46 @@ static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
   return out;
 }
 
+#ifndef SAB_PVW_BENCH_R
+#define SAB_PVW_BENCH_R 2
+#endif
+
+#ifndef SAB_PVW_BENCH_REPS
+#define SAB_PVW_BENCH_REPS 3
+#endif
+
+static double mean_u64(const uint64_t * values, int count){
+  double sum = 0.0;
+  for (size_t idx = 0; idx < (size_t) count; idx++) sum += values[idx];
+  return sum / count;
+}
+
+static double stddev_u64(const uint64_t * values, int count, double mean){
+  if(count < 2) return 0.0;
+  double sq_sum = 0.0;
+  for (size_t idx = 0; idx < (size_t) count; idx++){
+    const double diff = values[idx] - mean;
+    sq_sum += diff * diff;
+  }
+  return sqrt(sq_sum / (count - 1));
+}
+
+static double mean_double(const double * values, int count){
+  double sum = 0.0;
+  for (size_t idx = 0; idx < (size_t) count; idx++) sum += values[idx];
+  return sum / count;
+}
+
+static double stddev_double(const double * values, int count, double mean){
+  if(count < 2) return 0.0;
+  double sq_sum = 0.0;
+  for (size_t idx = 0; idx < (size_t) count; idx++){
+    const double diff = values[idx] - mean;
+    sq_sum += diff * diff;
+  }
+  return sqrt(sq_sum / (count - 1));
+}
+
 static TRLWE_Key test_binary_key_from_distances(int N, int k,
     const uint64_t * distances, int h, double sigma){
   TRLWE_Key out = trlwe_alloc_key(N, k, sigma);
@@ -2381,12 +2421,17 @@ void test_sab_pvw_target_full(){
 }
 
 void test_sab_pvw_target_bench(){
-  const int r = 2, reps = 3;
+  const int r = SAB_PVW_BENCH_R, reps = SAB_PVW_BENCH_REPS;
   const int in_N = 2048, in_k = 1, out_N = 2048, out_k = 1;
   const int l = 1, bg_bit = 23, prec = 3, h = 39, r_prec = 7;
   const int h_out = 512, h_packing = 256;
   const int ell_packing = 2, b_packing = 14, ell_hw = 12, b_hw = 1;
   uint64_t distances[39];
+
+  if(r < 1 || reps < 1){
+    printf("SAB_PVW_BENCH invalid config r=%d reps=%d\n", r, reps);
+    exit(1);
+  }
 
   for (size_t idx = 0; idx < (size_t) h; idx++){
     distances[idx] = idx < 8 ? 52 : 51;
@@ -2446,26 +2491,41 @@ void test_sab_pvw_target_bench(){
          r, h, r_prec, pass ? "Pass" : "Fail");
   if(!pass) exit(1);
 
-  uint64_t pvw_total = 0, scalar_total = 0;
+  uint64_t * pvw_times = (uint64_t *) safe_malloc(sizeof(uint64_t) * reps);
+  uint64_t * scalar_times = (uint64_t *) safe_malloc(sizeof(uint64_t) * reps);
+  double * speedups = (double *) safe_malloc(sizeof(double) * reps);
   for (size_t rep = 0; rep < (size_t) reps; rep++){
-    const uint64_t begin = get_time();
+    uint64_t begin = get_time();
     sab_pvw_bootstrap_binary(pvw_out, input, pvw_tv, pvw_sab);
-    pvw_total += get_time() - begin;
-  }
-  for (size_t rep = 0; rep < (size_t) reps; rep++){
-    const uint64_t begin = get_time();
+    pvw_times[rep] = get_time() - begin;
+
+    begin = get_time();
     for (size_t lane = 0; lane < (size_t) r; lane++){
       sab_rlwe_bootstrap(scalar_out[lane], input, scalar_tvs[lane],
           scalar_sabs[lane]);
     }
-    scalar_total += get_time() - begin;
+    scalar_times[rep] = get_time() - begin;
+    speedups[rep] = ((double) scalar_times[rep]) / pvw_times[rep];
+    printf("SAB_PVW_BENCH sample target_full r=%d rep=%" PRIu64
+           " pvw_us=%" PRIu64 " scalar_repeated_us=%" PRIu64
+           " speedup=%.3fx\n",
+           r, (uint64_t) rep, pvw_times[rep], scalar_times[rep],
+           speedups[rep]);
   }
-  const double pvw_avg = ((double) pvw_total) / reps;
-  const double scalar_avg = ((double) scalar_total) / reps;
-  printf("SAB_PVW_BENCH target_full r=%d reps=%d pvw_avg_us=%.3f pvw_lane_avg_us=%.3f scalar_repeated_avg_us=%.3f scalar_lane_avg_us=%.3f speedup_vs_scalar_repeated=%.3fx\n",
-         r, reps, pvw_avg, pvw_avg / r, scalar_avg, scalar_avg / r,
-         scalar_avg / pvw_avg);
+  const double pvw_avg = mean_u64(pvw_times, reps);
+  const double scalar_avg = mean_u64(scalar_times, reps);
+  const double pvw_stddev = stddev_u64(pvw_times, reps, pvw_avg);
+  const double scalar_stddev = stddev_u64(scalar_times, reps, scalar_avg);
+  const double speedup_avg = mean_double(speedups, reps);
+  const double speedup_stddev = stddev_double(speedups, reps, speedup_avg);
+  printf("SAB_PVW_BENCH summary target_full r=%d reps=%d pvw_avg_us=%.3f pvw_stddev_us=%.3f pvw_lane_avg_us=%.3f scalar_repeated_avg_us=%.3f scalar_stddev_us=%.3f scalar_lane_avg_us=%.3f speedup_vs_scalar_repeated=%.3fx speedup_stddev=%.3f\n",
+         r, reps, pvw_avg, pvw_stddev, pvw_avg / r, scalar_avg,
+         scalar_stddev, scalar_avg / r, scalar_avg / pvw_avg,
+         speedup_stddev);
 
+  free(speedups);
+  free(scalar_times);
+  free(pvw_times);
   free_trlwe_array(pvw_out, r);
   free_trlwe_array(scalar_out, r);
   free_trlwe_array(scalar_tvs, r);

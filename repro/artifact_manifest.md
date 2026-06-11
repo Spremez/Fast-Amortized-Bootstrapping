@@ -9,6 +9,8 @@ Code artifacts:
   - `SAB_PVW_KERNEL_TEST`
   - `SAB_PVW_TARGET_TEST`
   - `SAB_PVW_BENCH`
+  - `SAB_PVW_BENCH_R`
+  - `SAB_PVW_BENCH_REPS`
 - `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
 
 Documentation artifacts:
