@@ -383,12 +383,21 @@ Current status:
   `MOSFHET_DETERMINISTIC_RNG=true` and `MOSFHET_TEST_RNG_SEED=...`.
   A fixed-seed WSL/Linux `spqlios` smoke with seed `6862025` produced
   byte-for-byte identical output across two process restarts.
+- Added `scripts/run_stage6_seed_sweep.sh` so one deterministic build can run
+  multiple runtime seeds. Latest WSL/Linux `spqlios` smoke over seeds
+  `6862025`, `6862026`, and `6862027` passed with:
+  - PVW final-output failures: `0 / 12288`;
+  - scalar final-output failures: `0 / 12288`;
+  - PVW-vs-scalar quantized pair failures: `0 / 12288`;
+  - largest observed PVW-minus-scalar final-output noise gap: `0.608`
+    log2 units, below the current engineering gate `4.0`.
 - Detailed result is recorded in `docs/stage6_pvw_noise_log.md`.
 
 Remaining limitation:
 
 - This is not yet a paper-grade multi-seed campaign. The deterministic seed
-  mechanism exists, but the larger seed sweep has not been run.
+  mechanism and 3-seed smoke exist, but the larger 50+ seed sweep has not been
+  run.
 - Noise is currently measured at final output. Stage-level noise probes before
   and after blind rotation, extract, packing KS, and HW KS remain open.
 - `r=4` target-shape correctness/noise is not yet measured.

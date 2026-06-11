@@ -534,6 +534,7 @@ void multivalue_bootstrap_UBR_phase2(TLWE out, TRLWE tv, TLWE in, TRGSW_DFT * sa
 /* Misc */ 
 void generate_rnd_seed(uint64_t * p);
 void generate_random_bytes(uint64_t amount, uint8_t * pointer);
+void mosfhet_set_deterministic_seed(uint64_t seed);
 double generate_normal_random(double sigma);
 void generate_torus_normal_random_array(Torus * out, double sigma, int N);
 void * safe_malloc(size_t size);

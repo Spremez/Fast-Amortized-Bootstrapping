@@ -156,6 +156,48 @@ Interpretation:
   `0.608` log2 units, but still within the current engineering threshold and
   with no quantized failures.
 
+## Seed Sweep Smoke
+
+`scripts/run_stage6_seed_sweep.sh` builds the deterministic Stage 6 binary once
+and then runs multiple seeds by setting runtime environment variable
+`MOSFHET_TEST_RNG_SEED` for each process. It stores one raw log per seed and a
+machine-readable summary CSV.
+
+Command:
+
+```bash
+STAGE6_SWEEP_OUT_DIR=repro/stage6_seed_sweep_smoke \
+  bash scripts/run_stage6_seed_sweep.sh 6862025 6862026 6862027
+```
+
+Generated artifacts:
+
+- `repro/stage6_seed_sweep_smoke/summary.csv`
+- `repro/stage6_seed_sweep_smoke/seed_6862025.log`
+- `repro/stage6_seed_sweep_smoke/seed_6862026.log`
+- `repro/stage6_seed_sweep_smoke/seed_6862027.log`
+
+Summary:
+
+```text
+seed,status,points,pvw_failures,scalar_failures,pair_failures,pvw_log2_sigma_torus,scalar_log2_sigma_torus,pair_log2_sigma_torus,pvw_minus_scalar_log2,max_allowed_log2_gap
+6862025,Pass,4096,0,0,0,-7.721,-8.328,-7.311,0.608,4.000
+6862026,Pass,4096,0,0,0,-8.027,-8.280,-7.590,0.253,4.000
+6862027,Pass,4096,0,0,0,-8.314,-8.333,-7.759,0.019,4.000
+```
+
+Interpretation:
+
+- All three fixed seeds passed the Stage 6 final-output gate.
+- Aggregate quantized failures across the smoke sweep:
+  - PVW: `0 / 12288`;
+  - scalar: `0 / 12288`;
+  - PVW-vs-scalar pair: `0 / 12288`.
+- The largest observed PVW-minus-scalar final-output noise gap was `0.608`
+  log2 units, below the current loose engineering gate of `4.0`.
+- This is useful automation/procedure evidence, not enough seed count for the
+  final Stage 6 correctness/noise claim.
+
 ## Scalar Baseline After Stage 6 Gate
 
 Command:
@@ -189,6 +231,18 @@ Bootstrapping time: 12,429,735 us +- 769,196.335812
 Pass
 ```
 
+After adding runtime seed selection and the seed sweep script, the default
+scalar path was checked again:
+
+```text
+Sparse bootstrapping with binary keys
+Message precision: 3 - Repetitions: 3
+Max monomial distance (log B): 7
+Rejection Sampling Attempts: 159
+Bootstrapping time: 12,483,290 us +- 1,055,242.982135
+Pass
+```
+
 The default scalar build still does not link `sab_pvw.o`.
 
 ## Failed/Non-Claim Runs
@@ -204,8 +258,8 @@ These are platform/toolchain observations, not algorithm failures:
 
 ## Remaining Work
 
-- Run a larger correctness/noise campaign with recorded deterministic seeds,
-  starting with at least 50 seeds for engineering signal.
+- Expand the seed sweep from the 3-seed smoke to at least 50 recorded seeds for
+  engineering signal.
 - Repeat Stage 6 for `r=4` after confirming memory and runtime are acceptable.
 - Add stage-level noise probes before/after blind rotation, extract, packing
   KS, and HW KS if a final paper claim needs more than final-output noise.

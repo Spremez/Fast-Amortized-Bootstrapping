@@ -36,8 +36,26 @@ Torus int2torus(uint64_t x, int log_scale){
 
 static __thread uint64_t deterministic_rng_state =
     (uint64_t) MOSFHET_TEST_RNG_SEED;
+static __thread bool deterministic_rng_initialized = false;
+
+void mosfhet_set_deterministic_seed(uint64_t seed){
+  deterministic_rng_state = seed;
+  deterministic_rng_initialized = true;
+}
+
+static void deterministic_rng_init_once(){
+  if(deterministic_rng_initialized) return;
+  const char * env_seed = getenv("MOSFHET_TEST_RNG_SEED");
+  if(env_seed != NULL && env_seed[0] != '\0'){
+    char * endptr = NULL;
+    const uint64_t seed = strtoull(env_seed, &endptr, 0);
+    if(endptr != env_seed) deterministic_rng_state = seed;
+  }
+  deterministic_rng_initialized = true;
+}
 
 static uint64_t deterministic_splitmix64_next(){
+  deterministic_rng_init_once();
   uint64_t z = (deterministic_rng_state += 0x9E3779B97F4A7C15ULL);
   z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
   z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
@@ -115,6 +133,12 @@ void generate_random_bytes(uint64_t amount, uint8_t * pointer){
   else get_rnd_from_hash(amount, pointer);
 }
 
+#endif
+
+#ifndef MOSFHET_DETERMINISTIC_RNG
+void mosfhet_set_deterministic_seed(uint64_t seed){
+  (void) seed;
+}
 #endif
 
 #ifndef M_PI
