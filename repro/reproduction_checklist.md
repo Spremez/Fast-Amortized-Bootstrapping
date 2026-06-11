@@ -1,6 +1,6 @@
 # Reproduction Checklist
 
-- [ ] Record final commit hash after each stage commit.
+- [x] Record stage commit hash registry through Stage 9.
 - [x] Record WSL/Linux compiler and CPU platform.
 - [x] Keep scalar SAB baseline command registered.
 - [x] Record Stage 5 PVW API sparse correctness command.
@@ -41,3 +41,4 @@
 - [x] Add Stage 9 initial literature/novelty scan.
 - [x] Add Stage 9 statistical evidence check for 50-seed zero-failure sweeps.
 - [x] Add Stage 9 stage-level noise smoke summary.
+- [x] Add Stage 10 engineering claim-to-evidence matrix.

@@ -1,0 +1,12 @@
+stage,primary_commit,date,milestone,evidence,notes
+0,4537798,2026-06-08,portable baseline build fixed,"docs/baseline_build.md; repro/environment.md","Initial imported project commits before b59a125 are upstream history; Stage 0 registry starts at local baseline repair"
+1,b59d557,2026-06-08,SAB baseline and cost model documented,"docs/protocol_map.md; docs/cost_model.md","Call graph and external-product cost model recorded"
+2,68e9ca9,2026-06-08,SAB bottleneck measurements recorded,"docs/profile_baseline.md; docs/stage2_measurements.md","Microbench evidence shows CMUX/RGSW layer is the relevant target"
+3,2f56704,2026-06-08,MAT_TRGSW PVW kernel checks completed,"docs/stage3_pvw_kernel_status.md; docs/mat_external_product_breakdown.md","Kernel bring-up and external-product evidence recorded before SAB integration"
+4,a1b3c80,2026-06-11,PVW lane-state CMUX/NCMUX equivalence tests added,"docs/sab_pvw_state_design.md; docs/stage4_pvw_cmux_ncmux_log.md","Isolated lane invariant tests for r=1/2/4"
+5,a926b0c,2026-06-11,PVW full bootstrap target gate added,"include/sab_pvw.h; src/sab_pvw.c; docs/stage5_pvw_full_bootstrap_log.md","Full-output target-shape correctness gate exists beside scalar path"
+6,bd5ef9b,2026-06-11,pre-variant noise sweeps completed through r=4 10-seed,"docs/stage6_pvw_noise_log.md; repro/stage6_seed_sweep_50/summary.csv; repro/stage6_seed_sweep_r4_10/summary.csv","Later Stage 8 clear-elision 50-seed sweeps supersede this for final engineering evidence"
+7,a1784be,2026-06-11,repeated full SAB benchmark and backend smoke recorded,"docs/stage7_pvw_full_bench_log.md; repro/stage7_bench_sweep_summary.csv; repro/stage7_resource_summary.csv","Stage 7 performance and resource evidence before Stage 8 variants"
+8,2031dc8,2026-06-11,Stage 8 engineering exit assessment recorded,"docs/stage8_ablation_plan.md; docs/stage8_clear_elision_log.md; repro/stage8_clear_elision_bench_summary.csv","Clear-elision performance evidence; r=4 50-seed expansion was committed later at 22b21c0"
+8-extra,22b21c0,2026-06-12,Stage 8 r=4 50-seed clear-elision expansion,"repro/stage8_clear_elision_seed_sweep_r4_50_aggregate.csv; repro/stage8_clear_elision_seed_sweep_summary.csv","Completes r=4 50-seed engineering gate"
+9,d2e587e,2026-06-12,Stage 9 statistical novelty and stage-noise evidence recorded,"docs/stage9_novelty_scan.md; docs/stage9_statistical_evidence.md; docs/stage9_stage_noise_probe.md","Safe claim remains engineering/systems optimization"

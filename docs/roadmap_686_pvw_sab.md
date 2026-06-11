@@ -650,10 +650,22 @@ Verification:
 - Every result has command, commit hash, platform, parameters, and log pointer.
 - Every claim has supporting evidence.
 
+Current status:
+
+- Initial engineering report is recorded in
+  `docs/stage10_engineering_report.md`.
+- Machine-readable claim support is recorded in
+  `repro/stage10_claim_evidence_matrix.csv`.
+- Stage-to-commit evidence registry is recorded in
+  `repro/stage_commit_registry.csv`.
+- The current supported conclusion is a scoped engineering/systems
+  optimization claim for binary `SET_2_3_2048` on WSL/Linux `spqlios`, not a
+  paper-grade novelty or failure-rate claim.
+
 ## Immediate Execution Plan
 
-The implementation path has reached Stage 9 engineering evidence. The next
-decision is whether to finish a rigorous engineering report or invest in
+The implementation path has reached a Stage 10 engineering report. The next
+decision is whether to stop at a rigorous engineering result or invest in
 paper-grade evidence.
 
 Recommended next steps:
@@ -662,11 +674,7 @@ Recommended next steps:
    noise is needed for the final claim.
 2. Read the closest related work at algorithm-step level before making any
    novelty claim stronger than implementation/systems optimization.
-3. Prepare Stage 10 claim-to-evidence tables that separate:
-   - same-backend full SAB algorithmic speedup;
-   - backend/SIMD absolute timing effects;
-   - final-output multi-seed correctness/noise;
-   - stage-level smoke evidence;
-   - resource cost and key-size overhead.
+3. If preparing a paper draft, turn the Stage 10 claim-to-evidence table into
+   a method/results section with explicit claim labels.
 4. If a paper claim is desired, define the failure-rate target and independent
    trial unit before running larger campaigns.

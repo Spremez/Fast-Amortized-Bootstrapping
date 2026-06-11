@@ -44,12 +44,14 @@ Documentation artifacts:
 - `docs/stage9_novelty_scan.md`
 - `docs/stage9_statistical_evidence.md`
 - `docs/stage9_stage_noise_probe.md`
+- `docs/stage10_engineering_report.md`
 
 Repro artifacts:
 
 - `repro/environment.md`
 - `repro/baseline_registry.yaml`
 - `repro/run_log.csv`
+- `repro/stage_commit_registry.csv`
 - `repro/reproduction_checklist.md`
 - `repro/stage6_seed_sweep_smoke/summary.csv`
 - `repro/stage6_seed_sweep_smoke/seed_6862025.log`
@@ -150,3 +152,4 @@ Repro artifacts:
 - `repro/stage9_stage_noise_r2_trials1/main.log`
 - `repro/stage9_stage_noise_r4_trials1/main.log`
 - `repro/stage9_stage_noise_summary.csv`
+- `repro/stage10_claim_evidence_matrix.csv`
