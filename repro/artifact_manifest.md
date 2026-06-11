@@ -137,3 +137,5 @@ Repro artifacts:
 - `repro/stage8_clear_elision_seed_sweep_summary.csv`
 - `docs/stage8_gain_separation.md`
 - `repro/stage8_full_bootstrap_gain_separation.csv`
+- `docs/stage9_novelty_scan.md`
+- `repro/stage9_literature_matrix.csv`

@@ -609,6 +609,14 @@ Decision gate:
 - If a new SAB-specific batching invariant or complexity improvement is
   demonstrably novel, prepare paper-grade evidence.
 
+Current status:
+
+- Initial novelty scan is recorded in `docs/stage9_novelty_scan.md` and
+  `repro/stage9_literature_matrix.csv`.
+- Current safe claim level is engineering/systems optimization. A paper-level
+  algorithmic novelty claim remains unverified until the related work is read at
+  algorithm-step level.
+
 ## Stage 10: Final Paper/Report Package
 
 Goal:
