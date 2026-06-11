@@ -146,6 +146,8 @@ Result:
 
 | variant | backend | r | runs | reps/run | PVW mean us | scalar repeated mean us | speedup mean | sample stddev | range |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| pre-variant | spqlios | 2 | 3 | 2 | 19,266,121.667 | 22,848,639.333 | 1.188x | 0.066 | 1.132x-1.261x |
+| clear-elision | spqlios | 2 | 3 | 2 | 18,684,294.000 | 23,642,989.000 | 1.269x | 0.096 | 1.172x-1.364x |
 | pre-variant | spqlios | 4 | 3 | 2 | 35,402,965.167 | 46,436,548.167 | 1.312x | 0.014 | 1.302x-1.328x |
 | clear-elision | spqlios | 4 | 3 | 2 | 35,044,592.833 | 46,848,311.333 | 1.337x | 0.012 | 1.323x-1.345x |
 
@@ -153,9 +155,11 @@ Interpretation:
 
 - Every clear-elision process-level run passed the full-output correctness gate.
 - The `r=4` clear-elision sweep is stable and positive.
-- Compared with the earlier pre-variant `spqlios` r=4 sweep, PVW average time
-  is about `1.010x` lower and the speedup ratio rises from `1.312x` to
-  `1.337x`.
+- The `r=2` clear-elision sweep is positive but still has visible process-level
+  variance.
+- Compared with the earlier pre-variant `spqlios` sweeps:
+  - `r=2` speedup mean rises from `1.188x` to `1.269x`;
+  - `r=4` speedup mean rises from `1.312x` to `1.337x`.
 - This is encouraging but not a strict paired variant A/B because the
   pre-variant and clear-elision measurements are from separate process
   campaigns and commits. Treat it as Stage 8 engineering evidence, not a final
@@ -163,8 +167,23 @@ Interpretation:
 
 ## Remaining Gates
 
-- Repeat `r=2` after clear-elision if the smaller-lane setting remains a target.
-- Rerun Stage 6 noise sweeps if clear-elision becomes part of the final claimed
-  implementation.
+- Stage 6-style smoke noise checks have been rerun after clear-elision:
+
+| variant | backend | r | trials | points | failures | PVW log2 sigma | scalar log2 sigma | PVW-scalar gap |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| clear-elision | spqlios | 2 | 3 | 12,288 | 0 / 0 / 0 | -8.395 | -8.311 | -0.083 |
+| clear-elision | spqlios | 4 | 1 | 8,192 | 0 / 0 / 0 | -8.349 | -8.160 | -0.189 |
+
+Machine-readable table:
+
+- `repro/stage8_clear_elision_noise_summary.csv`
+
+Artifacts:
+
+- `repro/stage8_clear_elision_noise_r2_trials3/main.log`
+- `repro/stage8_clear_elision_noise_r4_trials1/main.log`
+
+- Larger Stage 6 seed sweeps are still needed if clear-elision becomes part of
+  the final claimed implementation.
 - Repeat resource metrics only if key layout or allocation changes; this variant
   does not change key material.

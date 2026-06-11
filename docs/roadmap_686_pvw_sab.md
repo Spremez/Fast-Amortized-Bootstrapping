@@ -544,15 +544,22 @@ Current status:
   - default scalar SAB smoke.
 - Full repeated A/B performance must be rerun after clear-elision before
   assigning a new full SAB speedup number to this variant.
-- The first clear-elision repeated full-output A/B is recorded for WSL/Linux
-  `spqlios`, target-shape `r=4`, `reps=2`, `runs=3`:
-  - all runs passed;
-  - PVW mean `35,044,592.833 us`;
-  - repeated scalar mean `46,848,311.333 us`;
-  - speedup mean `1.337x`, sample stddev `0.012`, range `1.323x-1.345x`.
-- Compared with the earlier pre-variant `r=4` `spqlios` sweep (`1.312x` mean),
-  this is a modest positive engineering signal, but not a strict paired
-  variant A/B.
+- Clear-elision repeated full-output A/B is recorded for WSL/Linux `spqlios`,
+  target-shape `r=2` and `r=4`, `reps=2`, `runs=3`:
+  - `r=2`: all runs passed; speedup mean `1.269x`, sample stddev `0.096`,
+    range `1.172x-1.364x`;
+  - `r=4`: all runs passed; speedup mean `1.337x`, sample stddev `0.012`,
+    range `1.323x-1.345x`.
+- Compared with earlier pre-variant `spqlios` sweeps (`1.188x` at `r=2`,
+  `1.312x` at `r=4`), this is a positive engineering signal, but not a strict
+  paired variant A/B.
+- Clear-elision Stage 6-style smoke noise checks are recorded:
+  - `r=2`, `trials=3`, `points=12288`: PVW/scalar/pair failures all `0`,
+    PVW-minus-scalar log2 gap `-0.083`;
+  - `r=4`, `trials=1`, `points=8192`: PVW/scalar/pair failures all `0`,
+    PVW-minus-scalar log2 gap `-0.189`.
+- Larger deterministic seed sweeps remain required before treating
+  clear-elision as final paper-grade correctness/noise evidence.
 
 ## Stage 9: Literature and Novelty Check
 

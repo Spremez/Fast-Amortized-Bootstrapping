@@ -1,3 +1,5 @@
 variant,backend,r,reps_per_run,runs,status,pvw_avg_us_mean,scalar_repeated_avg_us_mean,speedup_mean,speedup_sample_stddev,min_speedup,max_speedup,source_dir
+pre_variant,spqlios,2,2,3,Pass,19266121.667,22848639.333,1.188,0.066,1.132,1.261,repro/stage7_bench_sweep_r2_reps2_runs3
+clear_elision,spqlios,2,2,3,Pass,18684294.000,23642989.000,1.269,0.096,1.172,1.364,repro/stage8_clear_elision_bench_r2_reps2_runs3
 pre_variant,spqlios,4,2,3,Pass,35402965.167,46436548.167,1.312,0.014,1.302,1.328,repro/stage7_bench_sweep_r4_reps2_runs3
 clear_elision,spqlios,4,2,3,Pass,35044592.833,46848311.333,1.337,0.012,1.323,1.345,repro/stage8_clear_elision_bench_r4_reps2_runs3

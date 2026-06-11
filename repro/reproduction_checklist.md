@@ -33,5 +33,6 @@
 - [x] Add Stage 8 implementation-variant decision record.
 - [x] Add Stage 8 clear-elision kernel and correctness gates.
 - [x] Add Stage 8 clear-elision repeated `r=4` full-output A/B benchmark.
-- [ ] Add Stage 8 clear-elision `r=2` repeated full-output A/B benchmark.
-- [ ] Add Stage 8 clear-elision Stage 6 noise sweep if used for final claim.
+- [x] Add Stage 8 clear-elision `r=2` repeated full-output A/B benchmark.
+- [x] Add Stage 8 clear-elision Stage 6-style noise smoke.
+- [ ] Add Stage 8 clear-elision deterministic multi-seed noise sweep if used for final claim.

@@ -260,10 +260,14 @@ Current decision:
   decomposition, key material, or SAB protocol.
 - The kernel/small-API gate, target-shape PVW correctness gate, and scalar
   baseline gate pass after the change.
-- Full repeated A/B performance for `r=4` is recorded: `1.337x` speedup mean,
-  sample stddev `0.012`, range `1.323x-1.345x`.
-- `r=2` clear-elision performance and Stage 6 noise sweeps remain pending, so
-  clear-elision is not yet a final paper-grade implementation claim.
+- Full repeated A/B performance is recorded for:
+  - `r=2`: `1.269x` speedup mean, sample stddev `0.096`, range
+    `1.172x-1.364x`;
+  - `r=4`: `1.337x` speedup mean, sample stddev `0.012`, range
+    `1.323x-1.345x`.
+- Stage 6 noise sweeps remain pending after the arithmetic-code change, so
+  clear-elision is not yet a final paper-grade implementation claim. Initial
+  smoke checks pass for `r=2` (`trials=3`) and `r=4` (`trials=1`).
 
 Failure handling:
 
