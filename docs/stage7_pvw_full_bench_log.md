@@ -21,8 +21,10 @@ including:
 - HW-reducing KS;
 - final TRLWE outputs.
 
-This is an initial Stage 7 engineering benchmark, not the final performance
-claim. Multi-seed correctness/noise and repeated statistical runs remain open.
+This is a Stage 7 engineering benchmark, not the final performance claim.
+Stage 6 now has multi-seed correctness/noise evidence for `r=2` and `r=4`,
+but backend separation, memory/key-size, and broader repeated benchmark
+campaigns remain open.
 
 ## Benchmark Entry
 
@@ -42,10 +44,19 @@ make FFT_LIB=spqlios SAB_PVW_BENCH=true SAB_PVW_BENCH_R=2 SAB_PVW_BENCH_REPS=5 K
 ./main
 ```
 
+Latest `r=4` command:
+
+```bash
+make clean
+make FFT_LIB=spqlios SAB_PVW_BENCH=true SAB_PVW_BENCH_R=4 SAB_PVW_BENCH_REPS=3 KEY=BINARY PARAM=SET_2_3_2048 -j$(nproc)
+stdbuf -o0 ./main | tee repro/stage7_pvw_bench_r4_reps3/main.log
+```
+
 ## Target Shape
 
 - backend: WSL/Linux `spqlios`
-- `r = 2`
+- `r = 2` in the latest `r=2` paired run
+- `r = 4` in the latest `r=4` paired run
 - `in_N = 2048`
 - `out_N = 2048`
 - `h = 39`
@@ -66,7 +77,7 @@ corresponding scalar output lane:
 SAB_PVW_BENCH correctness target_full r=2 h=39 r_prec=7: Pass
 ```
 
-## Result
+## r=2 Result
 
 Latest paired-statistics run:
 
@@ -103,6 +114,35 @@ Interpretation:
   batched blind-rotation path.
 - The `reps=5` paired run gives a stronger engineering signal than the initial
   `reps=3` aggregate run, but it is still not paper-grade statistical evidence.
+
+## r=4 Result
+
+Latest paired-statistics run after the Stage 6 `r=4` 10-seed correctness/noise
+sweep:
+
+```text
+SAB_PVW_BENCH correctness target_full r=4 h=39 r_prec=7: Pass
+SAB_PVW_BENCH sample target_full r=4 rep=0 pvw_us=35823318 scalar_repeated_us=45736214 speedup=1.277x
+SAB_PVW_BENCH sample target_full r=4 rep=1 pvw_us=35434510 scalar_repeated_us=47145138 speedup=1.330x
+SAB_PVW_BENCH sample target_full r=4 rep=2 pvw_us=35653735 scalar_repeated_us=46108784 speedup=1.293x
+SAB_PVW_BENCH summary target_full r=4 reps=3 pvw_avg_us=35637187.667 pvw_stddev_us=194931.465 pvw_lane_avg_us=8909296.917 scalar_repeated_avg_us=46330045.333 scalar_stddev_us=730057.630 scalar_lane_avg_us=11582511.333 speedup_vs_scalar_repeated=1.300x speedup_stddev=0.028
+```
+
+Artifact:
+
+- `repro/stage7_pvw_bench_r4_reps3/main.log`
+
+Interpretation:
+
+- Same WSL/Linux `spqlios` backend and same target shape.
+- The full-output PVW path was faster than four repeated scalar full
+  bootstraps in all three paired samples.
+- The average per-lane full-bootstrap time improved from `11,582,511.333 us`
+  for repeated scalar to `8,909,296.917 us` for PVW.
+- The recorded `r=4` full-output throughput speedup was `1.300x` with speedup
+  stddev `0.028`.
+- This is stronger than the earlier `r=2` `1.191x` run, but it is still an
+  engineering result rather than final paper-grade performance evidence.
 
 ## Scalar Baseline Regression
 
@@ -161,8 +201,7 @@ FFNT remains a portability/correctness smoke only.
 
 Before claiming final SAB acceleration:
 
-- run multi-seed correctness/noise checks;
 - repeat the benchmark across multiple runs and report variance;
-- test `r=4` target shape if memory/time permits;
 - separate algorithmic gain from backend/SIMD effects;
 - record key size, memory peak, and key generation time.
+- add memory/key-size/keygen rows for `r=2` and `r=4`.

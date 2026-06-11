@@ -461,10 +461,16 @@ Current status:
   - repeated scalar full bootstrap average: `24,304,453.600 us` for 2 lanes
     (`693,984.847 us` stddev);
   - throughput speedup: `1.191x`, speedup stddev `0.067`.
+- Latest WSL/Linux `spqlios` result for `SET_2_3_2048` shape, `r=4`,
+  `h=39`, `r_prec=7`, paired `reps=3`:
+  - PVW full bootstrap average: `35,637,187.667 us` for 4 lanes
+    (`194,931.465 us` stddev);
+  - repeated scalar full bootstrap average: `46,330,045.333 us` for 4 lanes
+    (`730,057.630 us` stddev);
+  - throughput speedup: `1.300x`, speedup stddev `0.028`.
 - Detailed result is recorded in `docs/stage7_pvw_full_bench_log.md`.
-- This is not final performance evidence yet because multi-seed/noise,
-  repeated benchmark variance, memory/key-size, and backend separation remain
-  open.
+- This is not final performance evidence yet because repeated benchmark
+  campaigns, memory/key-size, keygen time, and backend separation remain open.
 
 Failure handling:
 

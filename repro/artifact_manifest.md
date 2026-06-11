@@ -64,3 +64,4 @@ Repro artifacts:
 - `repro/stage6_seed_sweep_r4_10/summary.csv`
 - `repro/stage6_seed_sweep_r4_10/seed_6862025.log` through
   `repro/stage6_seed_sweep_r4_10/seed_6862034.log`
+- `repro/stage7_pvw_bench_r4_reps3/main.log`
