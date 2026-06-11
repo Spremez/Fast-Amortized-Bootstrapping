@@ -267,7 +267,8 @@ Current decision:
     `1.323x-1.345x`.
 - Stage 6 noise sweeps remain pending after the arithmetic-code change, so
   clear-elision is not yet a final paper-grade implementation claim. Initial
-  smoke checks pass for `r=2` (`trials=3`) and `r=4` (`trials=1`).
+  smoke checks pass for `r=2` (`trials=3`) and `r=4` (`trials=1`), and
+  deterministic 10-seed sweeps pass for both `r=2` and `r=4`.
 
 Failure handling:
 

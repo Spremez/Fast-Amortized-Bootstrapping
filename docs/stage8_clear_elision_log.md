@@ -183,7 +183,36 @@ Artifacts:
 - `repro/stage8_clear_elision_noise_r2_trials3/main.log`
 - `repro/stage8_clear_elision_noise_r4_trials1/main.log`
 
-- Larger Stage 6 seed sweeps are still needed if clear-elision becomes part of
-  the final claimed implementation.
+Deterministic multi-seed sweeps have also been rerun after clear-elision:
+
+```bash
+STAGE6_SWEEP_OUT_DIR=repro/stage8_clear_elision_seed_sweep_r2_10 \
+SAB_PVW_NOISE_R=2 bash scripts/run_stage6_seed_sweep_range.sh 6862025 10
+
+STAGE6_SWEEP_OUT_DIR=repro/stage8_clear_elision_seed_sweep_r4_10 \
+SAB_PVW_NOISE_R=4 bash scripts/run_stage6_seed_sweep_range.sh 6862025 10
+```
+
+Machine-readable table:
+
+- `repro/stage8_clear_elision_seed_sweep_summary.csv`
+
+| variant | backend | r | seeds | points | failures | gap range | average gap |
+|---|---|---:|---:|---:|---:|---:|---:|
+| clear-elision | spqlios | 2 | 10 | 40,960 | 0 / 0 / 0 | -0.138 to 0.636 | 0.2152 |
+| clear-elision | spqlios | 4 | 10 | 81,920 | 0 / 0 / 0 | -0.541 to 0.510 | -0.2026 |
+
+Artifacts:
+
+- `repro/stage8_clear_elision_seed_sweep_r2_10/summary.csv`
+- `repro/stage8_clear_elision_seed_sweep_r2_10/seed_6862025.log` through
+  `repro/stage8_clear_elision_seed_sweep_r2_10/seed_6862034.log`
+- `repro/stage8_clear_elision_seed_sweep_r4_10/summary.csv`
+- `repro/stage8_clear_elision_seed_sweep_r4_10/seed_6862025.log` through
+  `repro/stage8_clear_elision_seed_sweep_r4_10/seed_6862034.log`
+
+- The `r=2` clear-elision 10-seed sweep is a solid engineering signal, but it
+  is smaller than the earlier pre-variant 50-seed `r=2` campaign. Expand to 50
+  seeds before treating it as final paper-grade evidence.
 - Repeat resource metrics only if key layout or allocation changes; this variant
   does not change key material.

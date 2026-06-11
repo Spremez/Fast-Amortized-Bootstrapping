@@ -1,0 +1,3 @@
+variant,backend,r,seeds,seed_start,seed_end,trials_per_seed,total_points,status,pvw_failures,scalar_failures,pair_failures,min_pvw_minus_scalar_log2,max_pvw_minus_scalar_log2,avg_pvw_minus_scalar_log2,max_allowed_log2_gap,source_dir
+clear_elision,spqlios,2,10,6862025,6862034,1,40960,Pass,0,0,0,-0.138,0.636,0.2152,4.000,repro/stage8_clear_elision_seed_sweep_r2_10
+clear_elision,spqlios,4,10,6862025,6862034,1,81920,Pass,0,0,0,-0.541,0.510,-0.2026,4.000,repro/stage8_clear_elision_seed_sweep_r4_10

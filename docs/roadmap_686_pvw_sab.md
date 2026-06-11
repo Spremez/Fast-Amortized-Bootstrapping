@@ -560,6 +560,14 @@ Current status:
     PVW-minus-scalar log2 gap `-0.189`.
 - Larger deterministic seed sweeps remain required before treating
   clear-elision as final paper-grade correctness/noise evidence.
+- Clear-elision deterministic 10-seed sweeps are now recorded:
+  - `r=2`, seeds `6862025-6862034`, total points `40960`, PVW/scalar/pair
+    failures all `0`, gap range `[-0.138, 0.636]`, average gap `0.2152`;
+  - `r=4`, seeds `6862025-6862034`, total points `81920`, PVW/scalar/pair
+    failures all `0`, gap range `[-0.541, 0.510]`, average gap `-0.2026`.
+- The `r=2` 10-seed sweep is still smaller than the earlier pre-variant
+  50-seed campaign, so final paper-grade evidence should expand it before
+  claiming a formal failure-rate result.
 
 ## Stage 9: Literature and Novelty Check
 
