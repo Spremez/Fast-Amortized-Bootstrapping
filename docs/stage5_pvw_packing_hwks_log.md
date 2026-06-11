@@ -154,13 +154,15 @@ The default scalar build still does not link `sab_pvw.o`.
 
 ## Remaining Boundary
 
-The next boundary is target-size and full-API integration:
+Update: the next boundary has been checked for a callable full-output API and
+one deterministic target-shape gate. See
+`docs/stage5_pvw_full_bootstrap_log.md`.
+
+The remaining boundary is now Stage 6/7 evidence:
 
 ```text
-sab_pvw_* full binary bootstrap
-with target SET_2_3_2048 shape
-and per-lane final output comparison
+multi-seed correctness/noise
+and full bootstrapping performance A/B
 ```
 
-Only after that should Stage 6 multi-seed/noise checks and Stage 7 full SAB
-performance A/B start.
+Only after those gates should this work claim final SAB bootstrapping speedup.

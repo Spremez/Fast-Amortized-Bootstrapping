@@ -5,6 +5,9 @@ Code artifacts:
 - `include/sab_pvw.h`
 - `src/sab_pvw.c`
 - `main.c` gated test path under `SAB_PVW_KERNEL_TEST`
+- `src/mosfhet/Makefile.def` gated PVW flags:
+  - `SAB_PVW_KERNEL_TEST`
+  - `SAB_PVW_TARGET_TEST`
 - `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
 
 Documentation artifacts:
@@ -15,6 +18,7 @@ Documentation artifacts:
 - `docs/stage5_pvw_bootstrap_wo_extract_log.md`
 - `docs/stage5_pvw_extract_log.md`
 - `docs/stage5_pvw_packing_hwks_log.md`
+- `docs/stage5_pvw_full_bootstrap_log.md`
 - `docs/stage5_pvw_rgsw_monomial_log.md`
 
 Repro artifacts:

@@ -24,6 +24,54 @@ static MAT_TRGSW_DFT * sab_pvw_alloc_selector_bits(uint64_t r_prec,
   return res;
 }
 
+static TRLWE_Key sab_pvw_trlwe_key_from_lane(PVW_TMLWE_Key in, uint64_t lane){
+  const int N = in->s[0][lane]->N;
+  TRLWE_Key out = trlwe_alloc_key(N, in->k, in->sigma);
+  for (size_t idx = 0; idx < (size_t) in->k; idx++){
+    polynomial_copy_torus_polynomial(out->s[idx], in->s[idx][lane]);
+    polynomial_copy_DFT_polynomial(out->s_dft[idx], in->s_dft[idx][lane]);
+  }
+  return out;
+}
+
+static void sab_pvw_materialize_pvwtlwe_lane(TLWE out, PVW_TLWE in,
+    uint64_t lane){
+  for (size_t idx = 0; idx < (size_t) in->n; idx++){
+    out->a[idx] = in->a[idx];
+  }
+  out->b = in->b[lane];
+}
+
+static void sab_pvw_init_full_postproc(SAB_PVW_Key sab, TRLWE_Key input_key,
+    TRLWE_Key repacking_key, uint64_t b_packing, uint64_t ell_packing,
+    uint64_t t_ks, uint64_t b_ks){
+  sab->packing_keys = (TRLWE_KS_Key *) safe_malloc(
+      sizeof(TRLWE_KS_Key) * sab->lanes);
+  for (size_t lane = 0; lane < sab->lanes; lane++){
+    TRLWE_Key lane_key = sab_pvw_trlwe_key_from_lane(sab->output_key, lane);
+    TLWE_Key extracted_key = tlwe_alloc_key(sab->out_N * sab->out_k,
+        lane_key->sigma);
+    trlwe_extract_tlwe_key(extracted_key, lane_key);
+    sab->packing_keys[lane] = trlwe_new_full_packing_KS_key(repacking_key,
+        extracted_key, ell_packing, b_packing);
+    free_tlwe_key(extracted_key);
+    free_trlwe_key(lane_key);
+  }
+  sab->hw_reducing_key = trlwe_new_KS_key(input_key, repacking_key,
+      t_ks, b_ks);
+
+  sab->tmp->acc = pvmtmlwe_alloc_new_sample_array(sab->in_N, sab->out_k,
+      sab->lanes, sab->out_N);
+  sab->tmp->extracted = pvwtlwe_alloc_sample_array(sab->in_N,
+      sab->out_N * sab->out_k, sab->lanes);
+  sab->tmp->lane_extracted = (TLWE **) safe_malloc(sizeof(TLWE *) * sab->lanes);
+  for (size_t lane = 0; lane < sab->lanes; lane++){
+    sab->tmp->lane_extracted[lane] = tlwe_alloc_sample_array(sab->in_N,
+        sab->out_N * sab->out_k);
+  }
+  sab->tmp->packed = trlwe_alloc_new_sample(sab->in_k, sab->in_N);
+}
+
 SAB_PVW_Key sab_pvw_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key,
     uint64_t b_prec, uint64_t h, uint64_t r_prec, uint64_t l, uint64_t bg_bit){
   if(input_key == NULL) sab_pvw_die("input key is NULL");
@@ -42,6 +90,8 @@ SAB_PVW_Key sab_pvw_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key
   res->mat_key = mat_trgsw_new_key(output_key, l, bg_bit);
   res->aut_minus1 = pvmtmlwe_new_automorphism_KS_key(output_key,
       2 * out_N - 1, l, bg_bit);
+  res->packing_keys = NULL;
+  res->hw_reducing_key = NULL;
 
   MAT_TRGSW tmp = mat_trgsw_alloc_new_sample(l, bg_bit, out_k, lanes, out_N);
   res->s = (MAT_TRGSW_DFT ***) safe_malloc(sizeof(MAT_TRGSW_DFT **) * in_k);
@@ -87,8 +137,24 @@ SAB_PVW_Key sab_pvw_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key
   res->tmp->tmlwe = pvmtmlwe_alloc_new_sample(out_k, lanes, out_N);
   res->tmp->rotated = pvmtmlwe_alloc_new_sample(out_k, lanes, out_N);
   res->tmp->tmlwe_poly2 = pvmtmlwe_alloc_new_sample_array(in_N, out_k, lanes, out_N);
+  res->tmp->acc = NULL;
+  res->tmp->extracted = NULL;
+  res->tmp->lane_extracted = NULL;
+  res->tmp->packed = NULL;
   res->tmp->scratch = mat_trgsw_alloc_mul_scratch((out_k + lanes) * l, out_N);
   res->tmp->a_mod = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
+  return res;
+}
+
+SAB_PVW_Key sab_pvw_new_binary_full_key(TRLWE_Key input_key,
+    TRLWE_Key repacking_key, PVW_TMLWE_Key output_key, uint64_t b_prec,
+    uint64_t b_packing, uint64_t ell_packing, uint64_t t_ks, uint64_t b_ks,
+    uint64_t h, uint64_t r_prec, uint64_t l, uint64_t bg_bit){
+  if(repacking_key == NULL) sab_pvw_die("repacking key is NULL");
+  SAB_PVW_Key res = sab_pvw_new_binary_key(input_key, output_key, b_prec,
+      h, r_prec, l, bg_bit);
+  sab_pvw_init_full_postproc(res, input_key, repacking_key, b_packing,
+      ell_packing, t_ks, b_ks);
   return res;
 }
 
@@ -106,11 +172,31 @@ void free_sab_pvw_key(SAB_PVW_Key sab){
   free(sab->s);
   free_mat_trgsw_mul_scratch(sab->tmp->scratch);
   free(sab->tmp->a_mod);
+  if(sab->tmp->packed != NULL) free_trlwe(sab->tmp->packed);
+  if(sab->tmp->lane_extracted != NULL){
+    for (size_t lane = 0; lane < sab->lanes; lane++){
+      free_tlwe_array(sab->tmp->lane_extracted[lane], sab->in_N);
+    }
+    free(sab->tmp->lane_extracted);
+  }
+  if(sab->tmp->extracted != NULL){
+    free_pvwtlwe_array(sab->tmp->extracted, sab->in_N);
+  }
+  if(sab->tmp->acc != NULL){
+    free_pvmtmlwe_array(sab->tmp->acc, sab->in_N);
+  }
   free_pvmtmlwe_array(sab->tmp->tmlwe_poly2, sab->in_N);
   free_pvmtmlwe(sab->tmp->rotated);
   free_pvmtmlwe(sab->tmp->tmlwe);
   free_pvmtmlwe_DFT(sab->tmp->tmlwe_dft);
   free(sab->tmp);
+  if(sab->hw_reducing_key != NULL) free_trlwe_ks_key(sab->hw_reducing_key);
+  if(sab->packing_keys != NULL){
+    for (size_t lane = 0; lane < sab->lanes; lane++){
+      free_trlwe_ks_key(sab->packing_keys[lane]);
+    }
+    free(sab->packing_keys);
+  }
   free_pvmtmlwe_ks_key(sab->aut_minus1);
   free_mat_trgsw_key(sab->mat_key);
   free(sab);
@@ -201,5 +287,23 @@ void sab_pvw_bootstrap_wo_extract_binary(PVW_TMLWE * out, TRLWE in,
 void sab_pvw_extract_pvwtlwe(PVW_TLWE * out, PVW_TMLWE * in, SAB_PVW_Key sab){
   for (size_t idx = 0; idx < sab->in_N; idx++){
     pvmtmlwe_extract_pvmtlwe(out[idx], in[idx], 0);
+  }
+}
+
+void sab_pvw_bootstrap_binary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
+    SAB_PVW_Key sab){
+  if(sab->packing_keys == NULL || sab->hw_reducing_key == NULL){
+    sab_pvw_die("full binary bootstrap requires sab_pvw_new_binary_full_key");
+  }
+  sab_pvw_bootstrap_wo_extract_binary(sab->tmp->acc, in, tv, sab);
+  sab_pvw_extract_pvwtlwe(sab->tmp->extracted, sab->tmp->acc, sab);
+  for (size_t lane = 0; lane < sab->lanes; lane++){
+    for (size_t idx = 0; idx < sab->in_N; idx++){
+      sab_pvw_materialize_pvwtlwe_lane(sab->tmp->lane_extracted[lane][idx],
+          sab->tmp->extracted[idx], lane);
+    }
+    trlwe_full_packing_keyswitch(sab->tmp->packed,
+        sab->tmp->lane_extracted[lane], sab->in_N, sab->packing_keys[lane]);
+    trlwe_keyswitch(out[lane], sab->tmp->packed, sab->hw_reducing_key);
   }
 }

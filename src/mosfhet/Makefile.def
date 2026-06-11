@@ -12,6 +12,11 @@ ifeq ($(SAB_PVW_KERNEL_TEST),true)
 	FLAGS += -DSAB_PVW_KERNEL_TEST
 	ENABLE_PVW_TMLWE := true
 endif
+SAB_PVW_TARGET_TEST ?= false
+ifeq ($(SAB_PVW_TARGET_TEST),true)
+	FLAGS += -DSAB_PVW_TARGET_TEST
+	ENABLE_PVW_TMLWE := true
+endif
 ifeq ($(ENABLE_PVW_TMLWE),true)
 	__SRC += pvwtmlwe.c mattrgsw.c
 endif
