@@ -16,8 +16,8 @@ for:
 - PVW output versus repeated scalar output.
 
 This is still an engineering gate. It is not a paper-grade failure-rate
-experiment because the current MOSFHET RNG has no stable seed API exposed to
-the test harness.
+experiment because the current recorded campaign is small. A deterministic test
+RNG is now available, but the larger multi-seed campaign still needs to be run.
 
 ## Code Artifacts
 
@@ -25,6 +25,8 @@ the test harness.
 - `SAB_PVW_NOISE_R`
 - `SAB_PVW_NOISE_TRIALS`
 - `SAB_PVW_NOISE_MAX_LOG2_GAP`
+- `MOSFHET_DETERMINISTIC_RNG`
+- `MOSFHET_TEST_RNG_SEED`
 
 The gate uses target-shape binary parameters:
 
@@ -108,6 +110,52 @@ SAB_PVW_NOISE target full bootstrap gate: Pass
 
 FFNT remains a correctness/portability smoke only.
 
+## Deterministic Seed Smoke
+
+`MOSFHET_DETERMINISTIC_RNG=true` replaces the normal entropy source with a
+test-only SplitMix64 stream seeded by `MOSFHET_TEST_RNG_SEED`. The option is
+off by default and is intended only for reproducible correctness/noise runs.
+
+Command:
+
+```bash
+make clean
+make FFT_LIB=spqlios MOSFHET_DETERMINISTIC_RNG=true \
+  MOSFHET_TEST_RNG_SEED=6862025 SAB_PVW_NOISE_TEST=true \
+  SAB_PVW_NOISE_R=2 SAB_PVW_NOISE_TRIALS=1 \
+  KEY=BINARY PARAM=SET_2_3_2048 -j$(nproc)
+stdbuf -o0 ./main > /tmp/sab_seed_6862025_run1.log
+stdbuf -o0 ./main > /tmp/sab_seed_6862025_run2.log
+diff -u /tmp/sab_seed_6862025_run1.log /tmp/sab_seed_6862025_run2.log
+cat /tmp/sab_seed_6862025_run1.log
+```
+
+The `diff` command produced no output, so the two process-level reruns were
+byte-for-byte identical.
+
+Result:
+
+```text
+SAB_PVW_NOISE trial target_full r=2 trial=0 complete
+SAB_PVW_NOISE lane target_full r=2 lane=0 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-7.721 scalar_log2_sigma_torus=-8.457 pair_log2_sigma_torus=-7.478
+SAB_PVW_NOISE lane target_full r=2 lane=1 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-7.721 scalar_log2_sigma_torus=-8.220 pair_log2_sigma_torus=-7.174
+SAB_PVW_NOISE summary target_full r=2 trials=1 points=4096 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-7.721 scalar_log2_sigma_torus=-8.328 pair_log2_sigma_torus=-7.311 pvw_minus_scalar_log2=0.608 max_allowed_log2_gap=4.000
+SAB_PVW_NOISE pvw_total count=4096 failures=0 log2_sigma_torus=-7.721 log2_max_abs_torus=-6.041
+SAB_PVW_NOISE scalar_total count=4096 failures=0 log2_sigma_torus=-8.328 log2_max_abs_torus=-6.491
+SAB_PVW_NOISE pair_total count=4096 failures=0 log2_sigma_torus=-7.311 log2_max_abs_torus=-5.648
+SAB_PVW_NOISE target full bootstrap gate: Pass
+```
+
+Interpretation:
+
+- The deterministic seed path is reproducible across process restarts for the
+  same binary and command line.
+- This is a seed-mechanism check, not a statistical campaign. It covers one
+  seed and one target-shape trial.
+- In this seed, PVW final-output noise is higher than scalar by
+  `0.608` log2 units, but still within the current engineering threshold and
+  with no quantized failures.
+
 ## Scalar Baseline After Stage 6 Gate
 
 Command:
@@ -129,6 +177,18 @@ Bootstrapping time: 12,665,925 us +- 550,777.619969
 Pass
 ```
 
+After adding the deterministic RNG switch, the default scalar path was checked
+again without the deterministic flag:
+
+```text
+Sparse bootstrapping with binary keys
+Message precision: 3 - Repetitions: 3
+Max monomial distance (log B): 7
+Rejection Sampling Attempts: 110
+Bootstrapping time: 12,429,735 us +- 769,196.335812
+Pass
+```
+
 The default scalar build still does not link `sab_pvw.o`.
 
 ## Failed/Non-Claim Runs
@@ -144,10 +204,8 @@ These are platform/toolchain observations, not algorithm failures:
 
 ## Remaining Work
 
-- Add a deterministic seed or seed-recording mechanism if reproducible
-  multi-seed logs are required.
-- Run a larger correctness/noise campaign, starting with at least 50 default
-  RNG trials for engineering signal.
+- Run a larger correctness/noise campaign with recorded deterministic seeds,
+  starting with at least 50 seeds for engineering signal.
 - Repeat Stage 6 for `r=4` after confirming memory and runtime are acceptable.
 - Add stage-level noise probes before/after blind rotation, extract, packing
   KS, and HW KS if a final paper claim needs more than final-output noise.

@@ -29,6 +29,40 @@ Torus int2torus(uint64_t x, int log_scale){
 
 // Random generation
 
+#ifdef MOSFHET_DETERMINISTIC_RNG
+#ifndef MOSFHET_TEST_RNG_SEED
+#define MOSFHET_TEST_RNG_SEED 1ULL
+#endif
+
+static __thread uint64_t deterministic_rng_state =
+    (uint64_t) MOSFHET_TEST_RNG_SEED;
+
+static uint64_t deterministic_splitmix64_next(){
+  uint64_t z = (deterministic_rng_state += 0x9E3779B97F4A7C15ULL);
+  z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
+  z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
+  return z ^ (z >> 31);
+}
+
+void generate_rnd_seed(uint64_t * p){
+  for (size_t idx = 0; idx < 4; idx++) p[idx] = deterministic_splitmix64_next();
+}
+
+void generate_random_bytes(uint64_t amount, uint8_t * pointer){
+  uint64_t offset = 0;
+  while(amount - offset >= sizeof(uint64_t)){
+    const uint64_t rnd = deterministic_splitmix64_next();
+    memcpy(pointer + offset, &rnd, sizeof(rnd));
+    offset += sizeof(rnd);
+  }
+  if(offset < amount){
+    const uint64_t rnd = deterministic_splitmix64_next();
+    memcpy(pointer + offset, &rnd, amount - offset);
+  }
+}
+
+#else
+
 #ifndef PORTABLE_BUILD
 // TODO: add code src.
 void generate_rnd_seed(uint64_t * p){
@@ -80,6 +114,8 @@ void generate_random_bytes(uint64_t amount, uint8_t * pointer){
   if(amount < 512) get_rnd_from_buffer(amount, pointer);
   else get_rnd_from_hash(amount, pointer);
 }
+
+#endif
 
 #ifndef M_PI
     #define M_PI 3.14159265358979323846

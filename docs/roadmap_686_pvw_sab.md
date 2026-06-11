@@ -379,13 +379,16 @@ Current status:
     `SAB_PVW_NOISE_MAX_LOG2_GAP=4.0`.
 - Windows FFNT target-shape smoke also passes with `ARCH_FLAGS=` and
   `trials=1`; Windows remains correctness/portability only.
+- A test-only deterministic RNG switch is now available through
+  `MOSFHET_DETERMINISTIC_RNG=true` and `MOSFHET_TEST_RNG_SEED=...`.
+  A fixed-seed WSL/Linux `spqlios` smoke with seed `6862025` produced
+  byte-for-byte identical output across two process restarts.
 - Detailed result is recorded in `docs/stage6_pvw_noise_log.md`.
 
 Remaining limitation:
 
-- This is not yet a paper-grade multi-seed campaign. The current test uses the
-  default MOSFHET RNG and records independent trials under one generated key
-  set; the harness still lacks a stable seed API.
+- This is not yet a paper-grade multi-seed campaign. The deterministic seed
+  mechanism exists, but the larger seed sweep has not been run.
 - Noise is currently measured at final output. Stage-level noise probes before
   and after blind rotation, extract, packing KS, and HW KS remain open.
 - `r=4` target-shape correctness/noise is not yet measured.

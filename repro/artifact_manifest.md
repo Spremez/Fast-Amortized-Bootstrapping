@@ -15,7 +15,10 @@ Code artifacts:
   - `SAB_PVW_NOISE_R`
   - `SAB_PVW_NOISE_TRIALS`
   - `SAB_PVW_NOISE_MAX_LOG2_GAP`
+  - `MOSFHET_DETERMINISTIC_RNG`
+  - `MOSFHET_TEST_RNG_SEED`
 - `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
+- `src/mosfhet/src/misc.c` deterministic test RNG path
 
 Documentation artifacts:
 

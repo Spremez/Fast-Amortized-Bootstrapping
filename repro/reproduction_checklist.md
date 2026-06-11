@@ -13,5 +13,6 @@
 - [x] Add initial target-size full SAB A/B benchmark run.
 - [x] Add paired benchmark run with mean/stddev output.
 - [x] Add initial target-shape correctness/noise gate run.
+- [x] Add deterministic RNG seed switch and fixed-seed smoke.
 - [ ] Add multi-seed correctness/noise run log.
 - [ ] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.
