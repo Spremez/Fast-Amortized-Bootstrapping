@@ -44,3 +44,14 @@ Repro artifacts:
 - `repro/stage6_seed_sweep_smoke/seed_6862025.log`
 - `repro/stage6_seed_sweep_smoke/seed_6862026.log`
 - `repro/stage6_seed_sweep_smoke/seed_6862027.log`
+- `repro/stage6_seed_sweep_10/summary.csv`
+- `repro/stage6_seed_sweep_10/seed_6862025.log`
+- `repro/stage6_seed_sweep_10/seed_6862026.log`
+- `repro/stage6_seed_sweep_10/seed_6862027.log`
+- `repro/stage6_seed_sweep_10/seed_6862028.log`
+- `repro/stage6_seed_sweep_10/seed_6862029.log`
+- `repro/stage6_seed_sweep_10/seed_6862030.log`
+- `repro/stage6_seed_sweep_10/seed_6862031.log`
+- `repro/stage6_seed_sweep_10/seed_6862032.log`
+- `repro/stage6_seed_sweep_10/seed_6862033.log`
+- `repro/stage6_seed_sweep_10/seed_6862034.log`

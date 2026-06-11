@@ -198,6 +198,76 @@ Interpretation:
 - This is useful automation/procedure evidence, not enough seed count for the
   final Stage 6 correctness/noise claim.
 
+## 10-Seed Sweep
+
+The same deterministic sweep procedure was extended to 10 consecutive seeds on
+the WSL/Linux `spqlios` target platform. This is stronger engineering evidence
+than the 3-seed smoke, but it is still below the 50+ seed campaign desired
+before a final Stage 6 claim.
+
+Command:
+
+```bash
+STAGE6_SWEEP_OUT_DIR=repro/stage6_seed_sweep_10 \
+  bash scripts/run_stage6_seed_sweep.sh \
+  6862025 6862026 6862027 6862028 6862029 \
+  6862030 6862031 6862032 6862033 6862034
+```
+
+Generated artifacts:
+
+- `repro/stage6_seed_sweep_10/summary.csv`
+- `repro/stage6_seed_sweep_10/seed_6862025.log`
+- `repro/stage6_seed_sweep_10/seed_6862026.log`
+- `repro/stage6_seed_sweep_10/seed_6862027.log`
+- `repro/stage6_seed_sweep_10/seed_6862028.log`
+- `repro/stage6_seed_sweep_10/seed_6862029.log`
+- `repro/stage6_seed_sweep_10/seed_6862030.log`
+- `repro/stage6_seed_sweep_10/seed_6862031.log`
+- `repro/stage6_seed_sweep_10/seed_6862032.log`
+- `repro/stage6_seed_sweep_10/seed_6862033.log`
+- `repro/stage6_seed_sweep_10/seed_6862034.log`
+
+Summary:
+
+```text
+seed,status,points,pvw_failures,scalar_failures,pair_failures,pvw_log2_sigma_torus,scalar_log2_sigma_torus,pair_log2_sigma_torus,pvw_minus_scalar_log2,max_allowed_log2_gap
+6862025,Pass,4096,0,0,0,-7.721,-8.328,-7.311,0.608,4.000
+6862026,Pass,4096,0,0,0,-8.027,-8.280,-7.590,0.253,4.000
+6862027,Pass,4096,0,0,0,-8.314,-8.333,-7.759,0.019,4.000
+6862028,Pass,4096,0,0,0,-8.280,-8.142,-7.682,-0.138,4.000
+6862029,Pass,4096,0,0,0,-8.061,-8.209,-7.549,0.148,4.000
+6862030,Pass,4096,0,0,0,-7.694,-8.329,-7.400,0.636,4.000
+6862031,Pass,4096,0,0,0,-8.163,-8.118,-7.544,-0.045,4.000
+6862032,Pass,4096,0,0,0,-8.097,-8.204,-7.822,0.107,4.000
+6862033,Pass,4096,0,0,0,-7.631,-8.243,-7.355,0.612,4.000
+6862034,Pass,4096,0,0,0,-8.278,-8.230,-7.865,-0.048,4.000
+```
+
+Aggregate:
+
+- Seeds: `10`.
+- Total final-output points: `40960`.
+- PVW final-output failures: `0 / 40960`.
+- Scalar final-output failures: `0 / 40960`.
+- PVW-vs-scalar pair failures: `0 / 40960`.
+- PVW-minus-scalar final-output noise gap:
+  - minimum: `-0.138` log2 units;
+  - maximum: `0.636` log2 units;
+  - average: `0.2152` log2 units.
+- Current loose engineering threshold:
+  `SAB_PVW_NOISE_MAX_LOG2_GAP=4.0`.
+
+Interpretation:
+
+- The 10-seed sweep did not expose final-output correctness failures for either
+  PVW or repeated scalar SAB.
+- The largest observed PVW-minus-scalar noise gap was `0.636` log2 units,
+  still far below the current engineering gate of `4.0`.
+- This improves Stage 6 engineering confidence but does not replace the
+  remaining 50+ seed campaign, `r=4` target-shape run, or stage-level noise
+  instrumentation.
+
 ## Scalar Baseline After Stage 6 Gate
 
 Command:
@@ -258,8 +328,8 @@ These are platform/toolchain observations, not algorithm failures:
 
 ## Remaining Work
 
-- Expand the seed sweep from the 3-seed smoke to at least 50 recorded seeds for
-  engineering signal.
+- Expand the seed sweep from the 10-seed engineering run to at least 50
+  recorded seeds before treating Stage 6 as complete.
 - Repeat Stage 6 for `r=4` after confirming memory and runtime are acceptable.
 - Add stage-level noise probes before/after blind rotation, extract, packing
   KS, and HW KS if a final paper claim needs more than final-output noise.
