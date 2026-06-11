@@ -116,3 +116,7 @@ PVW_TLWE extracted lanes -> packing/HW KS comparable output
 That requires deciding whether to add PVW-aware packing/HW key-switching or to
 materialize per-lane scalar TLWE samples before reusing the existing scalar
 packing/HW keys.
+
+Update: the next boundary has been checked by materializing each PVW TLWE lane
+and reusing the existing scalar full packing KS plus HW-reducing KS. See
+`docs/stage5_pvw_packing_hwks_log.md`.

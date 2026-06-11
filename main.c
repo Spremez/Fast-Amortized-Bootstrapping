@@ -1434,6 +1434,67 @@ static bool compare_pvwtlwe_scalar_array_phases(const char * label, int r,
   return pass;
 }
 
+static void copy_pvwtlwe_lane_to_tlwe(TLWE out, PVW_TLWE in, int lane){
+  for (size_t idx = 0; idx < (size_t) in->n; idx++){
+    out->a[idx] = in->a[idx];
+  }
+  out->b = in->b[lane];
+}
+
+static bool compare_tlwe_scalar_array_phases(const char * label, int r,
+    int count, int prec, TLWE ** lhs_arr, TLWE_Key * lhs_keys,
+    TLWE ** rhs_arr, TLWE_Key * rhs_keys){
+  bool pass = true;
+
+  for (size_t idx = 0; idx < (size_t) count; idx++){
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      const Torus lhs_phase = tlwe_phase(lhs_arr[lane][idx],
+          lhs_keys[lane]);
+      const Torus rhs_phase = tlwe_phase(rhs_arr[lane][idx],
+          rhs_keys[lane]);
+      const uint64_t lhs_val = torus2int(lhs_phase, prec);
+      const uint64_t rhs_val = torus2int(rhs_phase, prec);
+      if(lhs_val != rhs_val){
+        printf("SAB_PVW %s materialized TLWE phase fail idx=%" PRIu64
+               " r=%d lane=%" PRIu64 ": %" PRIu64 " != %" PRIu64 "\n",
+               label, (uint64_t) idx, r, (uint64_t) lane,
+               lhs_val, rhs_val);
+        pass = false;
+        break;
+      }
+    }
+    if(!pass) break;
+  }
+
+  return pass;
+}
+
+static bool compare_trlwe_pair_phases(const char * label, TRLWE lhs,
+    TRLWE_Key lhs_key, TRLWE rhs, TRLWE_Key rhs_key, int prec, int lane){
+  const int N = lhs->b->N;
+  TorusPolynomial lhs_phase = polynomial_new_torus_polynomial(N);
+  TorusPolynomial rhs_phase = polynomial_new_torus_polynomial(N);
+  bool pass = true;
+
+  trlwe_phase(lhs_phase, lhs, lhs_key);
+  trlwe_phase(rhs_phase, rhs, rhs_key);
+  for (size_t coeff = 0; coeff < (size_t) N; coeff++){
+    const uint64_t lhs_val = torus2int(lhs_phase->coeffs[coeff], prec);
+    const uint64_t rhs_val = torus2int(rhs_phase->coeffs[coeff], prec);
+    if(lhs_val != rhs_val){
+      printf("SAB_PVW %s TRLWE phase fail lane=%d coeff=%" PRIu64
+             ": %" PRIu64 " != %" PRIu64 "\n",
+             label, lane, (uint64_t) coeff, lhs_val, rhs_val);
+      pass = false;
+      break;
+    }
+  }
+
+  free_polynomial(rhs_phase);
+  free_polynomial(lhs_phase);
+  return pass;
+}
+
 static void isolated_pvw_RGSW_monomial_step(PVW_TMLWE * out, PVW_TMLWE * in,
     MAT_TRGSW_DFT selector, int in_N, int power,
     MAT_TRGSW_MUL_SCRATCH scratch, PVW_TMLWE rotated,
@@ -2115,7 +2176,61 @@ static bool check_pvw_bootstrap_wo_extract_binary_lane_equivalence(int r){
   printf("SAB_PVW API extract binary lane equivalence r=%d h=%d r_prec=%d: %s\n",
          r, h, r_prec, extract_pass ? "Pass" : "Fail");
 
+  TLWE ** pvw_lane_extracted = (TLWE **) safe_malloc(sizeof(TLWE *) * r);
   for (size_t lane = 0; lane < (size_t) r; lane++){
+    pvw_lane_extracted[lane] = tlwe_alloc_sample_array(in_N, out_N * out_k);
+    for (size_t idx = 0; idx < (size_t) in_N; idx++){
+      copy_pvwtlwe_lane_to_tlwe(pvw_lane_extracted[lane][idx],
+          pvw_extracted[idx], lane);
+    }
+  }
+
+  const bool materialized_pass = compare_tlwe_scalar_array_phases(
+      "bootstrap_extract binary", r, in_N, prec, pvw_lane_extracted,
+      scalar_extracted_keys, scalar_extracted, scalar_extracted_keys);
+  pass &= materialized_pass;
+  printf("SAB_PVW API materialized TLWE binary lane equivalence r=%d h=%d r_prec=%d: %s\n",
+         r, h, r_prec, materialized_pass ? "Pass" : "Fail");
+
+  const int ell_packing = 2, b_packing = 14, ell_hw = 12, b_hw = 1;
+  const uint64_t packing_key_distances[2] = {2, 7};
+  TRLWE_Key packing_key = test_binary_key_from_distances(in_N, in_k,
+      packing_key_distances, h, pow(2, -70));
+  TRLWE_KS_Key hw_reducing_key = trlwe_new_KS_key(input_key, packing_key,
+      ell_hw, b_hw);
+  bool packing_hwks_pass = true;
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    TRLWE_KS_Key packing_ks = trlwe_new_full_packing_KS_key(packing_key,
+        scalar_extracted_keys[lane], ell_packing, b_packing);
+    TRLWE pvw_packed = trlwe_alloc_new_sample(in_k, in_N);
+    TRLWE scalar_packed = trlwe_alloc_new_sample(in_k, in_N);
+    TRLWE pvw_hwks = trlwe_alloc_new_sample(in_k, in_N);
+    TRLWE scalar_hwks = trlwe_alloc_new_sample(in_k, in_N);
+
+    trlwe_full_packing_keyswitch(pvw_packed, pvw_lane_extracted[lane],
+        in_N, packing_ks);
+    trlwe_full_packing_keyswitch(scalar_packed, scalar_extracted[lane],
+        in_N, packing_ks);
+    packing_hwks_pass &= compare_trlwe_pair_phases("packing binary",
+        pvw_packed, packing_key, scalar_packed, packing_key, prec, lane);
+
+    trlwe_keyswitch(pvw_hwks, pvw_packed, hw_reducing_key);
+    trlwe_keyswitch(scalar_hwks, scalar_packed, hw_reducing_key);
+    packing_hwks_pass &= compare_trlwe_pair_phases("HW-KS binary",
+        pvw_hwks, input_key, scalar_hwks, input_key, prec, lane);
+
+    free_trlwe(scalar_hwks);
+    free_trlwe(pvw_hwks);
+    free_trlwe(scalar_packed);
+    free_trlwe(pvw_packed);
+    free_trlwe_ks_key(packing_ks);
+  }
+  pass &= packing_hwks_pass;
+  printf("SAB_PVW API packing/HW-KS binary lane equivalence r=%d h=%d r_prec=%d: %s\n",
+         r, h, r_prec, packing_hwks_pass ? "Pass" : "Fail");
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    free_tlwe_array(pvw_lane_extracted[lane], in_N);
     free_tlwe_array(scalar_extracted[lane], in_N);
     free_tlwe_key(scalar_extracted_keys[lane]);
     for (size_t idx = 0; idx < (size_t) (h + 1) * r_prec; idx++){
@@ -2132,6 +2247,9 @@ static bool check_pvw_bootstrap_wo_extract_binary_lane_equivalence(int r){
     free_trlwe_ks_key(scalar_aut_minus1[lane]);
     free_trlwe_key(scalar_keys[lane]);
   }
+  free_trlwe_ks_key(hw_reducing_key);
+  free_trlwe_key(packing_key);
+  free(pvw_lane_extracted);
   free(scalar_extracted);
   free(scalar_extracted_keys);
   free_pvwtlwe_array(pvw_extracted, in_N);

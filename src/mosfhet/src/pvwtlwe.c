@@ -145,7 +145,7 @@ void pvwtlwe_sample(PVW_TLWE out, Torus * m, PVW_TLWE_Key key){
 }
 
 void pvwtlwe_copy(PVW_TLWE out, PVW_TLWE in){
-  memcpy(out->a, in->a, sizeof(Torus) * in->n * in->r);
+  memcpy(out->a, in->a, sizeof(Torus) * in->n);
   memcpy(out->b, in->b, sizeof(Torus) * in->r);
 }
 
@@ -176,7 +176,7 @@ void pvwtlwe_phase(Torus * out, PVW_TLWE c, PVW_TLWE_Key key){
 }
 
 void pvwtlwe_add(PVW_TLWE out, PVW_TLWE in1, PVW_TLWE in2){
-  for (size_t i = 0; i < in1->n * in1->r; i++){
+  for (size_t i = 0; i < in1->n; i++){
     out->a[i] = in1->a[i] + in2->a[i];
   }
   for (size_t i = 0; i < in1->r; i++){
@@ -185,7 +185,7 @@ void pvwtlwe_add(PVW_TLWE out, PVW_TLWE in1, PVW_TLWE in2){
 }
 
 void pvwtlwe_scale(PVW_TLWE out, PVW_TLWE in1, Torus in2){
-  for (size_t i = 0; i < in1->n * in1->r; i++){
+  for (size_t i = 0; i < in1->n; i++){
     out->a[i] = in1->a[i] * in2;
   }
   for (size_t i = 0; i < in1->r; i++){
@@ -194,7 +194,7 @@ void pvwtlwe_scale(PVW_TLWE out, PVW_TLWE in1, Torus in2){
 }
 
 void pvwtlwe_scale_addto(PVW_TLWE out, PVW_TLWE in1, Torus in2){
-  for (size_t i = 0; i < in1->n * in1->r; i++){
+  for (size_t i = 0; i < in1->n; i++){
     out->a[i] += in1->a[i] * in2;
   }
   for (size_t i = 0; i < in1->r; i++){
@@ -203,7 +203,7 @@ void pvwtlwe_scale_addto(PVW_TLWE out, PVW_TLWE in1, Torus in2){
 }
 
 void pvwtlwe_scale_subto(PVW_TLWE out, PVW_TLWE in1, Torus in2){
-  for (size_t i = 0; i < in1->n * in1->r; i++){
+  for (size_t i = 0; i < in1->n; i++){
     out->a[i] -= in1->a[i] * in2;
   }
   for (size_t i = 0; i < in1->r; i++){
@@ -216,7 +216,7 @@ void pvwtlwe_addto(PVW_TLWE out, PVW_TLWE in){
 }
 
 void pvwtlwe_sub(PVW_TLWE out, PVW_TLWE in1, PVW_TLWE in2){
-  for (size_t i = 0; i < in1->n * in1->r; i++){
+  for (size_t i = 0; i < in1->n; i++){
     out->a[i] = in1->a[i] - in2->a[i];
   }
   for (size_t i = 0; i < in1->r; i++){
@@ -225,7 +225,7 @@ void pvwtlwe_sub(PVW_TLWE out, PVW_TLWE in1, PVW_TLWE in2){
 }
 
 void pvwtlwe_negate(PVW_TLWE out, PVW_TLWE in){
-  for (size_t i = 0; i < in->n * in->r; i++){
+  for (size_t i = 0; i < in->n; i++){
     out->a[i] = -in->a[i];
   }
   for (size_t i = 0; i < in->r; i++){

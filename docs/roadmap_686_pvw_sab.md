@@ -289,19 +289,28 @@ Current status:
 - Added and verified small `sab_pvw_bootstrap_wo_extract_binary(...)`
   correctness for `r=1/2/4`, `h=2`, `r_prec=3`, `in_N=16`, `out_N=1024`.
 - Added and verified PVW TLWE extraction correctness for the same small shape.
+- Added and verified per-lane PVW TLWE materialization plus existing scalar
+  full packing KS and HW-reducing KS correctness for the same small shape.
+- Fixed `PVW_TLWE` shared-mask arithmetic helpers so they process `n` mask
+  coefficients, not `n*r`, avoiding out-of-bounds writes on multi-lane TLWE
+  operations.
 - Detailed results are recorded in `docs/stage5_pvw_rgsw_monomial_log.md`.
 - Binary sparse results are recorded in `docs/stage5_pvw_sparse_mul_log.md`.
 - No-extract bootstrap results are recorded in
   `docs/stage5_pvw_bootstrap_wo_extract_log.md`.
 - Extract results are recorded in `docs/stage5_pvw_extract_log.md`.
+- Packing/HW-KS results are recorded in
+  `docs/stage5_pvw_packing_hwks_log.md`.
 
 Remaining limitation:
 
 - The PVW path is not yet connected to full `sab_pvw_*` bootstrapping.
 - Binary `sparse_mul` is verified only on the small API-skeleton test shape,
   not yet on target `h=39, in_N=2048`.
-- `setup_tv_xb` and binary blind rotation now have a small PVW gate, but target
-  shape, packing KS, and HW-reducing KS are still not integrated.
+- `setup_tv_xb` and binary blind rotation now have a small PVW gate, and
+  post-extract scalar packing/HW KS compatibility is verified on the same
+  small shape. Target shape and a full `sab_pvw_*` API are still not
+  integrated.
 - Ternary/include-zero/gaussian `sub_a` branches remain out of scope for the
   current binary target.
 
@@ -468,5 +477,8 @@ phase(out_pvw_lane[q])
 phase(out_scalar[q])
 ```
 
-4. Add packing/HW-KS-aware comparison, then scale to target `SET_2_3_2048`,
-   then run noise and performance A/B.
+4. Add packing/HW-KS-aware comparison. Done on the small binary skeleton by
+   materializing each PVW TLWE lane and reusing existing scalar full packing KS
+   plus HW-reducing KS.
+5. Scale the PVW binary path to target `SET_2_3_2048`, then run noise and
+   performance A/B.

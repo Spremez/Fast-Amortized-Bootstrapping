@@ -14,6 +14,7 @@ Documentation artifacts:
 - `docs/stage5_pvw_sparse_mul_log.md`
 - `docs/stage5_pvw_bootstrap_wo_extract_log.md`
 - `docs/stage5_pvw_extract_log.md`
+- `docs/stage5_pvw_packing_hwks_log.md`
 - `docs/stage5_pvw_rgsw_monomial_log.md`
 
 Repro artifacts:
