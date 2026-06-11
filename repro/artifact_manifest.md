@@ -20,6 +20,7 @@ Code artifacts:
 - `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
 - `src/mosfhet/src/misc.c` deterministic test RNG path
 - `scripts/run_stage6_seed_sweep.sh`
+- `scripts/run_stage6_seed_sweep_range.sh`
 
 Documentation artifacts:
 
@@ -55,3 +56,6 @@ Repro artifacts:
 - `repro/stage6_seed_sweep_10/seed_6862032.log`
 - `repro/stage6_seed_sweep_10/seed_6862033.log`
 - `repro/stage6_seed_sweep_10/seed_6862034.log`
+- `repro/stage6_seed_sweep_50/summary.csv`
+- `repro/stage6_seed_sweep_50/seed_6862025.log` through
+  `repro/stage6_seed_sweep_50/seed_6862074.log`

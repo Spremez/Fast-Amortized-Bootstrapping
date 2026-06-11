@@ -16,5 +16,7 @@
 - [x] Add deterministic RNG seed switch and fixed-seed smoke.
 - [x] Add Stage 6 seed-sweep automation and 3-seed smoke log.
 - [x] Add Stage 6 10-seed correctness/noise run log.
-- [ ] Add Stage 6 50+ seed correctness/noise campaign log.
+- [x] Add Stage 6 50+ seed correctness/noise campaign log.
+- [ ] Add Stage 6 `r=4` target-shape correctness/noise run log.
+- [ ] Add Stage 6 stage-level noise probe logs.
 - [ ] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.

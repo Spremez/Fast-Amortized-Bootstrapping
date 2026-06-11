@@ -15,9 +15,10 @@ for:
 - repeated scalar output versus expected LUT output;
 - PVW output versus repeated scalar output.
 
-This is still an engineering gate. It is not a paper-grade failure-rate
-experiment because the current recorded campaign is small. A deterministic test
-RNG is now available, but the larger multi-seed campaign still needs to be run.
+This is still an engineering gate. The recorded 50-seed `r=2` campaign is
+useful correctness/noise evidence, but it is not a paper-grade failure-rate
+experiment. `r=4` target-shape coverage and stage-level noise probes still need
+to be run.
 
 ## Code Artifacts
 
@@ -27,6 +28,7 @@ RNG is now available, but the larger multi-seed campaign still needs to be run.
 - `SAB_PVW_NOISE_MAX_LOG2_GAP`
 - `MOSFHET_DETERMINISTIC_RNG`
 - `MOSFHET_TEST_RNG_SEED`
+- `scripts/run_stage6_seed_sweep_range.sh`
 
 The gate uses target-shape binary parameters:
 
@@ -264,9 +266,57 @@ Interpretation:
   PVW or repeated scalar SAB.
 - The largest observed PVW-minus-scalar noise gap was `0.636` log2 units,
   still far below the current engineering gate of `4.0`.
-- This improves Stage 6 engineering confidence but does not replace the
-  remaining 50+ seed campaign, `r=4` target-shape run, or stage-level noise
-  instrumentation.
+- This improved Stage 6 engineering confidence before the later 50-seed run,
+  but by itself did not replace the 50+ seed campaign, `r=4` target-shape run,
+  or stage-level noise instrumentation.
+
+## 50-Seed Sweep
+
+The deterministic sweep was extended to 50 consecutive seeds on WSL/Linux
+`spqlios`, using a range wrapper around the existing seed-sweep script. This is
+the first recorded 50+ seed Stage 6 final-output correctness/noise campaign for
+the `r=2` target shape.
+
+Command:
+
+```bash
+STAGE6_SWEEP_OUT_DIR=repro/stage6_seed_sweep_50 \
+  bash scripts/run_stage6_seed_sweep_range.sh 6862025 50
+```
+
+Generated artifacts:
+
+- `repro/stage6_seed_sweep_50/summary.csv`
+- `repro/stage6_seed_sweep_50/seed_6862025.log` through
+  `repro/stage6_seed_sweep_50/seed_6862074.log`
+
+Aggregate:
+
+- Seeds: `50` (`6862025` through `6862074`).
+- Total final-output points: `204800`.
+- PVW final-output failures: `0 / 204800`.
+- Scalar final-output failures: `0 / 204800`.
+- PVW-vs-scalar pair failures: `0 / 204800`.
+- PVW-minus-scalar final-output noise gap:
+  - minimum: `-0.470` log2 units at seed `6862070`;
+  - maximum: `0.636` log2 units at seed `6862030`;
+  - average: `-0.00386` log2 units;
+  - positive gaps: `23 / 50`;
+  - negative gaps: `27 / 50`.
+- Current loose engineering threshold:
+  `SAB_PVW_NOISE_MAX_LOG2_GAP=4.0`.
+
+Interpretation:
+
+- The 50-seed sweep did not expose final-output correctness failures for either
+  PVW or repeated scalar SAB.
+- The maximum observed positive PVW-minus-scalar noise gap remained `0.636`
+  log2 units, far below the current engineering gate of `4.0`.
+- The average gap was close to zero, so this campaign does not show systematic
+  final-output noise inflation for the `r=2` target shape.
+- This is enough to satisfy the planned 50+ seed engineering gate for `r=2`
+  final-output correctness/noise, but it does not cover `r=4`, stage-level
+  noise probes, or a formal paper-grade failure model.
 
 ## Scalar Baseline After Stage 6 Gate
 
@@ -328,8 +378,8 @@ These are platform/toolchain observations, not algorithm failures:
 
 ## Remaining Work
 
-- Expand the seed sweep from the 10-seed engineering run to at least 50
-  recorded seeds before treating Stage 6 as complete.
 - Repeat Stage 6 for `r=4` after confirming memory and runtime are acceptable.
 - Add stage-level noise probes before/after blind rotation, extract, packing
   KS, and HW KS if a final paper claim needs more than final-output noise.
+- If this becomes a paper claim, expand beyond the 50-seed engineering
+  campaign with a stated failure model and confidence interval.
