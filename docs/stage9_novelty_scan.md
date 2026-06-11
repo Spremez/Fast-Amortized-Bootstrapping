@@ -93,6 +93,9 @@ Required before upgrading that claim:
 - `r=4` 50-seed noise evidence is now available. If the project targets a
   paper claim, the next evidence upgrade should be statistical treatment and
   stage-level noise probes rather than another small deterministic sweep.
+- Initial statistical treatment is recorded in
+  `docs/stage9_statistical_evidence.md`. It supports the engineering
+  correctness/noise gate, but not a paper-grade failure-rate claim.
 - Decide whether Stage 9 should target a paper contribution or a rigorous
   engineering report. The current evidence supports the latter; the former
   requires deeper related-work exclusion and statistical treatment.

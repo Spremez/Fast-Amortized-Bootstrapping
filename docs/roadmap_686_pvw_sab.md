@@ -614,9 +614,13 @@ Current status:
 
 - Initial novelty scan is recorded in `docs/stage9_novelty_scan.md` and
   `repro/stage9_literature_matrix.csv`.
+- Initial statistical evidence check is recorded in
+  `docs/stage9_statistical_evidence.md` and
+  `repro/stage9_failure_rate_summary.csv`.
 - Current safe claim level is engineering/systems optimization. A paper-level
   algorithmic novelty claim remains unverified until the related work is read at
-  algorithm-step level.
+  algorithm-step level, and a paper-grade failure-rate claim remains unsupported
+  without stronger independent-trial statistics.
 
 ## Stage 10: Final Paper/Report Package
 

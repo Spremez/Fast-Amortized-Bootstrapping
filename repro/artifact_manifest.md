@@ -143,3 +143,5 @@ Repro artifacts:
 - `repro/stage8_full_bootstrap_gain_separation.csv`
 - `docs/stage9_novelty_scan.md`
 - `repro/stage9_literature_matrix.csv`
+- `docs/stage9_statistical_evidence.md`
+- `repro/stage9_failure_rate_summary.csv`

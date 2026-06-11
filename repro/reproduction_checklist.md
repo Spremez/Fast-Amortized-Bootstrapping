@@ -39,3 +39,4 @@
 - [x] Add Stage 8 clear-elision `r=4` 50-seed noise campaign.
 - [x] Record Stage 8 engineering exit assessment.
 - [x] Add Stage 9 initial literature/novelty scan.
+- [x] Add Stage 9 statistical evidence check for 50-seed zero-failure sweeps.
