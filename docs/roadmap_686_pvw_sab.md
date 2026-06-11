@@ -475,9 +475,16 @@ Current status:
   - `r=4`: PVW estimated key bytes are `1.065349x` repeated scalar; PVW
     keygen is about `1.179x` repeated scalar; peak RSS is comparable
     (`769,208 KB` PVW vs `771,208 KB` scalar by `/usr/bin/time -v`).
+- A process-level repeated benchmark sweep is now recorded for `r=2` and
+  `r=4`, with three independent `./main` runs per lane count and two paired
+  timing repetitions inside each process:
+  - `r=2`: all runs passed; mean speedup `1.188x`, sample stddev `0.066`,
+    range `1.132x-1.261x`;
+  - `r=4`: all runs passed; mean speedup `1.312x`, sample stddev `0.014`,
+    range `1.302x-1.328x`.
 - Detailed result is recorded in `docs/stage7_pvw_full_bench_log.md`.
-- This is not final performance evidence yet because repeated benchmark
-  campaigns and backend separation remain open.
+- This is not final performance evidence yet because backend separation,
+  larger benchmark matrices, and paper-grade statistics remain open.
 
 Failure handling:
 

@@ -22,9 +22,10 @@ including:
 - final TRLWE outputs.
 
 This is a Stage 7 engineering benchmark, not the final performance claim.
-Stage 6 now has multi-seed correctness/noise evidence for `r=2` and `r=4`,
-but backend separation, memory/key-size, and broader repeated benchmark
-campaigns remain open.
+Stage 6 now has multi-seed correctness/noise evidence for `r=2` and `r=4`.
+Stage 7 also has key-size/RSS metrics and an initial process-level repeated
+benchmark sweep for `r=2` and `r=4`. Backend separation and broader benchmark
+matrices remain open.
 
 ## Benchmark Entry
 
@@ -167,6 +168,43 @@ Notes:
   backend/SIMD comparison, but backend separation is not complete until the
   same benchmark matrix is repeated on another backend or AVX path.
 
+## Repeated Benchmark Sweep
+
+A process-level sweep now rebuilds once for a fixed `r` and runs `./main`
+multiple times, preserving each raw run log and a per-sweep CSV:
+
+```bash
+STAGE7_BENCH_OUT_DIR=repro/stage7_bench_sweep_r2_reps2_runs3 \
+SAB_PVW_BENCH_R=2 SAB_PVW_BENCH_REPS=2 STAGE7_BENCH_RUNS=3 \
+bash scripts/run_stage7_bench_sweep.sh
+
+STAGE7_BENCH_OUT_DIR=repro/stage7_bench_sweep_r4_reps2_runs3 \
+SAB_PVW_BENCH_R=4 SAB_PVW_BENCH_REPS=2 STAGE7_BENCH_RUNS=3 \
+bash scripts/run_stage7_bench_sweep.sh
+```
+
+Machine-readable tables:
+
+- `repro/stage7_bench_sweep_r2_reps2_runs3/summary.csv`
+- `repro/stage7_bench_sweep_r4_reps2_runs3/summary.csv`
+- `repro/stage7_bench_sweep_summary.csv`
+
+| backend | r | reps per run | process runs | all passed | PVW mean us | scalar repeated mean us | speedup mean | speedup sample stddev | speedup range |
+|---|---:|---:|---:|---|---:|---:|---:|---:|---:|
+| spqlios | 2 | 2 | 3 | yes | 19,266,121.667 | 22,848,639.333 | 1.188x | 0.066 | 1.132x-1.261x |
+| spqlios | 4 | 2 | 3 | yes | 35,402,965.167 | 46,436,548.167 | 1.312x | 0.014 | 1.302x-1.328x |
+
+Interpretation:
+
+- Every process-level run passed the full-output PVW-vs-repeated-scalar
+  correctness gate before timing.
+- `r=2` remains positive but has visible run-to-run variability in this small
+  three-run campaign.
+- `r=4` gives the stronger Stage 7 engineering signal: all three runs stay near
+  `1.30x` throughput speedup with lower process-level speedup variance.
+- This still supports only a same-backend algorithmic throughput claim on
+  WSL/Linux `spqlios`; backend/SIMD separation remains a separate gate.
+
 ## Resource Metrics
 
 The resource gate records PVW and repeated-scalar key generation time,
@@ -281,6 +319,7 @@ FFNT remains a portability/correctness smoke only.
 
 Before claiming final SAB acceleration:
 
-- repeat the benchmark across multiple runs and report variance;
 - separate algorithmic gain from backend/SIMD effects;
+- expand the repeated benchmark matrix across more runs, lane counts, and
+  backends if a paper-grade claim is needed;
 - repeat resource metrics if allocator, key layout, or backend changes.

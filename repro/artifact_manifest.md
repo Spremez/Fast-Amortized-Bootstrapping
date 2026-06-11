@@ -23,6 +23,7 @@ Code artifacts:
 - `src/mosfhet/src/misc.c` deterministic test RNG path
 - `scripts/run_stage6_seed_sweep.sh`
 - `scripts/run_stage6_seed_sweep_range.sh`
+- `scripts/run_stage7_bench_sweep.sh`
 
 Documentation artifacts:
 
@@ -77,3 +78,12 @@ Repro artifacts:
 - `repro/stage7_resource_r4/scalar.log`
 - `repro/stage7_resource_r4/scalar.time.log`
 - `repro/stage7_resource_summary.csv`
+- `repro/stage7_bench_sweep_r2_reps2_runs3/summary.csv`
+- `repro/stage7_bench_sweep_r2_reps2_runs3/run_0.log`
+- `repro/stage7_bench_sweep_r2_reps2_runs3/run_1.log`
+- `repro/stage7_bench_sweep_r2_reps2_runs3/run_2.log`
+- `repro/stage7_bench_sweep_r4_reps2_runs3/summary.csv`
+- `repro/stage7_bench_sweep_r4_reps2_runs3/run_0.log`
+- `repro/stage7_bench_sweep_r4_reps2_runs3/run_1.log`
+- `repro/stage7_bench_sweep_r4_reps2_runs3/run_2.log`
+- `repro/stage7_bench_sweep_summary.csv`

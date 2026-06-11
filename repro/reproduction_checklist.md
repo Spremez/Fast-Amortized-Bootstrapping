@@ -24,4 +24,5 @@
 - [x] Add Stage 7 `r=4` target-shape full SAB A/B benchmark run.
 - [x] Add Stage 7 `r=2`/`r=4` full SAB benchmark summary table.
 - [x] Add Stage 7 keygen/key-size/RSS resource metrics for `r=2`/`r=4`.
+- [x] Add Stage 7 repeated process-level benchmark sweep for `r=2`/`r=4`.
 - [ ] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.
