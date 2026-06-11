@@ -1279,6 +1279,291 @@ static bool check_pvw_cmux_ncmux_lane_equivalence(int r){
   return pass;
 }
 
+static PVW_TMLWE * alloc_pvw_sample_array_local(int count, int k, int r, int N){
+  PVW_TMLWE * res = (PVW_TMLWE *) safe_malloc(sizeof(PVW_TMLWE) * count);
+  for (size_t i = 0; i < (size_t) count; i++){
+    res[i] = pvmtmlwe_alloc_new_sample(k, r, N);
+  }
+  return res;
+}
+
+static void free_pvw_sample_array_local(PVW_TMLWE * arr, int count){
+  for (size_t i = 0; i < (size_t) count; i++){
+    free_pvmtmlwe(arr[i]);
+  }
+  free(arr);
+}
+
+static void mat_trgsw_noiseless_trivial_sample_local(MAT_TRGSW out,
+    int64_t m, int e, int l, int bg_bit, int k, int r, int N){
+  const int rows = (k + r) * l;
+  if(e & N) m *= -1;
+  e &= (N - 1);
+
+  for (size_t row = 0; row < (size_t) rows; row++){
+    pvmtmlwe_noiseless_trivial_sample(out->samples[row], NULL);
+  }
+  for (size_t level = 0; level < (size_t) l; level++){
+    const Torus h = 1ULL << (sizeof(Torus) * 8 - (level + 1) * bg_bit);
+    for (size_t j = 0; j < (size_t) k; j++){
+      out->samples[j * l + level]->a[j]->coeffs[e] += m * h;
+    }
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      out->samples[(k + lane) * l + level]->b[lane]->coeffs[e] += m * h;
+    }
+  }
+}
+
+static void mat_trgsw_noiseless_trivial_DFT_sample_local(MAT_TRGSW_DFT out,
+    int64_t m, int e, int l, int bg_bit, int k, int r, int N){
+  MAT_TRGSW tmp = mat_trgsw_alloc_new_sample(l, bg_bit, k, r, N);
+  mat_trgsw_noiseless_trivial_sample_local(tmp, m, e, l, bg_bit, k, r, N);
+  mat_trgsw_to_DFT(out, tmp);
+  free_mat_trgsw(tmp);
+}
+
+static void trgsw_noiseless_trivial_DFT_sample_local(TRGSW_DFT out,
+    int64_t m, int l, int bg_bit, int k, int N){
+  TRGSW tmp = trgsw_alloc_new_sample(l, bg_bit, k, N);
+  trgsw_noiseless_trivial_sample(tmp, m, l, bg_bit, k, N);
+  trgsw_to_DFT(out, tmp);
+  free_trgsw(tmp);
+}
+
+static bool compare_pvw_scalar_array_phases(const char * label, int r, int count,
+    int prec, PVW_TMLWE * pvw_arr, PVW_TMLWE_Key pvw_key,
+    TRLWE ** scalar_arr, TRLWE_Key * scalar_keys){
+  const int N = pvw_arr[0]->b[0]->N;
+  TorusPolynomial * pvw_phase = polynomial_new_array_of_torus_polynomials(N, r);
+  TorusPolynomial scalar_phase = polynomial_new_torus_polynomial(N);
+  bool pass = true;
+
+  for (size_t idx = 0; idx < (size_t) count; idx++){
+    pvmtmlwe_phase(pvw_phase, pvw_arr[idx], pvw_key);
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      trlwe_phase(scalar_phase, scalar_arr[lane][idx], scalar_keys[lane]);
+      for (size_t coeff = 0; coeff < (size_t) N; coeff++){
+        const uint64_t pvw_val = torus2int(pvw_phase[lane]->coeffs[coeff], prec);
+        const uint64_t scalar_val = torus2int(scalar_phase->coeffs[coeff], prec);
+        if(pvw_val != scalar_val){
+          printf("SAB_PVW %s RGSW phase fail idx=%" PRIu64 " r=%d lane=%" PRIu64
+                 " coeff=%" PRIu64 ": %" PRIu64 " != %" PRIu64 "\n",
+                 label, (uint64_t) idx, r, (uint64_t) lane,
+                 (uint64_t) coeff, pvw_val, scalar_val);
+          pass = false;
+          break;
+        }
+      }
+      if(!pass) break;
+    }
+    if(!pass) break;
+  }
+
+  free_polynomial(scalar_phase);
+  free_array_of_polynomials(pvw_phase, r);
+  return pass;
+}
+
+static void isolated_pvw_RGSW_monomial_step(PVW_TMLWE * out, PVW_TMLWE * in,
+    MAT_TRGSW_DFT selector, int in_N, int power,
+    MAT_TRGSW_MUL_SCRATCH scratch, PVW_TMLWE rotated,
+    PVW_TMLWE tmp, PVW_TMLWE_DFT tmp_dft){
+  for (size_t j = 0; j < (size_t) power; j++){
+    isolated_pvw_NCMUX_raw(out[j], in[j], in[in_N - power + j],
+        selector, scratch, rotated, tmp, tmp_dft);
+  }
+  for (size_t j = 0; j < (size_t) (in_N - power); j++){
+    isolated_pvw_CMUX(out[j + power], in[j + power], in[j],
+        selector, scratch, tmp, tmp_dft);
+  }
+}
+
+static void isolated_scalar_RGSW_monomial_step(TRLWE * out, TRLWE * in,
+    TRGSW_DFT selector, int in_N, int power,
+    TRLWE rotated, TRLWE tmp, TRLWE_DFT tmp_dft){
+  for (size_t j = 0; j < (size_t) power; j++){
+    isolated_scalar_NCMUX_raw(out[j], in[j], in[in_N - power + j],
+        selector, rotated, tmp, tmp_dft);
+  }
+  for (size_t j = 0; j < (size_t) (in_N - power); j++){
+    isolated_scalar_CMUX(out[j + power], in[j + power], in[j],
+        selector, tmp, tmp_dft);
+  }
+}
+
+static bool check_pvw_rgsw_monomial_lane_case(int r, int r_prec,
+    const int * selector_bits, bool encrypted_selectors, const char * label){
+  const int N = 1024, k = 1, l = 1, bg_bit = 23, prec = 3;
+  const int in_N = 1 << r_prec;
+  const int rows = (k + r) * l;
+  bool pass = true;
+
+  PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -50));
+  MAT_TRGSW_Key mat_key = mat_trgsw_new_key(pvw_key, l, bg_bit);
+  MAT_TRGSW_DFT * mat_selectors = (MAT_TRGSW_DFT *) safe_malloc(sizeof(MAT_TRGSW_DFT) * r_prec);
+  for (size_t bit = 0; bit < (size_t) r_prec; bit++){
+    mat_selectors[bit] = mat_trgsw_alloc_new_DFT_sample(l, bg_bit, k, r, N);
+  }
+  MAT_TRGSW_MUL_SCRATCH scratch = mat_trgsw_alloc_mul_scratch(rows, N);
+
+  TRLWE_Key * scalar_keys = (TRLWE_Key *) safe_malloc(sizeof(TRLWE_Key) * r);
+  TRGSW_Key * scalar_trgsw_keys = (TRGSW_Key *) safe_malloc(sizeof(TRGSW_Key) * r);
+  TRGSW_DFT ** scalar_selectors = (TRGSW_DFT **) safe_malloc(sizeof(TRGSW_DFT *) * r);
+  TRLWE ** scalar_acc = (TRLWE **) safe_malloc(sizeof(TRLWE *) * r);
+  TRLWE ** scalar_tmp_poly = (TRLWE **) safe_malloc(sizeof(TRLWE *) * r);
+  TRLWE * scalar_rotated = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE * scalar_tmp = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE_DFT * scalar_tmp_dft = (TRLWE_DFT *) safe_malloc(sizeof(TRLWE_DFT) * r);
+
+  PVW_TMLWE * pvw_acc = alloc_pvw_sample_array_local(in_N, k, r, N);
+  PVW_TMLWE * pvw_tmp_poly = alloc_pvw_sample_array_local(in_N, k, r, N);
+  PVW_TMLWE pvw_rotated = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE pvw_tmp = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE_DFT pvw_tmp_dft = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    scalar_keys[lane] = trlwe_key_from_pvmtmlwe_lane(pvw_key, lane);
+    scalar_trgsw_keys[lane] = trgsw_new_key(scalar_keys[lane], l, bg_bit);
+    scalar_selectors[lane] = (TRGSW_DFT *) safe_malloc(sizeof(TRGSW_DFT) * r_prec);
+    scalar_acc[lane] = trlwe_alloc_new_sample_array(in_N, k, N);
+    scalar_tmp_poly[lane] = trlwe_alloc_new_sample_array(in_N, k, N);
+    scalar_rotated[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_tmp[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_tmp_dft[lane] = trlwe_alloc_new_DFT_sample(k, N);
+    for (size_t bit = 0; bit < (size_t) r_prec; bit++){
+      scalar_selectors[lane][bit] = trgsw_alloc_new_DFT_sample(l, bg_bit, k, N);
+    }
+  }
+
+  for (size_t bit = 0; bit < (size_t) r_prec; bit++){
+    if(encrypted_selectors){
+      mat_trgsw_monomial_DFT_sample(mat_selectors[bit], selector_bits[bit], 0, mat_key);
+    }else{
+      mat_trgsw_noiseless_trivial_DFT_sample_local(mat_selectors[bit],
+          selector_bits[bit], 0, l, bg_bit, k, r, N);
+    }
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      if(encrypted_selectors){
+        trgsw_monomial_DFT_sample(scalar_selectors[lane][bit],
+            selector_bits[bit], 0, scalar_trgsw_keys[lane]);
+      }else{
+        trgsw_noiseless_trivial_DFT_sample_local(scalar_selectors[lane][bit],
+            selector_bits[bit], l, bg_bit, k, N);
+      }
+    }
+  }
+
+  TorusPolynomial * msg = polynomial_new_array_of_torus_polynomials(N, r);
+  for (size_t idx = 0; idx < (size_t) in_N; idx++){
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      for (size_t coeff = 0; coeff < (size_t) N; coeff++){
+        msg[lane]->coeffs[coeff] = int2torus((idx + 2 * lane + 3 * coeff) & 7, prec);
+      }
+    }
+    pvmtmlwe_noiseless_trivial_sample(pvw_acc[idx], msg);
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      copy_pvw_lane_to_trlwe(scalar_acc[lane][idx], pvw_acc[idx], lane);
+    }
+  }
+
+  PVW_TMLWE * pvw_p[2] = {pvw_acc, pvw_tmp_poly};
+
+  for (size_t bit = 0; bit < (size_t) r_prec; bit++){
+    const int power = 1 << bit;
+    const int out = (bit + 1) & 1;
+    const int in = out ^ 1;
+    isolated_pvw_RGSW_monomial_step(pvw_p[out], pvw_p[in],
+        mat_selectors[bit], in_N, power, scratch,
+        pvw_rotated, pvw_tmp, pvw_tmp_dft);
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      TRLWE * scalar_p[2] = {scalar_acc[lane], scalar_tmp_poly[lane]};
+      isolated_scalar_RGSW_monomial_step(scalar_p[out], scalar_p[in],
+          scalar_selectors[lane][bit], in_N, power,
+          scalar_rotated[lane], scalar_tmp[lane], scalar_tmp_dft[lane]);
+    }
+
+    TRLWE ** scalar_current = (TRLWE **) safe_malloc(sizeof(TRLWE *) * r);
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      scalar_current[lane] = ((bit + 1) & 1) ? scalar_tmp_poly[lane] : scalar_acc[lane];
+    }
+    char step_label[128];
+    snprintf(step_label, sizeof(step_label), "%s bit=%" PRIu64, label, (uint64_t) bit);
+    pass &= compare_pvw_scalar_array_phases(step_label, r, in_N, prec,
+        pvw_p[out], pvw_key, scalar_current, scalar_keys);
+    free(scalar_current);
+    if(!pass) break;
+  }
+
+  if(pass && (r_prec & 1)){
+    for (size_t idx = 0; idx < (size_t) in_N; idx++){
+      pvmtmlwe_copy(pvw_acc[idx], pvw_tmp_poly[idx]);
+    }
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      for (size_t idx = 0; idx < (size_t) in_N; idx++){
+        trlwe_copy(scalar_acc[lane][idx], scalar_tmp_poly[lane][idx]);
+      }
+    }
+    pass &= compare_pvw_scalar_array_phases(label, r, in_N, prec,
+        pvw_acc, pvw_key, scalar_acc, scalar_keys);
+  }
+
+  printf("SAB_PVW isolated RGSW_monomial lane equivalence %s r=%d r_prec=%d: %s\n",
+         label, r, r_prec, pass ? "Pass" : "Fail");
+
+  free_array_of_polynomials(msg, r);
+  free_pvmtmlwe_DFT(pvw_tmp_dft);
+  free_pvmtmlwe(pvw_tmp);
+  free_pvmtmlwe(pvw_rotated);
+  free_pvw_sample_array_local(pvw_tmp_poly, in_N);
+  free_pvw_sample_array_local(pvw_acc, in_N);
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    for (size_t bit = 0; bit < (size_t) r_prec; bit++){
+      free_trgsw(scalar_selectors[lane][bit]);
+    }
+    free(scalar_selectors[lane]);
+    free_trlwe(scalar_tmp_dft[lane]);
+    free_trlwe(scalar_tmp[lane]);
+    free_trlwe(scalar_rotated[lane]);
+    free_trlwe_array(scalar_tmp_poly[lane], in_N);
+    free_trlwe_array(scalar_acc[lane], in_N);
+    free_trgsw_key(scalar_trgsw_keys[lane]);
+    free_trlwe_key(scalar_keys[lane]);
+  }
+  free(scalar_tmp_dft);
+  free(scalar_tmp);
+  free(scalar_rotated);
+  free(scalar_tmp_poly);
+  free(scalar_acc);
+  free(scalar_selectors);
+  free(scalar_trgsw_keys);
+  free(scalar_keys);
+
+  free_mat_trgsw_mul_scratch(scratch);
+  for (size_t bit = 0; bit < (size_t) r_prec; bit++){
+    free_mat_trgsw_DFT(mat_selectors[bit]);
+  }
+  free(mat_selectors);
+  free_mat_trgsw_key(mat_key);
+  free_pvmtmlwe_key(pvw_key);
+  return pass;
+}
+
+static bool check_pvw_rgsw_monomial_lane_equivalence(int r){
+  bool pass = true;
+  const int bit_zero[1] = {0};
+  const int bit_one[1] = {1};
+  const int multi_bits[3] = {1, 0, 1};
+
+  pass &= check_pvw_rgsw_monomial_lane_case(r, 1, bit_zero, true,
+      "encrypted-selector bit0");
+  pass &= check_pvw_rgsw_monomial_lane_case(r, 1, bit_one, true,
+      "encrypted-selector bit1");
+  pass &= check_pvw_rgsw_monomial_lane_case(r, 3, multi_bits, false,
+      "trivial-selector multibit");
+  return pass;
+}
+
 void test_mat_trgsw_kernel(){
   bool pass = true;
   pass &= check_mat_trgsw_identity_lane(1);
@@ -1288,7 +1573,10 @@ void test_mat_trgsw_kernel(){
   pass &= check_pvw_cmux_ncmux_lane_equivalence(1);
   pass &= check_pvw_cmux_ncmux_lane_equivalence(2);
   pass &= check_pvw_cmux_ncmux_lane_equivalence(4);
-  printf("MAT_TRGSW/PVW Stage 4 kernel test: %s\n", pass ? "Pass" : "Fail");
+  pass &= check_pvw_rgsw_monomial_lane_equivalence(1);
+  pass &= check_pvw_rgsw_monomial_lane_equivalence(2);
+  pass &= check_pvw_rgsw_monomial_lane_equivalence(4);
+  printf("MAT_TRGSW/PVW staged kernel test: %s\n", pass ? "Pass" : "Fail");
   if(!pass) exit(1);
 
   bench_mat_trgsw_kernel_lane(1);

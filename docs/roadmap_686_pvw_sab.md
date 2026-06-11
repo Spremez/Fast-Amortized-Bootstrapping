@@ -268,6 +268,22 @@ Verification:
   input, and LUT.
 - Existing `sab_rlwe_bootstrap(...)` output remains unchanged.
 
+Current status:
+
+- Partially complete at the isolated `RGSW_monomial_mul` scheduler level.
+- Implemented under `SAB_PVW_KERNEL_TEST`, so production scalar
+  `RGSW_monomial_mul`, `sparse_mul`, and `sab_rlwe_bootstrap` are unchanged.
+- Verified `r=1/2/4` for:
+  - `r_prec=1` encrypted selector bit `0/1`;
+  - `r_prec=3` trivial-selector multibit schedule `{1,0,1}`.
+- Detailed results are recorded in `docs/stage5_pvw_rgsw_monomial_log.md`.
+
+Remaining limitation:
+
+- Full encrypted multibit `RGSW_monomial_mul` still requires a PVW
+  automorphism/key-switch strategy for NCMUX. The current PVW keyswitch function
+  is an aborting stub and must not be used in production.
+
 Failure handling:
 
 - If isolated CMUX passes but RGSW fails, debug monomial schedule and
@@ -416,11 +432,13 @@ Verification:
 
 ## Immediate Execution Plan
 
-The next executable step is Stage 5:
+The next executable step remains inside Stage 5:
 
-1. Add isolated `RGSW_monomial_mul` lane-state tests without changing
-   `sab_rlwe_bootstrap`.
-2. Reuse the Stage 4 invariant after each CMUX/NCMUX bit step:
+1. Resolve the encrypted NCMUX automorphism boundary:
+   - implement PVW automorphism/key-switch; or
+   - design a lane-state schedule that avoids calling `pvmtmlwe_keyswitch(...)`.
+2. Then verify the invariant for full encrypted multibit
+   `RGSW_monomial_mul`:
 
 ```text
 phase(acc_pvw.body[q] after step t)
@@ -428,7 +446,5 @@ phase(acc_pvw.body[q] after step t)
 phase(acc_scalar[q] after the same scalar step t)
 ```
 
-3. Decide and implement the PVW handling for the encrypted NCMUX
-   automorphism/key-switch boundary.
-4. Only after isolated `RGSW_monomial_mul` passes, move to `sparse_mul` and
-   then full `sab_pvw_*` integration.
+3. Only after full encrypted `RGSW_monomial_mul` passes, move to `sparse_mul`
+   and then full `sab_pvw_*` integration.

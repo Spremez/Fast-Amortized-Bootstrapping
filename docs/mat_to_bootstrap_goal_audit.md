@@ -252,9 +252,11 @@ Do not claim final bootstrapping speedup yet.
    - scalar `sab_rlwe_bootstrap(...)` remains unchanged and passes smoke.
 
 2. Stage 5 RGSW monomial batching:
-   - replace repeated scalar CMUX/NCMUX inside `RGSW_monomial_mul`;
-   - preserve monomial rotation and `sub_a` semantics;
-   - compare after each exponent-bit step.
+   - isolated scheduler tests now pass for `r=1/2/4`;
+   - encrypted one-bit selector tests pass for selector bit `0/1`;
+   - trivial-selector multibit tests pass for selector bits `{1,0,1}`;
+   - full encrypted multibit equivalence is still blocked by the PVW
+     automorphism/key-switch boundary.
 
 3. Stage 5 `sparse_mul` batching:
    - batch across independent LUT/SAB lanes only when they share sparse secret
@@ -345,7 +347,7 @@ speedup. Current evidence proves only:
 Required next milestone:
 
 ```text
-Stage 5 isolated RGSW_monomial_mul lane equivalence.
+Stage 5 full encrypted RGSW_monomial_mul lane equivalence.
 ```
 
 Only after Stage 5 and full `sab_pvw_*` integration can the work claim anything
