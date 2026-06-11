@@ -1,0 +1,3 @@
+backend,r,reps_per_run,runs,status,pvw_avg_us,scalar_repeated_avg_us,speedup_vs_scalar_repeated,role,source_dir
+spqlios,2,2,3,Pass,19266121.667,22848639.333,1.188,primary WSL/Linux performance evidence,repro/stage7_bench_sweep_r2_reps2_runs3
+ffnt,2,1,1,Pass,37360973.000,45495270.000,1.218,portable target-shape backend smoke only,repro/stage7_backend_ffnt_r2_reps1_runs1

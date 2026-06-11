@@ -87,3 +87,6 @@ Repro artifacts:
 - `repro/stage7_bench_sweep_r4_reps2_runs3/run_1.log`
 - `repro/stage7_bench_sweep_r4_reps2_runs3/run_2.log`
 - `repro/stage7_bench_sweep_summary.csv`
+- `repro/stage7_backend_ffnt_r2_reps1_runs1/summary.csv`
+- `repro/stage7_backend_ffnt_r2_reps1_runs1/run_0.log`
+- `repro/stage7_backend_summary.csv`

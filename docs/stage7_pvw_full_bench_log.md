@@ -205,6 +205,40 @@ Interpretation:
 - This still supports only a same-backend algorithmic throughput claim on
   WSL/Linux `spqlios`; backend/SIMD separation remains a separate gate.
 
+## Backend Separation Smoke
+
+The first backend-separation smoke uses the portable FFNT path on the same
+target shape. This is deliberately recorded as a correctness/backend portability
+check, not as final performance evidence.
+
+Command:
+
+```bash
+STAGE7_BENCH_OUT_DIR=repro/stage7_backend_ffnt_r2_reps1_runs1 \
+FFT_LIB=ffnt SAB_PVW_BENCH_R=2 SAB_PVW_BENCH_REPS=1 STAGE7_BENCH_RUNS=1 \
+bash scripts/run_stage7_bench_sweep.sh
+```
+
+Result:
+
+```text
+SAB_PVW_BENCH correctness target_full r=2 h=39 r_prec=7: Pass
+SAB_PVW_BENCH sample target_full r=2 rep=0 pvw_us=37360973 scalar_repeated_us=45495270 speedup=1.218x
+SAB_PVW_BENCH summary target_full r=2 reps=1 pvw_avg_us=37360973.000 pvw_stddev_us=0.000 pvw_lane_avg_us=18680486.500 scalar_repeated_avg_us=45495270.000 scalar_stddev_us=0.000 scalar_lane_avg_us=22747635.000 speedup_vs_scalar_repeated=1.218x speedup_stddev=0.000
+```
+
+Machine-readable table:
+
+- `repro/stage7_backend_summary.csv`
+
+Interpretation:
+
+- The full target-shape PVW path also passes on the portable FFNT backend.
+- Absolute FFNT timings are much slower than the WSL/Linux `spqlios` primary
+  performance platform, as expected.
+- The single FFNT run is useful as backend separation smoke, but it is not a
+  statistical performance claim and does not replace the `spqlios` sweep.
+
 ## Resource Metrics
 
 The resource gate records PVW and repeated-scalar key generation time,

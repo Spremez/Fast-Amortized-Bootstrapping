@@ -482,6 +482,10 @@ Current status:
     range `1.132x-1.261x`;
   - `r=4`: all runs passed; mean speedup `1.312x`, sample stddev `0.014`,
     range `1.302x-1.328x`.
+- The first backend-separation smoke is recorded on portable `FFT_LIB=ffnt`
+  for target-shape `r=2`, `reps=1`: correctness passed and the same PVW-vs-
+  repeated-scalar comparison produced `1.218x`. This is recorded only as a
+  backend portability smoke, not as a final performance claim.
 - Detailed result is recorded in `docs/stage7_pvw_full_bench_log.md`.
 - This is not final performance evidence yet because backend separation,
   larger benchmark matrices, and paper-grade statistics remain open.
