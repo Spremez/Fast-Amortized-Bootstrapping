@@ -716,18 +716,593 @@ static void bench_mat_trgsw_kernel_lane(int r){
   free_pvmtmlwe_key(key);
 }
 
+static void bench_mat_trgsw_vs_scalar_lane(int r){
+  const int N = 2048, k = 1, l = 1, bg_bit = 23;
+  const int rows = (k + r) * l;
+  const uint64_t reps = 1000;
+
+  PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -50));
+  MAT_TRGSW_Key mat_key = mat_trgsw_new_key(pvw_key, l, bg_bit);
+  MAT_TRGSW_DFT mat_selector = mat_trgsw_alloc_new_DFT_sample(l, bg_bit, k, r, N);
+  PVW_TMLWE pvw_in = pvmtmlwe_new_sample(NULL, pvw_key);
+  PVW_TMLWE_DFT mat_out = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
+  MAT_TRGSW_MUL_SCRATCH scratch = mat_trgsw_alloc_mul_scratch(rows, N);
+
+  TRLWE_Key * scalar_keys = (TRLWE_Key *) safe_malloc(sizeof(TRLWE_Key) * r);
+  TRGSW_Key * scalar_trgsw_keys = (TRGSW_Key *) safe_malloc(sizeof(TRGSW_Key) * r);
+  TRGSW_DFT * scalar_selectors = (TRGSW_DFT *) safe_malloc(sizeof(TRGSW_DFT) * r);
+  TRLWE * scalar_in = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE_DFT * scalar_out = (TRLWE_DFT *) safe_malloc(sizeof(TRLWE_DFT) * r);
+
+  mat_trgsw_monomial_DFT_sample(mat_selector, 1, 0, mat_key);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    scalar_keys[lane] = trlwe_key_from_pvmtmlwe_lane(pvw_key, lane);
+    scalar_trgsw_keys[lane] = trgsw_new_key(scalar_keys[lane], l, bg_bit);
+    scalar_selectors[lane] = trgsw_alloc_new_DFT_sample(l, bg_bit, k, N);
+    trgsw_monomial_DFT_sample(scalar_selectors[lane], 1, 0, scalar_trgsw_keys[lane]);
+    scalar_in[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_out[lane] = trlwe_alloc_new_DFT_sample(k, N);
+    polynomial_copy_torus_polynomial(scalar_in[lane]->a[0], pvw_in->a[0]);
+    polynomial_copy_torus_polynomial(scalar_in[lane]->b, pvw_in->b[lane]);
+  }
+
+  for (size_t i = 0; i < 10; i++){
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      trgsw_mul_trlwe_DFT(scalar_out[lane], scalar_in[lane], scalar_selectors[lane]);
+    }
+    mat_trgsw_mul_pvmtmlwe_DFT(mat_out, pvw_in, mat_selector, scratch);
+  }
+
+  uint64_t scalar_total_us = 0;
+  for (size_t i = 0; i < reps; i++){
+    const uint64_t start = get_time();
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      trgsw_mul_trlwe_DFT(scalar_out[lane], scalar_in[lane], scalar_selectors[lane]);
+    }
+    scalar_total_us += get_time() - start;
+  }
+
+  uint64_t mat_total_us = 0;
+  for (size_t i = 0; i < reps; i++){
+    const uint64_t start = get_time();
+    mat_trgsw_mul_pvmtmlwe_DFT(mat_out, pvw_in, mat_selector, scratch);
+    mat_total_us += get_time() - start;
+  }
+
+  const double scalar_avg_us = ((double) scalar_total_us) / ((double) reps);
+  const double scalar_lane_avg_us = scalar_avg_us / ((double) r);
+  const double mat_avg_us = ((double) mat_total_us) / ((double) reps);
+  const double mat_lane_avg_us = mat_avg_us / ((double) r);
+  const double speedup = mat_total_us == 0 ? 0.0 : ((double) scalar_total_us) / ((double) mat_total_us);
+
+  printf("MAT_TRGSW vs scalar r=%d reps=%" PRIu64
+         " scalar_repeated_avg_us=%.3f scalar_lane_avg_us=%.3f"
+         " mat_avg_us=%.3f mat_lane_avg_us=%.3f speedup_vs_scalar_repeated=%.3fx\n",
+         r, reps, scalar_avg_us, scalar_lane_avg_us, mat_avg_us, mat_lane_avg_us, speedup);
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    free_trlwe(scalar_out[lane]);
+    free_trlwe(scalar_in[lane]);
+    free_trgsw(scalar_selectors[lane]);
+    free_trgsw_key(scalar_trgsw_keys[lane]);
+    free_trlwe_key(scalar_keys[lane]);
+  }
+  free(scalar_out);
+  free(scalar_in);
+  free(scalar_selectors);
+  free(scalar_trgsw_keys);
+  free(scalar_keys);
+  free_mat_trgsw_mul_scratch(scratch);
+  free_pvmtmlwe_DFT(mat_out);
+  free_pvmtmlwe(pvw_in);
+  free_mat_trgsw_DFT(mat_selector);
+  free_mat_trgsw_key(mat_key);
+  free_pvmtmlwe_key(pvw_key);
+}
+
+static void bench_mat_trgsw_vs_scalar_lane_full(int r){
+  const int N = 2048, k = 1, l = 1, bg_bit = 23;
+  const int rows = (k + r) * l;
+  const uint64_t reps = 1000;
+
+  PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -50));
+  MAT_TRGSW_Key mat_key = mat_trgsw_new_key(pvw_key, l, bg_bit);
+  MAT_TRGSW_DFT mat_selector = mat_trgsw_alloc_new_DFT_sample(l, bg_bit, k, r, N);
+  PVW_TMLWE pvw_in = pvmtmlwe_new_sample(NULL, pvw_key);
+  PVW_TMLWE_DFT mat_out_dft = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
+  PVW_TMLWE mat_out = pvmtmlwe_alloc_new_sample(k, r, N);
+  MAT_TRGSW_MUL_SCRATCH scratch = mat_trgsw_alloc_mul_scratch(rows, N);
+
+  TRLWE_Key * scalar_keys = (TRLWE_Key *) safe_malloc(sizeof(TRLWE_Key) * r);
+  TRGSW_Key * scalar_trgsw_keys = (TRGSW_Key *) safe_malloc(sizeof(TRGSW_Key) * r);
+  TRGSW_DFT * scalar_selectors = (TRGSW_DFT *) safe_malloc(sizeof(TRGSW_DFT) * r);
+  TRLWE * scalar_in = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE_DFT * scalar_out_dft = (TRLWE_DFT *) safe_malloc(sizeof(TRLWE_DFT) * r);
+  TRLWE * scalar_out = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+
+  mat_trgsw_monomial_DFT_sample(mat_selector, 1, 0, mat_key);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    scalar_keys[lane] = trlwe_key_from_pvmtmlwe_lane(pvw_key, lane);
+    scalar_trgsw_keys[lane] = trgsw_new_key(scalar_keys[lane], l, bg_bit);
+    scalar_selectors[lane] = trgsw_alloc_new_DFT_sample(l, bg_bit, k, N);
+    trgsw_monomial_DFT_sample(scalar_selectors[lane], 1, 0, scalar_trgsw_keys[lane]);
+    scalar_in[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_out_dft[lane] = trlwe_alloc_new_DFT_sample(k, N);
+    scalar_out[lane] = trlwe_alloc_new_sample(k, N);
+    polynomial_copy_torus_polynomial(scalar_in[lane]->a[0], pvw_in->a[0]);
+    polynomial_copy_torus_polynomial(scalar_in[lane]->b, pvw_in->b[lane]);
+  }
+
+  for (size_t i = 0; i < 10; i++){
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      trgsw_mul_trlwe_DFT(scalar_out_dft[lane], scalar_in[lane], scalar_selectors[lane]);
+      trlwe_from_DFT(scalar_out[lane], scalar_out_dft[lane]);
+    }
+    mat_trgsw_mul_pvmtmlwe_DFT(mat_out_dft, pvw_in, mat_selector, scratch);
+    pvmtmlwe_from_DFT(mat_out, mat_out_dft);
+  }
+
+  uint64_t scalar_total_us = 0;
+  for (size_t i = 0; i < reps; i++){
+    const uint64_t start = get_time();
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      trgsw_mul_trlwe_DFT(scalar_out_dft[lane], scalar_in[lane], scalar_selectors[lane]);
+      trlwe_from_DFT(scalar_out[lane], scalar_out_dft[lane]);
+    }
+    scalar_total_us += get_time() - start;
+  }
+
+  uint64_t mat_total_us = 0;
+  for (size_t i = 0; i < reps; i++){
+    const uint64_t start = get_time();
+    mat_trgsw_mul_pvmtmlwe_DFT(mat_out_dft, pvw_in, mat_selector, scratch);
+    pvmtmlwe_from_DFT(mat_out, mat_out_dft);
+    mat_total_us += get_time() - start;
+  }
+
+  const double scalar_avg_us = ((double) scalar_total_us) / ((double) reps);
+  const double scalar_lane_avg_us = scalar_avg_us / ((double) r);
+  const double mat_avg_us = ((double) mat_total_us) / ((double) reps);
+  const double mat_lane_avg_us = mat_avg_us / ((double) r);
+  const double speedup = mat_total_us == 0 ? 0.0 : ((double) scalar_total_us) / ((double) mat_total_us);
+
+  printf("MAT_TRGSW_FULL vs scalar_full r=%d reps=%" PRIu64
+         " scalar_repeated_avg_us=%.3f scalar_lane_avg_us=%.3f"
+         " mat_avg_us=%.3f mat_lane_avg_us=%.3f speedup_vs_scalar_repeated=%.3fx\n",
+         r, reps, scalar_avg_us, scalar_lane_avg_us, mat_avg_us, mat_lane_avg_us, speedup);
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    free_trlwe(scalar_out[lane]);
+    free_trlwe(scalar_out_dft[lane]);
+    free_trlwe(scalar_in[lane]);
+    free_trgsw(scalar_selectors[lane]);
+    free_trgsw_key(scalar_trgsw_keys[lane]);
+    free_trlwe_key(scalar_keys[lane]);
+  }
+  free(scalar_out);
+  free(scalar_out_dft);
+  free(scalar_in);
+  free(scalar_selectors);
+  free(scalar_trgsw_keys);
+  free(scalar_keys);
+  free_mat_trgsw_mul_scratch(scratch);
+  free_pvmtmlwe(mat_out);
+  free_pvmtmlwe_DFT(mat_out_dft);
+  free_pvmtmlwe(pvw_in);
+  free_mat_trgsw_DFT(mat_selector);
+  free_mat_trgsw_key(mat_key);
+  free_pvmtmlwe_key(pvw_key);
+}
+
+typedef struct {
+  uint64_t alloc_us;
+  uint64_t decompose_us;
+  uint64_t dft_us;
+  uint64_t clear_us;
+  uint64_t mul_us;
+  uint64_t free_us;
+} ExternalProductPhases;
+
+static void print_external_product_phases(const char * label, int r, uint64_t reps, ExternalProductPhases phases){
+  const uint64_t phase_sum = phases.alloc_us + phases.decompose_us + phases.dft_us +
+      phases.clear_us + phases.mul_us + phases.free_us;
+  const double denom = phase_sum == 0 ? 1.0 : (double) phase_sum;
+  printf("EP_BREAKDOWN %s r=%d reps=%" PRIu64 " phase_sum_avg_us=%.3f"
+         " alloc_avg_us=%.3f alloc_pct=%.2f"
+         " decompose_avg_us=%.3f decompose_pct=%.2f"
+         " dft_avg_us=%.3f dft_pct=%.2f"
+         " clear_avg_us=%.3f clear_pct=%.2f"
+         " mul_avg_us=%.3f mul_pct=%.2f"
+         " free_avg_us=%.3f free_pct=%.2f\n",
+         label, r, reps, ((double) phase_sum) / ((double) reps),
+         ((double) phases.alloc_us) / ((double) reps), 100.0 * ((double) phases.alloc_us) / denom,
+         ((double) phases.decompose_us) / ((double) reps), 100.0 * ((double) phases.decompose_us) / denom,
+         ((double) phases.dft_us) / ((double) reps), 100.0 * ((double) phases.dft_us) / denom,
+         ((double) phases.clear_us) / ((double) reps), 100.0 * ((double) phases.clear_us) / denom,
+         ((double) phases.mul_us) / ((double) reps), 100.0 * ((double) phases.mul_us) / denom,
+         ((double) phases.free_us) / ((double) reps), 100.0 * ((double) phases.free_us) / denom);
+}
+
+static void bench_external_product_phase_breakdown(int r){
+  const int N = 2048, k = 1, l = 1, bg_bit = 23;
+  const int scalar_rows = (k + 1) * l;
+  const int mat_rows = (k + r) * l;
+  const uint64_t reps = 1000;
+
+  PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -50));
+  MAT_TRGSW_Key mat_key = mat_trgsw_new_key(pvw_key, l, bg_bit);
+  MAT_TRGSW_DFT mat_selector = mat_trgsw_alloc_new_DFT_sample(l, bg_bit, k, r, N);
+  PVW_TMLWE pvw_in = pvmtmlwe_new_sample(NULL, pvw_key);
+  PVW_TMLWE_DFT mat_out = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
+  MAT_TRGSW_MUL_SCRATCH scratch = mat_trgsw_alloc_mul_scratch(mat_rows, N);
+
+  TRLWE_Key * scalar_keys = (TRLWE_Key *) safe_malloc(sizeof(TRLWE_Key) * r);
+  TRGSW_Key * scalar_trgsw_keys = (TRGSW_Key *) safe_malloc(sizeof(TRGSW_Key) * r);
+  TRGSW_DFT * scalar_selectors = (TRGSW_DFT *) safe_malloc(sizeof(TRGSW_DFT) * r);
+  TRLWE * scalar_in = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE_DFT * scalar_out = (TRLWE_DFT *) safe_malloc(sizeof(TRLWE_DFT) * r);
+
+  mat_trgsw_monomial_DFT_sample(mat_selector, 1, 0, mat_key);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    scalar_keys[lane] = trlwe_key_from_pvmtmlwe_lane(pvw_key, lane);
+    scalar_trgsw_keys[lane] = trgsw_new_key(scalar_keys[lane], l, bg_bit);
+    scalar_selectors[lane] = trgsw_alloc_new_DFT_sample(l, bg_bit, k, N);
+    trgsw_monomial_DFT_sample(scalar_selectors[lane], 1, 0, scalar_trgsw_keys[lane]);
+    scalar_in[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_out[lane] = trlwe_alloc_new_DFT_sample(k, N);
+    polynomial_copy_torus_polynomial(scalar_in[lane]->a[0], pvw_in->a[0]);
+    polynomial_copy_torus_polynomial(scalar_in[lane]->b, pvw_in->b[lane]);
+  }
+
+  ExternalProductPhases scalar_phases = {0, 0, 0, 0, 0, 0};
+  ExternalProductPhases mat_phases = {0, 0, 0, 0, 0, 0};
+
+  TorusPolynomial ** scalar_dec = (TorusPolynomial **) safe_malloc(sizeof(TorusPolynomial *) * r);
+  DFT_Polynomial ** scalar_dec_dft = (DFT_Polynomial **) safe_malloc(sizeof(DFT_Polynomial *) * r);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    scalar_dec[lane] = polynomial_new_array_of_torus_polynomials(N, scalar_rows);
+    scalar_dec_dft[lane] = polynomial_new_array_of_polynomials_DFT(N, scalar_rows);
+  }
+
+  for (size_t rep = 0; rep < reps; rep++){
+    uint64_t start = get_time();
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      for (size_t level = 0; level < (size_t) l; level++){
+        polynomial_decompose_i(scalar_dec[lane][level], scalar_in[lane]->a[0], bg_bit, l, level);
+        polynomial_decompose_i(scalar_dec[lane][l + level], scalar_in[lane]->b, bg_bit, l, level);
+      }
+    }
+    scalar_phases.decompose_us += get_time() - start;
+
+    start = get_time();
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      for (size_t row = 0; row < (size_t) scalar_rows; row++){
+        polynomial_torus_to_DFT(scalar_dec_dft[lane][row], scalar_dec[lane][row]);
+      }
+    }
+    scalar_phases.dft_us += get_time() - start;
+
+    start = get_time();
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      polynomial_mul_DFT(scalar_out[lane]->a[0], scalar_dec_dft[lane][0], scalar_selectors[lane]->samples[0]->a[0]);
+      polynomial_mul_DFT(scalar_out[lane]->b, scalar_dec_dft[lane][0], scalar_selectors[lane]->samples[0]->b);
+      for (size_t row = 1; row < (size_t) scalar_rows; row++){
+        polynomial_mul_addto_DFT(scalar_out[lane]->a[0], scalar_dec_dft[lane][row], scalar_selectors[lane]->samples[row]->a[0]);
+        polynomial_mul_addto_DFT(scalar_out[lane]->b, scalar_dec_dft[lane][row], scalar_selectors[lane]->samples[row]->b);
+      }
+    }
+    scalar_phases.mul_us += get_time() - start;
+
+    start = get_time();
+    pvmtmlwe_decompose(scratch->dec, pvw_in, bg_bit, l);
+    mat_phases.decompose_us += get_time() - start;
+
+    start = get_time();
+    for (size_t row = 0; row < (size_t) mat_rows; row++){
+      polynomial_torus_to_DFT(scratch->dec_dft[row], scratch->dec[row]);
+    }
+    mat_phases.dft_us += get_time() - start;
+
+    start = get_time();
+    pvmtmlwe_noiseless_trivial_DFT_sample(mat_out, NULL);
+    mat_phases.clear_us += get_time() - start;
+
+    start = get_time();
+    for (size_t row = 0; row < (size_t) mat_rows; row++){
+      for (size_t j = 0; j < (size_t) k; j++){
+        polynomial_mul_addto_DFT(mat_out->a[j], scratch->dec_dft[row], mat_selector->samples[row]->a[j]);
+      }
+      for (size_t lane = 0; lane < (size_t) r; lane++){
+        polynomial_mul_addto_DFT(mat_out->b[lane], scratch->dec_dft[row], mat_selector->samples[row]->b[lane]);
+      }
+    }
+    mat_phases.mul_us += get_time() - start;
+  }
+
+  print_external_product_phases("scalar_repeated", r, reps, scalar_phases);
+  print_external_product_phases("mat_shared_mask", r, reps, mat_phases);
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    free_array_of_polynomials((void **) scalar_dec[lane], scalar_rows);
+    free_array_of_polynomials((void **) scalar_dec_dft[lane], scalar_rows);
+  }
+  free(scalar_dec_dft);
+  free(scalar_dec);
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    free_trlwe(scalar_out[lane]);
+    free_trlwe(scalar_in[lane]);
+    free_trgsw(scalar_selectors[lane]);
+    free_trgsw_key(scalar_trgsw_keys[lane]);
+    free_trlwe_key(scalar_keys[lane]);
+  }
+  free(scalar_out);
+  free(scalar_in);
+  free(scalar_selectors);
+  free(scalar_trgsw_keys);
+  free(scalar_keys);
+  free_mat_trgsw_mul_scratch(scratch);
+  free_pvmtmlwe_DFT(mat_out);
+  free_pvmtmlwe(pvw_in);
+  free_mat_trgsw_DFT(mat_selector);
+  free_mat_trgsw_key(mat_key);
+  free_pvmtmlwe_key(pvw_key);
+}
+
+static void copy_pvw_lane_to_trlwe(TRLWE out, PVW_TMLWE in, int lane){
+  for (size_t i = 0; i < (size_t) in->k; i++){
+    polynomial_copy_torus_polynomial(out->a[i], in->a[i]);
+  }
+  polynomial_copy_torus_polynomial(out->b, in->b[lane]);
+}
+
+static void trlwe_raw_automorphism(TRLWE out, TRLWE in, uint64_t gen){
+  for (size_t i = 0; i < (size_t) in->k; i++){
+    polynomial_permute(out->a[i], in->a[i], gen);
+  }
+  polynomial_permute(out->b, in->b, gen);
+}
+
+static void pvmtmlwe_raw_automorphism(PVW_TMLWE out, PVW_TMLWE in, uint64_t gen){
+  for (size_t i = 0; i < (size_t) in->k; i++){
+    polynomial_permute(out->a[i], in->a[i], gen);
+  }
+  for (size_t lane = 0; lane < (size_t) in->r; lane++){
+    polynomial_permute(out->b[lane], in->b[lane], gen);
+  }
+}
+
+static void isolated_scalar_CMUX(TRLWE out, TRLWE in1, TRLWE in2,
+    TRGSW_DFT selector, TRLWE tmp, TRLWE_DFT tmp_dft){
+  trlwe_sub(tmp, in2, in1);
+  trgsw_mul_trlwe_DFT(tmp_dft, tmp, selector);
+  trlwe_from_DFT(tmp, tmp_dft);
+  trlwe_add(out, tmp, in1);
+}
+
+static void isolated_pvw_CMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
+    MAT_TRGSW_DFT selector, MAT_TRGSW_MUL_SCRATCH scratch,
+    PVW_TMLWE tmp, PVW_TMLWE_DFT tmp_dft){
+  pvmtmlwe_sub(tmp, in2, in1);
+  mat_trgsw_mul_pvmtmlwe_DFT(tmp_dft, tmp, selector, scratch);
+  pvmtmlwe_from_DFT(tmp, tmp_dft);
+  pvmtmlwe_add(out, tmp, in1);
+}
+
+static void isolated_scalar_NCMUX_raw(TRLWE out, TRLWE in1, TRLWE in2,
+    TRGSW_DFT selector, TRLWE rotated, TRLWE tmp, TRLWE_DFT tmp_dft){
+  const uint64_t gen = 2 * in2->b->N - 1;
+  trlwe_raw_automorphism(rotated, in2, gen);
+  isolated_scalar_CMUX(out, in1, rotated, selector, tmp, tmp_dft);
+}
+
+static void isolated_pvw_NCMUX_raw(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
+    MAT_TRGSW_DFT selector, MAT_TRGSW_MUL_SCRATCH scratch,
+    PVW_TMLWE rotated, PVW_TMLWE tmp, PVW_TMLWE_DFT tmp_dft){
+  const uint64_t gen = 2 * in2->b[0]->N - 1;
+  pvmtmlwe_raw_automorphism(rotated, in2, gen);
+  isolated_pvw_CMUX(out, in1, rotated, selector, scratch, tmp, tmp_dft);
+}
+
+static bool compare_pvw_scalar_lane_phases(const char * label, int r, int prec,
+    PVW_TMLWE pvw_out, PVW_TMLWE_Key pvw_key,
+    TRLWE * scalar_out, TRLWE_Key * scalar_keys){
+  const int N = pvw_out->b[0]->N;
+  TorusPolynomial * pvw_phase = polynomial_new_array_of_torus_polynomials(N, r);
+  TorusPolynomial scalar_phase = polynomial_new_torus_polynomial(N);
+  bool pass = true;
+
+  pvmtmlwe_phase(pvw_phase, pvw_out, pvw_key);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    trlwe_phase(scalar_phase, scalar_out[lane], scalar_keys[lane]);
+    for (size_t i = 0; i < (size_t) N; i++){
+      const uint64_t pvw_val = torus2int(pvw_phase[lane]->coeffs[i], prec);
+      const uint64_t scalar_val = torus2int(scalar_phase->coeffs[i], prec);
+      if(pvw_val != scalar_val){
+        printf("SAB_PVW %s phase fail r=%d lane=%" PRIu64 " coeff=%" PRIu64
+               ": %" PRIu64 " != %" PRIu64 "\n",
+               label, r, (uint64_t) lane, (uint64_t) i, pvw_val, scalar_val);
+        pass = false;
+        break;
+      }
+    }
+    if(!pass) break;
+  }
+
+  free_polynomial(scalar_phase);
+  free_array_of_polynomials(pvw_phase, r);
+  return pass;
+}
+
+static bool check_pvw_cmux_ncmux_lane_equivalence(int r){
+  const int N = 1024, k = 1, l = 1, bg_bit = 23, prec = 3;
+  const int rows = (k + r) * l;
+  bool pass = true;
+
+  PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -50));
+  MAT_TRGSW_Key mat_key = mat_trgsw_new_key(pvw_key, l, bg_bit);
+  MAT_TRGSW_DFT mat_selector_zero = mat_trgsw_alloc_new_DFT_sample(l, bg_bit, k, r, N);
+  MAT_TRGSW_DFT mat_selector_one = mat_trgsw_alloc_new_DFT_sample(l, bg_bit, k, r, N);
+  MAT_TRGSW_MUL_SCRATCH scratch = mat_trgsw_alloc_mul_scratch(rows, N);
+
+  TRLWE_Key * scalar_keys = (TRLWE_Key *) safe_malloc(sizeof(TRLWE_Key) * r);
+  TRGSW_Key * scalar_trgsw_keys = (TRGSW_Key *) safe_malloc(sizeof(TRGSW_Key) * r);
+  TRGSW_DFT * scalar_selector_zero = (TRGSW_DFT *) safe_malloc(sizeof(TRGSW_DFT) * r);
+  TRGSW_DFT * scalar_selector_one = (TRGSW_DFT *) safe_malloc(sizeof(TRGSW_DFT) * r);
+  TRLWE * scalar_in1 = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE * scalar_in2 = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE * scalar_trivial_in1 = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE * scalar_trivial_in2 = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE * scalar_out = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE * scalar_tmp = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE * scalar_rotated = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE_DFT * scalar_tmp_dft = (TRLWE_DFT *) safe_malloc(sizeof(TRLWE_DFT) * r);
+
+  TorusPolynomial * msg_in1 = polynomial_new_array_of_torus_polynomials(N, r);
+  TorusPolynomial * msg_in2 = polynomial_new_array_of_torus_polynomials(N, r);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    for (size_t i = 0; i < (size_t) N; i++){
+      msg_in1[lane]->coeffs[i] = int2torus((i + lane) & 7, prec);
+      msg_in2[lane]->coeffs[i] = int2torus((3 * i + 2 * lane + 1) & 7, prec);
+    }
+  }
+
+  mat_trgsw_monomial_DFT_sample(mat_selector_zero, 0, 0, mat_key);
+  mat_trgsw_monomial_DFT_sample(mat_selector_one, 1, 0, mat_key);
+
+  PVW_TMLWE pvw_in1 = pvmtmlwe_new_sample(msg_in1, pvw_key);
+  PVW_TMLWE pvw_in2 = pvmtmlwe_new_sample(msg_in2, pvw_key);
+  PVW_TMLWE pvw_trivial_in1 = pvmtmlwe_new_noiseless_trivial_sample(msg_in1, k, r, N);
+  PVW_TMLWE pvw_trivial_in2 = pvmtmlwe_new_noiseless_trivial_sample(msg_in2, k, r, N);
+  PVW_TMLWE pvw_out = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE pvw_tmp = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE pvw_rotated = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE_DFT pvw_tmp_dft = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    scalar_keys[lane] = trlwe_key_from_pvmtmlwe_lane(pvw_key, lane);
+    scalar_trgsw_keys[lane] = trgsw_new_key(scalar_keys[lane], l, bg_bit);
+    scalar_selector_zero[lane] = trgsw_alloc_new_DFT_sample(l, bg_bit, k, N);
+    scalar_selector_one[lane] = trgsw_alloc_new_DFT_sample(l, bg_bit, k, N);
+    trgsw_monomial_DFT_sample(scalar_selector_zero[lane], 0, 0, scalar_trgsw_keys[lane]);
+    trgsw_monomial_DFT_sample(scalar_selector_one[lane], 1, 0, scalar_trgsw_keys[lane]);
+
+    scalar_in1[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_in2[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_trivial_in1[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_trivial_in2[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_out[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_tmp[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_rotated[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_tmp_dft[lane] = trlwe_alloc_new_DFT_sample(k, N);
+
+    copy_pvw_lane_to_trlwe(scalar_in1[lane], pvw_in1, lane);
+    copy_pvw_lane_to_trlwe(scalar_in2[lane], pvw_in2, lane);
+    copy_pvw_lane_to_trlwe(scalar_trivial_in1[lane], pvw_trivial_in1, lane);
+    copy_pvw_lane_to_trlwe(scalar_trivial_in2[lane], pvw_trivial_in2, lane);
+  }
+
+  isolated_pvw_CMUX(pvw_out, pvw_in1, pvw_in2, mat_selector_zero, scratch, pvw_tmp, pvw_tmp_dft);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    isolated_scalar_CMUX(scalar_out[lane], scalar_in1[lane], scalar_in2[lane],
+        scalar_selector_zero[lane], scalar_tmp[lane], scalar_tmp_dft[lane]);
+  }
+  pass &= compare_pvw_scalar_lane_phases("CMUX selector=0", r, prec, pvw_out, pvw_key, scalar_out, scalar_keys);
+
+  isolated_pvw_CMUX(pvw_out, pvw_in1, pvw_in2, mat_selector_one, scratch, pvw_tmp, pvw_tmp_dft);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    isolated_scalar_CMUX(scalar_out[lane], scalar_in1[lane], scalar_in2[lane],
+        scalar_selector_one[lane], scalar_tmp[lane], scalar_tmp_dft[lane]);
+  }
+  pass &= compare_pvw_scalar_lane_phases("CMUX selector=1", r, prec, pvw_out, pvw_key, scalar_out, scalar_keys);
+
+  isolated_pvw_NCMUX_raw(pvw_out, pvw_trivial_in1, pvw_trivial_in2,
+      mat_selector_zero, scratch, pvw_rotated, pvw_tmp, pvw_tmp_dft);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    isolated_scalar_NCMUX_raw(scalar_out[lane], scalar_trivial_in1[lane], scalar_trivial_in2[lane],
+        scalar_selector_zero[lane], scalar_rotated[lane], scalar_tmp[lane], scalar_tmp_dft[lane]);
+  }
+  pass &= compare_pvw_scalar_lane_phases("NCMUX raw selector=0", r, prec, pvw_out, pvw_key, scalar_out, scalar_keys);
+
+  isolated_pvw_NCMUX_raw(pvw_out, pvw_trivial_in1, pvw_trivial_in2,
+      mat_selector_one, scratch, pvw_rotated, pvw_tmp, pvw_tmp_dft);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    isolated_scalar_NCMUX_raw(scalar_out[lane], scalar_trivial_in1[lane], scalar_trivial_in2[lane],
+        scalar_selector_one[lane], scalar_rotated[lane], scalar_tmp[lane], scalar_tmp_dft[lane]);
+  }
+  pass &= compare_pvw_scalar_lane_phases("NCMUX raw selector=1", r, prec, pvw_out, pvw_key, scalar_out, scalar_keys);
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    free_trlwe(scalar_tmp_dft[lane]);
+    free_trlwe(scalar_rotated[lane]);
+    free_trlwe(scalar_tmp[lane]);
+    free_trlwe(scalar_out[lane]);
+    free_trlwe(scalar_trivial_in2[lane]);
+    free_trlwe(scalar_trivial_in1[lane]);
+    free_trlwe(scalar_in2[lane]);
+    free_trlwe(scalar_in1[lane]);
+    free_trgsw(scalar_selector_one[lane]);
+    free_trgsw(scalar_selector_zero[lane]);
+    free_trgsw_key(scalar_trgsw_keys[lane]);
+    free_trlwe_key(scalar_keys[lane]);
+  }
+
+  free(scalar_tmp_dft);
+  free(scalar_rotated);
+  free(scalar_tmp);
+  free(scalar_out);
+  free(scalar_trivial_in2);
+  free(scalar_trivial_in1);
+  free(scalar_in2);
+  free(scalar_in1);
+  free(scalar_selector_one);
+  free(scalar_selector_zero);
+  free(scalar_trgsw_keys);
+  free(scalar_keys);
+  free_pvmtmlwe_DFT(pvw_tmp_dft);
+  free_pvmtmlwe(pvw_rotated);
+  free_pvmtmlwe(pvw_tmp);
+  free_pvmtmlwe(pvw_out);
+  free_pvmtmlwe(pvw_trivial_in2);
+  free_pvmtmlwe(pvw_trivial_in1);
+  free_pvmtmlwe(pvw_in2);
+  free_pvmtmlwe(pvw_in1);
+  free_array_of_polynomials(msg_in2, r);
+  free_array_of_polynomials(msg_in1, r);
+  free_mat_trgsw_mul_scratch(scratch);
+  free_mat_trgsw_DFT(mat_selector_one);
+  free_mat_trgsw_DFT(mat_selector_zero);
+  free_mat_trgsw_key(mat_key);
+  free_pvmtmlwe_key(pvw_key);
+
+  printf("SAB_PVW isolated CMUX/NCMUX lane equivalence r=%d: %s\n", r, pass ? "Pass" : "Fail");
+  return pass;
+}
+
 void test_mat_trgsw_kernel(){
   bool pass = true;
   pass &= check_mat_trgsw_identity_lane(1);
   pass &= check_mat_trgsw_identity_lane(2);
   pass &= check_mat_trgsw_identity_lane(4);
   pass &= check_mat_trgsw_scalar_equivalence();
-  printf("MAT_TRGSW kernel test: %s\n", pass ? "Pass" : "Fail");
+  pass &= check_pvw_cmux_ncmux_lane_equivalence(1);
+  pass &= check_pvw_cmux_ncmux_lane_equivalence(2);
+  pass &= check_pvw_cmux_ncmux_lane_equivalence(4);
+  printf("MAT_TRGSW/PVW Stage 4 kernel test: %s\n", pass ? "Pass" : "Fail");
   if(!pass) exit(1);
 
   bench_mat_trgsw_kernel_lane(1);
   bench_mat_trgsw_kernel_lane(2);
   bench_mat_trgsw_kernel_lane(4);
+  bench_mat_trgsw_vs_scalar_lane(1);
+  bench_mat_trgsw_vs_scalar_lane(2);
+  bench_mat_trgsw_vs_scalar_lane(4);
+  bench_mat_trgsw_vs_scalar_lane_full(1);
+  bench_mat_trgsw_vs_scalar_lane_full(2);
+  bench_mat_trgsw_vs_scalar_lane_full(4);
+  bench_external_product_phase_breakdown(1);
+  bench_external_product_phase_breakdown(2);
+  bench_external_product_phase_breakdown(4);
 }
 #endif
 

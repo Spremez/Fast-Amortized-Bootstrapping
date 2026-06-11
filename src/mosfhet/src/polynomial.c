@@ -385,6 +385,23 @@ void polynomial_mul_DFT(DFT_Polynomial out, DFT_Polynomial in1, DFT_Polynomial i
     const __m512d _2 = _mm512_mul_pd (a_im, b_re);
     c[i + N/16] = _mm512_fmadd_pd (a_re, b_im,  _2);
   }
+  #elif defined(DFT_FMA_OPT)
+  const int half_N = N / 2;
+  int i = 0;
+  for (; i + 3 < half_N; i += 4) {
+    const __m256d a_re = _mm256_loadu_pd(in1->coeffs + i);
+    const __m256d a_im = _mm256_loadu_pd(in1->coeffs + half_N + i);
+    const __m256d b_re = _mm256_loadu_pd(in2->coeffs + i);
+    const __m256d b_im = _mm256_loadu_pd(in2->coeffs + half_N + i);
+    const __m256d re = _mm256_fmsub_pd(a_re, b_re, _mm256_mul_pd(a_im, b_im));
+    const __m256d im = _mm256_fmadd_pd(a_re, b_im, _mm256_mul_pd(a_im, b_re));
+    _mm256_storeu_pd(out->coeffs + i, re);
+    _mm256_storeu_pd(out->coeffs + half_N + i, im);
+  }
+  for (; i < half_N; i++) {
+    out->coeffs[i] = in1->coeffs[i] * in2->coeffs[i] - in1->coeffs[i + half_N] * in2->coeffs[i + half_N];
+    out->coeffs[i + half_N] = in1->coeffs[i + half_N] * in2->coeffs[i] + in1->coeffs[i] * in2->coeffs[i + half_N];
+  }
   #else
   for (int i = 0; i < N / 2; i++) {
     out->coeffs[i] = in1->coeffs[i] * in2->coeffs[i] - in1->coeffs[i + N / 2] * in2->coeffs[i + N / 2];
@@ -407,6 +424,27 @@ void polynomial_mul_addto_DFT(DFT_Polynomial out, DFT_Polynomial in1, DFT_Polyno
     c[i] = _mm512_fmsub_pd (a[i], b[i],  _1);
     const __m512d _2 = _mm512_fmadd_pd (a[i + N/16], b[i], c[i + N/16]);
     c[i + N/16] = _mm512_fmadd_pd (a[i], b[i + N/16],  _2);
+  }
+  #elif defined(DFT_FMA_OPT)
+  const int half_N = N / 2;
+  int i = 0;
+  for (; i + 3 < half_N; i += 4) {
+    const __m256d a_re = _mm256_loadu_pd(in1->coeffs + i);
+    const __m256d a_im = _mm256_loadu_pd(in1->coeffs + half_N + i);
+    const __m256d b_re = _mm256_loadu_pd(in2->coeffs + i);
+    const __m256d b_im = _mm256_loadu_pd(in2->coeffs + half_N + i);
+    __m256d c_re = _mm256_loadu_pd(out->coeffs + i);
+    __m256d c_im = _mm256_loadu_pd(out->coeffs + half_N + i);
+    c_re = _mm256_fmadd_pd(a_re, b_re, c_re);
+    c_re = _mm256_fnmadd_pd(a_im, b_im, c_re);
+    c_im = _mm256_fmadd_pd(a_im, b_re, c_im);
+    c_im = _mm256_fmadd_pd(a_re, b_im, c_im);
+    _mm256_storeu_pd(out->coeffs + i, c_re);
+    _mm256_storeu_pd(out->coeffs + half_N + i, c_im);
+  }
+  for (; i < half_N; i++) {
+    out->coeffs[i] += in1->coeffs[i] * in2->coeffs[i] - in1->coeffs[i + half_N] * in2->coeffs[i + half_N];
+    out->coeffs[i + half_N] += in1->coeffs[i + half_N] * in2->coeffs[i] + in1->coeffs[i] * in2->coeffs[i + half_N];
   }
   #else
   for (int i = 0; i < N / 2; i++) {

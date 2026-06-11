@@ -89,6 +89,15 @@ $(BUILD_DIR)/spqlios-ifft-fma.o: $(MOSFHET_DIR)/src/fft/spqlios/spqlios-ifft-fma
 $(BUILD_DIR)/spqlios-fft-impl.o: $(MOSFHET_DIR)/src/fft/spqlios/spqlios-fft-impl.c | setup
 	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
 
+$(BUILD_DIR)/spqlios-fft-avx512.o: $(MOSFHET_DIR)/src/fft/spqlios/spqlios-fft-avx512.s | setup
+	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
+
+$(BUILD_DIR)/spqlios-ifft-avx512.o: $(MOSFHET_DIR)/src/fft/spqlios/spqlios-ifft-avx512.s | setup
+	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
+
+$(BUILD_DIR)/spqlios-fft-impl-avx512.o: $(MOSFHET_DIR)/src/fft/spqlios/spqlios-fft-impl-avx512.c | setup
+	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
+
 $(BUILD_DIR)/fft_processor_spqlios.o: $(MOSFHET_DIR)/src/fft/spqlios/fft_processor_spqlios.c | setup
 	$(CC) -g -c $(LIB_FLAGS) $(INCLUDE_FLAGS) $< -o $@
 

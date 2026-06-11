@@ -169,9 +169,15 @@ Verification gates:
 
 Current status:
 
-- Partially complete.
+- Complete for kernel bring-up and external-product performance analysis.
 - Implemented identity tests and WSL/Linux `spqlios` smoke.
-- Remaining execution target: scalar equivalence and PVW microbench.
+- Added `r=1` scalar-equivalence coverage and repeated-scalar-vs-MAT
+  microbenching for `r=1/2/4`.
+- Added full-output external-product timing and same-level AVX/FMA comparison
+  against mbfhe MAT.
+- Detailed results are recorded in `docs/mat_external_product_breakdown.md`.
+- Remaining work is no longer Stage 3 kernel bring-up; the next engineering
+  step is Stage 4 state design and isolated CMUX/NCMUX lane tests.
 
 ## Stage 4: SAB-PVW State Design
 
@@ -205,6 +211,25 @@ Verification:
 
 - Deterministic isolated CMUX/NCMUX tests for `r=1/2/4`.
 - No changes in scalar SAB outputs.
+
+Current status:
+
+- Complete for isolated lane-state validation.
+- Implemented under `SAB_PVW_KERNEL_TEST`, so the scalar SAB default route is
+  unchanged.
+- Verified `r=1/2/4` for:
+  - encrypted-input isolated CMUX with selector `0/1`;
+  - trivial-input isolated NCMUX raw `X -> X^{-1}` branch with selector `0/1`.
+- WSL/Linux `spqlios` Stage 4 gate passes.
+- FFNT/portable Stage 4 smoke passes.
+- Default scalar SAB WSL/Linux `spqlios` smoke still passes.
+
+Remaining limitation:
+
+- Full encrypted NCMUX still needs a PVW automorphism/key-switch strategy. The
+  current isolated NCMUX check intentionally avoids the unimplemented
+  `pvmtmlwe_keyswitch(...)` path and only validates the lane/body invariant for
+  the raw automorphism branch on trivial inputs.
 
 Decision gate:
 
@@ -391,12 +416,19 @@ Verification:
 
 ## Immediate Execution Plan
 
-The next executable step is Stage 3 completion:
+The next executable step is Stage 5:
 
-1. Add scalar equivalence test for `r=1`.
-2. Add PVW external-product microbench for `r=1/2/4`.
-3. Run WSL/Linux `spqlios` kernel test and default SAB smoke.
-4. Commit the Stage 3 completion increment.
+1. Add isolated `RGSW_monomial_mul` lane-state tests without changing
+   `sab_rlwe_bootstrap`.
+2. Reuse the Stage 4 invariant after each CMUX/NCMUX bit step:
 
-After that, begin Stage 4 by writing `sab_pvw_state_design.md` and adding
-isolated PVW CMUX lane-state tests.
+```text
+phase(acc_pvw.body[q] after step t)
+==
+phase(acc_scalar[q] after the same scalar step t)
+```
+
+3. Decide and implement the PVW handling for the encrypted NCMUX
+   automorphism/key-switch boundary.
+4. Only after isolated `RGSW_monomial_mul` passes, move to `sparse_mul` and
+   then full `sab_pvw_*` integration.
