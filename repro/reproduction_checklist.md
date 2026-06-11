@@ -27,3 +27,6 @@
 - [x] Add Stage 7 repeated process-level benchmark sweep for `r=2`/`r=4`.
 - [x] Add Stage 7 portable FFNT target-shape backend smoke.
 - [ ] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.
+- [x] Add Stage 8 `r=1` full-output negative-control log.
+- [ ] Add Stage 8 backend/SIMD sensitivity matrix.
+- [ ] Add Stage 8 implementation-variant decision record.

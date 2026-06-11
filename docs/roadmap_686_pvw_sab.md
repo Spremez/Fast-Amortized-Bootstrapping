@@ -516,6 +516,16 @@ Verification:
 - Same parameter set and seed policy.
 - Record negative results.
 
+Current status:
+
+- Stage 8 plan is recorded in `docs/stage8_ablation_plan.md`.
+- First executable ablation, the `r=1` full-output negative control on
+  WSL/Linux `spqlios`, is recorded and passed correctness in all three process
+  runs.
+- `r=1` mean speedup is `1.022x` with sample stddev `0.063` and range
+  `0.975x-1.094x`, matching the expectation that one lane has no stable MAT
+  advantage.
+
 ## Stage 9: Literature and Novelty Check
 
 Goal:

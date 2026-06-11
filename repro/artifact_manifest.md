@@ -37,6 +37,7 @@ Documentation artifacts:
 - `docs/stage5_pvw_rgsw_monomial_log.md`
 - `docs/stage6_pvw_noise_log.md`
 - `docs/stage7_pvw_full_bench_log.md`
+- `docs/stage8_ablation_plan.md`
 
 Repro artifacts:
 
@@ -90,3 +91,8 @@ Repro artifacts:
 - `repro/stage7_backend_ffnt_r2_reps1_runs1/summary.csv`
 - `repro/stage7_backend_ffnt_r2_reps1_runs1/run_0.log`
 - `repro/stage7_backend_summary.csv`
+- `repro/stage8_r_scaling_r1_reps2_runs3/summary.csv`
+- `repro/stage8_r_scaling_r1_reps2_runs3/run_0.log`
+- `repro/stage8_r_scaling_r1_reps2_runs3/run_1.log`
+- `repro/stage8_r_scaling_r1_reps2_runs3/run_2.log`
+- `repro/stage8_r_scaling_summary.csv`

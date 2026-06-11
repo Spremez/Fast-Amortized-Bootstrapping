@@ -1,0 +1,264 @@
+# Stage 8 Ablation and Variant Plan
+
+Date: 2026-06-11
+
+## Objective
+
+Stage 8 decides why the current `sab_pvw_*` path is faster or slower under
+specific conditions. It must separate:
+
+- algorithmic shared-mask MAT/PVW batching gain;
+- backend/SIMD gain;
+- implementation details such as scratch reuse, output clearing, dense addmul,
+  and per-lane materialization;
+- non-blind-rotation overhead from extract, packing KS, and HW-reducing KS.
+
+No Stage 8 result should be described as final 686 bootstrapping acceleration
+unless it is reproduced at the complete SAB output boundary with correctness,
+noise, resource, and backend context attached.
+
+## Current Evidence Before Stage 8
+
+Full SAB output boundary on WSL/Linux `spqlios`:
+
+| r | process runs | reps per run | speedup mean | sample stddev | range |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 3 | 2 | 1.022x | 0.063 | 0.975x-1.094x |
+| 2 | 3 | 2 | 1.188x | 0.066 | 1.132x-1.261x |
+| 4 | 3 | 2 | 1.312x | 0.014 | 1.302x-1.328x |
+
+Correctness/noise gates before Stage 8:
+
+- `r=2`: 50-seed target-shape sweep, `0 / 204800` PVW failures,
+  `0 / 204800` scalar failures, `0 / 204800` pair failures.
+- `r=4`: 10-seed target-shape sweep, `0 / 81920` PVW failures,
+  `0 / 81920` scalar failures, `0 / 81920` pair failures.
+
+Resource context:
+
+- `r=2`: PVW key bytes `1.013617x` repeated scalar; PVW keygen `1.236x`
+  repeated scalar; peak RSS comparable.
+- `r=4`: PVW key bytes `1.065349x` repeated scalar; PVW keygen `1.179x`
+  repeated scalar; peak RSS comparable.
+
+Backend context:
+
+- Primary performance platform remains WSL/Linux `spqlios`.
+- Portable `FFT_LIB=ffnt` target-shape `r=2`, `reps=1` passed as backend smoke
+  and produced `1.218x`, but this is not statistical performance evidence.
+
+## Primary Endpoint
+
+The primary endpoint for Stage 8 performance ablations is:
+
+```text
+speedup_vs_scalar_repeated
+= repeated scalar full SAB output time for r independent lanes
+  / one sab_pvw_bootstrap_binary(...) full SAB output time for r lanes
+```
+
+The timed boundary must include blind rotation, extract, full packing KS,
+HW-reducing KS, and final TLWE outputs. Key generation remains excluded from
+the timed bootstrap endpoint and is reported separately under resource metrics.
+
+## Claim Labels
+
+- Engineering-positive: same-backend full-output speedup is above `1.10x` for
+  `r=2` or above `1.20x` for `r=4`, with all process runs passing correctness.
+- Statistically insufficient: fewer than 10 process-level runs, no confidence
+  interval, or only one backend/CPU mode.
+- Failed ablation: PVW speedup falls below `1.00x`, correctness/noise fails, or
+  resource overhead becomes unacceptable.
+- Paper-ready: not available yet. Requires larger repeated campaigns, backend
+  separation, confidence intervals, resource tables, and novelty/literature
+  support.
+
+## Ablation Matrix
+
+### A1: Lane Count Scaling
+
+Question:
+
+Does shared-mask batching behave as predicted over `r=1/2/4`, and is `r=1` a
+valid negative control?
+
+Runs:
+
+| variant | backend | r | reps per run | process runs | expected role |
+|---|---|---:|---:|---:|---|
+| negative control | spqlios | 1 | 2 | 3 | recorded; no stable MAT advantage |
+| main target | spqlios | 2 | 2 | 3+ | already recorded; expand if needed |
+| main target | spqlios | 4 | 2 | 3+ | already recorded; expand if needed |
+| stress | spqlios | 8 | 1 | 1 smoke first | memory/key-size risk gate |
+
+Correctness gate:
+
+- Each process-level run must print `SAB_PVW_BENCH correctness ... Pass`.
+
+Performance gate:
+
+- Report mean, sample stddev, min, max, and per-lane average.
+- `r=1` should not be used to claim acceleration; it is a fairness and overhead
+  check.
+
+Failure handling:
+
+- If `r=1` shows large speedup, inspect benchmark symmetry and per-lane scalar
+  comparison first.
+- If `r=4` is strong but `r=2` is unstable, treat `r=4` as the primary target
+  and keep `r=2` as a smaller-throughput setting.
+- If `r=8` fails or exhausts memory, record the resource limit instead of
+  forcing the run.
+
+Recorded `r=1` negative-control command:
+
+```bash
+STAGE7_BENCH_OUT_DIR=repro/stage8_r_scaling_r1_reps2_runs3 \
+SAB_PVW_BENCH_R=1 SAB_PVW_BENCH_REPS=2 STAGE7_BENCH_RUNS=3 \
+bash scripts/run_stage7_bench_sweep.sh
+```
+
+Machine-readable tables:
+
+- `repro/stage8_r_scaling_r1_reps2_runs3/summary.csv`
+- `repro/stage8_r_scaling_summary.csv`
+
+`r=1` result:
+
+| backend | r | process runs | reps per run | PVW mean us | scalar mean us | speedup mean | sample stddev | range |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| spqlios | 1 | 3 | 2 | 11,574,338.833 | 11,809,581.333 | 1.022x | 0.063 | 0.975x-1.094x |
+
+Interpretation:
+
+- Every process-level run passed correctness.
+- `r=1` does not show a stable throughput advantage; one run is below `1.0x`,
+  one is near parity, and one is modestly above parity.
+- This is the expected negative-control behavior and supports the interpretation
+  that the stronger `r=2/4` full SAB gains come from multi-lane shared-mask
+  batching rather than a generally faster PVW wrapper.
+
+### A2: Backend/SIMD Separation
+
+Question:
+
+Is the observed speedup a same-backend algorithmic effect, or mostly a backend
+artifact?
+
+Runs:
+
+| backend | role | required before claim |
+|---|---|---|
+| `spqlios` | primary WSL/Linux performance baseline | yes |
+| `spqlios_avx512` | SIMD/backend sensitivity if CPU supports AVX512 | yes for backend separation |
+| `ffnt` | portable correctness/backend smoke | smoke only |
+| `spqlios` + `DFT_FMA_OPT` | same-ISA comparison against mbfhe-style AVX/FMA | useful for implementation comparison |
+
+Gate:
+
+- Compare ratios only within the same backend.
+- Do not mix MOSFHET `spqlios_avx512` absolute times with mbfhe `spqlios-fma`
+  as an algorithm claim.
+
+Failure handling:
+
+- If speedup exists only on one backend, report it as backend-specific.
+- If all backends show the same direction but different magnitudes, separate
+  algorithmic direction from backend magnitude.
+
+### A3: Boundary Ablation
+
+Question:
+
+Where does the full SAB speedup come from?
+
+Boundaries:
+
+| boundary | current evidence | next measurement |
+|---|---|---|
+| external product full-output | recorded in Stage 3 | keep as low-level anchor |
+| isolated CMUX/RGSW/sparse_mul | correctness recorded in Stage 4/5 | add timing only if full SAB regresses |
+| no-extract bootstrap | correctness recorded | add A/B timing to isolate blind rotation |
+| full SAB output | Stage 7 benchmark recorded | primary endpoint |
+
+Gate:
+
+- If no-extract speedup is much larger than full-output speedup, the next
+  optimization target is extract/materialization/packing KS.
+- If no-extract and full-output speedups match, the current bottleneck remains
+  blind rotation / sparse multiplication.
+
+### A4: Kernel Implementation Variants
+
+Question:
+
+Can the MAT kernel reduce dense accumulation overhead without changing the SAB
+protocol?
+
+Variants:
+
+- Clear-elision: initialize output from the first row, then add remaining rows.
+- Fused row/output addmul: load one decomposed DFT row and update all output
+  components in a tight loop.
+- Small-r specialization: dedicated `k=1,l=1,r=2` and `r=4` kernels.
+- Streaming decomposition: decompose/DFT one row at a time to reduce scratch and
+  cache pressure.
+- FMA/AVX512 alignment: keep implementation comparisons at the same ISA level.
+
+Gate:
+
+- Each kernel variant first passes Stage 3 `r=1/2/4` kernel tests.
+- Then it must pass Stage 5 small full-output API tests.
+- Only after those gates can it enter Stage 6/7 full SAB tests.
+
+Failure handling:
+
+- If a kernel variant improves microbench but not full SAB, inspect conversion,
+  materialization, and packing KS overhead.
+- If a kernel variant changes noise/correctness, revert the variant or isolate
+  the arithmetic bug before further benchmarking.
+
+### A5: Resource and Key-Size Sensitivity
+
+Question:
+
+Does higher `r` or an implementation variant make key size, keygen time, or RSS
+unacceptable?
+
+Metrics:
+
+- estimated public key bytes;
+- keygen time;
+- peak RSS from `/usr/bin/time -v`;
+- internal `VmHWM`;
+- raw log paths.
+
+Gate:
+
+- Every performance-positive variant needs a matching resource row.
+- Resource overhead must be reported with speedup; it cannot be hidden behind
+  throughput results.
+
+## Execution Order
+
+1. Run `r=1` full-output negative control on WSL/Linux `spqlios`. Done.
+2. If `r=1` behaves as expected, run `spqlios_avx512` full-output `r=2/4`
+   sweeps if CPU support and build remain stable.
+3. Add a no-extract timing boundary only if full-output speedup is much smaller
+   than kernel/RGSW evidence suggests.
+4. Choose exactly one kernel variant for implementation, starting with
+   clear-elision or small-r specialization.
+5. Repeat Stage 6 noise and Stage 7 performance gates for any variant that
+   changes arithmetic code.
+
+## Stage 8 Exit Criteria
+
+Stage 8 is complete only when:
+
+- `r=1/2/4` scaling is documented with full-output logs;
+- at least one backend/SIMD sensitivity check is documented;
+- one implementation-variant decision is made with evidence, even if the
+  decision is not to implement it yet;
+- negative and inconclusive results are preserved in `repro/`;
+- the next Stage 9 novelty/literature task can distinguish engineering speedup
+  from a defensible algorithmic contribution.

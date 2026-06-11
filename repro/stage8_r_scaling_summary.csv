@@ -1,0 +1,4 @@
+backend,r,reps_per_run,runs,status,pvw_avg_us_mean,scalar_repeated_avg_us_mean,speedup_mean,speedup_sample_stddev,min_speedup,max_speedup,role,source_dir
+spqlios,1,2,3,Pass,11574338.833,11809581.333,1.022,0.063,0.975,1.094,negative control,repro/stage8_r_scaling_r1_reps2_runs3
+spqlios,2,2,3,Pass,19266121.667,22848639.333,1.188,0.066,1.132,1.261,main target from Stage 7 sweep,repro/stage7_bench_sweep_r2_reps2_runs3
+spqlios,4,2,3,Pass,35402965.167,46436548.167,1.312,0.014,1.302,1.328,main target from Stage 7 sweep,repro/stage7_bench_sweep_r4_reps2_runs3
