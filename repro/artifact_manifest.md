@@ -11,6 +11,10 @@ Code artifacts:
   - `SAB_PVW_BENCH`
   - `SAB_PVW_BENCH_R`
   - `SAB_PVW_BENCH_REPS`
+  - `SAB_PVW_NOISE_TEST`
+  - `SAB_PVW_NOISE_R`
+  - `SAB_PVW_NOISE_TRIALS`
+  - `SAB_PVW_NOISE_MAX_LOG2_GAP`
 - `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
 
 Documentation artifacts:
@@ -23,6 +27,7 @@ Documentation artifacts:
 - `docs/stage5_pvw_packing_hwks_log.md`
 - `docs/stage5_pvw_full_bootstrap_log.md`
 - `docs/stage5_pvw_rgsw_monomial_log.md`
+- `docs/stage6_pvw_noise_log.md`
 - `docs/stage7_pvw_full_bench_log.md`
 
 Repro artifacts:

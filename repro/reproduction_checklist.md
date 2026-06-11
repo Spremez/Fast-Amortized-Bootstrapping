@@ -12,5 +12,6 @@
 - [x] Add target-size `SET_2_3_2048` PVW full SAB correctness run.
 - [x] Add initial target-size full SAB A/B benchmark run.
 - [x] Add paired benchmark run with mean/stddev output.
+- [x] Add initial target-shape correctness/noise gate run.
 - [ ] Add multi-seed correctness/noise run log.
 - [ ] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.

@@ -358,6 +358,38 @@ Decision gate:
 - Define the minimum seed count and accepted failure threshold before claiming
   any final result.
 
+Current status:
+
+- Initial target-shape final-output correctness/noise gate has been added under
+  `SAB_PVW_NOISE_TEST=true`.
+- The gate is configurable through `SAB_PVW_NOISE_R`,
+  `SAB_PVW_NOISE_TRIALS`, and `SAB_PVW_NOISE_MAX_LOG2_GAP`.
+- The test uses valid per-lane LUTs packed through existing scalar
+  `sab_LUT_packing(...)`, then copies each packed body into the matching PVW
+  TV lane. This checks PVW and scalar against an explicit LUT expectation,
+  not only against each other.
+- Latest WSL/Linux `spqlios` target-shape result for `r=2`, `trials=3`,
+  `SET_2_3_2048` shape:
+  - PVW final-output failures: `0 / 12288`;
+  - scalar final-output failures: `0 / 12288`;
+  - PVW-vs-scalar quantized pair failures: `0 / 12288`;
+  - PVW aggregate `log2_sigma_torus = -8.469`;
+  - scalar aggregate `log2_sigma_torus = -8.162`;
+  - `pvw_minus_scalar_log2 = -0.307`, within the loose engineering gate
+    `SAB_PVW_NOISE_MAX_LOG2_GAP=4.0`.
+- Windows FFNT target-shape smoke also passes with `ARCH_FLAGS=` and
+  `trials=1`; Windows remains correctness/portability only.
+- Detailed result is recorded in `docs/stage6_pvw_noise_log.md`.
+
+Remaining limitation:
+
+- This is not yet a paper-grade multi-seed campaign. The current test uses the
+  default MOSFHET RNG and records independent trials under one generated key
+  set; the harness still lacks a stable seed API.
+- Noise is currently measured at final output. Stage-level noise probes before
+  and after blind rotation, extract, packing KS, and HW KS remain open.
+- `r=4` target-shape correctness/noise is not yet measured.
+
 Recommended starting point:
 
 - Correctness: at least 50 seeds for engineering signal.
@@ -508,4 +540,5 @@ phase(out_scalar[q])
    plus HW-reducing KS.
 5. Scale the PVW binary path to target `SET_2_3_2048`. Done for a deterministic
    `r=2` full-output correctness gate.
-6. Run Stage 6 multi-seed/noise checks, then Stage 7 full performance A/B.
+6. Run broader Stage 6 correctness/noise checks, then repeat Stage 7 full
+   performance A/B with the stronger correctness/noise evidence attached.
