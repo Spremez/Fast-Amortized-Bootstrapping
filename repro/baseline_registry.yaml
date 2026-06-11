@@ -1,0 +1,13 @@
+baselines:
+  - id: scalar_sab_binary_set_2_3
+    description: Existing scalar sparse amortized bootstrapping route.
+    command: make FFT_LIB=spqlios KEY=BINARY PARAM=SET_2_3 -j$(nproc) && ./main
+    status: active_baseline
+    notes: Must remain runnable and comparable after every sab_pvw_* change.
+
+variants:
+  - id: sab_pvw_api_binary_sparse_gate
+    description: PVW/MAT_TRGSW shared-mask multi-body binary sparse_mul lane-equivalence gate.
+    command: make FFT_LIB=spqlios SAB_PVW_KERNEL_TEST=true KEY=BINARY PARAM=SET_2_3 -j$(nproc) && ./main
+    status: stage5_correctness_gate
+    notes: Tests r=1/2/4 small-shape API skeleton; not a full bootstrapping speedup claim.

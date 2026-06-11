@@ -590,6 +590,7 @@ void pvwtlwe_keyswitch(PVW_TLWE out, PVW_TLWE in, PVW_TLWE_KS_Key ks_key);
 
 /* PVW_TMLWE */
 PVW_TMLWE pvmtmlwe_alloc_new_sample(int k, int r, int N);
+PVW_TMLWE * pvmtmlwe_alloc_new_sample_array(int count, int k, int r, int N);
 void pvmtmlwe_save_sample(FILE * fd, PVW_TMLWE c);
 void pvmtmlwe_load_sample(FILE * fd, PVW_TMLWE c);
 PVW_TMLWE pvmtmlwe_load_new_sample(FILE * fd, int k, int r, int N);

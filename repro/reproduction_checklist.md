@@ -1,0 +1,11 @@
+# Reproduction Checklist
+
+- [ ] Record final commit hash after each stage commit.
+- [x] Record WSL/Linux compiler and CPU platform.
+- [x] Keep scalar SAB baseline command registered.
+- [x] Record Stage 5 PVW API sparse correctness command.
+- [x] Add FFNT portability smoke result for this stage.
+- [x] Add scalar baseline smoke result for this stage.
+- [ ] Add target-size `SET_2_3_2048` PVW full SAB correctness run.
+- [ ] Add multi-seed correctness/noise run log.
+- [ ] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.

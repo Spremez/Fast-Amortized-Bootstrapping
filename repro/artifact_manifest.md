@@ -1,0 +1,22 @@
+# Artifact Manifest
+
+Code artifacts:
+
+- `include/sab_pvw.h`
+- `src/sab_pvw.c`
+- `main.c` gated test path under `SAB_PVW_KERNEL_TEST`
+- `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
+
+Documentation artifacts:
+
+- `docs/roadmap_686_pvw_sab.md`
+- `docs/mat_to_bootstrap_goal_audit.md`
+- `docs/stage5_pvw_sparse_mul_log.md`
+- `docs/stage5_pvw_rgsw_monomial_log.md`
+
+Repro artifacts:
+
+- `repro/environment.md`
+- `repro/baseline_registry.yaml`
+- `repro/run_log.csv`
+- `repro/reproduction_checklist.md`

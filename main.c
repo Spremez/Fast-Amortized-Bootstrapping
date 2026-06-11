@@ -3,6 +3,9 @@
 #include <benchmark_util.h>
 #include <sab_profile.h>
 #include <inttypes.h>
+#if defined(SAB_PVW_KERNEL_TEST)
+#include <sab_pvw.h>
+#endif
 
 // #define PRINT_POLY
 
@@ -555,6 +558,27 @@ static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
   for (size_t i = 0; i < in->k; i++){
     polynomial_copy_torus_polynomial(out->s[i], in->s[i][lane]);
     polynomial_copy_DFT_polynomial(out->s_dft[i], in->s_dft[i][lane]);
+  }
+  return out;
+}
+
+static TRLWE_Key test_binary_key_from_distances(int N, int k,
+    const uint64_t * distances, int h, double sigma){
+  TRLWE_Key out = trlwe_alloc_key(N, k, sigma);
+  for (size_t key_idx = 0; key_idx < (size_t) k; key_idx++){
+    memset(out->s[key_idx]->coeffs, 0, sizeof(Torus) * N);
+    uint64_t previous = N;
+    for (size_t step = 0; step < (size_t) h; step++){
+      const uint64_t distance = distances[step];
+      if(distance == 0 || distance > previous){
+        printf("Invalid test sparse distance step=%" PRIu64 " distance=%" PRIu64
+               " previous=%" PRIu64 "\n", (uint64_t) step, distance, previous);
+        exit(1);
+      }
+      previous -= distance;
+      out->s[key_idx]->coeffs[previous] = 1;
+    }
+    polynomial_torus_to_DFT(out->s_dft[key_idx], out->s[key_idx]);
   }
   return out;
 }
@@ -1802,30 +1826,21 @@ static void isolated_scalar_sub_a_binary(TRLWE * p, const uint64_t * a,
 
 static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
   const int N = 1024, k = 1, l = 1, bg_bit = 23, prec = 3;
-  const int r_prec = 3, in_N = 1 << r_prec, h = 2;
-  const int rows = (k + r) * l;
-  const int selector_bits[3][3] = {
-    {1, 0, 1},
-    {0, 1, 1},
-    {1, 1, 0},
+  const int r_prec = 3, in_N = 16, h = 2;
+  const uint64_t selector_values[3] = {5, 4, 7};
+  const uint64_t a[16] = {
+    1, 3, 5, 7, 9, 11, 13, 15,
+    17, 19, 21, 23, 25, 27, 29, 31
   };
-  const uint64_t a[8] = {1, 3, 5, 7, 9, 11, 13, 15};
   const uint64_t gen_minus1 = 2 * N - 1;
   const int total_selectors = (h + 1) * r_prec;
   bool pass = true;
 
+  TRLWE_Key input_key = test_binary_key_from_distances(in_N, k,
+      selector_values, h, pow(2, -15));
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -70));
-  PVW_TMLWE_KS_Key pvw_aut_minus1 = pvmtmlwe_new_automorphism_KS_key(pvw_key, gen_minus1, l, bg_bit);
-  MAT_TRGSW_Key mat_key = mat_trgsw_new_key(pvw_key, l, bg_bit);
-  MAT_TRGSW_DFT * mat_selectors = (MAT_TRGSW_DFT *) safe_malloc(sizeof(MAT_TRGSW_DFT) * total_selectors);
-  for (size_t round = 0; round < (size_t) (h + 1); round++){
-    for (size_t bit = 0; bit < (size_t) r_prec; bit++){
-      const size_t idx = round * r_prec + bit;
-      mat_selectors[idx] = mat_trgsw_alloc_new_DFT_sample(l, bg_bit, k, r, N);
-      mat_trgsw_monomial_DFT_sample(mat_selectors[idx], selector_bits[round][bit], 0, mat_key);
-    }
-  }
-  MAT_TRGSW_MUL_SCRATCH scratch = mat_trgsw_alloc_mul_scratch(rows, N);
+  SAB_PVW_Key pvw_sab = sab_pvw_new_binary_key(input_key, pvw_key,
+      prec, h, r_prec, l, bg_bit);
 
   TRLWE_Key * scalar_keys = (TRLWE_Key *) safe_malloc(sizeof(TRLWE_Key) * r);
   TRLWE_KS_Key * scalar_aut_minus1 = (TRLWE_KS_Key *) safe_malloc(sizeof(TRLWE_KS_Key) * r);
@@ -1838,10 +1853,6 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
   TRLWE_DFT * scalar_tmp_dft = (TRLWE_DFT *) safe_malloc(sizeof(TRLWE_DFT) * r);
 
   PVW_TMLWE * pvw_acc = alloc_pvw_sample_array_local(in_N, k, r, N);
-  PVW_TMLWE * pvw_tmp_poly = alloc_pvw_sample_array_local(in_N, k, r, N);
-  PVW_TMLWE pvw_rotated = pvmtmlwe_alloc_new_sample(k, r, N);
-  PVW_TMLWE pvw_tmp = pvmtmlwe_alloc_new_sample(k, r, N);
-  PVW_TMLWE_DFT pvw_tmp_dft = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
 
   for (size_t lane = 0; lane < (size_t) r; lane++){
     scalar_keys[lane] = trlwe_key_from_pvmtmlwe_lane(pvw_key, lane);
@@ -1863,7 +1874,7 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
         const size_t idx = round * r_prec + bit;
         scalar_selectors[lane][idx] = trgsw_alloc_new_DFT_sample(l, bg_bit, k, N);
         trgsw_monomial_DFT_sample(scalar_selectors[lane][idx],
-            selector_bits[round][bit], 0, scalar_trgsw_keys[lane]);
+            (selector_values[round] >> bit) & 1, 0, scalar_trgsw_keys[lane]);
       }
     }
   }
@@ -1882,9 +1893,7 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
   }
 
   for (size_t round = 0; round < (size_t) h; round++){
-    isolated_pvw_RGSW_monomial_mul_auto(pvw_acc, pvw_tmp_poly,
-        &mat_selectors[round * r_prec], r_prec, in_N, scratch, pvw_aut_minus1,
-        pvw_rotated, pvw_tmp, pvw_tmp_dft);
+    sab_pvw_RGSW_monomial_mul(pvw_acc, pvw_sab->s[0][round], pvw_sab);
     for (size_t lane = 0; lane < (size_t) r; lane++){
       isolated_scalar_RGSW_monomial_mul_auto(scalar_acc[lane], scalar_tmp_poly[lane],
           &scalar_selectors[lane][round * r_prec], r_prec, in_N,
@@ -1897,7 +1906,7 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
         pvw_acc, pvw_key, scalar_acc, scalar_keys);
     if(!pass) break;
 
-    isolated_pvw_sub_a_binary(pvw_acc, a, in_N, pvw_tmp);
+    sab_pvw_sub_a_binary(pvw_acc, a, pvw_sab);
     for (size_t lane = 0; lane < (size_t) r; lane++){
       isolated_scalar_sub_a_binary(scalar_acc[lane], a, in_N, scalar_tmp[lane]);
     }
@@ -1908,9 +1917,7 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
   }
 
   if(pass){
-    isolated_pvw_RGSW_monomial_mul_auto(pvw_acc, pvw_tmp_poly,
-        &mat_selectors[h * r_prec], r_prec, in_N, scratch, pvw_aut_minus1,
-        pvw_rotated, pvw_tmp, pvw_tmp_dft);
+    sab_pvw_RGSW_monomial_mul(pvw_acc, pvw_sab->s[0][h], pvw_sab);
     for (size_t lane = 0; lane < (size_t) r; lane++){
       isolated_scalar_RGSW_monomial_mul_auto(scalar_acc[lane], scalar_tmp_poly[lane],
           &scalar_selectors[lane][h * r_prec], r_prec, in_N,
@@ -1921,14 +1928,10 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
         pvw_acc, pvw_key, scalar_acc, scalar_keys);
   }
 
-  printf("SAB_PVW isolated binary sparse_mul lane equivalence r=%d h=%d r_prec=%d: %s\n",
+  printf("SAB_PVW API binary sparse_mul lane equivalence r=%d h=%d r_prec=%d: %s\n",
          r, h, r_prec, pass ? "Pass" : "Fail");
 
   free_array_of_polynomials(msg, r);
-  free_pvmtmlwe_DFT(pvw_tmp_dft);
-  free_pvmtmlwe(pvw_tmp);
-  free_pvmtmlwe(pvw_rotated);
-  free_pvw_sample_array_local(pvw_tmp_poly, in_N);
   free_pvw_sample_array_local(pvw_acc, in_N);
 
   for (size_t lane = 0; lane < (size_t) r; lane++){
@@ -1955,14 +1958,9 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
   free(scalar_aut_minus1);
   free(scalar_keys);
 
-  free_mat_trgsw_mul_scratch(scratch);
-  for (size_t idx = 0; idx < (size_t) total_selectors; idx++){
-    free_mat_trgsw_DFT(mat_selectors[idx]);
-  }
-  free(mat_selectors);
-  free_mat_trgsw_key(mat_key);
-  free_pvmtmlwe_ks_key(pvw_aut_minus1);
+  free_sab_pvw_key(pvw_sab);
   free_pvmtmlwe_key(pvw_key);
+  free_trlwe_key(input_key);
   return pass;
 }
 

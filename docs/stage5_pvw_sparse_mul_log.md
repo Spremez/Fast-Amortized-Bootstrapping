@@ -29,16 +29,30 @@ The executable test is compiled only with:
 SAB_PVW_KERNEL_TEST=true
 ```
 
+This stage now uses the real `sab_pvw_*` API skeleton:
+
+- `include/sab_pvw.h`
+- `src/sab_pvw.c`
+- `SAB_PVW_Key`
+- `sab_pvw_RGSW_monomial_mul(...)`
+- `sab_pvw_sub_a_binary(...)`
+- `sab_pvw_sparse_mul_binary(...)`
+
+The PVW selector schedule is materialized from a deterministic binary sparse
+input key instead of hand-built MAT selector arrays in `main.c`.
+
 The production scalar `sub_a(...)`, `sparse_mul(...)`, and
 `sab_rlwe_bootstrap(...)` paths are not modified.
 
 ## Test Coverage
 
-The isolated binary sparse test covers:
+The API binary sparse test covers:
 
 - `r = 1, 2, 4`
-- `r_prec = 3`, so `in_N = 8`
+- `r_prec = 3`, with test accumulator count `in_N = 16`
 - `h = 2`
+- deterministic binary sparse distances `{5, 4, 7}` for
+  `RGSW -> sub_a -> final RGSW`
 - encrypted PVW and scalar accumulator inputs
 - encrypted MAT_TRGSW and scalar TRGSW selector sets
 - PVW and scalar automorphism key-switch in every NCMUX branch
@@ -75,9 +89,9 @@ make FFT_LIB=spqlios SAB_PVW_KERNEL_TEST=true KEY=BINARY PARAM=SET_2_3 -j$(nproc
 Result:
 
 ```text
-SAB_PVW isolated binary sparse_mul lane equivalence r=1 h=2 r_prec=3: Pass
-SAB_PVW isolated binary sparse_mul lane equivalence r=2 h=2 r_prec=3: Pass
-SAB_PVW isolated binary sparse_mul lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW API binary sparse_mul lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW API binary sparse_mul lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW API binary sparse_mul lane equivalence r=4 h=2 r_prec=3: Pass
 MAT_TRGSW/PVW staged kernel test: Pass
 ```
 
@@ -96,6 +110,7 @@ Result:
 ```text
 Sparse bootstrapping with binary keys
 Message precision: 3 - Repetitions: 3
+Bootstrapping time: 14,834,289 us +- 912289.559140
 Pass
 ```
 
@@ -115,9 +130,9 @@ make FFT_LIB=ffnt SAB_PVW_KERNEL_TEST=true KEY=BINARY PARAM=SET_2_3 -j$(nproc)
 Result:
 
 ```text
-SAB_PVW isolated binary sparse_mul lane equivalence r=1 h=2 r_prec=3: Pass
-SAB_PVW isolated binary sparse_mul lane equivalence r=2 h=2 r_prec=3: Pass
-SAB_PVW isolated binary sparse_mul lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW API binary sparse_mul lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW API binary sparse_mul lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW API binary sparse_mul lane equivalence r=4 h=2 r_prec=3: Pass
 MAT_TRGSW/PVW staged kernel test: Pass
 ```
 
@@ -125,12 +140,12 @@ FFNT is used here only as a correctness/portability smoke check.
 
 ## Stage 5 Handoff
 
-The next gate is no longer isolated arithmetic. The next required step is a
-real `sab_pvw_*` context/API skeleton:
+The `sab_pvw_*` context/API skeleton now exists and the binary sparse gate uses
+it. The next required step is full small-shape bootstrapping integration:
 
 ```text
 PVW key/context -> MAT selector schedule -> PVW accumulator array ->
-binary sparse_mul -> per-lane extraction/output comparison
+setup_tv_xb -> binary sparse_mul -> per-lane extraction/output comparison
 ```
 
 Only after that full bootstrapping path passes correctness can performance,

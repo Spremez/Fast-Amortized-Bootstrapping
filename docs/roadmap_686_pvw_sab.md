@@ -270,24 +270,32 @@ Verification:
 
 Current status:
 
-- Complete at the isolated full encrypted `RGSW_monomial_mul` level.
-- Implemented under `SAB_PVW_KERNEL_TEST`, so production scalar
-  `RGSW_monomial_mul`, `sparse_mul`, and `sab_rlwe_bootstrap` are unchanged.
+- Complete through the first `sab_pvw_*` API skeleton for the binary sparse
+  hot path.
+- Added `include/sab_pvw.h` and `src/sab_pvw.c`; the file is compiled only
+  when `ENABLE_PVW_TMLWE=true`, so the default scalar build does not link the
+  PVW SAB code.
+- The scalar `RGSW_monomial_mul`, `sparse_mul`, and `sab_rlwe_bootstrap`
+  implementations are unchanged.
 - Verified `r=1/2/4` for:
   - `r_prec=1` encrypted selector bit `0/1`;
   - `r_prec=3` trivial-selector multibit schedule `{1,0,1}`;
   - `r_prec=3` full encrypted multibit schedule `{1,0,1}`.
 - Added PVW TMLWE automorphism/key-switch support for NCMUX.
-- Verified isolated binary `sparse_mul` lane equivalence for `r=1/2/4`,
-  `h=2`, `r_prec=3`.
+- Verified `sab_pvw_*` API binary `sparse_mul` lane equivalence for `r=1/2/4`,
+  `h=2`, `r_prec=3`, `in_N=16`.
+- The binary sparse test now materializes MAT selectors from a deterministic
+  binary input-key schedule instead of hand-built PVW selectors.
 - Detailed results are recorded in `docs/stage5_pvw_rgsw_monomial_log.md`.
 - Binary sparse results are recorded in `docs/stage5_pvw_sparse_mul_log.md`.
 
 Remaining limitation:
 
 - The PVW path is not yet connected to full `sab_pvw_*` bootstrapping.
-- Binary `sparse_mul` is verified only on the isolated small test shape, not
-  yet on target `h=39, in_N=2048`.
+- Binary `sparse_mul` is verified only on the small API-skeleton test shape,
+  not yet on target `h=39, in_N=2048`.
+- `setup_tv_xb`, extraction, packing KS, and HW-reducing KS are still scalar
+  only.
 - Ternary/include-zero/gaussian `sub_a` branches remain out of scope for the
   current binary target.
 
@@ -441,9 +449,10 @@ Verification:
 
 The next executable step remains inside Stage 5:
 
-1. Introduce a `sab_pvw_*` context/API skeleton without replacing
-   `sab_rlwe_bootstrap`.
-2. Materialize the MAT selector schedule from the same binary scalar schedule.
+1. Add PVW setup for multiple independent lane accumulators without replacing
+   `setup_tv_xb`.
+2. Add a small `sab_pvw_bootstrap_wo_extract` or equivalent test-only wrapper
+   using the existing `SAB_PVW_Key` and binary sparse path.
 3. Run small full bootstrapping correctness with per-lane output comparison:
 
 ```text

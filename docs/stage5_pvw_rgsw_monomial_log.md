@@ -163,11 +163,9 @@ first PVW integration target should remain the binary branch used by
 
 ## Stage 5 Handoff
 
-The next required gate is isolated binary `sparse_mul` lane equivalence. It
-should reuse the verified PVW `RGSW_monomial_mul` path and add a PVW version of
-binary `sub_a` before connecting anything to full `sab_pvw_*`.
+The isolated binary `sparse_mul` gate has passed and the first `sab_pvw_*`
+context/API skeleton now owns the PVW side of that check. See
+`docs/stage5_pvw_sparse_mul_log.md`.
 
-Status update: isolated binary `sparse_mul` lane equivalence now passes for
-`r=1/2/4`, `h=2`, `r_prec=3`; see `docs/stage5_pvw_sparse_mul_log.md`. The next
-gate is a real `sab_pvw_*` context/API skeleton and small full bootstrapping
-correctness.
+The next gate is small full bootstrapping correctness, starting with PVW
+`setup_tv_xb`/blind-rotate output comparison before extraction and packing KS.

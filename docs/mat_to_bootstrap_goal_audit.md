@@ -260,9 +260,12 @@ Do not claim final bootstrapping speedup yet.
      scalar automorphism oracle.
 
 3. Stage 5 `sparse_mul` batching:
-   - isolated binary branch now passes for `r=1/2/4`, `h=2`, `r_prec=3`;
+   - `sab_pvw_*` API binary branch now passes for `r=1/2/4`, `h=2`,
+     `r_prec=3`, `in_N=16`;
    - the check compares after each `RGSW_monomial_mul`, each binary `sub_a`,
      and the final `RGSW_monomial_mul`;
+   - MAT selector schedule is materialized from a deterministic binary sparse
+     input key;
    - target-size `h=39, in_N=2048` and full bootstrapping output extraction are
      still not integrated.
 
@@ -350,7 +353,8 @@ speedup. Current evidence proves only:
 Required next milestone:
 
 ```text
-Stage 5 sab_pvw_* context/API and small full bootstrapping correctness.
+Stage 5 small full `sab_pvw_*` bootstrapping correctness using the existing
+API skeleton.
 ```
 
 Only after Stage 5 and full `sab_pvw_*` integration can the work claim anything
