@@ -332,3 +332,18 @@ Stage 8 is complete only when:
 - negative and inconclusive results are preserved in `repro/`;
 - the next Stage 9 novelty/literature task can distinguish engineering speedup
   from a defensible algorithmic contribution.
+
+Exit assessment as of commit `d5a6b1b`:
+
+| criterion | status | evidence |
+|---|---|---|
+| `r=1/2/4` full-output scaling | Pass | `repro/stage8_r_scaling_summary.csv`, `repro/stage8_clear_elision_bench_summary.csv` |
+| Backend/SIMD sensitivity | Pass | `repro/stage8_backend_sensitivity_summary.csv` |
+| Implementation variant decision | Pass | clear-elision implemented and recorded in `docs/stage8_clear_elision_log.md` |
+| Negative/inconclusive preservation | Pass | `r=1` negative control and backend-sensitive `r=2` AVX512 result are retained in `repro/` |
+| Algorithm/backend separation | Pass | `docs/stage8_gain_separation.md`, `repro/stage8_full_bootstrap_gain_separation.csv` |
+
+Stage 8 is therefore complete at the engineering-evidence level. Remaining
+items such as `r=4` 50+ seed expansion and stage-level noise probes are
+paper-strengthening tasks, not blockers for entering Stage 9 novelty and
+literature analysis.

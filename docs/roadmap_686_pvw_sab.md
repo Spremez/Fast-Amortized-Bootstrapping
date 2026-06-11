@@ -574,6 +574,9 @@ Current status:
   - `spqlios_avx512` improves absolute time but reduces the relative PVW
     speedup to `1.099x` at `r=2` and `1.249x` at `r=4`, so backend/SIMD
     effects are not counted as algorithmic gain.
+- Stage 8 is complete at the engineering-evidence level as of commit
+  `d5a6b1b`. Remaining `r=4` 50+ seed expansion and stage-level noise probes
+  are paper-strengthening tasks rather than blockers for Stage 9.
 
 ## Stage 9: Literature and Novelty Check
 

@@ -37,3 +37,4 @@
 - [x] Add Stage 8 clear-elision Stage 6-style noise smoke.
 - [x] Add Stage 8 clear-elision initial deterministic 10-seed noise sweeps for `r=2`/`r=4`.
 - [x] Expand Stage 8 clear-elision `r=2` noise sweep to 50 seeds if used for final claim.
+- [x] Record Stage 8 engineering exit assessment.
