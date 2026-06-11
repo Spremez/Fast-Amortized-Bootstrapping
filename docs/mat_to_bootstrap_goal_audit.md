@@ -260,9 +260,11 @@ Do not claim final bootstrapping speedup yet.
      scalar automorphism oracle.
 
 3. Stage 5 `sparse_mul` batching:
-   - batch across independent LUT/SAB lanes only when they share sparse secret
-     schedule;
-   - ensure lane identities do not get mixed by rotation/extract logic.
+   - isolated binary branch now passes for `r=1/2/4`, `h=2`, `r_prec=3`;
+   - the check compares after each `RGSW_monomial_mul`, each binary `sub_a`,
+     and the final `RGSW_monomial_mul`;
+   - target-size `h=39, in_N=2048` and full bootstrapping output extraction are
+     still not integrated.
 
 4. Key and selector materialization:
    - define MAT selector generation from scalar selector schedule;
@@ -348,7 +350,7 @@ speedup. Current evidence proves only:
 Required next milestone:
 
 ```text
-Stage 5 isolated binary sparse_mul lane equivalence.
+Stage 5 sab_pvw_* context/API and small full bootstrapping correctness.
 ```
 
 Only after Stage 5 and full `sab_pvw_*` integration can the work claim anything

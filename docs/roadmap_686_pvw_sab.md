@@ -278,13 +278,18 @@ Current status:
   - `r_prec=3` trivial-selector multibit schedule `{1,0,1}`;
   - `r_prec=3` full encrypted multibit schedule `{1,0,1}`.
 - Added PVW TMLWE automorphism/key-switch support for NCMUX.
+- Verified isolated binary `sparse_mul` lane equivalence for `r=1/2/4`,
+  `h=2`, `r_prec=3`.
 - Detailed results are recorded in `docs/stage5_pvw_rgsw_monomial_log.md`.
+- Binary sparse results are recorded in `docs/stage5_pvw_sparse_mul_log.md`.
 
 Remaining limitation:
 
-- The PVW path is not yet connected to `sparse_mul` or full
-  `sab_rlwe_bootstrap`.
-- The next isolated boundary is binary `sub_a` and final `sparse_mul`.
+- The PVW path is not yet connected to full `sab_pvw_*` bootstrapping.
+- Binary `sparse_mul` is verified only on the isolated small test shape, not
+  yet on target `h=39, in_N=2048`.
+- Ternary/include-zero/gaussian `sub_a` branches remain out of scope for the
+  current binary target.
 
 Failure handling:
 
@@ -436,17 +441,16 @@ Verification:
 
 The next executable step remains inside Stage 5:
 
-1. Implement an isolated PVW binary `sub_a` test path for the `SET_2_3_2048`
-   branch.
-2. Compose verified PVW `RGSW_monomial_mul` + binary `sub_a` into isolated
-   `sparse_mul` lane equivalence.
-3. Verify the invariant after each `sparse_mul` phase:
+1. Introduce a `sab_pvw_*` context/API skeleton without replacing
+   `sab_rlwe_bootstrap`.
+2. Materialize the MAT selector schedule from the same binary scalar schedule.
+3. Run small full bootstrapping correctness with per-lane output comparison:
 
 ```text
-phase(acc_pvw.body[q] after step t)
+phase(out_pvw_lane[q])
 ==
-phase(acc_scalar[q] after the same scalar step t)
+phase(out_scalar[q])
 ```
 
-4. Only after isolated binary `sparse_mul` passes, move to `sab_pvw_*`
-   context/API integration.
+4. Only after small full `sab_pvw_*` correctness passes, scale to target
+   `SET_2_3_2048`, then run noise and performance A/B.
