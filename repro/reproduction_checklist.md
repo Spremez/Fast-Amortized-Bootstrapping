@@ -10,5 +10,6 @@
 - [x] Add scalar baseline smoke result for this stage.
 - [x] Add packing/HW-KS-aware PVW correctness run.
 - [x] Add target-size `SET_2_3_2048` PVW full SAB correctness run.
+- [x] Add initial target-size full SAB A/B benchmark run.
 - [ ] Add multi-seed correctness/noise run log.
 - [ ] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.

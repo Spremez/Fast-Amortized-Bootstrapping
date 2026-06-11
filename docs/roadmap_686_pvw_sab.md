@@ -392,6 +392,20 @@ Minimum success:
 - Stable throughput improvement for target parameter sets.
 - No correctness/noise regression.
 
+Current status:
+
+- Initial target-shape full-output A/B benchmark added under
+  `SAB_PVW_BENCH=true`.
+- First WSL/Linux `spqlios` result for `SET_2_3_2048` shape, `r=2`,
+  `h=39`, `r_prec=7`, `reps=3`:
+  - PVW full bootstrap average: `20,329,962.667 us` for 2 lanes;
+  - repeated scalar full bootstrap average: `24,774,453.000 us` for 2 lanes;
+  - throughput speedup: `1.219x`.
+- Detailed result is recorded in `docs/stage7_pvw_full_bench_log.md`.
+- This is not final performance evidence yet because multi-seed/noise,
+  repeated benchmark variance, memory/key-size, and backend separation remain
+  open.
+
 Failure handling:
 
 - If raw kernel is faster but full SAB is not, inspect allocation, conversion,

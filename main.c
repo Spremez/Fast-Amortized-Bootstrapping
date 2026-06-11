@@ -3,7 +3,7 @@
 #include <benchmark_util.h>
 #include <sab_profile.h>
 #include <inttypes.h>
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH)
 #include <sab_pvw.h>
 #endif
 
@@ -551,7 +551,7 @@ void test_sab_microbench(){
   );
 }
 
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH)
 static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
   const int N = in->s[0][lane]->N;
   TRLWE_Key out = trlwe_alloc_key(N, in->k, in->sigma);
@@ -2380,6 +2380,112 @@ void test_sab_pvw_target_full(){
   if(!pass) exit(1);
 }
 
+void test_sab_pvw_target_bench(){
+  const int r = 2, reps = 3;
+  const int in_N = 2048, in_k = 1, out_N = 2048, out_k = 1;
+  const int l = 1, bg_bit = 23, prec = 3, h = 39, r_prec = 7;
+  const int h_out = 512, h_packing = 256;
+  const int ell_packing = 2, b_packing = 14, ell_hw = 12, b_hw = 1;
+  uint64_t distances[39];
+
+  for (size_t idx = 0; idx < (size_t) h; idx++){
+    distances[idx] = idx < 8 ? 52 : 51;
+  }
+
+  TRLWE_Key input_key = test_binary_key_from_distances(in_N, in_k,
+      distances, h, pow(2, -15));
+  TRLWE_Key packing_key = trlwe_new_ternary_key(in_N, in_k, h_packing,
+      pow(2, -44));
+  PVW_TMLWE_Key pvw_key = pvmtmlwe_new_ternary_key(out_N, out_k, r, h_out,
+      pow(2, -50));
+  SAB_PVW_Key pvw_sab = sab_pvw_new_binary_full_key(input_key, packing_key,
+      pvw_key, prec, b_packing, ell_packing, ell_hw, b_hw, h, r_prec, l,
+      bg_bit);
+
+  SAB_Key * scalar_sabs = (SAB_Key *) safe_malloc(sizeof(SAB_Key) * r);
+  TRGSW_Key * scalar_trgsw_keys = (TRGSW_Key *) safe_malloc(sizeof(TRGSW_Key) * r);
+  TRLWE_Key * scalar_keys = (TRLWE_Key *) safe_malloc(sizeof(TRLWE_Key) * r);
+
+  TorusPolynomial input_msg = polynomial_new_torus_polynomial(in_N);
+  for (size_t idx = 0; idx < (size_t) in_N; idx++){
+    input_msg->coeffs[idx] = int2torus((3 * idx + 1) & 7, prec);
+  }
+  TRLWE input = trlwe_new_sample(input_msg, input_key);
+
+  TorusPolynomial * tv_msg = polynomial_new_array_of_torus_polynomials(out_N, r);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    for (size_t coeff = 0; coeff < (size_t) out_N; coeff++){
+      tv_msg[lane]->coeffs[coeff] = int2torus(
+          (5 * lane + 3 * coeff + 1) & 7, prec);
+    }
+  }
+  PVW_TMLWE pvw_tv = pvmtmlwe_new_noiseless_trivial_sample(tv_msg, out_k, r,
+      out_N);
+  TRLWE * scalar_tvs = trlwe_alloc_new_sample_array(r, out_k, out_N);
+  TRLWE * scalar_out = trlwe_alloc_new_sample_array(r, in_k, in_N);
+  TRLWE * pvw_out = trlwe_alloc_new_sample_array(r, in_k, in_N);
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    scalar_keys[lane] = trlwe_key_from_pvmtmlwe_lane(pvw_key, lane);
+    scalar_trgsw_keys[lane] = trgsw_new_key(scalar_keys[lane], l, bg_bit);
+    scalar_sabs[lane] = new_sparse_amortized_bootstrapping(input_key,
+        packing_key, scalar_trgsw_keys[lane], prec, b_packing, ell_packing,
+        ell_hw, b_hw, h, r_prec, false, false, false);
+    trlwe_noiseless_trivial_sample(scalar_tvs[lane], tv_msg[lane]);
+  }
+
+  sab_pvw_bootstrap_binary(pvw_out, input, pvw_tv, pvw_sab);
+  bool pass = true;
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    sab_rlwe_bootstrap(scalar_out[lane], input, scalar_tvs[lane],
+        scalar_sabs[lane]);
+    pass &= compare_trlwe_pair_phases("bench target full bootstrap binary",
+        pvw_out[lane], input_key, scalar_out[lane], input_key, prec, lane);
+  }
+  printf("SAB_PVW_BENCH correctness target_full r=%d h=%d r_prec=%d: %s\n",
+         r, h, r_prec, pass ? "Pass" : "Fail");
+  if(!pass) exit(1);
+
+  uint64_t pvw_total = 0, scalar_total = 0;
+  for (size_t rep = 0; rep < (size_t) reps; rep++){
+    const uint64_t begin = get_time();
+    sab_pvw_bootstrap_binary(pvw_out, input, pvw_tv, pvw_sab);
+    pvw_total += get_time() - begin;
+  }
+  for (size_t rep = 0; rep < (size_t) reps; rep++){
+    const uint64_t begin = get_time();
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      sab_rlwe_bootstrap(scalar_out[lane], input, scalar_tvs[lane],
+          scalar_sabs[lane]);
+    }
+    scalar_total += get_time() - begin;
+  }
+  const double pvw_avg = ((double) pvw_total) / reps;
+  const double scalar_avg = ((double) scalar_total) / reps;
+  printf("SAB_PVW_BENCH target_full r=%d reps=%d pvw_avg_us=%.3f pvw_lane_avg_us=%.3f scalar_repeated_avg_us=%.3f scalar_lane_avg_us=%.3f speedup_vs_scalar_repeated=%.3fx\n",
+         r, reps, pvw_avg, pvw_avg / r, scalar_avg, scalar_avg / r,
+         scalar_avg / pvw_avg);
+
+  free_trlwe_array(pvw_out, r);
+  free_trlwe_array(scalar_out, r);
+  free_trlwe_array(scalar_tvs, r);
+  free_pvmtmlwe(pvw_tv);
+  free_array_of_polynomials(tv_msg, r);
+  free_trlwe(input);
+  free_polynomial(input_msg);
+  free_sab_pvw_key(pvw_sab);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    free_trgsw_key(scalar_trgsw_keys[lane]);
+    free_trlwe_key(scalar_keys[lane]);
+  }
+  free(scalar_sabs);
+  free(scalar_trgsw_keys);
+  free(scalar_keys);
+  free_pvmtmlwe_key(pvw_key);
+  free_trlwe_key(packing_key);
+  free_trlwe_key(input_key);
+}
+
 void test_mat_trgsw_kernel(){
   bool pass = true;
   pass &= check_mat_trgsw_identity_lane(1);
@@ -2414,6 +2520,8 @@ int main(int argc, char const *argv[])
 {
 #if defined(SAB_PVW_TARGET_TEST)
   test_sab_pvw_target_full();
+#elif defined(SAB_PVW_BENCH)
+  test_sab_pvw_target_bench();
 #elif defined(SAB_PVW_KERNEL_TEST)
   test_mat_trgsw_kernel();
 #elif defined(SAB_MICROBENCH)
