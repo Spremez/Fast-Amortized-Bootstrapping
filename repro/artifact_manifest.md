@@ -38,6 +38,7 @@ Documentation artifacts:
 - `docs/stage6_pvw_noise_log.md`
 - `docs/stage7_pvw_full_bench_log.md`
 - `docs/stage8_ablation_plan.md`
+- `docs/stage8_clear_elision_log.md`
 
 Repro artifacts:
 
@@ -107,3 +108,7 @@ Repro artifacts:
 - `repro/stage8_backend_avx512_r4_reps2_runs3/run_0.log`
 - `repro/stage8_backend_avx512_r4_reps2_runs3/run_1.log`
 - `repro/stage8_backend_avx512_r4_reps2_runs3/run_2.log`
+- `repro/stage8_clear_elision_kernel_spqlios/main.log`
+- `repro/stage8_clear_elision_target_spqlios/main.log`
+- `repro/stage8_clear_elision_scalar_spqlios/main.log`
+- `repro/stage8_clear_elision_summary.csv`

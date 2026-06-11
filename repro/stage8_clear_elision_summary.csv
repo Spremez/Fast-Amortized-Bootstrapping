@@ -1,0 +1,4 @@
+gate,backend,status,command,summary,artifact
+kernel_small_api,spqlios,Pass,"make clean && make FFT_LIB=spqlios SAB_PVW_KERNEL_TEST=true KEY=BINARY PARAM=SET_2_3 -j$(nproc) && stdbuf -o0 ./main","r=1/2/4 kernel, CMUX/NCMUX, RGSW, sparse_mul, no-extract, extract, packing/HW-KS, and full-output small API gates passed; MAT clear_avg_us is 0.000 in phase breakdown","repro/stage8_clear_elision_kernel_spqlios/main.log"
+target_full,spqlios,Pass,"make clean && make FFT_LIB=spqlios SAB_PVW_TARGET_TEST=true KEY=BINARY PARAM=SET_2_3_2048 -j$(nproc) && stdbuf -o0 ./main","target-shape r=2 full-output PVW lane equivalence passed","repro/stage8_clear_elision_target_spqlios/main.log"
+scalar_baseline,spqlios,Pass,"make clean && make FFT_LIB=spqlios KEY=BINARY PARAM=SET_2_3 -j$(nproc) && stdbuf -o0 ./main","default scalar SAB passed after clear-elision; bootstrap time 11555228 us +- 895795.872240","repro/stage8_clear_elision_scalar_spqlios/main.log"

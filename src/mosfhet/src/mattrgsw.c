@@ -154,8 +154,14 @@ void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT s
     polynomial_torus_to_DFT(scratch->dec_dft[i], scratch->dec[i]);
   }
 
-  pvmtmlwe_noiseless_trivial_DFT_sample(out, NULL);
-  for (size_t row = 0; row < rows; row++){
+  for (size_t j = 0; j < k; j++){
+    polynomial_mul_DFT(out->a[j], scratch->dec_dft[0], selector->samples[0]->a[j]);
+  }
+  for (size_t j = 0; j < r; j++){
+    polynomial_mul_DFT(out->b[j], scratch->dec_dft[0], selector->samples[0]->b[j]);
+  }
+
+  for (size_t row = 1; row < rows; row++){
     for (size_t j = 0; j < k; j++){
       polynomial_mul_addto_DFT(out->a[j], scratch->dec_dft[row], selector->samples[row]->a[j]);
     }

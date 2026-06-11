@@ -239,6 +239,7 @@ protocol?
 Variants:
 
 - Clear-elision: initialize output from the first row, then add remaining rows.
+  Implemented; see `docs/stage8_clear_elision_log.md`.
 - Fused row/output addmul: load one decomposed DFT row and update all output
   components in a tight loop.
 - Small-r specialization: dedicated `k=1,l=1,r=2` and `r=4` kernels.
@@ -251,6 +252,16 @@ Gate:
 - Each kernel variant first passes Stage 3 `r=1/2/4` kernel tests.
 - Then it must pass Stage 5 small full-output API tests.
 - Only after those gates can it enter Stage 6/7 full SAB tests.
+
+Current decision:
+
+- Clear-elision is the first implemented variant because it removes a known
+  redundant DFT-output clear pass without changing the MAT selector layout,
+  decomposition, key material, or SAB protocol.
+- The kernel/small-API gate, target-shape PVW correctness gate, and scalar
+  baseline gate pass after the change.
+- Full repeated A/B performance for the clear-elision variant remains pending,
+  so no new full SAB speedup claim is attached to the variant yet.
 
 Failure handling:
 
@@ -289,7 +300,8 @@ Gate:
 3. Add a no-extract timing boundary only if full-output speedup is much smaller
    than kernel/RGSW evidence suggests.
 4. Choose exactly one kernel variant for implementation, starting with
-   clear-elision or small-r specialization.
+   clear-elision or small-r specialization. Clear-elision is implemented and
+   correctness-gated; repeated full-output A/B remains pending.
 5. Repeat Stage 6 noise and Stage 7 performance gates for any variant that
    changes arithmetic code.
 

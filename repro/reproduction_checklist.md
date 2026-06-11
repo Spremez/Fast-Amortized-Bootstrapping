@@ -30,4 +30,6 @@
 - [x] Add Stage 8 `r=1` full-output negative-control log.
 - [x] Add Stage 8 initial backend/SIMD sensitivity smoke.
 - [x] Add Stage 8 repeated backend/SIMD sensitivity matrix.
-- [ ] Add Stage 8 implementation-variant decision record.
+- [x] Add Stage 8 implementation-variant decision record.
+- [x] Add Stage 8 clear-elision kernel and correctness gates.
+- [ ] Add Stage 8 clear-elision repeated full-output A/B benchmark.

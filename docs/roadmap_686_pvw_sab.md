@@ -535,6 +535,15 @@ Current status:
 - Absolute AVX512 time improved for both scalar repeated and PVW, but relative
   PVW speedup was smaller than the primary `spqlios` sweep, reinforcing the
   need to separate backend/SIMD gains from same-backend algorithmic gains.
+- The first implementation variant, MAT external-product clear-elision, is now
+  implemented. It initializes output from the first decomposed row and adds the
+  remaining rows, removing the separate DFT-output clear pass.
+- Clear-elision has passed:
+  - WSL/Linux `spqlios` `SAB_PVW_KERNEL_TEST=true` for `r=1/2/4`;
+  - target-shape `SAB_PVW_TARGET_TEST=true`, `r=2`, `SET_2_3_2048`;
+  - default scalar SAB smoke.
+- Full repeated A/B performance must be rerun after clear-elision before
+  assigning a new full SAB speedup number to this variant.
 
 ## Stage 9: Literature and Novelty Check
 

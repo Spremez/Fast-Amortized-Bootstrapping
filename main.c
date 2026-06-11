@@ -1255,11 +1255,13 @@ static void bench_external_product_phase_breakdown(int r){
     mat_phases.dft_us += get_time() - start;
 
     start = get_time();
-    pvmtmlwe_noiseless_trivial_DFT_sample(mat_out, NULL);
-    mat_phases.clear_us += get_time() - start;
-
-    start = get_time();
-    for (size_t row = 0; row < (size_t) mat_rows; row++){
+    for (size_t j = 0; j < (size_t) k; j++){
+      polynomial_mul_DFT(mat_out->a[j], scratch->dec_dft[0], mat_selector->samples[0]->a[j]);
+    }
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      polynomial_mul_DFT(mat_out->b[lane], scratch->dec_dft[0], mat_selector->samples[0]->b[lane]);
+    }
+    for (size_t row = 1; row < (size_t) mat_rows; row++){
       for (size_t j = 0; j < (size_t) k; j++){
         polynomial_mul_addto_DFT(mat_out->a[j], scratch->dec_dft[row], mat_selector->samples[row]->a[j]);
       }
