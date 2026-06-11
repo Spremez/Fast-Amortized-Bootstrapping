@@ -144,6 +144,29 @@ Interpretation:
 - This is stronger than the earlier `r=2` `1.191x` run, but it is still an
   engineering result rather than final paper-grade performance evidence.
 
+## Cross-r Summary
+
+Machine-readable table:
+
+- `repro/stage7_full_bench_summary.csv`
+
+| backend | r | reps | PVW avg us | scalar repeated avg us | PVW lane avg us | scalar lane avg us | speedup |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| spqlios | 2 | 5 | 20,407,053.000 | 24,304,453.600 | 10,203,526.500 | 12,152,226.800 | 1.191x |
+| spqlios | 4 | 3 | 35,637,187.667 | 46,330,045.333 | 8,909,296.917 | 11,582,511.333 | 1.300x |
+
+Notes:
+
+- Both rows use the same WSL/Linux `spqlios` target backend and target SAB
+  shape.
+- `r=4` has better recorded throughput scaling than `r=2` in this evidence set.
+- The `r=2` row comes from the earlier documented paired run; no separate raw
+  `main.log` was preserved for that run.
+- The `r=4` row is backed by `repro/stage7_pvw_bench_r4_reps3/main.log`.
+- This table separates same-backend algorithmic comparison from any future
+  backend/SIMD comparison, but backend separation is not complete until the
+  same benchmark matrix is repeated on another backend or AVX path.
+
 ## Scalar Baseline Regression
 
 Command:

@@ -22,4 +22,5 @@
 - [ ] Decide whether Stage 6 `r=4` needs a 50+ seed campaign.
 - [ ] Add Stage 6 stage-level noise probe logs.
 - [x] Add Stage 7 `r=4` target-shape full SAB A/B benchmark run.
+- [x] Add Stage 7 `r=2`/`r=4` full SAB benchmark summary table.
 - [ ] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.
