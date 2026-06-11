@@ -396,11 +396,14 @@ Current status:
   - average PVW-minus-scalar final-output noise gap: `-0.00386`
     log2 units.
 - Detailed result is recorded in `docs/stage6_pvw_noise_log.md`.
-- A one-seed WSL/Linux `spqlios` target-shape smoke for `r=4` also passed:
-  - PVW final-output failures: `0 / 8192`;
-  - scalar final-output failures: `0 / 8192`;
-  - PVW-vs-scalar quantized pair failures: `0 / 8192`;
-  - PVW-minus-scalar final-output noise gap: `-0.541` log2 units.
+- A 10-seed WSL/Linux `spqlios` target-shape sweep for `r=4` also passed:
+  - PVW final-output failures: `0 / 81920`;
+  - scalar final-output failures: `0 / 81920`;
+  - PVW-vs-scalar quantized pair failures: `0 / 81920`;
+  - PVW-minus-scalar final-output noise gap range: `[-0.541, 0.510]`
+    log2 units;
+  - average PVW-minus-scalar final-output noise gap: `-0.2026`
+    log2 units.
 
 Remaining limitation:
 
@@ -408,8 +411,8 @@ Remaining limitation:
   is not a formal paper-grade failure-rate claim.
 - Noise is currently measured at final output. Stage-level noise probes before
   and after blind rotation, extract, packing KS, and HW KS remain open.
-- `r=4` target-shape correctness/noise has only a one-seed smoke; multi-seed
-  `r=4` coverage is not yet measured.
+- `r=4` target-shape correctness/noise has a 10-seed engineering sweep, but
+  not a paper-grade failure-rate campaign.
 
 Recommended starting point:
 

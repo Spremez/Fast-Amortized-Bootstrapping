@@ -15,10 +15,10 @@ for:
 - repeated scalar output versus expected LUT output;
 - PVW output versus repeated scalar output.
 
-This is still an engineering gate. The recorded 50-seed `r=2` campaign is
-useful correctness/noise evidence, but it is not a paper-grade failure-rate
-experiment. `r=4` has only a one-seed target-shape smoke, and stage-level noise
-probes still need to be run.
+This is still an engineering gate. The recorded 50-seed `r=2` campaign and
+10-seed `r=4` campaign are useful correctness/noise evidence, but they are not
+paper-grade failure-rate experiments. Stage-level noise probes still need to be
+run.
 
 ## Code Artifacts
 
@@ -355,6 +355,64 @@ Interpretation:
 - This is a viability smoke only. It does not replace a multi-seed `r=4`
   correctness/noise campaign.
 
+## r=4 10-Seed Sweep
+
+After the one-seed `r=4` smoke passed, the same target-shape gate was extended
+to 10 consecutive deterministic seeds on WSL/Linux `spqlios`.
+
+Command:
+
+```bash
+STAGE6_SWEEP_OUT_DIR=repro/stage6_seed_sweep_r4_10 \
+  SAB_PVW_NOISE_R=4 \
+  bash scripts/run_stage6_seed_sweep_range.sh 6862025 10
+```
+
+Generated artifacts:
+
+- `repro/stage6_seed_sweep_r4_10/summary.csv`
+- `repro/stage6_seed_sweep_r4_10/seed_6862025.log` through
+  `repro/stage6_seed_sweep_r4_10/seed_6862034.log`
+
+Summary:
+
+```text
+seed,status,points,pvw_failures,scalar_failures,pair_failures,pvw_log2_sigma_torus,scalar_log2_sigma_torus,pair_log2_sigma_torus,pvw_minus_scalar_log2,max_allowed_log2_gap
+6862025,Pass,8192,0,0,0,-8.411,-7.870,-7.530,-0.541,4.000
+6862026,Pass,8192,0,0,0,-8.332,-8.225,-7.806,-0.107,4.000
+6862027,Pass,8192,0,0,0,-8.423,-8.033,-7.744,-0.389,4.000
+6862028,Pass,8192,0,0,0,-8.383,-7.867,-7.488,-0.516,4.000
+6862029,Pass,8192,0,0,0,-8.267,-8.175,-7.761,-0.092,4.000
+6862030,Pass,8192,0,0,0,-7.831,-8.342,-7.503,0.510,4.000
+6862031,Pass,8192,0,0,0,-8.086,-8.277,-7.747,0.192,4.000
+6862032,Pass,8192,0,0,0,-8.463,-7.980,-7.659,-0.483,4.000
+6862033,Pass,8192,0,0,0,-8.371,-8.170,-7.778,-0.202,4.000
+6862034,Pass,8192,0,0,0,-8.465,-8.067,-7.713,-0.398,4.000
+```
+
+Aggregate:
+
+- Seeds: `10` (`6862025` through `6862034`).
+- Total final-output points: `81920`.
+- PVW final-output failures: `0 / 81920`.
+- Scalar final-output failures: `0 / 81920`.
+- PVW-vs-scalar pair failures: `0 / 81920`.
+- PVW-minus-scalar final-output noise gap:
+  - minimum: `-0.541` log2 units;
+  - maximum: `0.510` log2 units;
+  - average: `-0.2026` log2 units.
+- Current loose engineering threshold:
+  `SAB_PVW_NOISE_MAX_LOG2_GAP=4.0`.
+
+Interpretation:
+
+- The `r=4` 10-seed sweep did not expose final-output correctness failures for
+  PVW or repeated scalar SAB.
+- The largest observed positive PVW-minus-scalar final-output noise gap was
+  `0.510` log2 units, below the current engineering gate of `4.0`.
+- This is a useful engineering campaign for `r=4`, but it is smaller than the
+  50-seed `r=2` campaign and still does not include stage-level noise probes.
+
 ## Scalar Baseline After Stage 6 Gate
 
 Command:
@@ -415,8 +473,8 @@ These are platform/toolchain observations, not algorithm failures:
 
 ## Remaining Work
 
-- Expand `r=4` from the one-seed smoke to a multi-seed correctness/noise
-  campaign after choosing an acceptable runtime budget.
+- Decide whether to extend `r=4` beyond the 10-seed engineering campaign before
+  using it for paper-level claims.
 - Add stage-level noise probes before/after blind rotation, extract, packing
   KS, and HW KS if a final paper claim needs more than final-output noise.
 - If this becomes a paper claim, expand beyond the 50-seed engineering
