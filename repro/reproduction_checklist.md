@@ -26,7 +26,7 @@
 - [x] Add Stage 7 keygen/key-size/RSS resource metrics for `r=2`/`r=4`.
 - [x] Add Stage 7 repeated process-level benchmark sweep for `r=2`/`r=4`.
 - [x] Add Stage 7 portable FFNT target-shape backend smoke.
-- [ ] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.
+- [x] Add full bootstrapping A/B performance tables with backend separated from algorithmic gain.
 - [x] Add Stage 8 `r=1` full-output negative-control log.
 - [x] Add Stage 8 initial backend/SIMD sensitivity smoke.
 - [x] Add Stage 8 repeated backend/SIMD sensitivity matrix.

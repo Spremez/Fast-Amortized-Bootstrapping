@@ -566,6 +566,14 @@ Current status:
 - The `r=2` clear-elision sweep now reaches the planned 50-seed engineering
   gate. A formal paper-grade failure-rate result still needs statistical
   treatment beyond this engineering campaign.
+- Full SAB performance gain separation is now recorded in
+  `docs/stage8_gain_separation.md` and
+  `repro/stage8_full_bootstrap_gain_separation.csv`:
+  - same-backend `spqlios` algorithmic full SAB speedup after clear-elision is
+    `1.269x` for `r=2` and `1.337x` for `r=4`;
+  - `spqlios_avx512` improves absolute time but reduces the relative PVW
+    speedup to `1.099x` at `r=2` and `1.249x` at `r=4`, so backend/SIMD
+    effects are not counted as algorithmic gain.
 
 ## Stage 9: Literature and Novelty Check
 

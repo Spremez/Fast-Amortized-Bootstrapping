@@ -206,6 +206,11 @@ Interpretation:
 - Backend separation now supports a cautious same-backend algorithmic direction:
   `r=4` is consistently positive across `spqlios` and `spqlios_avx512`; `r=2`
   is positive on `spqlios` but backend-sensitive under AVX512.
+- A derived full-bootstrap gain-separation table is recorded in
+  `docs/stage8_gain_separation.md` and
+  `repro/stage8_full_bootstrap_gain_separation.csv`. It treats same-backend
+  PVW-vs-repeated-scalar full SAB speedup as the algorithmic metric, and keeps
+  backend/SIMD absolute timing gains in separate columns.
 
 ### A3: Boundary Ablation
 
@@ -312,6 +317,9 @@ Gate:
    correctness-gated; repeated full-output A/B is recorded for `r=4`.
 5. Repeat Stage 6 noise and Stage 7 performance gates for any variant that
    changes arithmetic code.
+6. Record a full-bootstrap gain-separation table that separates same-backend
+   algorithmic gain from backend/SIMD gain. Done in
+   `docs/stage8_gain_separation.md`.
 
 ## Stage 8 Exit Criteria
 
