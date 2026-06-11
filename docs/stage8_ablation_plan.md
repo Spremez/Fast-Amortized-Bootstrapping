@@ -166,35 +166,46 @@ Failure handling:
 - If all backends show the same direction but different magnitudes, separate
   algorithmic direction from backend magnitude.
 
-Recorded AVX512 backend smoke command:
+Recorded AVX512 backend sensitivity commands:
 
 ```bash
-STAGE7_BENCH_OUT_DIR=repro/stage8_backend_avx512_r2_reps1_runs1 \
-FFT_LIB=spqlios_avx512 SAB_PVW_BENCH_R=2 SAB_PVW_BENCH_REPS=1 \
-STAGE7_BENCH_RUNS=1 bash scripts/run_stage7_bench_sweep.sh
+STAGE7_BENCH_OUT_DIR=repro/stage8_backend_avx512_r2_reps2_runs3 \
+FFT_LIB=spqlios_avx512 SAB_PVW_BENCH_R=2 SAB_PVW_BENCH_REPS=2 \
+STAGE7_BENCH_RUNS=3 bash scripts/run_stage7_bench_sweep.sh
+
+STAGE7_BENCH_OUT_DIR=repro/stage8_backend_avx512_r4_reps2_runs3 \
+FFT_LIB=spqlios_avx512 SAB_PVW_BENCH_R=4 SAB_PVW_BENCH_REPS=2 \
+STAGE7_BENCH_RUNS=3 bash scripts/run_stage7_bench_sweep.sh
 ```
 
 Machine-readable table:
 
 - `repro/stage8_backend_sensitivity_summary.csv`
 
-Recorded `r=2` backend sensitivity:
+Recorded backend sensitivity matrix:
 
-| backend | process runs | reps per run | PVW us | scalar repeated us | speedup | role |
-|---|---:|---:|---:|---:|---:|---|
-| spqlios | 3 | 2 | 19,266,121.667 | 22,848,639.333 | 1.188x | primary sweep |
-| spqlios_avx512 | 1 | 1 | 14,741,933.000 | 15,564,569.000 | 1.056x | AVX512 smoke |
-| ffnt | 1 | 1 | 37,360,973.000 | 45,495,270.000 | 1.218x | portable smoke only |
+| backend | r | runs | reps/run | PVW mean us | scalar mean us | speedup mean | sample stddev | range | role |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| spqlios | 2 | 3 | 2 | 19,266,121.667 | 22,848,639.333 | 1.188x | 0.066 | 1.132x-1.261x | primary sweep |
+| spqlios | 4 | 3 | 2 | 35,402,965.167 | 46,436,548.167 | 1.312x | 0.014 | 1.302x-1.328x | primary sweep |
+| spqlios_avx512 | 2 | 3 | 2 | 15,085,929.667 | 16,487,502.333 | 1.099x | 0.157 | 0.991x-1.280x | AVX512 sweep |
+| spqlios_avx512 | 4 | 3 | 2 | 27,847,373.000 | 34,782,265.333 | 1.249x | 0.021 | 1.235x-1.274x | AVX512 sweep |
+| ffnt | 2 | 1 | 1 | 37,360,973.000 | 45,495,270.000 | 1.218x | 0.000 | 1.218x-1.218x | portable smoke only |
 
 Interpretation:
 
 - AVX512 reduces absolute full-bootstrap time for both scalar repeated and PVW.
-- The observed single-run AVX512 relative speedup is smaller than the `spqlios`
-  repeated sweep (`1.056x` vs `1.188x` at `r=2`), which matches the lower-level
-  Stage 3 observation that faster SIMD can reduce the relative MAT advantage.
-- This is only a smoke result because it has one process run and one timing
-  repetition. It is enough to justify a full AVX512 matrix if backend-sensitive
-  claims become important.
+- At `r=2`, the AVX512 repeated sweep is positive on average but unstable:
+  mean `1.099x`, sample stddev `0.157`, and one run below parity.
+- At `r=4`, the AVX512 repeated sweep remains stable and positive:
+  mean `1.249x`, sample stddev `0.021`, and all runs above `1.23x`.
+- The relative AVX512 speedups are smaller than the primary `spqlios`
+  speedups, especially for `r=2`. This matches the lower-level Stage 3
+  observation that faster SIMD can reduce the relative MAT advantage by
+  accelerating both scalar repeated and MAT/PVW paths.
+- Backend separation now supports a cautious same-backend algorithmic direction:
+  `r=4` is consistently positive across `spqlios` and `spqlios_avx512`; `r=2`
+  is positive on `spqlios` but backend-sensitive under AVX512.
 
 ### A3: Boundary Ablation
 
@@ -273,8 +284,8 @@ Gate:
 
 1. Run `r=1` full-output negative control on WSL/Linux `spqlios`. Done.
 2. If `r=1` behaves as expected, run `spqlios_avx512` full-output `r=2/4`
-   sweeps if CPU support and build remain stable. `r=2` smoke is done; full
-   repeated `r=2/4` AVX512 sweeps remain optional.
+   sweeps if CPU support and build remain stable. Done for `r=2/4` with
+   `reps=2`, `runs=3`.
 3. Add a no-extract timing boundary only if full-output speedup is much smaller
    than kernel/RGSW evidence suggests.
 4. Choose exactly one kernel variant for implementation, starting with

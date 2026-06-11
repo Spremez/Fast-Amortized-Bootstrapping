@@ -1,0 +1,4 @@
+SAB_PVW_BENCH correctness target_full r=4 h=39 r_prec=7: Pass
+SAB_PVW_BENCH sample target_full r=4 rep=0 pvw_us=28625360 scalar_repeated_us=35852747 speedup=1.252x
+SAB_PVW_BENCH sample target_full r=4 rep=1 pvw_us=28260521 scalar_repeated_us=34382067 speedup=1.217x
+SAB_PVW_BENCH summary target_full r=4 reps=2 pvw_avg_us=28442940.500 pvw_stddev_us=257980.131 pvw_lane_avg_us=7110735.125 scalar_repeated_avg_us=35117407.000 scalar_stddev_us=1039927.801 scalar_lane_avg_us=8779351.750 speedup_vs_scalar_repeated=1.235x speedup_stddev=0.025

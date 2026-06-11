@@ -1,4 +1,6 @@
-backend,r,reps_per_run,runs,status,pvw_avg_us,scalar_repeated_avg_us,speedup_vs_scalar_repeated,role,source_dir
-spqlios,2,2,3,Pass,19266121.667,22848639.333,1.188,primary same-backend performance sweep,repro/stage7_bench_sweep_r2_reps2_runs3
-spqlios_avx512,2,1,1,Pass,14741933.000,15564569.000,1.056,AVX512 backend sensitivity smoke,repro/stage8_backend_avx512_r2_reps1_runs1
-ffnt,2,1,1,Pass,37360973.000,45495270.000,1.218,portable backend smoke only,repro/stage7_backend_ffnt_r2_reps1_runs1
+backend,r,reps_per_run,runs,status,pvw_avg_us_mean,scalar_repeated_avg_us_mean,speedup_mean,speedup_sample_stddev,min_speedup,max_speedup,role,source_dir
+spqlios,2,2,3,Pass,19266121.667,22848639.333,1.188,0.066,1.132,1.261,primary same-backend performance sweep,repro/stage7_bench_sweep_r2_reps2_runs3
+spqlios,4,2,3,Pass,35402965.167,46436548.167,1.312,0.014,1.302,1.328,primary same-backend performance sweep,repro/stage7_bench_sweep_r4_reps2_runs3
+spqlios_avx512,2,2,3,Pass,15085929.667,16487502.333,1.099,0.157,0.991,1.280,AVX512 repeated backend sensitivity sweep,repro/stage8_backend_avx512_r2_reps2_runs3
+spqlios_avx512,4,2,3,Pass,27847373.000,34782265.333,1.249,0.021,1.235,1.274,AVX512 repeated backend sensitivity sweep,repro/stage8_backend_avx512_r4_reps2_runs3
+ffnt,2,1,1,Pass,37360973.000,45495270.000,1.218,0.000,1.218,1.218,portable backend smoke only,repro/stage7_backend_ffnt_r2_reps1_runs1
