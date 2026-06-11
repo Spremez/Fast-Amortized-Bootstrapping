@@ -265,10 +265,11 @@ Current decision:
     `1.172x-1.364x`;
   - `r=4`: `1.337x` speedup mean, sample stddev `0.012`, range
     `1.323x-1.345x`.
-- Stage 6 noise sweeps remain pending after the arithmetic-code change, so
-  clear-elision is not yet a final paper-grade implementation claim. Initial
-  smoke checks pass for `r=2` (`trials=3`) and `r=4` (`trials=1`), and
-  deterministic 10-seed sweeps pass for both `r=2` and `r=4`.
+- Stage 6-style noise gates after the arithmetic-code change pass for the
+  current engineering bar: `r=2` has a 50-seed deterministic sweep with
+  `0 / 204800` PVW failures and gap range `[-0.470, 0.636]`; `r=4` has a
+  10-seed deterministic sweep with `0 / 81920` PVW failures and gap range
+  `[-0.541, 0.510]`.
 
 Failure handling:
 

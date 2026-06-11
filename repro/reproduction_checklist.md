@@ -35,5 +35,5 @@
 - [x] Add Stage 8 clear-elision repeated `r=4` full-output A/B benchmark.
 - [x] Add Stage 8 clear-elision `r=2` repeated full-output A/B benchmark.
 - [x] Add Stage 8 clear-elision Stage 6-style noise smoke.
-- [x] Add Stage 8 clear-elision deterministic 10-seed noise sweeps for `r=2`/`r=4`.
-- [ ] Expand Stage 8 clear-elision `r=2` noise sweep to 50 seeds if used for final claim.
+- [x] Add Stage 8 clear-elision initial deterministic 10-seed noise sweeps for `r=2`/`r=4`.
+- [x] Expand Stage 8 clear-elision `r=2` noise sweep to 50 seeds if used for final claim.

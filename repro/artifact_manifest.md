@@ -124,9 +124,13 @@ Repro artifacts:
 - `repro/stage8_clear_elision_noise_r2_trials3/main.log`
 - `repro/stage8_clear_elision_noise_r4_trials1/main.log`
 - `repro/stage8_clear_elision_noise_summary.csv`
+- `repro/stage8_clear_elision_seed_sweep_r2_50_aggregate.csv`
 - `repro/stage8_clear_elision_seed_sweep_r2_10/summary.csv`
 - `repro/stage8_clear_elision_seed_sweep_r2_10/seed_6862025.log` through
   `repro/stage8_clear_elision_seed_sweep_r2_10/seed_6862034.log`
+- `repro/stage8_clear_elision_seed_sweep_r2_40_more/summary.csv`
+- `repro/stage8_clear_elision_seed_sweep_r2_40_more/seed_6862035.log`
+  through `repro/stage8_clear_elision_seed_sweep_r2_40_more/seed_6862074.log`
 - `repro/stage8_clear_elision_seed_sweep_r4_10/summary.csv`
 - `repro/stage8_clear_elision_seed_sweep_r4_10/seed_6862025.log` through
   `repro/stage8_clear_elision_seed_sweep_r4_10/seed_6862034.log`
