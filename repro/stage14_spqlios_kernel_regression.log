@@ -1,0 +1,103 @@
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=1: Pass
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=2: Pass
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=4: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=encrypted-selector bit0
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=1 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=encrypted-selector bit1
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=1 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=trivial-selector multibit
+SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=1 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=full-encrypted multibit
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=1 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin sparse_mul r=1
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=input_key
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=sab_pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=scalar_alloc
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=scalar_keys
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=acc_init
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=rounds
+SAB_PVW_KERNEL_TEST sparse_mul r=1 round=0 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=1 round=0 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=1 round=1 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=1 round=1 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=final_RGSW
+SAB_PVW API binary sparse_mul lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin bootstrap_wo_extract r=1
+SAB_PVW API bootstrap_wo_extract binary lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW API extract binary lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW API materialized TLWE binary lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW API packing/HW-KS binary lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW API full bootstrap binary lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=encrypted-selector bit0
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=2 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=encrypted-selector bit1
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=2 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=trivial-selector multibit
+SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=full-encrypted multibit
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin sparse_mul r=2
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=input_key
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=sab_pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=scalar_alloc
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=scalar_keys
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=acc_init
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=rounds
+SAB_PVW_KERNEL_TEST sparse_mul r=2 round=0 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=2 round=0 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=2 round=1 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=2 round=1 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=final_RGSW
+SAB_PVW API binary sparse_mul lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin bootstrap_wo_extract r=2
+SAB_PVW API bootstrap_wo_extract binary lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW API extract binary lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW API materialized TLWE binary lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW API packing/HW-KS binary lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW API full bootstrap binary lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=encrypted-selector bit0
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=4 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=encrypted-selector bit1
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=4 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=trivial-selector multibit
+SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=4 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=full-encrypted multibit
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=4 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin sparse_mul r=4
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=input_key
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=sab_pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=scalar_alloc
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=scalar_keys
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=acc_init
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=rounds
+SAB_PVW_KERNEL_TEST sparse_mul r=4 round=0 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=4 round=0 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=4 round=1 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=4 round=1 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=final_RGSW
+SAB_PVW API binary sparse_mul lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin bootstrap_wo_extract r=4
+SAB_PVW API bootstrap_wo_extract binary lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW API extract binary lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW API materialized TLWE binary lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW API packing/HW-KS binary lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW API full bootstrap binary lane equivalence r=4 h=2 r_prec=3: Pass
+MAT_TRGSW/PVW staged kernel test: Pass
+MAT_TRGSW microbench r=1 reps=1000 avg_us=8 lane_avg_us=8
+MAT_TRGSW microbench r=2 reps=1000 avg_us=14 lane_avg_us=7
+MAT_TRGSW microbench r=4 reps=1000 avg_us=30 lane_avg_us=7
+MAT_TRGSW vs scalar r=1 reps=1000 scalar_repeated_avg_us=8.049 scalar_lane_avg_us=8.049 mat_avg_us=8.007 mat_lane_avg_us=8.007 speedup_vs_scalar_repeated=1.005x
+MAT_TRGSW vs scalar r=2 reps=1000 scalar_repeated_avg_us=15.858 scalar_lane_avg_us=7.929 mat_avg_us=13.326 mat_lane_avg_us=6.663 speedup_vs_scalar_repeated=1.190x
+MAT_TRGSW vs scalar r=4 reps=1000 scalar_repeated_avg_us=34.930 scalar_lane_avg_us=8.732 mat_avg_us=27.099 mat_lane_avg_us=6.775 speedup_vs_scalar_repeated=1.289x
+MAT_TRGSW_FULL vs scalar_full r=1 reps=1000 scalar_repeated_avg_us=14.942 scalar_lane_avg_us=14.942 mat_avg_us=14.713 mat_lane_avg_us=14.713 speedup_vs_scalar_repeated=1.016x
+MAT_TRGSW_FULL vs scalar_full r=2 reps=1000 scalar_repeated_avg_us=31.407 scalar_lane_avg_us=15.704 mat_avg_us=24.277 mat_lane_avg_us=12.139 speedup_vs_scalar_repeated=1.294x
+MAT_TRGSW_FULL vs scalar_full r=4 reps=1000 scalar_repeated_avg_us=69.398 scalar_lane_avg_us=17.349 mat_avg_us=46.826 mat_lane_avg_us=11.707 speedup_vs_scalar_repeated=1.482x
+EP_BREAKDOWN scalar_repeated r=1 reps=1000 phase_sum_avg_us=7.635 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=0.630 decompose_pct=8.25 dft_avg_us=4.629 dft_pct=60.63 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=2.376 mul_pct=31.12 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN mat_shared_mask r=1 reps=1000 phase_sum_avg_us=7.639 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=0.689 decompose_pct=9.02 dft_avg_us=4.532 dft_pct=59.33 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=2.418 mul_pct=31.65 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN scalar_repeated r=2 reps=1000 phase_sum_avg_us=16.640 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=2.054 decompose_pct=12.34 dft_avg_us=9.409 dft_pct=56.54 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=5.177 mul_pct=31.11 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN mat_shared_mask r=2 reps=1000 phase_sum_avg_us=13.991 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=1.469 decompose_pct=10.50 dft_avg_us=7.134 dft_pct=50.99 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=5.388 mul_pct=38.51 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN scalar_repeated r=4 reps=1000 phase_sum_avg_us=33.986 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=4.027 decompose_pct=11.85 dft_avg_us=19.253 dft_pct=56.65 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=10.706 mul_pct=31.50 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN mat_shared_mask r=4 reps=1000 phase_sum_avg_us=29.037 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=2.618 decompose_pct=9.02 dft_avg_us=11.907 dft_pct=41.01 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=14.512 mul_pct=49.98 free_avg_us=0.000 free_pct=0.00

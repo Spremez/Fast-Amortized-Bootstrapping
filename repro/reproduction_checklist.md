@@ -71,4 +71,10 @@
 - [x] Add Stage 13 `r=2`/`r=4` unprofiled one-run full SAB smokes.
 - [ ] Add Stage 13 direct extraction three-process full SAB sweep only if promoted beyond cleanup.
 - [ ] Implement PVW-aware direct-to-packing KS only if the measured tail justifies the complexity.
-- [ ] Implement SAB-specific sparse/fused variants after PVW post-processing profile is fixed.
+- [x] Add Stage 14 algorithm-to-paper goal and MAT AVX512 completeness boundary.
+- [x] Add `SAB_PVW_BODY_PROFILE` profile switch for PVW no-extract body.
+- [x] Add Stage 14 `r=2`/`r=4` target body profile smokes and parseable CSV.
+- [x] Verify Stage 14 structural counts for MAT EP, CMUX/NCMUX, RGSW monomial, `sub_a`, and copy-back.
+- [x] Record Stage 14 decision that CMUX/RGSW/sparse fusion precedes AVX512-only promotion.
+- [ ] Implement SAB-specific sparse/fused variants after PVW body profile is fixed.
+- [ ] Complete MAT AVX512 promotion audit with repeated full SAB sweeps, counters, and broader shape coverage.

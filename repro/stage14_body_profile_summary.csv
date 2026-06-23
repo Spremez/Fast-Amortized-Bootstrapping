@@ -1,0 +1,3 @@
+stage,r,backend,profile_call,full_us,bench_pvw_avg_us,bench_scalar_repeated_avg_us,bench_speedup,mat_ep_calls,expected_mat_ep_calls,cmux_calls,ncmux_calls,rgsw_monomial_calls,sub_a_calls,copyback_calls,blind_rotate_pct,rgsw_pct,cmux_pct,mat_ep_pct,cmux_non_mat_pct,sub_a_pct,copyback_pct,mat_ep_avg_us,cmux_avg_us,status,label
+14,2,spqlios,1,22922300,23185027,27798279,1.199,573440,573440,573440,5080,40,39,40,99.803,98.071,95.546,43.805,51.741,1.732,1.775,17.510,38.193,PASS,engineering-smoke-profile
+14,4,spqlios,1,42393097,42893673,57447839,1.339,573440,573440,573440,5080,40,39,40,99.920,98.261,95.988,47.199,48.789,1.659,1.670,34.893,70.962,PASS,engineering-smoke-profile

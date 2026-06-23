@@ -1,0 +1,3 @@
+run,call_index,lanes,in_N,out_N,h,r_prec,full_us,setup_tv_xb_calls,setup_tv_xb_us,blind_rotate_calls,blind_rotate_us,sparse_mul_calls,sparse_mul_us,rgsw_monomial_calls,rgsw_monomial_us,cmux_calls,cmux_us,ncmux_calls,ncmux_us,mat_ep_calls,mat_ep_us,sub_a_calls,sub_a_us,copyback_calls,copyback_us
+0,0,2,2048,2048,39,7,22330284,1,41044,1,22289240,1,22289232,40,21920785,573440,21370541,5080,326424,573440,8282777,39,368392,40,381571
+0,1,2,2048,2048,39,7,22922300,1,45070,1,22877230,1,22877221,40,22480097,573440,21901318,5080,327196,573440,10041159,39,397071,40,406814

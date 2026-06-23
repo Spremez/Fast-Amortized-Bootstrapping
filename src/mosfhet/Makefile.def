@@ -62,6 +62,11 @@ ifeq ($(SAB_PVW_POSTPROC_PROFILE),true)
 	FLAGS += -DSAB_PVW_POSTPROC_PROFILE
 	ENABLE_PVW_TMLWE := true
 endif
+SAB_PVW_BODY_PROFILE ?= false
+ifeq ($(SAB_PVW_BODY_PROFILE),true)
+	FLAGS += -DSAB_PVW_BODY_PROFILE
+	ENABLE_PVW_TMLWE := true
+endif
 ifeq ($(ENABLE_PVW_TMLWE),true)
 	__SRC += pvwtmlwe.c mattrgsw.c
 endif
