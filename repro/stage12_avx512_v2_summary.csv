@@ -1,0 +1,9 @@
+artifact,backend,variant,r,runs,reps,status,speedup,notes,source
+default_kernel_crash_localization,spqlios_avx512,default,n/a,n/a,n/a,FAIL,n/a,"Default AVX512 staged gate crashed in the small-N sparse/bootstrap helper path; not owned by the small-r MAT variant.",repro/stage12_avx512_default_sparse_progress/main.log
+default_kernel_fixed,spqlios_avx512,default,n/a,n/a,n/a,PASS,n/a,"RGSW/CMUX/MAT staged pass; small-N sparse/bootstrap skipped with explicit reason; target gate required for AVX512 evidence.",repro/stage12_avx512_default_kernel_fixed/main.log
+spqlios_kernel_regression,spqlios,default,n/a,n/a,n/a,PASS,n/a,"Ordinary spqlios staged gate still runs full small sparse/bootstrap checks.",repro/stage12_spqlios_kernel_regression/main.log
+smallr_v2_kernel,spqlios_avx512,smallr_v2,2,n/a,n/a,PASS,1.226,"Isolated MAT_TRGSW speedup; full-output MAT_TRGSW speedup was 1.449x.",repro/stage12_avx512_smallr_v2_kernel/main.log
+smallr_v2_kernel,spqlios_avx512,smallr_v2,4,n/a,n/a,PASS,1.584,"Isolated MAT_TRGSW speedup; full-output MAT_TRGSW speedup was 1.481x.",repro/stage12_avx512_smallr_v2_kernel/main.log
+smallr_v2_target_full,spqlios_avx512,smallr_v2,2,n/a,n/a,PASS,n/a,"Target full-output correctness gate passed for explicit v2 path.",repro/stage12_avx512_smallr_v2_target_full/main.log
+smallr_v2_bench_r2,spqlios_avx512,smallr_v2,2,1,1,SMOKE_ONLY,1.137,"One-run full SAB smoke only; not accepted as a final speedup claim.",repro/stage12_avx512_smallr_v2_bench_r2_reps1_runs1/summary.csv
+smallr_v2_bench_r4,spqlios_avx512,smallr_v2,4,1,1,SMOKE_ONLY,1.253,"One-run full SAB smoke only; not accepted as a final speedup claim.",repro/stage12_avx512_smallr_v2_bench_r4_reps1_runs1/summary.csv

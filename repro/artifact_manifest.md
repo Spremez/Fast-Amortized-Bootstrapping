@@ -49,11 +49,14 @@ Documentation artifacts:
 - `docs/stage9_stage_noise_probe.md`
 - `docs/stage10_engineering_report.md`
 - `docs/stage11_pvw_sab_loop_engineering.md`
+- `docs/stage12_next_goal.md`
+- `docs/stage12_avx512_gate_and_v2_kernel_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_full_pipeline.md`
 - `theory_checks/pvw_sab_complexity_model.md`
 - `experiments/stage11_experiment_validation_plan.md`
+- `experiments/stage12_experiment_validation_plan.md`
 
 Repro artifacts:
 
@@ -177,3 +180,17 @@ Repro artifacts:
 - `repro/stage11_avx512_smallr_replay_r2_reps1_runs1/run_0.log`
 - `repro/stage11_avx512_smallr_replay_r4_reps1_runs1/summary.csv`
 - `repro/stage11_avx512_smallr_replay_r4_reps1_runs1/run_0.log`
+- `repro/stage12_avx512_v2_summary.csv`
+- `repro/stage12_avx512_default_kernel_check/main.log`
+- `repro/stage12_avx512_default_kernel_progress/main.log`
+- `repro/stage12_avx512_default_sparse_progress/main.log`
+- `repro/stage12_avx512_default_kernel_fixed/main.log`
+- `repro/stage12_avx512_smallr_kernel_fixed/main.log`
+- `repro/stage12_spqlios_kernel_regression/main.log`
+- `repro/stage12_avx512_default_target_full/main.log`
+- `repro/stage12_avx512_smallr_v2_kernel/main.log`
+- `repro/stage12_avx512_smallr_v2_target_full/main.log`
+- `repro/stage12_avx512_smallr_v2_bench_r2_reps1_runs1/summary.csv`
+- `repro/stage12_avx512_smallr_v2_bench_r2_reps1_runs1/run_0.log`
+- `repro/stage12_avx512_smallr_v2_bench_r4_reps1_runs1/summary.csv`
+- `repro/stage12_avx512_smallr_v2_bench_r4_reps1_runs1/run_0.log`

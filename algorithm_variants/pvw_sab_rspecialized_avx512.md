@@ -92,3 +92,66 @@ engineering data point and use it to motivate a stronger second variant:
 - no pointer-array inner loop;
 - separate hand-unrolled `r=2` and `r=4` functions;
 - microbench first, full SAB only after staged correctness passes.
+
+## Stage 12 V2 Update
+
+Status: implemented behind the same explicit flag, but still not enabled by
+default.
+
+V2 replaces the first pointer-array coefficient loop with two direct kernels:
+
+```text
+mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r2_avx512()
+mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_avx512()
+```
+
+The dispatch is active only for:
+
+```text
+FFT_LIB=spqlios_avx512
+MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true
+k=1
+l=1
+r in {2,4}
+```
+
+Algorithmic change inside one DFT block:
+
+```text
+for coeff block:
+  initialize all output accumulators from row 0
+  for row in 1..(k+r-1):
+    accumulate complex products into all output accumulators
+  store the shared mask output and r body outputs once
+```
+
+This keeps the arithmetic count unchanged at `(k+r)^2 * l` complex products,
+but removes the pointer-array output loop from the hot coefficient path and
+keeps output accumulators in AVX512 registers while rows are accumulated.
+
+Evidence:
+
+| artifact | status | result |
+|---|---|---|
+| `repro/stage12_avx512_smallr_v2_kernel/main.log` | PASS | staged correctness and isolated microbench passed |
+| `repro/stage12_avx512_smallr_v2_target_full/main.log` | PASS | target full-output correctness passed |
+| `repro/stage12_avx512_smallr_v2_bench_r2_reps1_runs1/summary.csv` | SMOKE_ONLY | full SAB `r=2` one-run speedup `1.137x` |
+| `repro/stage12_avx512_smallr_v2_bench_r4_reps1_runs1/summary.csv` | SMOKE_ONLY | full SAB `r=4` one-run speedup `1.253x` |
+
+Microbench signal:
+
+| benchmark | r | speedup vs repeated scalar |
+|---|---:|---:|
+| isolated MAT_TRGSW | 2 | `1.226x` |
+| isolated MAT_TRGSW | 4 | `1.584x` |
+| full-output MAT_TRGSW | 2 | `1.449x` |
+| full-output MAT_TRGSW | 4 | `1.481x` |
+
+Decision:
+
+```text
+V2 is accepted as a staged-correct isolated MAT kernel experiment, but it is not
+accepted as a new full SAB acceleration claim. The next algorithmic target is
+PVW-aware post-processing and SAB-specific sparse/fused batching, not more MAT
+micro-optimization alone.
+```

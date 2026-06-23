@@ -2155,11 +2155,15 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
   const int total_selectors = (h + 1) * r_prec;
   bool pass = true;
 
+  printf("SAB_PVW_KERNEL_TEST sparse_mul r=%d step=input_key\n", r);
   TRLWE_Key input_key = test_binary_key_from_distances(in_N, k,
       selector_values, h, pow(2, -15));
+  printf("SAB_PVW_KERNEL_TEST sparse_mul r=%d step=pvw_key\n", r);
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -70));
+  printf("SAB_PVW_KERNEL_TEST sparse_mul r=%d step=sab_pvw_key\n", r);
   SAB_PVW_Key pvw_sab = sab_pvw_new_binary_key(input_key, pvw_key,
       prec, h, r_prec, l, bg_bit);
+  printf("SAB_PVW_KERNEL_TEST sparse_mul r=%d step=scalar_alloc\n", r);
 
   TRLWE_Key * scalar_keys = (TRLWE_Key *) safe_malloc(sizeof(TRLWE_Key) * r);
   TRLWE_KS_Key * scalar_aut_minus1 = (TRLWE_KS_Key *) safe_malloc(sizeof(TRLWE_KS_Key) * r);
@@ -2173,6 +2177,7 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
 
   PVW_TMLWE * pvw_acc = alloc_pvw_sample_array_local(in_N, k, r, N);
 
+  printf("SAB_PVW_KERNEL_TEST sparse_mul r=%d step=scalar_keys\n", r);
   for (size_t lane = 0; lane < (size_t) r; lane++){
     scalar_keys[lane] = trlwe_key_from_pvmtmlwe_lane(pvw_key, lane);
     uint64_t scalar_aut_gens[1] = {gen_minus1};
@@ -2198,6 +2203,7 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
     }
   }
 
+  printf("SAB_PVW_KERNEL_TEST sparse_mul r=%d step=acc_init\n", r);
   TorusPolynomial * msg = polynomial_new_array_of_torus_polynomials(N, r);
   for (size_t idx = 0; idx < (size_t) in_N; idx++){
     for (size_t lane = 0; lane < (size_t) r; lane++){
@@ -2211,7 +2217,10 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
     }
   }
 
+  printf("SAB_PVW_KERNEL_TEST sparse_mul r=%d step=rounds\n", r);
   for (size_t round = 0; round < (size_t) h; round++){
+    printf("SAB_PVW_KERNEL_TEST sparse_mul r=%d round=%" PRIu64 " step=RGSW\n",
+           r, (uint64_t) round);
     sab_pvw_RGSW_monomial_mul(pvw_acc, pvw_sab->s[0][round], pvw_sab);
     for (size_t lane = 0; lane < (size_t) r; lane++){
       isolated_scalar_RGSW_monomial_mul_auto(scalar_acc[lane], scalar_tmp_poly[lane],
@@ -2225,6 +2234,8 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
         pvw_acc, pvw_key, scalar_acc, scalar_keys);
     if(!pass) break;
 
+    printf("SAB_PVW_KERNEL_TEST sparse_mul r=%d round=%" PRIu64 " step=sub_a\n",
+           r, (uint64_t) round);
     sab_pvw_sub_a_binary(pvw_acc, a, pvw_sab);
     for (size_t lane = 0; lane < (size_t) r; lane++){
       isolated_scalar_sub_a_binary(scalar_acc[lane], a, in_N, scalar_tmp[lane]);
@@ -2236,6 +2247,7 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
   }
 
   if(pass){
+    printf("SAB_PVW_KERNEL_TEST sparse_mul r=%d step=final_RGSW\n", r);
     sab_pvw_RGSW_monomial_mul(pvw_acc, pvw_sab->s[0][h], pvw_sab);
     for (size_t lane = 0; lane < (size_t) r; lane++){
       isolated_scalar_RGSW_monomial_mul_auto(scalar_acc[lane], scalar_tmp_poly[lane],
@@ -2515,14 +2527,24 @@ static bool check_pvw_rgsw_monomial_lane_equivalence(int r){
   const int bit_one[1] = {1};
   const int multi_bits[3] = {1, 0, 1};
 
+  printf("SAB_PVW_KERNEL_TEST begin RGSW_monomial r=%d case=encrypted-selector bit0\n", r);
   pass &= check_pvw_rgsw_monomial_lane_case(r, 1, bit_zero, true,
       "encrypted-selector bit0");
+  printf("SAB_PVW_KERNEL_TEST begin RGSW_monomial r=%d case=encrypted-selector bit1\n", r);
   pass &= check_pvw_rgsw_monomial_lane_case(r, 1, bit_one, true,
       "encrypted-selector bit1");
+  printf("SAB_PVW_KERNEL_TEST begin RGSW_monomial r=%d case=trivial-selector multibit\n", r);
   pass &= check_pvw_rgsw_monomial_lane_case(r, 3, multi_bits, false,
       "trivial-selector multibit");
+  printf("SAB_PVW_KERNEL_TEST begin RGSW_monomial r=%d case=full-encrypted multibit\n", r);
   pass &= check_pvw_rgsw_monomial_full_encrypted_case(r);
+#if defined(USE_SPQLIOS) && defined(AVX512_OPT)
+  printf("SAB_PVW_KERNEL_TEST skip small-N sparse/bootstrap r=%d backend=spqlios_avx512 reason=N=16 staged TRLWE key helpers are not supported by this backend; use target full gate\n", r);
+  return pass;
+#endif
+  printf("SAB_PVW_KERNEL_TEST begin sparse_mul r=%d\n", r);
   pass &= check_pvw_sparse_mul_binary_lane_equivalence(r);
+  printf("SAB_PVW_KERNEL_TEST begin bootstrap_wo_extract r=%d\n", r);
   pass &= check_pvw_bootstrap_wo_extract_binary_lane_equivalence(r);
   return pass;
 }

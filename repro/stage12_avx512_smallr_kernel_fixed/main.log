@@ -1,0 +1,46 @@
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=1: Pass
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=2: Pass
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=4: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=encrypted-selector bit0
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=1 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=encrypted-selector bit1
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=1 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=trivial-selector multibit
+SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=1 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=full-encrypted multibit
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=1 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST skip small-N sparse/bootstrap r=1 backend=spqlios_avx512 reason=N=16 staged TRLWE key helpers are not supported by this backend; use target full gate
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=encrypted-selector bit0
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=2 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=encrypted-selector bit1
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=2 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=trivial-selector multibit
+SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=full-encrypted multibit
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST skip small-N sparse/bootstrap r=2 backend=spqlios_avx512 reason=N=16 staged TRLWE key helpers are not supported by this backend; use target full gate
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=encrypted-selector bit0
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=4 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=encrypted-selector bit1
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=4 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=trivial-selector multibit
+SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=4 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=full-encrypted multibit
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=4 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST skip small-N sparse/bootstrap r=4 backend=spqlios_avx512 reason=N=16 staged TRLWE key helpers are not supported by this backend; use target full gate
+MAT_TRGSW/PVW staged kernel test: Pass
+MAT_TRGSW microbench r=1 reps=1000 avg_us=9 lane_avg_us=9
+MAT_TRGSW microbench r=2 reps=1000 avg_us=13 lane_avg_us=6
+MAT_TRGSW microbench r=4 reps=1000 avg_us=28 lane_avg_us=7
+MAT_TRGSW vs scalar r=1 reps=1000 scalar_repeated_avg_us=7.081 scalar_lane_avg_us=7.081 mat_avg_us=7.785 mat_lane_avg_us=7.785 speedup_vs_scalar_repeated=0.910x
+MAT_TRGSW vs scalar r=2 reps=1000 scalar_repeated_avg_us=16.764 scalar_lane_avg_us=8.382 mat_avg_us=16.502 mat_lane_avg_us=8.251 speedup_vs_scalar_repeated=1.016x
+MAT_TRGSW vs scalar r=4 reps=1000 scalar_repeated_avg_us=31.680 scalar_lane_avg_us=7.920 mat_avg_us=26.773 mat_lane_avg_us=6.693 speedup_vs_scalar_repeated=1.183x
+MAT_TRGSW_FULL vs scalar_full r=1 reps=1000 scalar_repeated_avg_us=17.519 scalar_lane_avg_us=17.519 mat_avg_us=15.527 mat_lane_avg_us=15.527 speedup_vs_scalar_repeated=1.128x
+MAT_TRGSW_FULL vs scalar_full r=2 reps=1000 scalar_repeated_avg_us=34.785 scalar_lane_avg_us=17.392 mat_avg_us=29.256 mat_lane_avg_us=14.628 speedup_vs_scalar_repeated=1.189x
+MAT_TRGSW_FULL vs scalar_full r=4 reps=1000 scalar_repeated_avg_us=68.094 scalar_lane_avg_us=17.023 mat_avg_us=47.600 mat_lane_avg_us=11.900 speedup_vs_scalar_repeated=1.431x
+EP_BREAKDOWN scalar_repeated r=1 reps=1000 phase_sum_avg_us=8.911 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=1.005 decompose_pct=11.28 dft_avg_us=5.546 dft_pct=62.24 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=2.360 mul_pct=26.48 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN mat_shared_mask r=1 reps=1000 phase_sum_avg_us=8.830 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=1.065 decompose_pct=12.06 dft_avg_us=5.393 dft_pct=61.08 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=2.372 mul_pct=26.86 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN scalar_repeated r=2 reps=1000 phase_sum_avg_us=19.097 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=2.815 decompose_pct=14.74 dft_avg_us=10.472 dft_pct=54.84 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=5.810 mul_pct=30.42 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN mat_shared_mask r=2 reps=1000 phase_sum_avg_us=16.052 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=2.097 decompose_pct=13.06 dft_avg_us=8.063 dft_pct=50.23 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=5.892 mul_pct=36.71 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN scalar_repeated r=4 reps=1000 phase_sum_avg_us=39.683 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=5.981 decompose_pct=15.07 dft_avg_us=21.329 dft_pct=53.75 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=12.373 mul_pct=31.18 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN mat_shared_mask r=4 reps=1000 phase_sum_avg_us=33.872 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=3.813 decompose_pct=11.26 dft_avg_us=13.705 dft_pct=40.46 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=16.354 mul_pct=48.28 free_avg_us=0.000 free_pct=0.00

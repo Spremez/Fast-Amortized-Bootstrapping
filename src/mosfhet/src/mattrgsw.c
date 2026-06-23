@@ -137,59 +137,140 @@ void free_mat_trgsw_mul_scratch(MAT_TRGSW_MUL_SCRATCH scratch){
 }
 
 #if defined(AVX512_OPT) && defined(MAT_TRGSW_AVX512_SMALLR_SPECIALIZED)
-static void mat_trgsw_mul_row_outputs_avx512(DFT_Polynomial * outs,
-    DFT_Polynomial dec, DFT_Polynomial * sels, int out_count, bool init){
-  const int N = dec->N;
+static inline void mat_avx512_complex_mul(__m512d dec_re, __m512d dec_im,
+    __m512d sel_re, __m512d sel_im, __m512d * out_re, __m512d * out_im){
+  *out_re = _mm512_fmsub_pd(dec_re, sel_re, _mm512_mul_pd(dec_im, sel_im));
+  *out_im = _mm512_fmadd_pd(dec_re, sel_im, _mm512_mul_pd(dec_im, sel_re));
+}
+
+static inline void mat_avx512_complex_addmul(__m512d dec_re, __m512d dec_im,
+    __m512d sel_re, __m512d sel_im, __m512d * acc_re, __m512d * acc_im){
+  __m512d re, im;
+  mat_avx512_complex_mul(dec_re, dec_im, sel_re, sel_im, &re, &im);
+  *acc_re = _mm512_add_pd(*acc_re, re);
+  *acc_im = _mm512_add_pd(*acc_im, im);
+}
+
+static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r2_avx512(
+    PVW_TMLWE_DFT out, MAT_TRGSW_DFT selector, DFT_Polynomial * dec_dft){
+  const int N = out->a[0]->N;
   const int vec_half = N / 16;
-  __m512d * dec_coeffs = (__m512d *) dec->coeffs;
+  __m512d * out_a = (__m512d *) out->a[0]->coeffs;
+  __m512d * out_b0 = (__m512d *) out->b[0]->coeffs;
+  __m512d * out_b1 = (__m512d *) out->b[1]->coeffs;
+
+  assert(out->k == 1);
+  assert(out->r == 2);
+  assert(selector->T == 1);
 
   for (int coeff = 0; coeff < vec_half; coeff++){
-    const __m512d dec_re = dec_coeffs[coeff];
-    const __m512d dec_im = dec_coeffs[coeff + vec_half];
-    for (int out_idx = 0; out_idx < out_count; out_idx++){
-      __m512d * sel_coeffs = (__m512d *) sels[out_idx]->coeffs;
-      __m512d * out_coeffs = (__m512d *) outs[out_idx]->coeffs;
-      const __m512d sel_re = sel_coeffs[coeff];
-      const __m512d sel_im = sel_coeffs[coeff + vec_half];
-      const __m512d re = _mm512_fmsub_pd(dec_re, sel_re,
-          _mm512_mul_pd(dec_im, sel_im));
-      const __m512d im = _mm512_fmadd_pd(dec_re, sel_im,
-          _mm512_mul_pd(dec_im, sel_re));
-      if(init){
-        out_coeffs[coeff] = re;
-        out_coeffs[coeff + vec_half] = im;
-      }else{
-        out_coeffs[coeff] = _mm512_add_pd(out_coeffs[coeff], re);
-        out_coeffs[coeff + vec_half] = _mm512_add_pd(
-            out_coeffs[coeff + vec_half], im);
-      }
+    __m512d * dec0 = (__m512d *) dec_dft[0]->coeffs;
+    __m512d dec_re = dec0[coeff];
+    __m512d dec_im = dec0[coeff + vec_half];
+    __m512d * sel_a = (__m512d *) selector->samples[0]->a[0]->coeffs;
+    __m512d * sel_b0 = (__m512d *) selector->samples[0]->b[0]->coeffs;
+    __m512d * sel_b1 = (__m512d *) selector->samples[0]->b[1]->coeffs;
+    __m512d acc_a_re, acc_a_im, acc_b0_re, acc_b0_im, acc_b1_re, acc_b1_im;
+
+    mat_avx512_complex_mul(dec_re, dec_im, sel_a[coeff],
+        sel_a[coeff + vec_half], &acc_a_re, &acc_a_im);
+    mat_avx512_complex_mul(dec_re, dec_im, sel_b0[coeff],
+        sel_b0[coeff + vec_half], &acc_b0_re, &acc_b0_im);
+    mat_avx512_complex_mul(dec_re, dec_im, sel_b1[coeff],
+        sel_b1[coeff + vec_half], &acc_b1_re, &acc_b1_im);
+
+    for (int row = 1; row < 3; row++){
+      __m512d * dec = (__m512d *) dec_dft[row]->coeffs;
+      dec_re = dec[coeff];
+      dec_im = dec[coeff + vec_half];
+      sel_a = (__m512d *) selector->samples[row]->a[0]->coeffs;
+      sel_b0 = (__m512d *) selector->samples[row]->b[0]->coeffs;
+      sel_b1 = (__m512d *) selector->samples[row]->b[1]->coeffs;
+      mat_avx512_complex_addmul(dec_re, dec_im, sel_a[coeff],
+          sel_a[coeff + vec_half], &acc_a_re, &acc_a_im);
+      mat_avx512_complex_addmul(dec_re, dec_im, sel_b0[coeff],
+          sel_b0[coeff + vec_half], &acc_b0_re, &acc_b0_im);
+      mat_avx512_complex_addmul(dec_re, dec_im, sel_b1[coeff],
+          sel_b1[coeff + vec_half], &acc_b1_re, &acc_b1_im);
     }
+
+    out_a[coeff] = acc_a_re;
+    out_a[coeff + vec_half] = acc_a_im;
+    out_b0[coeff] = acc_b0_re;
+    out_b0[coeff + vec_half] = acc_b0_im;
+    out_b1[coeff] = acc_b1_re;
+    out_b1[coeff + vec_half] = acc_b1_im;
   }
 }
 
-static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_smallr_avx512(
+static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_avx512(
     PVW_TMLWE_DFT out, MAT_TRGSW_DFT selector, DFT_Polynomial * dec_dft){
-  const int r = out->r;
-  DFT_Polynomial outs[5];
-  DFT_Polynomial sels[5];
-  const int out_count = 1 + r;
+  const int N = out->a[0]->N;
+  const int vec_half = N / 16;
+  __m512d * out_a = (__m512d *) out->a[0]->coeffs;
+  __m512d * out_b0 = (__m512d *) out->b[0]->coeffs;
+  __m512d * out_b1 = (__m512d *) out->b[1]->coeffs;
+  __m512d * out_b2 = (__m512d *) out->b[2]->coeffs;
+  __m512d * out_b3 = (__m512d *) out->b[3]->coeffs;
 
   assert(out->k == 1);
+  assert(out->r == 4);
   assert(selector->T == 1);
-  assert(r == 2 || r == 4);
 
-  outs[0] = out->a[0];
-  for (int lane = 0; lane < r; lane++){
-    outs[1 + lane] = out->b[lane];
-  }
+  for (int coeff = 0; coeff < vec_half; coeff++){
+    __m512d * dec0 = (__m512d *) dec_dft[0]->coeffs;
+    __m512d dec_re = dec0[coeff];
+    __m512d dec_im = dec0[coeff + vec_half];
+    __m512d * sel_a = (__m512d *) selector->samples[0]->a[0]->coeffs;
+    __m512d * sel_b0 = (__m512d *) selector->samples[0]->b[0]->coeffs;
+    __m512d * sel_b1 = (__m512d *) selector->samples[0]->b[1]->coeffs;
+    __m512d * sel_b2 = (__m512d *) selector->samples[0]->b[2]->coeffs;
+    __m512d * sel_b3 = (__m512d *) selector->samples[0]->b[3]->coeffs;
+    __m512d acc_a_re, acc_a_im, acc_b0_re, acc_b0_im, acc_b1_re, acc_b1_im;
+    __m512d acc_b2_re, acc_b2_im, acc_b3_re, acc_b3_im;
 
-  for (int row = 0; row < out_count; row++){
-    sels[0] = selector->samples[row]->a[0];
-    for (int lane = 0; lane < r; lane++){
-      sels[1 + lane] = selector->samples[row]->b[lane];
+    mat_avx512_complex_mul(dec_re, dec_im, sel_a[coeff],
+        sel_a[coeff + vec_half], &acc_a_re, &acc_a_im);
+    mat_avx512_complex_mul(dec_re, dec_im, sel_b0[coeff],
+        sel_b0[coeff + vec_half], &acc_b0_re, &acc_b0_im);
+    mat_avx512_complex_mul(dec_re, dec_im, sel_b1[coeff],
+        sel_b1[coeff + vec_half], &acc_b1_re, &acc_b1_im);
+    mat_avx512_complex_mul(dec_re, dec_im, sel_b2[coeff],
+        sel_b2[coeff + vec_half], &acc_b2_re, &acc_b2_im);
+    mat_avx512_complex_mul(dec_re, dec_im, sel_b3[coeff],
+        sel_b3[coeff + vec_half], &acc_b3_re, &acc_b3_im);
+
+    for (int row = 1; row < 5; row++){
+      __m512d * dec = (__m512d *) dec_dft[row]->coeffs;
+      dec_re = dec[coeff];
+      dec_im = dec[coeff + vec_half];
+      sel_a = (__m512d *) selector->samples[row]->a[0]->coeffs;
+      sel_b0 = (__m512d *) selector->samples[row]->b[0]->coeffs;
+      sel_b1 = (__m512d *) selector->samples[row]->b[1]->coeffs;
+      sel_b2 = (__m512d *) selector->samples[row]->b[2]->coeffs;
+      sel_b3 = (__m512d *) selector->samples[row]->b[3]->coeffs;
+      mat_avx512_complex_addmul(dec_re, dec_im, sel_a[coeff],
+          sel_a[coeff + vec_half], &acc_a_re, &acc_a_im);
+      mat_avx512_complex_addmul(dec_re, dec_im, sel_b0[coeff],
+          sel_b0[coeff + vec_half], &acc_b0_re, &acc_b0_im);
+      mat_avx512_complex_addmul(dec_re, dec_im, sel_b1[coeff],
+          sel_b1[coeff + vec_half], &acc_b1_re, &acc_b1_im);
+      mat_avx512_complex_addmul(dec_re, dec_im, sel_b2[coeff],
+          sel_b2[coeff + vec_half], &acc_b2_re, &acc_b2_im);
+      mat_avx512_complex_addmul(dec_re, dec_im, sel_b3[coeff],
+          sel_b3[coeff + vec_half], &acc_b3_re, &acc_b3_im);
     }
-    mat_trgsw_mul_row_outputs_avx512(outs, dec_dft[row], sels, out_count,
-        row == 0);
+
+    out_a[coeff] = acc_a_re;
+    out_a[coeff + vec_half] = acc_a_im;
+    out_b0[coeff] = acc_b0_re;
+    out_b0[coeff + vec_half] = acc_b0_im;
+    out_b1[coeff] = acc_b1_re;
+    out_b1[coeff + vec_half] = acc_b1_im;
+    out_b2[coeff] = acc_b2_re;
+    out_b2[coeff + vec_half] = acc_b2_im;
+    out_b3[coeff] = acc_b3_re;
+    out_b3[coeff + vec_half] = acc_b3_im;
   }
 }
 #endif
@@ -213,8 +294,13 @@ void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT s
   }
 
 #if defined(AVX512_OPT) && defined(MAT_TRGSW_AVX512_SMALLR_SPECIALIZED)
-  if(k == 1 && l == 1 && (r == 2 || r == 4)){
-    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_smallr_avx512(out, selector,
+  if(k == 1 && l == 1 && r == 2){
+    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r2_avx512(out, selector,
+        scratch->dec_dft);
+    return;
+  }
+  if(k == 1 && l == 1 && r == 4){
+    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_avx512(out, selector,
         scratch->dec_dft);
     return;
   }

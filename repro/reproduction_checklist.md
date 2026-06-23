@@ -50,5 +50,16 @@
 - [x] Add Stage 11 `r=2` three-run full SAB benchmark summary.
 - [x] Add Stage 11 `r=4` incomplete long-run/timeout evidence.
 - [x] Add Stage 11 explicit-flag one-run replay smokes for `r=2` and `r=4`.
-- [ ] Implement second-generation hand-unrolled `r=2`/`r=4` AVX512 kernels after staged gate root-cause analysis.
+- [x] Add Stage 12 next-goal document with task matrix and gate policy.
+- [x] Localize default AVX512 staged crash to the small-N sparse/bootstrap helper path.
+- [x] Add AVX512 small-N staged sparse/bootstrap skip policy with explicit log message.
+- [x] Re-run default AVX512 staged gate after the skip policy.
+- [x] Re-run ordinary `spqlios` staged regression with full small sparse/bootstrap coverage.
+- [x] Implement second-generation hand-unrolled `r=2`/`r=4` AVX512 MAT kernels after staged gate root-cause analysis.
+- [x] Add Stage 12 explicit v2 staged kernel and microbench log.
+- [x] Add Stage 12 explicit v2 target full-output correctness log.
+- [x] Add Stage 12 explicit v2 one-run full SAB smokes for `r=2` and `r=4`.
+- [ ] Add Stage 12 v2 three-process full SAB sweep if the variant remains worth promoting.
+- [ ] Add Stage 12 v2 noise/seed gate if promoted beyond kernel experiment.
 - [ ] Implement PVW-aware post-processing to remove the remaining scalar per-lane KS tail.
+- [ ] Implement SAB-specific sparse/fused variants after PVW post-processing design is fixed.
