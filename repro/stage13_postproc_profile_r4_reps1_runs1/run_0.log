@@ -1,0 +1,5 @@
+SAB_PVW_POSTPROC_PROFILE sample lanes=4 bootstrap_wo_extract_us=45433780 direct_extract_us=84529 packing_ks_us=425430 hw_ks_us=648 full_us=45944390
+SAB_PVW_BENCH correctness target_full r=4 h=39 r_prec=7: Pass
+SAB_PVW_POSTPROC_PROFILE sample lanes=4 bootstrap_wo_extract_us=43336910 direct_extract_us=167309 packing_ks_us=483378 hw_ks_us=601 full_us=43988199
+SAB_PVW_BENCH sample target_full r=4 rep=0 pvw_us=43988305 scalar_repeated_us=56387246 speedup=1.282x
+SAB_PVW_BENCH summary target_full r=4 reps=1 pvw_avg_us=43988305.000 pvw_stddev_us=0.000 pvw_lane_avg_us=10997076.250 scalar_repeated_avg_us=56387246.000 scalar_stddev_us=0.000 scalar_lane_avg_us=14096811.500 speedup_vs_scalar_repeated=1.282x speedup_stddev=0.000

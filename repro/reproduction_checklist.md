@@ -61,5 +61,14 @@
 - [x] Add Stage 12 explicit v2 one-run full SAB smokes for `r=2` and `r=4`.
 - [ ] Add Stage 12 v2 three-process full SAB sweep if the variant remains worth promoting.
 - [ ] Add Stage 12 v2 noise/seed gate if promoted beyond kernel experiment.
-- [ ] Implement PVW-aware post-processing to remove the remaining scalar per-lane KS tail.
-- [ ] Implement SAB-specific sparse/fused variants after PVW post-processing design is fixed.
+- [x] Add Stage 13 PVW post-processing goal, algorithm card, and validation plan.
+- [x] Preserve Stage 13 failed direct extraction staged gate as negative evidence.
+- [x] Implement fixed direct lane extraction in full-output `sab_pvw_bootstrap_binary`.
+- [x] Add `SAB_PVW_POSTPROC_PROFILE` timing gate.
+- [x] Add Stage 13 fixed direct extraction staged gate log.
+- [x] Add Stage 13 fixed direct extraction target full-output correctness log.
+- [x] Add Stage 13 `r=2`/`r=4` post-processing profile smokes.
+- [x] Add Stage 13 `r=2`/`r=4` unprofiled one-run full SAB smokes.
+- [ ] Add Stage 13 direct extraction three-process full SAB sweep only if promoted beyond cleanup.
+- [ ] Implement PVW-aware direct-to-packing KS only if the measured tail justifies the complexity.
+- [ ] Implement SAB-specific sparse/fused variants after PVW post-processing profile is fixed.

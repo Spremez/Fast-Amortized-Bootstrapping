@@ -21,6 +21,7 @@ Code artifacts:
   - `MOSFHET_DETERMINISTIC_RNG`
   - `MOSFHET_TEST_RNG_SEED`
   - `MAT_TRGSW_AVX512_SMALLR_SPECIALIZED`
+  - `SAB_PVW_POSTPROC_PROFILE`
 - `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
 - `src/mosfhet/src/misc.c` deterministic test RNG path
 - `src/mosfhet/src/mattrgsw.c` experimental small-r AVX512 MAT external-product dispatch
@@ -28,6 +29,7 @@ Code artifacts:
 - `scripts/run_stage6_seed_sweep_range.sh`
 - `scripts/run_stage7_bench_sweep.sh`
 - `scripts/run_stage11_avx512_smallr_bench.sh`
+- `scripts/run_stage13_postproc_profile.sh`
 
 Documentation artifacts:
 
@@ -51,12 +53,15 @@ Documentation artifacts:
 - `docs/stage11_pvw_sab_loop_engineering.md`
 - `docs/stage12_next_goal.md`
 - `docs/stage12_avx512_gate_and_v2_kernel_log.md`
+- `docs/stage13_postproc_profile_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
+- `algorithm_variants/pvw_sab_direct_lane_extract.md`
 - `algorithm_variants/pvw_sab_full_pipeline.md`
 - `theory_checks/pvw_sab_complexity_model.md`
 - `experiments/stage11_experiment_validation_plan.md`
 - `experiments/stage12_experiment_validation_plan.md`
+- `experiments/stage13_postproc_validation_plan.md`
 
 Repro artifacts:
 
@@ -194,3 +199,17 @@ Repro artifacts:
 - `repro/stage12_avx512_smallr_v2_bench_r2_reps1_runs1/run_0.log`
 - `repro/stage12_avx512_smallr_v2_bench_r4_reps1_runs1/summary.csv`
 - `repro/stage12_avx512_smallr_v2_bench_r4_reps1_runs1/run_0.log`
+- `repro/stage13_postproc_summary.csv`
+- `repro/stage13_kernel_spqlios_direct_extract.log`
+- `repro/stage13_kernel_spqlios_direct_extract_fixed.log`
+- `repro/stage13_target_full_spqlios_direct_extract.log`
+- `repro/stage13_postproc_profile_r2_reps1_runs1/postproc_profile.csv`
+- `repro/stage13_postproc_profile_r2_reps1_runs1/bench_summary.csv`
+- `repro/stage13_postproc_profile_r2_reps1_runs1/run_0.log`
+- `repro/stage13_postproc_profile_r4_reps1_runs1/postproc_profile.csv`
+- `repro/stage13_postproc_profile_r4_reps1_runs1/bench_summary.csv`
+- `repro/stage13_postproc_profile_r4_reps1_runs1/run_0.log`
+- `repro/stage13_direct_extract_bench_r2_reps1_runs1/summary.csv`
+- `repro/stage13_direct_extract_bench_r2_reps1_runs1/run_0.log`
+- `repro/stage13_direct_extract_bench_r4_reps1_runs1/summary.csv`
+- `repro/stage13_direct_extract_bench_r4_reps1_runs1/run_0.log`

@@ -1,4 +1,26 @@
 #include <sab_pvw.h>
+#include <inttypes.h>
+#include <sys/time.h>
+
+#ifdef SAB_PVW_POSTPROC_PROFILE
+static uint64_t sab_pvw_now_us(void){
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return (uint64_t) tv.tv_usec + (uint64_t) tv.tv_sec * 1000000ULL;
+}
+
+#define SAB_PVW_POSTPROC_TIME_ACC(ACC, CODE) \
+  do { \
+    const uint64_t __sab_pvw_begin = sab_pvw_now_us(); \
+    CODE; \
+    (ACC) += sab_pvw_now_us() - __sab_pvw_begin; \
+  } while (0)
+#else
+#define SAB_PVW_POSTPROC_TIME_ACC(ACC, CODE) \
+  do { \
+    CODE; \
+  } while (0)
+#endif
 
 static void sab_pvw_die(const char * msg){
   fprintf(stderr, "sab_pvw: %s\n", msg);
@@ -40,6 +62,30 @@ static void sab_pvw_materialize_pvwtlwe_lane(TLWE out, PVW_TLWE in,
     out->a[idx] = in->a[idx];
   }
   out->b = in->b[lane];
+}
+
+static void sab_pvw_extract_tlwe_lane(TLWE out, PVW_TMLWE in,
+    uint64_t lane, uint64_t idx){
+  const uint64_t N = (uint64_t) in->b[0]->N;
+  const uint64_t k = (uint64_t) in->k;
+  for (size_t key_idx = 0; key_idx < (size_t) k; key_idx++){
+    for (size_t coeff = 0; coeff <= (size_t) idx; coeff++){
+      out->a[key_idx * N + coeff] =
+          in->a[key_idx]->coeffs[idx - coeff];
+    }
+    for (size_t coeff = (size_t) idx + 1; coeff < (size_t) N; coeff++){
+      out->a[key_idx * N + coeff] =
+          -in->a[key_idx]->coeffs[N + idx - coeff];
+    }
+  }
+  out->b = in->b[lane]->coeffs[idx];
+}
+
+static void sab_pvw_extract_tlwe_lane_array(TLWE * out, PVW_TMLWE * in,
+    uint64_t lane, SAB_PVW_Key sab){
+  for (size_t idx = 0; idx < (size_t) sab->in_N; idx++){
+    sab_pvw_extract_tlwe_lane(out[idx], in[idx], lane, 0);
+  }
 }
 
 static void sab_pvw_init_full_postproc(SAB_PVW_Key sab, TRLWE_Key input_key,
@@ -295,15 +341,36 @@ void sab_pvw_bootstrap_binary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
   if(sab->packing_keys == NULL || sab->hw_reducing_key == NULL){
     sab_pvw_die("full binary bootstrap requires sab_pvw_new_binary_full_key");
   }
-  sab_pvw_bootstrap_wo_extract_binary(sab->tmp->acc, in, tv, sab);
-  sab_pvw_extract_pvwtlwe(sab->tmp->extracted, sab->tmp->acc, sab);
+#ifdef SAB_PVW_POSTPROC_PROFILE
+  uint64_t bootstrap_wo_extract_us = 0;
+  uint64_t direct_extract_us = 0;
+  uint64_t packing_ks_us = 0;
+  uint64_t hw_ks_us = 0;
+  const uint64_t full_begin = sab_pvw_now_us();
+#endif
+  SAB_PVW_POSTPROC_TIME_ACC(bootstrap_wo_extract_us,
+      sab_pvw_bootstrap_wo_extract_binary(sab->tmp->acc, in, tv, sab));
   for (size_t lane = 0; lane < sab->lanes; lane++){
-    for (size_t idx = 0; idx < sab->in_N; idx++){
-      sab_pvw_materialize_pvwtlwe_lane(sab->tmp->lane_extracted[lane][idx],
-          sab->tmp->extracted[idx], lane);
-    }
-    trlwe_full_packing_keyswitch(sab->tmp->packed,
-        sab->tmp->lane_extracted[lane], sab->in_N, sab->packing_keys[lane]);
-    trlwe_keyswitch(out[lane], sab->tmp->packed, sab->hw_reducing_key);
+    SAB_PVW_POSTPROC_TIME_ACC(direct_extract_us,
+        sab_pvw_extract_tlwe_lane_array(sab->tmp->lane_extracted[lane],
+            sab->tmp->acc, lane, sab));
+    SAB_PVW_POSTPROC_TIME_ACC(packing_ks_us,
+        trlwe_full_packing_keyswitch(sab->tmp->packed,
+            sab->tmp->lane_extracted[lane], sab->in_N,
+            sab->packing_keys[lane]));
+    SAB_PVW_POSTPROC_TIME_ACC(hw_ks_us,
+        trlwe_keyswitch(out[lane], sab->tmp->packed,
+            sab->hw_reducing_key));
   }
+#ifdef SAB_PVW_POSTPROC_PROFILE
+  const uint64_t full_us = sab_pvw_now_us() - full_begin;
+  printf("SAB_PVW_POSTPROC_PROFILE sample lanes=%" PRIu64
+         " bootstrap_wo_extract_us=%" PRIu64
+         " direct_extract_us=%" PRIu64
+         " packing_ks_us=%" PRIu64
+         " hw_ks_us=%" PRIu64
+         " full_us=%" PRIu64 "\n",
+         sab->lanes, bootstrap_wo_extract_us, direct_extract_us,
+         packing_ks_us, hw_ks_us, full_us);
+#endif
 }

@@ -1,0 +1,95 @@
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=1: Pass
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=2: Pass
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=4: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=encrypted-selector bit0
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=1 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=encrypted-selector bit1
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=1 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=trivial-selector multibit
+SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=1 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=1 case=full-encrypted multibit
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=1 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin sparse_mul r=1
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=input_key
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=sab_pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=scalar_alloc
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=scalar_keys
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=acc_init
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=rounds
+SAB_PVW_KERNEL_TEST sparse_mul r=1 round=0 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=1 round=0 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=1 round=1 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=1 round=1 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=1 step=final_RGSW
+SAB_PVW API binary sparse_mul lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin bootstrap_wo_extract r=1
+SAB_PVW API bootstrap_wo_extract binary lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW API extract binary lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW API materialized TLWE binary lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW full bootstrap binary TRLWE phase fail lane=0 coeff=1: 5 != 0
+SAB_PVW API packing/HW-KS binary lane equivalence r=1 h=2 r_prec=3: Pass
+SAB_PVW API full bootstrap binary lane equivalence r=1 h=2 r_prec=3: Fail
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=encrypted-selector bit0
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=2 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=encrypted-selector bit1
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=2 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=trivial-selector multibit
+SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=2 case=full-encrypted multibit
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin sparse_mul r=2
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=input_key
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=sab_pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=scalar_alloc
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=scalar_keys
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=acc_init
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=rounds
+SAB_PVW_KERNEL_TEST sparse_mul r=2 round=0 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=2 round=0 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=2 round=1 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=2 round=1 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=2 step=final_RGSW
+SAB_PVW API binary sparse_mul lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin bootstrap_wo_extract r=2
+SAB_PVW API bootstrap_wo_extract binary lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW API extract binary lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW API materialized TLWE binary lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW full bootstrap binary TRLWE phase fail lane=0 coeff=1: 0 != 3
+SAB_PVW full bootstrap binary TRLWE phase fail lane=1 coeff=1: 5 != 0
+SAB_PVW API packing/HW-KS binary lane equivalence r=2 h=2 r_prec=3: Pass
+SAB_PVW API full bootstrap binary lane equivalence r=2 h=2 r_prec=3: Fail
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=encrypted-selector bit0
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=4 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=encrypted-selector bit1
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=4 r_prec=1: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=trivial-selector multibit
+SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=4 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin RGSW_monomial r=4 case=full-encrypted multibit
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=4 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin sparse_mul r=4
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=input_key
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=sab_pvw_key
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=scalar_alloc
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=scalar_keys
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=acc_init
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=rounds
+SAB_PVW_KERNEL_TEST sparse_mul r=4 round=0 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=4 round=0 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=4 round=1 step=RGSW
+SAB_PVW_KERNEL_TEST sparse_mul r=4 round=1 step=sub_a
+SAB_PVW_KERNEL_TEST sparse_mul r=4 step=final_RGSW
+SAB_PVW API binary sparse_mul lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW_KERNEL_TEST begin bootstrap_wo_extract r=4
+SAB_PVW API bootstrap_wo_extract binary lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW API extract binary lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW API materialized TLWE binary lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW full bootstrap binary TRLWE phase fail lane=0 coeff=1: 5 != 0
+SAB_PVW full bootstrap binary TRLWE phase fail lane=1 coeff=1: 2 != 5
+SAB_PVW full bootstrap binary TRLWE phase fail lane=2 coeff=1: 7 != 2
+SAB_PVW full bootstrap binary TRLWE phase fail lane=3 coeff=1: 4 != 7
+SAB_PVW API packing/HW-KS binary lane equivalence r=4 h=2 r_prec=3: Pass
+SAB_PVW API full bootstrap binary lane equivalence r=4 h=2 r_prec=3: Fail
+MAT_TRGSW/PVW staged kernel test: Fail
