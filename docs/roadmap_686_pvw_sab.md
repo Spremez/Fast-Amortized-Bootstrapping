@@ -662,19 +662,75 @@ Current status:
   optimization claim for binary `SET_2_3_2048` on WSL/Linux `spqlios`, not a
   paper-grade novelty or failure-rate claim.
 
+## Stage 11: PVW-SAB Optimization Loop Engineering
+
+Goal:
+
+Start the next theory-to-experiment loop after the Stage 10 engineering result,
+focused on larger SAB throughput gains from:
+
+- `r=2/r=4` specialized AVX512 MAT external-product kernels;
+- PVW-aware post-processing instead of scalar per-lane packing/HW key
+  switching;
+- SAB-specific sparse/fused external-product structure.
+
+Artifacts:
+
+- `docs/stage11_pvw_sab_loop_engineering.md`
+- `hypotheses/hypothesis_register.yaml`
+- `algorithm_variants/pvw_sab_rspecialized_avx512.md`
+- `algorithm_variants/pvw_sab_full_pipeline.md`
+- `theory_checks/pvw_sab_complexity_model.md`
+- `experiments/stage11_experiment_validation_plan.md`
+- `scripts/run_stage11_avx512_smallr_bench.sh`
+- `repro/stage11_avx512_rspecialized_summary.csv`
+
+Current status:
+
+- Added explicit experimental flag
+  `MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true`.
+- Implemented the first fused row/output AVX512 MAT variant for
+  `k=1,l=1,r in {2,4}`.
+- The default scalar SAB, default PVW/SAB, default `spqlios`, and default
+  `spqlios_avx512` paths are unchanged unless the flag is enabled.
+- The explicit-flag staged kernel run failed by segmentation fault after
+  CMUX/NCMUX and `r=1` RGSW-monomial lane-equivalence checks printed `Pass`;
+  the crash occurs before any `r=2` RGSW-monomial result is printed.
+- Explicit-flag target `r=2` full bootstrap correctness replay passed.
+- Full SAB benchmark evidence for this first variant is not accepted as an
+  improvement:
+  - `r=2`, 3 process runs, 2 reps/run: speedup mean `1.253x`;
+  - `r=4`, 1 complete process run, 2 reps/run: speedup `1.189x`;
+  - explicit one-run replay smokes: `1.109x` at `r=2`, `1.353x` at `r=4`.
+
+Decision:
+
+The first AVX512 specialization is a negative/neutral data point. It preserves
+the dense `(k+r)^2` MAT addmul count and still uses a pointer-array output loop
+inside the coefficient loop. It does not replace the Stage 10 accepted result:
+clear-elision `spqlios` remains the best supported full SAB optimization with
+`1.269x` at `r=2` and `1.337x` at `r=4`.
+
+Next gate:
+
+Do not run longer benchmarks for the first variant until the staged crash is
+root-caused. The next implementation should use separate hand-unrolled `r=2`
+and `r=4` kernels with staged correctness before any full SAB performance run.
+
 ## Immediate Execution Plan
 
-The implementation path has reached a Stage 10 engineering report. The next
-decision is whether to stop at a rigorous engineering result or invest in
-paper-grade evidence.
+The implementation path has reached a Stage 10 engineering report and started a
+Stage 11 optimization loop. The next decision is whether to invest in a deeper
+kernel redesign and PVW post-processing path, or stop at the rigorous
+engineering result.
 
 Recommended next steps:
 
-1. Expand the stage-level noise probe beyond `trials=1` only if stage-local
-   noise is needed for the final claim.
-2. Read the closest related work at algorithm-step level before making any
+1. Root-cause the Stage 11 staged kernel segfault under
+   `MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true`.
+2. Implement second-generation hand-unrolled `r=2` and `r=4` AVX512 kernels
+   without pointer arrays in the coefficient loop.
+3. Implement PVW-aware packing/HW-KS only if the kernel gate shows the blind
+   rotation path can still scale.
+4. Read the closest related work at algorithm-step level before making any
    novelty claim stronger than implementation/systems optimization.
-3. If preparing a paper draft, turn the Stage 10 claim-to-evidence table into
-   a method/results section with explicit claim labels.
-4. If a paper claim is desired, define the failure-rate target and independent
-   trial unit before running larger campaigns.

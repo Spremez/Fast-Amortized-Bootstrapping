@@ -1,0 +1,7 @@
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=1: Pass
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=2: Pass
+SAB_PVW isolated CMUX/NCMUX lane equivalence r=4: Pass
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit0 r=1 r_prec=1: Pass
+SAB_PVW isolated RGSW_monomial lane equivalence encrypted-selector bit1 r=1 r_prec=1: Pass
+SAB_PVW isolated RGSW_monomial lane equivalence trivial-selector multibit r=1 r_prec=3: Pass
+SAB_PVW isolated RGSW_monomial lane equivalence full-encrypted multibit r=1 r_prec=3: Pass

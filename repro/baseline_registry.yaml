@@ -21,3 +21,13 @@ variants:
     command: make FFT_LIB=spqlios SAB_PVW_KERNEL_TEST=true KEY=BINARY PARAM=SET_2_3 -j$(nproc) && ./main
     status: stage5_correctness_gate
     notes: Tests extracted TLWE phase for r=1/2/4 small shape; packing/HW KS, noise, and performance remain open.
+  - id: sab_pvw_clear_elision_stage10
+    description: Accepted engineering PVW/MAT-SAB path with clear-elision external product implementation.
+    command: STAGE7_BENCH_OUT_DIR=repro/stage8_clear_elision_bench_r2_reps2_runs3 SAB_PVW_BENCH_R=2 SAB_PVW_BENCH_REPS=2 STAGE7_BENCH_RUNS=3 bash scripts/run_stage7_bench_sweep.sh
+    status: accepted_engineering_variant
+    notes: Same-backend spqlios speedups are 1.269x at r=2 and 1.337x at r=4 with 50-seed final-output correctness/noise gates.
+  - id: mat_trgsw_avx512_smallr_stage11_v1
+    description: First experimental r=2/r=4 AVX512 fused row/output MAT external-product variant.
+    command: STAGE11_BENCH_OUT_DIR=repro/stage11_avx512_smallr_replay_r2_reps1_runs1 SAB_PVW_BENCH_R=2 SAB_PVW_BENCH_REPS=1 STAGE11_BENCH_RUNS=1 bash scripts/run_stage11_avx512_smallr_bench.sh
+    status: experimental_not_accepted
+    notes: Explicit compile flag is MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true; staged kernel gate failed in the first run, so this variant is not default and not a positive speedup claim.

@@ -42,3 +42,13 @@
 - [x] Add Stage 9 statistical evidence check for 50-seed zero-failure sweeps.
 - [x] Add Stage 9 stage-level noise smoke summary.
 - [x] Add Stage 10 engineering claim-to-evidence matrix.
+- [x] Add Stage 11 hypothesis register and candidate variant cards.
+- [x] Add Stage 11 PVW/MAT-SAB complexity and loop-engineering notes.
+- [x] Add explicit experimental AVX512 small-r MAT compile flag.
+- [x] Preserve Stage 11 explicit-flag failed staged kernel gate log as negative evidence.
+- [x] Add Stage 11 explicit-flag target correctness replay.
+- [x] Add Stage 11 `r=2` three-run full SAB benchmark summary.
+- [x] Add Stage 11 `r=4` incomplete long-run/timeout evidence.
+- [x] Add Stage 11 explicit-flag one-run replay smokes for `r=2` and `r=4`.
+- [ ] Implement second-generation hand-unrolled `r=2`/`r=4` AVX512 kernels after staged gate root-cause analysis.
+- [ ] Implement PVW-aware post-processing to remove the remaining scalar per-lane KS tail.

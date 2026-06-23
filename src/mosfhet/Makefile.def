@@ -7,6 +7,11 @@ OPT_FLAGS = -O3 -fwhole-program -flto  $(FLAGS)
 LIB_FLAGS = -O3 $(FLAGS)
 __SRC = keyswitch.c bootstrap.c bootstrap_ga.c tlwe.c trlwe.c trgsw.c misc.c polynomial.c register.c pvwtlwe.c sha3/fips202.c fft/karatsuba.c
 ENABLE_PVW_TMLWE ?= false
+MAT_TRGSW_AVX512_SMALLR_SPECIALIZED ?= false
+ifeq ($(MAT_TRGSW_AVX512_SMALLR_SPECIALIZED),true)
+	FLAGS += -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED
+	ENABLE_PVW_TMLWE := true
+endif
 SAB_PVW_KERNEL_TEST ?= false
 ifeq ($(SAB_PVW_KERNEL_TEST),true)
 	FLAGS += -DSAB_PVW_KERNEL_TEST

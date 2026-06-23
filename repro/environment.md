@@ -21,3 +21,11 @@ Current source state:
 - Base commit before this stage: `c9a332c`
 - This stage adds a working-tree `sab_pvw_*` API skeleton and will be committed
   after verification.
+
+Stage 11 source state:
+
+- Base commit before the Stage 11 optimization loop: `ea659b1`.
+- The first AVX512 small-r MAT external-product variant is guarded by
+  `MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true` and is not enabled by default.
+- `scripts/run_stage11_avx512_smallr_bench.sh` wraps the explicit flag for
+  replay smokes and follow-up benchmarks.

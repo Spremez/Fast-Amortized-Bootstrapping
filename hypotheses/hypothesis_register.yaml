@@ -1,0 +1,50 @@
+project: pvw_sab_686_optimization
+date: 2026-06-23
+scope: binary SET_2_3_2048, WSL/Linux performance platform
+hypotheses:
+  - id: H1_r_specialized_avx512
+    statement: >
+      Replacing the generic MAT_TRGSW row/output loop with r=2/r=4
+      AVX512-specialized fused row/output accumulation should reduce DFT
+      addmul overhead in the MAT external product and improve full SAB
+      throughput over the current sab_pvw_* path.
+    mechanism: >
+      Load each decomposed DFT row once per vector block and update all
+      k+r outputs, reducing repeated dec-row loads and generic function
+      dispatch in polynomial_mul_addto_DFT.
+    status: experimentally_not_supported_by_first_variant
+    evidence: docs/stage11_pvw_sab_loop_engineering.md
+    failure_criteria:
+      - target correctness failure
+      - staged kernel crash
+      - full SAB speedup not better than existing clear-elision evidence
+  - id: H2_full_pvw_postprocessing
+    statement: >
+      Extending PVW batching beyond blind rotation into extract, packing KS,
+      and HW-reducing KS should raise full bootstrapping speedup beyond the
+      current 1.269x-1.337x range.
+    mechanism: >
+      The current path materializes each PVW body and runs scalar packing/HW
+      key switching per lane, leaving an O(r) post-processing tail.
+    status: theory_pending_implementation
+    evidence: docs/stage10_engineering_report.md
+    failure_criteria:
+      - PVW post-processing noise exceeds scalar baseline
+      - key size or memory overhead becomes unacceptable
+      - full SAB benchmark does not improve over current clear-elision path
+  - id: H3_sab_specific_sparse_mat
+    statement: >
+      Exploiting the monomial/binary selector structure of 2025/686 SAB can
+      reduce the dense (k+r)^2 MAT accumulation cost and enable larger-r
+      scaling.
+    mechanism: >
+      MAT_TRGSW selectors in SAB are encrypted monomial selector bits; if their
+      structure can be preserved or partially exposed in the evaluation form,
+      some dense row-output products may be skipped or fused with automorphism
+      and monomial rotation.
+    status: theory_unverified
+    evidence: docs/stage11_pvw_sab_loop_engineering.md
+    failure_criteria:
+      - selector structure is not exploitable after encryption/DFT conversion
+      - any sparse shortcut changes CMUX semantics or noise distribution
+      - correctness gate fails for target parameters

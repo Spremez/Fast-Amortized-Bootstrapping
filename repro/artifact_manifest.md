@@ -20,11 +20,14 @@ Code artifacts:
   - `SAB_PVW_STAGE_NOISE_TEST`
   - `MOSFHET_DETERMINISTIC_RNG`
   - `MOSFHET_TEST_RNG_SEED`
+  - `MAT_TRGSW_AVX512_SMALLR_SPECIALIZED`
 - `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
 - `src/mosfhet/src/misc.c` deterministic test RNG path
+- `src/mosfhet/src/mattrgsw.c` experimental small-r AVX512 MAT external-product dispatch
 - `scripts/run_stage6_seed_sweep.sh`
 - `scripts/run_stage6_seed_sweep_range.sh`
 - `scripts/run_stage7_bench_sweep.sh`
+- `scripts/run_stage11_avx512_smallr_bench.sh`
 
 Documentation artifacts:
 
@@ -45,6 +48,12 @@ Documentation artifacts:
 - `docs/stage9_statistical_evidence.md`
 - `docs/stage9_stage_noise_probe.md`
 - `docs/stage10_engineering_report.md`
+- `docs/stage11_pvw_sab_loop_engineering.md`
+- `hypotheses/hypothesis_register.yaml`
+- `algorithm_variants/pvw_sab_rspecialized_avx512.md`
+- `algorithm_variants/pvw_sab_full_pipeline.md`
+- `theory_checks/pvw_sab_complexity_model.md`
+- `experiments/stage11_experiment_validation_plan.md`
 
 Repro artifacts:
 
@@ -153,3 +162,18 @@ Repro artifacts:
 - `repro/stage9_stage_noise_r4_trials1/main.log`
 - `repro/stage9_stage_noise_summary.csv`
 - `repro/stage10_claim_evidence_matrix.csv`
+- `repro/stage11_avx512_rspecialized_summary.csv`
+- `repro/stage11_avx512_rspecialized_kernel/main.log`
+- `repro/stage11_avx512_smallr_explicit_kernel_fail/main.log`
+- `repro/stage11_avx512_smallr_replay_target_r2/main.log`
+- `repro/stage11_avx512_rspecialized_r2_reps2_runs3/summary.csv`
+- `repro/stage11_avx512_rspecialized_r2_reps2_runs3/run_0.log`
+- `repro/stage11_avx512_rspecialized_r2_reps2_runs3/run_1.log`
+- `repro/stage11_avx512_rspecialized_r2_reps2_runs3/run_2.log`
+- `repro/stage11_avx512_rspecialized_r4_reps2_runs3/summary.csv`
+- `repro/stage11_avx512_rspecialized_r4_reps2_runs3/run_0.log`
+- `repro/stage11_avx512_rspecialized_r4_reps2_runs3/run_1.log`
+- `repro/stage11_avx512_smallr_replay_r2_reps1_runs1/summary.csv`
+- `repro/stage11_avx512_smallr_replay_r2_reps1_runs1/run_0.log`
+- `repro/stage11_avx512_smallr_replay_r4_reps1_runs1/summary.csv`
+- `repro/stage11_avx512_smallr_replay_r4_reps1_runs1/run_0.log`

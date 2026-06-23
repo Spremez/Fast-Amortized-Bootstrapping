@@ -1,0 +1,2 @@
+SAB_PVW_BENCH correctness target_full r=4 h=39 r_prec=7: Pass
+SAB_PVW_BENCH sample target_full r=4 rep=0 pvw_us=35722547 scalar_repeated_us=46124354 speedup=1.291x
