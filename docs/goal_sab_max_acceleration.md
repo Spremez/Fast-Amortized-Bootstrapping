@@ -61,6 +61,7 @@ evidence.
 | Stage 36 target high-stat performance/noise/resource | `spqlios_avx512` | 1/2/4 | 10-run/10-seed/3-run target support | performance r=2 mean `1.191x` CI `[1.075307,1.306693]`, r=4 mean `1.377x` CI `[1.314893,1.438107]`; stage-noise 10 seeds, zero pair failures; resource scalar/PVW r=1/2/4 has 3-run support |
 | Stage 37 native perf-counter audit | WSL2 probe | n/a | blocked, reproducible | requested heavy Stage 28 counter gate with `STAGE28_RUN_BENCH=1`; `perf` missing in PATH, so MAT-AVX512 hardware-counter attribution remains blocked |
 | Stage 38 full 2025/686 source-review gate | artifact gate | n/a | blocked, reproducible | `FAB686_FULLTEXT_PATH` not supplied; theorem-level base-paper citations and novelty review remain blocked |
+| Stage 39 optional variant triage | audit synthesis | n/a | no new variant promoted | non-binary and AVX/layout work blocked by full-text/perf prerequisites; schedule/post-processing variants deferred by prior neutral/small-tail evidence |
 
 Current conclusion:
 
@@ -138,6 +139,10 @@ The Stage 38 full-text review gate records the other remaining external
 blocker: no 2025/686 full-text artifact is available through
 `FAB686_FULLTEXT_PATH`, so theorem-level protocol citations and base-paper
 novelty review cannot be upgraded.
+The Stage 39 optional-variant triage records that no new algorithmic variant
+should be promoted under current evidence. New code work is justified only if
+one of the explicit blocked prerequisites is supplied or a new profile changes
+the prior neutral/deferred cost model.
 ```
 
 ## Invariants
@@ -208,6 +213,6 @@ Stage 35: completion blocker matrix. [completed; local scoped-ready and external
 Stage 36: high-statistics claim expansion. [target_perf 10-run, stage_noise 10-seed, and resource 3-run campaigns completed; target_noise and added_params remain optional]
 Stage 37: native perf-counter evidence. [executed in current WSL2; blocked until native/perf-enabled platform]
 Stage 38: full 2025/686 source review. [executed artifact gate; blocked until full text is supplied]
-Stage 39: optional new algorithmic variants. [only if scope requires beyond current promoted path]
+Stage 39: optional new algorithmic variants. [triaged; no new variant promoted under current evidence]
 Stage 40: final paper/release freeze. [after selected blockers or expansions are resolved]
 ```

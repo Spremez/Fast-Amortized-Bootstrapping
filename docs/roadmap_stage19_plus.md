@@ -940,6 +940,25 @@ Gate:
 - full SAB A/B, correctness, noise, and resource gates are required before
   promotion.
 
+Status:
+
+```text
+Stage 39 optional-variant triage completed. No new variant is promoted under
+current evidence:
+
+- non-binary PVW-SAB is blocked by explicit binary-only support and missing
+  2025/686 full-text review;
+- deeper schedule fusion is deferred because Stage 23 was neutral;
+- MAT r=4 layout and additional AVX512 specialization are blocked by missing
+  native hardware counters or require isolated reversible experiments;
+- direct post-processing remains deferred because Stage 24 measured max tail
+  at 1.261195%, below the 2.0% threshold.
+
+The promoted active-buffer MAT-SAB path remains the current implementation
+target. New code work should start only after an explicit prerequisite or new
+profile changes this triage.
+```
+
 ## Stage 40: Final Paper/Release Freeze
 
 Goal:
