@@ -130,5 +130,6 @@
 - [x] Record non-binary PVW branch as unsupported while keeping scalar TERNARY buildable.
 - [ ] Run Stage 26 noise/performance gates for added parameters before broad performance claims.
 - [x] Add Stage 27 initial related-work and claim-boundary matrix.
+- [x] Record Stage 27 full-source access attempt and claim boundary.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Re-run final consolidated full-SAB performance/noise/resource package after final claim scope is fixed.

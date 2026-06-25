@@ -84,6 +84,18 @@ or accelerate all SAB variants.
   algorithmic delta not already covered by common-mask TFHE or PVW/MAT
   batching work.
 
+## Full-Source Gate Update
+
+The first full-source access attempt is recorded in
+`docs/stage27_full_related_work_gate_log.md` and
+`repro/stage27_source_access_matrix.csv`. Direct ePrint/ACM PDF fetches for
+2025/686 returned HTTP 403 in this environment, so theorem-level and
+algorithm-number citation checking for the base paper remains incomplete.
+Public full-text pages for 2025/2112 and 2025/696 were accessible enough to
+confirm the current claim boundary: shared-mask/multiple-body TFHE batching is
+prior-art risky, while incomplete-NTT amortized bootstrapping is an adjacent
+acceleration direction.
+
 ## Decision
 
 Status:
