@@ -62,6 +62,7 @@ evidence.
 | Stage 37 native perf-counter audit | WSL2 probe | n/a | blocked, reproducible | requested heavy Stage 28 counter gate with `STAGE28_RUN_BENCH=1`; `perf` missing in PATH, so MAT-AVX512 hardware-counter attribution remains blocked |
 | Stage 38 full 2025/686 source-review gate | artifact gate | n/a | blocked, reproducible | `FAB686_FULLTEXT_PATH` not supplied; theorem-level base-paper citations and novelty review remain blocked |
 | Stage 39 optional variant triage | audit synthesis | n/a | no new variant promoted | non-binary and AVX/layout work blocked by full-text/perf prerequisites; schedule/post-processing variants deferred by prior neutral/small-tail evidence |
+| Stage 40 final scoped freeze | report/freeze | n/a | scoped freeze ready | freeze package is ready for scoped engineering claim; stronger claims remain blocked |
 
 Current conclusion:
 
@@ -143,6 +144,10 @@ The Stage 39 optional-variant triage records that no new algorithmic variant
 should be promoted under current evidence. New code work is justified only if
 one of the explicit blocked prerequisites is supplied or a new profile changes
 the prior neutral/deferred cost model.
+The Stage 40 final scoped freeze package records the current release boundary:
+the engineering acceleration claim can be reported under tested scope, while
+theory, novelty, non-binary, and all-parameter claims remain outside the
+freeze.
 ```
 
 ## Invariants
@@ -214,5 +219,5 @@ Stage 36: high-statistics claim expansion. [target_perf 10-run, stage_noise 10-s
 Stage 37: native perf-counter evidence. [executed in current WSL2; blocked until native/perf-enabled platform]
 Stage 38: full 2025/686 source review. [executed artifact gate; blocked until full text is supplied]
 Stage 39: optional new algorithmic variants. [triaged; no new variant promoted under current evidence]
-Stage 40: final paper/release freeze. [after selected blockers or expansions are resolved]
+Stage 40: final paper/release freeze. [scoped engineering freeze ready; stronger claims blocked]
 ```

@@ -981,3 +981,16 @@ Gate:
 - final audit must match the selected scope;
 - no stronger claim can be included without its corresponding Stage 36-39
   evidence.
+
+Status:
+
+```text
+Stage 40 scoped freeze completed. The generated decision is
+SCOPED_FREEZE_READY_STRONGER_CLAIMS_BLOCKED. Required scoped artifacts exist,
+final audit A9 remains scoped-ready/stronger-blocked, Stage 39 promotes no new
+variant under current evidence, and Stage 35 preserves the external blockers.
+
+This freezes the current engineering package only. It is not a freeze for
+theoretical MAT-AVX512 optimality, theorem-level 2025/686 citations, novelty,
+non-binary support, or all-parameter generality.
+```

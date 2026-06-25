@@ -1,0 +1,16 @@
+artifact,exists,size_bytes
+docs/stage27_final_engineering_report.md,yes,7074
+docs/final_goal_completion_audit.md,yes,4561
+docs/stage35_completion_blocker_matrix.md,yes,3901
+docs/stage36_high_stat_expansion_log.md,yes,6097
+docs/stage37_native_perf_counter_log.md,yes,2167
+docs/stage38_fulltext_review_log.md,yes,2168
+docs/stage39_variant_triage_log.md,yes,2040
+repro/final_goal_completion_audit.csv,yes,4450
+repro/stage35_completion_blockers.csv,yes,4779
+repro/stage36_target_perf_summary.csv,yes,521
+repro/stage36_stage_noise_seeds10/aggregate.csv,yes,1296
+repro/stage36_resource_summary.csv,yes,2083
+repro/stage37_native_perf_counter_audit/summary.csv,yes,491
+repro/stage38_fulltext_review_gate/summary.csv,yes,254
+repro/stage39_variant_triage.csv,yes,2882

@@ -1,0 +1,8 @@
+item,status,evidence,detail
+source_commit,01db760,git rev-parse --short HEAD,Commit used to generate the Stage 40 freeze artifacts.
+final_audit_A9,SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED,repro/final_goal_completion_audit.csv,complete scoped engineering acceleration evidence exists; novelty/theory/all-parameter claims are not complete
+stage39_overall,NO_NEW_VARIANT_PROMOTED_CURRENTLY,repro/stage39_variant_triage.csv,The promoted active-buffer MAT-SAB path already has scoped engineering evidence; remaining stronger claims are external or optional rather than an immediate new-code requirement.
+external_blockers,PRESERVED,repro/stage35_completion_blockers.csv,A8=BLOCKED_EXTERNAL; A8b=MISSING_OPTIONAL_EXTERNAL_EVIDENCE
+required_artifacts,PASS,repro/stage40_final_freeze_manifest.csv,All required freeze artifacts exist.
+run_log_registration,PRESENT,repro/run_log.csv,Stage40 run_log row is present.
+stage40_decision,SCOPED_FREEZE_READY_STRONGER_CLAIMS_BLOCKED,repro/stage40_final_freeze_summary.csv,Freeze scoped engineering package only; stronger claims remain blocked.
