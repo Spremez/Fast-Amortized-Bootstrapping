@@ -373,6 +373,12 @@ complete-SAB A/B smokes; `SET_2_3_4096` r=2 reached 1.251x. All corresponding
 one-seed final-output noise smokes had zero PVW, scalar, and pair failures.
 This strengthens parameter smoke, but does not yet support broad statistical
 performance/noise claims.
+
+`SET_4_5_2048` r=4 was then expanded to a 3-run/3-seed repeated smoke. The
+complete-SAB A/B mean speedup was 1.360x with range 1.352x-1.376x, and all
+24576 final-output noise points had zero PVW, scalar, and pair failures. This
+supports a scoped repeated-smoke claim for that added parameter, still below
+the main-target 50-seed evidence level.
 ```
 
 ## Stage 27: Novelty and Paper Package

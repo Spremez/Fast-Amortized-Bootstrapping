@@ -65,10 +65,28 @@ broad performance claim. The evidence has one process run and one noise seed
 per case, so final wording must remain smoke-level unless repeated full-SAB
 A/B and multi-seed noise are added. PVW+TERNARY remains explicitly unsupported.
 
+## Repeated r=4 Follow-up
+
+`SET_4_5_2048` r=4 was then expanded to a small repeated gate:
+
+| param | r | runs | correctness | PVW mean us | scalar repeated mean us | mean speedup | min speedup | max speedup |
+|---|---:|---:|---|---:|---:|---:|---:|---:|
+| `SET_4_5_2048` | 4 | 3 | Pass | `28571625.333` | `38872191.333` | `1.360x` | `1.352x` | `1.376x` |
+
+Noise for the same case used 3 deterministic seeds:
+
+| param | r | seeds | points | PVW failures | scalar failures | pair failures | min gap | max gap | avg gap |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `SET_4_5_2048` | 4 | 3 | `24576` | 0 | 0 | 0 | `-0.082` | `0.059` | `-0.008000` |
+
+This is stronger than the first one-run smoke for that parameter and supports a
+scoped repeated-smoke claim for `SET_4_5_2048` r=4. It is still not equivalent
+to the main-target 50-seed noise gate.
+
 ## Next Work
 
 - Add repeated runs for any added parameter that appears in the final paper
   claim.
-- Add multi-seed noise for at least `SET_4_5_2048` r=4 if the r=4 scaling claim
-  is generalized beyond `SET_2_3_2048`.
+- Increase `SET_4_5_2048` r=4 noise beyond 3 seeds if the r=4 scaling claim is
+  generalized beyond `SET_2_3_2048`.
 - Decide whether `SET_2_3_4096` r=4 is worth the cost before running it.

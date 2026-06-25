@@ -81,7 +81,10 @@ with open(perf_summary, "w", newline="", encoding="utf-8") as f:
         pvw = [float(row["pvw_avg_us"]) for row in rows]
         scalar = [float(row["scalar_repeated_avg_us"]) for row in rows]
         status = "PASS" if statuses == ["Pass"] else "+".join(statuses)
-        decision = "PASS_SMOKE" if status == "PASS" else "FAIL"
+        if status == "PASS":
+            decision = "PASS_REPEATED_SMOKE" if len(rows) >= 3 else "PASS_SMOKE"
+        else:
+            decision = "FAIL"
         writer.writerow([
             param, r, len(rows), status,
             f"{statistics.mean(pvw):.3f}",
