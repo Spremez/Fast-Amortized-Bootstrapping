@@ -94,6 +94,7 @@ Documentation artifacts:
 - `docs/stage24_postproc_tail_log.md`
 - `docs/stage25_correctness_noise_resource_log.md`
 - `docs/stage26_parameter_branch_log.md`
+- `docs/stage27_novelty_paper_package_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -117,6 +118,7 @@ Documentation artifacts:
 - `experiments/stage24_postproc_tail_plan.md`
 - `experiments/stage25_correctness_noise_resource_plan.md`
 - `experiments/stage26_parameter_branch_plan.md`
+- `experiments/stage27_novelty_paper_package_plan.md`
 
 Repro artifacts:
 
@@ -449,3 +451,4 @@ Repro artifacts:
 - `repro/stage26_parameter_branch_smoke_avx512/binary_SET_2_3_4096/run.log`
 - `repro/stage26_parameter_branch_smoke_avx512/unsupported_TERNARY_SET_2_3_2048/pvw_build.log`
 - `repro/stage26_parameter_branch_smoke_avx512/unsupported_TERNARY_SET_2_3_2048/scalar_build.log`
+- `repro/stage27_literature_matrix.csv`

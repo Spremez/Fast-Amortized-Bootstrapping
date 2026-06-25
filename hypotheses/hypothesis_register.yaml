@@ -210,12 +210,15 @@ hypotheses:
       PVW/MAT external products and shared-mask batching have prior-art risk.
       A defensible contribution must isolate what is new in the SAB adaptation,
       schedule fusion, complexity reduction, or implementation evidence.
-    status: planned_stage27
-    evidence: docs/goal_sab_max_acceleration.md
+    status: stage27_started_safe_engineering_claim_only
+    evidence: docs/stage27_novelty_paper_package_log.md
     current_decision: >
-      Current evidence supports an engineering optimization, not yet a novelty
-      claim. Stage 27 must build the related-work matrix and citation support
-      bank before manuscript claims are promoted.
+      Stage 27 created an initial related-work matrix. Current evidence
+      supports a scoped engineering/systems optimization claim, not a novelty
+      claim. 2025/2112 common-mask TFHE has strong overlap with shared-mask
+      multi-body batching, so this project must distinguish any future paper
+      claim as SAB-specific integration, schedule engineering, or measured
+      implementation evidence after full paper review.
     failure_criteria:
       - related work already covers the claimed algorithmic idea
       - full SAB benchmark evidence is missing or only smoke-level

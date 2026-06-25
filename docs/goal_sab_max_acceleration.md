@@ -38,6 +38,7 @@ evidence.
 | Stage 25 resource matrix | `spqlios_avx512` | 1/2/4 | smoke support | PVW key bytes ratio `1.000029x`/`1.013617x`/`1.065349x`; PVW keygen slower per lane |
 | Stage 26 binary parameter smoke | `spqlios_avx512` | 2 | initial scope expansion | `SET_2_3_2048`, `SET_4_5_2048`, `SET_2_3_4096` target gates pass |
 | Stage 26 non-binary branch scope | `spqlios_avx512` | n/a | explicit unsupported | PVW+TERNARY rejected; scalar TERNARY build still passes |
+| Stage 27 novelty audit | external scan | n/a | started | safe engineering claim available; novelty claim blocked by related-work risk |
 
 Current conclusion:
 
@@ -55,7 +56,8 @@ threshold, so the next promoted-path work is Stage 25 correctness, noise, and
 resource validation. Stage 25 now has smoke-level r=1/2/4 stage-noise and
 resource evidence, plus 50-seed final-output noise support for promoted r=2
 and r=4. Stage 26 now has initial binary parameter-smoke support and an
-explicit non-binary PVW unsupported boundary.
+explicit non-binary PVW unsupported boundary. Stage 27 starts the paper package
+but keeps novelty claims blocked until full related-work review.
 ```
 
 ## Invariants
@@ -114,5 +116,5 @@ Stage 23: CMUX/NCMUX schedule fusion. [completed, neutral]
 Stage 24: conditional post-processing optimization. [completed, deferred]
 Stage 25: correctness/noise/resource matrix. [50-seed final-output expansion completed for r=2/r=4; stage/resource smoke completed]
 Stage 26: parameter and branch generalization. [initial binary smoke completed; non-binary PVW unsupported]
-Stage 27: novelty and paper package.
+Stage 27: novelty and paper package. [started; novelty claim blocked pending full related-work]
 ```

@@ -389,3 +389,20 @@ Gate:
 
 - no complete-SAB speedup claim without full SAB benchmark support;
 - no novelty claim without literature support.
+
+Status after initial execution:
+
+```text
+Stage 27 initial related-work and claim-boundary audit is complete enough to
+set the paper framing. The current safe claim is an engineering/systems
+optimization: PVW/MAT shared-mask multi-body batching is integrated into the
+2025/686 binary SAB implementation with complete-SAB performance evidence and
+noise/resource gates under tested scope.
+
+Novelty is not yet claimable. 2025/2112 common-mask TFHE has strong overlap
+with shared-mask multiple-body ciphertexts and distinct LUT support, so this
+project must not claim invention of the shared-mask batching idea. The open
+paper contribution, if any, must be SAB-specific integration, schedule
+engineering, implementation evidence, or a clearly distinguished algorithmic
+delta after full paper review.
+```
