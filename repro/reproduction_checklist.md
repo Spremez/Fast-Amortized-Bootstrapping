@@ -112,7 +112,12 @@
 - [x] Run Stage 21 sequential unprofiled full SAB smokes and record the candidate as neutral versus Stage 20.
 - [x] Complete Stage 22 MAT AVX512 promotion audit with generic-vs-specialized microbench, objdump attribution, and r=4 full SAB sweep.
 - [ ] Re-run Stage 22 hardware perf-counter attribution on native Linux if a theoretical load/store claim is needed.
-- [ ] Implement Stage 23 CMUX/NCMUX schedule fusion only after Stage 19/22 identify a material target.
+- [x] Implement Stage 23 CMUX/NCMUX schedule-fused epilogue candidate behind `SAB_PVW_SCHEDULE_FUSED_CMUX`.
+- [x] Run Stage 23 target correctness and default target regression gates.
+- [x] Run Stage 23 schedule count profile for `r=2` and `r=4`.
+- [x] Run Stage 23 sequential repeated full SAB A/B for `r=2` and `r=4`.
+- [x] Record the Stage 23 schedule-fused CMUX candidate as neutral and not promoted.
+- [ ] Run Stage 24 conditional post-processing profile after the promoted body path.
 - [ ] Run Stage 25 correctness/noise/resource matrix for any promoted Stage 20-23 variant.
 - [ ] Run Stage 26 parameter and branch generalization before broad SAB claims.
 - [ ] Complete Stage 27 novelty/literature and paper package before manuscript claims.

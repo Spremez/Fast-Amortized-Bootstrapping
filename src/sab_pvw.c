@@ -41,6 +41,7 @@ typedef struct {
   uint64_t mat_ep_us, mat_ep_calls;
   uint64_t sub_a_us, sub_a_calls;
   uint64_t sub_a_output_fusion_us, sub_a_output_fusion_calls;
+  uint64_t schedule_fused_cmux_calls, schedule_fused_ncmux_calls;
   uint64_t copyback_us, copyback_calls;
   uint64_t bit_ncmux_us[SAB_PVW_BODY_PROFILE_MAX_BITS];
   uint64_t bit_ncmux_calls[SAB_PVW_BODY_PROFILE_MAX_BITS];
@@ -93,6 +94,8 @@ static void sab_pvw_body_profile_print(SAB_PVW_Key sab, uint64_t full_us){
          " sub_a_us=%" PRIu64
          " sub_a_output_fusion_calls=%" PRIu64
          " sub_a_output_fusion_us=%" PRIu64
+         " schedule_fused_cmux_calls=%" PRIu64
+         " schedule_fused_ncmux_calls=%" PRIu64
          " copyback_calls=%" PRIu64
          " copyback_us=%" PRIu64
          " profile_bit_capacity=%u",
@@ -123,6 +126,8 @@ static void sab_pvw_body_profile_print(SAB_PVW_Key sab, uint64_t full_us){
          sab_pvw_body_profile.sub_a_us,
          sab_pvw_body_profile.sub_a_output_fusion_calls,
          sab_pvw_body_profile.sub_a_output_fusion_us,
+         sab_pvw_body_profile.schedule_fused_cmux_calls,
+         sab_pvw_body_profile.schedule_fused_ncmux_calls,
          sab_pvw_body_profile.copyback_calls,
          sab_pvw_body_profile.copyback_us,
          (unsigned) SAB_PVW_BODY_PROFILE_MAX_BITS);
@@ -373,8 +378,9 @@ void free_sab_pvw_key(SAB_PVW_Key sab){
   free(sab);
 }
 
-void sab_pvw_CMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
-    MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+static void sab_pvw_CMUX_internal(PVW_TMLWE out, PVW_TMLWE in1,
+    PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_Key sab,
+    int prefer_fused_from_dft_add){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t cmux_begin = sab_pvw_now_us();
   const uint64_t cmux_sub_begin = sab_pvw_now_us();
@@ -394,8 +400,7 @@ void sab_pvw_CMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
       &sab_pvw_body_profile.mat_ep_calls, mat_ep_begin);
   const uint64_t cmux_from_dft_begin = sab_pvw_now_us();
 #endif
-#if defined(SAB_PVW_FUSED_FROM_DFT_ADD)
-  if(out != in1){
+  if(prefer_fused_from_dft_add && out != in1){
     pvmtmlwe_from_DFT_add(out, sab->tmp->tmlwe_dft, in1);
 #ifdef SAB_PVW_BODY_PROFILE
     sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_from_dft_us,
@@ -415,22 +420,18 @@ void sab_pvw_CMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
         &sab_pvw_body_profile.cmux_add_calls, cmux_add_begin);
 #endif
   }
-#else
-  pvmtmlwe_from_DFT(sab->tmp->tmlwe, sab->tmp->tmlwe_dft);
-#ifdef SAB_PVW_BODY_PROFILE
-  sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_from_dft_us,
-      &sab_pvw_body_profile.cmux_from_dft_calls, cmux_from_dft_begin);
-  const uint64_t cmux_add_begin = sab_pvw_now_us();
-#endif
-  pvmtmlwe_add(out, sab->tmp->tmlwe, in1);
-#ifdef SAB_PVW_BODY_PROFILE
-  sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_add_us,
-      &sab_pvw_body_profile.cmux_add_calls, cmux_add_begin);
-#endif
-#endif
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_us,
       &sab_pvw_body_profile.cmux_calls, cmux_begin);
+#endif
+}
+
+void sab_pvw_CMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
+    MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+#if defined(SAB_PVW_FUSED_FROM_DFT_ADD)
+  sab_pvw_CMUX_internal(out, in1, in2, selector, sab, 1);
+#else
+  sab_pvw_CMUX_internal(out, in1, in2, selector, sab, 0);
 #endif
 }
 
@@ -453,6 +454,34 @@ void sab_pvw_NCMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
 #endif
 }
 
+static void sab_pvw_schedule_CMUX(PVW_TMLWE out, PVW_TMLWE in1,
+    PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile.schedule_fused_cmux_calls++;
+#endif
+  sab_pvw_CMUX_internal(out, in1, in2, selector, sab, 1);
+}
+
+static void sab_pvw_schedule_NCMUX(PVW_TMLWE out, PVW_TMLWE in1,
+    PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+#ifdef SAB_PVW_BODY_PROFILE
+  const uint64_t ncmux_begin = sab_pvw_now_us();
+  const uint64_t ncmux_auto_begin = sab_pvw_now_us();
+  sab_pvw_body_profile.schedule_fused_ncmux_calls++;
+#endif
+  pvmtmlwe_eval_automorphism(sab->tmp->rotated, in2,
+      2 * in2->b[0]->N - 1, sab->aut_minus1);
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.ncmux_auto_us,
+      &sab_pvw_body_profile.ncmux_auto_calls, ncmux_auto_begin);
+#endif
+  sab_pvw_CMUX_internal(out, in1, sab->tmp->rotated, selector, sab, 1);
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.ncmux_us,
+      &sab_pvw_body_profile.ncmux_calls, ncmux_begin);
+#endif
+}
+
 static uint64_t sab_pvw_RGSW_monomial_mul_state(PVW_TMLWE * p[2],
     uint64_t active, MAT_TRGSW_DFT * e, SAB_PVW_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
@@ -467,8 +496,13 @@ static uint64_t sab_pvw_RGSW_monomial_mul_state(PVW_TMLWE * p[2],
     const uint64_t ncmux_loop_begin = sab_pvw_now_us();
 #endif
     for (size_t j = 0; j < power; j++){
+#ifdef SAB_PVW_SCHEDULE_FUSED_CMUX
+      sab_pvw_schedule_NCMUX(p[out][j], p[in][j], p[in][in_N - power + j],
+          e[bit], sab);
+#else
       sab_pvw_NCMUX(p[out][j], p[in][j], p[in][in_N - power + j],
           e[bit], sab);
+#endif
     }
 #ifdef SAB_PVW_BODY_PROFILE
     if(bit < SAB_PVW_BODY_PROFILE_MAX_BITS){
@@ -479,8 +513,13 @@ static uint64_t sab_pvw_RGSW_monomial_mul_state(PVW_TMLWE * p[2],
     const uint64_t direct_cmux_loop_begin = sab_pvw_now_us();
 #endif
     for (size_t j = 0; j < in_N - power; j++){
+#ifdef SAB_PVW_SCHEDULE_FUSED_CMUX
+      sab_pvw_schedule_CMUX(p[out][j + power], p[in][j + power], p[in][j],
+          e[bit], sab);
+#else
       sab_pvw_CMUX(p[out][j + power], p[in][j + power], p[in][j],
           e[bit], sab);
+#endif
     }
 #ifdef SAB_PVW_BODY_PROFILE
     if(bit < SAB_PVW_BODY_PROFILE_MAX_BITS){

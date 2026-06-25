@@ -30,6 +30,8 @@ evidence.
 | Stage 20 active-buffer fusion | `spqlios_avx512` | 4 | current explicit baseline | mean `1.346x`, range `1.323x-1.384x` |
 | Stage 21 sub_a output fusion | `spqlios_avx512` | 2/4 | neutral ablation | one-run `1.136x`/`1.308x`, not above Stage 20 |
 | Stage 22 specialized vs generic MAT-AVX | `spqlios_avx512` | 4 | implementation audit | specialized/generic PVW `1.040x`, full-SAB speedup `1.373x` |
+| Stage 23 schedule-fused CMUX | `spqlios_avx512` | 2 | neutral ablation | mean `1.273x`, essentially tied with Stage 20 `1.270x` |
+| Stage 23 schedule-fused CMUX | `spqlios_avx512` | 4 | neutral ablation | mean `1.335x`, below Stage 20 `1.346x` and Stage 22 `1.373x` |
 
 Current conclusion:
 
@@ -39,8 +41,10 @@ The project has complete SAB speedup evidence, but not a multi-fold result.
 The current best explicit variant remains Stage 20 active-buffer fusion with
 the specialized MAT-AVX512 kernel. Stage 21 was validated but not promoted.
 Stage 22 confirms the specialized kernel is useful but does not justify a
-theoretical-optimality claim. The next work should move to schedule-level
-fusion or noise/resource validation rather than isolated r=4 kernel tuning.
+theoretical-optimality claim. Stage 23 schedule-fused CMUX/NCMUX was validated
+but not promoted. The next work should move to conditional post-processing
+tail profiling and then noise/resource validation rather than repeating the
+same CMUX epilogue fusion.
 ```
 
 ## Invariants
@@ -95,9 +99,9 @@ Stage 19: exact sparse schedule audit. [completed]
 Stage 20: active-buffer/copyback fusion. [completed, current explicit baseline]
 Stage 21: sub_a and polynomial rotation optimization. [completed, neutral]
 Stage 22: MAT-aware AVX512 theoretical-limit audit. [completed, practical path confirmed]
-Stage 23: CMUX/NCMUX schedule fusion. [next optimization]
-Stage 24: conditional post-processing optimization.
-Stage 25: correctness/noise/resource matrix.
+Stage 23: CMUX/NCMUX schedule fusion. [completed, neutral]
+Stage 24: conditional post-processing optimization. [next conditional audit]
+Stage 25: correctness/noise/resource matrix. [next promotion gate]
 Stage 26: parameter and branch generalization.
 Stage 27: novelty and paper package.
 ```

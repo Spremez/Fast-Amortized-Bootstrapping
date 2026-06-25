@@ -236,6 +236,20 @@ Performance gate:
 - full SAB repeated A/B for `r=4` first, then `r=2`;
 - promote only if Stage 16/18 full SAB means improve beyond run variability.
 
+Status after execution:
+
+```text
+Implemented SAB_PVW_SCHEDULE_FUSED_CMUX=true as an explicit schedule-local
+ablation. The path preserves target full-output correctness and exact schedule
+counts for r=2/r=4: CMUX/MAT EP 573440, NCMUX 5080, schedule-fused direct
+CMUX 568360, and copyback 0 with active-buffer fusion.
+
+Sequential three-run full SAB A/B did not improve over the current best
+experimental path. r=2 averaged 1.273x, essentially tied with Stage 20's
+1.270x. r=4 averaged 1.335x, below Stage 20's 1.346x and Stage 22's 1.373x.
+The candidate is therefore recorded as neutral and is not promoted.
+```
+
 ## Stage 24: Conditional Post-Processing Optimization
 
 Goal:

@@ -1,0 +1,7 @@
+scope,r,runs,pvw_mean_us,pvw_min_us,pvw_max_us,scalar_repeated_mean_us,speedup_mean,speedup_min,speedup_max,status,notes
+profile,2,1,15600140.000,15600140,15600140,19437520.000,1.246,1.246,1.246,PASS_INSTRUMENTED,"count gate passed; timing is instrumented only"
+profile,4,1,29175969.000,29175969,29175969,40419205.000,1.385,1.385,1.385,PASS_INSTRUMENTED,"count gate passed; timing is instrumented only"
+full_sab_seq,2,3,15673397.333,15058181,16636523,19898011.667,1.273,1.153,1.343,PASS_NEUTRAL,"correct but not materially better than Stage 20 r=2 mean 1.270x"
+full_sab_seq,4,3,29651483.333,29263194,30278977,39568238.333,1.335,1.304,1.377,PASS_NEUTRAL,"correct but below Stage 20 r=4 mean 1.346x and Stage 22 r=4 mean 1.373x"
+full_sab_parallel_invalid,2,3,,,,,,,,INVALID,"parallel benchmark shared build/main with r=4 run; not used for claims"
+full_sab_parallel_invalid,4,3,,,,,,,,INVALID,"parallel benchmark shared build/main with r=2 run; not used for claims"

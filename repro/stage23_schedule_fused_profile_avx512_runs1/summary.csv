@@ -1,0 +1,3 @@
+r,run,status,pvw_avg_us,scalar_repeated_avg_us,speedup,in_N,h,r_prec,rgsw_monomial_calls,cmux_calls,expected_cmux,ncmux_calls,expected_ncmux,mat_ep_calls,sub_a_calls,expected_sub_a,copyback_calls,expected_copyback,schedule_fused_cmux_calls,expected_schedule_fused_cmux,schedule_fused_ncmux_calls,expected_schedule_fused_ncmux,cmux_from_dft_calls,cmux_add_calls,source_log
+2,0,PASS,15600140.000,19437520.000,1.246,2048,39,7,40,573440,573440,5080,5080,573440,39,39,0,0,568360,568360,5080,5080,573440,573440,repro/stage23_schedule_fused_profile_avx512_runs1/r2/run_0.log
+4,0,PASS,29175969.000,40419205.000,1.385,2048,39,7,40,573440,573440,5080,5080,573440,39,39,0,0,568360,568360,5080,5080,573440,573440,repro/stage23_schedule_fused_profile_avx512_runs1/r4/run_0.log

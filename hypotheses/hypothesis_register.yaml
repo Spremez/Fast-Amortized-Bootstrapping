@@ -65,14 +65,21 @@ hypotheses:
       wrapper, scratch, automorphism, and schedule work. Fusing those steps can
       reduce memory traffic and dispatch/copy overhead without changing the
       dense MAT arithmetic count.
-    status: profile_supported_first_fusion_candidate_neutral
-    evidence: docs/stage18_cmux_profile_and_fusion_log.md
+    status: stage23_schedule_fusion_neutral_not_promoted
+    evidence: docs/stage23_schedule_fused_cmux_log.md
     current_decision: >
       Fine-grained Stage 18 profile shows from_DFT is the largest non-MAT CMUX
       component. The explicit SAB_PVW_FUSED_FROM_DFT_ADD candidate passes
       staged and target correctness gates, but the r=4 three-process full SAB
-      sweep is neutral versus Stage 16. It should remain an ablation and not
-      be promoted by default.
+      sweep is neutral versus Stage 16. Stage 23 then forced the same
+      from_DFT_add epilogue only inside the RGSW monomial schedule using
+      SAB_PVW_SCHEDULE_FUSED_CMUX=true. It preserved target correctness and
+      exact count gates for r=2/r=4, but valid sequential repeated full SAB
+      A/B remained neutral: r=2 averaged 1.273x, essentially tied with Stage
+      20's 1.270x, and r=4 averaged 1.335x, below Stage 20's 1.346x and Stage
+      22's 1.373x. Keep both fused epilogue variants as ablations and do not
+      promote this optimization direction without a stronger schedule-level
+      change.
     failure_criteria:
       - CMUX wrapper-minus-MAT time does not decrease
       - full SAB throughput does not improve over Stage 16
