@@ -385,6 +385,15 @@ complete-SAB A/B mean speedup was 1.317x with range 1.270x-1.346x, and all
 49152 final-output noise points had zero PVW, scalar, and pair failures. This
 adds repeated-smoke support for the larger `in_N=4096`, `r_prec=8` binary
 parameter.
+
+The added-parameter r=2 cases were then expanded to the same 3-run/3-seed
+repeated-smoke level. `SET_4_5_2048` r=2 reached mean speedup 1.238x with
+range 1.086x-1.434x, and all 12288 final-output noise points had zero PVW,
+scalar, and pair failures. `SET_2_3_4096` r=2 reached mean speedup 1.227x with
+range 1.219x-1.235x, and all 24576 final-output noise points had zero PVW,
+scalar, and pair failures. The added binary parameters therefore have
+repeated-smoke support for r=2 and r=4, but not the main-target 50-seed noise
+level.
 ```
 
 ## Stage 27: Novelty and Paper Package

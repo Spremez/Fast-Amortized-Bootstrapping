@@ -484,6 +484,14 @@ Repro artifacts:
 - `repro/stage26_parameter_perf_noise_avx512_set_2_3_4096_r4_runs3_seeds3/perf_SET_2_3_4096_r4_runs3/summary.csv`
 - `repro/stage26_parameter_perf_noise_avx512_set_2_3_4096_r4_runs3_seeds3/noise_SET_2_3_4096_r4_seeds3/summary.csv`
 - `repro/stage26_parameter_perf_noise_avx512_set_2_3_4096_r4_runs3_seeds3/noise_SET_2_3_4096_r4_seeds3/aggregate.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_runs3_seeds3/performance_summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_runs3_seeds3/noise_summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_runs3_seeds3/perf_SET_4_5_2048_r2_runs3/summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_runs3_seeds3/perf_SET_2_3_4096_r2_runs3/summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_runs3_seeds3/noise_SET_4_5_2048_r2_seeds3/summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_runs3_seeds3/noise_SET_4_5_2048_r2_seeds3/aggregate.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_runs3_seeds3/noise_SET_2_3_4096_r2_seeds3/summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_runs3_seeds3/noise_SET_2_3_4096_r2_seeds3/aggregate.csv`
 - `repro/stage27_literature_matrix.csv`
 - `repro/stage27_source_access_matrix.csv`
 - `repro/stage27_final_full_sab_summary.csv`

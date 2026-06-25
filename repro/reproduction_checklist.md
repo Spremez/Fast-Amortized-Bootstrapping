@@ -131,7 +131,8 @@
 - [x] Run Stage 26 initial performance/noise smoke for added binary parameters.
 - [x] Expand Stage 26 `SET_4_5_2048` r=4 to 3-run/3-seed repeated smoke.
 - [x] Expand Stage 26 `SET_2_3_4096` r=4 to 3-run/3-seed repeated smoke.
-- [ ] Run repeated Stage 26 performance and multi-seed noise gates for added parameters before broad performance claims.
+- [x] Expand Stage 26 added binary r=2 parameters to 3-run/3-seed repeated smoke.
+- [ ] Increase Stage 26 added-parameter evidence beyond 3 runs/seeds before broad statistical performance claims.
 - [x] Add Stage 27 initial related-work and claim-boundary matrix.
 - [x] Record Stage 27 full-source access attempt and claim boundary.
 - [x] Re-run final consolidated full-SAB performance table for promoted r=2/r=4 target path after Stage 26 harness changes.

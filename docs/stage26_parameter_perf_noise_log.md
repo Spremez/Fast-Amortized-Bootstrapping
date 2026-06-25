@@ -86,11 +86,34 @@ This is stronger than the first one-run smoke for that parameter and supports a
 scoped repeated-smoke claim for `SET_4_5_2048` r=4 and `SET_2_3_4096` r=4. It
 is still not equivalent to the main-target 50-seed noise gate.
 
+## Repeated r=2 Follow-up
+
+The added-parameter r=2 cases were also expanded to 3-run/3-seed repeated
+smoke gates:
+
+| param | r | runs | correctness | PVW mean us | scalar repeated mean us | mean speedup | min speedup | max speedup |
+|---|---:|---:|---|---:|---:|---:|---:|---:|
+| `SET_4_5_2048` | 2 | 3 | Pass | `15246375.667` | `18744766.333` | `1.238x` | `1.086x` | `1.434x` |
+| `SET_2_3_4096` | 2 | 3 | Pass | `26769817.000` | `32847150.333` | `1.227x` | `1.219x` | `1.235x` |
+
+Noise for the same r=2 cases used 3 deterministic seeds:
+
+| param | r | seeds | points | PVW failures | scalar failures | pair failures | min gap | max gap | avg gap |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `SET_4_5_2048` | 2 | 3 | `12288` | 0 | 0 | 0 | `-0.175` | `0.464` | `0.046000` |
+| `SET_2_3_4096` | 2 | 3 | `24576` | 0 | 0 | 0 | `-0.172` | `0.014` | `-0.093000` |
+
+Together with the r=4 follow-up above, the added binary parameters now have
+3-run/3-seed repeated-smoke evidence for r=2 and r=4. This supports scoped
+binary parameter repeated-smoke language, but it is still below the target
+parameter's 50-seed final-output noise gate and should not be described as a
+broad statistical claim.
+
 ## Next Work
 
-- Add repeated runs for any added parameter that appears in the final paper
-  claim.
-- Increase added-parameter r=4 noise beyond 3 seeds if the r=4 scaling claim is
-  generalized beyond `SET_2_3_2048`.
-- Decide whether added-parameter r=2 repeated gates are needed for final
-  manuscript wording.
+- Increase added-parameter r=2/r=4 noise and performance repetitions beyond
+  3 seeds/runs if these parameters appear in a broad final paper claim.
+- Decide whether Stage 26 should stay as parameter repeated-smoke support or be
+  promoted to a larger statistical campaign.
+- Keep PVW+TERNARY out of scope unless a separate implementation and gate are
+  added.

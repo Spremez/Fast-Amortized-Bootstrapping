@@ -202,9 +202,13 @@ hypotheses:
       unsupported, while scalar TERNARY still builds. Follow-up repeated-smoke
       gates passed for SET_4_5_2048 r=4 with 3-run mean speedup 1.360x and
       for SET_2_3_4096 r=4 with 3-run mean speedup 1.317x; both had 3 noise
-      seeds with zero PVW/scalar/pair failures. Keep broad claims limited to
-      binary smoke generalization until larger repeated performance and
-      multi-seed noise are added for the claimed parameters.
+      seeds with zero PVW/scalar/pair failures. Added-parameter r=2 follow-up
+      gates also passed: SET_4_5_2048 r=2 reached 3-run mean speedup 1.238x
+      with range 1.086x-1.434x and 12288 zero-failure noise points, while
+      SET_2_3_4096 r=2 reached 3-run mean speedup 1.227x with range
+      1.219x-1.235x and 24576 zero-failure noise points. Keep broad claims
+      limited to binary repeated-smoke generalization until larger repeated
+      performance and multi-seed noise are added for the claimed parameters.
     failure_criteria:
       - added parameter sets fail correctness or noise gates
       - speedup appears only on one narrow configuration
