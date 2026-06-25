@@ -986,14 +986,15 @@ Status:
 
 ```text
 Stage 40 scoped freeze completed. The generated decision is
-SCOPED_FREEZE_READY_STRONGER_CLAIMS_BLOCKED. Required scoped artifacts exist,
-final audit A9 remains scoped-ready/stronger-blocked, Stage 39 promotes no new
-variant under current evidence, and Stage 35 preserves the external blockers.
+SCOPED_FREEZE_READY_STRONGER_CLAIMS_BLOCKED. Required scoped artifacts exist
+with SHA-256 hashes in the freeze manifest, final audit A9 remains
+scoped-ready/stronger-blocked, Stage 39 promotes no new variant under current
+evidence, and Stage 35 preserves the external blockers.
 
 The post-freeze verifier then ran from a clean worktree input commit and
 reported PASS_POSTFREEZE_VERIFY without regenerating the freeze package. This
 checks Stage 40 decision, final audit A9, Stage 39 triage, external blockers,
-manifest paths, and the Stage 40 run-log row.
+manifest paths, manifest SHA-256 hashes, and the Stage 40 run-log row.
 
 This freezes the current engineering package only. It is not a freeze for
 theoretical MAT-AVX512 optimality, theorem-level 2025/686 citations, novelty,

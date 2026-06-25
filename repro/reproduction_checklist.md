@@ -159,7 +159,9 @@
 - [x] Add and run Stage 38 full-text review gate; current environment remains blocked because `FAB686_FULLTEXT_PATH` is missing.
 - [x] Generate Stage 39 optional variant triage matrix.
 - [x] Generate Stage 40 final scoped freeze package.
+- [x] Add SHA-256 hashes to the Stage 40 freeze manifest.
 - [x] Run Stage 40 post-freeze verifier from a clean worktree input.
+- [x] Verify Stage 40 freeze manifest SHA-256 hashes.
 - [x] Run final recheck with Stage 40 post-freeze verifier enabled.
 - [x] Separate post-freeze-only final recheck output from ordinary final recheck output.
 - [ ] Execute remaining Stage 36 optional target-noise/added-parameter campaigns only if broader claims need them.
