@@ -188,12 +188,15 @@ hypotheses:
       The relative cost of MAT external products, sparse schedule work, sub_a,
       extract, and key switching depends on N, h, r_prec, branch type, and
       backend. A single target parameter can hide branch-specific regressions.
-    status: planned_stage26
-    evidence: docs/roadmap_stage19_plus.md
+    status: stage26_initial_binary_parameter_smoke_supported
+    evidence: docs/stage26_parameter_branch_log.md
     current_decision: >
-      Keep the current engineering claim scoped to the tested binary target
-      until Stage 26 expands coverage. Unsupported ternary/include-zero paths
-      must be labeled out of scope rather than implied.
+      Stage 26 parameterized the PVW target harness and verified that
+      SET_2_3_2048, SET_4_5_2048, and SET_2_3_4096 pass target correctness
+      smoke under spqlios_avx512 with specialized MAT-AVX512 and active-buffer
+      fusion. PVW+TERNARY is explicitly rejected as unsupported, while scalar
+      TERNARY still builds. Keep broad claims limited to binary smoke
+      generalization until added parameters receive noise/performance gates.
     failure_criteria:
       - added parameter sets fail correctness or noise gates
       - speedup appears only on one narrow configuration

@@ -51,6 +51,7 @@ Code artifacts:
 - `scripts/run_stage25_final_noise_sweep.sh`
 - `scripts/run_stage25_stage_noise_probe.sh`
 - `scripts/run_stage25_resource_matrix.sh`
+- `scripts/run_stage26_parameter_target_smoke.sh`
 
 Documentation artifacts:
 
@@ -92,6 +93,7 @@ Documentation artifacts:
 - `docs/stage23_schedule_fused_cmux_log.md`
 - `docs/stage24_postproc_tail_log.md`
 - `docs/stage25_correctness_noise_resource_log.md`
+- `docs/stage26_parameter_branch_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -114,6 +116,7 @@ Documentation artifacts:
 - `experiments/stage23_schedule_fused_cmux_plan.md`
 - `experiments/stage24_postproc_tail_plan.md`
 - `experiments/stage25_correctness_noise_resource_plan.md`
+- `experiments/stage26_parameter_branch_plan.md`
 
 Repro artifacts:
 
@@ -436,3 +439,13 @@ Repro artifacts:
 - `repro/stage25_resource_avx512/r4/pvw.time.log`
 - `repro/stage25_resource_avx512/r4/scalar.log`
 - `repro/stage25_resource_avx512/r4/scalar.time.log`
+- `repro/stage26_parameter_branch_smoke_avx512/parameter_summary.csv`
+- `repro/stage26_parameter_branch_smoke_avx512/branch_summary.csv`
+- `repro/stage26_parameter_branch_smoke_avx512/binary_SET_2_3_2048/build.log`
+- `repro/stage26_parameter_branch_smoke_avx512/binary_SET_2_3_2048/run.log`
+- `repro/stage26_parameter_branch_smoke_avx512/binary_SET_4_5_2048/build.log`
+- `repro/stage26_parameter_branch_smoke_avx512/binary_SET_4_5_2048/run.log`
+- `repro/stage26_parameter_branch_smoke_avx512/binary_SET_2_3_4096/build.log`
+- `repro/stage26_parameter_branch_smoke_avx512/binary_SET_2_3_4096/run.log`
+- `repro/stage26_parameter_branch_smoke_avx512/unsupported_TERNARY_SET_2_3_2048/pvw_build.log`
+- `repro/stage26_parameter_branch_smoke_avx512/unsupported_TERNARY_SET_2_3_2048/scalar_build.log`

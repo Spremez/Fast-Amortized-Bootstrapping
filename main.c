@@ -586,6 +586,94 @@ static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
 #define SAB_PVW_RESOURCE_R 2
 #endif
 
+#if !defined(BINARY)
+#error "SAB_PVW target harness currently supports only KEY=BINARY"
+#endif
+
+typedef struct {
+  int in_N;
+  int in_k;
+  int out_N;
+  int out_k;
+  int l;
+  int bg_bit;
+  int prec;
+  int h;
+  int r_prec;
+  int h_out;
+  int h_packing;
+  int ell_packing;
+  int b_packing;
+  int t_ks;
+  int b_ks;
+  double sigma_in;
+  double sigma_out;
+  double sigma_packing;
+} SAB_PVW_Target_Params;
+
+static SAB_PVW_Target_Params sab_pvw_target_params(void){
+#if defined(SET_2_3_4096)
+  return (SAB_PVW_Target_Params){4096, 1, 2048, 1, 1, 23, 3, 32, 8,
+      512, 256, 2, 14, 12, 1, pow(2, -15), pow(2, -50), pow(2, -44)};
+#elif defined(SET_2_3_8192)
+  return (SAB_PVW_Target_Params){8192, 1, 2048, 1, 1, 23, 3, 25, 10,
+      512, 256, 2, 14, 12, 1, pow(2, -15), pow(2, -50), pow(2, -44)};
+#elif defined(SET_4_5_2048)
+  return (SAB_PVW_Target_Params){2048, 1, 2048, 1, 1, 23, 5, 42, 7,
+      512, 256, 2, 14, 14, 1, pow(2, -17), pow(2, -50), pow(2, -44)};
+#elif defined(SET_4_5_4096)
+  return (SAB_PVW_Target_Params){4096, 1, 2048, 1, 1, 23, 5, 34, 8,
+      512, 256, 2, 14, 14, 1, pow(2, -18), pow(2, -50), pow(2, -44)};
+#elif defined(SET_4_5_8192)
+  return (SAB_PVW_Target_Params){8192, 1, 2048, 1, 1, 23, 5, 26, 10,
+      512, 256, 2, 14, 14, 1, pow(2, -18), pow(2, -50), pow(2, -44)};
+#elif defined(SET_6_7_4096)
+  return (SAB_PVW_Target_Params){4096, 1, 2048, 1, 1, 23, 7, 33, 9,
+      512, 256, 2, 14, 17, 1, pow(2, -21), pow(2, -50), pow(2, -44)};
+#elif defined(SET_6_7_8192)
+  return (SAB_PVW_Target_Params){8192, 1, 2048, 1, 1, 23, 7, 27, 10,
+      512, 256, 2, 14, 17, 1, pow(2, -21), pow(2, -50), pow(2, -44)};
+#elif defined(SET_8_9_4096)
+  return (SAB_PVW_Target_Params){4096, 1, 8192, 1, 1, 22, 9, 34, 9,
+      512, 256, 2, 14, 20, 1, pow(2, -24), pow(2, -51), pow(2, -44)};
+#elif defined(SET_8_9_8192)
+  return (SAB_PVW_Target_Params){8192, 1, 8192, 1, 1, 22, 9, 28, 10,
+      512, 256, 2, 14, 20, 1, pow(2, -24), pow(2, -51), pow(2, -44)};
+#elif defined(SET_8_9_HIGH_FR)
+  return (SAB_PVW_Target_Params){8192, 1, 4096, 1, 1, 23, 9, 28, 10,
+      512, 256, 2, 14, 17, 1, pow(2, -22), pow(2, -50), pow(2, -44)};
+#else
+  return (SAB_PVW_Target_Params){2048, 1, 2048, 1, 1, 23, 3, 39, 7,
+      512, 256, 2, 14, 12, 1, pow(2, -15), pow(2, -50), pow(2, -44)};
+#endif
+}
+
+static void sab_pvw_fill_target_distances(uint64_t * distances,
+    const SAB_PVW_Target_Params * params){
+  const uint64_t slots = (uint64_t) params->h + 1;
+  const uint64_t base = ((uint64_t) params->in_N) / slots;
+  const uint64_t remainder = ((uint64_t) params->in_N) % slots;
+  const uint64_t r_max = 1ULL << params->r_prec;
+  uint64_t sum = 0;
+  for (size_t idx = 0; idx < (size_t) params->h; idx++){
+    const uint64_t distance = base + (idx < remainder ? 1 : 0);
+    if(distance == 0 || distance >= r_max){
+      printf("SAB_PVW target unsupported distance idx=%" PRIu64
+             " distance=%" PRIu64 " r_prec=%d\n",
+             (uint64_t) idx, distance, params->r_prec);
+      exit(1);
+    }
+    distances[idx] = distance;
+    sum += distance;
+  }
+  const uint64_t tail = ((uint64_t) params->in_N) - sum;
+  if(tail == 0 || tail >= r_max){
+    printf("SAB_PVW target unsupported tail distance=%" PRIu64
+           " r_prec=%d\n", tail, params->r_prec);
+    exit(1);
+  }
+}
+
 typedef struct {
   double sq_sum;
   uint64_t count;
@@ -2550,23 +2638,26 @@ static bool check_pvw_rgsw_monomial_lane_equivalence(int r){
 }
 
 static bool check_pvw_target_full_binary_lane_equivalence(int r){
-  const int in_N = 2048, in_k = 1, out_N = 2048, out_k = 1;
-  const int l = 1, bg_bit = 23, prec = 3, h = 39, r_prec = 7;
-  const int h_out = 512, h_packing = 256;
-  const int ell_packing = 2, b_packing = 14, ell_hw = 12, b_hw = 1;
-  uint64_t distances[39];
+  const SAB_PVW_Target_Params params = sab_pvw_target_params();
+  const int in_N = params.in_N, in_k = params.in_k;
+  const int out_N = params.out_N, out_k = params.out_k;
+  const int l = params.l, bg_bit = params.bg_bit, prec = params.prec;
+  const int h = params.h, r_prec = params.r_prec;
+  const int h_out = params.h_out, h_packing = params.h_packing;
+  const int ell_packing = params.ell_packing;
+  const int b_packing = params.b_packing;
+  const int ell_hw = params.t_ks, b_hw = params.b_ks;
+  uint64_t distances[h];
   bool pass = true;
 
-  for (size_t idx = 0; idx < (size_t) h; idx++){
-    distances[idx] = idx < 8 ? 52 : 51;
-  }
+  sab_pvw_fill_target_distances(distances, &params);
 
   TRLWE_Key input_key = test_binary_key_from_distances(in_N, in_k,
-      distances, h, pow(2, -15));
+      distances, h, params.sigma_in);
   TRLWE_Key packing_key = trlwe_new_ternary_key(in_N, in_k, h_packing,
-      pow(2, -44));
+      params.sigma_packing);
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_ternary_key(out_N, out_k, r, h_out,
-      pow(2, -50));
+      params.sigma_out);
   SAB_PVW_Key pvw_sab = sab_pvw_new_binary_full_key(input_key, packing_key,
       pvw_key, prec, b_packing, ell_packing, ell_hw, b_hw, h, r_prec, l,
       bg_bit);
@@ -2633,27 +2724,30 @@ void test_sab_pvw_target_full(){
 
 void test_sab_pvw_target_bench(){
   const int r = SAB_PVW_BENCH_R, reps = SAB_PVW_BENCH_REPS;
-  const int in_N = 2048, in_k = 1, out_N = 2048, out_k = 1;
-  const int l = 1, bg_bit = 23, prec = 3, h = 39, r_prec = 7;
-  const int h_out = 512, h_packing = 256;
-  const int ell_packing = 2, b_packing = 14, ell_hw = 12, b_hw = 1;
-  uint64_t distances[39];
+  const SAB_PVW_Target_Params params = sab_pvw_target_params();
+  const int in_N = params.in_N, in_k = params.in_k;
+  const int out_N = params.out_N, out_k = params.out_k;
+  const int l = params.l, bg_bit = params.bg_bit, prec = params.prec;
+  const int h = params.h, r_prec = params.r_prec;
+  const int h_out = params.h_out, h_packing = params.h_packing;
+  const int ell_packing = params.ell_packing;
+  const int b_packing = params.b_packing;
+  const int ell_hw = params.t_ks, b_hw = params.b_ks;
+  uint64_t distances[h];
 
   if(r < 1 || reps < 1){
     printf("SAB_PVW_BENCH invalid config r=%d reps=%d\n", r, reps);
     exit(1);
   }
 
-  for (size_t idx = 0; idx < (size_t) h; idx++){
-    distances[idx] = idx < 8 ? 52 : 51;
-  }
+  sab_pvw_fill_target_distances(distances, &params);
 
   TRLWE_Key input_key = test_binary_key_from_distances(in_N, in_k,
-      distances, h, pow(2, -15));
+      distances, h, params.sigma_in);
   TRLWE_Key packing_key = trlwe_new_ternary_key(in_N, in_k, h_packing,
-      pow(2, -44));
+      params.sigma_packing);
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_ternary_key(out_N, out_k, r, h_out,
-      pow(2, -50));
+      params.sigma_out);
   SAB_PVW_Key pvw_sab = sab_pvw_new_binary_full_key(input_key, packing_key,
       pvw_key, prec, b_packing, ell_packing, ell_hw, b_hw, h, r_prec, l,
       bg_bit);
@@ -2759,12 +2853,17 @@ void test_sab_pvw_target_bench(){
 
 void test_sab_pvw_resource(){
   const int r = SAB_PVW_RESOURCE_R;
-  const int in_N = 2048, in_k = 1, out_N = 2048, out_k = 1;
-  const int l = 1, bg_bit = 23, prec = 3, h = 39, r_prec = 7;
-  const int h_out = 512, h_packing = 256;
-  const int ell_packing = 2, b_packing = 14, ell_hw = 12, b_hw = 1;
+  const SAB_PVW_Target_Params params = sab_pvw_target_params();
+  const int in_N = params.in_N, in_k = params.in_k;
+  const int out_N = params.out_N, out_k = params.out_k;
+  const int l = params.l, bg_bit = params.bg_bit, prec = params.prec;
+  const int h = params.h, r_prec = params.r_prec;
+  const int h_out = params.h_out, h_packing = params.h_packing;
+  const int ell_packing = params.ell_packing;
+  const int b_packing = params.b_packing;
+  const int ell_hw = params.t_ks, b_hw = params.b_ks;
   const char * mode = getenv("SAB_PVW_RESOURCE_MODE");
-  uint64_t distances[39];
+  uint64_t distances[h];
 
   if(mode == NULL || mode[0] == '\0') mode = "both";
   const bool run_pvw = strcmp(mode, "pvw") == 0 || strcmp(mode, "both") == 0;
@@ -2774,9 +2873,7 @@ void test_sab_pvw_resource(){
     exit(1);
   }
 
-  for (size_t idx = 0; idx < (size_t) h; idx++){
-    distances[idx] = idx < 8 ? 52 : 51;
-  }
+  sab_pvw_fill_target_distances(distances, &params);
 
   printf("SAB_PVW_RESOURCE config target_full r=%d mode=%s in_N=%d out_N=%d h=%d r_prec=%d ell_packing=%d b_packing=%d ell_hw=%d b_hw=%d\n",
          r, mode, in_N, out_N, h, r_prec, ell_packing, b_packing,
@@ -2784,17 +2881,17 @@ void test_sab_pvw_resource(){
 
   uint64_t begin = get_time();
   TRLWE_Key input_key = test_binary_key_from_distances(in_N, in_k,
-      distances, h, pow(2, -15));
+      distances, h, params.sigma_in);
   const uint64_t input_keygen_us = get_time() - begin;
 
   begin = get_time();
   TRLWE_Key packing_key = trlwe_new_ternary_key(in_N, in_k, h_packing,
-      pow(2, -44));
+      params.sigma_packing);
   const uint64_t packing_keygen_us = get_time() - begin;
 
   begin = get_time();
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_ternary_key(out_N, out_k, r, h_out,
-      pow(2, -50));
+      params.sigma_out);
   const uint64_t pvw_secret_keygen_us = get_time() - begin;
 
   const uint64_t scalar_one_key_bytes = estimate_scalar_sab_public_key_bytes(
@@ -2854,29 +2951,32 @@ void test_sab_pvw_resource(){
 
 void test_sab_pvw_noise(){
   const int r = SAB_PVW_NOISE_R, trials = SAB_PVW_NOISE_TRIALS;
-  const int in_N = 2048, in_k = 1, out_N = 2048, out_k = 1;
-  const int l = 1, bg_bit = 23, prec = 3, h = 39, r_prec = 7;
-  const int h_out = 512, h_packing = 256;
-  const int ell_packing = 2, b_packing = 14, ell_hw = 12, b_hw = 1;
+  const SAB_PVW_Target_Params params = sab_pvw_target_params();
+  const int in_N = params.in_N, in_k = params.in_k;
+  const int out_N = params.out_N, out_k = params.out_k;
+  const int l = params.l, bg_bit = params.bg_bit, prec = params.prec;
+  const int h = params.h, r_prec = params.r_prec;
+  const int h_out = params.h_out, h_packing = params.h_packing;
+  const int ell_packing = params.ell_packing;
+  const int b_packing = params.b_packing;
+  const int ell_hw = params.t_ks, b_hw = params.b_ks;
   const uint64_t lut_size = 1ULL << prec;
   const uint64_t mod_mask = (1ULL << (prec - 1)) - 1;
-  uint64_t distances[39];
+  uint64_t distances[h];
 
   if(r < 1 || trials < 1){
     printf("SAB_PVW_NOISE invalid config r=%d trials=%d\n", r, trials);
     exit(1);
   }
 
-  for (size_t idx = 0; idx < (size_t) h; idx++){
-    distances[idx] = idx < 8 ? 52 : 51;
-  }
+  sab_pvw_fill_target_distances(distances, &params);
 
   TRLWE_Key input_key = test_binary_key_from_distances(in_N, in_k,
-      distances, h, pow(2, -15));
+      distances, h, params.sigma_in);
   TRLWE_Key packing_key = trlwe_new_ternary_key(in_N, in_k, h_packing,
-      pow(2, -44));
+      params.sigma_packing);
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_ternary_key(out_N, out_k, r, h_out,
-      pow(2, -50));
+      params.sigma_out);
   SAB_PVW_Key pvw_sab = sab_pvw_new_binary_full_key(input_key, packing_key,
       pvw_key, prec, b_packing, ell_packing, ell_hw, b_hw, h, r_prec, l,
       bg_bit);
@@ -3135,28 +3235,31 @@ static void add_stage_noise_trlwe(TorusNoiseStats * lanes, int lane, int prec,
 
 void test_sab_pvw_stage_noise(){
   const int r = SAB_PVW_NOISE_R, trials = SAB_PVW_NOISE_TRIALS;
-  const int in_N = 2048, in_k = 1, out_N = 2048, out_k = 1;
-  const int l = 1, bg_bit = 23, prec = 3, h = 39, r_prec = 7;
-  const int h_out = 512, h_packing = 256;
-  const int ell_packing = 2, b_packing = 14, ell_hw = 12, b_hw = 1;
+  const SAB_PVW_Target_Params params = sab_pvw_target_params();
+  const int in_N = params.in_N, in_k = params.in_k;
+  const int out_N = params.out_N, out_k = params.out_k;
+  const int l = params.l, bg_bit = params.bg_bit, prec = params.prec;
+  const int h = params.h, r_prec = params.r_prec;
+  const int h_out = params.h_out, h_packing = params.h_packing;
+  const int ell_packing = params.ell_packing;
+  const int b_packing = params.b_packing;
+  const int ell_hw = params.t_ks, b_hw = params.b_ks;
   const uint64_t lut_size = 1ULL << prec;
   const uint64_t mod_mask = (1ULL << (prec - 1)) - 1;
-  uint64_t distances[39];
+  uint64_t distances[h];
 
   if(r < 1 || trials < 1){
     printf("SAB_PVW_STAGE_NOISE invalid config r=%d trials=%d\n", r, trials);
     exit(1);
   }
-  for (size_t idx = 0; idx < (size_t) h; idx++){
-    distances[idx] = idx < 8 ? 52 : 51;
-  }
+  sab_pvw_fill_target_distances(distances, &params);
 
   TRLWE_Key input_key = test_binary_key_from_distances(in_N, in_k,
-      distances, h, pow(2, -15));
+      distances, h, params.sigma_in);
   TRLWE_Key packing_key = trlwe_new_ternary_key(in_N, in_k, h_packing,
-      pow(2, -44));
+      params.sigma_packing);
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_ternary_key(out_N, out_k, r, h_out,
-      pow(2, -50));
+      params.sigma_out);
   SAB_PVW_Key pvw_sab = sab_pvw_new_binary_full_key(input_key, packing_key,
       pvw_key, prec, b_packing, ell_packing, ell_hw, b_hw, h, r_prec, l,
       bg_bit);

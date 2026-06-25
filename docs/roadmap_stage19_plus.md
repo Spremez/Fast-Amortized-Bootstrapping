@@ -349,6 +349,24 @@ Gate:
 
 - no broad SAB claim may rely on only one parameter set.
 
+Status after initial execution:
+
+```text
+Stage 26 first fixed the PVW target harness so PARAM=SET_* actually changes
+the PVW target, bench, noise, stage-noise, and resource gate parameters.
+Previously those paths were hard-coded to BINARY SET_2_3_2048.
+
+Initial binary parameter smoke passed for SET_2_3_2048, SET_4_5_2048, and
+SET_2_3_4096 under spqlios_avx512 with specialized MAT-AVX512 and
+active-buffer fusion. The corresponding h/r_prec values were 39/7, 42/7, and
+32/8. PVW+TERNARY is now explicitly rejected as unsupported, while scalar
+TERNARY still builds.
+
+This supports binary parameter-smoke generalization only. It does not yet
+support non-binary PVW-SAB, performance scaling claims on the new parameters,
+or noise robustness beyond the main target.
+```
+
 ## Stage 27: Novelty and Paper Package
 
 Goal:

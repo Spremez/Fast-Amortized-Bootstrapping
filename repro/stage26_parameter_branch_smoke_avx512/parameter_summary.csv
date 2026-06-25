@@ -1,0 +1,4 @@
+backend,param,key,r,h,r_prec,status,build_log,run_log
+spqlios_avx512,SET_2_3_2048,BINARY,2,39,7,Pass,repro/stage26_parameter_branch_smoke_avx512/binary_SET_2_3_2048/build.log,repro/stage26_parameter_branch_smoke_avx512/binary_SET_2_3_2048/run.log
+spqlios_avx512,SET_4_5_2048,BINARY,2,42,7,Pass,repro/stage26_parameter_branch_smoke_avx512/binary_SET_4_5_2048/build.log,repro/stage26_parameter_branch_smoke_avx512/binary_SET_4_5_2048/run.log
+spqlios_avx512,SET_2_3_4096,BINARY,2,32,8,Pass,repro/stage26_parameter_branch_smoke_avx512/binary_SET_2_3_4096/build.log,repro/stage26_parameter_branch_smoke_avx512/binary_SET_2_3_4096/run.log

@@ -1,0 +1,3 @@
+backend,param,key,mode,status,build_log,notes
+spqlios_avx512,SET_2_3_2048,TERNARY,pvw_target,EXPECTED_UNSUPPORTED,repro/stage26_parameter_branch_smoke_avx512/unsupported_TERNARY_SET_2_3_2048/pvw_build.log,PVW target harness is binary-only; scalar path is checked separately
+spqlios_avx512,SET_2_3_2048,TERNARY,scalar_build,PASS,repro/stage26_parameter_branch_smoke_avx512/unsupported_TERNARY_SET_2_3_2048/scalar_build.log,Scalar non-binary build is unaffected by the PVW binary-only guard

@@ -125,5 +125,8 @@
 - [x] Expand Stage 25 promoted-path final-output correctness/noise to 50 seeds for `r=2` and `r=4`.
 - [ ] Expand Stage 25 stage-level noise beyond smoke if final report requires stage-by-stage statistical evidence.
 - [ ] Re-run a consolidated Stage 25 repeated full SAB A/B table if it is needed as the final promoted-variant performance package.
-- [ ] Run Stage 26 parameter and branch generalization before broad SAB claims.
+- [x] Parameterize PVW target harness so `PARAM=SET_*` affects PVW gates.
+- [x] Run Stage 26 initial binary parameter target smoke.
+- [x] Record non-binary PVW branch as unsupported while keeping scalar TERNARY buildable.
+- [ ] Run Stage 26 noise/performance gates for added parameters before broad performance claims.
 - [ ] Complete Stage 27 novelty/literature and paper package before manuscript claims.
