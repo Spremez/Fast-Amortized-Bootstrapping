@@ -57,6 +57,7 @@ Code artifacts:
 - `scripts/build_stage27_final_package.py`
 - `scripts/run_stage28_native_perf_counter_gate.sh`
 - `scripts/build_final_goal_completion_audit.py`
+- `scripts/run_final_goal_recheck.sh`
 
 Documentation artifacts:
 
@@ -110,6 +111,7 @@ Documentation artifacts:
 - `docs/stage27_final_engineering_report.md`
 - `docs/stage28_native_perf_counter_gate_log.md`
 - `docs/final_goal_completion_audit.md`
+- `docs/final_goal_recheck_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -136,6 +138,7 @@ Documentation artifacts:
 - `experiments/stage26_parameter_perf_noise_plan.md`
 - `experiments/stage27_novelty_paper_package_plan.md`
 - `experiments/stage28_native_perf_counter_gate_plan.md`
+- `experiments/final_goal_recheck_plan.md`
 
 Repro artifacts:
 
@@ -546,3 +549,7 @@ Repro artifacts:
 - `repro/stage28_native_perf_counter_gate/environment.log`
 - `repro/stage28_native_perf_counter_gate/perf_smoke.log`
 - `repro/final_goal_completion_audit.csv`
+- `repro/final_goal_recheck/summary.csv`
+- `repro/final_goal_recheck/stage28_perf_gate.log`
+- `repro/final_goal_recheck/stage27_final_package.log`
+- `repro/final_goal_recheck/final_goal_audit.log`

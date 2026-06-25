@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+out_dir="${FINAL_RECHECK_OUT_DIR:-repro/final_goal_recheck}"
+run_citation="${FINAL_RECHECK_CITATION:-0}"
+run_perf="${FINAL_RECHECK_PERF:-1}"
+run_stage27_package="${FINAL_RECHECK_STAGE27_PACKAGE:-1}"
+run_goal_audit="${FINAL_RECHECK_GOAL_AUDIT:-1}"
+python_bin="${PYTHON_BIN:-python3}"
+
+mkdir -p "$out_dir"
+
+summary_csv="$out_dir/summary.csv"
+printf 'step,status,command,log,notes\n' > "$summary_csv"
+
+csv_row() {
+  local step="$1"
+  local status="$2"
+  local command="$3"
+  local log="$4"
+  local notes="$5"
+  command="${command//,/;}"
+  notes="${notes//$'\n'/ }"
+  notes="${notes//,/;}"
+  printf '%s,%s,%s,%s,%s\n' "$step" "$status" "$command" "$log" "$notes" >> "$summary_csv"
+}
+
+run_logged() {
+  local step="$1"
+  local command="$2"
+  local log="$out_dir/${step}.log"
+
+  set +e
+  bash -lc "$command" > "$log" 2>&1
+  local rc="$?"
+  set -e
+
+  if [[ "$rc" -eq 0 ]]; then
+    csv_row "$step" "PASS" "$command" "$log" "command completed"
+  else
+    csv_row "$step" "FAIL" "$command" "$log" "command failed with rc=$rc"
+    return "$rc"
+  fi
+}
+
+if [[ "$run_citation" == "1" ]]; then
+  run_logged "stage27_citation_probe" \
+    "bash scripts/run_stage27_citation_access_probe.sh"
+else
+  csv_row "stage27_citation_probe" "SKIPPED" \
+    "bash scripts/run_stage27_citation_access_probe.sh" \
+    "" \
+    "Set FINAL_RECHECK_CITATION=1 to refresh network/full-text citation access."
+fi
+
+if [[ "$run_perf" == "1" ]]; then
+  run_logged "stage28_perf_gate" \
+    "bash scripts/run_stage28_native_perf_counter_gate.sh"
+else
+  csv_row "stage28_perf_gate" "SKIPPED" \
+    "bash scripts/run_stage28_native_perf_counter_gate.sh" \
+    "" \
+    "Set FINAL_RECHECK_PERF=1 to refresh native perf-counter gate."
+fi
+
+if [[ "$run_stage27_package" == "1" ]]; then
+  run_logged "stage27_final_package" \
+    "$python_bin scripts/build_stage27_final_package.py"
+else
+  csv_row "stage27_final_package" "SKIPPED" \
+    "$python_bin scripts/build_stage27_final_package.py" \
+    "" \
+    "Set FINAL_RECHECK_STAGE27_PACKAGE=1 to rebuild final evidence package."
+fi
+
+if [[ "$run_goal_audit" == "1" ]]; then
+  run_logged "final_goal_audit" \
+    "$python_bin scripts/build_final_goal_completion_audit.py"
+else
+  csv_row "final_goal_audit" "SKIPPED" \
+    "$python_bin scripts/build_final_goal_completion_audit.py" \
+    "" \
+    "Set FINAL_RECHECK_GOAL_AUDIT=1 to regenerate final goal completion audit."
+fi
+
+if [[ -f repro/final_goal_completion_audit.csv ]]; then
+  decision="$(
+    awk -F, '$1 == "A9" {print $4}' repro/final_goal_completion_audit.csv
+  )"
+  csv_row "final_decision" "${decision:-MISSING}" \
+    "read repro/final_goal_completion_audit.csv A9" \
+    "repro/final_goal_completion_audit.csv" \
+    "current final goal audit decision"
+else
+  csv_row "final_decision" "MISSING" \
+    "read repro/final_goal_completion_audit.csv A9" \
+    "repro/final_goal_completion_audit.csv" \
+    "final goal audit CSV is missing"
+fi
+
+printf 'Final goal recheck summary: %s\n' "$summary_csv"

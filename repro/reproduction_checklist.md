@@ -145,5 +145,6 @@
 - [x] Add Stage 27 final scoped engineering report.
 - [x] Add and run Stage 28 lightweight native perf-counter gate; current WSL2 platform is blocked because `perf` is missing.
 - [x] Add generated final goal completion audit separating scoped engineering readiness from stronger blocked claims.
+- [x] Add and run final lightweight recheck runner for Stage 27 package, Stage 28 perf gate, and Stage 29 audit.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.

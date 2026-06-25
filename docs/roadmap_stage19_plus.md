@@ -565,3 +565,41 @@ but novelty, theorem-level 2025/686 citations, non-binary support, broad
 all-parameter support, and MAT-AVX512 hardware-counter optimality remain
 blocked or conditional.
 ```
+
+## Stage 30: Final Goal Recheck Runner
+
+Goal:
+
+```text
+Provide a single reproducible command that refreshes the current external-gate
+state and final audit without changing the scalar or PVW/MAT-SAB
+implementation.
+```
+
+Tasks:
+
+- optionally refresh the Stage 27 citation/full-text probe;
+- refresh the Stage 28 native perf-counter gate;
+- rebuild the Stage 27 final evidence package;
+- regenerate the Stage 29 final goal completion audit;
+- record the final `A9` decision in a recheck summary CSV.
+
+Gate:
+
+- default recheck must not run expensive or network-dependent checks unless
+  explicitly requested;
+- skipped citation probing must not be interpreted as theorem-level citation
+  support;
+- blocked perf-counter probing must not be interpreted as theoretical
+  MAT-AVX512 optimality support.
+
+Status after initial execution:
+
+```text
+`bash scripts/run_final_goal_recheck.sh` completed with citation probing
+skipped, Stage 28 perf gate refreshed, final package rebuilt, and final goal
+audit regenerated.
+
+Decision:
+SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
+```

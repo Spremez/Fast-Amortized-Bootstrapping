@@ -52,6 +52,7 @@ evidence.
 | Stage 27 final engineering report | report | n/a | scoped engineering report ready | User-facing technical report generated without novelty or theorem-level overclaim |
 | Stage 28 native perf-counter gate | WSL2 probe | n/a | blocked, reproducible | `perf` missing in current WSL2 PATH; MAT-AVX512 theoretical load/store claim remains blocked |
 | Stage 29 final goal completion audit | generated audit | n/a | scoped ready, stronger blocked | `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED` |
+| Stage 30 final goal recheck runner | orchestration | n/a | reproducible recheck available | default lightweight recheck regenerates final package/audit and preserves stronger-claim blocks |
 
 Current conclusion:
 
@@ -98,6 +99,8 @@ load/store attribution still requires a native/perf-enabled run.
 The Stage 29 generated goal audit now machine-checks the scoped engineering
 evidence chain and records the overall state as scoped-ready with stronger
 claims still blocked.
+The Stage 30 recheck runner provides one command to refresh the current gate
+state and final audit when external citation or perf conditions change.
 ```
 
 ## Invariants
@@ -159,4 +162,5 @@ Stage 26: parameter and branch generalization. [initial binary smoke plus added-
 Stage 27: novelty and paper package. [engineering evidence package assembled; novelty claim blocked pending full-paper review]
 Stage 28: native perf-counter gate for MAT-AVX512 theoretical load/store attribution. [lightweight probe completed; blocked on current WSL2 platform]
 Stage 29: final goal completion audit. [generated; scoped engineering chain ready, stronger claims blocked]
+Stage 30: final goal recheck runner. [generated and run; current decision unchanged]
 ```
