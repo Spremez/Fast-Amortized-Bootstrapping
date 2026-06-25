@@ -413,6 +413,12 @@ Repro artifacts:
 - `repro/stage25_final_noise_avx512_seeds1/r1/seed_6862025.log`
 - `repro/stage25_final_noise_avx512_seeds1/r2/seed_6862025.log`
 - `repro/stage25_final_noise_avx512_seeds1/r4/seed_6862025.log`
+- `repro/stage25_final_noise_avx512_r2_r4_seeds50/summary.csv`
+- `repro/stage25_final_noise_avx512_r2_r4_seeds50/aggregate.csv`
+- `repro/stage25_final_noise_avx512_r2_r4_seeds50/r2/seed_6862025.log`
+  through `repro/stage25_final_noise_avx512_r2_r4_seeds50/r2/seed_6862074.log`
+- `repro/stage25_final_noise_avx512_r2_r4_seeds50/r4/seed_6862025.log`
+  through `repro/stage25_final_noise_avx512_r2_r4_seeds50/r4/seed_6862074.log`
 - `repro/stage25_stage_noise_avx512_trials1/summary.csv`
 - `repro/stage25_stage_noise_avx512_trials1/r1/seed_6862025.log`
 - `repro/stage25_stage_noise_avx512_trials1/r2/seed_6862025.log`

@@ -319,9 +319,15 @@ at 1.000029x, 1.013617x, and 1.065349x repeated scalar for r=1/2/4,
 respectively. PVW keygen is slower per lane in this smoke run, so keygen cost
 must be reported with any throughput claim.
 
-This is enough to continue to Stage 26 planning, but not enough for a final
-paper-grade correctness/noise claim. A 50+ seed Stage 25 expansion remains
-required before final promotion.
+The 50-seed final-output expansion then passed for promoted r=2 and r=4:
+r=2 had 50 seeds, 204800 points, and zero PVW/scalar/pair failures; r=4 had
+50 seeds, 409600 points, and zero PVW/scalar/pair failures. PVW-vs-scalar
+log2 sigma gaps stayed within [-0.446, 0.619] for r=2 and [-0.555, 0.682]
+for r=4, below the configured 4.0 threshold.
+
+This closes the Stage 25 final-output noise expansion for the target path.
+Stage-level noise is still smoke-level, and Stage 26 parameter/branch
+generalization remains required before any broad SAB claim.
 ```
 
 ## Stage 26: Parameter and Branch Generalization

@@ -122,7 +122,8 @@
 - [x] Add Stage 25 final-output noise, stage-noise, and resource scripts for the current promoted explicit path.
 - [x] Run Stage 25 initial smoke matrix for `r=1/2/4`.
 - [x] Record Stage 25 resource costs: keygen time, public key estimate, internal HWM, and max RSS.
-- [ ] Expand Stage 25 promoted-path correctness/noise to 50+ seeds before final promotion.
+- [x] Expand Stage 25 promoted-path final-output correctness/noise to 50 seeds for `r=2` and `r=4`.
+- [ ] Expand Stage 25 stage-level noise beyond smoke if final report requires stage-by-stage statistical evidence.
 - [ ] Re-run a consolidated Stage 25 repeated full SAB A/B table if it is needed as the final promoted-variant performance package.
 - [ ] Run Stage 26 parameter and branch generalization before broad SAB claims.
 - [ ] Complete Stage 27 novelty/literature and paper package before manuscript claims.

@@ -102,7 +102,7 @@ hypotheses:
       ping-pong accumulator on the opposite buffer. Returning an explicit active
       state lets the next sparse step and sub_a consume that buffer directly,
       delaying normalization until an API or extract boundary.
-    status: stage25_initial_noise_resource_smoke_supported_pending_50_seed
+    status: stage25_final_noise_50seed_supported_pending_stage26
     evidence: docs/stage25_correctness_noise_resource_log.md
     current_decision: >
       Stage 20 implemented SAB_PVW_ACTIVE_BUFFER_FUSION=true and confirmed
@@ -113,11 +113,13 @@ hypotheses:
       stage-level noise, and resource evidence under the current best explicit
       path with specialized MAT-AVX512. One deterministic seed produced zero
       final-output PVW, scalar, and pair failures, and every probed stage had
-      zero pair failures. Resource reporting shows PVW estimated public key
-      bytes at 1.000029x, 1.013617x, and 1.065349x repeated scalar for r=1/2/4,
-      while PVW keygen is slower per lane. Keep the path explicit; expand
-      Stage 25 to 50+ seeds before final promotion and complete Stage 26 before
-      broad parameter claims.
+      zero pair failures. The promoted r=2/r=4 final-output expansion then
+      passed 50 deterministic seeds each: r=2 covered 204800 points with zero
+      PVW/scalar/pair failures and r=4 covered 409600 points with zero
+      PVW/scalar/pair failures. Resource reporting shows PVW estimated public
+      key bytes at 1.000029x, 1.013617x, and 1.065349x repeated scalar for
+      r=1/2/4, while PVW keygen is slower per lane. Keep the path explicit and
+      complete Stage 26 before broad parameter claims.
     failure_criteria:
       - schedule counters do not match the binary SET_2_3_2048 model
       - active-buffer lane phase differs from scalar reference

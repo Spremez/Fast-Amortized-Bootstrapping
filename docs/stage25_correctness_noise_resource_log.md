@@ -142,19 +142,50 @@ noise/resource support.
 
 It is not yet a final paper-ready claim because:
 
-- the Stage 25 noise sweep used one deterministic seed, not 50+ seeds;
 - performance evidence is inherited from Stage 20 and Stage 22 rather than
   re-run as a consolidated Stage 25 statistical campaign;
 - Stage 26 parameter and branch generalization has not started;
 - Stage 27 novelty and related-work validation is still pending.
 
+## 50-Seed Final-Output Expansion
+
+Command:
+
+```sh
+STAGE25_FINAL_NOISE_SEED_COUNT=50 \
+STAGE25_FINAL_NOISE_R_VALUES='2 4' \
+STAGE25_FINAL_NOISE_OUT_DIR=repro/stage25_final_noise_avx512_r2_r4_seeds50 \
+bash scripts/run_stage25_final_noise_sweep.sh
+```
+
+Summary:
+
+| r | seeds | points | PVW failures | scalar failures | pair failures | min PVW minus scalar log2 sigma | max PVW minus scalar log2 sigma | avg PVW minus scalar log2 sigma | status |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| 2 | 50 | 204800 | 0 | 0 | 0 | -0.446 | 0.619 | -0.007400 | PASS |
+| 4 | 50 | 409600 | 0 | 0 | 0 | -0.555 | 0.682 | -0.029200 | PASS |
+
+Interpretation:
+
+- The promoted `r=2` and `r=4` paths now have 50 deterministic seeds each
+  with zero PVW, scalar, and pair failures at final output.
+- The PVW-vs-scalar sigma gap stays well below the configured `4.0` log2
+  threshold in every seed.
+- With zero seed-level failures out of 50 seeds per `r`, the simple rule of
+  three gives an approximate 95% upper bound near `6%` per-seed failure under
+  this test distribution. This is useful engineering evidence, not a formal
+  cryptographic failure-rate proof.
+- This closes the Stage 25 final-output noise expansion for the current
+  promoted target path. Stage-level noise remains smoke-level and Stage 26
+  parameter/branch generalization is still required.
+
 ## Next Work
 
 Immediate follow-up:
 
-1. Expand Stage 25 final-output noise to at least 50 seeds for promoted
-   `r=2` and `r=4`, keeping `r=1` as a negative-control/degradation check.
-2. If the 50-seed sweep is stable, advance Stage 26 with a smaller smoke
-   parameter and any supported non-binary branches that the code can build.
+1. Advance Stage 26 with a smaller smoke parameter and any supported
+   non-binary branches that the code can build.
+2. Re-run a consolidated repeated full SAB A/B package only if Stage 26 keeps
+   the current path as the final promoted variant.
 3. Keep Stage 27 novelty claims blocked until Stage 26 scope is known and a
    related-work matrix exists.
