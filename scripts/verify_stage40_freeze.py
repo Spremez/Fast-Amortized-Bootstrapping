@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import subprocess
 import sys
 from pathlib import Path
@@ -63,6 +64,14 @@ def write_csv(path: Path, rows: Iterable[Dict[str, str]]) -> None:
         writer.writerows(rows)
 
 
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dict[str, str]]:
     freeze = {row.get("item"): row for row in read_csv(FREEZE_SUMMARY)}
     manifest = read_csv(FREEZE_MANIFEST)
@@ -76,6 +85,18 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         for row in manifest
         if row.get("exists") != "yes" or not (ROOT / row.get("artifact", "")).exists()
     ]
+    manifest_hash_mismatches = []
+    for row in manifest:
+        rel_path = row.get("artifact", "")
+        expected_hash = row.get("sha256", "")
+        path = ROOT / rel_path
+        if row.get("exists") == "yes" and path.exists():
+            if not expected_hash:
+                manifest_hash_mismatches.append(f"{rel_path}:missing_expected_hash")
+            else:
+                actual_hash = sha256_file(path)
+                if actual_hash != expected_hash:
+                    manifest_hash_mismatches.append(f"{rel_path}:sha256_mismatch")
     external_blockers = [
         row
         for row in blockers
@@ -125,6 +146,12 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "status": "PASS" if manifest and not manifest_missing else "FAIL",
             "evidence": "repro/stage40_final_freeze_manifest.csv",
             "detail": "all manifest paths exist" if not manifest_missing else "; ".join(manifest_missing),
+        },
+        {
+            "check": "freeze_manifest_hashes",
+            "status": "PASS" if manifest and not manifest_hash_mismatches else "FAIL",
+            "evidence": "repro/stage40_final_freeze_manifest.csv",
+            "detail": "all manifest hashes match" if not manifest_hash_mismatches else "; ".join(manifest_hash_mismatches),
         },
         {
             "check": "stage40_run_log_row",

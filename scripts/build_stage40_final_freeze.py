@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import subprocess
 from pathlib import Path
 from typing import Dict, Iterable, List
@@ -72,15 +73,25 @@ def write_csv(path: Path, rows: Iterable[Dict[str, str]], fields: List[str]) -> 
         writer.writerows(rows)
 
 
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def build_manifest() -> List[Dict[str, str]]:
     rows = []
     for rel_path in REQUIRED_ARTIFACTS:
         path = ROOT / rel_path
+        exists = path.exists()
         rows.append(
             {
                 "artifact": rel_path,
-                "exists": "yes" if path.exists() else "no",
-                "size_bytes": str(path.stat().st_size) if path.exists() else "",
+                "exists": "yes" if exists else "no",
+                "size_bytes": str(path.stat().st_size) if exists else "",
+                "sha256": sha256_file(path) if exists else "",
             }
         )
     return rows
@@ -98,6 +109,7 @@ def main() -> int:
     s39 = row_by(triage, "candidate_id", "S39-OVERALL")
     manifest = build_manifest()
     manifest_ok = all(row["exists"] == "yes" for row in manifest)
+    manifest_hashes_recorded = all(row["sha256"] for row in manifest)
     external_blockers = [
         row
         for row in blockers
@@ -110,7 +122,7 @@ def main() -> int:
     blockers_preserved = len(external_blockers) >= 2
     decision = (
         "SCOPED_FREEZE_READY_STRONGER_CLAIMS_BLOCKED"
-        if scoped_ready and triage_ready and blockers_preserved and manifest_ok
+        if scoped_ready and triage_ready and blockers_preserved and manifest_ok and manifest_hashes_recorded
         else "FREEZE_NOT_READY"
     )
 
@@ -144,9 +156,13 @@ def main() -> int:
         },
         {
             "item": "required_artifacts",
-            "status": "PASS" if manifest_ok else "MISSING",
+            "status": "PASS" if manifest_ok and manifest_hashes_recorded else "MISSING",
             "evidence": "repro/stage40_final_freeze_manifest.csv",
-            "detail": "All required freeze artifacts exist." if manifest_ok else "One or more required artifacts are missing.",
+            "detail": (
+                "All required freeze artifacts exist and have SHA-256 hashes recorded."
+                if manifest_ok and manifest_hashes_recorded
+                else "One or more required artifacts are missing or lack SHA-256 hashes."
+            ),
         },
         {
             "item": "run_log_registration",
@@ -173,7 +189,7 @@ def main() -> int:
     write_csv(
         OUT_MANIFEST,
         manifest,
-        ["artifact", "exists", "size_bytes"],
+        ["artifact", "exists", "size_bytes", "sha256"],
     )
     write_csv(
         OUT_SUMMARY,
@@ -207,12 +223,15 @@ def main() -> int:
             "",
             "## Required Artifacts",
             "",
-            "| artifact | exists | size bytes |",
-            "|---|---|---:|",
+            "| artifact | exists | size bytes | sha256 |",
+            "|---|---|---:|---|",
         ]
     )
     for row in manifest:
-        lines.append(f"| {row['artifact']} | {row['exists']} | {row['size_bytes']} |")
+        lines.append(
+            f"| {row['artifact']} | {row['exists']} | "
+            f"{row['size_bytes']} | `{row['sha256']}` |"
+        )
 
     lines.extend(
         [

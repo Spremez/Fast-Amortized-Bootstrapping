@@ -23,7 +23,9 @@ python3 scripts/build_stage40_final_freeze.py
 - Stage 39 must report `NO_NEW_VARIANT_PROMOTED_CURRENTLY`;
 - Stage 35 must preserve external blockers for native perf and 2025/686 full
   text;
-- required evidence artifacts must exist.
+- required evidence artifacts must exist;
+- required evidence artifacts must have SHA-256 hashes recorded in the freeze
+  manifest.
 
 ## Allowed Claim After Freeze
 
@@ -44,5 +46,6 @@ Do not claim:
 ## Artifacts
 
 - `repro/stage40_final_freeze_summary.csv`
-- `repro/stage40_final_freeze_manifest.csv`
+- `repro/stage40_final_freeze_manifest.csv` with artifact sizes and SHA-256
+  hashes
 - `docs/stage40_final_freeze_report.md`

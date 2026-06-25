@@ -32,6 +32,7 @@ python3 scripts/verify_stage40_freeze.py --check-only
 - Stage 35 preserves external blockers.
 - Stage 39 promotes no new variant.
 - Stage 40 manifest entries exist.
+- Stage 40 manifest hashes match current artifact contents.
 - Stage 40 run log row exists.
 - The verifier starts from a clean tracked worktree.
 
