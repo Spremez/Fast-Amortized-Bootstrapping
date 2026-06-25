@@ -51,6 +51,7 @@ evidence.
 | Stage 27 completion readiness audit | aggregation | n/a | scoped engineering chain ready | Final standards and Stage 19-27 items mapped to evidence, scope, and remaining actions |
 | Stage 27 final engineering report | report | n/a | scoped engineering report ready | User-facing technical report generated without novelty or theorem-level overclaim |
 | Stage 28 native perf-counter gate | WSL2 probe | n/a | blocked, reproducible | `perf` missing in current WSL2 PATH; MAT-AVX512 theoretical load/store claim remains blocked |
+| Stage 29 final goal completion audit | generated audit | n/a | scoped ready, stronger blocked | `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED` |
 
 Current conclusion:
 
@@ -94,6 +95,9 @@ The Stage 28 native perf-counter gate makes the remaining MAT-AVX512
 theoretical-optimality gap explicit: the current WSL2 environment records
 AVX512 CPU flags but does not provide Linux `perf`, so hardware-counter-backed
 load/store attribution still requires a native/perf-enabled run.
+The Stage 29 generated goal audit now machine-checks the scoped engineering
+evidence chain and records the overall state as scoped-ready with stronger
+claims still blocked.
 ```
 
 ## Invariants
@@ -154,4 +158,5 @@ Stage 25: correctness/noise/resource matrix. [50-seed final-output expansion com
 Stage 26: parameter and branch generalization. [initial binary smoke plus added-parameter perf/noise smoke completed; non-binary PVW unsupported]
 Stage 27: novelty and paper package. [engineering evidence package assembled; novelty claim blocked pending full-paper review]
 Stage 28: native perf-counter gate for MAT-AVX512 theoretical load/store attribution. [lightweight probe completed; blocked on current WSL2 platform]
+Stage 29: final goal completion audit. [generated; scoped engineering chain ready, stronger claims blocked]
 ```

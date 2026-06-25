@@ -520,3 +520,48 @@ platform. This does not change the scoped engineering speedup claim, but it
 does keep MAT-AVX512 theoretical load/store optimality blocked until a
 native/perf-enabled run is available.
 ```
+
+## Stage 29: Final Goal Completion Audit
+
+Goal:
+
+```text
+Convert the current Stage 19+ evidence chain into a machine-generated
+completion audit that distinguishes scoped engineering completion from
+stronger blocked claims.
+```
+
+Tasks:
+
+- read the Stage 27 final package CSVs;
+- read Stage 27 completion readiness;
+- read Stage 28 native perf-counter gate;
+- check target complete-SAB speedup, target 50-seed final-output noise,
+  resource reporting, manifest existence, blocked-claim preservation, and
+  added-parameter small-sample support;
+- emit a final audit CSV and Markdown summary.
+
+Gate:
+
+- every scoped engineering item must be backed by current artifacts;
+- blocked novelty, theorem-level citation, non-binary, all-parameter, and
+  MAT-AVX512 theoretical-optimality claims must stay blocked unless stronger
+  evidence is supplied;
+- the audit must not mark the active goal complete when stronger-claim evidence
+  remains external or unavailable.
+
+Status after initial execution:
+
+```text
+`scripts/build_final_goal_completion_audit.py` generated
+`repro/final_goal_completion_audit.csv` and
+`docs/final_goal_completion_audit.md`.
+
+Decision:
+SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
+
+The scoped engineering acceleration evidence chain is ready and reproducible,
+but novelty, theorem-level 2025/686 citations, non-binary support, broad
+all-parameter support, and MAT-AVX512 hardware-counter optimality remain
+blocked or conditional.
+```
