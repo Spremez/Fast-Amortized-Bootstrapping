@@ -99,9 +99,9 @@
 - [x] Add MAT-aware AVX512 memory/load-store theory check.
 - [x] Add Stage 19 sparse schedule audit experiment plan.
 - [x] Register H5-H9 for active-buffer fusion, sub_a rotation, MAT AVX512 limit audit, parameter generalization, and paper novelty.
-- [ ] Implement Stage 19 exact sparse schedule counters for per-bit CMUX/NCMUX and copy/sub_a attribution.
-- [ ] Run Stage 19 sparse schedule audit for `r=2` and `r=4`.
-- [ ] Record Stage 19 schedule-audit log and decision.
+- [x] Implement Stage 19 exact sparse schedule counters for per-bit CMUX/NCMUX and copy/sub_a attribution.
+- [x] Run Stage 19 sparse schedule audit for `r=2` and `r=4`.
+- [x] Record Stage 19 schedule-audit log and decision.
 - [ ] Implement Stage 20 active-buffer RGSW monomial/sparse_mul candidate if Stage 19 counters match theory.
 - [ ] Run Stage 20 staged lane-equivalence, target correctness, and full SAB A/B gates.
 - [ ] Implement Stage 21 sub_a/rotation scratch optimization only if the post-Stage-20 profile justifies it.

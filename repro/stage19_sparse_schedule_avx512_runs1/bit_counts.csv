@@ -1,0 +1,15 @@
+r,run,bit,status,ncmux_calls,expected_ncmux,direct_cmux_calls,expected_direct_cmux,total_update_calls,expected_total_update,ncmux_us,direct_cmux_us,source_log
+2,0,0,PASS,40,40,81880,81880,81920,81920,5816,2188984,repro/stage19_sparse_schedule_avx512_runs1/r2/run_0.log
+2,0,1,PASS,80,80,81840,81840,81920,81920,6550,2246916,repro/stage19_sparse_schedule_avx512_runs1/r2/run_0.log
+2,0,2,PASS,160,160,81760,81760,81920,81920,10358,2281684,repro/stage19_sparse_schedule_avx512_runs1/r2/run_0.log
+2,0,3,PASS,320,320,81600,81600,81920,81920,18854,2260315,repro/stage19_sparse_schedule_avx512_runs1/r2/run_0.log
+2,0,4,PASS,640,640,81280,81280,81920,81920,33592,2270040,repro/stage19_sparse_schedule_avx512_runs1/r2/run_0.log
+2,0,5,PASS,1280,1280,80640,80640,81920,81920,66757,2307340,repro/stage19_sparse_schedule_avx512_runs1/r2/run_0.log
+2,0,6,PASS,2560,2560,79360,79360,81920,81920,133603,2310378,repro/stage19_sparse_schedule_avx512_runs1/r2/run_0.log
+4,0,0,PASS,40,40,81880,81880,81920,81920,9308,4135326,repro/stage19_sparse_schedule_avx512_runs1/r4/run_0.log
+4,0,1,PASS,80,80,81840,81840,81920,81920,12639,4250358,repro/stage19_sparse_schedule_avx512_runs1/r4/run_0.log
+4,0,2,PASS,160,160,81760,81760,81920,81920,17889,4236084,repro/stage19_sparse_schedule_avx512_runs1/r4/run_0.log
+4,0,3,PASS,320,320,81600,81600,81920,81920,32738,4266005,repro/stage19_sparse_schedule_avx512_runs1/r4/run_0.log
+4,0,4,PASS,640,640,81280,81280,81920,81920,58944,4261299,repro/stage19_sparse_schedule_avx512_runs1/r4/run_0.log
+4,0,5,PASS,1280,1280,80640,80640,81920,81920,112918,4285494,repro/stage19_sparse_schedule_avx512_runs1/r4/run_0.log
+4,0,6,PASS,2560,2560,79360,79360,81920,81920,224634,4238460,repro/stage19_sparse_schedule_avx512_runs1/r4/run_0.log

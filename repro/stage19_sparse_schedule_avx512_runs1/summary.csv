@@ -1,0 +1,3 @@
+r,run,status,pvw_avg_us,scalar_repeated_avg_us,speedup,in_N,h,r_prec,sparse_mul_calls,rgsw_monomial_calls,expected_rgsw,cmux_calls,expected_cmux,ncmux_calls,expected_ncmux,mat_ep_calls,sub_a_calls,expected_sub_a,copyback_calls,expected_copyback,bit_status,source_log
+2,0,PASS,17237430.000,22473234.000,1.304,2048,39,7,1,40,40,573440,573440,5080,5080,573440,39,39,40,40,PASS,repro/stage19_sparse_schedule_avx512_runs1/r2/run_0.log
+4,0,PASS,32819360.000,43960558.000,1.339,2048,39,7,1,40,40,573440,573440,5080,5080,573440,39,39,40,40,PASS,repro/stage19_sparse_schedule_avx512_runs1/r4/run_0.log

@@ -26,6 +26,7 @@ static uint64_t sab_pvw_now_us(void){
 #endif
 
 #ifdef SAB_PVW_BODY_PROFILE
+#define SAB_PVW_BODY_PROFILE_MAX_BITS 64
 typedef struct {
   uint64_t setup_tv_xb_us, setup_tv_xb_calls;
   uint64_t blind_rotate_us, blind_rotate_calls;
@@ -40,6 +41,10 @@ typedef struct {
   uint64_t mat_ep_us, mat_ep_calls;
   uint64_t sub_a_us, sub_a_calls;
   uint64_t copyback_us, copyback_calls;
+  uint64_t bit_ncmux_us[SAB_PVW_BODY_PROFILE_MAX_BITS];
+  uint64_t bit_ncmux_calls[SAB_PVW_BODY_PROFILE_MAX_BITS];
+  uint64_t bit_direct_cmux_us[SAB_PVW_BODY_PROFILE_MAX_BITS];
+  uint64_t bit_direct_cmux_calls[SAB_PVW_BODY_PROFILE_MAX_BITS];
 } SAB_PVW_Body_Profile;
 
 static SAB_PVW_Body_Profile sab_pvw_body_profile;
@@ -86,7 +91,8 @@ static void sab_pvw_body_profile_print(SAB_PVW_Key sab, uint64_t full_us){
          " sub_a_calls=%" PRIu64
          " sub_a_us=%" PRIu64
          " copyback_calls=%" PRIu64
-         " copyback_us=%" PRIu64 "\n",
+         " copyback_us=%" PRIu64
+         " profile_bit_capacity=%u",
          sab->lanes, sab->in_N, sab->out_N, sab->h, sab->r_prec, full_us,
          sab_pvw_body_profile.setup_tv_xb_calls,
          sab_pvw_body_profile.setup_tv_xb_us,
@@ -113,7 +119,26 @@ static void sab_pvw_body_profile_print(SAB_PVW_Key sab, uint64_t full_us){
          sab_pvw_body_profile.sub_a_calls,
          sab_pvw_body_profile.sub_a_us,
          sab_pvw_body_profile.copyback_calls,
-         sab_pvw_body_profile.copyback_us);
+         sab_pvw_body_profile.copyback_us,
+         (unsigned) SAB_PVW_BODY_PROFILE_MAX_BITS);
+  const uint64_t bits = sab->r_prec < SAB_PVW_BODY_PROFILE_MAX_BITS ?
+      sab->r_prec : SAB_PVW_BODY_PROFILE_MAX_BITS;
+  for (size_t bit = 0; bit < (size_t) bits; bit++){
+    const uint64_t total_update_calls =
+        sab_pvw_body_profile.bit_ncmux_calls[bit] +
+        sab_pvw_body_profile.bit_direct_cmux_calls[bit];
+    printf(" bit%zu_ncmux_calls=%" PRIu64
+           " bit%zu_ncmux_us=%" PRIu64
+           " bit%zu_direct_cmux_calls=%" PRIu64
+           " bit%zu_direct_cmux_us=%" PRIu64
+           " bit%zu_total_update_calls=%" PRIu64,
+           bit, sab_pvw_body_profile.bit_ncmux_calls[bit],
+           bit, sab_pvw_body_profile.bit_ncmux_us[bit],
+           bit, sab_pvw_body_profile.bit_direct_cmux_calls[bit],
+           bit, sab_pvw_body_profile.bit_direct_cmux_us[bit],
+           bit, total_update_calls);
+  }
+  printf("\n");
 }
 #endif
 
@@ -433,14 +458,32 @@ void sab_pvw_RGSW_monomial_mul(PVW_TMLWE * p0, MAT_TRGSW_DFT * e,
   for (size_t bit = 0; bit < r_prec; bit++){
     const uint64_t power = 1ULL << bit;
     const uint64_t out = (bit + 1) & 1, in = out ^ 1;
+#ifdef SAB_PVW_BODY_PROFILE
+    const uint64_t ncmux_loop_begin = sab_pvw_now_us();
+#endif
     for (size_t j = 0; j < power; j++){
       sab_pvw_NCMUX(p[out][j], p[in][j], p[in][in_N - power + j],
           e[bit], sab);
     }
+#ifdef SAB_PVW_BODY_PROFILE
+    if(bit < SAB_PVW_BODY_PROFILE_MAX_BITS){
+      sab_pvw_body_profile.bit_ncmux_us[bit] +=
+          sab_pvw_now_us() - ncmux_loop_begin;
+      sab_pvw_body_profile.bit_ncmux_calls[bit] += power;
+    }
+    const uint64_t direct_cmux_loop_begin = sab_pvw_now_us();
+#endif
     for (size_t j = 0; j < in_N - power; j++){
       sab_pvw_CMUX(p[out][j + power], p[in][j + power], p[in][j],
           e[bit], sab);
     }
+#ifdef SAB_PVW_BODY_PROFILE
+    if(bit < SAB_PVW_BODY_PROFILE_MAX_BITS){
+      sab_pvw_body_profile.bit_direct_cmux_us[bit] +=
+          sab_pvw_now_us() - direct_cmux_loop_begin;
+      sab_pvw_body_profile.bit_direct_cmux_calls[bit] += in_N - power;
+    }
+#endif
   }
   if(p[r_prec & 1] != p0){
 #ifdef SAB_PVW_BODY_PROFILE

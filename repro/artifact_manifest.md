@@ -37,6 +37,7 @@ Code artifacts:
 - `scripts/run_stage16_full_sab_audit.sh`
 - `scripts/run_stage17_perf_attribution.sh`
 - `scripts/run_stage18_cmux_profile.sh`
+- `scripts/run_stage19_sparse_schedule_audit.sh`
 
 Documentation artifacts:
 
@@ -71,6 +72,7 @@ Documentation artifacts:
 - `docs/goal_sab_max_acceleration.md`
 - `docs/roadmap_stage19_plus.md`
 - `docs/loop_engineering.md`
+- `docs/stage19_sparse_schedule_audit_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -299,3 +301,7 @@ Repro artifacts:
 - `repro/stage18_fused_from_dft_add_r4_runs3_reps1/r4/run_0.log`
 - `repro/stage18_fused_from_dft_add_r4_runs3_reps1/r4/run_1.log`
 - `repro/stage18_fused_from_dft_add_r4_runs3_reps1/r4/run_2.log`
+- `repro/stage19_sparse_schedule_avx512_runs1/summary.csv`
+- `repro/stage19_sparse_schedule_avx512_runs1/bit_counts.csv`
+- `repro/stage19_sparse_schedule_avx512_runs1/r2/run_0.log`
+- `repro/stage19_sparse_schedule_avx512_runs1/r4/run_0.log`

@@ -87,13 +87,15 @@ hypotheses:
       ping-pong accumulator on the opposite buffer. Returning an explicit active
       state lets the next sparse step and sub_a consume that buffer directly,
       delaying normalization until an API or extract boundary.
-    status: planned_stage19_20
-    evidence: docs/roadmap_stage19_plus.md
+    status: stage19_schedule_confirmed_stage20_ready
+    evidence: docs/stage19_sparse_schedule_audit_log.md
     current_decision: >
-      Stage 19 must first verify exact CMUX/NCMUX, copyback, and sub_a counts.
-      If the model matches the profile, Stage 20 should implement an
-      explicit-flag active-buffer path and compare complete SAB throughput
-      against Stage 16/18.
+      Stage 19 verified the exact target schedule for r=2/r=4 under
+      spqlios_avx512: CMUX/MAT EP calls are 573440, NCMUX calls are 5080,
+      sub_a calls are 39, copyback calls are 40, and each bit contributes
+      81920 total updates. Stage 20 should implement an explicit-flag
+      active-buffer path and compare complete SAB throughput against Stage
+      16/18.
     failure_criteria:
       - schedule counters do not match the binary SET_2_3_2048 model
       - active-buffer lane phase differs from scalar reference
