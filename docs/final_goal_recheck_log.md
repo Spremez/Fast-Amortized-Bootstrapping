@@ -132,6 +132,7 @@ Observed summary:
 
 ```text
 stage40_postfreeze_verify = PASS
+freeze_manifest_hashes = PASS
 final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 ```
 
