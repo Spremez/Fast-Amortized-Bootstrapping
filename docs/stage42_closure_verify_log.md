@@ -11,17 +11,18 @@ regenerating the Stage 42 audit or manifest.
 
 | check | status | evidence | detail |
 |---|---|---|---|
-| verification_input_commit | de85276 | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
+| verification_input_commit | a69ee51 | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
 | worktree_clean_before_outputs | PASS | git status --short --untracked-files=all | tracked and untracked worktree was clean before verifier outputs. |
 | final_audit_A9 | PASS | repro/final_goal_completion_audit.csv | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED |
 | stage41_readiness | PASS | repro/stage41_external_unlock_packet.csv | all readiness rows remain waiting for external evidence |
 | stage42_overall | PASS | repro/stage42_evidence_closure_audit.csv | PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED |
 | stage42_manifest_hashes | PASS | repro/stage42_evidence_closure_manifest.csv | all closure manifest hashes match |
 | stage43_current_smoke | PASS | repro/stage43_current_smoke_after_stage42/summary.csv | scalar binary, PVW target, and scalar ternary smoke rows pass |
+| stage44_external_reprobe | PASS | repro/stage44_external_unlock_reprobe/summary.csv | external full-text/native-perf unlocks remain unavailable and recorded |
 | default_recheck_closure | PASS | repro/final_goal_recheck/summary.csv | default final recheck includes stage42_evidence_closure=PASS |
 | closure_only_recheck | PASS | repro/final_goal_recheck_stage42_closure/summary.csv | closure-only final recheck includes stage42_evidence_closure=PASS |
-| stage42_run_log_rows | PASS | repro/run_log.csv | all Stage42/43 closure run rows are present |
-| artifact_manifest_mentions | PASS | repro/artifact_manifest.md | Stage42 verifier and closure manifest are registered |
+| stage42_run_log_rows | PASS | repro/run_log.csv | all Stage42/43/44 closure run rows are present |
+| artifact_manifest_mentions | PASS | repro/artifact_manifest.md | Stage42 verifier, closure manifest, and Stage44 re-probe are registered |
 | stage42_verify_decision | PASS_STAGE42_VERIFY_STRONGER_CLAIMS_BLOCKED | repro/stage42_closure_verify/summary.csv | Stage42 closure package is internally consistent; stronger claims remain blocked. |
 
 ## Decision
