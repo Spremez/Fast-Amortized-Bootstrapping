@@ -102,8 +102,10 @@
 - [x] Implement Stage 19 exact sparse schedule counters for per-bit CMUX/NCMUX and copy/sub_a attribution.
 - [x] Run Stage 19 sparse schedule audit for `r=2` and `r=4`.
 - [x] Record Stage 19 schedule-audit log and decision.
-- [ ] Implement Stage 20 active-buffer RGSW monomial/sparse_mul candidate if Stage 19 counters match theory.
-- [ ] Run Stage 20 staged lane-equivalence, target correctness, and full SAB A/B gates.
+- [x] Implement Stage 20 active-buffer RGSW monomial/sparse_mul candidate after Stage 19 counters matched theory.
+- [x] Run Stage 20 target correctness and default target regression gates.
+- [x] Run Stage 20 active-buffer profile gate and verify copyback 40 -> 0.
+- [x] Run Stage 20 repeated full SAB A/B gates for `r=2` and `r=4`.
 - [ ] Implement Stage 21 sub_a/rotation scratch optimization only if the post-Stage-20 profile justifies it.
 - [ ] Complete Stage 22 MAT AVX512 promotion audit with generic-vs-MAT microbench, assembly/perf attribution, and full SAB sweeps.
 - [ ] Implement Stage 23 CMUX/NCMUX schedule fusion only after Stage 19/22 identify a material target.

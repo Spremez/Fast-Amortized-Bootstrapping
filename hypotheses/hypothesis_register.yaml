@@ -87,15 +87,15 @@ hypotheses:
       ping-pong accumulator on the opposite buffer. Returning an explicit active
       state lets the next sparse step and sub_a consume that buffer directly,
       delaying normalization until an API or extract boundary.
-    status: stage19_schedule_confirmed_stage20_ready
-    evidence: docs/stage19_sparse_schedule_audit_log.md
+    status: stage20_positive_pending_noise_resource
+    evidence: docs/stage20_active_buffer_log.md
     current_decision: >
-      Stage 19 verified the exact target schedule for r=2/r=4 under
-      spqlios_avx512: CMUX/MAT EP calls are 573440, NCMUX calls are 5080,
-      sub_a calls are 39, copyback calls are 40, and each bit contributes
-      81920 total updates. Stage 20 should implement an explicit-flag
-      active-buffer path and compare complete SAB throughput against Stage
-      16/18.
+      Stage 20 implemented SAB_PVW_ACTIVE_BUFFER_FUSION=true and confirmed
+      copyback_calls drop from the legacy 40 to 0 for target r=2/r=4 while
+      preserving target full-output correctness. Three-process full SAB A/B
+      under spqlios_avx512 gave mean speedups of 1.270x for r=2 and 1.346x
+      for r=4. Keep the path explicit pending noise/resource and broader
+      parameter gates.
     failure_criteria:
       - schedule counters do not match the binary SET_2_3_2048 model
       - active-buffer lane phase differs from scalar reference

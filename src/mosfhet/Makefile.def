@@ -72,6 +72,11 @@ ifeq ($(SAB_PVW_FUSED_FROM_DFT_ADD),true)
 	FLAGS += -DSAB_PVW_FUSED_FROM_DFT_ADD
 	ENABLE_PVW_TMLWE := true
 endif
+SAB_PVW_ACTIVE_BUFFER_FUSION ?= false
+ifeq ($(SAB_PVW_ACTIVE_BUFFER_FUSION),true)
+	FLAGS += -DSAB_PVW_ACTIVE_BUFFER_FUSION
+	ENABLE_PVW_TMLWE := true
+endif
 ifeq ($(ENABLE_PVW_TMLWE),true)
 	__SRC += pvwtmlwe.c mattrgsw.c
 endif

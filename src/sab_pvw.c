@@ -448,16 +448,16 @@ void sab_pvw_NCMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
 #endif
 }
 
-void sab_pvw_RGSW_monomial_mul(PVW_TMLWE * p0, MAT_TRGSW_DFT * e,
-    SAB_PVW_Key sab){
+static uint64_t sab_pvw_RGSW_monomial_mul_state(PVW_TMLWE * p[2],
+    uint64_t active, MAT_TRGSW_DFT * e, SAB_PVW_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t rgsw_begin = sab_pvw_now_us();
 #endif
   const uint32_t r_prec = sab->r_prec, in_N = sab->in_N;
-  PVW_TMLWE * p[2] = {p0, sab->tmp->tmlwe_poly2};
   for (size_t bit = 0; bit < r_prec; bit++){
     const uint64_t power = 1ULL << bit;
-    const uint64_t out = (bit + 1) & 1, in = out ^ 1;
+    const uint64_t in = active ^ (bit & 1);
+    const uint64_t out = in ^ 1;
 #ifdef SAB_PVW_BODY_PROFILE
     const uint64_t ncmux_loop_begin = sab_pvw_now_us();
 #endif
@@ -485,22 +485,35 @@ void sab_pvw_RGSW_monomial_mul(PVW_TMLWE * p0, MAT_TRGSW_DFT * e,
     }
 #endif
   }
-  if(p[r_prec & 1] != p0){
-#ifdef SAB_PVW_BODY_PROFILE
-    const uint64_t copyback_begin = sab_pvw_now_us();
-#endif
-    for (size_t idx = 0; idx < in_N; idx++){
-      pvmtmlwe_copy(p0[idx], p[r_prec & 1][idx]);
-    }
-#ifdef SAB_PVW_BODY_PROFILE
-    sab_pvw_body_profile_acc(&sab_pvw_body_profile.copyback_us,
-        &sab_pvw_body_profile.copyback_calls, copyback_begin);
-#endif
-  }
+  active ^= r_prec & 1;
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.rgsw_monomial_us,
       &sab_pvw_body_profile.rgsw_monomial_calls, rgsw_begin);
 #endif
+  return active;
+}
+
+static void sab_pvw_copy_accumulator_array(PVW_TMLWE * out, PVW_TMLWE * in,
+    SAB_PVW_Key sab){
+#ifdef SAB_PVW_BODY_PROFILE
+  const uint64_t copyback_begin = sab_pvw_now_us();
+#endif
+  for (size_t idx = 0; idx < sab->in_N; idx++){
+    pvmtmlwe_copy(out[idx], in[idx]);
+  }
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.copyback_us,
+      &sab_pvw_body_profile.copyback_calls, copyback_begin);
+#endif
+}
+
+void sab_pvw_RGSW_monomial_mul(PVW_TMLWE * p0, MAT_TRGSW_DFT * e,
+    SAB_PVW_Key sab){
+  PVW_TMLWE * p[2] = {p0, sab->tmp->tmlwe_poly2};
+  const uint64_t active = sab_pvw_RGSW_monomial_mul_state(p, 0, e, sab);
+  if(p[active] != p0){
+    sab_pvw_copy_accumulator_array(p0, p[active], sab);
+  }
 }
 
 void sab_pvw_sub_a_binary(PVW_TMLWE * p, const uint64_t * a, SAB_PVW_Key sab){
@@ -523,11 +536,26 @@ void sab_pvw_sparse_mul_binary(PVW_TMLWE * p, const uint64_t * a,
   const uint64_t sparse_mul_begin = sab_pvw_now_us();
 #endif
   if(a_idx >= sab->in_k) sab_pvw_die("sparse_mul a_idx out of range");
+#ifdef SAB_PVW_ACTIVE_BUFFER_FUSION
+  PVW_TMLWE * state[2] = {p, sab->tmp->tmlwe_poly2};
+  uint64_t active = 0;
+  for (size_t step = 0; step < sab->h; step++){
+    active = sab_pvw_RGSW_monomial_mul_state(state, active,
+        sab->s[a_idx][step], sab);
+    sab_pvw_sub_a_binary(state[active], a, sab);
+  }
+  active = sab_pvw_RGSW_monomial_mul_state(state, active,
+      sab->s[a_idx][sab->h], sab);
+  if(active != 0){
+    sab_pvw_copy_accumulator_array(state[0], state[active], sab);
+  }
+#else
   for (size_t step = 0; step < sab->h; step++){
     sab_pvw_RGSW_monomial_mul(p, sab->s[a_idx][step], sab);
     sab_pvw_sub_a_binary(p, a, sab);
   }
   sab_pvw_RGSW_monomial_mul(p, sab->s[a_idx][sab->h], sab);
+#endif
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.sparse_mul_us,
       &sab_pvw_body_profile.sparse_mul_calls, sparse_mul_begin);

@@ -1,0 +1,5 @@
+stage,variant,backend,r,runs,reps,status,pvw_mean_us,scalar_repeated_mean_us,speedup_mean,speedup_min,speedup_max,copyback_calls,legacy_copyback_calls,decision,artifacts
+20,active_buffer_profile,spqlios_avx512,2,1,1,PASS,17587636.000,23801268.000,1.353,1.353,1.353,0,40,profile_count_gate_only,repro/stage20_active_buffer_profile_avx512_runs1/summary.csv
+20,active_buffer_profile,spqlios_avx512,4,1,1,PASS,34433744.000,44909930.000,1.304,1.304,1.304,0,40,profile_count_gate_only,repro/stage20_active_buffer_profile_avx512_runs1/summary.csv
+20,active_buffer_full_sab,spqlios_avx512,2,3,1,PASS,16358590.667,20747480.333,1.270,1.173,1.349,n/a,n/a,positive_pending_noise_resource,repro/stage20_active_buffer_bench_r2_reps1_runs3/summary.csv
+20,active_buffer_full_sab,spqlios_avx512,4,3,1,PASS,31093757.667,41812418.333,1.346,1.323,1.384,n/a,n/a,positive_pending_noise_resource,repro/stage20_active_buffer_bench_r4_reps1_runs3/summary.csv
