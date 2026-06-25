@@ -1,0 +1,2 @@
+param,r,runs,status,pvw_mean_us,scalar_repeated_mean_us,mean_speedup,min_speedup,max_speedup,source_csv,decision
+SET_2_3_4096,4,3,PASS,50609387.333,66607445.000,1.317,1.270,1.346,repro/stage26_parameter_perf_noise_avx512_set_2_3_4096_r4_runs3_seeds3/perf_SET_2_3_4096_r4_runs3/summary.csv,PASS_REPEATED_SMOKE

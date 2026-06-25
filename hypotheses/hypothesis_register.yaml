@@ -197,13 +197,14 @@ hypotheses:
       fusion. Added-parameter performance/noise smoke now also passes:
       SET_4_5_2048 r=2 has 1.310x one-run full-SAB speedup with zero
       final-output failures, SET_4_5_2048 r=4 has 1.437x with zero failures,
-      and SET_2_3_4096 r=2 has 1.251x with zero failures. PVW+TERNARY is
-      explicitly rejected as unsupported, while scalar TERNARY still builds.
-      A follow-up repeated-smoke gate for SET_4_5_2048 r=4 passed 3 full-SAB
-      runs with mean speedup 1.360x and range 1.352x-1.376x, plus 3 noise
-      seeds with zero PVW/scalar/pair failures over 24576 points. Keep broad
-      claims limited to binary smoke generalization until larger repeated
-      performance and multi-seed noise are added for the claimed parameters.
+      SET_2_3_4096 r=2 has 1.251x with zero failures, and SET_2_3_4096 r=4
+      has 1.359x with zero failures. PVW+TERNARY is explicitly rejected as
+      unsupported, while scalar TERNARY still builds. Follow-up repeated-smoke
+      gates passed for SET_4_5_2048 r=4 with 3-run mean speedup 1.360x and
+      for SET_2_3_4096 r=4 with 3-run mean speedup 1.317x; both had 3 noise
+      seeds with zero PVW/scalar/pair failures. Keep broad claims limited to
+      binary smoke generalization until larger repeated performance and
+      multi-seed noise are added for the claimed parameters.
     failure_criteria:
       - added parameter sets fail correctness or noise gates
       - speedup appears only on one narrow configuration

@@ -58,7 +58,7 @@ The added binary parameters now have initial performance/noise smoke beyond
 target correctness:
 
 - `SET_4_5_2048` has r=2 and r=4 smoke support.
-- `SET_2_3_4096` has r=2 smoke support.
+- `SET_2_3_4096` has r=2 and r=4 smoke support.
 
 This strengthens the binary-parameter generalization story, but it is not a
 broad performance claim. The evidence has one process run and one noise seed
@@ -67,26 +67,30 @@ A/B and multi-seed noise are added. PVW+TERNARY remains explicitly unsupported.
 
 ## Repeated r=4 Follow-up
 
-`SET_4_5_2048` r=4 was then expanded to a small repeated gate:
+`SET_4_5_2048` r=4 and `SET_2_3_4096` r=4 were then expanded to small repeated
+gates:
 
 | param | r | runs | correctness | PVW mean us | scalar repeated mean us | mean speedup | min speedup | max speedup |
 |---|---:|---:|---|---:|---:|---:|---:|---:|
 | `SET_4_5_2048` | 4 | 3 | Pass | `28571625.333` | `38872191.333` | `1.360x` | `1.352x` | `1.376x` |
+| `SET_2_3_4096` | 4 | 3 | Pass | `50609387.333` | `66607445.000` | `1.317x` | `1.270x` | `1.346x` |
 
 Noise for the same case used 3 deterministic seeds:
 
 | param | r | seeds | points | PVW failures | scalar failures | pair failures | min gap | max gap | avg gap |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | `SET_4_5_2048` | 4 | 3 | `24576` | 0 | 0 | 0 | `-0.082` | `0.059` | `-0.008000` |
+| `SET_2_3_4096` | 4 | 3 | `49152` | 0 | 0 | 0 | `-0.117` | `0.280` | `0.085000` |
 
 This is stronger than the first one-run smoke for that parameter and supports a
-scoped repeated-smoke claim for `SET_4_5_2048` r=4. It is still not equivalent
-to the main-target 50-seed noise gate.
+scoped repeated-smoke claim for `SET_4_5_2048` r=4 and `SET_2_3_4096` r=4. It
+is still not equivalent to the main-target 50-seed noise gate.
 
 ## Next Work
 
 - Add repeated runs for any added parameter that appears in the final paper
   claim.
-- Increase `SET_4_5_2048` r=4 noise beyond 3 seeds if the r=4 scaling claim is
+- Increase added-parameter r=4 noise beyond 3 seeds if the r=4 scaling claim is
   generalized beyond `SET_2_3_2048`.
-- Decide whether `SET_2_3_4096` r=4 is worth the cost before running it.
+- Decide whether added-parameter r=2 repeated gates are needed for final
+  manuscript wording.

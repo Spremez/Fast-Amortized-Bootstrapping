@@ -37,8 +37,9 @@ evidence.
 | Stage 25 final-noise expansion | `spqlios_avx512` | 2/4 | 50-seed target support | zero PVW/scalar/pair failures; r=2 gap `[-0.446,0.619]`, r=4 gap `[-0.555,0.682]` |
 | Stage 25 resource matrix | `spqlios_avx512` | 1/2/4 | smoke support | PVW key bytes ratio `1.000029x`/`1.013617x`/`1.065349x`; PVW keygen slower per lane |
 | Stage 26 binary parameter smoke | `spqlios_avx512` | 2 | initial scope expansion | `SET_2_3_2048`, `SET_4_5_2048`, `SET_2_3_4096` target gates pass |
-| Stage 26 parameter perf/noise smoke | `spqlios_avx512` | 2/4 | smoke support | added parameters pass initial full-SAB A/B and final-output noise smoke: `SET_4_5_2048` r=2/r=4, `SET_2_3_4096` r=2 |
+| Stage 26 parameter perf/noise smoke | `spqlios_avx512` | 2/4 | smoke support | added parameters pass initial full-SAB A/B and final-output noise smoke: `SET_4_5_2048` r=2/r=4, `SET_2_3_4096` r=2/r=4 |
 | Stage 26 `SET_4_5_2048` r=4 repeated smoke | `spqlios_avx512` | 4 | repeated smoke support | 3-run full-SAB mean `1.360x`, range `1.352x-1.376x`; 3 noise seeds, zero failures |
+| Stage 26 `SET_2_3_4096` r=4 repeated smoke | `spqlios_avx512` | 4 | repeated smoke support | 3-run full-SAB mean `1.317x`, range `1.270x-1.346x`; 3 noise seeds, zero failures |
 | Stage 26 non-binary branch scope | `spqlios_avx512` | n/a | explicit unsupported | PVW+TERNARY rejected; scalar TERNARY build still passes |
 | Stage 27 novelty audit | external scan | n/a | started | safe engineering claim available; novelty claim blocked by related-work risk |
 | Stage 27 final full-SAB rerun | `spqlios_avx512` | 2/4 | scoped performance support | r=2 mean `1.171x` with higher variance; r=4 mean `1.401x`, range `1.331x-1.472x` |
@@ -61,8 +62,8 @@ resource evidence, plus 50-seed final-output noise support for promoted r=2
 and r=4. Stage 26 now has initial binary parameter-smoke support and an
 explicit non-binary PVW unsupported boundary. Stage 26 now also has
 performance/noise smoke for added binary parameters, but not repeated or
-large-seed generalization evidence. `SET_4_5_2048` r=4 now has a small
-3-run/3-seed repeated-smoke gate. Stage 27 starts the paper package
+large-seed generalization evidence. `SET_4_5_2048` r=4 and `SET_2_3_4096`
+r=4 now have small 3-run/3-seed repeated-smoke gates. Stage 27 starts the paper package
 but keeps novelty claims blocked until full related-work review. The Stage 27
 final full-SAB performance rerun confirms the current promoted explicit path
 after the Stage 26 harness refactor; r=4 is the strongest current target

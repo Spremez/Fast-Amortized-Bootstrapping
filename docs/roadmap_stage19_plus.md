@@ -369,16 +369,22 @@ parameters, or noise robustness beyond smoke-level added-parameter gates.
 Follow-up execution added initial performance/noise smoke for the added binary
 parameters. Under `spqlios_avx512`, specialized MAT-AVX512, and active-buffer
 fusion, `SET_4_5_2048` r=2 reached 1.310x and r=4 reached 1.437x in one-run
-complete-SAB A/B smokes; `SET_2_3_4096` r=2 reached 1.251x. All corresponding
-one-seed final-output noise smokes had zero PVW, scalar, and pair failures.
-This strengthens parameter smoke, but does not yet support broad statistical
-performance/noise claims.
+complete-SAB A/B smokes; `SET_2_3_4096` r=2 reached 1.251x and r=4 reached
+1.359x. All corresponding one-seed final-output noise smokes had zero PVW,
+scalar, and pair failures. This strengthens parameter smoke, but does not yet
+support broad statistical performance/noise claims.
 
 `SET_4_5_2048` r=4 was then expanded to a 3-run/3-seed repeated smoke. The
 complete-SAB A/B mean speedup was 1.360x with range 1.352x-1.376x, and all
 24576 final-output noise points had zero PVW, scalar, and pair failures. This
 supports a scoped repeated-smoke claim for that added parameter, still below
 the main-target 50-seed evidence level.
+
+`SET_2_3_4096` r=4 was also expanded to a 3-run/3-seed repeated smoke. The
+complete-SAB A/B mean speedup was 1.317x with range 1.270x-1.346x, and all
+49152 final-output noise points had zero PVW, scalar, and pair failures. This
+adds repeated-smoke support for the larger `in_N=4096`, `r_prec=8` binary
+parameter.
 ```
 
 ## Stage 27: Novelty and Paper Package

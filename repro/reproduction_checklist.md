@@ -130,6 +130,7 @@
 - [x] Record non-binary PVW branch as unsupported while keeping scalar TERNARY buildable.
 - [x] Run Stage 26 initial performance/noise smoke for added binary parameters.
 - [x] Expand Stage 26 `SET_4_5_2048` r=4 to 3-run/3-seed repeated smoke.
+- [x] Expand Stage 26 `SET_2_3_4096` r=4 to 3-run/3-seed repeated smoke.
 - [ ] Run repeated Stage 26 performance and multi-seed noise gates for added parameters before broad performance claims.
 - [x] Add Stage 27 initial related-work and claim-boundary matrix.
 - [x] Record Stage 27 full-source access attempt and claim boundary.
