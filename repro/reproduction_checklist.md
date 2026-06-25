@@ -173,6 +173,7 @@
 - [x] Run Stage 42 read-only closure verifier from a clean worktree input.
 - [x] Add and run Stage 44 external full-text/native-perf unlock re-probe.
 - [x] Integrate Stage 44 external unlock re-probe into the final recheck runner.
-- [ ] Execute remaining Stage 36 optional target-noise/added-parameter campaigns only if broader claims need them.
+- [x] Execute Stage 36 added-parameter 10-run/20-seed campaign for added binary r=2/r=4 parameters.
+- [ ] Execute remaining Stage 36 optional target-noise campaign only if broader target-noise wording needs it.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.

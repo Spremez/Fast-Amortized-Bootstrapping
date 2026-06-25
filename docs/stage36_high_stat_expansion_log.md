@@ -84,6 +84,36 @@ Supplemental samples not included in the primary 10-run statistic:
 | 4 | pvw | 3 | 584219.500 | 1.065 | 769468.000 | PASS_RESOURCE_3RUN |
 | 4 | scalar | 3 | 502914.000 | 1.000 | 771688.000 | PASS_RESOURCE_3RUN |
 
+## Added-Parameter Result
+
+| param | r | runs | mean speedup | min | max | ci95 low | ci95 high | decision |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| SET_4_5_2048 | 2 | 10 | 1.286 | 1.209 | 1.346 | 1.255799 | 1.315601 | PASS_ADDED_PARAM_10RUN |
+| SET_4_5_2048 | 4 | 10 | 1.351 | 1.314 | 1.397 | 1.329122 | 1.372278 | PASS_ADDED_PARAM_10RUN |
+| SET_2_3_4096 | 2 | 10 | 1.235 | 1.156 | 1.286 | 1.210553 | 1.259647 | PASS_ADDED_PARAM_10RUN |
+| SET_2_3_4096 | 4 | 10 | 1.346 | 1.264 | 1.569 | 1.285926 | 1.406474 | PASS_ADDED_PARAM_10RUN |
+
+| param | r | seeds | points | pvw failures | scalar failures | pair failures | decision |
+|---|---:|---:|---:|---:|---:|---:|---|
+| SET_4_5_2048 | 2 | 20 | 81920 | 0 | 0 | 0 | PASS_ADDED_PARAM_20SEED |
+| SET_4_5_2048 | 4 | 20 | 163840 | 0 | 0 | 0 | PASS_ADDED_PARAM_20SEED |
+| SET_2_3_4096 | 2 | 20 | 163840 | 0 | 0 | 0 | PASS_ADDED_PARAM_20SEED |
+| SET_2_3_4096 | 4 | 20 | 327680 | 0 | 0 | 0 | PASS_ADDED_PARAM_20SEED |
+
+The initial all-in-one added-parameter command hit a tool timeout after
+producing partial artifacts. The missing `SET_2_3_4096` r=4 performance/noise
+case was completed by a targeted top-up. Two extra r=4 top-up performance
+samples are preserved as supplemental and are excluded from the primary
+10-run statistic.
+
 ## Current Decision
 
-The target performance campaign has 10 primary same-backend samples for r=2 and r=4, the stage-noise campaign has 10 deterministic seeds for r=2 and r=4 with zero pair failures at all reported stages, and the resource campaign has 3 repeated snapshots for scalar/PVW r=1/2/4. This strengthens target performance, stage-level noise, and resource statistics, but it does not upgrade novelty, theorem-level citation, non-binary, all-parameter, or hardware-counter claims.
+The target performance campaign has 10 primary same-backend samples for r=2 and
+r=4, the stage-noise campaign has 10 deterministic seeds for r=2 and r=4 with
+zero pair failures at all reported stages, the resource campaign has 3 repeated
+snapshots for scalar/PVW r=1/2/4, and the added-binary parameter campaign has
+10 complete-SAB samples plus 20 final-output noise seeds for `SET_4_5_2048` and
+`SET_2_3_4096`, r=2/r=4. This strengthens target performance, stage-level
+noise, resource statistics, and added-binary parameter evidence, but it does
+not upgrade novelty, theorem-level citation, non-binary, all-parameter, or
+hardware-counter claims.

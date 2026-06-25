@@ -59,6 +59,7 @@ evidence.
 | Stage 34 current-smoke final recheck | orchestration | n/a | passed | final recheck refreshed Stage 33 current smoke before rebuilding the final audit |
 | Stage 35 completion blocker matrix | audit synthesis | n/a | passed | remaining work classified into scoped-complete, optional expansion, claim guardrail, external blocker, and overall decision lanes |
 | Stage 36 target high-stat performance/noise/resource | `spqlios_avx512` | 1/2/4 | 10-run/10-seed/3-run target support | performance r=2 mean `1.191x` CI `[1.075307,1.306693]`, r=4 mean `1.377x` CI `[1.314893,1.438107]`; stage-noise 10 seeds, zero pair failures; resource scalar/PVW r=1/2/4 has 3-run support |
+| Stage 36 added-binary parameter expansion | `spqlios_avx512` | 2/4 | 10-run/20-seed added-parameter support | `SET_4_5_2048`: r=2 mean `1.286x` CI `[1.255799,1.315601]`, r=4 mean `1.351x` CI `[1.329122,1.372278]`; `SET_2_3_4096`: r=2 mean `1.235x` CI `[1.210553,1.259647]`, r=4 mean `1.346x` CI `[1.285926,1.406474]`; all 20-seed noise gates have zero PVW/scalar/pair failures |
 | Stage 37 native perf-counter audit | WSL2 probe | n/a | blocked, reproducible | requested heavy Stage 28 counter gate with `STAGE28_RUN_BENCH=1`; `perf` missing in PATH, so MAT-AVX512 hardware-counter attribution remains blocked |
 | Stage 38 full 2025/686 source-review gate | artifact gate | n/a | blocked, reproducible | `FAB686_FULLTEXT_PATH` not supplied; theorem-level base-paper citations and novelty review remain blocked |
 | Stage 39 optional variant triage | audit synthesis | n/a | no new variant promoted | non-binary and AVX/layout work blocked by full-text/perf prerequisites; schedule/post-processing variants deferred by prior neutral/small-tail evidence |
@@ -137,6 +138,13 @@ performance samples, 10 deterministic stage-noise seeds for r=2 and r=4, and
 3 resource snapshots for scalar/PVW r=1/2/4. They do not change the remaining
 external blockers for novelty, theorem-level 2025/686 review, non-binary
 support, all-parameter claims, or MAT-AVX512 hardware-counter attribution.
+The Stage 36 added-binary parameter campaign then raises the prior Stage 26
+5-run/5-seed support to 10 complete-SAB performance samples and 20 final-output
+noise seeds for `SET_4_5_2048` and `SET_2_3_4096`, r=2/r=4. All four added
+binary parameter/r cases remain positive and have zero reported PVW, scalar,
+and pair noise failures. This strengthens binary parameter-generalization
+wording, but still does not support non-binary, all-parameter, novelty,
+theorem-level citation, or hardware-counter claims.
 The Stage 37 native perf-counter audit then requested the heavy hardware
 counter gate but confirmed the current WSL2 environment still lacks `perf` in
 PATH. This records a stronger reproducible blocker for MAT-AVX512

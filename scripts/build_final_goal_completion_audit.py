@@ -22,6 +22,8 @@ STAGE33 = ROOT / "repro" / "stage33_current_smoke" / "summary.csv"
 STAGE36_TARGET_PERF = ROOT / "repro" / "stage36_target_perf_summary.csv"
 STAGE36_STAGE_NOISE = ROOT / "repro" / "stage36_stage_noise_seeds10" / "aggregate.csv"
 STAGE36_RESOURCE = ROOT / "repro" / "stage36_resource_summary.csv"
+STAGE36_ADDED_PERF = ROOT / "repro" / "stage36_added_params_runs10_seeds20" / "performance_stats.csv"
+STAGE36_ADDED_NOISE = ROOT / "repro" / "stage36_added_params_runs10_seeds20" / "noise_summary.csv"
 RUN_LOG = ROOT / "repro" / "run_log.csv"
 
 
@@ -404,15 +406,49 @@ def audit() -> list[AuditRow]:
         and as_int(row, "scalar_failures") == 0
         and as_int(row, "pair_failures") == 0
     ]
+    stage36_added_perf = read_csv_if_exists(STAGE36_ADDED_PERF)
+    stage36_added_noise = read_csv_if_exists(STAGE36_ADDED_NOISE)
+    expected_added_keys = {
+        ("SET_4_5_2048", "2"),
+        ("SET_4_5_2048", "4"),
+        ("SET_2_3_4096", "2"),
+        ("SET_2_3_4096", "4"),
+    }
+    stage36_perf_passed = {
+        (row.get("param"), row.get("r"))
+        for row in stage36_added_perf
+        if row.get("decision") == "PASS_ADDED_PARAM_10RUN"
+        and as_int(row, "runs") >= 10
+        and as_float(row, "mean_speedup") > 1.0
+    }
+    stage36_noise_passed = {
+        (row.get("param"), row.get("r"))
+        for row in stage36_added_noise
+        if row.get("decision") == "PASS_ADDED_PARAM_20SEED"
+        and as_int(row, "seeds") >= 20
+        and as_int(row, "pvw_failures") == 0
+        and as_int(row, "scalar_failures") == 0
+        and as_int(row, "pair_failures") == 0
+    }
+    if expected_added_keys.issubset(stage36_perf_passed) and expected_added_keys.issubset(stage36_noise_passed):
+        a7_status = "PASS_ADDED_PARAM_10RUN_20SEED"
+        a7_evidence = f"{rel(STAGE36_ADDED_PERF)}; {rel(STAGE36_ADDED_NOISE)}"
+        a7_scope = "added binary SET_4_5_2048 and SET_2_3_4096, r=2/r=4, 10-run performance and 20-seed noise"
+        a7_action = "Keep non-binary and all-parameter claims blocked unless separate implementations and gates are added."
+    else:
+        a7_status = "PASS_SMALL_SAMPLE" if len(added_perf) == 4 and len(added_noise) == 4 else "FAIL_INCOMPLETE"
+        a7_evidence = f"{rel(PERFORMANCE)}; {rel(NOISE)}"
+        a7_scope = "small-sample only; not broad all-parameter evidence"
+        a7_action = "Increase runs/seeds before broad parameter-generalization claims."
     out.append(
         AuditRow(
             "A7",
             "generalization",
-            "Added binary parameters have r=2/r=4 small-sample performance and noise support",
-            "PASS_SMALL_SAMPLE" if len(added_perf) == 4 and len(added_noise) == 4 else "FAIL_INCOMPLETE",
-            f"{rel(PERFORMANCE)}; {rel(NOISE)}",
-            "small-sample only; not broad all-parameter evidence",
-            "Increase runs/seeds before broad parameter-generalization claims.",
+            "Added binary parameters have r=2/r=4 performance and noise support",
+            a7_status,
+            a7_evidence,
+            a7_scope,
+            a7_action,
         )
     )
 

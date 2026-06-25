@@ -1,0 +1,3 @@
+param,r,sample_id,status,pvw_avg_us,scalar_repeated_avg_us,speedup_vs_scalar_repeated,source_csv,decision
+SET_2_3_4096,4,perf_SET_2_3_4096_r4_runs9_topup:run_7,Pass,46372393.000,61126191.000,1.318,repro/stage36_added_params_runs10_seeds20/perf_SET_2_3_4096_r4_runs9_topup/summary.csv,SUPPLEMENTAL_NOT_IN_PRIMARY_10RUN
+SET_2_3_4096,4,perf_SET_2_3_4096_r4_runs9_topup:run_8,Pass,46270535.000,61434298.000,1.328,repro/stage36_added_params_runs10_seeds20/perf_SET_2_3_4096_r4_runs9_topup/summary.csv,SUPPLEMENTAL_NOT_IN_PRIMARY_10RUN

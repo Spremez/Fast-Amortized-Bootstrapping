@@ -399,10 +399,10 @@ The added binary parameter matrix was then expanded to 5 full-SAB A/B runs and
 5 final-output noise seeds for `SET_4_5_2048` and `SET_2_3_4096`, r=2/r=4.
 All full-SAB correctness gates passed and all noise aggregates had zero PVW,
 scalar, and pair failures. Mean speedups were: `SET_4_5_2048` r=2 1.329x,
-r=4 1.346x; `SET_2_3_4096` r=2 1.224x, r=4 1.318x. This is the strongest
-current added-parameter support, but it remains small-sample evidence and does
-not replace the main target's 50-seed noise gate. `SET_4_5_2048` r=2 has high
-run-to-run variance and must be reported with its range or confidence interval.
+r=4 1.346x; `SET_2_3_4096` r=2 1.224x, r=4 1.318x. This was later superseded
+by the Stage 36 added-binary 10-run/20-seed campaign. The Stage 26 matrix
+remains useful as an earlier smoke and harness checkpoint, but it should no
+longer be described as the strongest added-parameter evidence.
 ```
 
 ## Stage 27: Novelty and Paper Package
@@ -538,7 +538,7 @@ Tasks:
 - read Stage 28 native perf-counter gate;
 - check target complete-SAB speedup, target 50-seed final-output noise,
   resource reporting, manifest existence, blocked-claim preservation, and
-  added-parameter small-sample support;
+  added-parameter 10-run/20-seed support when available;
 - emit a final audit CSV and Markdown summary.
 
 Gate:
@@ -782,8 +782,8 @@ Status:
 
 ```text
 Stage 35 completed and was refreshed after Stage 36. The generated matrix now
-covers all final audit rows: 5 scoped-complete items, 3 statistical
-expansions, 2 optional expansions, 1 claim guardrail, 2 external blockers, and
+covers all final audit rows: 5 scoped-complete items, 4 statistical
+expansions, 1 optional expansion, 1 claim guardrail, 2 external blockers, and
 1 overall scoped-ready decision. The current external blockers remain
 fab686_fulltext=MISSING and stage28_native_perf_summary=MISSING.
 ```
@@ -834,9 +834,21 @@ underflow in resource logs. All six scalar/PVW r/mode groups have three
 samples and PASS_RESOURCE_3RUN. PVW public key byte ratios versus repeated
 scalar remain 1.000029x for r=1, 1.013617x for r=2, and 1.065349x for r=4.
 
-This strengthens target-performance, stage-level noise, and resource
-statistics but does not upgrade novelty, theorem-level citation, non-binary,
-all-parameter, or hardware-counter claims.
+The added-parameter campaign was then executed for `SET_4_5_2048` and
+`SET_2_3_4096`, r=2/r=4. Each parameter/r case now has 10 complete-SAB
+same-backend performance samples and 20 deterministic final-output noise seeds.
+Mean speedups are `SET_4_5_2048` r=2 1.286x, r=4 1.351x; `SET_2_3_4096`
+r=2 1.235x, r=4 1.346x. The t-intervals are fully above 1.0 for all four
+cases, and all reported PVW, scalar, and pair noise failures are zero. The
+initial all-in-one command hit a tool timeout after producing partial
+artifacts, so `SET_2_3_4096` r=4 was completed by a targeted top-up. Two
+extra r=4 top-up samples are recorded as supplemental and excluded from the
+primary 10-run statistic.
+
+This strengthens target-performance, stage-level noise, resource statistics,
+and added-binary parameter wording beyond the Stage 26 5-run/5-seed matrix. It
+does not upgrade novelty, theorem-level citation, non-binary, all-parameter, or
+hardware-counter claims.
 ```
 
 ## Stage 37: Native Perf-Counter Evidence

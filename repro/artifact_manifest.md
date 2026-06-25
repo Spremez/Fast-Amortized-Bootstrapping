@@ -649,6 +649,26 @@ Repro artifacts:
 - `repro/stage36_resource_run_2/summary.csv`
 - `repro/stage36_resource_run_0/r1/pvw.log` through
   `repro/stage36_resource_run_2/r4/scalar.time.log`
+- `scripts/build_stage36_added_params_summary.py`
+- `docs/stage36_added_params_expansion_log.md`
+- `repro/stage36_added_params_runs10_seeds20/performance_summary.csv`
+- `repro/stage36_added_params_runs10_seeds20/performance_stats.csv`
+- `repro/stage36_added_params_runs10_seeds20/performance_samples.csv`
+- `repro/stage36_added_params_runs10_seeds20/performance_supplemental.csv`
+- `repro/stage36_added_params_runs10_seeds20/noise_summary.csv`
+- `repro/stage36_added_params_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/summary.csv`
+- `repro/stage36_added_params_runs10_seeds20/perf_SET_4_5_2048_r4_runs10/summary.csv`
+- `repro/stage36_added_params_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/summary.csv`
+- `repro/stage36_added_params_runs10_seeds20/perf_SET_2_3_4096_r4_runs10/summary.csv`
+- `repro/stage36_added_params_runs10_seeds20/perf_SET_2_3_4096_r4_runs9_topup/summary.csv`
+- `repro/stage36_added_params_runs10_seeds20/noise_SET_4_5_2048_r2_seeds20/summary.csv`
+- `repro/stage36_added_params_runs10_seeds20/noise_SET_4_5_2048_r2_seeds20/aggregate.csv`
+- `repro/stage36_added_params_runs10_seeds20/noise_SET_4_5_2048_r4_seeds20/summary.csv`
+- `repro/stage36_added_params_runs10_seeds20/noise_SET_4_5_2048_r4_seeds20/aggregate.csv`
+- `repro/stage36_added_params_runs10_seeds20/noise_SET_2_3_4096_r2_seeds20/summary.csv`
+- `repro/stage36_added_params_runs10_seeds20/noise_SET_2_3_4096_r2_seeds20/aggregate.csv`
+- `repro/stage36_added_params_runs10_seeds20/noise_SET_2_3_4096_r4_seeds20/summary.csv`
+- `repro/stage36_added_params_runs10_seeds20/noise_SET_2_3_4096_r4_seeds20/aggregate.csv`
 - `repro/stage37_native_perf_counter_audit/summary.csv`
 - `repro/stage37_native_perf_counter_audit/stage28_gate/summary.csv`
 - `repro/stage37_native_perf_counter_audit/stage28_gate/environment.log`

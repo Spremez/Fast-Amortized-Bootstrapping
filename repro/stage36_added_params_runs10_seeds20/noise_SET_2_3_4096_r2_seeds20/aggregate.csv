@@ -1,0 +1,2 @@
+r,seeds,points,pvw_failures,scalar_failures,pair_failures,min_pvw_minus_scalar_log2,max_pvw_minus_scalar_log2,avg_pvw_minus_scalar_log2,status
+2,20,163840,0,0,0,-0.562,0.665,-0.041350,PASS

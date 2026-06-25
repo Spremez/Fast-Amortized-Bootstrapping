@@ -1,0 +1,5 @@
+param,r,seeds,points,pvw_failures,scalar_failures,pair_failures,min_pvw_minus_scalar_log2,max_pvw_minus_scalar_log2,avg_pvw_minus_scalar_log2,status,decision,source_csv
+SET_4_5_2048,2,20,81920,0,0,0,-0.348,0.464,-0.047700,PASS,PASS_ADDED_PARAM_20SEED,repro/stage36_added_params_runs10_seeds20/noise_SET_4_5_2048_r2_seeds20/aggregate.csv
+SET_4_5_2048,4,20,163840,0,0,0,-0.478,0.365,-0.077350,PASS,PASS_ADDED_PARAM_20SEED,repro/stage36_added_params_runs10_seeds20/noise_SET_4_5_2048_r4_seeds20/aggregate.csv
+SET_2_3_4096,2,20,163840,0,0,0,-0.562,0.665,-0.041350,PASS,PASS_ADDED_PARAM_20SEED,repro/stage36_added_params_runs10_seeds20/noise_SET_2_3_4096_r2_seeds20/aggregate.csv
+SET_2_3_4096,4,20,327680,0,0,0,-0.299,0.584,0.029600,PASS,PASS_ADDED_PARAM_20SEED,repro/stage36_added_params_runs10_seeds20/noise_SET_2_3_4096_r4_seeds20/aggregate.csv

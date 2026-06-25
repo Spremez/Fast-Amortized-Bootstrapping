@@ -89,6 +89,11 @@ def classify(row: Dict[str, str], ext_status: str) -> Dict[str, str]:
         requires_user = "no"
         next_action = "increase added-parameter runs/seeds only before broad all-parameter claims"
         impact = "does not block scoped target claim; blocks broad generalization wording"
+    if item_id == "A7" and status == "PASS_ADDED_PARAM_10RUN_20SEED":
+        lane = "statistical_expansion"
+        requires_user = "no"
+        next_action = "use this evidence only for added-binary parameter wording; keep non-binary/all-parameter claims blocked"
+        impact = "strengthens binary parameter-generalization evidence; does not affect external blockers"
     if item_id == "A2b" and status == "PASS_10RUN_TARGET_PERF":
         lane = "statistical_expansion"
         requires_user = "no"
@@ -195,7 +200,8 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         ]
     )
 
-    OUT_MD.write_text("\n".join(lines), encoding="utf-8")
+    with OUT_MD.open("w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines).rstrip() + "\n")
 
 
 def main() -> int:

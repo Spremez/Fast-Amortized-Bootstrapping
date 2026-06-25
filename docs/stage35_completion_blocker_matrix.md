@@ -16,9 +16,9 @@ not upgrade any claim by itself.
 - `claim_guardrail`: 1
 - `complete_or_scoped_complete`: 5
 - `external_blocker`: 2
-- `optional_expansion`: 2
+- `optional_expansion`: 1
 - `overall_scoped_ready`: 1
-- `statistical_expansion`: 3
+- `statistical_expansion`: 4
 
 ## Matrix
 
@@ -34,7 +34,7 @@ not upgrade any claim by itself.
 | A5 | PASS_SCOPED | complete_or_scoped_complete | no |  | keep artifact current through final recheck | supports scoped engineering claim |
 | A5b | PASS_CURRENT_SMOKE | complete_or_scoped_complete | no |  | keep artifact current through final recheck | supports scoped engineering claim |
 | A6 | PASS_BLOCKED_BOUNDARY | claim_guardrail | yes_for_upgrade |  | review full related work and 2025/686 text before changing blocked labels | prevents novelty/theorem overclaim |
-| A7 | PASS_SMALL_SAMPLE | optional_expansion | no |  | increase added-parameter runs/seeds only before broad all-parameter claims | does not block scoped target claim; blocks broad generalization wording |
+| A7 | PASS_ADDED_PARAM_10RUN_20SEED | statistical_expansion | no |  | use this evidence only for added-binary parameter wording; keep non-binary/all-parameter claims blocked | strengthens binary parameter-generalization evidence; does not affect external blockers |
 | A8 | BLOCKED_EXTERNAL | external_blocker | yes | fab686_fulltext=MISSING; stage28_native_perf_summary=MISSING | run Stage 28 on native Linux or perf-enabled WSL with STAGE28_RUN_BENCH=1 and register the summary | blocks MAT-AVX512 theoretical load/store optimality claim |
 | A8b | MISSING_OPTIONAL_EXTERNAL_EVIDENCE | external_blocker | yes | fab686_fulltext=MISSING; stage28_native_perf_summary=MISSING | provide 2025/686 full text and/or native perf summary through FAB686_FULLTEXT_PATH and STAGE28_NATIVE_PERF_SUMMARY | blocks theorem-level citation review and optional perf upgrade |
 | A9 | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED | overall_scoped_ready | conditional |  | continue only with explicit stronger-claim scope: full paper review, native perf counters, broader statistics, or new algorithmic variants | scoped engineering SAB acceleration is ready; paper-level stronger claims remain open |
