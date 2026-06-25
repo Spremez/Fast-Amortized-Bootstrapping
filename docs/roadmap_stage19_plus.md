@@ -901,6 +901,21 @@ Gate:
 - no theorem-level manuscript citation may be upgraded before full-text review;
 - novelty remains blocked if related work already covers the claimed idea.
 
+Status:
+
+```text
+Stage 38 was executed through scripts/run_stage38_fulltext_review_gate.sh with
+no FAB686_FULLTEXT_PATH supplied. The artifact gate reports
+BLOCKED_FULLTEXT_MISSING and creates a manual review checklist for protocol
+stages, complexity, correctness/noise, parameter security, PVW-SAB delta, and
+novelty boundary. Every checklist row remains blocked until a concrete
+full-text source anchor is supplied.
+
+External evidence intake still reports fab686_fulltext=MISSING, so final audit
+A8b remains MISSING_OPTIONAL_EXTERNAL_EVIDENCE and A9 remains
+SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED.
+```
+
 ## Stage 39: Optional New Algorithmic Variants
 
 Goal:

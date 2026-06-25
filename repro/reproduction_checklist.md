@@ -156,6 +156,7 @@
 - [x] Execute Stage 36 stage-level noise 10-seed campaign.
 - [x] Execute Stage 36 resource 3-run scalar/PVW matrix.
 - [x] Add and run Stage 37 native perf-counter audit; current WSL2 platform remains blocked because `perf` is missing.
+- [x] Add and run Stage 38 full-text review gate; current environment remains blocked because `FAB686_FULLTEXT_PATH` is missing.
 - [ ] Execute remaining Stage 36 optional target-noise/added-parameter campaigns only if broader claims need them.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.
