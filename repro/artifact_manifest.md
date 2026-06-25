@@ -145,6 +145,7 @@ Documentation artifacts:
 - `docs/stage40_postfreeze_verify_log.md`
 - `docs/stage41_external_unlock_packet.md`
 - `docs/stage42_evidence_closure_audit.md`
+- `docs/stage42_closure_verify_log.md`
 - `docs/stage43_postclosure_current_smoke_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
@@ -663,6 +664,7 @@ Repro artifacts:
 - `repro/stage41_external_unlock_packet.csv`
 - `repro/stage42_evidence_closure_audit.csv`
 - `repro/stage42_evidence_closure_manifest.csv`
+- `repro/stage42_closure_verify/summary.csv`
 - `repro/stage43_current_smoke_after_stage42/summary.csv`
 - `repro/stage43_current_smoke_after_stage42/scalar_binary_SET_2_3_2048/build.log`
 - `repro/stage43_current_smoke_after_stage42/scalar_binary_SET_2_3_2048/run.log`

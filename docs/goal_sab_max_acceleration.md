@@ -65,6 +65,7 @@ evidence.
 | Stage 40 final scoped freeze | report/freeze | n/a | scoped freeze ready | freeze package is ready for scoped engineering claim; SHA-256 manifest and post-freeze verifier pass; stronger claims remain blocked |
 | Stage 41 external unlock packet | audit synthesis | n/a | generated | current readiness is WAIT_EXTERNAL_FULLTEXT, WAIT_NATIVE_PERF, WAIT_EXTERNAL_ARTIFACTS, and WAIT_UNLOCKS; stronger claims still require external evidence plus manual review |
 | Stage 42 evidence closure audit | audit synthesis | n/a | passed and recheck-integrated | Stage 19-43 scoped evidence chain is internally closed under current artifacts; closure-only final recheck passes; stronger claims remain blocked |
+| Stage 42 closure verifier | read-only audit | n/a | passed from clean input | no-regenerate verifier confirmed final audit, Stage 41 readiness, Stage 42 closure, Stage 43 smoke, final recheck closure, run-log rows, and manifest registration |
 | Stage 43 post-closure current smoke | `spqlios_avx512` | n/a | passed | current-head scalar binary full run, explicit PVW target gate, and scalar ternary build all pass; smoke only |
 
 Current conclusion:
@@ -166,6 +167,13 @@ post-freeze control-plane artifacts. It is callable through the unified final
 recheck runner and has passed in both a closure-only output directory and the
 ordinary default recheck path, so evidence-chain closure can be refreshed
 without special handling.
+The Stage 42 read-only closure verifier then checked that package from a clean
+input worktree without regenerating the closure audit. It confirmed the final
+audit label, Stage 41 waiting state, Stage 42 closure result, Stage 43 smoke,
+default and closure-only final recheck entries, required run-log rows, and
+artifact-manifest registration. This strengthens reproducibility of the scoped
+closure package, but it still does not upgrade any blocked full-text,
+native-perf, novelty, or theoretical-optimality claim.
 The Stage 43 post-closure current smoke then refreshes build/correctness
 evidence at the current repository head. Scalar binary full run, explicit PVW
 target gate, and scalar ternary build all pass under `spqlios_avx512`; this is
@@ -243,6 +251,6 @@ Stage 38: full 2025/686 source review. [executed artifact gate; blocked until fu
 Stage 39: optional new algorithmic variants. [triaged; no new variant promoted under current evidence]
 Stage 40: final paper/release freeze. [scoped engineering freeze ready; hash manifest and post-freeze verifier passed; stronger claims blocked]
 Stage 41: external unlock packet. [generated; waiting for full-text/native-perf evidence before stronger claim upgrade]
-Stage 42: evidence closure audit. [passed; scoped evidence chain is internally closed, stronger claims remain blocked]
+Stage 42: evidence closure audit. [passed; scoped evidence chain is internally closed, no-regenerate verifier passed, stronger claims remain blocked]
 Stage 43: post-closure current smoke. [passed; current-head scalar/PVW smoke refreshed without changing claim scope]
 ```

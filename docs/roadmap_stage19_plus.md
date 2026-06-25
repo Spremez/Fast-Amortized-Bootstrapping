@@ -1058,6 +1058,8 @@ Tasks:
   target, and scalar ternary build;
 - generate and verify a SHA-256 manifest for stable post-freeze control-plane
   artifacts;
+- add and run a no-regenerate Stage 42 closure verifier from a clean worktree
+  input;
 - verify Stage 40 freeze manifest SHA-256 hashes still match current artifacts;
 - verify run-log coverage and required control-plane files;
 - preserve claim guardrails rather than upgrading blocked claims.
@@ -1068,6 +1070,9 @@ Gate:
 
 - `S42-OVERALL` must be
   `PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED`;
+- `stage42_verify_decision` must be
+  `PASS_STAGE42_VERIFY_STRONGER_CLAIMS_BLOCKED` when the read-only verifier is
+  used as closure-package evidence;
 - any failed row means the evidence chain is not closed and must be repaired
   before relying on the final package;
 - Stage 42 cannot be used as performance, novelty, or theoretical optimality
@@ -1083,6 +1088,11 @@ manifest entries, post-freeze control-plane hashes, and claim guardrails. The
 overall result is scoped evidence closure with stronger claims still blocked.
 The audit is also integrated into the final recheck runner and passed in both
 a closure-only recheck output directory and the ordinary default recheck path.
+The read-only closure verifier also passed from a clean `de85276` input commit:
+it confirmed final audit A9, Stage 41 waiting readiness, Stage 42 closure,
+Stage 43 current smoke, default and closure-only final recheck closure,
+required Stage 42/43 run-log rows, artifact-manifest registration, and closure
+manifest hashes without regenerating the audit.
 ```
 
 ## Stage 43: Post-Closure Current Smoke
