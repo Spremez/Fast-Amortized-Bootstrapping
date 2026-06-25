@@ -26,6 +26,8 @@ The scoped engineering evidence chain is assembled:
 - final-output noise evidence exists at 50 seeds for the target r=2/r=4 path;
 - resource costs are reported;
 - claim support, citation access, and related-work boundaries are recorded;
+- the scoped final engineering report is recorded in
+  `docs/stage27_final_engineering_report.md`;
 - final evidence package generation is reproducible via
   `scripts/build_stage27_final_package.py`.
 
@@ -62,6 +64,7 @@ Status:
 
 ```text
 SCOPED_ENGINEERING_EVIDENCE_CHAIN_READY
+SCOPED_ENGINEERING_REPORT_READY
 FINAL_ENGINEERING_PACKAGE_REPRODUCIBLE
 PAPER_NOVELTY_AND_THEOREM_LEVEL_CITATIONS_BLOCKED
 GOAL_NOT_MARKED_COMPLETE_UNTIL_EXTERNAL_FULL_TEXT_OR_SCOPE_DECISION

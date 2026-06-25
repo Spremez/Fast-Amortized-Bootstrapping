@@ -49,6 +49,7 @@ evidence.
 | Stage 27 final full-SAB rerun | `spqlios_avx512` | 2/4 | scoped performance support | r=2 mean `1.171x` with higher variance; r=4 mean `1.401x`, range `1.331x-1.472x` |
 | Stage 27 final evidence package | aggregation | n/a | scoped engineering package assembled | performance, noise, resource, and claim-boundary matrices generated from recorded artifacts |
 | Stage 27 completion readiness audit | aggregation | n/a | scoped engineering chain ready | Final standards and Stage 19-27 items mapped to evidence, scope, and remaining actions |
+| Stage 27 final engineering report | report | n/a | scoped engineering report ready | User-facing technical report generated without novelty or theorem-level overclaim |
 
 Current conclusion:
 
@@ -86,6 +87,8 @@ direct full text remains blocked in this environment.
 The completion-readiness audit marks the scoped engineering evidence chain
 ready, while keeping novelty, all-parameter, non-binary, theoretical-optimality,
 and theorem-level citation claims blocked or conditional.
+The final engineering report now provides the scoped, non-overclaiming
+technical summary for the current result.
 ```
 
 ## Invariants

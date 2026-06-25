@@ -87,6 +87,7 @@ repeated scalar SAB under the same backend and parameter scope.
 | S25 | stage | SATISFIED_SCOPED | Correctness/noise/resource matrix |
 | S26 | stage | SATISFIED_SCOPED | Parameter and branch generalization |
 | S27 | stage | SATISFIED_ENGINEERING_BLOCKED_NOVELTY | Novelty/paper package and final evidence package |
+| R1 | report | SATISFIED_SCOPED | Scoped final engineering report |
 
 ## Decision
 

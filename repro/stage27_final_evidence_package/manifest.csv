@@ -6,3 +6,4 @@ claim_scope,repro/stage27_final_evidence_package/claim_scope.csv,repro/stage27_c
 citation_gate,repro/stage27_final_evidence_package/citation_gate.csv,repro/stage27_citation_access_probe/summary.csv
 completion_readiness,repro/stage27_final_evidence_package/completion_readiness.csv,repro/stage27_completion_readiness_audit.csv
 markdown_summary,docs/stage27_final_evidence_package.md,generated from final package CSVs
+final_engineering_report,docs/stage27_final_engineering_report.md,docs/stage27_final_evidence_package.md; repro/stage27_completion_readiness_audit.csv

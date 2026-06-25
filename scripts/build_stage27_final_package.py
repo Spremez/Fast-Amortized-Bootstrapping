@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "repro" / "stage27_final_evidence_package"
 DOC_PATH = ROOT / "docs" / "stage27_final_evidence_package.md"
+ENGINEERING_REPORT = ROOT / "docs" / "stage27_final_engineering_report.md"
 
 
 TARGET_PERF = ROOT / "repro" / "stage27_final_full_sab_summary.csv"
@@ -412,6 +413,7 @@ def main() -> None:
         {"artifact": "citation_gate", "path": rel(OUT_DIR / "citation_gate.csv"), "source": rel(CITATION_PROBE)},
         {"artifact": "completion_readiness", "path": rel(OUT_DIR / "completion_readiness.csv"), "source": rel(READINESS_AUDIT)},
         {"artifact": "markdown_summary", "path": rel(DOC_PATH), "source": "generated from final package CSVs"},
+        {"artifact": "final_engineering_report", "path": rel(ENGINEERING_REPORT), "source": rel(DOC_PATH) + "; " + rel(READINESS_AUDIT)},
     ]
     write_csv(OUT_DIR / "manifest.csv", ["artifact", "path", "source"], manifest_rows)
 

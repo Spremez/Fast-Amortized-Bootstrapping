@@ -105,6 +105,7 @@ Documentation artifacts:
 - `docs/stage27_citation_gate_log.md`
 - `docs/stage27_final_evidence_package.md`
 - `docs/stage27_completion_readiness_audit.md`
+- `docs/stage27_final_engineering_report.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`

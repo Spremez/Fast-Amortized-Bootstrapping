@@ -476,4 +476,9 @@ chain ready and identifies the remaining work as stronger-claim work:
 full-paper citation review, novelty review, non-binary PVW design, broader
 parameter statistics, native perf counters for theoretical AVX512 claims, or
 stage-level noise expansion if such claims are introduced.
+
+The final scoped engineering report is recorded in
+`docs/stage27_final_engineering_report.md`. It is the current presentation
+layer for the completed engineering evidence chain and keeps the stronger
+claims blocked.
 ```

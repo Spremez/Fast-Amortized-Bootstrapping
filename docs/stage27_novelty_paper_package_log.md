@@ -169,6 +169,12 @@ scoped engineering evidence chain ready, while keeping novelty,
 all-parameter, non-binary, theoretical-optimality, and theorem-level citation
 claims blocked or conditional.
 
+The scoped final engineering report is recorded in
+`docs/stage27_final_engineering_report.md`. It is the current user-facing
+technical summary for the engineering result and deliberately avoids novelty,
+non-binary, all-parameter, theoretical-optimality, and theorem-level 2025/686
+claims.
+
 ## Decision
 
 Status:
@@ -182,6 +188,7 @@ CLAIM_SUPPORT_MATRIX_AVAILABLE
 FINAL_ENGINEERING_EVIDENCE_PACKAGE_ASSEMBLED
 CITATION_ACCESS_PROBE_COMPLETED
 COMPLETION_READINESS_AUDIT_AVAILABLE
+FINAL_ENGINEERING_REPORT_READY
 ```
 
 Stage 27 can proceed, but paper-level novelty must stay blocked until the full
