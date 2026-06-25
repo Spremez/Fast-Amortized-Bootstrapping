@@ -2,6 +2,15 @@
 
 Date: 2026-06-25
 
+Update:
+
+```text
+Stage 16 through Stage 18 have now been executed and recorded. For the active
+Stage 19+ roadmap after the Stage 18 neutral fused-from-DFT-add result, use
+docs/goal_sab_max_acceleration.md, docs/roadmap_stage19_plus.md, and
+docs/loop_engineering.md as the controlling plan.
+```
+
 ## Overall Goal
 
 Complete the PVW/MAT-SAB optimization path for 2025/686 without weakening the

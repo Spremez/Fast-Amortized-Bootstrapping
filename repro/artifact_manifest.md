@@ -68,11 +68,15 @@ Documentation artifacts:
 - `docs/stage16_plus_execution_plan.md`
 - `docs/stage17_perf_attribution_log.md`
 - `docs/stage18_cmux_profile_and_fusion_log.md`
+- `docs/goal_sab_max_acceleration.md`
+- `docs/roadmap_stage19_plus.md`
+- `docs/loop_engineering.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
 - `algorithm_variants/pvw_sab_full_pipeline.md`
 - `theory_checks/pvw_sab_complexity_model.md`
+- `theory_checks/mat_avx_memory_model.md`
 - `experiments/stage11_experiment_validation_plan.md`
 - `experiments/stage12_experiment_validation_plan.md`
 - `experiments/stage13_postproc_validation_plan.md`
@@ -82,6 +86,7 @@ Documentation artifacts:
 - `experiments/stage17_perf_attribution_plan.md`
 - `experiments/stage18_cmux_profile_plan.md`
 - `experiments/stage18_fused_from_dft_add_plan.md`
+- `experiments/stage19_sparse_schedule_audit_plan.md`
 
 Repro artifacts:
 

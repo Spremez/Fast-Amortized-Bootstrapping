@@ -93,5 +93,20 @@
 - [x] Run Stage 18 fused from-DFT-add correctness and smoke gates.
 - [x] Run Stage 18 fused from-DFT-add repeated full SAB sweep for `r=4`.
 - [x] Record Stage 18 fused from-DFT-add as neutral rather than promotable.
-- [ ] Implement SAB-specific sparse/fused variants after PVW body profile is fixed.
-- [ ] Complete MAT AVX512 promotion audit with repeated full SAB sweeps, counters, and broader shape coverage.
+- [x] Add project-level maximum-acceleration goal and claim guardrails.
+- [x] Add Stage 19+ roadmap after Stage 18 neutral result.
+- [x] Add PVW/MAT-SAB loop-engineering contract for future candidates.
+- [x] Add MAT-aware AVX512 memory/load-store theory check.
+- [x] Add Stage 19 sparse schedule audit experiment plan.
+- [x] Register H5-H9 for active-buffer fusion, sub_a rotation, MAT AVX512 limit audit, parameter generalization, and paper novelty.
+- [ ] Implement Stage 19 exact sparse schedule counters for per-bit CMUX/NCMUX and copy/sub_a attribution.
+- [ ] Run Stage 19 sparse schedule audit for `r=2` and `r=4`.
+- [ ] Record Stage 19 schedule-audit log and decision.
+- [ ] Implement Stage 20 active-buffer RGSW monomial/sparse_mul candidate if Stage 19 counters match theory.
+- [ ] Run Stage 20 staged lane-equivalence, target correctness, and full SAB A/B gates.
+- [ ] Implement Stage 21 sub_a/rotation scratch optimization only if the post-Stage-20 profile justifies it.
+- [ ] Complete Stage 22 MAT AVX512 promotion audit with generic-vs-MAT microbench, assembly/perf attribution, and full SAB sweeps.
+- [ ] Implement Stage 23 CMUX/NCMUX schedule fusion only after Stage 19/22 identify a material target.
+- [ ] Run Stage 25 correctness/noise/resource matrix for any promoted Stage 20-23 variant.
+- [ ] Run Stage 26 parameter and branch generalization before broad SAB claims.
+- [ ] Complete Stage 27 novelty/literature and paper package before manuscript claims.

@@ -77,3 +77,107 @@ hypotheses:
       - CMUX wrapper-minus-MAT time does not decrease
       - full SAB throughput does not improve over Stage 16
       - lane equivalence or target correctness fails
+  - id: H5_sparse_schedule_active_buffer_fusion
+    statement: >
+      Carrying the active PVW accumulator buffer and parity across
+      RGSW-monomial and sparse_mul boundaries should reduce forced copyback
+      and schedule traffic in complete SAB.
+    mechanism: >
+      The target binary path uses r_prec=7, so each RGSW monomial leaves the
+      ping-pong accumulator on the opposite buffer. Returning an explicit active
+      state lets the next sparse step and sub_a consume that buffer directly,
+      delaying normalization until an API or extract boundary.
+    status: planned_stage19_20
+    evidence: docs/roadmap_stage19_plus.md
+    current_decision: >
+      Stage 19 must first verify exact CMUX/NCMUX, copyback, and sub_a counts.
+      If the model matches the profile, Stage 20 should implement an
+      explicit-flag active-buffer path and compare complete SAB throughput
+      against Stage 16/18.
+    failure_criteria:
+      - schedule counters do not match the binary SET_2_3_2048 model
+      - active-buffer lane phase differs from scalar reference
+      - full SAB throughput does not improve over the Stage 16/18 baseline
+      - resource overhead offsets the copyback reduction
+  - id: H6_sub_a_rotation_scratch
+    statement: >
+      Scratch-aware or batched polynomial rotation for sub_a can reduce the
+      remaining sparse-step overhead after active-buffer fusion.
+    mechanism: >
+      sub_a applies input-dependent monomial rotations to PVW lane state.
+      Reusing scratch and separating index arithmetic, sign handling, and body
+      loops may reduce memory traffic without changing the encrypted rotation
+      semantics.
+    status: planned_stage21
+    evidence: docs/roadmap_stage19_plus.md
+    current_decision: >
+      This is secondary to H5. It should start only after Stage 19/20 profiles
+      show sub_a remains material. Unsafe in-place rotation is out of scope
+      unless aliasing safety is proven.
+    failure_criteria:
+      - rotation aliasing cannot be made explicit and safe
+      - per-step phase equivalence fails
+      - sub_a time is not material in the post-Stage-20 profile
+      - full SAB benchmark is neutral or negative
+  - id: H7_mat_avx512_layout_tiling_limit
+    statement: >
+      The current MAT-aware AVX512 external product may still be improved by
+      r-specific register tiling or selector/output layout changes, but any
+      kernel-level win must translate to complete SAB before it can support a
+      bootstrapping claim.
+    mechanism: >
+      MAT-aware accumulation reduces repeated decomposed-row loads and output
+      stores compared with a generic single-poly AVX loop. At r=4, dense
+      (1+r)^2 arithmetic and register pressure may cap this benefit; tiling or
+      layout changes might reduce spills and memory traffic.
+    status: planned_stage22
+    evidence: theory_checks/mat_avx_memory_model.md
+    current_decision: >
+      Stage 15/16 support scoped positive AVX512 MAT evidence, but not a
+      theoretical-optimality claim. Stage 22 must compare generic and MAT-aware
+      AVX paths with assembly or perf-counter attribution before any stronger
+      claim is made.
+    failure_criteria:
+      - microbench does not show expected memory-operation reduction
+      - assembly or counters show avoidable spills/traffic remain unexplained
+      - full SAB A/B does not improve even if the kernel improves
+      - layout changes require incompatible key formats without enough gain
+  - id: H8_parameter_branch_generalization
+    statement: >
+      A PVW/MAT-SAB acceleration claim can be generalized beyond BINARY
+      SET_2_3_2048 only if correctness, performance, and resource evidence
+      hold across additional parameters and supported SAB branches.
+    mechanism: >
+      The relative cost of MAT external products, sparse schedule work, sub_a,
+      extract, and key switching depends on N, h, r_prec, branch type, and
+      backend. A single target parameter can hide branch-specific regressions.
+    status: planned_stage26
+    evidence: docs/roadmap_stage19_plus.md
+    current_decision: >
+      Keep the current engineering claim scoped to the tested binary target
+      until Stage 26 expands coverage. Unsupported ternary/include-zero paths
+      must be labeled out of scope rather than implied.
+    failure_criteria:
+      - added parameter sets fail correctness or noise gates
+      - speedup appears only on one narrow configuration
+      - branch-specific code paths are not tested but are claimed
+  - id: H9_paper_claim_novelty
+    statement: >
+      The project can support a paper-level contribution only if the final
+      promoted PVW/MAT-SAB path has complete-SAB evidence and a literature audit
+      shows that the SAB-specific integration or fusion is not already known.
+    mechanism: >
+      PVW/MAT external products and shared-mask batching have prior-art risk.
+      A defensible contribution must isolate what is new in the SAB adaptation,
+      schedule fusion, complexity reduction, or implementation evidence.
+    status: planned_stage27
+    evidence: docs/goal_sab_max_acceleration.md
+    current_decision: >
+      Current evidence supports an engineering optimization, not yet a novelty
+      claim. Stage 27 must build the related-work matrix and citation support
+      bank before manuscript claims are promoted.
+    failure_criteria:
+      - related work already covers the claimed algorithmic idea
+      - full SAB benchmark evidence is missing or only smoke-level
+      - theory/noise/security discussion does not support changed boundaries
+      - claim scope exceeds tested parameters or branches
