@@ -47,6 +47,11 @@ written:
 FINAL_RECHECK_POSTFREEZE_VERIFY=1 bash scripts/run_final_goal_recheck.sh
 ```
 
+When this is the only enabled gate, the default output directory is
+`repro/final_goal_recheck_postfreeze` so it does not overwrite the ordinary
+`repro/final_goal_recheck` summary. Set `FINAL_RECHECK_OUT_DIR` explicitly to
+override this behavior.
+
 To attempt the heavy perf-counter SAB benchmark, pass through the Stage 28
 option:
 
@@ -89,4 +94,11 @@ repro/final_goal_recheck/stage27_final_package.log
 repro/final_goal_recheck/external_evidence_intake.log
 repro/final_goal_recheck/stage33_current_smoke.log
 repro/final_goal_recheck/final_goal_audit.log
+```
+
+Post-freeze-only output:
+
+```text
+repro/final_goal_recheck_postfreeze/summary.csv
+repro/final_goal_recheck_postfreeze/stage40_postfreeze_verify.log
 ```

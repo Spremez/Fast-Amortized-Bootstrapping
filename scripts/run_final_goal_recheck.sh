@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-out_dir="${FINAL_RECHECK_OUT_DIR:-repro/final_goal_recheck}"
 run_citation="${FINAL_RECHECK_CITATION:-0}"
 run_perf="${FINAL_RECHECK_PERF:-1}"
 run_stage27_package="${FINAL_RECHECK_STAGE27_PACKAGE:-1}"
@@ -10,6 +9,20 @@ run_current_smoke="${FINAL_RECHECK_CURRENT_SMOKE:-0}"
 run_goal_audit="${FINAL_RECHECK_GOAL_AUDIT:-1}"
 run_postfreeze_verify="${FINAL_RECHECK_POSTFREEZE_VERIFY:-0}"
 python_bin="${PYTHON_BIN:-python3}"
+
+if [[ -n "${FINAL_RECHECK_OUT_DIR+x}" ]]; then
+  out_dir="$FINAL_RECHECK_OUT_DIR"
+elif [[ "$run_postfreeze_verify" == "1" \
+  && "$run_citation" == "0" \
+  && "$run_perf" == "0" \
+  && "$run_stage27_package" == "0" \
+  && "$run_external_intake" == "0" \
+  && "$run_current_smoke" == "0" \
+  && "$run_goal_audit" == "0" ]]; then
+  out_dir="repro/final_goal_recheck_postfreeze"
+else
+  out_dir="repro/final_goal_recheck"
+fi
 
 postfreeze_rc=0
 postfreeze_output=""
