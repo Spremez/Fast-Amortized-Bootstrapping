@@ -102,15 +102,22 @@ hypotheses:
       ping-pong accumulator on the opposite buffer. Returning an explicit active
       state lets the next sparse step and sub_a consume that buffer directly,
       delaying normalization until an API or extract boundary.
-    status: stage20_positive_pending_noise_resource
-    evidence: docs/stage20_active_buffer_log.md
+    status: stage25_initial_noise_resource_smoke_supported_pending_50_seed
+    evidence: docs/stage25_correctness_noise_resource_log.md
     current_decision: >
       Stage 20 implemented SAB_PVW_ACTIVE_BUFFER_FUSION=true and confirmed
       copyback_calls drop from the legacy 40 to 0 for target r=2/r=4 while
       preserving target full-output correctness. Three-process full SAB A/B
       under spqlios_avx512 gave mean speedups of 1.270x for r=2 and 1.346x
-      for r=4. Keep the path explicit pending noise/resource and broader
-      parameter gates.
+      for r=4. Stage 25 added smoke-level r=1/2/4 final-output noise,
+      stage-level noise, and resource evidence under the current best explicit
+      path with specialized MAT-AVX512. One deterministic seed produced zero
+      final-output PVW, scalar, and pair failures, and every probed stage had
+      zero pair failures. Resource reporting shows PVW estimated public key
+      bytes at 1.000029x, 1.013617x, and 1.065349x repeated scalar for r=1/2/4,
+      while PVW keygen is slower per lane. Keep the path explicit; expand
+      Stage 25 to 50+ seeds before final promotion and complete Stage 26 before
+      broad parameter claims.
     failure_criteria:
       - schedule counters do not match the binary SET_2_3_2048 model
       - active-buffer lane phase differs from scalar reference

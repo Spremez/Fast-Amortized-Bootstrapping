@@ -1,0 +1,16 @@
+r,stage,trials,points,pair_failures,pair_log2_sigma_torus,pair_log2_max_abs_torus,source_log
+1,blind_rotate_coeff0,1,2048,0,-14.576,-12.827,repro/stage25_stage_noise_avx512_trials1/r1/seed_6862025.log
+1,extract,1,2048,0,-14.576,-12.827,repro/stage25_stage_noise_avx512_trials1/r1/seed_6862025.log
+1,materialize_tlwe,1,2048,0,-14.576,-12.827,repro/stage25_stage_noise_avx512_trials1/r1/seed_6862025.log
+1,packing_ks,1,2048,0,-14.576,-12.840,repro/stage25_stage_noise_avx512_trials1/r1/seed_6862025.log
+1,hw_ks,1,2048,0,-8.111,-6.113,repro/stage25_stage_noise_avx512_trials1/r1/seed_6862025.log
+2,blind_rotate_coeff0,1,4096,0,-14.861,-12.748,repro/stage25_stage_noise_avx512_trials1/r2/seed_6862025.log
+2,extract,1,4096,0,-14.861,-12.748,repro/stage25_stage_noise_avx512_trials1/r2/seed_6862025.log
+2,materialize_tlwe,1,4096,0,-14.861,-12.748,repro/stage25_stage_noise_avx512_trials1/r2/seed_6862025.log
+2,packing_ks,1,4096,0,-14.859,-12.747,repro/stage25_stage_noise_avx512_trials1/r2/seed_6862025.log
+2,hw_ks,1,4096,0,-8.048,-5.954,repro/stage25_stage_noise_avx512_trials1/r2/seed_6862025.log
+4,blind_rotate_coeff0,1,8192,0,-14.778,-12.482,repro/stage25_stage_noise_avx512_trials1/r4/seed_6862025.log
+4,extract,1,8192,0,-14.778,-12.482,repro/stage25_stage_noise_avx512_trials1/r4/seed_6862025.log
+4,materialize_tlwe,1,8192,0,-14.778,-12.482,repro/stage25_stage_noise_avx512_trials1/r4/seed_6862025.log
+4,packing_ks,1,8192,0,-14.777,-12.515,repro/stage25_stage_noise_avx512_trials1/r4/seed_6862025.log
+4,hw_ks,1,8192,0,-8.056,-5.945,repro/stage25_stage_noise_avx512_trials1/r4/seed_6862025.log

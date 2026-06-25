@@ -1,0 +1,7 @@
+backend,r,mode,keygen_us,keygen_lane_avg_us,estimated_key_bytes,estimated_key_bytes_ratio_vs_scalar_repeated,internal_vmhwm_kb,time_max_rss_kb,source_log,time_log,notes
+spqlios_avx512,1,pvw,498853,498853.000,153358112,1.000029,203228,203608,repro/stage25_resource_avx512/r1/pvw.log,repro/stage25_resource_avx512/r1/pvw.time.log,public bootstrap key estimate excludes secret keys and tmp scratch
+spqlios_avx512,1,scalar,493691,493691.000,153353608,1.000000,194912,195192,repro/stage25_resource_avx512/r1/scalar.log,repro/stage25_resource_avx512/r1/scalar.time.log,public bootstrap key estimate excludes secret keys and tmp scratch
+spqlios_avx512,2,pvw,1147482,573741.000,310883736,1.013617,382968,383240,repro/stage25_resource_avx512/r2/pvw.log,repro/stage25_resource_avx512/r2/pvw.time.log,public bootstrap key estimate excludes secret keys and tmp scratch
+spqlios_avx512,2,scalar,1008197,504098.500,306707216,1.000000,386900,387236,repro/stage25_resource_avx512/r2/scalar.log,repro/stage25_resource_avx512/r2/scalar.time.log,public bootstrap key estimate excludes secret keys and tmp scratch
+spqlios_avx512,4,pvw,2397860,599465.000,653500424,1.065349,769068,769388,repro/stage25_resource_avx512/r4/pvw.log,repro/stage25_resource_avx512/r4/pvw.time.log,public bootstrap key estimate excludes secret keys and tmp scratch
+spqlios_avx512,4,scalar,2050095,512523.750,613414432,1.000000,771264,771672,repro/stage25_resource_avx512/r4/scalar.log,repro/stage25_resource_avx512/r4/scalar.time.log,public bootstrap key estimate excludes secret keys and tmp scratch

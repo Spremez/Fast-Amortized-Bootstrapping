@@ -33,6 +33,8 @@ evidence.
 | Stage 23 schedule-fused CMUX | `spqlios_avx512` | 2 | neutral ablation | mean `1.273x`, essentially tied with Stage 20 `1.270x` |
 | Stage 23 schedule-fused CMUX | `spqlios_avx512` | 4 | neutral ablation | mean `1.335x`, below Stage 20 `1.346x` and Stage 22 `1.373x` |
 | Stage 24 post-processing tail | `spqlios_avx512` | 2/4 | deferred | max tail `1.261%`, below `2.0%` implementation threshold |
+| Stage 25 final/stage noise smoke | `spqlios_avx512` | 1/2/4 | smoke support | one deterministic seed; zero final-output failures and zero stage pair failures |
+| Stage 25 resource matrix | `spqlios_avx512` | 1/2/4 | smoke support | PVW key bytes ratio `1.000029x`/`1.013617x`/`1.065349x`; PVW keygen slower per lane |
 
 Current conclusion:
 
@@ -47,7 +49,9 @@ but not promoted. The next work should move to conditional post-processing
 tail profiling and then noise/resource validation rather than repeating the
 same CMUX epilogue fusion. Stage 24 measured the tail below the implementation
 threshold, so the next promoted-path work is Stage 25 correctness, noise, and
-resource validation.
+resource validation. Stage 25 now has smoke-level r=1/2/4 correctness,
+stage-noise, final-noise, and resource evidence; the remaining Stage 25 gap is
+the 50+ seed expansion needed before final promotion.
 ```
 
 ## Invariants
@@ -104,7 +108,7 @@ Stage 21: sub_a and polynomial rotation optimization. [completed, neutral]
 Stage 22: MAT-aware AVX512 theoretical-limit audit. [completed, practical path confirmed]
 Stage 23: CMUX/NCMUX schedule fusion. [completed, neutral]
 Stage 24: conditional post-processing optimization. [completed, deferred]
-Stage 25: correctness/noise/resource matrix. [next promotion gate]
+Stage 25: correctness/noise/resource matrix. [initial smoke completed, 50+ seed expansion pending]
 Stage 26: parameter and branch generalization.
 Stage 27: novelty and paper package.
 ```

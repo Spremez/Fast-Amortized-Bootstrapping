@@ -1,0 +1,7 @@
+SAB_PVW_RESOURCE config target_full r=4 mode=pvw in_N=2048 out_N=2048 h=39 r_prec=7 ell_packing=2 b_packing=14 ell_hw=12 b_hw=1
+SAB_PVW_RESOURCE base_keygen target_full r=4 input_keygen_us=2409 packing_keygen_us=27 pvw_secret_keygen_us=2986
+SAB_PVW_RESOURCE key_bytes target_full r=4 pvw_estimated_key_bytes=653500424 scalar_one_estimated_key_bytes=153353608 scalar_repeated_estimated_key_bytes=613414432 pvw_vs_scalar_repeated_ratio=1.065349 estimate_scope=public_bootstrap_key_excludes_secret_keys_and_tmp
+SAB_PVW_RESOURCE rss target_full r=4 mode=pvw label=after_base_keys vmrss_kb=2448 vmhwm_kb=2448
+SAB_PVW_RESOURCE keygen target_full r=4 mode=pvw pvw_sab_keygen_us=2397860
+SAB_PVW_RESOURCE rss target_full r=4 mode=pvw label=after_pvw_sab_keygen vmrss_kb=769068 vmhwm_kb=769068
+SAB_PVW_RESOURCE target_full gate: Pass

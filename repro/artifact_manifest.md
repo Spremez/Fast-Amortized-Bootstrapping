@@ -45,6 +45,12 @@ Code artifacts:
 - `scripts/run_stage21_suba_output_profile.sh`
 - `scripts/run_stage21_suba_output_bench.sh`
 - `scripts/run_stage22_mat_avx512_limit_audit.sh`
+- `scripts/run_stage23_schedule_fused_profile.sh`
+- `scripts/run_stage23_schedule_fused_bench.sh`
+- `scripts/run_stage24_postproc_tail_profile.sh`
+- `scripts/run_stage25_final_noise_sweep.sh`
+- `scripts/run_stage25_stage_noise_probe.sh`
+- `scripts/run_stage25_resource_matrix.sh`
 
 Documentation artifacts:
 
@@ -83,6 +89,9 @@ Documentation artifacts:
 - `docs/stage20_active_buffer_log.md`
 - `docs/stage21_suba_output_log.md`
 - `docs/stage22_mat_avx512_limit_audit_log.md`
+- `docs/stage23_schedule_fused_cmux_log.md`
+- `docs/stage24_postproc_tail_log.md`
+- `docs/stage25_correctness_noise_resource_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -102,6 +111,9 @@ Documentation artifacts:
 - `experiments/stage20_active_buffer_validation_plan.md`
 - `experiments/stage21_suba_output_validation_plan.md`
 - `experiments/stage22_mat_avx512_limit_audit_plan.md`
+- `experiments/stage23_schedule_fused_cmux_plan.md`
+- `experiments/stage24_postproc_tail_plan.md`
+- `experiments/stage25_correctness_noise_resource_plan.md`
 
 Repro artifacts:
 
@@ -396,3 +408,25 @@ Repro artifacts:
 - `repro/stage24_postproc_tail_avx512_runs1/summary.csv`
 - `repro/stage24_postproc_tail_avx512_runs1/r2/run_0.log`
 - `repro/stage24_postproc_tail_avx512_runs1/r4/run_0.log`
+- `repro/stage25_final_noise_avx512_seeds1/summary.csv`
+- `repro/stage25_final_noise_avx512_seeds1/aggregate.csv`
+- `repro/stage25_final_noise_avx512_seeds1/r1/seed_6862025.log`
+- `repro/stage25_final_noise_avx512_seeds1/r2/seed_6862025.log`
+- `repro/stage25_final_noise_avx512_seeds1/r4/seed_6862025.log`
+- `repro/stage25_stage_noise_avx512_trials1/summary.csv`
+- `repro/stage25_stage_noise_avx512_trials1/r1/seed_6862025.log`
+- `repro/stage25_stage_noise_avx512_trials1/r2/seed_6862025.log`
+- `repro/stage25_stage_noise_avx512_trials1/r4/seed_6862025.log`
+- `repro/stage25_resource_avx512/summary.csv`
+- `repro/stage25_resource_avx512/r1/pvw.log`
+- `repro/stage25_resource_avx512/r1/pvw.time.log`
+- `repro/stage25_resource_avx512/r1/scalar.log`
+- `repro/stage25_resource_avx512/r1/scalar.time.log`
+- `repro/stage25_resource_avx512/r2/pvw.log`
+- `repro/stage25_resource_avx512/r2/pvw.time.log`
+- `repro/stage25_resource_avx512/r2/scalar.log`
+- `repro/stage25_resource_avx512/r2/scalar.time.log`
+- `repro/stage25_resource_avx512/r4/pvw.log`
+- `repro/stage25_resource_avx512/r4/pvw.time.log`
+- `repro/stage25_resource_avx512/r4/scalar.log`
+- `repro/stage25_resource_avx512/r4/scalar.time.log`

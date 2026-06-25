@@ -305,6 +305,25 @@ Gate:
 - noise growth must be bounded or explicitly explained;
 - resource overhead must be reported with speedup.
 
+Status after initial execution:
+
+```text
+Initial smoke-level Stage 25 matrix completed for the current best explicit
+path: spqlios_avx512, MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true, and
+SAB_PVW_ACTIVE_BUFFER_FUSION=true. Final-output noise, stage-level noise, and
+resource scripts now cover r=1/2/4. One deterministic seed passed with zero
+PVW, scalar, and pair failures at final output; stage probes also reported
+zero pair failures across blind_rotate_coeff0, extract, materialize_tlwe,
+packing_ks, and hw_ks. Resource reporting shows PVW estimated public key bytes
+at 1.000029x, 1.013617x, and 1.065349x repeated scalar for r=1/2/4,
+respectively. PVW keygen is slower per lane in this smoke run, so keygen cost
+must be reported with any throughput claim.
+
+This is enough to continue to Stage 26 planning, but not enough for a final
+paper-grade correctness/noise claim. A 50+ seed Stage 25 expansion remains
+required before final promotion.
+```
+
 ## Stage 26: Parameter and Branch Generalization
 
 Goal:
