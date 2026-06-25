@@ -163,6 +163,12 @@ gain over the generic AVX512 MAT path is modest. The r=4 phase profile still
 shows MAT multiply time above repeated scalar multiply time, matching the dense
 `25` versus `16` complex-product model.
 
+Stage 28 adds a reproducible native perf-counter gate rather than a new
+optimization. On the current WSL2 platform, the CPU flags include AVX512, but
+Linux `perf` is not available in PATH and `perf_event_paranoid=2` was recorded.
+Therefore hardware-counter-backed load/store attribution remains unavailable
+for this environment.
+
 ## Required Next Checks
 
 Stage 22 must answer the remaining questions:
@@ -183,6 +189,8 @@ MAT-aware AVX512 is theoretically motivated by reduced vector memory traffic
 and is experimentally positive at the scoped kernel and complete-SAB levels.
 The explicit specialized kernel gives a same-backend complete-SAB improvement
 over the generic AVX512 MAT loop for r=4.
+Stage 28 proves that the current WSL2 environment cannot upgrade this into a
+hardware-counter-backed load/store claim because `perf` is missing.
 ```
 
 Not yet allowed:

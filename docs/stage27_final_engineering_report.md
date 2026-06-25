@@ -184,6 +184,10 @@ Blocked or conditional:
 - broad all-parameter claim: not supported by current evidence;
 - theoretical AVX512 optimality: not supported without native perf counters.
 
+Stage 28 now makes the perf-counter condition reproducible: the current WSL2
+run records AVX512 CPU flags but has no Linux `perf` in PATH, so the
+MAT-AVX512 theoretical load/store claim remains blocked on this platform.
+
 ## Final Decision
 
 Status:

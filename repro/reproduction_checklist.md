@@ -143,5 +143,6 @@
 - [x] Add reproducible Stage 27 citation-access probe for 2025/686 full-text availability.
 - [x] Add Stage 27 completion-readiness audit for scoped engineering claim.
 - [x] Add Stage 27 final scoped engineering report.
+- [x] Add and run Stage 28 lightweight native perf-counter gate; current WSL2 platform is blocked because `perf` is missing.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.

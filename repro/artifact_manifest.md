@@ -55,6 +55,7 @@ Code artifacts:
 - `scripts/run_stage26_parameter_perf_noise.sh`
 - `scripts/run_stage27_citation_access_probe.sh`
 - `scripts/build_stage27_final_package.py`
+- `scripts/run_stage28_native_perf_counter_gate.sh`
 
 Documentation artifacts:
 
@@ -106,6 +107,7 @@ Documentation artifacts:
 - `docs/stage27_final_evidence_package.md`
 - `docs/stage27_completion_readiness_audit.md`
 - `docs/stage27_final_engineering_report.md`
+- `docs/stage28_native_perf_counter_gate_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -131,6 +133,7 @@ Documentation artifacts:
 - `experiments/stage26_parameter_branch_plan.md`
 - `experiments/stage26_parameter_perf_noise_plan.md`
 - `experiments/stage27_novelty_paper_package_plan.md`
+- `experiments/stage28_native_perf_counter_gate_plan.md`
 
 Repro artifacts:
 
@@ -537,3 +540,6 @@ Repro artifacts:
 - `repro/stage27_final_full_sab_active_r4_runs3/run_0.log`
 - `repro/stage27_final_full_sab_active_r4_runs3/run_1.log`
 - `repro/stage27_final_full_sab_active_r4_runs3/run_2.log`
+- `repro/stage28_native_perf_counter_gate/summary.csv`
+- `repro/stage28_native_perf_counter_gate/environment.log`
+- `repro/stage28_native_perf_counter_gate/perf_smoke.log`

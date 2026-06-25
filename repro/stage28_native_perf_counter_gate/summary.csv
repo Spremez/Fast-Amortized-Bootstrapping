@@ -1,0 +1,4 @@
+probe,status,evidence,detail
+environment,RECORDED,repro/stage28_native_perf_counter_gate/environment.log,Platform metadata captured.
+perf_command,MISSING,repro/stage28_native_perf_counter_gate/perf_smoke.log,Install Linux perf tools or rerun on native Linux with perf in PATH.
+hardware_counter_gate,BLOCKED,repro/stage28_native_perf_counter_gate/summary.csv,No perf command; MAT-AVX512 theoretical load/store claim remains blocked.

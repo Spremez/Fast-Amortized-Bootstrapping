@@ -482,3 +482,41 @@ The final scoped engineering report is recorded in
 layer for the completed engineering evidence chain and keeps the stronger
 claims blocked.
 ```
+
+## Stage 28: Native Perf-Counter Gate
+
+Goal:
+
+```text
+Determine whether the current platform can support hardware-counter-backed
+MAT-AVX512 load/store attribution, which is required before upgrading the
+Stage 22 practical SIMD result into a theoretical-optimality claim.
+```
+
+Tasks:
+
+- record CPU, WSL/native platform, `perf` availability, and
+  `perf_event_paranoid`;
+- run a lightweight `perf stat` smoke if `perf` exists;
+- only run the heavy r=4 SAB benchmark under counters when
+  `STAGE28_RUN_BENCH=1`;
+- preserve blocked results as evidence instead of silently treating Stage 22
+  objdump evidence as hardware-counter evidence.
+
+Gate:
+
+- `perf` must be in PATH;
+- basic `perf stat` must pass;
+- heavy r=4 SAB benchmark must pass target-full correctness if executed;
+- otherwise MAT-AVX512 theoretical load/store claims remain blocked.
+
+Status after initial execution:
+
+```text
+Stage 28 lightweight gate was run in the current WSL2 environment. It recorded
+AVX512-capable CPU flags and `perf_event_paranoid=2`, but Linux `perf` was not
+available in PATH. The hardware-counter gate is therefore blocked on this
+platform. This does not change the scoped engineering speedup claim, but it
+does keep MAT-AVX512 theoretical load/store optimality blocked until a
+native/perf-enabled run is available.
+```
