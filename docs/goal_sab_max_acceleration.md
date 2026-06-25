@@ -54,6 +54,7 @@ evidence.
 | Stage 29 final goal completion audit | generated audit | n/a | scoped ready, stronger blocked | `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED` |
 | Stage 30 final goal recheck runner | orchestration | n/a | reproducible recheck available | default lightweight recheck regenerates final package/audit and preserves stronger-claim blocks |
 | Stage 31 external evidence intake | artifact intake | n/a | missing, reproducible | no full-text or native perf external evidence supplied; final audit records A8b |
+| Stage 32 citation refresh recheck | network gate | n/a | full text still blocked | 2026-06-26 refresh: ePrint/ACM/ResearchGate direct routes blocked; metadata only elsewhere |
 
 Current conclusion:
 
@@ -105,6 +106,8 @@ state and final audit when external citation or perf conditions change.
 The Stage 31 external-evidence intake records missing or supplied full-text and
 native/perf artifacts with hashes, while preserving manual review requirements
 before claim upgrades.
+The Stage 32 citation refresh reran the full-text probe and confirmed that
+theorem-level 2025/686 citations still cannot be upgraded in this environment.
 ```
 
 ## Invariants
@@ -168,4 +171,5 @@ Stage 28: native perf-counter gate for MAT-AVX512 theoretical load/store attribu
 Stage 29: final goal completion audit. [generated; scoped engineering chain ready, stronger claims blocked]
 Stage 30: final goal recheck runner. [generated and run; current decision unchanged]
 Stage 31: external evidence intake. [generated and run; no external artifacts supplied]
+Stage 32: citation refresh recheck. [run with network citation probe; direct full text still blocked]
 ```

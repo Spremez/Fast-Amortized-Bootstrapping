@@ -642,3 +642,38 @@ The final goal audit now includes A8b for optional external evidence. Since no
 external files were supplied, the final decision remains:
 SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 ```
+
+## Stage 32: Citation Refresh Recheck
+
+Goal:
+
+```text
+Refresh the external 2025/686 full-text gate and propagate the result through
+the final recheck and final goal audit.
+```
+
+Tasks:
+
+- run `FINAL_RECHECK_CITATION=1 bash scripts/run_final_goal_recheck.sh`;
+- preserve citation-probe logs;
+- inspect direct PDF and metadata-only outcomes;
+- keep theorem-level citation claims blocked unless direct full text is
+  available and later manually reviewed.
+
+Gate:
+
+- `stage27_citation_probe` must pass as a command;
+- `direct_pdf_access` must be `PASS` before theorem-level citation review can
+  start;
+- final audit must remain scoped-ready/blocked when only metadata or HTTP 403
+  results are observed.
+
+Status after initial execution:
+
+```text
+The 2026-06-26 refresh ran successfully. Direct PDF access remains blocked:
+ePrint HTML/PDF, ACM DOI/PDF, and ResearchGate returned 403; Semantic Scholar
+and DBLP provide metadata only. The final recheck decision remains:
+
+SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
+```

@@ -114,6 +114,7 @@ Documentation artifacts:
 - `docs/final_goal_completion_audit.md`
 - `docs/final_goal_recheck_log.md`
 - `docs/external_evidence_intake_log.md`
+- `docs/stage32_citation_refresh_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -142,6 +143,7 @@ Documentation artifacts:
 - `experiments/stage28_native_perf_counter_gate_plan.md`
 - `experiments/final_goal_recheck_plan.md`
 - `experiments/external_evidence_intake_plan.md`
+- `experiments/stage32_citation_refresh_plan.md`
 
 Repro artifacts:
 
@@ -554,6 +556,7 @@ Repro artifacts:
 - `repro/final_goal_completion_audit.csv`
 - `repro/final_goal_recheck/summary.csv`
 - `repro/final_goal_recheck/stage28_perf_gate.log`
+- `repro/final_goal_recheck/stage27_citation_probe.log`
 - `repro/final_goal_recheck/stage27_final_package.log`
 - `repro/final_goal_recheck/external_evidence_intake.log`
 - `repro/final_goal_recheck/final_goal_audit.log`

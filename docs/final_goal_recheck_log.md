@@ -61,3 +61,20 @@ The recheck confirms the current state rather than upgrading it:
   preserves the stronger-claim blocks;
 - Stage 28 still controls MAT-AVX512 hardware-counter claims;
 - final audit remains the authoritative completion-status summary.
+
+## Citation Refresh
+
+On 2026-06-26, the recheck was rerun with citation probing enabled:
+
+```bash
+FINAL_RECHECK_CITATION=1 bash scripts/run_final_goal_recheck.sh
+```
+
+The probe completed and the final decision remained:
+
+```text
+SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
+```
+
+Direct full-text routes for 2025/686 remained blocked, so theorem-level
+citations are still not allowed.
