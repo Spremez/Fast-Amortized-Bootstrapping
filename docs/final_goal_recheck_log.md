@@ -113,3 +113,23 @@ FINAL_RECHECK_POSTFREEZE_VERIFY=1 bash scripts/run_final_goal_recheck.sh
 This records `stage40_postfreeze_verify` in
 `repro/final_goal_recheck/summary.csv`. It is a consistency check for the
 frozen scoped engineering package; it does not upgrade external blockers.
+
+The 2026-06-26 post-freeze-only recheck passed:
+
+```bash
+FINAL_RECHECK_POSTFREEZE_VERIFY=1 \
+FINAL_RECHECK_CITATION=0 \
+FINAL_RECHECK_PERF=0 \
+FINAL_RECHECK_STAGE27_PACKAGE=0 \
+FINAL_RECHECK_EXTERNAL_INTAKE=0 \
+FINAL_RECHECK_CURRENT_SMOKE=0 \
+FINAL_RECHECK_GOAL_AUDIT=0 \
+bash scripts/run_final_goal_recheck.sh
+```
+
+Observed summary:
+
+```text
+stage40_postfreeze_verify = PASS
+final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
+```

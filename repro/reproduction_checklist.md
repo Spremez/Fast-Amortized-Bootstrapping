@@ -160,6 +160,7 @@
 - [x] Generate Stage 39 optional variant triage matrix.
 - [x] Generate Stage 40 final scoped freeze package.
 - [x] Run Stage 40 post-freeze verifier from a clean worktree input.
+- [x] Run final recheck with Stage 40 post-freeze verifier enabled.
 - [ ] Execute remaining Stage 36 optional target-noise/added-parameter campaigns only if broader claims need them.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.

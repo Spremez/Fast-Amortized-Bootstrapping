@@ -594,6 +594,7 @@ Repro artifacts:
 - `repro/final_goal_recheck/external_evidence_intake.log`
 - `repro/final_goal_recheck/stage33_current_smoke.log`
 - `repro/final_goal_recheck/final_goal_audit.log`
+- `repro/final_goal_recheck/stage40_postfreeze_verify.log`
 - `repro/external_evidence_intake/summary.csv`
 - `repro/stage35_completion_blockers.csv`
 - `repro/stage36_high_stat_plan.csv`
