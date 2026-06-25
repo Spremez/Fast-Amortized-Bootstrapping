@@ -67,7 +67,7 @@ evidence.
 | Stage 42 evidence closure audit | audit synthesis | n/a | passed and recheck-integrated | Stage 19-44 scoped evidence chain is internally closed under current artifacts; closure-only final recheck passes; stronger claims remain blocked |
 | Stage 42 closure verifier | read-only audit | n/a | passed from clean input | no-regenerate verifier confirmed final audit, Stage 41 readiness, Stage 42 closure, Stage 43 smoke, final recheck closure, run-log rows, and manifest registration |
 | Stage 43 post-closure current smoke | `spqlios_avx512` | n/a | passed | current-head scalar binary full run, explicit PVW target gate, and scalar ternary build all pass; smoke only |
-| Stage 44 external unlock re-probe | network/native gate | n/a | waiting external unlocks | citation/full-text probe and native perf probe rerun; direct full text and hardware-counter evidence remain unavailable, so stronger claims stay blocked |
+| Stage 44 external unlock re-probe | network/native gate | n/a | waiting external unlocks | citation/full-text probe and native perf probe rerun; direct full text and hardware-counter evidence remain unavailable; final-recheck integration passes without upgrading claims |
 
 Current conclusion:
 
@@ -183,7 +183,9 @@ The Stage 44 external-unlock re-probe then reruns the remaining external gates
 in isolated outputs. It confirms that direct 2025/686 full text and native
 hardware-counter evidence are still unavailable in the current environment.
 The stage therefore records `WAIT_EXTERNAL_UNLOCKS` and preserves the current
-scoped engineering boundary.
+scoped engineering boundary. The unified final recheck runner can now execute
+this re-probe before final-audit and Stage 42 closure refreshes by setting
+`FINAL_RECHECK_STAGE44_REPROBE=1`.
 ```
 
 ## Invariants

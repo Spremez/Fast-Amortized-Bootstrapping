@@ -1,7 +1,7 @@
 id,url,http_code,content_type,size_download,effective_url,status,notes
 FAB686_EPRINT_HTML,https://eprint.iacr.org/2025/686,403,text/html; charset=UTF-8,5451,https://eprint.iacr.org/2025/686,BLOCKED_403,base FAB ePrint landing page
 FAB686_EPRINT_PDF,https://eprint.iacr.org/2025/686.pdf,403,text/html; charset=UTF-8,5463,https://eprint.iacr.org/2025/686.pdf,BLOCKED_403,base FAB ePrint PDF candidate
-FAB686_ACM_DOI,https://dl.acm.org/doi/10.1145/3719027.3765181,403,text/html; charset=UTF-8,5545,https://dl.acm.org/doi/10.1145/3719027.3765181,BLOCKED_403,ACM DOI landing page
+FAB686_ACM_DOI,https://dl.acm.org/doi/10.1145/3719027.3765181,403,text/html; charset=UTF-8,5524,https://dl.acm.org/doi/10.1145/3719027.3765181,BLOCKED_403,ACM DOI landing page
 FAB686_ACM_PDF,https://dl.acm.org/doi/pdf/10.1145/3719027.3765181,403,text/html; charset=UTF-8,5557,https://dl.acm.org/doi/pdf/10.1145/3719027.3765181,BLOCKED_403,ACM PDF candidate
 FAB686_SEMANTIC_PAGE,https://www.semanticscholar.org/paper/ac77b3b95d4d7c2bea17775158435e000f18857e,202,text/html; charset=UTF-8,0,https://www.semanticscholar.org/paper/ac77b3b95d4d7c2bea17775158435e000f18857e,METADATA_OR_HTML_ONLY,Semantic Scholar paper page
 FAB686_RESEARCHGATE,https://www.researchgate.net/publication/397881480_Fast_Amortized_Bootstrapping_with_Small_Keys_and_Polynomial_Noise_Overhead,403,text/plain; charset=UTF-8,17,https://www.researchgate.net/publication/397881480_Fast_Amortized_Bootstrapping_with_Small_Keys_and_Polynomial_Noise_Overhead,BLOCKED_403,ResearchGate publication page

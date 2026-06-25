@@ -1172,4 +1172,11 @@ native perf gate also remains blocked in the current WSL2 environment because
 hardware-counter evidence is not available. The stage decision is
 WAIT_EXTERNAL_UNLOCKS, so the scoped engineering claim remains the strongest
 completed result.
+
+The Stage 44 re-probe is now also callable from the unified final recheck
+runner with `FINAL_RECHECK_STAGE44_REPROBE=1`. The isolated
+`repro/final_goal_recheck_stage44_reprobe/summary.csv` run passed
+`stage44_external_reprobe`, rebuilt the final audit, refreshed Stage 42
+closure, and preserved
+`SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`.
 ```

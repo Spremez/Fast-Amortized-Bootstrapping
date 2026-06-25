@@ -8,6 +8,8 @@ run_external_intake="${FINAL_RECHECK_EXTERNAL_INTAKE:-1}"
 run_current_smoke="${FINAL_RECHECK_CURRENT_SMOKE:-0}"
 run_goal_audit="${FINAL_RECHECK_GOAL_AUDIT:-1}"
 run_postfreeze_verify="${FINAL_RECHECK_POSTFREEZE_VERIFY:-0}"
+run_stage44_reprobe="${FINAL_RECHECK_STAGE44_REPROBE:-0}"
+stage44_run_native_bench="${FINAL_RECHECK_STAGE44_RUN_NATIVE_BENCH:-1}"
 python_bin="${PYTHON_BIN:-python3}"
 
 if [[ -n "${FINAL_RECHECK_STAGE42_CLOSURE+x}" ]]; then
@@ -18,7 +20,8 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_stage27_package" == "0" \
   && "$run_external_intake" == "0" \
   && "$run_current_smoke" == "0" \
-  && "$run_goal_audit" == "0" ]]; then
+  && "$run_goal_audit" == "0" \
+  && "$run_stage44_reprobe" == "0" ]]; then
   run_stage42_closure="0"
 else
   run_stage42_closure="1"
@@ -33,6 +36,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_external_intake" == "0" \
   && "$run_current_smoke" == "0" \
   && "$run_goal_audit" == "0" \
+  && "$run_stage44_reprobe" == "0" \
   && "$run_stage42_closure" == "0" ]]; then
   out_dir="repro/final_goal_recheck_postfreeze"
 else
@@ -156,6 +160,16 @@ else
     "bash scripts/run_stage33_current_smoke.sh" \
     "" \
     "Set FINAL_RECHECK_CURRENT_SMOKE=1 to refresh current scalar/PVW smoke evidence."
+fi
+
+if [[ "$run_stage44_reprobe" == "1" ]]; then
+  run_logged "stage44_external_reprobe" \
+    "STAGE44_RUN_NATIVE_BENCH=$stage44_run_native_bench bash scripts/run_stage44_external_unlock_reprobe.sh"
+else
+  csv_row "stage44_external_reprobe" "SKIPPED" \
+    "bash scripts/run_stage44_external_unlock_reprobe.sh" \
+    "" \
+    "Set FINAL_RECHECK_STAGE44_REPROBE=1 to refresh external full-text/native-perf unlock state."
 fi
 
 if [[ "$run_goal_audit" == "1" ]]; then

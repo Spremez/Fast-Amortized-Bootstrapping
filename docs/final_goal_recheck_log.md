@@ -23,11 +23,14 @@ bash scripts/run_final_goal_recheck.sh
 
 The default intentionally skips the network citation probe and current-commit
 smoke. It refreshes the local/perf gate, final package, optional external
-evidence intake, final audit, and Stage 42 evidence-closure audit. Use
+evidence intake, final audit, and Stage 42 evidence-closure audit. It also
+skips the Stage 44 external-unlock re-probe unless explicitly requested. Use
 `FINAL_RECHECK_CITATION=1` only when intentionally refreshing external
 full-text access evidence. Use `FINAL_RECHECK_CURRENT_SMOKE=1` when
 intentionally refreshing the scalar/PVW current-commit smoke before the final
-audit.
+audit. Use `FINAL_RECHECK_STAGE44_REPROBE=1` when intentionally refreshing the
+combined full-text/native-perf unlock state before the final audit and Stage 42
+closure audit.
 
 ## Initial Run
 
@@ -171,9 +174,46 @@ stage42_evidence_closure = PASS
 final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 ```
 
-This mode proves that the unified recheck wrapper can refresh the Stage 19-43
+This mode proves that the unified recheck wrapper can refresh the Stage 19-44
 evidence-closure audit without rerunning citation probes, perf gates, final
 package generation, external intake, current smoke, or final audit generation.
+
+## Stage44 External Re-probe Recheck
+
+Stage 44 adds an explicit external-unlock re-probe mode:
+
+```bash
+FINAL_RECHECK_OUT_DIR=repro/final_goal_recheck_stage44_reprobe \
+FINAL_RECHECK_POSTFREEZE_VERIFY=0 \
+FINAL_RECHECK_CITATION=0 \
+FINAL_RECHECK_PERF=0 \
+FINAL_RECHECK_STAGE27_PACKAGE=0 \
+FINAL_RECHECK_EXTERNAL_INTAKE=0 \
+FINAL_RECHECK_CURRENT_SMOKE=0 \
+FINAL_RECHECK_STAGE44_REPROBE=1 \
+FINAL_RECHECK_STAGE44_RUN_NATIVE_BENCH=1 \
+FINAL_RECHECK_GOAL_AUDIT=1 \
+FINAL_RECHECK_STAGE42_CLOSURE=1 \
+bash scripts/run_final_goal_recheck.sh
+```
+
+This runs `scripts/run_stage44_external_unlock_reprobe.sh`, regenerates the
+final audit, and then refreshes the Stage 42 closure audit against the updated
+canonical Stage 44 summary. It is still a blocker-refresh path: it does not
+upgrade theorem-level 2025/686 citations or MAT-AVX512 hardware-counter claims
+without available external artifacts and manual review.
+
+The 2026-06-26 Stage44-explicit recheck passed:
+
+```text
+stage44_external_reprobe = PASS
+final_goal_audit = PASS
+stage42_evidence_closure = PASS
+final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
+```
+
+The underlying Stage 44 decision remained `WAIT_EXTERNAL_UNLOCKS`, so this
+recheck strengthens reproducibility only; it does not upgrade claim scope.
 
 ## Default Recheck With Closure
 

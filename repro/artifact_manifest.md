@@ -616,6 +616,10 @@ Repro artifacts:
 - `repro/final_goal_recheck_postfreeze/stage40_postfreeze_verify.log`
 - `repro/final_goal_recheck_stage42_closure/summary.csv`
 - `repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log`
+- `repro/final_goal_recheck_stage44_reprobe/summary.csv`
+- `repro/final_goal_recheck_stage44_reprobe/stage44_external_reprobe.log`
+- `repro/final_goal_recheck_stage44_reprobe/final_goal_audit.log`
+- `repro/final_goal_recheck_stage44_reprobe/stage42_evidence_closure.log`
 - `repro/external_evidence_intake/summary.csv`
 - `repro/stage35_completion_blockers.csv`
 - `repro/stage36_high_stat_plan.csv`

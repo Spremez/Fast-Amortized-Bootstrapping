@@ -1,0 +1,11 @@
+step,status,command,log,notes
+stage40_postfreeze_verify,SKIPPED,python3 scripts/verify_stage40_freeze.py --check-only,,Set FINAL_RECHECK_POSTFREEZE_VERIFY=1 to run the Stage 40 no-write verifier before recheck outputs.
+stage27_citation_probe,SKIPPED,bash scripts/run_stage27_citation_access_probe.sh,,Set FINAL_RECHECK_CITATION=1 to refresh network/full-text citation access.
+stage28_perf_gate,SKIPPED,bash scripts/run_stage28_native_perf_counter_gate.sh,,Set FINAL_RECHECK_PERF=1 to refresh native perf-counter gate.
+stage27_final_package,SKIPPED,python3 scripts/build_stage27_final_package.py,,Set FINAL_RECHECK_STAGE27_PACKAGE=1 to rebuild final evidence package.
+external_evidence_intake,SKIPPED,python3 scripts/register_external_evidence.py,,Set FINAL_RECHECK_EXTERNAL_INTAKE=1 to refresh optional external evidence registration.
+stage33_current_smoke,SKIPPED,bash scripts/run_stage33_current_smoke.sh,,Set FINAL_RECHECK_CURRENT_SMOKE=1 to refresh current scalar/PVW smoke evidence.
+stage44_external_reprobe,PASS,STAGE44_RUN_NATIVE_BENCH=1 bash scripts/run_stage44_external_unlock_reprobe.sh,repro/final_goal_recheck_stage44_reprobe/stage44_external_reprobe.log,command completed
+final_goal_audit,PASS,python3 scripts/build_final_goal_completion_audit.py,repro/final_goal_recheck_stage44_reprobe/final_goal_audit.log,command completed
+stage42_evidence_closure,PASS,python3 scripts/build_stage42_evidence_closure_audit.py,repro/final_goal_recheck_stage44_reprobe/stage42_evidence_closure.log,command completed
+final_decision,SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED,read repro/final_goal_completion_audit.csv A9,repro/final_goal_completion_audit.csv,current final goal audit decision
