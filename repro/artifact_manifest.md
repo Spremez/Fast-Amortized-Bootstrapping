@@ -26,6 +26,7 @@ Code artifacts:
   - `SAB_PVW_FUSED_FROM_DFT_ADD`
   - `SAB_PVW_ACTIVE_BUFFER_FUSION`
   - `SAB_PVW_SUBA_OUTPUT_FUSION`
+  - `SAB_PVW_SCHEDULE_FUSED_CMUX`
 - `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
 - `src/mosfhet/src/misc.c` deterministic test RNG path
 - `src/mosfhet/src/mattrgsw.c` experimental small-r AVX512 MAT external-product dispatch
@@ -74,6 +75,7 @@ Code artifacts:
 - `scripts/build_stage39_variant_triage.py`
 - `scripts/build_stage40_final_freeze.py`
 - `scripts/verify_stage40_freeze.py`
+- `scripts/build_stage41_external_unlock_packet.py`
 
 Documentation artifacts:
 
@@ -139,6 +141,7 @@ Documentation artifacts:
 - `docs/stage39_variant_triage_log.md`
 - `docs/stage40_final_freeze_report.md`
 - `docs/stage40_postfreeze_verify_log.md`
+- `docs/stage41_external_unlock_packet.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -177,6 +180,7 @@ Documentation artifacts:
 - `experiments/stage39_optional_variant_triage_plan.md`
 - `experiments/stage40_final_freeze_plan.md`
 - `experiments/stage40_postfreeze_verify_plan.md`
+- `experiments/stage41_external_unlock_plan.md`
 
 Repro artifacts:
 
@@ -646,6 +650,7 @@ Repro artifacts:
 - `repro/stage40_final_freeze_summary.csv`
 - `repro/stage40_final_freeze_manifest.csv`
 - `repro/stage40_postfreeze_verify/summary.csv`
+- `repro/stage41_external_unlock_packet.csv`
 - `repro/stage33_current_smoke/summary.csv`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/build.log`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/run.log`

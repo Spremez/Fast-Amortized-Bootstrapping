@@ -63,6 +63,7 @@ evidence.
 | Stage 38 full 2025/686 source-review gate | artifact gate | n/a | blocked, reproducible | `FAB686_FULLTEXT_PATH` not supplied; theorem-level base-paper citations and novelty review remain blocked |
 | Stage 39 optional variant triage | audit synthesis | n/a | no new variant promoted | non-binary and AVX/layout work blocked by full-text/perf prerequisites; schedule/post-processing variants deferred by prior neutral/small-tail evidence |
 | Stage 40 final scoped freeze | report/freeze | n/a | scoped freeze ready | freeze package is ready for scoped engineering claim; SHA-256 manifest and post-freeze verifier pass; stronger claims remain blocked |
+| Stage 41 external unlock packet | audit synthesis | n/a | generated | current readiness is WAIT_EXTERNAL_FULLTEXT, WAIT_NATIVE_PERF, WAIT_EXTERNAL_ARTIFACTS, and WAIT_UNLOCKS; stronger claims still require external evidence plus manual review |
 
 Current conclusion:
 
@@ -150,6 +151,10 @@ theory, novelty, non-binary, and all-parameter claims remain outside the
 freeze. The freeze manifest records SHA-256 hashes for required artifacts, and
 a post-freeze verifier confirms the committed freeze package is internally
 consistent without regenerating freeze artifacts.
+The Stage 41 external-unlock packet then turns the remaining A8/A8b blockers
+into executable gates. It records exact commands and review policies for
+2025/686 full-text intake, native perf-counter intake, external evidence
+registration, and final recheck. It does not upgrade any claim by itself.
 ```
 
 ## Invariants
@@ -222,4 +227,5 @@ Stage 37: native perf-counter evidence. [executed in current WSL2; blocked until
 Stage 38: full 2025/686 source review. [executed artifact gate; blocked until full text is supplied]
 Stage 39: optional new algorithmic variants. [triaged; no new variant promoted under current evidence]
 Stage 40: final paper/release freeze. [scoped engineering freeze ready; hash manifest and post-freeze verifier passed; stronger claims blocked]
+Stage 41: external unlock packet. [generated; waiting for full-text/native-perf evidence before stronger claim upgrade]
 ```

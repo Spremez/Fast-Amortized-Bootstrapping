@@ -1000,3 +1000,41 @@ This freezes the current engineering package only. It is not a freeze for
 theoretical MAT-AVX512 optimality, theorem-level 2025/686 citations, novelty,
 non-binary support, or all-parameter generality.
 ```
+
+## Stage 41: External Unlock Packet
+
+Goal:
+
+```text
+Turn the remaining external blockers into executable, auditable gates so the
+project can continue from the scoped engineering freeze when full-text or
+native perf evidence becomes available.
+```
+
+Tasks:
+
+- generate a machine-readable unlock matrix from final audit, blocker matrix,
+  external evidence intake, Stage 37, and Stage 38;
+- define exact commands for 2025/686 full-text intake, native perf-counter
+  intake, external evidence registration, and final recheck;
+- preserve the rule that registration is not a claim upgrade;
+- keep scalar SAB and the promoted `sab_pvw_*` path unchanged.
+
+Gate:
+
+- every unlock row must identify current status, required evidence, command,
+  manual review gate, and claim policy;
+- full-text and native perf claims remain blocked while their external rows are
+  missing;
+- final audit A9 cannot move beyond scoped-ready until A8/A8b have direct
+  evidence and manual interpretation.
+
+Status:
+
+```text
+Stage 41 external-unlock packet generated. Current readiness remains
+WAIT_EXTERNAL_FULLTEXT, WAIT_NATIVE_PERF, WAIT_EXTERNAL_ARTIFACTS, and
+WAIT_UNLOCKS. This is not a new SAB optimization claim; it is the formal
+continuation path for stronger paper/theory claims after external evidence is
+supplied.
+```
