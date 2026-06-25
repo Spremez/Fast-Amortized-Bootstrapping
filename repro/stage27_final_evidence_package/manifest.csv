@@ -4,4 +4,5 @@ noise_scope,repro/stage27_final_evidence_package/noise_scope.csv,repro/stage25_f
 resource_scope,repro/stage27_final_evidence_package/resource_scope.csv,repro/stage25_resource_avx512/summary.csv
 claim_scope,repro/stage27_final_evidence_package/claim_scope.csv,repro/stage27_claim_support_matrix.csv
 citation_gate,repro/stage27_final_evidence_package/citation_gate.csv,repro/stage27_citation_access_probe/summary.csv
+completion_readiness,repro/stage27_final_evidence_package/completion_readiness.csv,repro/stage27_completion_readiness_audit.csv
 markdown_summary,docs/stage27_final_evidence_package.md,generated from final package CSVs

@@ -24,6 +24,7 @@ ADDED_PERF_STATS = ROOT / "repro" / "stage26_parameter_perf_noise_avx512_added_b
 ADDED_NOISE = ROOT / "repro" / "stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5" / "noise_summary.csv"
 CLAIMS = ROOT / "repro" / "stage27_claim_support_matrix.csv"
 CITATION_PROBE = ROOT / "repro" / "stage27_citation_access_probe" / "summary.csv"
+READINESS_AUDIT = ROOT / "repro" / "stage27_completion_readiness_audit.csv"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -206,6 +207,22 @@ def build_citation_gate() -> list[dict[str, str]]:
     return read_csv(CITATION_PROBE)
 
 
+def build_readiness() -> list[dict[str, str]]:
+    if not READINESS_AUDIT.exists():
+        return [
+            {
+                "item_id": "readiness_audit",
+                "category": "completion",
+                "requirement": "Stage 27 completion readiness audit",
+                "status": "NOT_RUN",
+                "evidence": "",
+                "scope": "",
+                "remaining_action": "Create repro/stage27_completion_readiness_audit.csv.",
+            }
+        ]
+    return read_csv(READINESS_AUDIT)
+
+
 def markdown_table(rows: list[dict[str, str]], columns: list[str]) -> str:
     header = "| " + " | ".join(columns) + " |"
     sep = "| " + " | ".join(["---"] * len(columns)) + " |"
@@ -221,11 +238,13 @@ def build_doc(
     resource: list[dict[str, str]],
     claims: list[dict[str, str]],
     citation_gate: list[dict[str, str]],
+    readiness: list[dict[str, str]],
 ) -> str:
     perf_cols = ["scope", "param", "r", "runs", "mean_speedup", "min_speedup", "max_speedup", "interpretation"]
     noise_cols = ["scope", "param", "r", "seeds", "points", "pvw_failures", "scalar_failures", "pair_failures", "status"]
     claim_cols = ["claim_id", "status_label", "manuscript_action", "claim"]
     citation_cols = ["gate", "status", "detail"]
+    readiness_cols = ["item_id", "category", "status", "requirement"]
 
     pvw_resource = [
         row
@@ -276,6 +295,10 @@ def build_doc(
             "",
             markdown_table(citation_gate, citation_cols),
             "",
+            "## Completion Readiness",
+            "",
+            markdown_table(readiness, readiness_cols),
+            "",
             "## Decision",
             "",
             "```text",
@@ -298,6 +321,7 @@ def main() -> None:
     resource = build_resource()
     claims = build_claims()
     citation_gate = build_citation_gate()
+    readiness = build_readiness()
 
     write_csv(
         OUT_DIR / "performance_scope.csv",
@@ -375,17 +399,27 @@ def main() -> None:
         claims,
     )
     write_csv(OUT_DIR / "citation_gate.csv", ["gate", "status", "detail"], citation_gate)
+    write_csv(
+        OUT_DIR / "completion_readiness.csv",
+        ["item_id", "category", "requirement", "status", "evidence", "scope", "remaining_action"],
+        readiness,
+    )
     manifest_rows = [
         {"artifact": "performance_scope", "path": rel(OUT_DIR / "performance_scope.csv"), "source": rel(TARGET_PERF) + "; " + rel(ADDED_PERF) + "; " + rel(ADDED_PERF_STATS)},
         {"artifact": "noise_scope", "path": rel(OUT_DIR / "noise_scope.csv"), "source": rel(TARGET_NOISE) + "; " + rel(ADDED_NOISE)},
         {"artifact": "resource_scope", "path": rel(OUT_DIR / "resource_scope.csv"), "source": rel(RESOURCE)},
         {"artifact": "claim_scope", "path": rel(OUT_DIR / "claim_scope.csv"), "source": rel(CLAIMS)},
         {"artifact": "citation_gate", "path": rel(OUT_DIR / "citation_gate.csv"), "source": rel(CITATION_PROBE)},
+        {"artifact": "completion_readiness", "path": rel(OUT_DIR / "completion_readiness.csv"), "source": rel(READINESS_AUDIT)},
         {"artifact": "markdown_summary", "path": rel(DOC_PATH), "source": "generated from final package CSVs"},
     ]
     write_csv(OUT_DIR / "manifest.csv", ["artifact", "path", "source"], manifest_rows)
 
-    DOC_PATH.write_text(build_doc(performance, noise, resource, claims, citation_gate), encoding="utf-8", newline="\n")
+    DOC_PATH.write_text(
+        build_doc(performance, noise, resource, claims, citation_gate, readiness),
+        encoding="utf-8",
+        newline="\n",
+    )
     print(f"Wrote {rel(DOC_PATH)}")
     print(f"Wrote {rel(OUT_DIR / 'manifest.csv')}")
 

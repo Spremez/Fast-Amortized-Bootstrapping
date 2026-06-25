@@ -61,10 +61,12 @@ Blocked unless additional evidence is added:
 - `docs/stage27_related_work_refresh_log.md`
 - `docs/stage27_citation_gate_log.md`
 - `docs/stage27_final_evidence_package.md`
+- `docs/stage27_completion_readiness_audit.md`
 - `repro/stage27_related_work_access_refresh.csv`
 - `repro/stage27_claim_support_matrix.csv`
 - `repro/stage27_final_evidence_package/*.csv`
 - `repro/stage27_citation_access_probe/*.csv`
+- `repro/stage27_completion_readiness_audit.csv`
 - `scripts/run_stage27_citation_access_probe.sh`
 - `scripts/build_stage27_final_package.py`
 - updates to the project goal, roadmap, hypothesis register, and reproduction

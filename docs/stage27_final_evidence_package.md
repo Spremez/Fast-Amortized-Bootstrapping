@@ -66,6 +66,28 @@ repeated scalar SAB under the same backend and parameter scope.
 | dblp_title_metadata | TITLE_METADATA_AVAILABLE | hits=2 |
 | citation_decision | BLOCK_THEOREM_LEVEL_CITATIONS | Do not cite 2025/686 theorem/algorithm/remark numbers without full text. |
 
+## Completion Readiness
+
+| item_id | category | status | requirement |
+| --- | --- | --- | --- |
+| F1 | final_standard | SATISFIED_SCOPED | Promoted sab_pvw_* full bootstrapping path matches repeated scalar SAB output under target parameters |
+| F2 | final_standard | SATISFIED_SCOPED | Multi-seed correctness/noise gates pass for promoted variants |
+| F3 | final_standard | SATISFIED_SCOPED | Complete bootstrapping benchmark evidence shows stable throughput gain over repeated scalar SAB under same backend |
+| F4 | final_standard | SATISFIED_SCOPED | Scalar baseline behavior and benchmarkability remain intact |
+| F5 | final_standard | SATISFIED_SCOPED | Algorithmic gains and backend/SIMD gains are separated |
+| F6 | final_standard | SATISFIED_SMOKE_RESOURCE | Key size, keygen time, memory peak, and scratch/resource overhead are reported |
+| F7 | final_standard | SATISFIED_SCOPED | Reproducibility artifacts contain commit, command, backend, CPU flags, logs, summaries, and decisions |
+| F8 | final_standard | SATISFIED_FOR_ENGINEERING_BLOCKED_FOR_NOVELTY | Paper-level claims are made only after literature/novelty audit |
+| S19 | stage | SATISFIED | Exact sparse schedule audit |
+| S20 | stage | SATISFIED_PROMOTED | Active-buffer/copyback fusion implementation and performance gate |
+| S21 | stage | SATISFIED_NEUTRAL | sub_a / rotation optimization candidate |
+| S22 | stage | SATISFIED_PRACTICAL_NOT_THEORETICAL | MAT-aware AVX512 practical audit |
+| S23 | stage | SATISFIED_NEUTRAL | PVW CMUX/NCMUX schedule fusion |
+| S24 | stage | SATISFIED_DEFERRED | Conditional post-processing profile |
+| S25 | stage | SATISFIED_SCOPED | Correctness/noise/resource matrix |
+| S26 | stage | SATISFIED_SCOPED | Parameter and branch generalization |
+| S27 | stage | SATISFIED_ENGINEERING_BLOCKED_NOVELTY | Novelty/paper package and final evidence package |
+
 ## Decision
 
 ```text

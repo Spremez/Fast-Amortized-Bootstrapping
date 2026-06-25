@@ -250,6 +250,10 @@ hypotheses:
       ResearchGate full-text routes are blocked in the current environment,
       while Semantic Scholar and DBLP provide metadata only; theorem-level
       2025/686 citations remain blocked.
+      The completion-readiness audit marks the scoped engineering evidence
+      chain ready and explicitly separates stronger blocked/conditional claims:
+      novelty, theorem-level citations, non-binary PVW-SAB, all-parameter
+      speedup, theoretical AVX512 optimality, and stage-by-stage noise claims.
     failure_criteria:
       - related work already covers the claimed algorithmic idea
       - full SAB benchmark evidence is missing or only smoke-level

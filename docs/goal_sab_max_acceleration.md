@@ -48,6 +48,7 @@ evidence.
 | Stage 27 citation access probe | metadata/full-text gate | n/a | theorem-level citation blocked | ePrint/ACM/ResearchGate full-text routes blocked; Semantic Scholar/DBLP metadata available |
 | Stage 27 final full-SAB rerun | `spqlios_avx512` | 2/4 | scoped performance support | r=2 mean `1.171x` with higher variance; r=4 mean `1.401x`, range `1.331x-1.472x` |
 | Stage 27 final evidence package | aggregation | n/a | scoped engineering package assembled | performance, noise, resource, and claim-boundary matrices generated from recorded artifacts |
+| Stage 27 completion readiness audit | aggregation | n/a | scoped engineering chain ready | Final standards and Stage 19-27 items mapped to evidence, scope, and remaining actions |
 
 Current conclusion:
 
@@ -82,6 +83,9 @@ work is not another engineering smoke result; it is manual full-paper citation
 review if novelty or theorem-level manuscript claims are desired. The
 reproducible citation probe confirms metadata is available for 2025/686, but
 direct full text remains blocked in this environment.
+The completion-readiness audit marks the scoped engineering evidence chain
+ready, while keeping novelty, all-parameter, non-binary, theoretical-optimality,
+and theorem-level citation claims blocked or conditional.
 ```
 
 ## Invariants

@@ -162,6 +162,13 @@ It supports the scoped engineering claim only. It does not close the novelty
 gate, because 2025/2112 remains prior-art risky and 2025/686 full text still
 needs manual inspection before theorem-level citations can be written.
 
+The completion-readiness audit in `docs/stage27_completion_readiness_audit.md`
+and `repro/stage27_completion_readiness_audit.csv` maps every final standard
+and every Stage 19-27 item to evidence and remaining actions. It marks the
+scoped engineering evidence chain ready, while keeping novelty,
+all-parameter, non-binary, theoretical-optimality, and theorem-level citation
+claims blocked or conditional.
+
 ## Decision
 
 Status:
@@ -174,6 +181,7 @@ RELATED_WORK_REFRESH_COMPLETED
 CLAIM_SUPPORT_MATRIX_AVAILABLE
 FINAL_ENGINEERING_EVIDENCE_PACKAGE_ASSEMBLED
 CITATION_ACCESS_PROBE_COMPLETED
+COMPLETION_READINESS_AUDIT_AVAILABLE
 ```
 
 Stage 27 can proceed, but paper-level novelty must stay blocked until the full
