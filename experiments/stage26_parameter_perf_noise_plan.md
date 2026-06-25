@@ -25,6 +25,16 @@ Initial smoke scope:
 
 This is a parameter-smoke gate, not statistical performance evidence.
 
+Executed follow-up scope:
+
+- `SET_4_5_2048` and `SET_2_3_4096`, r=2 and r=4;
+- five process runs for complete-SAB A/B per case;
+- five deterministic final-output noise seeds per case.
+
+This upgrades added binary parameters to small-sample support. It is still not
+equivalent to the main target's 50-seed final-output noise campaign and should
+not be used for all-parameter or non-binary claims.
+
 ## Gate
 
 - Complete `sab_pvw_*` target benchmark must report `Pass`.

@@ -394,6 +394,15 @@ range 1.219x-1.235x, and all 24576 final-output noise points had zero PVW,
 scalar, and pair failures. The added binary parameters therefore have
 repeated-smoke support for r=2 and r=4, but not the main-target 50-seed noise
 level.
+
+The added binary parameter matrix was then expanded to 5 full-SAB A/B runs and
+5 final-output noise seeds for `SET_4_5_2048` and `SET_2_3_4096`, r=2/r=4.
+All full-SAB correctness gates passed and all noise aggregates had zero PVW,
+scalar, and pair failures. Mean speedups were: `SET_4_5_2048` r=2 1.329x,
+r=4 1.346x; `SET_2_3_4096` r=2 1.224x, r=4 1.318x. This is the strongest
+current added-parameter support, but it remains small-sample evidence and does
+not replace the main target's 50-seed noise gate. `SET_4_5_2048` r=2 has high
+run-to-run variance and must be reported with its range or confidence interval.
 ```
 
 ## Stage 27: Novelty and Paper Package

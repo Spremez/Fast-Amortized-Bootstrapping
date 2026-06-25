@@ -41,7 +41,7 @@ Current claims that are supported:
 | Active-buffer fusion removes target copyback traffic | supported | Stage 20 |
 | Specialized MAT-AVX512 is useful but not theoretically optimal | supported | Stage 22 |
 | Current promoted r=2/r=4 path has 50-seed final-output noise support on target binary parameter | supported | Stage 25 |
-| Binary parameter smoke extends beyond `SET_2_3_2048` | initial smoke | Stage 26 |
+| Added binary parameters have r=2/r=4 complete-SAB and noise support | small-sample support | Stage 26 5-run/5-seed matrix |
 
 Claims that are blocked:
 
@@ -50,8 +50,8 @@ Claims that are blocked:
 | The project invents shared-mask/multiple-body TFHE batching | 2025/2112 has strong overlap with common-mask multiple-body TFHE |
 | PVW-SAB supports ternary/include-zero branches | Stage 26 explicitly marks PVW+TERNARY unsupported |
 | MAT-AVX512 implementation is theoretically optimal | Stage 22 lacks hardware-counter proof and dense MAT arithmetic still dominates |
-| Broad all-parameter SAB speedup | Stage 26 has correctness smoke only for added parameters |
-| Multi-fold SAB acceleration | current complete-SAB gains are about 1.27x-1.37x, not multiple-fold |
+| Broad all-parameter SAB speedup | Stage 26 covers two added binary parameters with small-sample evidence, not all parameters or non-binary branches |
+| Multi-fold SAB acceleration | current complete-SAB gains are about 1.22x-1.40x across scoped runs, not multiple-fold |
 
 ## Safe Paper Framing
 
@@ -76,8 +76,9 @@ or accelerate all SAB variants.
 
 - Re-run a final consolidated full-SAB performance table after the Stage 26
   parameterized harness refactor.
-- Decide whether added binary parameters need repeated full-SAB A/B, noise, or
-  only correctness smoke in the final claim.
+- Decide whether the added binary parameters' 5-run/5-seed small-sample
+  evidence is enough for final scope, or whether a larger statistical campaign
+  is needed before manuscript wording.
 - Add direct citation checks against the full 2025/686 and 2025/2112 papers,
   not only resource pages and repository metadata.
 - If claiming novelty beyond engineering integration, identify the exact
@@ -111,6 +112,20 @@ throughput on `BINARY SET_2_3_2048` under `spqlios_avx512`:
 
 This supports a scoped engineering throughput claim. It does not support
 novelty, non-binary, theoretical-optimality, or all-parameter claims.
+
+## Added-Parameter Scope Update
+
+Stage 26 now includes a 5-run/5-seed matrix for `SET_4_5_2048` and
+`SET_2_3_4096`, r=2/r=4, recorded in
+`docs/stage26_parameter_perf_noise_log.md` and
+`repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/`.
+All full-SAB correctness gates passed and all final-output noise aggregates had
+zero PVW, scalar, and pair failures. Mean speedups ranged from 1.224x to
+1.346x, with `SET_4_5_2048` r=2 showing the highest timing variance.
+
+This upgrades the added-parameter evidence from smoke to small-sample support,
+but it still does not justify claims for non-binary branches, all parameter
+families, or novelty.
 
 ## Decision
 

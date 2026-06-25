@@ -1,0 +1,5 @@
+param,r,runs,status,pvw_mean_us,scalar_repeated_mean_us,mean_speedup,min_speedup,max_speedup,source_csv,decision
+SET_2_3_4096,2,5,PASS,26922941.200,32955929.400,1.224,1.207,1.233,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/perf_SET_2_3_4096_r2_runs5/summary.csv,PASS_REPEATED_SMOKE
+SET_2_3_4096,4,5,PASS,50153785.800,66084384.600,1.318,1.272,1.350,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/perf_SET_2_3_4096_r4_runs5/summary.csv,PASS_REPEATED_SMOKE
+SET_4_5_2048,2,5,PASS,14731630.200,19438672.400,1.329,1.082,1.473,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/perf_SET_4_5_2048_r2_runs5/summary.csv,PASS_REPEATED_SMOKE
+SET_4_5_2048,4,5,PASS,28681374.000,38560527.200,1.346,1.305,1.455,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/perf_SET_4_5_2048_r4_runs5/summary.csv,PASS_REPEATED_SMOKE

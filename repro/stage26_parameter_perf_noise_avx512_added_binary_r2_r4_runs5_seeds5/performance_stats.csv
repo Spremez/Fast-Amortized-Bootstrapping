@@ -1,0 +1,5 @@
+param,r,runs,mean_speedup,min_speedup,max_speedup,stddev_speedup,sem_speedup,ci95_halfwidth_t_df4,ci95_low_t_df4,ci95_high_t_df4,source_csv
+SET_2_3_4096,2,5,1.224200,1.207000,1.233000,0.011389,0.005093,0.014139,1.210061,1.238339,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/perf_SET_2_3_4096_r2_runs5/summary.csv
+SET_2_3_4096,4,5,1.318400,1.272000,1.350000,0.031675,0.014165,0.039323,1.279077,1.357723,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/perf_SET_2_3_4096_r4_runs5/summary.csv
+SET_4_5_2048,2,5,1.328600,1.082000,1.473000,0.173682,0.077673,0.215620,1.112980,1.544220,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/perf_SET_4_5_2048_r2_runs5/summary.csv
+SET_4_5_2048,4,5,1.345800,1.305000,1.455000,0.062496,0.027949,0.077586,1.268214,1.423386,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/perf_SET_4_5_2048_r4_runs5/summary.csv

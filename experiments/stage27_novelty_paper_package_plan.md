@@ -12,7 +12,8 @@ strong enough.
 
 - Stage 20/22 complete-SAB performance evidence.
 - Stage 25 final-output noise/resource evidence.
-- Stage 26 binary parameter-smoke evidence.
+- Stage 26 binary parameter evidence: initial smoke plus added-parameter
+  r=2/r=4 5-run/5-seed small-sample matrix.
 - Related-work matrix for:
   - 2025/686 sparse amortized bootstrapping;
   - TFHE/GSW external product foundations;

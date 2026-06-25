@@ -109,10 +109,52 @@ binary parameter repeated-smoke language, but it is still below the target
 parameter's 50-seed final-output noise gate and should not be described as a
 broad statistical claim.
 
+## 5-Run/5-Seed Added-Binary Expansion
+
+The added binary parameters were then consolidated into a single r=2/r=4
+matrix with 5 full-SAB A/B runs and 5 final-output noise seeds per case:
+
+```sh
+bash -lc "STAGE26_PERF_RUNS=5 STAGE26_NOISE_SEED_COUNT=5 STAGE26_PERF_NOISE_R_VALUES='2 4' STAGE26_PERF_NOISE_PARAMS='SET_4_5_2048 SET_2_3_4096' STAGE26_PERF_NOISE_OUT_DIR=repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5 bash scripts/run_stage26_parameter_perf_noise.sh"
+```
+
+Performance:
+
+| param | r | runs | correctness | PVW mean us | scalar repeated mean us | mean speedup | min speedup | max speedup |
+|---|---:|---:|---|---:|---:|---:|---:|---:|
+| `SET_4_5_2048` | 2 | 5 | Pass | `14731630.200` | `19438672.400` | `1.329x` | `1.082x` | `1.473x` |
+| `SET_4_5_2048` | 4 | 5 | Pass | `28681374.000` | `38560527.200` | `1.346x` | `1.305x` | `1.455x` |
+| `SET_2_3_4096` | 2 | 5 | Pass | `26922941.200` | `32955929.400` | `1.224x` | `1.207x` | `1.233x` |
+| `SET_2_3_4096` | 4 | 5 | Pass | `50153785.800` | `66084384.600` | `1.318x` | `1.272x` | `1.350x` |
+
+Small-sample speedup dispersion:
+
+| param | r | speedup stddev | 95% CI half-width, t(df=4) | interpretation |
+|---|---:|---:|---:|---|
+| `SET_4_5_2048` | 2 | `0.173682` | `0.215620` | positive mean, high run-to-run variance |
+| `SET_4_5_2048` | 4 | `0.062496` | `0.077586` | positive small-sample support |
+| `SET_2_3_4096` | 2 | `0.011389` | `0.014139` | stable positive small-sample support |
+| `SET_2_3_4096` | 4 | `0.031675` | `0.039323` | stable positive small-sample support |
+
+Noise:
+
+| param | r | seeds | points | PVW failures | scalar failures | pair failures | min gap | max gap | avg gap |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `SET_4_5_2048` | 2 | 5 | `20480` | 0 | 0 | 0 | `-0.196` | `0.464` | `0.025400` |
+| `SET_4_5_2048` | 4 | 5 | `40960` | 0 | 0 | 0 | `-0.183` | `0.059` | `-0.048400` |
+| `SET_2_3_4096` | 2 | 5 | `40960` | 0 | 0 | 0 | `-0.308` | `0.014` | `-0.177600` |
+| `SET_2_3_4096` | 4 | 5 | `81920` | 0 | 0 | 0 | `-0.299` | `0.414` | `0.074000` |
+
+This improves Stage 26 from 3-run/3-seed repeated-smoke to 5-run/5-seed
+small-sample support for the two added binary parameters and r=2/r=4. It still
+does not match the main target's 50-seed final-output noise gate. In final
+paper wording, `SET_4_5_2048` r=2 should be reported with its high variance
+rather than only its mean.
+
 ## Next Work
 
 - Increase added-parameter r=2/r=4 noise and performance repetitions beyond
-  3 seeds/runs if these parameters appear in a broad final paper claim.
+  5 seeds/runs if these parameters appear in a broad final paper claim.
 - Decide whether Stage 26 should stay as parameter repeated-smoke support or be
   promoted to a larger statistical campaign.
 - Keep PVW+TERNARY out of scope unless a separate implementation and gate are

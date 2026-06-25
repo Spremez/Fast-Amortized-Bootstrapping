@@ -188,7 +188,7 @@ hypotheses:
       The relative cost of MAT external products, sparse schedule work, sub_a,
       extract, and key switching depends on N, h, r_prec, branch type, and
       backend. A single target parameter can hide branch-specific regressions.
-    status: stage26_parameter_perf_noise_smoke_supported
+    status: stage26_added_binary_small_sample_supported
     evidence: docs/stage26_parameter_perf_noise_log.md
     current_decision: >
       Stage 26 parameterized the PVW target harness and verified that
@@ -209,6 +209,13 @@ hypotheses:
       1.219x-1.235x and 24576 zero-failure noise points. Keep broad claims
       limited to binary repeated-smoke generalization until larger repeated
       performance and multi-seed noise are added for the claimed parameters.
+      A later consolidated 5-run/5-seed matrix for SET_4_5_2048 and
+      SET_2_3_4096, r=2/r=4, passed all full-SAB correctness and final-output
+      noise gates with zero PVW/scalar/pair failures. Mean complete-SAB
+      speedups were SET_4_5_2048 r=2 1.329x, SET_4_5_2048 r=4 1.346x,
+      SET_2_3_4096 r=2 1.224x, and SET_2_3_4096 r=4 1.318x. Treat this as
+      small-sample binary-parameter support, not all-parameter evidence;
+      SET_4_5_2048 r=2 remains high variance.
     failure_criteria:
       - added parameter sets fail correctness or noise gates
       - speedup appears only on one narrow configuration

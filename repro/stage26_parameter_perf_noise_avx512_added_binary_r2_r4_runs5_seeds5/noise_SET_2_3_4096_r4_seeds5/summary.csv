@@ -1,0 +1,6 @@
+r,seed,status,points,pvw_failures,scalar_failures,pair_failures,pvw_log2_sigma_torus,scalar_log2_sigma_torus,pair_log2_sigma_torus,pvw_minus_scalar_log2,max_allowed_log2_gap,source_log
+4,6863025,Pass,16384,0,0,0,-7.589,-7.870,-7.183,0.280,4.000,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/noise_SET_2_3_4096_r4_seeds5/r4/seed_6863025.log
+4,6863026,Pass,16384,0,0,0,-7.729,-7.612,-7.256,-0.117,4.000,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/noise_SET_2_3_4096_r4_seeds5/r4/seed_6863026.log
+4,6863027,Pass,16384,0,0,0,-7.559,-7.651,-7.077,0.092,4.000,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/noise_SET_2_3_4096_r4_seeds5/r4/seed_6863027.log
+4,6863028,Pass,16384,0,0,0,-7.835,-7.535,-7.139,-0.299,4.000,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/noise_SET_2_3_4096_r4_seeds5/r4/seed_6863028.log
+4,6863029,Pass,16384,0,0,0,-7.290,-7.704,-7.121,0.414,4.000,repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/noise_SET_2_3_4096_r4_seeds5/r4/seed_6863029.log

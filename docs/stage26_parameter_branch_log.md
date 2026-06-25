@@ -86,14 +86,15 @@ Stage 26 now has initial binary parameter generalization evidence. This is not
 yet a broad SAB claim because:
 
 - only three binary parameter choices were checked;
-- the added parameters have correctness smoke only, not 50-seed noise or
-  repeated full SAB performance;
+- later `docs/stage26_parameter_perf_noise_log.md` results add complete-SAB
+  performance and final-output noise support for the added binary parameters,
+  but only at 5-run/5-seed small-sample scale;
 - non-binary PVW-SAB is explicitly unsupported.
 
 ## Next Work
 
-1. Add performance/noise sweeps for the additional binary parameters only if
-   they remain part of the final claim.
+1. Increase performance/noise sweeps for the additional binary parameters only
+   if the final claim needs stronger than 5-run/5-seed support.
 2. Decide whether ternary/include-zero PVW support is in scope; if yes, design
    a separate `sab_pvw_*` key format for sign/coefficient selectors.
 3. Move to Stage 27 only after the final claimed parameter set is fixed.
