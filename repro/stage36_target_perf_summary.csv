@@ -1,0 +1,3 @@
+r,samples,statuses,pvw_mean_us,scalar_repeated_mean_us,mean_speedup,min_speedup,max_speedup,stddev_speedup,ci95_low,ci95_high,decision,source_labels,notes
+2,10,Pass,14665116.800,17315264.100,1.191,1.021,1.454,0.161738,1.075307,1.306693,PASS_TARGET_PERF_10RUN,target_r2_runs10,complete 10 sample aggregate
+4,10,Pass,27556959.000,37958530.600,1.377,1.305,1.585,0.086127,1.314893,1.438107,PASS_TARGET_PERF_10RUN,target_r4_runs10_initial,complete initial 10 sample aggregate; command hit tool timeout but artifacts completed

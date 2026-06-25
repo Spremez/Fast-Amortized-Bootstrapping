@@ -19,6 +19,7 @@ MANIFEST = ROOT / "repro" / "stage27_final_evidence_package" / "manifest.csv"
 STAGE28 = ROOT / "repro" / "stage28_native_perf_counter_gate" / "summary.csv"
 EXTERNAL = ROOT / "repro" / "external_evidence_intake" / "summary.csv"
 STAGE33 = ROOT / "repro" / "stage33_current_smoke" / "summary.csv"
+STAGE36_TARGET_PERF = ROOT / "repro" / "stage36_target_perf_summary.csv"
 RUN_LOG = ROOT / "repro" / "run_log.csv"
 
 
@@ -151,6 +152,42 @@ def audit() -> list[AuditRow]:
             "Re-run target full-SAB A/B until both r=2 and r=4 pass with positive speedup.",
         )
     )
+
+    stage36_perf = read_csv_if_exists(STAGE36_TARGET_PERF)
+    if stage36_perf:
+        stage36_target_perf = [
+            row
+            for row in stage36_perf
+            if row.get("r") in {"2", "4"}
+            and row.get("decision") == "PASS_TARGET_PERF_10RUN"
+            and as_int(row, "samples") >= 10
+            and as_float(row, "mean_speedup") > 1.0
+        ]
+        out.append(
+            AuditRow(
+                "A2b",
+                "performance_high_stat",
+                "Stage 36 target complete-SAB r=2/r=4 has 10-run same-backend performance support",
+                "PASS_10RUN_TARGET_PERF"
+                if len(stage36_target_perf) == 2
+                else "FAIL_STAGE36_TARGET_PERF",
+                rel(STAGE36_TARGET_PERF),
+                "optional stronger statistical target-performance evidence",
+                "Fix or rerun Stage 36 target_perf before using 10-run statistical wording.",
+            )
+        )
+    else:
+        out.append(
+            AuditRow(
+                "A2b",
+                "performance_high_stat",
+                "Stage 36 target complete-SAB r=2/r=4 has 10-run same-backend performance support",
+                "NOT_RUN_OPTIONAL",
+                "",
+                "optional; not required for current scoped engineering claim",
+                "Run STAGE36_MODE=target_perf STAGE36_EXECUTE=1 before using 10-run statistical wording.",
+            )
+        )
 
     target_noise = [
         row
@@ -340,6 +377,8 @@ def audit() -> list[AuditRow]:
     )
 
     scoped_ready_ids = {"A1", "A2", "A3", "A4", "A5", "A5b", "A6", "A7"}
+    if STAGE36_TARGET_PERF.exists():
+        scoped_ready_ids.add("A2b")
     status_by_id = {row.item_id: row.status for row in out}
     scoped_ready = all(
         status_by_id.get(item_id, "").startswith("PASS")

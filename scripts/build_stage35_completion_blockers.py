@@ -89,6 +89,11 @@ def classify(row: Dict[str, str], ext_status: str) -> Dict[str, str]:
         requires_user = "no"
         next_action = "increase added-parameter runs/seeds only before broad all-parameter claims"
         impact = "does not block scoped target claim; blocks broad generalization wording"
+    if item_id == "A2b" and status == "PASS_10RUN_TARGET_PERF":
+        lane = "statistical_expansion"
+        requires_user = "no"
+        next_action = "use this evidence only for target performance statistical wording"
+        impact = "strengthens target full-SAB performance evidence; does not affect external blockers"
     if item_id == "A4" and status == "PASS_SMOKE_RESOURCE":
         lane = "optional_expansion"
         requires_user = "no"

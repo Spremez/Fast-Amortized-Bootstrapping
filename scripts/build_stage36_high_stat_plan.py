@@ -16,6 +16,9 @@ from typing import Dict, Iterable, List
 ROOT = Path(__file__).resolve().parents[1]
 OUT_CSV = ROOT / "repro/stage36_high_stat_plan.csv"
 OUT_MD = ROOT / "docs/stage36_high_stat_expansion_log.md"
+TARGET_PERF_SUMMARY = ROOT / "repro/stage36_target_perf_summary.csv"
+TARGET_PERF_EXCLUSIONS = ROOT / "repro/stage36_target_perf_exclusions.csv"
+TARGET_PERF_SUPPLEMENTAL = ROOT / "repro/stage36_target_perf_supplemental.csv"
 
 
 def row(
@@ -119,6 +122,13 @@ def write_csv(rows: Iterable[Dict[str, str]]) -> None:
         writer.writerows(rows)
 
 
+def read_csv_if_exists(path: Path) -> List[Dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open(newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
 def write_md(rows: List[Dict[str, str]]) -> None:
     lines = [
         "# Stage 36 High-Statistics Expansion Log",
@@ -166,14 +176,75 @@ def write_md(rows: List[Dict[str, str]]) -> None:
             "| {item_id} | `{command}` | {failure_handling} |".format(**item)
         )
 
+    target_perf = read_csv_if_exists(TARGET_PERF_SUMMARY)
+    if target_perf:
+        lines.extend(
+            [
+                "",
+                "## Target Performance Result",
+                "",
+                "| r | samples | mean speedup | min | max | ci95 low | ci95 high | decision | notes |",
+                "|---|---:|---:|---:|---:|---:|---:|---|---|",
+            ]
+        )
+        for item in target_perf:
+            lines.append(
+                "| {r} | {samples} | {mean_speedup} | {min_speedup} | {max_speedup} | "
+                "{ci95_low} | {ci95_high} | {decision} | {notes} |".format(**item)
+            )
+
+        exclusions = read_csv_if_exists(TARGET_PERF_EXCLUSIONS)
+        if exclusions:
+            lines.extend(
+                [
+                    "",
+                    "Exclusion/review records:",
+                    "",
+                    "| source | r | decision | reason |",
+                    "|---|---:|---|---|",
+                ]
+            )
+            for item in exclusions:
+                lines.append(
+                    "| {source_label} | {r} | {decision} | {reason} |".format(**item)
+                )
+
+        supplemental = read_csv_if_exists(TARGET_PERF_SUPPLEMENTAL)
+        if supplemental:
+            lines.extend(
+                [
+                    "",
+                    "Supplemental samples not included in the primary 10-run statistic:",
+                    "",
+                    "| sample | r | speedup | decision |",
+                    "|---|---:|---:|---|",
+                ]
+            )
+            for item in supplemental:
+                lines.append(
+                    "| {sample_id} | {r} | {speedup_vs_scalar_repeated} | {decision} |".format(**item)
+                )
+
+        decision_text = (
+            "The target performance campaign now has 10 primary same-backend "
+            "samples for r=2 and r=4. This strengthens target performance "
+            "statistics, but it does not upgrade novelty, theorem-level "
+            "citation, non-binary, all-parameter, or hardware-counter claims."
+        )
+    else:
+        decision_text = (
+            "No Stage 36 heavy campaign has been promoted yet. The next "
+            "reasonable local campaign, if broader statistical performance "
+            "wording is desired, is `S36-TARGET-PERF` with 10 sequential "
+            "process runs for r=2 and r=4."
+        )
+
     lines.extend(
         [
             "",
             "## Current Decision",
             "",
-            "No Stage 36 heavy campaign has been promoted yet. The next reasonable",
-            "local campaign, if broader statistical performance wording is desired,",
-            "is `S36-TARGET-PERF` with 10 sequential process runs for r=2 and r=4.",
+            decision_text,
             "",
         ]
     )

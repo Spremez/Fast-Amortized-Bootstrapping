@@ -1,0 +1,2 @@
+source_label,r,log,reason,has_summary_line,decision
+target_r4_runs10_initial,4,repro/stage36_target_perf_r4_runs10/run_8.log,tool_timeout_partial_log_no_summary_line,yes,NOT_EXCLUDED_COMPLETED_AFTER_TIMEOUT

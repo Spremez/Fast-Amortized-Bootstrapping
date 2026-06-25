@@ -38,8 +38,26 @@ any claim by itself.
 | S36-ADDED-PARAM | `STAGE36_MODE=added_params STAGE36_EXECUTE=1 STAGE36_ADDED_RUNS=10 STAGE36_ADDED_SEEDS=20 bash scripts/run_stage36_high_stat_expansion.sh` | if gains are parameter-specific, downgrade to parameter-scoped claim |
 | S36-RESOURCE | `STAGE36_MODE=resource STAGE36_EXECUTE=1 STAGE36_RESOURCE_RUNS=3 bash scripts/run_stage36_high_stat_expansion.sh` | if resource cost is unstable or too high, keep resource claim descriptive and scoped |
 
+## Target Performance Result
+
+| r | samples | mean speedup | min | max | ci95 low | ci95 high | decision | notes |
+|---|---:|---:|---:|---:|---:|---:|---|---|
+| 2 | 10 | 1.191 | 1.021 | 1.454 | 1.075307 | 1.306693 | PASS_TARGET_PERF_10RUN | complete 10 sample aggregate |
+| 4 | 10 | 1.377 | 1.305 | 1.585 | 1.314893 | 1.438107 | PASS_TARGET_PERF_10RUN | complete initial 10 sample aggregate; command hit tool timeout but artifacts completed |
+
+Exclusion/review records:
+
+| source | r | decision | reason |
+|---|---:|---|---|
+| target_r4_runs10_initial | 4 | NOT_EXCLUDED_COMPLETED_AFTER_TIMEOUT | tool_timeout_partial_log_no_summary_line |
+
+Supplemental samples not included in the primary 10-run statistic:
+
+| sample | r | speedup | decision |
+|---|---:|---:|---|
+| target_r4_runs2_topup_run_0 | 4 | 1.374 | SUPPLEMENTAL_NOT_IN_PRIMARY_10RUN |
+| target_r4_runs2_topup_run_1 | 4 | 1.317 | SUPPLEMENTAL_NOT_IN_PRIMARY_10RUN |
+
 ## Current Decision
 
-No Stage 36 heavy campaign has been promoted yet. The next reasonable
-local campaign, if broader statistical performance wording is desired,
-is `S36-TARGET-PERF` with 10 sequential process runs for r=2 and r=4.
+The target performance campaign now has 10 primary same-backend samples for r=2 and r=4. This strengthens target performance statistics, but it does not upgrade novelty, theorem-level citation, non-binary, all-parameter, or hardware-counter claims.

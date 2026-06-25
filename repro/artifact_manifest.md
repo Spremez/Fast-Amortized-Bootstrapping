@@ -63,6 +63,7 @@ Code artifacts:
 - `scripts/build_stage35_completion_blockers.py`
 - `scripts/build_stage36_high_stat_plan.py`
 - `scripts/run_stage36_high_stat_expansion.sh`
+- `scripts/build_stage36_target_perf_summary.py`
 
 Documentation artifacts:
 
@@ -576,6 +577,19 @@ Repro artifacts:
 - `repro/external_evidence_intake/summary.csv`
 - `repro/stage35_completion_blockers.csv`
 - `repro/stage36_high_stat_plan.csv`
+- `repro/stage36_target_perf_summary.csv`
+- `repro/stage36_target_perf_samples.csv`
+- `repro/stage36_target_perf_exclusions.csv`
+- `repro/stage36_target_perf_supplemental.csv`
+- `repro/stage36_target_perf_r2_runs10/summary.csv`
+- `repro/stage36_target_perf_r2_runs10/run_0.log` through
+  `repro/stage36_target_perf_r2_runs10/run_9.log`
+- `repro/stage36_target_perf_r4_runs10/summary.csv`
+- `repro/stage36_target_perf_r4_runs10/run_0.log` through
+  `repro/stage36_target_perf_r4_runs10/run_9.log`
+- `repro/stage36_target_perf_r4_runs2_topup/summary.csv`
+- `repro/stage36_target_perf_r4_runs2_topup/run_0.log`
+- `repro/stage36_target_perf_r4_runs2_topup/run_1.log`
 - `repro/stage33_current_smoke/summary.csv`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/build.log`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/run.log`

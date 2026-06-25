@@ -781,11 +781,11 @@ Gate:
 Status:
 
 ```text
-Stage 35 completed. The generated matrix covers all final audit rows:
-5 scoped-complete items, 2 optional expansions, 1 claim guardrail,
-2 external blockers, and 1 overall scoped-ready decision. The current external
-blockers remain fab686_fulltext=MISSING and
-stage28_native_perf_summary=MISSING.
+Stage 35 completed and was refreshed after Stage 36. The generated matrix now
+covers all final audit rows: 5 scoped-complete items, 1 statistical expansion,
+2 optional expansions, 1 claim guardrail, 2 external blockers, and 1 overall
+scoped-ready decision. The current external blockers remain
+fab686_fulltext=MISSING and stage28_native_perf_summary=MISSING.
 ```
 
 ## Stage 36: High-Statistics Claim Expansion
@@ -817,11 +817,14 @@ Gate:
 Status:
 
 ```text
-Stage 36 plan generation completed. The budget matrix pre-registers five
-optional campaigns: target 10-run full-SAB performance, target 50-seed
-final-output noise rerun, 10-seed stage-level noise expansion, added-parameter
-10-run/20-seed expansion, and 3-run resource replication. No heavy campaign
-has been executed or promoted yet.
+Stage 36 plan generation completed and the high-priority target_perf campaign
+was executed. The primary 10-run same-backend target full-SAB aggregate passes:
+r=2 mean speedup 1.191x with 95% CI [1.075307, 1.306693], and r=4 mean
+speedup 1.377x with 95% CI [1.314893, 1.438107]. The original long command hit
+a tool timeout while WSL-side artifacts completed; two later r=4 top-up runs
+are preserved as supplemental and not included in the primary 10-run statistic.
+This strengthens target-performance statistics but does not upgrade novelty,
+theorem-level citation, non-binary, all-parameter, or hardware-counter claims.
 ```
 
 ## Stage 37: Native Perf-Counter Evidence

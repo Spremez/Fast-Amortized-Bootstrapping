@@ -18,6 +18,7 @@ not upgrade any claim by itself.
 - `external_blocker`: 2
 - `optional_expansion`: 2
 - `overall_scoped_ready`: 1
+- `statistical_expansion`: 1
 
 ## Matrix
 
@@ -25,6 +26,7 @@ not upgrade any claim by itself.
 |---|---|---|---|---|---|---|
 | A1 | PASS_SCOPED | complete_or_scoped_complete | no |  | keep artifact current through final recheck | supports scoped engineering claim |
 | A2 | PASS_SCOPED | complete_or_scoped_complete | no |  | keep artifact current through final recheck | supports scoped engineering claim |
+| A2b | PASS_10RUN_TARGET_PERF | statistical_expansion | no |  | use this evidence only for target performance statistical wording | strengthens target full-SAB performance evidence; does not affect external blockers |
 | A3 | PASS_SCOPED | complete_or_scoped_complete | no |  | keep artifact current through final recheck | supports scoped engineering claim |
 | A4 | PASS_SMOKE_RESOURCE | optional_expansion | no |  | repeat resource matrix only if paper needs statistical resource tables | does not block scoped engineering claim |
 | A5 | PASS_SCOPED | complete_or_scoped_complete | no |  | keep artifact current through final recheck | supports scoped engineering claim |

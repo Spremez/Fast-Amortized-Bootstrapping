@@ -152,6 +152,7 @@
 - [x] Add and run Stage 34 final recheck option for refreshing current-commit smoke.
 - [x] Generate Stage 35 completion blocker matrix from the final audit.
 - [x] Generate Stage 36 high-statistics expansion budget matrix.
-- [ ] Execute Stage 36 high-stat target performance campaign if broader statistical wording is needed.
+- [x] Execute Stage 36 high-stat target performance campaign.
+- [ ] Execute remaining Stage 36 optional noise/resource/added-parameter campaigns only if broader claims need them.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.

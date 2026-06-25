@@ -58,7 +58,7 @@ evidence.
 | Stage 33 current commit smoke | `spqlios_avx512` | n/a | current smoke passed | scalar binary full run, PVW target full gate, and scalar ternary build all pass |
 | Stage 34 current-smoke final recheck | orchestration | n/a | passed | final recheck refreshed Stage 33 current smoke before rebuilding the final audit |
 | Stage 35 completion blocker matrix | audit synthesis | n/a | passed | remaining work classified into scoped-complete, optional expansion, claim guardrail, external blocker, and overall decision lanes |
-| Stage 36 high-stat expansion plan | experiment planning | n/a | planned, not executed | optional higher-stat campaigns pre-registered for broader statistical claims |
+| Stage 36 target high-stat performance | `spqlios_avx512` | 2/4 | 10-run target support | r=2 mean `1.191x` CI `[1.075307,1.306693]`; r=4 mean `1.377x` CI `[1.314893,1.438107]` |
 
 Current conclusion:
 
@@ -122,9 +122,11 @@ The Stage 35 blocker matrix makes the remaining completion boundary explicit:
 the local scoped engineering chain is ready, while MAT-AVX512 theoretical
 load/store attribution and theorem-level 2025/686 review still require external
 native/perf and full-text evidence.
-The Stage 36 high-statistics plan pre-registers optional larger campaigns for
-broader statistical wording, but no heavy Stage 36 campaign has been executed
-or promoted.
+The Stage 36 target-performance campaign strengthens the target binary
+complete-SAB performance evidence with 10 same-backend samples for r=2 and
+r=4. It does not change the remaining external blockers for novelty,
+theorem-level 2025/686 review, non-binary support, all-parameter claims, or
+MAT-AVX512 hardware-counter attribution.
 ```
 
 ## Invariants
@@ -192,7 +194,7 @@ Stage 32: citation refresh recheck. [run with network citation probe; direct ful
 Stage 33: current commit smoke. [scalar/PVW target smoke passed; no performance claim]
 Stage 34: current-smoke final recheck integration. [completed; explicit refresh mode passed]
 Stage 35: completion blocker matrix. [completed; local scoped-ready and external blockers separated]
-Stage 36: high-statistics claim expansion. [plan generated; heavy campaigns not executed]
+Stage 36: high-statistics claim expansion. [target_perf 10-run campaign completed; other campaigns optional]
 Stage 37: native perf-counter evidence. [blocked until native/perf-enabled platform]
 Stage 38: full 2025/686 source review. [blocked until full text is supplied]
 Stage 39: optional new algorithmic variants. [only if scope requires beyond current promoted path]
