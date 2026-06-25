@@ -40,6 +40,7 @@ typedef struct {
   uint64_t ncmux_auto_us, ncmux_auto_calls;
   uint64_t mat_ep_us, mat_ep_calls;
   uint64_t sub_a_us, sub_a_calls;
+  uint64_t sub_a_output_fusion_us, sub_a_output_fusion_calls;
   uint64_t copyback_us, copyback_calls;
   uint64_t bit_ncmux_us[SAB_PVW_BODY_PROFILE_MAX_BITS];
   uint64_t bit_ncmux_calls[SAB_PVW_BODY_PROFILE_MAX_BITS];
@@ -90,6 +91,8 @@ static void sab_pvw_body_profile_print(SAB_PVW_Key sab, uint64_t full_us){
          " mat_ep_us=%" PRIu64
          " sub_a_calls=%" PRIu64
          " sub_a_us=%" PRIu64
+         " sub_a_output_fusion_calls=%" PRIu64
+         " sub_a_output_fusion_us=%" PRIu64
          " copyback_calls=%" PRIu64
          " copyback_us=%" PRIu64
          " profile_bit_capacity=%u",
@@ -118,6 +121,8 @@ static void sab_pvw_body_profile_print(SAB_PVW_Key sab, uint64_t full_us){
          sab_pvw_body_profile.mat_ep_us,
          sab_pvw_body_profile.sub_a_calls,
          sab_pvw_body_profile.sub_a_us,
+         sab_pvw_body_profile.sub_a_output_fusion_calls,
+         sab_pvw_body_profile.sub_a_output_fusion_us,
          sab_pvw_body_profile.copyback_calls,
          sab_pvw_body_profile.copyback_us,
          (unsigned) SAB_PVW_BODY_PROFILE_MAX_BITS);
@@ -530,6 +535,23 @@ void sab_pvw_sub_a_binary(PVW_TMLWE * p, const uint64_t * a, SAB_PVW_Key sab){
 #endif
 }
 
+static void sab_pvw_sub_a_binary_to(PVW_TMLWE * out, PVW_TMLWE * in,
+    const uint64_t * a, SAB_PVW_Key sab){
+#ifdef SAB_PVW_BODY_PROFILE
+  const uint64_t sub_a_begin = sab_pvw_now_us();
+#endif
+  for (size_t idx = 0; idx < sab->in_N; idx++){
+    pvmtmlwe_mul_by_xai(out[idx], in[idx], a[idx]);
+  }
+#ifdef SAB_PVW_BODY_PROFILE
+  const uint64_t elapsed = sab_pvw_now_us() - sub_a_begin;
+  sab_pvw_body_profile.sub_a_us += elapsed;
+  sab_pvw_body_profile.sub_a_calls++;
+  sab_pvw_body_profile.sub_a_output_fusion_us += elapsed;
+  sab_pvw_body_profile.sub_a_output_fusion_calls++;
+#endif
+}
+
 void sab_pvw_sparse_mul_binary(PVW_TMLWE * p, const uint64_t * a,
     uint64_t a_idx, SAB_PVW_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
@@ -542,7 +564,12 @@ void sab_pvw_sparse_mul_binary(PVW_TMLWE * p, const uint64_t * a,
   for (size_t step = 0; step < sab->h; step++){
     active = sab_pvw_RGSW_monomial_mul_state(state, active,
         sab->s[a_idx][step], sab);
+#ifdef SAB_PVW_SUBA_OUTPUT_FUSION
+    sab_pvw_sub_a_binary_to(state[active ^ 1], state[active], a, sab);
+    active ^= 1;
+#else
     sab_pvw_sub_a_binary(state[active], a, sab);
+#endif
   }
   active = sab_pvw_RGSW_monomial_mul_state(state, active,
       sab->s[a_idx][sab->h], sab);

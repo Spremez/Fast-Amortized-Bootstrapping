@@ -25,6 +25,7 @@ Code artifacts:
   - `SAB_PVW_BODY_PROFILE`
   - `SAB_PVW_FUSED_FROM_DFT_ADD`
   - `SAB_PVW_ACTIVE_BUFFER_FUSION`
+  - `SAB_PVW_SUBA_OUTPUT_FUSION`
 - `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
 - `src/mosfhet/src/misc.c` deterministic test RNG path
 - `src/mosfhet/src/mattrgsw.c` experimental small-r AVX512 MAT external-product dispatch
@@ -41,6 +42,8 @@ Code artifacts:
 - `scripts/run_stage19_sparse_schedule_audit.sh`
 - `scripts/run_stage20_active_buffer_profile.sh`
 - `scripts/run_stage20_active_buffer_bench.sh`
+- `scripts/run_stage21_suba_output_profile.sh`
+- `scripts/run_stage21_suba_output_bench.sh`
 
 Documentation artifacts:
 
@@ -77,6 +80,7 @@ Documentation artifacts:
 - `docs/loop_engineering.md`
 - `docs/stage19_sparse_schedule_audit_log.md`
 - `docs/stage20_active_buffer_log.md`
+- `docs/stage21_suba_output_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -94,6 +98,7 @@ Documentation artifacts:
 - `experiments/stage18_fused_from_dft_add_plan.md`
 - `experiments/stage19_sparse_schedule_audit_plan.md`
 - `experiments/stage20_active_buffer_validation_plan.md`
+- `experiments/stage21_suba_output_validation_plan.md`
 
 Repro artifacts:
 
@@ -324,3 +329,13 @@ Repro artifacts:
 - `repro/stage20_active_buffer_bench_r4_reps1_runs3/run_0.log`
 - `repro/stage20_active_buffer_bench_r4_reps1_runs3/run_1.log`
 - `repro/stage20_active_buffer_bench_r4_reps1_runs3/run_2.log`
+- `repro/stage21_suba_output_summary.csv`
+- `repro/stage21_suba_output_target_full.log`
+- `repro/stage21_default_target_regression.log`
+- `repro/stage21_suba_output_profile_avx512_runs1/summary.csv`
+- `repro/stage21_suba_output_profile_avx512_runs1/r2/run_0.log`
+- `repro/stage21_suba_output_profile_avx512_runs1/r4/run_0.log`
+- `repro/stage21_suba_output_bench_r2_reps1_runs1_seq/summary.csv`
+- `repro/stage21_suba_output_bench_r2_reps1_runs1_seq/run_0.log`
+- `repro/stage21_suba_output_bench_r4_reps1_runs1_seq/summary.csv`
+- `repro/stage21_suba_output_bench_r4_reps1_runs1_seq/run_0.log`

@@ -26,14 +26,19 @@ evidence.
 | Stage 16 AVX512 MAT full SAB | `spqlios_avx512` | 2 | positive, explicit flag | mean `1.197x`, range `1.155x-1.248x` |
 | Stage 16 AVX512 MAT full SAB | `spqlios_avx512` | 4 | positive, explicit flag | mean `1.281x`, range `1.231x-1.324x` |
 | Stage 18 fused from-DFT-add | `spqlios_avx512` | 4 | neutral ablation | mean `1.285x`, not materially above Stage 16 |
+| Stage 20 active-buffer fusion | `spqlios_avx512` | 2 | current explicit baseline | mean `1.270x`, range `1.173x-1.349x` |
+| Stage 20 active-buffer fusion | `spqlios_avx512` | 4 | current explicit baseline | mean `1.346x`, range `1.323x-1.384x` |
+| Stage 21 sub_a output fusion | `spqlios_avx512` | 2/4 | neutral ablation | one-run `1.136x`/`1.308x`, not above Stage 20 |
 
 Current conclusion:
 
 ```text
 PVW/MAT-SAB exists and is correct for the tested target path.
 The project has complete SAB speedup evidence, but not a multi-fold result.
-The next work is to maximize the complete SAB path by moving above local MAT
-micro-optimizations into SAB schedule, buffer, and layout optimization.
+The current best explicit variant is Stage 20 active-buffer fusion. Stage 21
+was validated but not promoted. The next work is Stage 22: audit whether the
+MAT-aware AVX512 external product is near its useful theoretical limit and
+whether any remaining kernel win translates to complete SAB.
 ```
 
 ## Invariants
@@ -84,10 +89,10 @@ The project reaches the current goal only if all conditions below hold:
 The next implementation loop starts at Stage 19:
 
 ```text
-Stage 19: exact sparse schedule audit.
-Stage 20: active-buffer/copyback fusion.
-Stage 21: sub_a and polynomial rotation optimization.
-Stage 22: MAT-aware AVX512 theoretical-limit audit.
+Stage 19: exact sparse schedule audit. [completed]
+Stage 20: active-buffer/copyback fusion. [completed, current explicit baseline]
+Stage 21: sub_a and polynomial rotation optimization. [completed, neutral]
+Stage 22: MAT-aware AVX512 theoretical-limit audit. [next]
 Stage 23: CMUX/NCMUX schedule fusion.
 Stage 24: conditional post-processing optimization.
 Stage 25: correctness/noise/resource matrix.

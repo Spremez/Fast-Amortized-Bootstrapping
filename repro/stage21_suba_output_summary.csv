@@ -1,0 +1,3 @@
+stage,variant,backend,r,runs,correctness,profile_counts,pvw_avg_us,scalar_repeated_avg_us,speedup,status,artifacts
+21,sub_a_output_fusion,spqlios_avx512,2,1,PASS,PASS,16991710,19309859,1.136,NEUTRAL_NOT_PROMOTED,docs/stage21_suba_output_log.md;repro/stage21_suba_output_bench_r2_reps1_runs1_seq/summary.csv
+21,sub_a_output_fusion,spqlios_avx512,4,1,PASS,PASS,30760328,40232320,1.308,NEUTRAL_NOT_PROMOTED,docs/stage21_suba_output_log.md;repro/stage21_suba_output_bench_r4_reps1_runs1_seq/summary.csv

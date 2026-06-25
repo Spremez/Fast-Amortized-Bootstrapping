@@ -110,12 +110,17 @@ hypotheses:
       Reusing scratch and separating index arithmetic, sign handling, and body
       loops may reduce memory traffic without changing the encrypted rotation
       semantics.
-    status: planned_stage21
-    evidence: docs/roadmap_stage19_plus.md
+    status: stage21_neutral_not_promoted
+    evidence: docs/stage21_suba_output_log.md
     current_decision: >
-      This is secondary to H5. It should start only after Stage 19/20 profiles
-      show sub_a remains material. Unsafe in-place rotation is out of scope
-      unless aliasing safety is proven.
+      Stage 21 implemented SAB_PVW_SUBA_OUTPUT_FUSION=true behind an explicit
+      flag and validated target correctness plus exact schedule counts for
+      r=2/r=4. It changed the expected target copyback count from Stage 20's 0
+      to 1 while routing all 39 sub_a calls through direct inactive-buffer
+      output. Sequential full SAB smokes were slower than the Stage 20 repeated
+      baseline: r=2 reached 1.136x versus Stage 20 mean 1.270x, and r=4 reached
+      1.308x versus Stage 20 mean 1.346x. Keep the code as a neutral ablation
+      and do not promote it by default.
     failure_criteria:
       - rotation aliasing cannot be made explicit and safe
       - per-step phase equivalence fails

@@ -142,6 +142,15 @@ Performance gate:
 - full SAB A/B must improve over the active-buffer baseline;
 - if `sub_a` remains a small fraction after Stage 20, defer deeper work.
 
+Status after execution:
+
+```text
+Implemented SAB_PVW_SUBA_OUTPUT_FUSION=true as an explicit ablation.
+Correctness and count gates passed for r=2/r=4.
+Sequential one-run full SAB smokes did not improve over the Stage 20 repeated
+baseline, so the path is recorded as neutral and is not promoted.
+```
+
 ## Stage 22: MAT-Aware AVX512 Theoretical-Limit Audit
 
 Goal:

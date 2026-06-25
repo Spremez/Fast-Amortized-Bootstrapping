@@ -1,0 +1,3 @@
+r,run,status,pvw_avg_us,scalar_repeated_avg_us,speedup,in_N,h,r_prec,rgsw_monomial_calls,cmux_calls,expected_cmux,ncmux_calls,expected_ncmux,mat_ep_calls,sub_a_calls,expected_sub_a,sub_a_output_fusion_calls,expected_sub_a_output_fusion,copyback_calls,expected_copyback,stage20_copyback,sub_a_us,sub_a_output_fusion_us,source_log
+2,0,PASS,19510423.000,20086115.000,1.030,2048,39,7,40,573440,573440,5080,5080,573440,39,39,39,39,1,1,0,623902,623902,repro/stage21_suba_output_profile_avx512_runs1/r2/run_0.log
+4,0,PASS,30982661.000,40462154.000,1.306,2048,39,7,40,573440,573440,5080,5080,573440,39,39,39,39,1,1,0,923189,923189,repro/stage21_suba_output_profile_avx512_runs1/r4/run_0.log

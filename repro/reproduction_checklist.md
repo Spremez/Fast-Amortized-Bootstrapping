@@ -106,7 +106,10 @@
 - [x] Run Stage 20 target correctness and default target regression gates.
 - [x] Run Stage 20 active-buffer profile gate and verify copyback 40 -> 0.
 - [x] Run Stage 20 repeated full SAB A/B gates for `r=2` and `r=4`.
-- [ ] Implement Stage 21 sub_a/rotation scratch optimization only if the post-Stage-20 profile justifies it.
+- [x] Implement Stage 21 sub_a output-fusion candidate behind an explicit flag after post-Stage-20 profile showed measurable sub_a cost.
+- [x] Run Stage 21 default target regression to confirm guarded code did not change the non-Stage-21 path.
+- [x] Run Stage 21 target correctness and profile count gates for `r=2` and `r=4`.
+- [x] Run Stage 21 sequential unprofiled full SAB smokes and record the candidate as neutral versus Stage 20.
 - [ ] Complete Stage 22 MAT AVX512 promotion audit with generic-vs-MAT microbench, assembly/perf attribution, and full SAB sweeps.
 - [ ] Implement Stage 23 CMUX/NCMUX schedule fusion only after Stage 19/22 identify a material target.
 - [ ] Run Stage 25 correctness/noise/resource matrix for any promoted Stage 20-23 variant.
