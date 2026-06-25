@@ -69,6 +69,7 @@ REQUIRED_FILES = [
     "docs/stage43_postclosure_current_smoke_log.md",
     "experiments/stage43_postclosure_current_smoke_plan.md",
     "repro/stage43_current_smoke_after_stage42/summary.csv",
+    "repro/final_goal_recheck_stage42_closure/summary.csv",
 ]
 
 
@@ -305,6 +306,8 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "docs/stage43_postclosure_current_smoke_log.md",
         "experiments/stage43_postclosure_current_smoke_plan.md",
         "repro/stage43_current_smoke_after_stage42/summary.csv",
+        "repro/final_goal_recheck_stage42_closure/summary.csv",
+        "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [

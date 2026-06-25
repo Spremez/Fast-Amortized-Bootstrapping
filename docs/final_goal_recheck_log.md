@@ -23,10 +23,11 @@ bash scripts/run_final_goal_recheck.sh
 
 The default intentionally skips the network citation probe and current-commit
 smoke. It refreshes the local/perf gate, final package, optional external
-evidence intake, and final audit. Use `FINAL_RECHECK_CITATION=1` only when
-intentionally refreshing external full-text access evidence. Use
-`FINAL_RECHECK_CURRENT_SMOKE=1` when intentionally refreshing the scalar/PVW
-current-commit smoke before the final audit.
+evidence intake, final audit, and Stage 42 evidence-closure audit. Use
+`FINAL_RECHECK_CITATION=1` only when intentionally refreshing external
+full-text access evidence. Use `FINAL_RECHECK_CURRENT_SMOKE=1` when
+intentionally refreshing the scalar/PVW current-commit smoke before the final
+audit.
 
 ## Initial Run
 
@@ -144,3 +145,32 @@ refreshed again. Its summary remains in `repro/final_goal_recheck/summary.csv`
 and records the local perf gate, final package rebuild, external evidence
 intake, and final audit refresh. The post-freeze-only summary remains in
 `repro/final_goal_recheck_postfreeze/summary.csv`.
+
+## Stage42 Closure Recheck
+
+After Stage 43 refreshed current-head smoke evidence, the final recheck runner
+was extended with an explicit Stage 42 closure step:
+
+```bash
+FINAL_RECHECK_OUT_DIR=repro/final_goal_recheck_stage42_closure \
+FINAL_RECHECK_POSTFREEZE_VERIFY=0 \
+FINAL_RECHECK_CITATION=0 \
+FINAL_RECHECK_PERF=0 \
+FINAL_RECHECK_STAGE27_PACKAGE=0 \
+FINAL_RECHECK_EXTERNAL_INTAKE=0 \
+FINAL_RECHECK_CURRENT_SMOKE=0 \
+FINAL_RECHECK_GOAL_AUDIT=0 \
+FINAL_RECHECK_STAGE42_CLOSURE=1 \
+bash scripts/run_final_goal_recheck.sh
+```
+
+Observed summary:
+
+```text
+stage42_evidence_closure = PASS
+final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
+```
+
+This mode proves that the unified recheck wrapper can refresh the Stage 19-43
+evidence-closure audit without rerunning citation probes, perf gates, final
+package generation, external intake, current smoke, or final audit generation.

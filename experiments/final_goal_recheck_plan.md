@@ -26,7 +26,8 @@ Default behavior:
 - rebuild the Stage 27 final evidence package;
 - register optional external evidence from `FAB686_FULLTEXT_PATH` and
   `STAGE28_NATIVE_PERF_SUMMARY` when supplied;
-- regenerate the final goal completion audit.
+- regenerate the final goal completion audit;
+- regenerate the Stage 42 evidence-closure audit unless explicitly disabled.
 
 To refresh full-text/citation availability:
 
@@ -51,6 +52,24 @@ When this is the only enabled gate, the default output directory is
 `repro/final_goal_recheck_postfreeze` so it does not overwrite the ordinary
 `repro/final_goal_recheck` summary. Set `FINAL_RECHECK_OUT_DIR` explicitly to
 override this behavior.
+
+To run only the Stage 42 closure audit through the final recheck wrapper:
+
+```bash
+FINAL_RECHECK_OUT_DIR=repro/final_goal_recheck_stage42_closure \
+FINAL_RECHECK_POSTFREEZE_VERIFY=0 \
+FINAL_RECHECK_CITATION=0 \
+FINAL_RECHECK_PERF=0 \
+FINAL_RECHECK_STAGE27_PACKAGE=0 \
+FINAL_RECHECK_EXTERNAL_INTAKE=0 \
+FINAL_RECHECK_CURRENT_SMOKE=0 \
+FINAL_RECHECK_GOAL_AUDIT=0 \
+FINAL_RECHECK_STAGE42_CLOSURE=1 \
+bash scripts/run_final_goal_recheck.sh
+```
+
+Set `FINAL_RECHECK_STAGE42_CLOSURE=0` to skip the closure audit in a custom
+recheck run.
 
 To attempt the heavy perf-counter SAB benchmark, pass through the Stage 28
 option:
@@ -81,6 +100,8 @@ bash scripts/run_final_goal_recheck.sh
   load/store claims.
 - Registered external evidence changes final audit state to review-required,
   not automatically complete.
+- A skipped Stage 42 closure audit does not prove the Stage 19+ evidence chain
+  is internally closed.
 - The final decision is read from `repro/final_goal_completion_audit.csv` row
   `A9`.
 
@@ -94,6 +115,7 @@ repro/final_goal_recheck/stage27_final_package.log
 repro/final_goal_recheck/external_evidence_intake.log
 repro/final_goal_recheck/stage33_current_smoke.log
 repro/final_goal_recheck/final_goal_audit.log
+repro/final_goal_recheck/stage42_evidence_closure.log
 ```
 
 Post-freeze-only output:
@@ -101,4 +123,11 @@ Post-freeze-only output:
 ```text
 repro/final_goal_recheck_postfreeze/summary.csv
 repro/final_goal_recheck_postfreeze/stage40_postfreeze_verify.log
+```
+
+Stage42-closure-only output:
+
+```text
+repro/final_goal_recheck_stage42_closure/summary.csv
+repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log
 ```

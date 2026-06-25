@@ -64,7 +64,7 @@ evidence.
 | Stage 39 optional variant triage | audit synthesis | n/a | no new variant promoted | non-binary and AVX/layout work blocked by full-text/perf prerequisites; schedule/post-processing variants deferred by prior neutral/small-tail evidence |
 | Stage 40 final scoped freeze | report/freeze | n/a | scoped freeze ready | freeze package is ready for scoped engineering claim; SHA-256 manifest and post-freeze verifier pass; stronger claims remain blocked |
 | Stage 41 external unlock packet | audit synthesis | n/a | generated | current readiness is WAIT_EXTERNAL_FULLTEXT, WAIT_NATIVE_PERF, WAIT_EXTERNAL_ARTIFACTS, and WAIT_UNLOCKS; stronger claims still require external evidence plus manual review |
-| Stage 42 evidence closure audit | audit synthesis | n/a | passed | Stage 19-43 scoped evidence chain is internally closed under current artifacts; stronger claims remain blocked |
+| Stage 42 evidence closure audit | audit synthesis | n/a | passed and recheck-integrated | Stage 19-43 scoped evidence chain is internally closed under current artifacts; closure-only final recheck passes; stronger claims remain blocked |
 | Stage 43 post-closure current smoke | `spqlios_avx512` | n/a | passed | current-head scalar binary full run, explicit PVW target gate, and scalar ternary build all pass; smoke only |
 
 Current conclusion:
@@ -161,6 +161,9 @@ The Stage 42 evidence-closure audit machine-checks that the Stage 19-43 route,
 final audit labels, Stage 40 hashes, Stage 41 readiness, Stage 43 current
 smoke, run log, artifact manifest, and claim guardrails are mutually
 consistent. It passes under the current scoped-ready/stronger-blocked state.
+The Stage 42 closure audit is now callable through the unified final recheck
+runner and has passed in a closure-only output directory, so evidence-chain
+closure can be refreshed without rerunning heavy or external gates.
 The Stage 43 post-closure current smoke then refreshes build/correctness
 evidence at the current repository head. Scalar binary full run, explicit PVW
 target gate, and scalar ternary build all pass under `spqlios_avx512`; this is

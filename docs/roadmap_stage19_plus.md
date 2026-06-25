@@ -1059,6 +1059,8 @@ Tasks:
 - verify Stage 40 freeze manifest SHA-256 hashes still match current artifacts;
 - verify run-log coverage and required control-plane files;
 - preserve claim guardrails rather than upgrading blocked claims.
+- expose the closure audit through `scripts/run_final_goal_recheck.sh` so it
+  can be refreshed by the unified recheck entry point.
 
 Gate:
 
@@ -1076,7 +1078,8 @@ Stage 42 evidence-closure audit generated and passed. It verifies roadmap
 coverage, final-audit status labels, Stage 41 readiness, Stage 40 freeze
 hashes, post-freeze verification, run-log coverage, required files, artifact
 manifest entries, and claim guardrails. The overall result is scoped evidence
-closure with stronger claims still blocked.
+closure with stronger claims still blocked. The audit is also integrated into
+the final recheck runner and passed in a closure-only recheck output directory.
 ```
 
 ## Stage 43: Post-Closure Current Smoke

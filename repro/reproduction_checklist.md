@@ -167,6 +167,7 @@
 - [x] Generate Stage 41 external-unlock packet for full-text/native-perf continuation gates.
 - [x] Generate Stage 42 machine-checkable evidence-closure audit for Stage 19-43.
 - [x] Run Stage 43 post-closure current-head scalar/PVW smoke refresh.
+- [x] Integrate Stage 42 evidence-closure audit into the final recheck runner.
 - [ ] Execute remaining Stage 36 optional target-noise/added-parameter campaigns only if broader claims need them.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.

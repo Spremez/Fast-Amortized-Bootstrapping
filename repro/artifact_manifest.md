@@ -606,6 +606,8 @@ Repro artifacts:
 - `repro/final_goal_recheck/stage40_postfreeze_verify.log`
 - `repro/final_goal_recheck_postfreeze/summary.csv`
 - `repro/final_goal_recheck_postfreeze/stage40_postfreeze_verify.log`
+- `repro/final_goal_recheck_stage42_closure/summary.csv`
+- `repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log`
 - `repro/external_evidence_intake/summary.csv`
 - `repro/stage35_completion_blockers.csv`
 - `repro/stage36_high_stat_plan.csv`
