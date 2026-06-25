@@ -21,10 +21,12 @@ Default lightweight command:
 bash scripts/run_final_goal_recheck.sh
 ```
 
-The default intentionally skips the network citation probe. It refreshes the
-local/perf gate, final package, optional external evidence intake, and final audit. Use
-`FINAL_RECHECK_CITATION=1` only when intentionally refreshing external full-text
-access evidence.
+The default intentionally skips the network citation probe and current-commit
+smoke. It refreshes the local/perf gate, final package, optional external
+evidence intake, and final audit. Use `FINAL_RECHECK_CITATION=1` only when
+intentionally refreshing external full-text access evidence. Use
+`FINAL_RECHECK_CURRENT_SMOKE=1` when intentionally refreshing the scalar/PVW
+current-commit smoke before the final audit.
 
 ## Initial Run
 
@@ -41,6 +43,7 @@ repro/final_goal_recheck/summary.csv
 repro/final_goal_recheck/stage28_perf_gate.log
 repro/final_goal_recheck/stage27_final_package.log
 repro/final_goal_recheck/external_evidence_intake.log
+repro/final_goal_recheck/stage33_current_smoke.log
 repro/final_goal_recheck/final_goal_audit.log
 ```
 
@@ -78,3 +81,22 @@ SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 
 Direct full-text routes for 2025/686 remained blocked, so theorem-level
 citations are still not allowed.
+
+## Current-Smoke Refresh
+
+Stage 34 adds an explicit current-smoke recheck mode:
+
+```bash
+FINAL_RECHECK_CURRENT_SMOKE=1 bash scripts/run_final_goal_recheck.sh
+```
+
+This runs `scripts/run_stage33_current_smoke.sh` before regenerating the final
+goal audit. It is a current build/correctness refresh only; it does not change
+the performance, noise, resource, citation, or novelty claim status.
+
+The 2026-06-26 current-smoke refresh passed:
+
+```text
+stage33_current_smoke = PASS
+final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
+```

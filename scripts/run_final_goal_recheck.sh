@@ -6,6 +6,7 @@ run_citation="${FINAL_RECHECK_CITATION:-0}"
 run_perf="${FINAL_RECHECK_PERF:-1}"
 run_stage27_package="${FINAL_RECHECK_STAGE27_PACKAGE:-1}"
 run_external_intake="${FINAL_RECHECK_EXTERNAL_INTAKE:-1}"
+run_current_smoke="${FINAL_RECHECK_CURRENT_SMOKE:-0}"
 run_goal_audit="${FINAL_RECHECK_GOAL_AUDIT:-1}"
 python_bin="${PYTHON_BIN:-python3}"
 
@@ -82,6 +83,16 @@ else
     "$python_bin scripts/register_external_evidence.py" \
     "" \
     "Set FINAL_RECHECK_EXTERNAL_INTAKE=1 to refresh optional external evidence registration."
+fi
+
+if [[ "$run_current_smoke" == "1" ]]; then
+  run_logged "stage33_current_smoke" \
+    "bash scripts/run_stage33_current_smoke.sh"
+else
+  csv_row "stage33_current_smoke" "SKIPPED" \
+    "bash scripts/run_stage33_current_smoke.sh" \
+    "" \
+    "Set FINAL_RECHECK_CURRENT_SMOKE=1 to refresh current scalar/PVW smoke evidence."
 fi
 
 if [[ "$run_goal_audit" == "1" ]]; then

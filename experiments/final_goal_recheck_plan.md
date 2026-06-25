@@ -21,6 +21,7 @@ bash scripts/run_final_goal_recheck.sh
 Default behavior:
 
 - skip network citation probing;
+- skip current-commit scalar/PVW smoke by default;
 - run the Stage 28 native perf-counter gate;
 - rebuild the Stage 27 final evidence package;
 - register optional external evidence from `FAB686_FULLTEXT_PATH` and
@@ -31,6 +32,12 @@ To refresh full-text/citation availability:
 
 ```bash
 FINAL_RECHECK_CITATION=1 bash scripts/run_final_goal_recheck.sh
+```
+
+To refresh current-commit scalar/PVW smoke evidence before the final audit:
+
+```bash
+FINAL_RECHECK_CURRENT_SMOKE=1 bash scripts/run_final_goal_recheck.sh
 ```
 
 To attempt the heavy perf-counter SAB benchmark, pass through the Stage 28
@@ -53,6 +60,8 @@ bash scripts/run_final_goal_recheck.sh
 - Any failed command must stop the recheck script.
 - A skipped citation probe does not upgrade theorem-level 2025/686 citation
   claims.
+- A skipped current smoke does not refresh the current-commit scalar/PVW
+  smoke evidence in the final audit.
 - A blocked Stage 28 perf gate does not upgrade MAT-AVX512 theoretical
   load/store claims.
 - Registered external evidence changes final audit state to review-required,
@@ -67,5 +76,6 @@ repro/final_goal_recheck/summary.csv
 repro/final_goal_recheck/stage28_perf_gate.log
 repro/final_goal_recheck/stage27_final_package.log
 repro/final_goal_recheck/external_evidence_intake.log
+repro/final_goal_recheck/stage33_current_smoke.log
 repro/final_goal_recheck/final_goal_audit.log
 ```

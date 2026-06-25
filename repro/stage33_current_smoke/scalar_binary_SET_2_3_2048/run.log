@@ -6,6 +6,6 @@ Decomposition: BS(ℓ=1, β=2^23) PCK(ℓ=2, β=2^14) KS(ℓ=12, β=2^1)
 Message precision: 3 - Repetitions: 3
 
 Max monomial distance (log B): 7
-Rejection Sampling Attempts: 428
-Bootstrapping time: 9,122,411μs +- 36534.584446
+Rejection Sampling Attempts: 389
+Bootstrapping time: 8,796,267μs +- 16694.881481
 Pass

@@ -710,3 +710,43 @@ Status after initial execution:
 
 PASS_CURRENT_SMOKE
 ```
+
+## Stage 34: Current-Smoke Final Recheck Integration
+
+Goal:
+
+```text
+Make the Stage 33 current-commit scalar/PVW smoke gate refreshable through the
+single final-goal recheck command before the generated final audit is rebuilt.
+```
+
+Tasks:
+
+- add `FINAL_RECHECK_CURRENT_SMOKE=1` support to
+  `scripts/run_final_goal_recheck.sh`;
+- keep the default lightweight recheck fast by skipping current smoke unless
+  explicitly requested;
+- run the Stage 33 smoke before final audit generation when enabled;
+- record the result in `repro/final_goal_recheck/summary.csv` and
+  `repro/final_goal_recheck/stage33_current_smoke.log`;
+- preserve the rule that the smoke is build/correctness evidence only, not a
+  performance claim.
+
+Gate:
+
+- `bash -n scripts/run_final_goal_recheck.sh` must pass;
+- `FINAL_RECHECK_CURRENT_SMOKE=1 bash scripts/run_final_goal_recheck.sh` must
+  pass with `stage33_current_smoke=PASS`;
+- the regenerated final audit must keep `A5b=PASS_CURRENT_SMOKE`;
+- the final decision must remain scoped-ready/stronger-blocked unless external
+  stronger evidence is supplied.
+
+Status:
+
+```text
+Implementation and execution completed. The final recheck runner now accepts
+FINAL_RECHECK_CURRENT_SMOKE=1, records stage33_current_smoke=PASS in
+repro/final_goal_recheck/summary.csv, regenerates the final audit afterward,
+and preserves the final decision:
+SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED.
+```
