@@ -188,15 +188,19 @@ hypotheses:
       The relative cost of MAT external products, sparse schedule work, sub_a,
       extract, and key switching depends on N, h, r_prec, branch type, and
       backend. A single target parameter can hide branch-specific regressions.
-    status: stage26_initial_binary_parameter_smoke_supported
-    evidence: docs/stage26_parameter_branch_log.md
+    status: stage26_parameter_perf_noise_smoke_supported
+    evidence: docs/stage26_parameter_perf_noise_log.md
     current_decision: >
       Stage 26 parameterized the PVW target harness and verified that
       SET_2_3_2048, SET_4_5_2048, and SET_2_3_4096 pass target correctness
       smoke under spqlios_avx512 with specialized MAT-AVX512 and active-buffer
-      fusion. PVW+TERNARY is explicitly rejected as unsupported, while scalar
-      TERNARY still builds. Keep broad claims limited to binary smoke
-      generalization until added parameters receive noise/performance gates.
+      fusion. Added-parameter performance/noise smoke now also passes:
+      SET_4_5_2048 r=2 has 1.310x one-run full-SAB speedup with zero
+      final-output failures, SET_4_5_2048 r=4 has 1.437x with zero failures,
+      and SET_2_3_4096 r=2 has 1.251x with zero failures. PVW+TERNARY is
+      explicitly rejected as unsupported, while scalar TERNARY still builds.
+      Keep broad claims limited to binary smoke generalization until repeated
+      performance and multi-seed noise are added for the claimed parameters.
     failure_criteria:
       - added parameter sets fail correctness or noise gates
       - speedup appears only on one narrow configuration

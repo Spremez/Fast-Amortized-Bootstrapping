@@ -1,0 +1,2 @@
+r,seed,status,points,pvw_failures,scalar_failures,pair_failures,pvw_log2_sigma_torus,scalar_log2_sigma_torus,pair_log2_sigma_torus,pvw_minus_scalar_log2,max_allowed_log2_gap,source_log
+2,6863025,Pass,8192,0,0,0,-7.674,-7.688,-7.163,0.014,4.000,repro/stage26_parameter_perf_noise_avx512_added_r2_smoke/noise_SET_2_3_4096_r2_seeds1/r2/seed_6863025.log

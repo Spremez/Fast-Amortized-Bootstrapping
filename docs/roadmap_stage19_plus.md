@@ -363,8 +363,16 @@ active-buffer fusion. The corresponding h/r_prec values were 39/7, 42/7, and
 TERNARY still builds.
 
 This supports binary parameter-smoke generalization only. It does not yet
-support non-binary PVW-SAB, performance scaling claims on the new parameters,
-or noise robustness beyond the main target.
+support non-binary PVW-SAB, repeated performance scaling claims on the new
+parameters, or noise robustness beyond smoke-level added-parameter gates.
+
+Follow-up execution added initial performance/noise smoke for the added binary
+parameters. Under `spqlios_avx512`, specialized MAT-AVX512, and active-buffer
+fusion, `SET_4_5_2048` r=2 reached 1.310x and r=4 reached 1.437x in one-run
+complete-SAB A/B smokes; `SET_2_3_4096` r=2 reached 1.251x. All corresponding
+one-seed final-output noise smokes had zero PVW, scalar, and pair failures.
+This strengthens parameter smoke, but does not yet support broad statistical
+performance/noise claims.
 ```
 
 ## Stage 27: Novelty and Paper Package

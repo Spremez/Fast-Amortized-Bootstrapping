@@ -52,6 +52,7 @@ Code artifacts:
 - `scripts/run_stage25_stage_noise_probe.sh`
 - `scripts/run_stage25_resource_matrix.sh`
 - `scripts/run_stage26_parameter_target_smoke.sh`
+- `scripts/run_stage26_parameter_perf_noise.sh`
 
 Documentation artifacts:
 
@@ -94,6 +95,7 @@ Documentation artifacts:
 - `docs/stage24_postproc_tail_log.md`
 - `docs/stage25_correctness_noise_resource_log.md`
 - `docs/stage26_parameter_branch_log.md`
+- `docs/stage26_parameter_perf_noise_log.md`
 - `docs/stage27_novelty_paper_package_log.md`
 - `docs/stage27_full_related_work_gate_log.md`
 - `docs/stage27_final_full_sab_performance_log.md`
@@ -120,6 +122,7 @@ Documentation artifacts:
 - `experiments/stage24_postproc_tail_plan.md`
 - `experiments/stage25_correctness_noise_resource_plan.md`
 - `experiments/stage26_parameter_branch_plan.md`
+- `experiments/stage26_parameter_perf_noise_plan.md`
 - `experiments/stage27_novelty_paper_package_plan.md`
 
 Repro artifacts:
@@ -453,6 +456,19 @@ Repro artifacts:
 - `repro/stage26_parameter_branch_smoke_avx512/binary_SET_2_3_4096/run.log`
 - `repro/stage26_parameter_branch_smoke_avx512/unsupported_TERNARY_SET_2_3_2048/pvw_build.log`
 - `repro/stage26_parameter_branch_smoke_avx512/unsupported_TERNARY_SET_2_3_2048/scalar_build.log`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_smoke/performance_summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_smoke/noise_summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_smoke/perf_SET_4_5_2048_r2_runs1/summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_smoke/perf_SET_2_3_4096_r2_runs1/summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_smoke/noise_SET_4_5_2048_r2_seeds1/summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_smoke/noise_SET_4_5_2048_r2_seeds1/aggregate.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_smoke/noise_SET_2_3_4096_r2_seeds1/summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_added_r2_smoke/noise_SET_2_3_4096_r2_seeds1/aggregate.csv`
+- `repro/stage26_parameter_perf_noise_avx512_set_4_5_2048_r4_smoke/performance_summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_set_4_5_2048_r4_smoke/noise_summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_set_4_5_2048_r4_smoke/perf_SET_4_5_2048_r4_runs1/summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_set_4_5_2048_r4_smoke/noise_SET_4_5_2048_r4_seeds1/summary.csv`
+- `repro/stage26_parameter_perf_noise_avx512_set_4_5_2048_r4_smoke/noise_SET_4_5_2048_r4_seeds1/aggregate.csv`
 - `repro/stage27_literature_matrix.csv`
 - `repro/stage27_source_access_matrix.csv`
 - `repro/stage27_final_full_sab_summary.csv`

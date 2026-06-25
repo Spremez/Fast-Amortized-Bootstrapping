@@ -128,7 +128,8 @@
 - [x] Parameterize PVW target harness so `PARAM=SET_*` affects PVW gates.
 - [x] Run Stage 26 initial binary parameter target smoke.
 - [x] Record non-binary PVW branch as unsupported while keeping scalar TERNARY buildable.
-- [ ] Run Stage 26 noise/performance gates for added parameters before broad performance claims.
+- [x] Run Stage 26 initial performance/noise smoke for added binary parameters.
+- [ ] Run repeated Stage 26 performance and multi-seed noise gates for added parameters before broad performance claims.
 - [x] Add Stage 27 initial related-work and claim-boundary matrix.
 - [x] Record Stage 27 full-source access attempt and claim boundary.
 - [x] Re-run final consolidated full-SAB performance table for promoted r=2/r=4 target path after Stage 26 harness changes.

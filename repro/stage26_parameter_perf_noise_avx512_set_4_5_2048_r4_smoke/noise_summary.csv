@@ -1,0 +1,2 @@
+param,r,seeds,points,pvw_failures,scalar_failures,pair_failures,min_pvw_minus_scalar_log2,max_pvw_minus_scalar_log2,avg_pvw_minus_scalar_log2,status,source_csv
+SET_4_5_2048,4,1,8192,0,0,0,0.059,0.059,0.059000,PASS,repro/stage26_parameter_perf_noise_avx512_set_4_5_2048_r4_smoke/noise_SET_4_5_2048_r4_seeds1/aggregate.csv
