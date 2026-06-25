@@ -137,3 +137,9 @@ final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 
 This mode is separated from the ordinary `repro/final_goal_recheck` output so
 the post-freeze-only summary does not overwrite the default recheck summary.
+
+After separating the output directories, the ordinary default recheck was
+refreshed again. Its summary remains in `repro/final_goal_recheck/summary.csv`
+and records the local perf gate, final package rebuild, external evidence
+intake, and final audit refresh. The post-freeze-only summary remains in
+`repro/final_goal_recheck_postfreeze/summary.csv`.
