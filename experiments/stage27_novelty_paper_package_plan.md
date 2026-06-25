@@ -58,5 +58,8 @@ Blocked unless additional evidence is added:
 
 - `repro/stage27_literature_matrix.csv`
 - `docs/stage27_novelty_paper_package_log.md`
+- `docs/stage27_related_work_refresh_log.md`
+- `repro/stage27_related_work_access_refresh.csv`
+- `repro/stage27_claim_support_matrix.csv`
 - updates to the project goal, roadmap, hypothesis register, and reproduction
   checklist.

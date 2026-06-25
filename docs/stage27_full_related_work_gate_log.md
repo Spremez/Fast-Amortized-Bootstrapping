@@ -17,6 +17,25 @@ SAB.
 | 2025/696 incomplete NTT | preliminary full text plus code metadata | public full-text page and GitHub repository describe incomplete-NTT amortized bootstrapping and reproducibility setup | adjacent acceleration baseline, not the same technique as PVW/MAT-SAB |
 | TFHE/GSW background | background accessible | TFHE external-product and GSW/LWE background sources | only supports background/security boundaries; no novelty support |
 
+## Refresh Update
+
+A follow-up source refresh is recorded in
+`docs/stage27_related_work_refresh_log.md` and
+`repro/stage27_related_work_access_refresh.csv`.
+
+Changes relative to the initial gate:
+
+- `2025/686` remains partial: author metadata, repository metadata, and ACM
+  metadata are usable, but full ePrint/ACM paper access is still blocked in
+  this environment.
+- `2025/2112` is now stronger novelty-risk evidence: public full-text and DBLP
+  metadata are available for common-mask/shared-mask multi-body TFHE batching.
+- `2025/696` incomplete-NTT amortized bootstrapping has accessible full ePrint
+  PDF and code metadata; it is adjacent acceleration evidence, not the same
+  PVW/MAT-SAB technique.
+- GPVL23 and a 2026 bootstrapping survey are added only as background and
+  positioning evidence.
+
 ## Claim Boundary After This Gate
 
 Allowed:
@@ -43,10 +62,10 @@ Multi-fold SAB speedup claim.
   theorem, algorithm, remark, or experiment numbers.
 - Inspect the final publisher/ePrint version of 2025/2112 before writing a
   novelty distinction in manuscript language.
-- Re-run a final consolidated full-SAB performance, noise, and resource table
-  after the claim scope is fixed.
-- If broad binary-parameter claims are desired, extend Stage 26 from correctness
-  smoke to repeated performance and noise gates on the added parameters.
+- Assemble the final performance/noise/resource manuscript package from the
+  Stage 25, Stage 26, and Stage 27 matrices after the claim scope is fixed.
+- If broad binary-parameter claims are desired, extend Stage 26 beyond the
+  current 5-run/5-seed added-parameter evidence.
 
 ## Decision
 
@@ -57,5 +76,5 @@ FULL_RELATED_WORK_GATE_STARTED
 FAB686_FULL_TEXT_BLOCKED_IN_CURRENT_ENVIRONMENT
 NOVELTY_CLAIM_STILL_BLOCKED
 SAFE_ENGINEERING_CLAIM_REMAINS_AVAILABLE
+RELATED_WORK_REFRESH_COMPLETED
 ```
-

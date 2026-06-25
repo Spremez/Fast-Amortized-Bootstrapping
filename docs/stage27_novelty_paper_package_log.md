@@ -97,6 +97,17 @@ confirm the current claim boundary: shared-mask/multiple-body TFHE batching is
 prior-art risky, while incomplete-NTT amortized bootstrapping is an adjacent
 acceleration direction.
 
+The related-work refresh in `docs/stage27_related_work_refresh_log.md` adds a
+source-access matrix and a claim-support matrix:
+
+- `repro/stage27_related_work_access_refresh.csv`;
+- `repro/stage27_claim_support_matrix.csv`.
+
+The refresh strengthens the safe engineering claim and the novelty block:
+public 2025/2112 evidence is sufficient to treat shared-mask/multiple-body
+TFHE batching as prior-art risky, while `2025/686` full text remains unavailable
+for theorem-level citation checking in this environment.
+
 ## Final Full-SAB Performance Update
 
 The first consolidated final full-SAB performance rerun is recorded in
@@ -135,6 +146,8 @@ Status:
 PAPER_PACKAGE_STARTED
 NOVELTY_CLAIM_BLOCKED_PENDING_FULL_RELATED_WORK
 SAFE_ENGINEERING_CLAIM_AVAILABLE
+RELATED_WORK_REFRESH_COMPLETED
+CLAIM_SUPPORT_MATRIX_AVAILABLE
 ```
 
 Stage 27 can proceed, but paper-level novelty must stay blocked until the full

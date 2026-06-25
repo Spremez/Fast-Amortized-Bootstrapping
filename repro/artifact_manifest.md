@@ -99,6 +99,7 @@ Documentation artifacts:
 - `docs/stage27_novelty_paper_package_log.md`
 - `docs/stage27_full_related_work_gate_log.md`
 - `docs/stage27_final_full_sab_performance_log.md`
+- `docs/stage27_related_work_refresh_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -509,6 +510,8 @@ Repro artifacts:
 - `repro/stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5/noise_SET_2_3_4096_r4_seeds5/aggregate.csv`
 - `repro/stage27_literature_matrix.csv`
 - `repro/stage27_source_access_matrix.csv`
+- `repro/stage27_related_work_access_refresh.csv`
+- `repro/stage27_claim_support_matrix.csv`
 - `repro/stage27_final_full_sab_summary.csv`
 - `repro/stage27_final_full_sab_active_r2_runs3/summary.csv`
 - `repro/stage27_final_full_sab_active_r2_runs3/run_0.log`

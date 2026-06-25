@@ -449,4 +449,10 @@ harness also completed. Under `spqlios_avx512`, specialized MAT-AVX512, and
 active-buffer fusion, r=2 averaged 1.171x over three runs and r=4 averaged
 1.401x over three runs. This strengthens the scoped engineering performance
 claim for the current promoted path but does not change the novelty boundary.
+
+The related-work refresh then added a source-access matrix and claim-support
+matrix. It strengthens the safe engineering claim and makes the novelty block
+more explicit: 2025/2112 common-mask/shared-mask multiple-body TFHE remains a
+strong prior-art risk for shared-mask batching, while 2025/686 full text is
+still required before theorem-level base-paper citations can be written.
 ```

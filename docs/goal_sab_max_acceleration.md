@@ -44,6 +44,7 @@ evidence.
 | Stage 26 added-binary 5-run/5-seed matrix | `spqlios_avx512` | 2/4 | small-sample parameter support | `SET_4_5_2048`: r=2 `1.329x`, r=4 `1.346x`; `SET_2_3_4096`: r=2 `1.224x`, r=4 `1.318x`; all zero noise failures |
 | Stage 26 non-binary branch scope | `spqlios_avx512` | n/a | explicit unsupported | PVW+TERNARY rejected; scalar TERNARY build still passes |
 | Stage 27 novelty audit | external scan | n/a | started | safe engineering claim available; novelty claim blocked by related-work risk |
+| Stage 27 related-work refresh | external scan | n/a | scoped claim matrix available | 2025/2112 strengthens shared-mask novelty block; 2025/686 full text still required for theorem-level citations |
 | Stage 27 final full-SAB rerun | `spqlios_avx512` | 2/4 | scoped performance support | r=2 mean `1.171x` with higher variance; r=4 mean `1.401x`, range `1.331x-1.472x` |
 
 Current conclusion:
@@ -67,10 +68,12 @@ performance/noise smoke for added binary parameters, but not repeated or
 large-seed generalization evidence. `SET_4_5_2048` and `SET_2_3_4096` now
 have small 5-run/5-seed parameter-support gates for r=2 and r=4; `SET_4_5_2048`
 r=2 is positive but visibly high variance. Stage 27 starts the paper package
-but keeps novelty claims blocked until full related-work review. The Stage 27
-final full-SAB performance rerun confirms the current promoted explicit path
-after the Stage 26 harness refactor; r=4 is the strongest current target
-evidence, while r=2 remains positive but noisier.
+and now has a related-work refresh plus claim-support matrix, but novelty
+claims remain blocked because shared-mask/multiple-body batching is prior-art
+risky and the full 2025/686 paper is still needed for theorem-level citation
+checks. The Stage 27 final full-SAB performance rerun confirms the current
+promoted explicit path after the Stage 26 harness refactor; r=4 is the
+strongest current target evidence, while r=2 remains positive but noisier.
 ```
 
 ## Invariants

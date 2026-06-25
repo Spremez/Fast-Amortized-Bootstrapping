@@ -137,5 +137,7 @@
 - [x] Add Stage 27 initial related-work and claim-boundary matrix.
 - [x] Record Stage 27 full-source access attempt and claim boundary.
 - [x] Re-run final consolidated full-SAB performance table for promoted r=2/r=4 target path after Stage 26 harness changes.
+- [x] Refresh Stage 27 related-work source access after Stage 26 5-run/5-seed evidence.
+- [x] Add Stage 27 claim-support matrix separating allowed and blocked manuscript wording.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Assemble final manuscript performance/noise/resource package after final claim scope is fixed.

@@ -237,7 +237,13 @@ hypotheses:
       claim. 2025/2112 common-mask TFHE has strong overlap with shared-mask
       multi-body batching, so this project must distinguish any future paper
       claim as SAB-specific integration, schedule engineering, or measured
-      implementation evidence after full paper review.
+      implementation evidence after full paper review. The follow-up
+      related-work refresh added a source-access matrix and claim-support
+      matrix. It strengthens the shared-mask/multi-body novelty block using
+      public 2025/2112 evidence, records 2025/696 incomplete NTT as adjacent
+      acceleration rather than direct PVW/MAT-SAB prior art, and keeps
+      theorem-level 2025/686 citation checks blocked until the full paper is
+      manually inspected.
     failure_criteria:
       - related work already covers the claimed algorithmic idea
       - full SAB benchmark evidence is missing or only smoke-level
