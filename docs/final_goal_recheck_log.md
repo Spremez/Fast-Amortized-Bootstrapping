@@ -174,3 +174,27 @@ final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 This mode proves that the unified recheck wrapper can refresh the Stage 19-43
 evidence-closure audit without rerunning citation probes, perf gates, final
 package generation, external intake, current smoke, or final audit generation.
+
+## Default Recheck With Closure
+
+The ordinary default recheck was then rerun after Stage 42 integration:
+
+```bash
+bash scripts/run_final_goal_recheck.sh
+```
+
+Observed summary:
+
+```text
+stage28_perf_gate = PASS
+stage27_final_package = PASS
+external_evidence_intake = PASS
+final_goal_audit = PASS
+stage42_evidence_closure = PASS
+final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
+```
+
+The Stage 28 gate remains a recorded blocked-gate refresh in this WSL2
+environment because `perf` is unavailable. The new default behavior adds the
+Stage 42 closure audit to the ordinary recheck path while preserving the final
+claim boundary.

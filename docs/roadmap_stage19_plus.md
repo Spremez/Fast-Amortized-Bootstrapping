@@ -1079,7 +1079,8 @@ coverage, final-audit status labels, Stage 41 readiness, Stage 40 freeze
 hashes, post-freeze verification, run-log coverage, required files, artifact
 manifest entries, and claim guardrails. The overall result is scoped evidence
 closure with stronger claims still blocked. The audit is also integrated into
-the final recheck runner and passed in a closure-only recheck output directory.
+the final recheck runner and passed in both a closure-only recheck output
+directory and the ordinary default recheck path.
 ```
 
 ## Stage 43: Post-Closure Current Smoke

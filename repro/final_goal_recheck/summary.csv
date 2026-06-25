@@ -6,4 +6,5 @@ stage27_final_package,PASS,python3 scripts/build_stage27_final_package.py,repro/
 external_evidence_intake,PASS,python3 scripts/register_external_evidence.py,repro/final_goal_recheck/external_evidence_intake.log,command completed
 stage33_current_smoke,SKIPPED,bash scripts/run_stage33_current_smoke.sh,,Set FINAL_RECHECK_CURRENT_SMOKE=1 to refresh current scalar/PVW smoke evidence.
 final_goal_audit,PASS,python3 scripts/build_final_goal_completion_audit.py,repro/final_goal_recheck/final_goal_audit.log,command completed
+stage42_evidence_closure,PASS,python3 scripts/build_stage42_evidence_closure_audit.py,repro/final_goal_recheck/stage42_evidence_closure.log,command completed
 final_decision,SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED,read repro/final_goal_completion_audit.csv A9,repro/final_goal_completion_audit.csv,current final goal audit decision
