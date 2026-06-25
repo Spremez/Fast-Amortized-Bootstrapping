@@ -10,7 +10,7 @@ This verifier checks the frozen scoped engineering evidence chain without regene
 
 | check | status | evidence | detail |
 |---|---|---|---|
-| verification_input_commit | 0be1e66 | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
+| verification_input_commit | 6593253 | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
 | worktree_clean_before_outputs | PASS | git status --short --untracked-files=all | tracked and untracked worktree was clean before verifier outputs. |
 | stage40_decision | PASS | repro/stage40_final_freeze_summary.csv | SCOPED_FREEZE_READY_STRONGER_CLAIMS_BLOCKED |
 | final_audit_A9 | PASS | repro/final_goal_completion_audit.csv | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED |
