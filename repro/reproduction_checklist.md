@@ -153,6 +153,7 @@
 - [x] Generate Stage 35 completion blocker matrix from the final audit.
 - [x] Generate Stage 36 high-statistics expansion budget matrix.
 - [x] Execute Stage 36 high-stat target performance campaign.
+- [x] Execute Stage 36 stage-level noise 10-seed campaign.
 - [ ] Execute remaining Stage 36 optional noise/resource/added-parameter campaigns only if broader claims need them.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.

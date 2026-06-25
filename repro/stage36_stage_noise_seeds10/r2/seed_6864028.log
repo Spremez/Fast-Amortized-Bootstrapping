@@ -1,0 +1,17 @@
+SAB_PVW_STAGE_NOISE trial target_full r=2 trial=0 complete
+SAB_PVW_STAGE_NOISE lane stage=blind_rotate_coeff0 r=2 lane=0 trials=1 pair_failures=0 pair_log2_sigma_torus=-15.075 pair_log2_max_abs_torus=-12.978
+SAB_PVW_STAGE_NOISE lane stage=blind_rotate_coeff0 r=2 lane=1 trials=1 pair_failures=0 pair_log2_sigma_torus=-15.201 pair_log2_max_abs_torus=-13.588
+SAB_PVW_STAGE_NOISE summary stage=blind_rotate_coeff0 r=2 trials=1 points=4096 pair_failures=0 pair_log2_sigma_torus=-15.135 pair_log2_max_abs_torus=-12.978
+SAB_PVW_STAGE_NOISE lane stage=extract r=2 lane=0 trials=1 pair_failures=0 pair_log2_sigma_torus=-15.075 pair_log2_max_abs_torus=-12.978
+SAB_PVW_STAGE_NOISE lane stage=extract r=2 lane=1 trials=1 pair_failures=0 pair_log2_sigma_torus=-15.201 pair_log2_max_abs_torus=-13.588
+SAB_PVW_STAGE_NOISE summary stage=extract r=2 trials=1 points=4096 pair_failures=0 pair_log2_sigma_torus=-15.135 pair_log2_max_abs_torus=-12.978
+SAB_PVW_STAGE_NOISE lane stage=materialize_tlwe r=2 lane=0 trials=1 pair_failures=0 pair_log2_sigma_torus=-15.075 pair_log2_max_abs_torus=-12.978
+SAB_PVW_STAGE_NOISE lane stage=materialize_tlwe r=2 lane=1 trials=1 pair_failures=0 pair_log2_sigma_torus=-15.201 pair_log2_max_abs_torus=-13.588
+SAB_PVW_STAGE_NOISE summary stage=materialize_tlwe r=2 trials=1 points=4096 pair_failures=0 pair_log2_sigma_torus=-15.135 pair_log2_max_abs_torus=-12.978
+SAB_PVW_STAGE_NOISE lane stage=packing_ks r=2 lane=0 trials=1 pair_failures=0 pair_log2_sigma_torus=-15.074 pair_log2_max_abs_torus=-12.972
+SAB_PVW_STAGE_NOISE lane stage=packing_ks r=2 lane=1 trials=1 pair_failures=0 pair_log2_sigma_torus=-15.200 pair_log2_max_abs_torus=-13.596
+SAB_PVW_STAGE_NOISE summary stage=packing_ks r=2 trials=1 points=4096 pair_failures=0 pair_log2_sigma_torus=-15.134 pair_log2_max_abs_torus=-12.972
+SAB_PVW_STAGE_NOISE lane stage=hw_ks r=2 lane=0 trials=1 pair_failures=0 pair_log2_sigma_torus=-8.064 pair_log2_max_abs_torus=-6.265
+SAB_PVW_STAGE_NOISE lane stage=hw_ks r=2 lane=1 trials=1 pair_failures=0 pair_log2_sigma_torus=-8.050 pair_log2_max_abs_torus=-6.141
+SAB_PVW_STAGE_NOISE summary stage=hw_ks r=2 trials=1 points=4096 pair_failures=0 pair_log2_sigma_torus=-8.057 pair_log2_max_abs_torus=-6.141
+SAB_PVW_STAGE_NOISE target full bootstrap stage gate: Pass

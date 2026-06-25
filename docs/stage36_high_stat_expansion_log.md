@@ -58,6 +58,21 @@ Supplemental samples not included in the primary 10-run statistic:
 | target_r4_runs2_topup_run_0 | 4 | 1.374 | SUPPLEMENTAL_NOT_IN_PRIMARY_10RUN |
 | target_r4_runs2_topup_run_1 | 4 | 1.317 | SUPPLEMENTAL_NOT_IN_PRIMARY_10RUN |
 
+## Stage-Noise Result
+
+| r | stage | seeds | pair failures | avg sigma | worst max abs | status |
+|---|---|---:|---:|---:|---:|---|
+| 2 | blind_rotate_coeff0 | 10 | 0 | -14.871200 | -12.146 | PASS |
+| 2 | extract | 10 | 0 | -14.871200 | -12.146 | PASS |
+| 2 | materialize_tlwe | 10 | 0 | -14.871200 | -12.146 | PASS |
+| 2 | packing_ks | 10 | 0 | -14.870400 | -12.155 | PASS |
+| 2 | hw_ks | 10 | 0 | -8.062200 | -5.992 | PASS |
+| 4 | blind_rotate_coeff0 | 10 | 0 | -14.798300 | -11.993 | PASS |
+| 4 | extract | 10 | 0 | -14.798300 | -11.993 | PASS |
+| 4 | materialize_tlwe | 10 | 0 | -14.798300 | -11.993 | PASS |
+| 4 | packing_ks | 10 | 0 | -14.797700 | -11.992 | PASS |
+| 4 | hw_ks | 10 | 0 | -8.062000 | -5.878 | PASS |
+
 ## Current Decision
 
-The target performance campaign now has 10 primary same-backend samples for r=2 and r=4. This strengthens target performance statistics, but it does not upgrade novelty, theorem-level citation, non-binary, all-parameter, or hardware-counter claims.
+The target performance campaign has 10 primary same-backend samples for r=2 and r=4, and the stage-noise campaign has 10 deterministic seeds for r=2 and r=4 with zero pair failures at all reported stages. This strengthens target performance and stage-level noise statistics, but it does not upgrade novelty, theorem-level citation, non-binary, all-parameter, or hardware-counter claims.

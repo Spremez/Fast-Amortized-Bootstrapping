@@ -64,6 +64,7 @@ Code artifacts:
 - `scripts/build_stage36_high_stat_plan.py`
 - `scripts/run_stage36_high_stat_expansion.sh`
 - `scripts/build_stage36_target_perf_summary.py`
+- `scripts/run_stage36_stage_noise_sweep.sh`
 
 Documentation artifacts:
 
@@ -590,6 +591,12 @@ Repro artifacts:
 - `repro/stage36_target_perf_r4_runs2_topup/summary.csv`
 - `repro/stage36_target_perf_r4_runs2_topup/run_0.log`
 - `repro/stage36_target_perf_r4_runs2_topup/run_1.log`
+- `repro/stage36_stage_noise_seeds10/summary.csv`
+- `repro/stage36_stage_noise_seeds10/aggregate.csv`
+- `repro/stage36_stage_noise_seeds10/r2/seed_6864025.log` through
+  `repro/stage36_stage_noise_seeds10/r2/seed_6864034.log`
+- `repro/stage36_stage_noise_seeds10/r4/seed_6864025.log` through
+  `repro/stage36_stage_noise_seeds10/r4/seed_6864034.log`
 - `repro/stage33_current_smoke/summary.csv`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/build.log`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/run.log`

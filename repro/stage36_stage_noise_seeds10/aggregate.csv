@@ -1,0 +1,11 @@
+r,stage,seeds,total_trials,total_points,pair_failures,min_pair_log2_sigma,max_pair_log2_sigma,avg_pair_log2_sigma,worst_pair_log2_max_abs,status,source_summary
+2,blind_rotate_coeff0,10,10,40960,0,-15.135,-14.246,-14.871200,-12.146,PASS,repro/stage36_stage_noise_seeds10/summary.csv
+2,extract,10,10,40960,0,-15.135,-14.246,-14.871200,-12.146,PASS,repro/stage36_stage_noise_seeds10/summary.csv
+2,materialize_tlwe,10,10,40960,0,-15.135,-14.246,-14.871200,-12.146,PASS,repro/stage36_stage_noise_seeds10/summary.csv
+2,packing_ks,10,10,40960,0,-15.134,-14.245,-14.870400,-12.155,PASS,repro/stage36_stage_noise_seeds10/summary.csv
+2,hw_ks,10,10,40960,0,-8.079,-8.036,-8.062200,-5.992,PASS,repro/stage36_stage_noise_seeds10/summary.csv
+4,blind_rotate_coeff0,10,10,81920,0,-14.959,-14.471,-14.798300,-11.993,PASS,repro/stage36_stage_noise_seeds10/summary.csv
+4,extract,10,10,81920,0,-14.959,-14.471,-14.798300,-11.993,PASS,repro/stage36_stage_noise_seeds10/summary.csv
+4,materialize_tlwe,10,10,81920,0,-14.959,-14.471,-14.798300,-11.993,PASS,repro/stage36_stage_noise_seeds10/summary.csv
+4,packing_ks,10,10,81920,0,-14.958,-14.470,-14.797700,-11.992,PASS,repro/stage36_stage_noise_seeds10/summary.csv
+4,hw_ks,10,10,81920,0,-8.082,-8.049,-8.062000,-5.878,PASS,repro/stage36_stage_noise_seeds10/summary.csv

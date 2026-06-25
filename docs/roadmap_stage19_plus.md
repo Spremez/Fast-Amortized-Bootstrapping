@@ -817,14 +817,19 @@ Gate:
 Status:
 
 ```text
-Stage 36 plan generation completed and the high-priority target_perf campaign
-was executed. The primary 10-run same-backend target full-SAB aggregate passes:
-r=2 mean speedup 1.191x with 95% CI [1.075307, 1.306693], and r=4 mean
-speedup 1.377x with 95% CI [1.314893, 1.438107]. The original long command hit
-a tool timeout while WSL-side artifacts completed; two later r=4 top-up runs
-are preserved as supplemental and not included in the primary 10-run statistic.
-This strengthens target-performance statistics but does not upgrade novelty,
-theorem-level citation, non-binary, all-parameter, or hardware-counter claims.
+Stage 36 plan generation completed. The high-priority target_perf campaign was
+executed: r=2 mean speedup 1.191x with 95% CI [1.075307, 1.306693], and r=4
+mean speedup 1.377x with 95% CI [1.314893, 1.438107]. The original long command
+hit a tool timeout while WSL-side artifacts completed; two later r=4 top-up
+runs are preserved as supplemental and not included in the primary 10-run
+statistic.
+
+The stage_noise campaign was also executed for r=2/r=4 with 10 deterministic
+seeds. All reported stages passed with zero pair failures:
+blind_rotate_coeff0, extract, materialize_tlwe, packing_ks, and hw_ks. This
+strengthens target-performance and stage-level noise statistics but does not
+upgrade novelty, theorem-level citation, non-binary, all-parameter, or
+hardware-counter claims.
 ```
 
 ## Stage 37: Native Perf-Counter Evidence

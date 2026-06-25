@@ -41,13 +41,10 @@ case "$mode" in
 
   stage_noise)
     seeds="${STAGE36_STAGE_NOISE_SEEDS:-10}"
+    r_values="${STAGE36_STAGE_NOISE_R_VALUES:-${STAGE36_TARGET_R_VALUES:-2 4}}"
     start_seed="${STAGE36_STAGE_NOISE_START_SEED:-6864025}"
-    r_values="${STAGE36_TARGET_R_VALUES:-2 4}"
-    for idx in $(seq 0 "$((seeds - 1))"); do
-      seed="$((start_seed + idx))"
-      out_dir="repro/stage36_stage_noise_seed_${seed}"
-      run_or_print "MOSFHET_TEST_RNG_SEED=$seed STAGE25_STAGE_NOISE_R_VALUES='$r_values' STAGE25_STAGE_NOISE_OUT_DIR=$out_dir FFT_LIB=$fft_lib MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=$mat_specialized SAB_PVW_ACTIVE_BUFFER_FUSION=$active_buffer JOBS=$jobs bash scripts/run_stage25_stage_noise_probe.sh"
-    done
+    out_dir="repro/stage36_stage_noise_seeds${seeds}"
+    run_or_print "STAGE36_STAGE_NOISE_R_VALUES='$r_values' STAGE36_STAGE_NOISE_SEEDS=$seeds STAGE36_STAGE_NOISE_START_SEED=$start_seed STAGE36_STAGE_NOISE_OUT_DIR=$out_dir FFT_LIB=$fft_lib MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=$mat_specialized SAB_PVW_ACTIVE_BUFFER_FUSION=$active_buffer JOBS=$jobs bash scripts/run_stage36_stage_noise_sweep.sh"
     ;;
 
   added_params)

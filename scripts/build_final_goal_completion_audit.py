@@ -20,6 +20,7 @@ STAGE28 = ROOT / "repro" / "stage28_native_perf_counter_gate" / "summary.csv"
 EXTERNAL = ROOT / "repro" / "external_evidence_intake" / "summary.csv"
 STAGE33 = ROOT / "repro" / "stage33_current_smoke" / "summary.csv"
 STAGE36_TARGET_PERF = ROOT / "repro" / "stage36_target_perf_summary.csv"
+STAGE36_STAGE_NOISE = ROOT / "repro" / "stage36_stage_noise_seeds10" / "aggregate.csv"
 RUN_LOG = ROOT / "repro" / "run_log.csv"
 
 
@@ -213,6 +214,53 @@ def audit() -> list[AuditRow]:
         )
     )
 
+    stage36_stage_noise = read_csv_if_exists(STAGE36_STAGE_NOISE)
+    if stage36_stage_noise:
+        expected_stages = {
+            ("2", "blind_rotate_coeff0"),
+            ("2", "extract"),
+            ("2", "materialize_tlwe"),
+            ("2", "packing_ks"),
+            ("2", "hw_ks"),
+            ("4", "blind_rotate_coeff0"),
+            ("4", "extract"),
+            ("4", "materialize_tlwe"),
+            ("4", "packing_ks"),
+            ("4", "hw_ks"),
+        }
+        passed_stages = {
+            (row.get("r"), row.get("stage"))
+            for row in stage36_stage_noise
+            if row.get("status") == "PASS"
+            and as_int(row, "seeds") >= 10
+            and as_int(row, "pair_failures") == 0
+        }
+        out.append(
+            AuditRow(
+                "A3b",
+                "stage_noise_high_stat",
+                "Stage 36 r=2/r=4 stage-level noise has 10-seed zero-failure support",
+                "PASS_STAGE_NOISE_10SEED"
+                if expected_stages.issubset(passed_stages)
+                else "FAIL_STAGE36_STAGE_NOISE",
+                rel(STAGE36_STAGE_NOISE),
+                "optional stage-level statistical noise evidence",
+                "Fix or rerun Stage 36 stage_noise before using stage-by-stage noise wording.",
+            )
+        )
+    else:
+        out.append(
+            AuditRow(
+                "A3b",
+                "stage_noise_high_stat",
+                "Stage 36 r=2/r=4 stage-level noise has 10-seed zero-failure support",
+                "NOT_RUN_OPTIONAL",
+                "",
+                "optional; not required for current scoped engineering claim",
+                "Run STAGE36_MODE=stage_noise STAGE36_EXECUTE=1 before using stage-by-stage noise wording.",
+            )
+        )
+
     resource_modes = {
         (row.get("r"), row.get("mode"))
         for row in resource
@@ -379,6 +427,8 @@ def audit() -> list[AuditRow]:
     scoped_ready_ids = {"A1", "A2", "A3", "A4", "A5", "A5b", "A6", "A7"}
     if STAGE36_TARGET_PERF.exists():
         scoped_ready_ids.add("A2b")
+    if STAGE36_STAGE_NOISE.exists():
+        scoped_ready_ids.add("A3b")
     status_by_id = {row.item_id: row.status for row in out}
     scoped_ready = all(
         status_by_id.get(item_id, "").startswith("PASS")

@@ -19,6 +19,7 @@ OUT_MD = ROOT / "docs/stage36_high_stat_expansion_log.md"
 TARGET_PERF_SUMMARY = ROOT / "repro/stage36_target_perf_summary.csv"
 TARGET_PERF_EXCLUSIONS = ROOT / "repro/stage36_target_perf_exclusions.csv"
 TARGET_PERF_SUPPLEMENTAL = ROOT / "repro/stage36_target_perf_supplemental.csv"
+STAGE_NOISE_AGGREGATE = ROOT / "repro/stage36_stage_noise_seeds10/aggregate.csv"
 
 
 def row(
@@ -225,11 +226,47 @@ def write_md(rows: List[Dict[str, str]]) -> None:
                     "| {sample_id} | {r} | {speedup_vs_scalar_repeated} | {decision} |".format(**item)
                 )
 
+    stage_noise = read_csv_if_exists(STAGE_NOISE_AGGREGATE)
+    if stage_noise:
+        lines.extend(
+            [
+                "",
+                "## Stage-Noise Result",
+                "",
+                "| r | stage | seeds | pair failures | avg sigma | worst max abs | status |",
+                "|---|---|---:|---:|---:|---:|---|",
+            ]
+        )
+        for item in stage_noise:
+            lines.append(
+                "| {r} | {stage} | {seeds} | {pair_failures} | "
+                "{avg_pair_log2_sigma} | {worst_pair_log2_max_abs} | {status} |".format(**item)
+            )
+
+    if target_perf and stage_noise:
+        decision_text = (
+            "The target performance campaign has 10 primary same-backend "
+            "samples for r=2 and r=4, and the stage-noise campaign has 10 "
+            "deterministic seeds for r=2 and r=4 with zero pair failures at "
+            "all reported stages. This strengthens target performance and "
+            "stage-level noise statistics, but it does not upgrade novelty, "
+            "theorem-level citation, non-binary, all-parameter, or "
+            "hardware-counter claims."
+        )
+    elif target_perf:
         decision_text = (
             "The target performance campaign now has 10 primary same-backend "
             "samples for r=2 and r=4. This strengthens target performance "
             "statistics, but it does not upgrade novelty, theorem-level "
             "citation, non-binary, all-parameter, or hardware-counter claims."
+        )
+    elif stage_noise:
+        decision_text = (
+            "The stage-noise campaign has 10 deterministic seeds for r=2 and "
+            "r=4 with zero pair failures at all reported stages. This "
+            "strengthens stage-level noise statistics, but it does not upgrade "
+            "performance, novelty, theorem-level citation, non-binary, "
+            "all-parameter, or hardware-counter claims."
         )
     else:
         decision_text = (
