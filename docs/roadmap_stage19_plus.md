@@ -1038,3 +1038,41 @@ WAIT_UNLOCKS. This is not a new SAB optimization claim; it is the formal
 continuation path for stronger paper/theory claims after external evidence is
 supplied.
 ```
+
+## Stage 42: Evidence Closure Audit
+
+Goal:
+
+```text
+Machine-check that the Stage 19-42 scoped PVW/MAT-SAB evidence chain is
+internally consistent after the scoped freeze and external-unlock packet.
+```
+
+Tasks:
+
+- verify roadmap coverage for Stage 19-42;
+- verify final audit scoped/pass/blocker statuses;
+- verify Stage 41 external-unlock readiness remains waiting for full text and
+  native perf evidence;
+- verify Stage 40 freeze manifest SHA-256 hashes still match current artifacts;
+- verify run-log coverage and required control-plane files;
+- preserve claim guardrails rather than upgrading blocked claims.
+
+Gate:
+
+- `S42-OVERALL` must be
+  `PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED`;
+- any failed row means the evidence chain is not closed and must be repaired
+  before relying on the final package;
+- Stage 42 cannot be used as performance, novelty, or theoretical optimality
+  evidence.
+
+Status:
+
+```text
+Stage 42 evidence-closure audit generated and passed. It verifies roadmap
+coverage, final-audit status labels, Stage 41 readiness, Stage 40 freeze
+hashes, post-freeze verification, run-log coverage, required files, artifact
+manifest entries, and claim guardrails. The overall result is scoped evidence
+closure with stronger claims still blocked.
+```

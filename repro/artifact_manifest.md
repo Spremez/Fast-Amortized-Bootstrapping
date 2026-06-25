@@ -76,6 +76,7 @@ Code artifacts:
 - `scripts/build_stage40_final_freeze.py`
 - `scripts/verify_stage40_freeze.py`
 - `scripts/build_stage41_external_unlock_packet.py`
+- `scripts/build_stage42_evidence_closure_audit.py`
 
 Documentation artifacts:
 
@@ -142,6 +143,7 @@ Documentation artifacts:
 - `docs/stage40_final_freeze_report.md`
 - `docs/stage40_postfreeze_verify_log.md`
 - `docs/stage41_external_unlock_packet.md`
+- `docs/stage42_evidence_closure_audit.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -181,6 +183,7 @@ Documentation artifacts:
 - `experiments/stage40_final_freeze_plan.md`
 - `experiments/stage40_postfreeze_verify_plan.md`
 - `experiments/stage41_external_unlock_plan.md`
+- `experiments/stage42_evidence_closure_audit_plan.md`
 
 Repro artifacts:
 
@@ -651,6 +654,7 @@ Repro artifacts:
 - `repro/stage40_final_freeze_manifest.csv`
 - `repro/stage40_postfreeze_verify/summary.csv`
 - `repro/stage41_external_unlock_packet.csv`
+- `repro/stage42_evidence_closure_audit.csv`
 - `repro/stage33_current_smoke/summary.csv`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/build.log`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/run.log`

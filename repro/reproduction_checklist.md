@@ -165,6 +165,7 @@
 - [x] Run final recheck with Stage 40 post-freeze verifier enabled.
 - [x] Separate post-freeze-only final recheck output from ordinary final recheck output.
 - [x] Generate Stage 41 external-unlock packet for full-text/native-perf continuation gates.
+- [x] Generate Stage 42 machine-checkable evidence-closure audit for Stage 19-41.
 - [ ] Execute remaining Stage 36 optional target-noise/added-parameter campaigns only if broader claims need them.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.
