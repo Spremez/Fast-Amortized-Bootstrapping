@@ -161,10 +161,11 @@ The Stage 42 evidence-closure audit machine-checks that the Stage 19-43 route,
 final audit labels, Stage 40 hashes, Stage 41 readiness, Stage 43 current
 smoke, run log, artifact manifest, and claim guardrails are mutually
 consistent. It passes under the current scoped-ready/stronger-blocked state.
-The Stage 42 closure audit is now callable through the unified final recheck
-runner and has passed in both a closure-only output directory and the ordinary
-default recheck path, so evidence-chain closure can be refreshed without
-special handling.
+The Stage 42 closure audit now emits a SHA-256 manifest for stable
+post-freeze control-plane artifacts. It is callable through the unified final
+recheck runner and has passed in both a closure-only output directory and the
+ordinary default recheck path, so evidence-chain closure can be refreshed
+without special handling.
 The Stage 43 post-closure current smoke then refreshes build/correctness
 evidence at the current repository head. Scalar binary full run, explicit PVW
 target gate, and scalar ternary build all pass under `spqlios_avx512`; this is

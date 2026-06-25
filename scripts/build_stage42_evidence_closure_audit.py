@@ -19,6 +19,7 @@ from typing import Dict, Iterable, List
 ROOT = Path(__file__).resolve().parents[1]
 OUT_CSV = ROOT / "repro" / "stage42_evidence_closure_audit.csv"
 OUT_MD = ROOT / "docs" / "stage42_evidence_closure_audit.md"
+OUT_MANIFEST = ROOT / "repro" / "stage42_evidence_closure_manifest.csv"
 
 ROADMAP = ROOT / "docs" / "roadmap_stage19_plus.md"
 GOAL = ROOT / "docs" / "goal_sab_max_acceleration.md"
@@ -70,6 +71,34 @@ REQUIRED_FILES = [
     "experiments/stage43_postclosure_current_smoke_plan.md",
     "repro/stage43_current_smoke_after_stage42/summary.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
+    "repro/stage42_evidence_closure_manifest.csv",
+]
+
+POSTFREEZE_MANIFEST_ARTIFACTS = [
+    "docs/goal_sab_max_acceleration.md",
+    "docs/roadmap_stage19_plus.md",
+    "docs/final_goal_recheck_log.md",
+    "docs/stage41_external_unlock_packet.md",
+    "docs/stage43_postclosure_current_smoke_log.md",
+    "experiments/final_goal_recheck_plan.md",
+    "experiments/stage41_external_unlock_plan.md",
+    "experiments/stage42_evidence_closure_audit_plan.md",
+    "experiments/stage43_postclosure_current_smoke_plan.md",
+    "scripts/build_stage41_external_unlock_packet.py",
+    "scripts/build_stage42_evidence_closure_audit.py",
+    "scripts/run_final_goal_recheck.sh",
+    "repro/artifact_manifest.md",
+    "repro/reproduction_checklist.md",
+    "repro/run_log.csv",
+    "repro/stage41_external_unlock_packet.csv",
+    "repro/stage43_current_smoke_after_stage42/summary.csv",
+    "repro/stage43_current_smoke_after_stage42/scalar_binary_SET_2_3_2048/build.log",
+    "repro/stage43_current_smoke_after_stage42/scalar_binary_SET_2_3_2048/run.log",
+    "repro/stage43_current_smoke_after_stage42/pvw_target_SET_2_3_2048/build.log",
+    "repro/stage43_current_smoke_after_stage42/pvw_target_SET_2_3_2048/run.log",
+    "repro/stage43_current_smoke_after_stage42/scalar_ternary_SET_2_3_2048/build.log",
+    "repro/final_goal_recheck_stage42_closure/summary.csv",
+    "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
 
 
@@ -108,6 +137,36 @@ def row(
 
 def pass_fail(ok: bool) -> str:
     return "PASS" if ok else "FAIL"
+
+
+def manifest_row(artifact: str) -> Dict[str, str]:
+    path = ROOT / artifact
+    if not path.exists():
+        return {
+            "artifact": artifact,
+            "exists": "no",
+            "size_bytes": "",
+            "sha256": "",
+        }
+    return {
+        "artifact": artifact,
+        "exists": "yes",
+        "size_bytes": str(path.stat().st_size),
+        "sha256": sha256_file(path),
+    }
+
+
+def write_closure_manifest() -> None:
+    OUT_MANIFEST.parent.mkdir(parents=True, exist_ok=True)
+    rows = [manifest_row(artifact) for artifact in POSTFREEZE_MANIFEST_ARTIFACTS]
+    with OUT_MANIFEST.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=["artifact", "exists", "size_bytes", "sha256"],
+            lineterminator="\n",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def check_roadmap() -> List[Dict[str, str]]:
@@ -221,6 +280,46 @@ def check_freeze_manifest() -> List[Dict[str, str]]:
     ]
 
 
+def check_closure_manifest() -> List[Dict[str, str]]:
+    rows = read_csv(OUT_MANIFEST)
+    problems = []
+    expected = set(POSTFREEZE_MANIFEST_ARTIFACTS)
+    observed = {r.get("artifact", "") for r in rows}
+    missing_rows = sorted(expected - observed)
+    extra_rows = sorted(observed - expected - {""})
+    if missing_rows:
+        problems.append(f"missing_rows={missing_rows}")
+    if extra_rows:
+        problems.append(f"extra_rows={extra_rows}")
+    for r in rows:
+        artifact = r.get("artifact", "")
+        path = ROOT / artifact
+        if artifact not in expected:
+            continue
+        if r.get("exists") != "yes":
+            problems.append(f"{artifact}:exists={r.get('exists')}")
+        elif not path.exists():
+            problems.append(f"{artifact}:missing")
+        elif r.get("size_bytes") != str(path.stat().st_size):
+            problems.append(f"{artifact}:size_mismatch")
+        elif not r.get("sha256"):
+            problems.append(f"{artifact}:missing_hash")
+        elif sha256_file(path) != r.get("sha256"):
+            problems.append(f"{artifact}:hash_mismatch")
+    return [
+        row(
+            "S42-CLOSURE-MANIFEST-HASHES",
+            "reproducibility",
+            pass_fail(not problems and bool(rows)),
+            OUT_MANIFEST.relative_to(ROOT).as_posix(),
+            f"{len(rows)} post-freeze control artifacts match recorded SHA-256 hashes"
+            if not problems and rows
+            else "; ".join(problems) or "manifest missing or empty",
+            "Regenerate or repair the Stage 42 closure manifest before relying on post-freeze control-plane evidence.",
+        )
+    ]
+
+
 def check_postfreeze() -> List[Dict[str, str]]:
     rows = {r.get("check"): r for r in read_csv(POSTFREEZE)}
     expected = {
@@ -309,6 +408,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/final_goal_recheck_stage42_closure/summary.csv",
         "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
         "repro/final_goal_recheck/stage42_evidence_closure.log",
+        "repro/stage42_evidence_closure_manifest.csv",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -361,6 +461,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage41,
         check_stage43_smoke,
         check_freeze_manifest,
+        check_closure_manifest,
         check_postfreeze,
         check_run_log,
         check_required_files,
@@ -444,6 +545,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
 
 
 def main() -> int:
+    write_closure_manifest()
     rows = build_rows()
     write_csv(rows)
     write_md(rows)

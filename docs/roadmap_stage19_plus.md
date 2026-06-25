@@ -1056,6 +1056,8 @@ Tasks:
   native perf evidence;
 - verify Stage 43 current smoke summary has PASS rows for scalar binary, PVW
   target, and scalar ternary build;
+- generate and verify a SHA-256 manifest for stable post-freeze control-plane
+  artifacts;
 - verify Stage 40 freeze manifest SHA-256 hashes still match current artifacts;
 - verify run-log coverage and required control-plane files;
 - preserve claim guardrails rather than upgrading blocked claims.
@@ -1077,10 +1079,10 @@ Status:
 Stage 42 evidence-closure audit generated and passed. It verifies roadmap
 coverage, final-audit status labels, Stage 41 readiness, Stage 40 freeze
 hashes, post-freeze verification, run-log coverage, required files, artifact
-manifest entries, and claim guardrails. The overall result is scoped evidence
-closure with stronger claims still blocked. The audit is also integrated into
-the final recheck runner and passed in both a closure-only recheck output
-directory and the ordinary default recheck path.
+manifest entries, post-freeze control-plane hashes, and claim guardrails. The
+overall result is scoped evidence closure with stronger claims still blocked.
+The audit is also integrated into the final recheck runner and passed in both
+a closure-only recheck output directory and the ordinary default recheck path.
 ```
 
 ## Stage 43: Post-Closure Current Smoke

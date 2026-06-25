@@ -26,9 +26,11 @@ python scripts/build_stage42_evidence_closure_audit.py
 - Stage 41 readiness remains waiting for external full text/native perf.
 - Stage 43 current smoke has PASS rows for scalar binary, PVW target, and
   scalar ternary build.
+- Stage 42 post-freeze control-plane manifest records SHA-256 hashes for the
+  stable Stage 41-43 docs, scripts, logs, and summaries.
 - Stage 40 freeze manifest paths and SHA-256 hashes match current artifacts.
 - Stage 40 post-freeze verifier preserves freeze hashes and external blockers.
-- Run log has at least one registered row for every Stage 19-41.
+- Run log has at least one registered row for every Stage 19-43.
 - Required Stage 41/42 control-plane files exist.
 - Artifact manifest includes the current schedule-fused CMUX flag and Stage 41
   artifacts.
@@ -37,6 +39,7 @@ python scripts/build_stage42_evidence_closure_audit.py
 ## Outputs
 
 - `repro/stage42_evidence_closure_audit.csv`
+- `repro/stage42_evidence_closure_manifest.csv`
 - `docs/stage42_evidence_closure_audit.md`
 
 ## Failure Handling
