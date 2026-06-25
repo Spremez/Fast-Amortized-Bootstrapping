@@ -100,3 +100,16 @@ The 2026-06-26 current-smoke refresh passed:
 stage33_current_smoke = PASS
 final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 ```
+
+## Post-Freeze Verify
+
+Stage 40 adds a no-write freeze verifier. The final recheck runner can execute
+it before writing any recheck output files:
+
+```bash
+FINAL_RECHECK_POSTFREEZE_VERIFY=1 bash scripts/run_final_goal_recheck.sh
+```
+
+This records `stage40_postfreeze_verify` in
+`repro/final_goal_recheck/summary.csv`. It is a consistency check for the
+frozen scoped engineering package; it does not upgrade external blockers.

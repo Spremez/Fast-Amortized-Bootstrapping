@@ -40,6 +40,13 @@ To refresh current-commit scalar/PVW smoke evidence before the final audit:
 FINAL_RECHECK_CURRENT_SMOKE=1 bash scripts/run_final_goal_recheck.sh
 ```
 
+To run the Stage 40 no-write freeze verifier before any recheck outputs are
+written:
+
+```bash
+FINAL_RECHECK_POSTFREEZE_VERIFY=1 bash scripts/run_final_goal_recheck.sh
+```
+
 To attempt the heavy perf-counter SAB benchmark, pass through the Stage 28
 option:
 
@@ -62,6 +69,9 @@ bash scripts/run_final_goal_recheck.sh
   claims.
 - A skipped current smoke does not refresh the current-commit scalar/PVW
   smoke evidence in the final audit.
+- A skipped post-freeze verifier does not check the frozen Stage 40 package.
+  When enabled, it runs before recheck output files are written so it can prove
+  the verifier input worktree was clean.
 - A blocked Stage 28 perf gate does not upgrade MAT-AVX512 theoretical
   load/store claims.
 - Registered external evidence changes final audit state to review-required,
@@ -74,6 +84,7 @@ bash scripts/run_final_goal_recheck.sh
 ```text
 repro/final_goal_recheck/summary.csv
 repro/final_goal_recheck/stage28_perf_gate.log
+repro/final_goal_recheck/stage40_postfreeze_verify.log
 repro/final_goal_recheck/stage27_final_package.log
 repro/final_goal_recheck/external_evidence_intake.log
 repro/final_goal_recheck/stage33_current_smoke.log

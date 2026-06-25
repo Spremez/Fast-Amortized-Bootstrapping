@@ -8,7 +8,19 @@ run_stage27_package="${FINAL_RECHECK_STAGE27_PACKAGE:-1}"
 run_external_intake="${FINAL_RECHECK_EXTERNAL_INTAKE:-1}"
 run_current_smoke="${FINAL_RECHECK_CURRENT_SMOKE:-0}"
 run_goal_audit="${FINAL_RECHECK_GOAL_AUDIT:-1}"
+run_postfreeze_verify="${FINAL_RECHECK_POSTFREEZE_VERIFY:-0}"
 python_bin="${PYTHON_BIN:-python3}"
+
+postfreeze_rc=0
+postfreeze_output=""
+if [[ "$run_postfreeze_verify" == "1" ]]; then
+  set +e
+  postfreeze_output="$(
+    bash -lc "$python_bin scripts/verify_stage40_freeze.py --check-only" 2>&1
+  )"
+  postfreeze_rc="$?"
+  set -e
+fi
 
 mkdir -p "$out_dir"
 
@@ -44,6 +56,29 @@ run_logged() {
     return "$rc"
   fi
 }
+
+if [[ "$run_postfreeze_verify" == "1" ]]; then
+  postfreeze_log="$out_dir/stage40_postfreeze_verify.log"
+  printf '%s\n' "$postfreeze_output" > "$postfreeze_log"
+  if [[ "$postfreeze_rc" -eq 0 ]]; then
+    csv_row "stage40_postfreeze_verify" "PASS" \
+      "$python_bin scripts/verify_stage40_freeze.py --check-only" \
+      "$postfreeze_log" \
+      "pre-recheck no-write verifier completed before recheck artifacts were written"
+  else
+    csv_row "stage40_postfreeze_verify" "FAIL" \
+      "$python_bin scripts/verify_stage40_freeze.py --check-only" \
+      "$postfreeze_log" \
+      "pre-recheck no-write verifier failed with rc=$postfreeze_rc"
+    printf 'Final goal recheck summary: %s\n' "$summary_csv"
+    exit "$postfreeze_rc"
+  fi
+else
+  csv_row "stage40_postfreeze_verify" "SKIPPED" \
+    "$python_bin scripts/verify_stage40_freeze.py --check-only" \
+    "" \
+    "Set FINAL_RECHECK_POSTFREEZE_VERIFY=1 to run the Stage 40 no-write verifier before recheck outputs."
+fi
 
 if [[ "$run_citation" == "1" ]]; then
   run_logged "stage27_citation_probe" \
