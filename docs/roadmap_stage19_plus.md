@@ -1044,16 +1044,18 @@ supplied.
 Goal:
 
 ```text
-Machine-check that the Stage 19-42 scoped PVW/MAT-SAB evidence chain is
+Machine-check that the Stage 19-43 scoped PVW/MAT-SAB evidence chain is
 internally consistent after the scoped freeze and external-unlock packet.
 ```
 
 Tasks:
 
-- verify roadmap coverage for Stage 19-42;
+- verify roadmap coverage for Stage 19-43;
 - verify final audit scoped/pass/blocker statuses;
 - verify Stage 41 external-unlock readiness remains waiting for full text and
   native perf evidence;
+- verify Stage 43 current smoke summary has PASS rows for scalar binary, PVW
+  target, and scalar ternary build;
 - verify Stage 40 freeze manifest SHA-256 hashes still match current artifacts;
 - verify run-log coverage and required control-plane files;
 - preserve claim guardrails rather than upgrading blocked claims.
@@ -1075,4 +1077,38 @@ coverage, final-audit status labels, Stage 41 readiness, Stage 40 freeze
 hashes, post-freeze verification, run-log coverage, required files, artifact
 manifest entries, and claim guardrails. The overall result is scoped evidence
 closure with stronger claims still blocked.
+```
+
+## Stage 43: Post-Closure Current Smoke
+
+Goal:
+
+```text
+Refresh current-head scalar/PVW build and correctness smoke evidence after the
+Stage 42 evidence-closure audit.
+```
+
+Tasks:
+
+- rerun the Stage 33 smoke runner with an isolated Stage 43 output directory;
+- verify scalar binary `SET_2_3_2048` full run ends with `Pass`;
+- verify explicit PVW target full bootstrap gate reports `Pass`;
+- verify scalar ternary build still passes independently of the binary PVW
+  path;
+- keep this evidence scoped to current-state correctness/build health only.
+
+Gate:
+
+- all three smoke rows in
+  `repro/stage43_current_smoke_after_stage42/summary.csv` must be `PASS`;
+- this stage cannot be used as a performance, novelty, or theoretical
+  optimality result.
+
+Status:
+
+```text
+Stage 43 current-head smoke passed on WSL/Linux with `spqlios_avx512`.
+Scalar binary full run, explicit PVW target full gate, and scalar ternary build
+all passed. The result refreshes current-state smoke evidence after the
+closure audit while preserving the stronger-claims-blocked boundary.
 ```

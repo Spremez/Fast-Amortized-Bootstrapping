@@ -144,6 +144,7 @@ Documentation artifacts:
 - `docs/stage40_postfreeze_verify_log.md`
 - `docs/stage41_external_unlock_packet.md`
 - `docs/stage42_evidence_closure_audit.md`
+- `docs/stage43_postclosure_current_smoke_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -184,6 +185,7 @@ Documentation artifacts:
 - `experiments/stage40_postfreeze_verify_plan.md`
 - `experiments/stage41_external_unlock_plan.md`
 - `experiments/stage42_evidence_closure_audit_plan.md`
+- `experiments/stage43_postclosure_current_smoke_plan.md`
 
 Repro artifacts:
 
@@ -655,6 +657,12 @@ Repro artifacts:
 - `repro/stage40_postfreeze_verify/summary.csv`
 - `repro/stage41_external_unlock_packet.csv`
 - `repro/stage42_evidence_closure_audit.csv`
+- `repro/stage43_current_smoke_after_stage42/summary.csv`
+- `repro/stage43_current_smoke_after_stage42/scalar_binary_SET_2_3_2048/build.log`
+- `repro/stage43_current_smoke_after_stage42/scalar_binary_SET_2_3_2048/run.log`
+- `repro/stage43_current_smoke_after_stage42/pvw_target_SET_2_3_2048/build.log`
+- `repro/stage43_current_smoke_after_stage42/pvw_target_SET_2_3_2048/run.log`
+- `repro/stage43_current_smoke_after_stage42/scalar_ternary_SET_2_3_2048/build.log`
 - `repro/stage33_current_smoke/summary.csv`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/build.log`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/run.log`

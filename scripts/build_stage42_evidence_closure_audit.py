@@ -2,7 +2,7 @@
 """Build the Stage 42 evidence-closure audit.
 
 This script checks whether the current scoped PVW/MAT-SAB evidence chain is
-internally consistent through Stage 42. It does not run benchmarks or upgrade
+internally consistent through Stage 43. It does not run benchmarks or upgrade
 claims; it verifies that the committed artifacts still support the recorded
 scope.
 """
@@ -28,6 +28,7 @@ RUN_LOG = ROOT / "repro" / "run_log.csv"
 FREEZE_MANIFEST = ROOT / "repro" / "stage40_final_freeze_manifest.csv"
 POSTFREEZE = ROOT / "repro" / "stage40_postfreeze_verify" / "summary.csv"
 STAGE41 = ROOT / "repro" / "stage41_external_unlock_packet.csv"
+STAGE43_SMOKE = ROOT / "repro" / "stage43_current_smoke_after_stage42" / "summary.csv"
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 
@@ -65,6 +66,9 @@ REQUIRED_FILES = [
     "scripts/build_stage41_external_unlock_packet.py",
     "scripts/build_stage42_evidence_closure_audit.py",
     "repro/stage41_external_unlock_packet.csv",
+    "docs/stage43_postclosure_current_smoke_log.md",
+    "experiments/stage43_postclosure_current_smoke_plan.md",
+    "repro/stage43_current_smoke_after_stage42/summary.csv",
 ]
 
 
@@ -108,7 +112,7 @@ def pass_fail(ok: bool) -> str:
 def check_roadmap() -> List[Dict[str, str]]:
     text = ROADMAP.read_text(encoding="utf-8") if ROADMAP.exists() else ""
     stages = sorted({int(m.group(1)) for m in re.finditer(r"^## Stage (\d+):", text, re.M)})
-    expected = list(range(19, 43))
+    expected = list(range(19, 44))
     return [
         row(
             "S42-ROADMAP-STAGES",
@@ -116,7 +120,7 @@ def check_roadmap() -> List[Dict[str, str]]:
             pass_fail(stages == expected),
             ROADMAP.relative_to(ROOT).as_posix(),
             f"observed={stages}; expected={expected}",
-            "Restore one Stage 19-42 section per stage before using the roadmap as the active plan.",
+            "Restore one Stage 19-43 section per stage before using the roadmap as the active plan.",
         )
     ]
 
@@ -157,6 +161,32 @@ def check_stage41() -> List[Dict[str, str]]:
             if not mismatches
             else "; ".join(mismatches),
             "Regenerate Stage 41 and manually review any readiness change before claim upgrade.",
+        )
+    ]
+
+
+def check_stage43_smoke() -> List[Dict[str, str]]:
+    rows = {r.get("step"): r for r in read_csv(STAGE43_SMOKE)}
+    expected = {
+        "scalar_binary_full_run": "PASS",
+        "pvw_target_full_gate": "PASS",
+        "scalar_ternary_build": "PASS",
+    }
+    mismatches = []
+    for step, expected_status in expected.items():
+        got = rows.get(step, {}).get("status", "MISSING")
+        if got != expected_status:
+            mismatches.append(f"{step}:{got}!={expected_status}")
+    return [
+        row(
+            "S42-STAGE43-CURRENT-SMOKE",
+            "current_smoke",
+            pass_fail(not mismatches),
+            STAGE43_SMOKE.relative_to(ROOT).as_posix(),
+            "scalar binary, PVW target, and scalar ternary smoke rows pass"
+            if not mismatches
+            else "; ".join(mismatches),
+            "Rerun Stage 43 current smoke before relying on current-head build/correctness evidence.",
         )
     ]
 
@@ -227,14 +257,14 @@ def check_run_log() -> List[Dict[str, str]]:
                 n = int(stage.split()[1])
             except (IndexError, ValueError):
                 continue
-            if 19 <= n <= 42:
+            if 19 <= n <= 43:
                 stages[n] = stages.get(n, 0) + 1
         if r.get("run_id") == "stage41-external-unlock-packet-001":
             stage41_status = r.get("status", "MISSING")
-    missing = [n for n in range(19, 43) if n not in stages]
+    missing = [n for n in range(19, 44) if n not in stages]
     ok = not missing and stage41_status == "WAIT_EXTERNAL_EVIDENCE"
     detail = (
-        f"stages 19-42 registered; stage41 status={stage41_status}"
+        f"stages 19-43 registered; stage41 status={stage41_status}"
         if ok
         else f"missing_stages={missing}; stage41 status={stage41_status}"
     )
@@ -258,8 +288,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41/42 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41/42 control-plane artifacts.",
+            "all required Stage 41-43 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-43 control-plane artifacts.",
         )
     ]
 
@@ -272,6 +302,9 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "docs/stage41_external_unlock_packet.md",
         "experiments/stage41_external_unlock_plan.md",
         "repro/stage41_external_unlock_packet.csv",
+        "docs/stage43_postclosure_current_smoke_log.md",
+        "experiments/stage43_postclosure_current_smoke_plan.md",
+        "repro/stage43_current_smoke_after_stage42/summary.csv",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -280,7 +313,9 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag and Stage 41 artifacts are registered" if not missing else f"missing_mentions={missing}",
+            "Stage 23 flag plus Stage 41 and Stage 43 artifacts are registered"
+            if not missing
+            else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
         )
     ]
@@ -320,6 +355,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_roadmap,
         check_final_audit,
         check_stage41,
+        check_stage43_smoke,
         check_freeze_manifest,
         check_postfreeze,
         check_run_log,
@@ -336,10 +372,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            "Stage 19-42 scoped evidence chain is internally closed; stronger claims remain blocked"
+            "Stage 19-43 scoped evidence chain is internally closed; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-42 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-43 evidence closure.",
         )
     )
     return checks
@@ -363,7 +399,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "",
         "## Purpose",
         "",
-        "Stage 42 machine-checks whether the Stage 19-42 PVW/MAT-SAB evidence",
+        "Stage 42 machine-checks whether the Stage 19-43 PVW/MAT-SAB evidence",
         "chain remains internally consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",
         "",
@@ -397,7 +433,10 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         ]
     )
     OUT_MD.parent.mkdir(parents=True, exist_ok=True)
-    OUT_MD.write_text("\n".join(lines), encoding="utf-8")
+    while lines and lines[-1] == "":
+        lines.pop()
+    with OUT_MD.open("w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines) + "\n")
 
 
 def main() -> int:

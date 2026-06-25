@@ -4,7 +4,7 @@ Date: 2026-06-26
 
 ## Goal
 
-Machine-check that the Stage 19-42 PVW/MAT-SAB evidence chain is internally
+Machine-check that the Stage 19-43 PVW/MAT-SAB evidence chain is internally
 consistent after the scoped freeze and external-unlock packet.
 
 Stage 42 is not a benchmark, not a new SAB optimization, and not a claim
@@ -21,9 +21,11 @@ python scripts/build_stage42_evidence_closure_audit.py
 
 ## Gates
 
-- Roadmap contains exactly one Stage 19-42 section for the active route.
+- Roadmap contains exactly one Stage 19-43 section for the active route.
 - Final audit keeps all expected scoped/pass/blocker statuses.
 - Stage 41 readiness remains waiting for external full text/native perf.
+- Stage 43 current smoke has PASS rows for scalar binary, PVW target, and
+  scalar ternary build.
 - Stage 40 freeze manifest paths and SHA-256 hashes match current artifacts.
 - Stage 40 post-freeze verifier preserves freeze hashes and external blockers.
 - Run log has at least one registered row for every Stage 19-41.
