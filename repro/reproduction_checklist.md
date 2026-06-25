@@ -76,5 +76,10 @@
 - [x] Add Stage 14 `r=2`/`r=4` target body profile smokes and parseable CSV.
 - [x] Verify Stage 14 structural counts for MAT EP, CMUX/NCMUX, RGSW monomial, `sub_a`, and copy-back.
 - [x] Record Stage 14 decision that CMUX/RGSW/sparse fusion precedes AVX512-only promotion.
+- [x] Implement Stage 15 AVX512 MAT FMA-accumulate addmul helper.
+- [x] Add Stage 15 AVX512 MAT repeated gate script and 3-run CSV outputs.
+- [x] Add Stage 15 target full-output correctness gate for the AVX512 MAT variant.
+- [x] Add Stage 15 r=2/r=4 full SAB smokes for the AVX512 MAT variant.
+- [x] Record Stage 15 scoped dense-MAT expectation decision and rejected r=4 pointer-array sub-variant.
 - [ ] Implement SAB-specific sparse/fused variants after PVW body profile is fixed.
 - [ ] Complete MAT AVX512 promotion audit with repeated full SAB sweeps, counters, and broader shape coverage.

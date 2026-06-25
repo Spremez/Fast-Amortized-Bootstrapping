@@ -1,0 +1,9 @@
+stage,scope,r,backend,runs,reps,scalar_avg_us,mat_or_pvw_avg_us,speedup,status,label
+15,mat_dft,1,spqlios_avx512,3,1000,7.058,6.380,1.121,PASS,negative-control-no-claim
+15,mat_dft,2,spqlios_avx512,3,1000,12.864,9.373,1.380,PASS,meets-scoped-dense-mat-expectation
+15,mat_dft,4,spqlios_avx512,3,1000,28.107,22.130,1.267,PASS,meets-scoped-dense-mat-expectation
+15,mat_full_output,1,spqlios_avx512,3,1000,12.306,11.100,1.110,PASS,negative-control-no-claim
+15,mat_full_output,2,spqlios_avx512,3,1000,22.660,16.031,1.416,PASS,meets-scoped-dense-mat-expectation
+15,mat_full_output,4,spqlios_avx512,3,1000,49.980,34.006,1.471,PASS,meets-scoped-dense-mat-expectation
+15,full_sab_smoke,2,spqlios_avx512,1,1,20087594.000,15876350.000,1.265,PASS,smoke-only
+15,full_sab_smoke,4,spqlios_avx512,1,1,40716798.000,30022641.000,1.356,PASS,smoke-only

@@ -32,6 +32,7 @@ Code artifacts:
 - `scripts/run_stage11_avx512_smallr_bench.sh`
 - `scripts/run_stage13_postproc_profile.sh`
 - `scripts/run_stage14_body_profile.sh`
+- `scripts/run_stage15_avx512_mat_gate.sh`
 
 Documentation artifacts:
 
@@ -58,6 +59,7 @@ Documentation artifacts:
 - `docs/stage13_postproc_profile_log.md`
 - `docs/stage14_algorithm_to_paper_goal.md`
 - `docs/stage14_body_profile_log.md`
+- `docs/stage15_avx512_mat_expectation_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -67,6 +69,7 @@ Documentation artifacts:
 - `experiments/stage12_experiment_validation_plan.md`
 - `experiments/stage13_postproc_validation_plan.md`
 - `experiments/stage14_body_profile_validation_plan.md`
+- `experiments/stage15_avx512_mat_validation_plan.md`
 
 Repro artifacts:
 
@@ -226,3 +229,21 @@ Repro artifacts:
 - `repro/stage14_body_profile_r4_reps1_runs1/body_profile.csv`
 - `repro/stage14_body_profile_r4_reps1_runs1/bench_summary.csv`
 - `repro/stage14_body_profile_r4_reps1_runs1/run_0.log`
+- `repro/stage15_avx512_mat_summary.csv`
+- `repro/stage15_avx512_mat_baseline_kernel.log`
+- `repro/stage15_avx512_mat_v3_kernel.log`
+- `repro/stage15_avx512_mat_v3_kernel_runs3/run_0.log`
+- `repro/stage15_avx512_mat_v3_kernel_runs3/run_1.log`
+- `repro/stage15_avx512_mat_v3_kernel_runs3/run_2.log`
+- `repro/stage15_avx512_mat_instruction_snippet.txt`
+- `repro/stage15_avx512_mat_gate_runs3/mat_vs_scalar.csv`
+- `repro/stage15_avx512_mat_gate_runs3/mat_full_vs_scalar.csv`
+- `repro/stage15_avx512_mat_gate_runs3/ep_breakdown.csv`
+- `repro/stage15_avx512_mat_gate_runs3/run_0.log`
+- `repro/stage15_avx512_mat_gate_runs3/run_1.log`
+- `repro/stage15_avx512_mat_gate_runs3/run_2.log`
+- `repro/stage15_avx512_mat_target_full.log`
+- `repro/stage15_avx512_mat_full_sab_r2_reps1_runs1/summary.csv`
+- `repro/stage15_avx512_mat_full_sab_r2_reps1_runs1/run_0.log`
+- `repro/stage15_avx512_mat_full_sab_r4_reps1_runs1/summary.csv`
+- `repro/stage15_avx512_mat_full_sab_r4_reps1_runs1/run_0.log`

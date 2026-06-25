@@ -155,3 +155,60 @@ accepted as a new full SAB acceleration claim. The next algorithmic target is
 PVW-aware post-processing and SAB-specific sparse/fused batching, not more MAT
 micro-optimization alone.
 ```
+
+## Stage 15 FMA-Accumulate Update
+
+Status: scoped AVX512 MAT expectation met for `k=1,l=1,r in {2,4}`.
+
+Delta:
+
+```text
+mat_avx512_complex_addmul()
+```
+
+now accumulates directly with AVX512 FMA instructions:
+
+```text
+acc_re = fmadd(dec_re, sel_re, acc_re)
+acc_re = fnmadd(dec_im, sel_im, acc_re)
+acc_im = fmadd(dec_im, sel_re, acc_im)
+acc_im = fmadd(dec_re, sel_im, acc_im)
+```
+
+The previous helper computed a temporary complex product and then added that
+temporary into the accumulator. The new form reduces extra vector add/mul work
+in the row accumulation path.
+
+Additional `r=2` specialization:
+
+```text
+The fixed three-row r=2 kernel hoists dec/selector pointers and explicitly
+accumulates rows 1 and 2.
+```
+
+Rejected sub-variant:
+
+```text
+An r=4 pointer-array hoist was tested and rejected. Repeated runs showed worse
+MAT mul/add phase time, consistent with register/stack pressure at five output
+accumulators and five selector rows.
+```
+
+Evidence:
+
+| artifact | status | result |
+|---|---|---|
+| `repro/stage15_avx512_mat_gate_runs3/mat_vs_scalar.csv` | PASS | DFT-output MAT speedups: r=2 `1.380x`, r=4 `1.267x` |
+| `repro/stage15_avx512_mat_gate_runs3/mat_full_vs_scalar.csv` | PASS | full-output MAT speedups: r=2 `1.416x`, r=4 `1.471x` |
+| `repro/stage15_avx512_mat_target_full.log` | PASS | target full-output correctness |
+| `repro/stage15_avx512_mat_full_sab_r2_reps1_runs1/summary.csv` | SMOKE_ONLY | full SAB r=2 `1.265x` |
+| `repro/stage15_avx512_mat_full_sab_r4_reps1_runs1/summary.csv` | SMOKE_ONLY | full SAB r=4 `1.356x` |
+| `repro/stage15_avx512_mat_instruction_snippet.txt` | PASS | contains AVX512 FMA instructions |
+
+Decision:
+
+```text
+Keep the FMA-accumulate helper and r=2 pointer-hoisted specialization.
+Do not enable the explicit flag by default.
+Move next to repeated full SAB sweeps or SAB-level CMUX/RGSW/sparse fusion.
+```
