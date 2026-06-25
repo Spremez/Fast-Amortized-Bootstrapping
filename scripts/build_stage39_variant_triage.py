@@ -214,7 +214,8 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         ]
     )
     OUT_MD.parent.mkdir(parents=True, exist_ok=True)
-    OUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    with OUT_MD.open("w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines) + "\n")
 
 
 def main() -> int:
