@@ -814,6 +814,16 @@ Gate:
 - this stage is optional for the current scoped engineering claim and required
   only for broader statistical claims.
 
+Status:
+
+```text
+Stage 36 plan generation completed. The budget matrix pre-registers five
+optional campaigns: target 10-run full-SAB performance, target 50-seed
+final-output noise rerun, 10-seed stage-level noise expansion, added-parameter
+10-run/20-seed expansion, and 3-run resource replication. No heavy campaign
+has been executed or promoted yet.
+```
+
 ## Stage 37: Native Perf-Counter Evidence
 
 Goal:
