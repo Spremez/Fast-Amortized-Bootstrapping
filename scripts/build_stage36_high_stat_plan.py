@@ -20,6 +20,7 @@ TARGET_PERF_SUMMARY = ROOT / "repro/stage36_target_perf_summary.csv"
 TARGET_PERF_EXCLUSIONS = ROOT / "repro/stage36_target_perf_exclusions.csv"
 TARGET_PERF_SUPPLEMENTAL = ROOT / "repro/stage36_target_perf_supplemental.csv"
 STAGE_NOISE_AGGREGATE = ROOT / "repro/stage36_stage_noise_seeds10/aggregate.csv"
+RESOURCE_SUMMARY = ROOT / "repro/stage36_resource_summary.csv"
 
 
 def row(
@@ -243,7 +244,35 @@ def write_md(rows: List[Dict[str, str]]) -> None:
                 "{avg_pair_log2_sigma} | {worst_pair_log2_max_abs} | {status} |".format(**item)
             )
 
-    if target_perf and stage_noise:
+    resource = read_csv_if_exists(RESOURCE_SUMMARY)
+    if resource:
+        lines.extend(
+            [
+                "",
+                "## Resource Result",
+                "",
+                "| r | mode | runs | keygen lane mean us | key bytes ratio mean | max RSS KB | decision |",
+                "|---|---|---:|---:|---:|---:|---|",
+            ]
+        )
+        for item in resource:
+            lines.append(
+                "| {r} | {mode} | {runs} | {keygen_lane_mean_us} | "
+                "{key_bytes_ratio_mean} | {time_max_rss_max_kb} | {decision} |".format(**item)
+            )
+
+    if target_perf and stage_noise and resource:
+        decision_text = (
+            "The target performance campaign has 10 primary same-backend "
+            "samples for r=2 and r=4, the stage-noise campaign has 10 "
+            "deterministic seeds for r=2 and r=4 with zero pair failures at "
+            "all reported stages, and the resource campaign has 3 repeated "
+            "snapshots for scalar/PVW r=1/2/4. This strengthens target "
+            "performance, stage-level noise, and resource statistics, but it "
+            "does not upgrade novelty, theorem-level citation, non-binary, "
+            "all-parameter, or hardware-counter claims."
+        )
+    elif target_perf and stage_noise:
         decision_text = (
             "The target performance campaign has 10 primary same-backend "
             "samples for r=2 and r=4, and the stage-noise campaign has 10 "

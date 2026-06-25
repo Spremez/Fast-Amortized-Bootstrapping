@@ -21,6 +21,7 @@ EXTERNAL = ROOT / "repro" / "external_evidence_intake" / "summary.csv"
 STAGE33 = ROOT / "repro" / "stage33_current_smoke" / "summary.csv"
 STAGE36_TARGET_PERF = ROOT / "repro" / "stage36_target_perf_summary.csv"
 STAGE36_STAGE_NOISE = ROOT / "repro" / "stage36_stage_noise_seeds10" / "aggregate.csv"
+STAGE36_RESOURCE = ROOT / "repro" / "stage36_resource_summary.csv"
 RUN_LOG = ROOT / "repro" / "run_log.csv"
 
 
@@ -288,6 +289,46 @@ def audit() -> list[AuditRow]:
         )
     )
 
+    stage36_resource = read_csv_if_exists(STAGE36_RESOURCE)
+    if stage36_resource:
+        expected = {
+            ("1", "pvw"),
+            ("1", "scalar"),
+            ("2", "pvw"),
+            ("2", "scalar"),
+            ("4", "pvw"),
+            ("4", "scalar"),
+        }
+        passed = {
+            (row.get("r"), row.get("mode"))
+            for row in stage36_resource
+            if row.get("decision") == "PASS_RESOURCE_3RUN"
+            and as_int(row, "runs") >= 3
+        }
+        out.append(
+            AuditRow(
+                "A4b",
+                "resources_high_stat",
+                "Stage 36 resource matrix has 3-run scalar/PVW r=1/2/4 support",
+                "PASS_RESOURCE_3RUN" if expected.issubset(passed) else "FAIL_STAGE36_RESOURCE",
+                rel(STAGE36_RESOURCE),
+                "optional statistical resource evidence",
+                "Fix or rerun Stage 36 resource before using statistical resource wording.",
+            )
+        )
+    else:
+        out.append(
+            AuditRow(
+                "A4b",
+                "resources_high_stat",
+                "Stage 36 resource matrix has 3-run scalar/PVW r=1/2/4 support",
+                "NOT_RUN_OPTIONAL",
+                "",
+                "optional; not required for current scoped engineering claim",
+                "Run STAGE36_MODE=resource STAGE36_EXECUTE=1 before using statistical resource wording.",
+            )
+        )
+
     manifest_ok, manifest_detail = existing_manifest_paths(manifest)
     run_log_has_stage28 = any(
         row.get("run_id") == "stage28-native-perf-counter-gate-001"
@@ -429,6 +470,8 @@ def audit() -> list[AuditRow]:
         scoped_ready_ids.add("A2b")
     if STAGE36_STAGE_NOISE.exists():
         scoped_ready_ids.add("A3b")
+    if STAGE36_RESOURCE.exists():
+        scoped_ready_ids.add("A4b")
     status_by_id = {row.item_id: row.status for row in out}
     scoped_ready = all(
         status_by_id.get(item_id, "").startswith("PASS")

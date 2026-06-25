@@ -58,7 +58,7 @@ evidence.
 | Stage 33 current commit smoke | `spqlios_avx512` | n/a | current smoke passed | scalar binary full run, PVW target full gate, and scalar ternary build all pass |
 | Stage 34 current-smoke final recheck | orchestration | n/a | passed | final recheck refreshed Stage 33 current smoke before rebuilding the final audit |
 | Stage 35 completion blocker matrix | audit synthesis | n/a | passed | remaining work classified into scoped-complete, optional expansion, claim guardrail, external blocker, and overall decision lanes |
-| Stage 36 target high-stat performance/noise | `spqlios_avx512` | 2/4 | 10-run/10-seed target support | performance r=2 mean `1.191x` CI `[1.075307,1.306693]`, r=4 mean `1.377x` CI `[1.314893,1.438107]`; stage-noise 10 seeds, zero pair failures |
+| Stage 36 target high-stat performance/noise/resource | `spqlios_avx512` | 1/2/4 | 10-run/10-seed/3-run target support | performance r=2 mean `1.191x` CI `[1.075307,1.306693]`, r=4 mean `1.377x` CI `[1.314893,1.438107]`; stage-noise 10 seeds, zero pair failures; resource scalar/PVW r=1/2/4 has 3-run support |
 
 Current conclusion:
 
@@ -122,12 +122,12 @@ The Stage 35 blocker matrix makes the remaining completion boundary explicit:
 the local scoped engineering chain is ready, while MAT-AVX512 theoretical
 load/store attribution and theorem-level 2025/686 review still require external
 native/perf and full-text evidence.
-The Stage 36 target-performance and stage-noise campaigns strengthen the
-target binary complete-SAB evidence with 10 same-backend performance samples
-and 10 deterministic stage-noise seeds for r=2 and r=4. They do not change the
-remaining external blockers for novelty, theorem-level 2025/686 review,
-non-binary support, all-parameter claims, or MAT-AVX512 hardware-counter
-attribution.
+The Stage 36 target-performance, stage-noise, and resource campaigns
+strengthen the target binary complete-SAB evidence with 10 same-backend
+performance samples, 10 deterministic stage-noise seeds for r=2 and r=4, and
+3 resource snapshots for scalar/PVW r=1/2/4. They do not change the remaining
+external blockers for novelty, theorem-level 2025/686 review, non-binary
+support, all-parameter claims, or MAT-AVX512 hardware-counter attribution.
 ```
 
 ## Invariants
@@ -195,7 +195,7 @@ Stage 32: citation refresh recheck. [run with network citation probe; direct ful
 Stage 33: current commit smoke. [scalar/PVW target smoke passed; no performance claim]
 Stage 34: current-smoke final recheck integration. [completed; explicit refresh mode passed]
 Stage 35: completion blocker matrix. [completed; local scoped-ready and external blockers separated]
-Stage 36: high-statistics claim expansion. [target_perf 10-run and stage_noise 10-seed campaigns completed; other campaigns optional]
+Stage 36: high-statistics claim expansion. [target_perf 10-run, stage_noise 10-seed, and resource 3-run campaigns completed; target_noise and added_params remain optional]
 Stage 37: native perf-counter evidence. [blocked until native/perf-enabled platform]
 Stage 38: full 2025/686 source review. [blocked until full text is supplied]
 Stage 39: optional new algorithmic variants. [only if scope requires beyond current promoted path]

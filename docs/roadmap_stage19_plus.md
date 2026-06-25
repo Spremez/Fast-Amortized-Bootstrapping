@@ -782,9 +782,9 @@ Status:
 
 ```text
 Stage 35 completed and was refreshed after Stage 36. The generated matrix now
-covers all final audit rows: 5 scoped-complete items, 1 statistical expansion,
-2 optional expansions, 1 claim guardrail, 2 external blockers, and 1 overall
-scoped-ready decision. The current external blockers remain
+covers all final audit rows: 5 scoped-complete items, 3 statistical
+expansions, 2 optional expansions, 1 claim guardrail, 2 external blockers, and
+1 overall scoped-ready decision. The current external blockers remain
 fab686_fulltext=MISSING and stage28_native_perf_summary=MISSING.
 ```
 
@@ -826,10 +826,17 @@ statistic.
 
 The stage_noise campaign was also executed for r=2/r=4 with 10 deterministic
 seeds. All reported stages passed with zero pair failures:
-blind_rotate_coeff0, extract, materialize_tlwe, packing_ks, and hw_ks. This
-strengthens target-performance and stage-level noise statistics but does not
-upgrade novelty, theorem-level citation, non-binary, all-parameter, or
-hardware-counter claims.
+blind_rotate_coeff0, extract, materialize_tlwe, packing_ks, and hw_ks.
+
+The resource campaign was executed three times for scalar and PVW r=1/2/4
+after switching benchmark timing to CLOCK_MONOTONIC to avoid wall-clock
+underflow in resource logs. All six scalar/PVW r/mode groups have three
+samples and PASS_RESOURCE_3RUN. PVW public key byte ratios versus repeated
+scalar remain 1.000029x for r=1, 1.013617x for r=2, and 1.065349x for r=4.
+
+This strengthens target-performance, stage-level noise, and resource
+statistics but does not upgrade novelty, theorem-level citation, non-binary,
+all-parameter, or hardware-counter claims.
 ```
 
 ## Stage 37: Native Perf-Counter Evidence

@@ -73,6 +73,17 @@ Supplemental samples not included in the primary 10-run statistic:
 | 4 | packing_ks | 10 | 0 | -14.797700 | -11.992 | PASS |
 | 4 | hw_ks | 10 | 0 | -8.062000 | -5.878 | PASS |
 
+## Resource Result
+
+| r | mode | runs | keygen lane mean us | key bytes ratio mean | max RSS KB | decision |
+|---|---|---:|---:|---:|---:|---|
+| 1 | pvw | 3 | 491737.667 | 1.000 | 203600.000 | PASS_RESOURCE_3RUN |
+| 1 | scalar | 3 | 498406.000 | 1.000 | 195204.000 | PASS_RESOURCE_3RUN |
+| 2 | pvw | 3 | 511311.000 | 1.014 | 383236.000 | PASS_RESOURCE_3RUN |
+| 2 | scalar | 3 | 481634.833 | 1.000 | 387320.000 | PASS_RESOURCE_3RUN |
+| 4 | pvw | 3 | 584219.500 | 1.065 | 769468.000 | PASS_RESOURCE_3RUN |
+| 4 | scalar | 3 | 502914.000 | 1.000 | 771688.000 | PASS_RESOURCE_3RUN |
+
 ## Current Decision
 
-The target performance campaign has 10 primary same-backend samples for r=2 and r=4, and the stage-noise campaign has 10 deterministic seeds for r=2 and r=4 with zero pair failures at all reported stages. This strengthens target performance and stage-level noise statistics, but it does not upgrade novelty, theorem-level citation, non-binary, all-parameter, or hardware-counter claims.
+The target performance campaign has 10 primary same-backend samples for r=2 and r=4, the stage-noise campaign has 10 deterministic seeds for r=2 and r=4 with zero pair failures at all reported stages, and the resource campaign has 3 repeated snapshots for scalar/PVW r=1/2/4. This strengthens target performance, stage-level noise, and resource statistics, but it does not upgrade novelty, theorem-level citation, non-binary, all-parameter, or hardware-counter claims.

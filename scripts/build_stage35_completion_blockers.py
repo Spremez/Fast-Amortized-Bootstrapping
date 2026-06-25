@@ -104,6 +104,11 @@ def classify(row: Dict[str, str], ext_status: str) -> Dict[str, str]:
         requires_user = "no"
         next_action = "repeat resource matrix only if paper needs statistical resource tables"
         impact = "does not block scoped engineering claim"
+    if item_id == "A4b" and status == "PASS_RESOURCE_3RUN":
+        lane = "statistical_expansion"
+        requires_user = "no"
+        next_action = "use this evidence only for statistical resource wording"
+        impact = "strengthens resource reporting; does not affect performance or external blockers"
     if item_id == "A6" and status == "PASS_BLOCKED_BOUNDARY":
         lane = "claim_guardrail"
         requires_user = "yes_for_upgrade"

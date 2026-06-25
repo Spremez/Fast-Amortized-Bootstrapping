@@ -62,6 +62,7 @@ case "$mode" in
       out_dir="repro/stage36_resource_run_${idx}"
       run_or_print "STAGE25_RESOURCE_OUT_DIR=$out_dir FFT_LIB=$fft_lib MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=$mat_specialized SAB_PVW_ACTIVE_BUFFER_FUSION=$active_buffer JOBS=$jobs bash scripts/run_stage25_resource_matrix.sh"
     done
+    run_or_print "python3 scripts/build_stage36_resource_summary.py"
     ;;
 
   *)

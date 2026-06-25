@@ -1,14 +1,14 @@
 // A small utility file for measuring time
-#include <sys/time.h>
+#include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
 
 uint64_t get_time() {
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  return (tv.tv_usec) + (tv.tv_sec * 1000000);
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  return ((uint64_t) ts.tv_sec * 1000000ULL) + ((uint64_t) ts.tv_nsec / 1000ULL);
 }
 
 

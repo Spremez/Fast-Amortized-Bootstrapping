@@ -18,7 +18,7 @@ not upgrade any claim by itself.
 - `external_blocker`: 2
 - `optional_expansion`: 2
 - `overall_scoped_ready`: 1
-- `statistical_expansion`: 2
+- `statistical_expansion`: 3
 
 ## Matrix
 
@@ -30,6 +30,7 @@ not upgrade any claim by itself.
 | A3 | PASS_SCOPED | complete_or_scoped_complete | no |  | keep artifact current through final recheck | supports scoped engineering claim |
 | A3b | PASS_STAGE_NOISE_10SEED | statistical_expansion | no |  | use this evidence only for stage-by-stage noise wording | strengthens staged noise evidence; does not affect external blockers |
 | A4 | PASS_SMOKE_RESOURCE | optional_expansion | no |  | repeat resource matrix only if paper needs statistical resource tables | does not block scoped engineering claim |
+| A4b | PASS_RESOURCE_3RUN | statistical_expansion | no |  | use this evidence only for statistical resource wording | strengthens resource reporting; does not affect performance or external blockers |
 | A5 | PASS_SCOPED | complete_or_scoped_complete | no |  | keep artifact current through final recheck | supports scoped engineering claim |
 | A5b | PASS_CURRENT_SMOKE | complete_or_scoped_complete | no |  | keep artifact current through final recheck | supports scoped engineering claim |
 | A6 | PASS_BLOCKED_BOUNDARY | claim_guardrail | yes_for_upgrade |  | review full related work and 2025/686 text before changing blocked labels | prevents novelty/theorem overclaim |
