@@ -1,0 +1,334 @@
+#!/usr/bin/env python3
+"""Verify the Stage 42 evidence-closure package without regenerating it."""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import subprocess
+import sys
+from pathlib import Path
+from typing import Dict, Iterable, List
+
+
+ROOT = Path(__file__).resolve().parents[1]
+FINAL_AUDIT = ROOT / "repro" / "final_goal_completion_audit.csv"
+STAGE41 = ROOT / "repro" / "stage41_external_unlock_packet.csv"
+STAGE42_AUDIT = ROOT / "repro" / "stage42_evidence_closure_audit.csv"
+STAGE42_MANIFEST = ROOT / "repro" / "stage42_evidence_closure_manifest.csv"
+STAGE43_SMOKE = ROOT / "repro" / "stage43_current_smoke_after_stage42" / "summary.csv"
+DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
+CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
+RUN_LOG = ROOT / "repro" / "run_log.csv"
+ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
+
+
+def read_csv(path: Path) -> List[Dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open(newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def row_by(rows: List[Dict[str, str]], key: str, value: str) -> Dict[str, str]:
+    for row in rows:
+        if row.get(key) == value:
+            return row
+    return {}
+
+
+def git_short() -> str:
+    return subprocess.check_output(
+        ["git", "rev-parse", "--short", "HEAD"],
+        cwd=ROOT,
+        text=True,
+    ).strip()
+
+
+def git_status_short() -> str:
+    return subprocess.check_output(
+        ["git", "status", "--short", "--untracked-files=all"],
+        cwd=ROOT,
+        text=True,
+    )
+
+
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def write_csv(path: Path, rows: Iterable[Dict[str, str]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=["check", "status", "evidence", "detail"],
+            lineterminator="\n",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def manifest_problems() -> List[str]:
+    rows = read_csv(STAGE42_MANIFEST)
+    problems: List[str] = []
+    if not rows:
+        return ["manifest_missing_or_empty"]
+    for row in rows:
+        artifact = row.get("artifact", "")
+        path = ROOT / artifact
+        if row.get("exists") != "yes":
+            problems.append(f"{artifact}:exists={row.get('exists')}")
+        elif not path.exists():
+            problems.append(f"{artifact}:missing")
+        elif row.get("size_bytes") != str(path.stat().st_size):
+            problems.append(f"{artifact}:size_mismatch")
+        elif not row.get("sha256"):
+            problems.append(f"{artifact}:missing_hash")
+        elif sha256_file(path) != row.get("sha256"):
+            problems.append(f"{artifact}:hash_mismatch")
+    return problems
+
+
+def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dict[str, str]]:
+    final_audit = {row.get("item_id"): row for row in read_csv(FINAL_AUDIT)}
+    stage41 = {row.get("unlock_id"): row for row in read_csv(STAGE41)}
+    stage42 = {row.get("check_id"): row for row in read_csv(STAGE42_AUDIT)}
+    stage43 = {row.get("step"): row for row in read_csv(STAGE43_SMOKE)}
+    default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
+    closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
+    run_log = read_csv(RUN_LOG)
+    artifact_manifest = ARTIFACT_MANIFEST.read_text(encoding="utf-8") if ARTIFACT_MANIFEST.exists() else ""
+
+    stage41_mismatches = []
+    expected_stage41 = {
+        "S41-FULLTEXT-INTAKE": "WAIT_EXTERNAL_FULLTEXT",
+        "S41-NATIVE-PERF-INTAKE": "WAIT_NATIVE_PERF",
+        "S41-EXTERNAL-REGISTRATION": "WAIT_EXTERNAL_ARTIFACTS",
+        "S41-FINAL-RECHECK": "WAIT_UNLOCKS",
+    }
+    for unlock_id, expected in expected_stage41.items():
+        got = stage41.get(unlock_id, {}).get("readiness", "MISSING")
+        if got != expected:
+            stage41_mismatches.append(f"{unlock_id}:{got}!={expected}")
+
+    stage43_mismatches = []
+    for step in ["scalar_binary_full_run", "pvw_target_full_gate", "scalar_ternary_build"]:
+        got = stage43.get(step, {}).get("status", "MISSING")
+        if got != "PASS":
+            stage43_mismatches.append(f"{step}:{got}!=PASS")
+
+    default_ok = (
+        default_recheck.get("stage42_evidence_closure", {}).get("status") == "PASS"
+        and default_recheck.get("final_decision", {}).get("status")
+        == "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED"
+    )
+    closure_ok = (
+        closure_recheck.get("stage42_evidence_closure", {}).get("status") == "PASS"
+        and closure_recheck.get("final_decision", {}).get("status")
+        == "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED"
+    )
+
+    manifest_mismatches = manifest_problems()
+    run_ids = {row.get("run_id") for row in run_log}
+    required_run_ids = [
+        "stage42-evidence-closure-audit-001",
+        "stage42-closure-manifest-001",
+        "stage42-final-recheck-closure-001",
+        "stage42-final-recheck-default-closure-001",
+        "stage43-postclosure-current-smoke-001",
+    ]
+    missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
+    required_manifest_mentions = [
+        "scripts/verify_stage42_closure.py",
+        "repro/stage42_evidence_closure_manifest.csv",
+    ]
+    missing_manifest_mentions = [
+        token for token in required_manifest_mentions if token not in artifact_manifest
+    ]
+
+    checks = [
+        {
+            "check": "verification_input_commit",
+            "status": git_short(),
+            "evidence": "git rev-parse --short HEAD",
+            "detail": "Commit checked before writing verifier output artifacts.",
+        },
+        {
+            "check": "worktree_clean_before_outputs",
+            "status": "PASS" if not status_before_outputs.strip() else "FAIL_DIRTY",
+            "evidence": "git status --short --untracked-files=all",
+            "detail": status_before_outputs.replace("\n", "; ")
+            if status_before_outputs.strip()
+            else "tracked and untracked worktree was clean before verifier outputs.",
+        },
+        {
+            "check": "final_audit_A9",
+            "status": "PASS"
+            if final_audit.get("A9", {}).get("status")
+            == "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED"
+            else "FAIL",
+            "evidence": "repro/final_goal_completion_audit.csv",
+            "detail": final_audit.get("A9", {}).get("status", "MISSING"),
+        },
+        {
+            "check": "stage41_readiness",
+            "status": "PASS" if not stage41_mismatches else "FAIL",
+            "evidence": "repro/stage41_external_unlock_packet.csv",
+            "detail": "all readiness rows remain waiting for external evidence"
+            if not stage41_mismatches
+            else "; ".join(stage41_mismatches),
+        },
+        {
+            "check": "stage42_overall",
+            "status": "PASS"
+            if stage42.get("S42-OVERALL", {}).get("status")
+            == "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED"
+            else "FAIL",
+            "evidence": "repro/stage42_evidence_closure_audit.csv",
+            "detail": stage42.get("S42-OVERALL", {}).get("status", "MISSING"),
+        },
+        {
+            "check": "stage42_manifest_hashes",
+            "status": "PASS" if not manifest_mismatches else "FAIL",
+            "evidence": "repro/stage42_evidence_closure_manifest.csv",
+            "detail": "all closure manifest hashes match"
+            if not manifest_mismatches
+            else "; ".join(manifest_mismatches),
+        },
+        {
+            "check": "stage43_current_smoke",
+            "status": "PASS" if not stage43_mismatches else "FAIL",
+            "evidence": "repro/stage43_current_smoke_after_stage42/summary.csv",
+            "detail": "scalar binary, PVW target, and scalar ternary smoke rows pass"
+            if not stage43_mismatches
+            else "; ".join(stage43_mismatches),
+        },
+        {
+            "check": "default_recheck_closure",
+            "status": "PASS" if default_ok else "FAIL",
+            "evidence": "repro/final_goal_recheck/summary.csv",
+            "detail": "default final recheck includes stage42_evidence_closure=PASS"
+            if default_ok
+            else "default recheck closure or final decision missing",
+        },
+        {
+            "check": "closure_only_recheck",
+            "status": "PASS" if closure_ok else "FAIL",
+            "evidence": "repro/final_goal_recheck_stage42_closure/summary.csv",
+            "detail": "closure-only final recheck includes stage42_evidence_closure=PASS"
+            if closure_ok
+            else "closure-only recheck closure or final decision missing",
+        },
+        {
+            "check": "stage42_run_log_rows",
+            "status": "PASS" if not missing_run_ids else "FAIL",
+            "evidence": "repro/run_log.csv",
+            "detail": "all Stage42/43 closure run rows are present"
+            if not missing_run_ids
+            else "; ".join(missing_run_ids),
+        },
+        {
+            "check": "artifact_manifest_mentions",
+            "status": "PASS" if not missing_manifest_mentions else "FAIL",
+            "evidence": "repro/artifact_manifest.md",
+            "detail": "Stage42 verifier and closure manifest are registered"
+            if not missing_manifest_mentions
+            else "; ".join(missing_manifest_mentions),
+        },
+    ]
+
+    pass_all = all(
+        row["status"] == "PASS" or row["check"] == "verification_input_commit"
+        for row in checks
+    )
+    checks.append(
+        {
+            "check": "stage42_verify_decision",
+            "status": "PASS_STAGE42_VERIFY_STRONGER_CLAIMS_BLOCKED"
+            if pass_all
+            else "FAIL_STAGE42_VERIFY",
+            "evidence": decision_evidence,
+            "detail": "Stage42 closure package is internally consistent; stronger claims remain blocked."
+            if pass_all
+            else "Inspect failing checks before relying on Stage42 closure evidence.",
+        }
+    )
+    return checks
+
+
+def write_md(rows: List[Dict[str, str]], out_md: Path) -> None:
+    lines = [
+        "# Stage 42 Closure Verification Log",
+        "",
+        "Date: 2026-06-26",
+        "",
+        "## Purpose",
+        "",
+        "This verifier checks the Stage 42 evidence-closure package without",
+        "regenerating the Stage 42 audit or manifest.",
+        "",
+        "## Checks",
+        "",
+        "| check | status | evidence | detail |",
+        "|---|---|---|---|",
+    ]
+    for row in rows:
+        lines.append(f"| {row['check']} | {row['status']} | {row['evidence']} | {row['detail']} |")
+    decision = row_by(rows, "check", "stage42_verify_decision")
+    lines.extend(["", "## Decision", "", decision.get("detail", "No decision row generated.")])
+    out_md.parent.mkdir(parents=True, exist_ok=True)
+    with out_md.open("w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines) + "\n")
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--out-dir",
+        default="repro/stage42_closure_verify",
+        help="Output directory for the verifier summary CSV.",
+    )
+    parser.add_argument(
+        "--check-only",
+        action="store_true",
+        help="Print verification CSV to stdout without writing repo artifacts.",
+    )
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    status_before_outputs = git_status_short()
+    rows = build_checks(
+        status_before_outputs,
+        "stdout" if args.check_only else "repro/stage42_closure_verify/summary.csv",
+    )
+    decision = row_by(rows, "check", "stage42_verify_decision")
+    if args.check_only:
+        writer = csv.DictWriter(
+            sys.stdout,
+            fieldnames=["check", "status", "evidence", "detail"],
+            lineterminator="\n",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+        return 0 if decision.get("status") == "PASS_STAGE42_VERIFY_STRONGER_CLAIMS_BLOCKED" else 1
+
+    out_dir = Path(args.out_dir)
+    if not out_dir.is_absolute():
+        out_dir = ROOT / out_dir
+    write_csv(out_dir / "summary.csv", rows)
+    write_md(rows, ROOT / "docs" / "stage42_closure_verify_log.md")
+    print(f"Wrote {(out_dir / 'summary.csv').relative_to(ROOT).as_posix()}")
+    print("Wrote docs/stage42_closure_verify_log.md")
+    return 0 if decision.get("status") == "PASS_STAGE42_VERIFY_STRONGER_CLAIMS_BLOCKED" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

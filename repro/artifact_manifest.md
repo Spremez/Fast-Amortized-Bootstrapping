@@ -77,6 +77,7 @@ Code artifacts:
 - `scripts/verify_stage40_freeze.py`
 - `scripts/build_stage41_external_unlock_packet.py`
 - `scripts/build_stage42_evidence_closure_audit.py`
+- `scripts/verify_stage42_closure.py`
 
 Documentation artifacts:
 
@@ -185,6 +186,7 @@ Documentation artifacts:
 - `experiments/stage40_postfreeze_verify_plan.md`
 - `experiments/stage41_external_unlock_plan.md`
 - `experiments/stage42_evidence_closure_audit_plan.md`
+- `experiments/stage42_closure_verify_plan.md`
 - `experiments/stage43_postclosure_current_smoke_plan.md`
 
 Repro artifacts:
