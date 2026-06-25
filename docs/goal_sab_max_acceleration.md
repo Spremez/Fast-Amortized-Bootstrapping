@@ -59,6 +59,7 @@ evidence.
 | Stage 34 current-smoke final recheck | orchestration | n/a | passed | final recheck refreshed Stage 33 current smoke before rebuilding the final audit |
 | Stage 35 completion blocker matrix | audit synthesis | n/a | passed | remaining work classified into scoped-complete, optional expansion, claim guardrail, external blocker, and overall decision lanes |
 | Stage 36 target high-stat performance/noise/resource | `spqlios_avx512` | 1/2/4 | 10-run/10-seed/3-run target support | performance r=2 mean `1.191x` CI `[1.075307,1.306693]`, r=4 mean `1.377x` CI `[1.314893,1.438107]`; stage-noise 10 seeds, zero pair failures; resource scalar/PVW r=1/2/4 has 3-run support |
+| Stage 37 native perf-counter audit | WSL2 probe | n/a | blocked, reproducible | requested heavy Stage 28 counter gate with `STAGE28_RUN_BENCH=1`; `perf` missing in PATH, so MAT-AVX512 hardware-counter attribution remains blocked |
 
 Current conclusion:
 
@@ -128,6 +129,10 @@ performance samples, 10 deterministic stage-noise seeds for r=2 and r=4, and
 3 resource snapshots for scalar/PVW r=1/2/4. They do not change the remaining
 external blockers for novelty, theorem-level 2025/686 review, non-binary
 support, all-parameter claims, or MAT-AVX512 hardware-counter attribution.
+The Stage 37 native perf-counter audit then requested the heavy hardware
+counter gate but confirmed the current WSL2 environment still lacks `perf` in
+PATH. This records a stronger reproducible blocker for MAT-AVX512
+load/store/FMA attribution, not a negative result about the kernel itself.
 ```
 
 ## Invariants
@@ -196,7 +201,7 @@ Stage 33: current commit smoke. [scalar/PVW target smoke passed; no performance 
 Stage 34: current-smoke final recheck integration. [completed; explicit refresh mode passed]
 Stage 35: completion blocker matrix. [completed; local scoped-ready and external blockers separated]
 Stage 36: high-statistics claim expansion. [target_perf 10-run, stage_noise 10-seed, and resource 3-run campaigns completed; target_noise and added_params remain optional]
-Stage 37: native perf-counter evidence. [blocked until native/perf-enabled platform]
+Stage 37: native perf-counter evidence. [executed in current WSL2; blocked until native/perf-enabled platform]
 Stage 38: full 2025/686 source review. [blocked until full text is supplied]
 Stage 39: optional new algorithmic variants. [only if scope requires beyond current promoted path]
 Stage 40: final paper/release freeze. [after selected blockers or expansions are resolved]

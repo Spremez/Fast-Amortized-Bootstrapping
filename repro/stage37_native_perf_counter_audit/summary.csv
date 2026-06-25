@@ -1,0 +1,4 @@
+item,status,evidence,detail
+stage28_heavy_gate,BLOCKED,repro/stage37_native_perf_counter_audit/stage28_gate/summary.csv,Stage 28 requested STAGE28_RUN_BENCH=1.
+external_intake,NO_NATIVE_PERF_REGISTERED,repro/external_evidence_intake/summary.csv,Stage 28 did not PASS; external native perf evidence remains missing.
+stage37_decision,BLOCKED_EXTERNAL_PERF,repro/stage37_native_perf_counter_audit/stage28_gate/summary.csv,Rerun on native Linux or perf-enabled WSL to collect hardware counters.

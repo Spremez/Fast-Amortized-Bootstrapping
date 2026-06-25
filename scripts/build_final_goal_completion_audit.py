@@ -416,31 +416,49 @@ def audit() -> list[AuditRow]:
         )
     )
 
+    external_statuses = {row.get("evidence_id"): row for row in external}
+    fulltext_status = external_statuses.get("fab686_fulltext", {}).get("status", "MISSING")
+    native_perf_status = external_statuses.get("stage28_native_perf_summary", {}).get("status", "MISSING")
+
     gate = row_by(stage28, "probe", "hardware_counter_gate")
     stage28_status = gate.get("status", "") if gate else "MISSING"
-    if stage28_status == "PASS":
+    if native_perf_status == "PASS_COUNTER_ATTRIBUTION_AVAILABLE":
+        stage28_audit_status = "PASS_COUNTER_ATTRIBUTION_EXTERNAL"
+        stage28_evidence = rel(EXTERNAL) if EXTERNAL.exists() else rel(STAGE28)
+        stage28_scope = "native/perf-enabled Stage 28 summary registered through external evidence intake"
+        stage28_action = "Interpret hardware counters against Stage 22 timing and objdump evidence before claiming theoretical optimality."
+    elif stage28_status == "PASS":
         stage28_audit_status = "PASS_COUNTER_ATTRIBUTION"
+        stage28_evidence = rel(STAGE28)
+        stage28_scope = gate.get("detail", "missing Stage 28 gate") if gate else "missing Stage 28 gate"
+        stage28_action = "Interpret hardware counters against Stage 22 timing and objdump evidence before claiming theoretical optimality."
     elif stage28_status == "READY_FOR_BENCH":
         stage28_audit_status = "CONDITIONAL_COUNTER_SMOKE_ONLY"
+        stage28_evidence = rel(STAGE28)
+        stage28_scope = gate.get("detail", "missing Stage 28 gate") if gate else "missing Stage 28 gate"
+        stage28_action = "Run Stage 28 with STAGE28_RUN_BENCH=1 before claiming theoretical optimality."
     elif stage28_status == "BLOCKED":
         stage28_audit_status = "BLOCKED_EXTERNAL"
+        stage28_evidence = rel(STAGE28)
+        stage28_scope = gate.get("detail", "missing Stage 28 gate") if gate else "missing Stage 28 gate"
+        stage28_action = "Run Stage 28 on native Linux or perf-enabled WSL with STAGE28_RUN_BENCH=1 before claiming theoretical optimality."
     else:
         stage28_audit_status = "FAIL_MISSING"
+        stage28_evidence = rel(STAGE28)
+        stage28_scope = gate.get("detail", "missing Stage 28 gate") if gate else "missing Stage 28 gate"
+        stage28_action = "Run Stage 28 on native Linux or perf-enabled WSL with STAGE28_RUN_BENCH=1 before claiming theoretical optimality."
     out.append(
         AuditRow(
             "A8",
             "theory_backend",
             "MAT-AVX512 theoretical load/store optimality has hardware-counter support",
             stage28_audit_status,
-            rel(STAGE28),
-            gate.get("detail", "missing Stage 28 gate") if gate else "missing Stage 28 gate",
-            "Run Stage 28 on native Linux or perf-enabled WSL with STAGE28_RUN_BENCH=1 before claiming theoretical optimality.",
+            stage28_evidence,
+            stage28_scope,
+            stage28_action,
         )
     )
 
-    external_statuses = {row.get("evidence_id"): row for row in external}
-    fulltext_status = external_statuses.get("fab686_fulltext", {}).get("status", "MISSING")
-    native_perf_status = external_statuses.get("stage28_native_perf_summary", {}).get("status", "MISSING")
     if fulltext_status == "AVAILABLE_UNREVIEWED" or native_perf_status == "PASS_COUNTER_ATTRIBUTION_AVAILABLE":
         external_audit_status = "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
         external_scope = (
@@ -487,7 +505,7 @@ def audit() -> list[AuditRow]:
             overall_status = "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED"
         else:
             overall_status = "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED"
-    elif scoped_ready and theory_status == "PASS_COUNTER_ATTRIBUTION":
+    elif scoped_ready and theory_status in {"PASS_COUNTER_ATTRIBUTION", "PASS_COUNTER_ATTRIBUTION_EXTERNAL"}:
         overall_status = "SCOPED_ENGINEERING_CHAIN_READY__COUNTER_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
     else:
         overall_status = "NOT_READY"

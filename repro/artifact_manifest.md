@@ -66,6 +66,8 @@ Code artifacts:
 - `scripts/build_stage36_target_perf_summary.py`
 - `scripts/run_stage36_stage_noise_sweep.sh`
 - `scripts/build_stage36_resource_summary.py`
+- `scripts/run_stage37_native_perf_counter_audit.sh`
+- `scripts/build_stage37_native_perf_counter_log.py`
 
 Documentation artifacts:
 
@@ -126,6 +128,7 @@ Documentation artifacts:
 - `docs/stage34_current_smoke_recheck_log.md`
 - `docs/stage35_completion_blocker_matrix.md`
 - `docs/stage36_high_stat_expansion_log.md`
+- `docs/stage37_native_perf_counter_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -159,6 +162,7 @@ Documentation artifacts:
 - `experiments/stage34_current_smoke_recheck_plan.md`
 - `experiments/stage35_completion_blockers_plan.md`
 - `experiments/stage36_high_stat_expansion_plan.md`
+- `experiments/stage37_native_perf_counter_plan.md`
 
 Repro artifacts:
 
@@ -605,6 +609,15 @@ Repro artifacts:
 - `repro/stage36_resource_run_2/summary.csv`
 - `repro/stage36_resource_run_0/r1/pvw.log` through
   `repro/stage36_resource_run_2/r4/scalar.time.log`
+- `repro/stage37_native_perf_counter_audit/summary.csv`
+- `repro/stage37_native_perf_counter_audit/stage28_gate/summary.csv`
+- `repro/stage37_native_perf_counter_audit/stage28_gate/environment.log`
+- `repro/stage37_native_perf_counter_audit/stage28_gate/perf_smoke.log`
+- `repro/stage37_native_perf_counter_audit/stage28_gate.log`
+- `repro/stage37_native_perf_counter_audit/external_evidence_intake.log`
+- `repro/stage37_native_perf_counter_audit/final_goal_audit.log`
+- `repro/stage37_native_perf_counter_audit/stage35_blockers.log`
+- `repro/stage37_native_perf_counter_audit/stage37_log_builder.log`
 - `repro/stage33_current_smoke/summary.csv`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/build.log`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/run.log`

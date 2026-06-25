@@ -862,6 +862,23 @@ Gate:
 - without this evidence, theoretical MAT-AVX512 load/store optimality remains
   blocked.
 
+Status:
+
+```text
+Stage 37 was executed through scripts/run_stage37_native_perf_counter_audit.sh
+with STAGE37_RUN_BENCH=1, which requests the Stage 28 heavy counter gate.
+The current WSL2 environment still has no perf command in PATH, so the gate is
+BLOCKED before hardware counters or the heavy SAB benchmark can run. The
+external evidence intake therefore remains missing for
+stage28_native_perf_summary, and final audit A8/A8b/A9 remain
+BLOCKED_EXTERNAL, MISSING_OPTIONAL_EXTERNAL_EVIDENCE, and
+SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED.
+
+This is a reproducible platform blocker, not a MAT-AVX512 kernel failure.
+Rerun the same Stage 37 command on native Linux or perf-enabled WSL to collect
+hardware-counter evidence.
+```
+
 ## Stage 38: Full 2025/686 Source Review
 
 Goal:
