@@ -1,0 +1,3 @@
+r,run,status,pvw_avg_us,scalar_repeated_avg_us,speedup,profile_samples,mean_tail_pct,max_tail_pct,threshold_pct,decision,source_log
+2,0,Pass,15231927.000,17847524.000,1.172,2,1.154563,1.261195,2.0,DEFER_TAIL_SMALL,repro/stage24_postproc_tail_avx512_runs1/r2/run_0.log
+4,0,Pass,26861119.000,38179424.000,1.421,2,1.057103,1.211048,2.0,DEFER_TAIL_SMALL,repro/stage24_postproc_tail_avx512_runs1/r4/run_0.log

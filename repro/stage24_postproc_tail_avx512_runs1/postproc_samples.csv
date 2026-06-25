@@ -1,0 +1,5 @@
+r,run,call_index,lanes,bootstrap_wo_extract_us,direct_extract_us,packing_ks_us,hw_ks_us,tail_us,full_us,body_pct,direct_pct,packing_pct,hwks_pct,tail_pct,source_log
+2,0,0,2,13981086,29389,148989,203,178581,14159667,98.738805,0.207554,1.052207,0.001434,1.261195,repro/stage24_postproc_tail_avx512_runs1/r2/run_0.log
+2,0,1,2,15072205,12945,146527,147,159619,15231825,98.952063,0.084987,0.961979,0.000965,1.047931,repro/stage24_postproc_tail_avx512_runs1/r2/run_0.log
+4,0,0,4,26989430,76586,253950,326,330862,27320294,98.788944,0.280326,0.929529,0.001193,1.211048,repro/stage24_postproc_tail_avx512_runs1/r4/run_0.log
+4,0,1,4,26618476,16196,226160,242,242598,26861075,99.096838,0.060295,0.841962,0.000901,0.903158,repro/stage24_postproc_tail_avx512_runs1/r4/run_0.log

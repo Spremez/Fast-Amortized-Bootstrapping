@@ -271,6 +271,17 @@ Gate:
 - no high-risk post-processing change is accepted without full-output
   equivalence and resource reporting.
 
+Status after execution:
+
+```text
+Stage 24 re-measured the tail under the current promoted experimental body
+path: spqlios_avx512, specialized MAT-AVX512, and active-buffer fusion. The
+maximum observed post-processing tail was 1.261195%, with mean tail 1.105833%
+across r=2/r=4 samples. This is below the 2.0% implementation threshold, so
+direct-to-packing KS and batched extract are deferred. The next stage is the
+correctness/noise/resource matrix for the current best explicit path.
+```
+
 ## Stage 25: Correctness, Noise, and Resource Matrix
 
 Goal:

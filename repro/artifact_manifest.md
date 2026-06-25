@@ -389,3 +389,10 @@ Repro artifacts:
 - `repro/stage23_schedule_fused_bench_r4_reps1_runs3_seq/run_2.log`
 - `repro/stage23_schedule_fused_bench_r2_reps1_runs3/summary.csv`
 - `repro/stage23_schedule_fused_bench_r4_reps1_runs3/summary.csv`
+- `experiments/stage24_postproc_tail_plan.md`
+- `docs/stage24_postproc_tail_log.md`
+- `scripts/run_stage24_postproc_tail_profile.sh`
+- `repro/stage24_postproc_tail_avx512_runs1/postproc_samples.csv`
+- `repro/stage24_postproc_tail_avx512_runs1/summary.csv`
+- `repro/stage24_postproc_tail_avx512_runs1/r2/run_0.log`
+- `repro/stage24_postproc_tail_avx512_runs1/r4/run_0.log`

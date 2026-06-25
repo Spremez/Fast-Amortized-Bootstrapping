@@ -32,8 +32,16 @@ hypotheses:
     mechanism: >
       The current path materializes each PVW body and runs scalar packing/HW
       key switching per lane, leaving an O(r) post-processing tail.
-    status: theory_pending_implementation
-    evidence: docs/stage10_engineering_report.md
+    status: stage24_deferred_tail_too_small
+    evidence: docs/stage24_postproc_tail_log.md
+    current_decision: >
+      Stage 24 re-measured post-processing under the current best explicit
+      path: spqlios_avx512, MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true, and
+      SAB_PVW_ACTIVE_BUFFER_FUSION=true. Across r=2/r=4, the maximum observed
+      tail was 1.261195% of the profiled full call and the mean tail was
+      1.105833%, below the 2.0% implementation threshold. Direct-to-packing KS
+      and batched extract are therefore deferred until a future body path makes
+      the post-processing tail materially larger.
     failure_criteria:
       - PVW post-processing noise exceeds scalar baseline
       - key size or memory overhead becomes unacceptable

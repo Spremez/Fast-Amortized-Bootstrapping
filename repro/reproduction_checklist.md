@@ -117,7 +117,8 @@
 - [x] Run Stage 23 schedule count profile for `r=2` and `r=4`.
 - [x] Run Stage 23 sequential repeated full SAB A/B for `r=2` and `r=4`.
 - [x] Record the Stage 23 schedule-fused CMUX candidate as neutral and not promoted.
-- [ ] Run Stage 24 conditional post-processing profile after the promoted body path.
+- [x] Run Stage 24 conditional post-processing profile after the promoted body path.
+- [x] Record Stage 24 post-processing direct-to-packing KS as deferred because tail is below threshold.
 - [ ] Run Stage 25 correctness/noise/resource matrix for any promoted Stage 20-23 variant.
 - [ ] Run Stage 26 parameter and branch generalization before broad SAB claims.
 - [ ] Complete Stage 27 novelty/literature and paper package before manuscript claims.

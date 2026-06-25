@@ -32,6 +32,7 @@ evidence.
 | Stage 22 specialized vs generic MAT-AVX | `spqlios_avx512` | 4 | implementation audit | specialized/generic PVW `1.040x`, full-SAB speedup `1.373x` |
 | Stage 23 schedule-fused CMUX | `spqlios_avx512` | 2 | neutral ablation | mean `1.273x`, essentially tied with Stage 20 `1.270x` |
 | Stage 23 schedule-fused CMUX | `spqlios_avx512` | 4 | neutral ablation | mean `1.335x`, below Stage 20 `1.346x` and Stage 22 `1.373x` |
+| Stage 24 post-processing tail | `spqlios_avx512` | 2/4 | deferred | max tail `1.261%`, below `2.0%` implementation threshold |
 
 Current conclusion:
 
@@ -44,7 +45,9 @@ Stage 22 confirms the specialized kernel is useful but does not justify a
 theoretical-optimality claim. Stage 23 schedule-fused CMUX/NCMUX was validated
 but not promoted. The next work should move to conditional post-processing
 tail profiling and then noise/resource validation rather than repeating the
-same CMUX epilogue fusion.
+same CMUX epilogue fusion. Stage 24 measured the tail below the implementation
+threshold, so the next promoted-path work is Stage 25 correctness, noise, and
+resource validation.
 ```
 
 ## Invariants
@@ -100,7 +103,7 @@ Stage 20: active-buffer/copyback fusion. [completed, current explicit baseline]
 Stage 21: sub_a and polynomial rotation optimization. [completed, neutral]
 Stage 22: MAT-aware AVX512 theoretical-limit audit. [completed, practical path confirmed]
 Stage 23: CMUX/NCMUX schedule fusion. [completed, neutral]
-Stage 24: conditional post-processing optimization. [next conditional audit]
+Stage 24: conditional post-processing optimization. [completed, deferred]
 Stage 25: correctness/noise/resource matrix. [next promotion gate]
 Stage 26: parameter and branch generalization.
 Stage 27: novelty and paper package.
