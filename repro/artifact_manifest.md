@@ -58,6 +58,7 @@ Code artifacts:
 - `scripts/run_stage28_native_perf_counter_gate.sh`
 - `scripts/build_final_goal_completion_audit.py`
 - `scripts/run_final_goal_recheck.sh`
+- `scripts/register_external_evidence.py`
 
 Documentation artifacts:
 
@@ -112,6 +113,7 @@ Documentation artifacts:
 - `docs/stage28_native_perf_counter_gate_log.md`
 - `docs/final_goal_completion_audit.md`
 - `docs/final_goal_recheck_log.md`
+- `docs/external_evidence_intake_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -139,6 +141,7 @@ Documentation artifacts:
 - `experiments/stage27_novelty_paper_package_plan.md`
 - `experiments/stage28_native_perf_counter_gate_plan.md`
 - `experiments/final_goal_recheck_plan.md`
+- `experiments/external_evidence_intake_plan.md`
 
 Repro artifacts:
 
@@ -552,4 +555,6 @@ Repro artifacts:
 - `repro/final_goal_recheck/summary.csv`
 - `repro/final_goal_recheck/stage28_perf_gate.log`
 - `repro/final_goal_recheck/stage27_final_package.log`
+- `repro/final_goal_recheck/external_evidence_intake.log`
 - `repro/final_goal_recheck/final_goal_audit.log`
+- `repro/external_evidence_intake/summary.csv`

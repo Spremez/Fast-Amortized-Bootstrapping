@@ -53,6 +53,7 @@ evidence.
 | Stage 28 native perf-counter gate | WSL2 probe | n/a | blocked, reproducible | `perf` missing in current WSL2 PATH; MAT-AVX512 theoretical load/store claim remains blocked |
 | Stage 29 final goal completion audit | generated audit | n/a | scoped ready, stronger blocked | `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED` |
 | Stage 30 final goal recheck runner | orchestration | n/a | reproducible recheck available | default lightweight recheck regenerates final package/audit and preserves stronger-claim blocks |
+| Stage 31 external evidence intake | artifact intake | n/a | missing, reproducible | no full-text or native perf external evidence supplied; final audit records A8b |
 
 Current conclusion:
 
@@ -101,6 +102,9 @@ evidence chain and records the overall state as scoped-ready with stronger
 claims still blocked.
 The Stage 30 recheck runner provides one command to refresh the current gate
 state and final audit when external citation or perf conditions change.
+The Stage 31 external-evidence intake records missing or supplied full-text and
+native/perf artifacts with hashes, while preserving manual review requirements
+before claim upgrades.
 ```
 
 ## Invariants
@@ -163,4 +167,5 @@ Stage 27: novelty and paper package. [engineering evidence package assembled; no
 Stage 28: native perf-counter gate for MAT-AVX512 theoretical load/store attribution. [lightweight probe completed; blocked on current WSL2 platform]
 Stage 29: final goal completion audit. [generated; scoped engineering chain ready, stronger claims blocked]
 Stage 30: final goal recheck runner. [generated and run; current decision unchanged]
+Stage 31: external evidence intake. [generated and run; no external artifacts supplied]
 ```

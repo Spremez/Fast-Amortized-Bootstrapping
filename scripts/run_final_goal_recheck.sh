@@ -5,6 +5,7 @@ out_dir="${FINAL_RECHECK_OUT_DIR:-repro/final_goal_recheck}"
 run_citation="${FINAL_RECHECK_CITATION:-0}"
 run_perf="${FINAL_RECHECK_PERF:-1}"
 run_stage27_package="${FINAL_RECHECK_STAGE27_PACKAGE:-1}"
+run_external_intake="${FINAL_RECHECK_EXTERNAL_INTAKE:-1}"
 run_goal_audit="${FINAL_RECHECK_GOAL_AUDIT:-1}"
 python_bin="${PYTHON_BIN:-python3}"
 
@@ -71,6 +72,16 @@ else
     "$python_bin scripts/build_stage27_final_package.py" \
     "" \
     "Set FINAL_RECHECK_STAGE27_PACKAGE=1 to rebuild final evidence package."
+fi
+
+if [[ "$run_external_intake" == "1" ]]; then
+  run_logged "external_evidence_intake" \
+    "$python_bin scripts/register_external_evidence.py"
+else
+  csv_row "external_evidence_intake" "SKIPPED" \
+    "$python_bin scripts/register_external_evidence.py" \
+    "" \
+    "Set FINAL_RECHECK_EXTERNAL_INTAKE=1 to refresh optional external evidence registration."
 fi
 
 if [[ "$run_goal_audit" == "1" ]]; then

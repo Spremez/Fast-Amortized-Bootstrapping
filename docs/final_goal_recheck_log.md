@@ -22,7 +22,7 @@ bash scripts/run_final_goal_recheck.sh
 ```
 
 The default intentionally skips the network citation probe. It refreshes the
-local/perf gate, final package, and final audit. Use
+local/perf gate, final package, optional external evidence intake, and final audit. Use
 `FINAL_RECHECK_CITATION=1` only when intentionally refreshing external full-text
 access evidence.
 
@@ -40,6 +40,7 @@ Artifacts:
 repro/final_goal_recheck/summary.csv
 repro/final_goal_recheck/stage28_perf_gate.log
 repro/final_goal_recheck/stage27_final_package.log
+repro/final_goal_recheck/external_evidence_intake.log
 repro/final_goal_recheck/final_goal_audit.log
 ```
 
@@ -56,5 +57,7 @@ The recheck confirms the current state rather than upgrading it:
 - scoped engineering evidence remains ready;
 - citation probing was skipped by default, so theorem-level 2025/686 claims stay
   blocked by the existing citation gate;
+- no external full-text or native/perf summary was supplied, so external intake
+  preserves the stronger-claim blocks;
 - Stage 28 still controls MAT-AVX512 hardware-counter claims;
 - final audit remains the authoritative completion-status summary.

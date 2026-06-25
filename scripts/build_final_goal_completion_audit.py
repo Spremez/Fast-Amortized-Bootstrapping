@@ -17,6 +17,7 @@ RESOURCE = ROOT / "repro" / "stage27_final_evidence_package" / "resource_scope.c
 CLAIMS = ROOT / "repro" / "stage27_final_evidence_package" / "claim_scope.csv"
 MANIFEST = ROOT / "repro" / "stage27_final_evidence_package" / "manifest.csv"
 STAGE28 = ROOT / "repro" / "stage28_native_perf_counter_gate" / "summary.csv"
+EXTERNAL = ROOT / "repro" / "external_evidence_intake" / "summary.csv"
 RUN_LOG = ROOT / "repro" / "run_log.csv"
 
 
@@ -34,6 +35,12 @@ class AuditRow:
 def read_csv(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as f:
         return list(csv.DictReader(f))
+
+
+def read_csv_if_exists(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    return read_csv(path)
 
 
 def rel(path: Path) -> str:
@@ -99,6 +106,7 @@ def audit() -> list[AuditRow]:
     claims = read_csv(CLAIMS)
     manifest = read_csv(MANIFEST)
     stage28 = read_csv(STAGE28)
+    external = read_csv_if_exists(EXTERNAL)
     run_log = read_csv(RUN_LOG)
 
     out: list[AuditRow] = []
@@ -278,12 +286,42 @@ def audit() -> list[AuditRow]:
         )
     )
 
+    external_statuses = {row.get("evidence_id"): row for row in external}
+    fulltext_status = external_statuses.get("fab686_fulltext", {}).get("status", "MISSING")
+    native_perf_status = external_statuses.get("stage28_native_perf_summary", {}).get("status", "MISSING")
+    if fulltext_status == "AVAILABLE_UNREVIEWED" or native_perf_status == "PASS_COUNTER_ATTRIBUTION_AVAILABLE":
+        external_audit_status = "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
+        external_scope = (
+            "external artifact registered; manual citation/perf interpretation gates "
+            "still required before claim upgrade"
+        )
+    elif fulltext_status == "MISSING" and native_perf_status == "MISSING":
+        external_audit_status = "MISSING_OPTIONAL_EXTERNAL_EVIDENCE"
+        external_scope = "no full-text or native perf external evidence registered"
+    else:
+        external_audit_status = "EXTERNAL_EVIDENCE_INTAKE_RECORDED"
+        external_scope = f"fab686_fulltext={fulltext_status}; native_perf={native_perf_status}"
+    out.append(
+        AuditRow(
+            "A8b",
+            "external_evidence",
+            "Optional external full-text and native perf artifacts are registered when supplied",
+            external_audit_status,
+            rel(EXTERNAL) if EXTERNAL.exists() else "",
+            external_scope,
+            "Register external artifacts with scripts/register_external_evidence.py, then rerun final recheck.",
+        )
+    )
+
     scoped_ready = all(row.status.startswith("PASS") for row in out[:7])
     if scoped_ready and out[7].status in {
         "BLOCKED_EXTERNAL",
         "CONDITIONAL_COUNTER_SMOKE_ONLY",
     }:
-        overall_status = "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED"
+        if out[8].status == "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED":
+            overall_status = "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED"
+        else:
+            overall_status = "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED"
     elif scoped_ready and out[7].status == "PASS_COUNTER_ATTRIBUTION":
         overall_status = "SCOPED_ENGINEERING_CHAIN_READY__COUNTER_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
     else:

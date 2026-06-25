@@ -597,9 +597,48 @@ Status after initial execution:
 
 ```text
 `bash scripts/run_final_goal_recheck.sh` completed with citation probing
-skipped, Stage 28 perf gate refreshed, final package rebuilt, and final goal
-audit regenerated.
+skipped, Stage 28 perf gate refreshed, final package rebuilt, external evidence
+intake refreshed, and final goal audit regenerated.
 
 Decision:
+SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
+```
+
+## Stage 31: External Evidence Intake
+
+Goal:
+
+```text
+Register externally supplied full-text and native/perf evidence with hashes and
+claim-safe status labels, without automatically upgrading manuscript claims.
+```
+
+Tasks:
+
+- register a locally supplied 2025/686 PDF/text artifact when
+  `FAB686_FULLTEXT_PATH` is provided;
+- register a native/perf-enabled Stage 28 summary when
+  `STAGE28_NATIVE_PERF_SUMMARY` is provided;
+- record missing evidence when no external paths are supplied;
+- feed the external intake result into the final goal completion audit.
+
+Gate:
+
+- file paths must exist before being recorded as available;
+- PDF/text detection and SHA-256 hashes must be recorded;
+- external evidence may only change the audit to review-required, not complete.
+
+Status after initial execution:
+
+```text
+`scripts/register_external_evidence.py` generated
+`repro/external_evidence_intake/summary.csv`.
+
+Current status:
+fab686_fulltext = MISSING
+stage28_native_perf_summary = MISSING
+
+The final goal audit now includes A8b for optional external evidence. Since no
+external files were supplied, the final decision remains:
 SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 ```

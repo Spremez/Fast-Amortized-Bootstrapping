@@ -2,5 +2,6 @@ step,status,command,log,notes
 stage27_citation_probe,SKIPPED,bash scripts/run_stage27_citation_access_probe.sh,,Set FINAL_RECHECK_CITATION=1 to refresh network/full-text citation access.
 stage28_perf_gate,PASS,bash scripts/run_stage28_native_perf_counter_gate.sh,repro/final_goal_recheck/stage28_perf_gate.log,command completed
 stage27_final_package,PASS,python3 scripts/build_stage27_final_package.py,repro/final_goal_recheck/stage27_final_package.log,command completed
+external_evidence_intake,PASS,python3 scripts/register_external_evidence.py,repro/final_goal_recheck/external_evidence_intake.log,command completed
 final_goal_audit,PASS,python3 scripts/build_final_goal_completion_audit.py,repro/final_goal_recheck/final_goal_audit.log,command completed
 final_decision,SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED,read repro/final_goal_completion_audit.csv A9,repro/final_goal_completion_audit.csv,current final goal audit decision
