@@ -116,10 +116,13 @@ def main() -> int:
 
     summary = [
         {
-            "item": "source_commit",
+            "item": "freeze_input_commit",
             "status": git_short(),
             "evidence": "git rev-parse --short HEAD",
-            "detail": "Commit used to generate the Stage 40 freeze artifacts.",
+            "detail": (
+                "Commit state observed before writing Stage 40 artifacts. "
+                "The artifact commit is the git commit that contains these generated files."
+            ),
         },
         {
             "item": "final_audit_A9",
