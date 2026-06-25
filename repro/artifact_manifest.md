@@ -73,6 +73,7 @@ Code artifacts:
 - `scripts/build_stage38_fulltext_review_log.py`
 - `scripts/build_stage39_variant_triage.py`
 - `scripts/build_stage40_final_freeze.py`
+- `scripts/verify_stage40_freeze.py`
 
 Documentation artifacts:
 
@@ -137,6 +138,7 @@ Documentation artifacts:
 - `docs/stage38_fulltext_review_log.md`
 - `docs/stage39_variant_triage_log.md`
 - `docs/stage40_final_freeze_report.md`
+- `docs/stage40_postfreeze_verify_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -174,6 +176,7 @@ Documentation artifacts:
 - `experiments/stage38_fulltext_review_plan.md`
 - `experiments/stage39_optional_variant_triage_plan.md`
 - `experiments/stage40_final_freeze_plan.md`
+- `experiments/stage40_postfreeze_verify_plan.md`
 
 Repro artifacts:
 
@@ -639,6 +642,7 @@ Repro artifacts:
 - `repro/stage39_variant_triage.csv`
 - `repro/stage40_final_freeze_summary.csv`
 - `repro/stage40_final_freeze_manifest.csv`
+- `repro/stage40_postfreeze_verify/summary.csv`
 - `repro/stage33_current_smoke/summary.csv`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/build.log`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/run.log`
