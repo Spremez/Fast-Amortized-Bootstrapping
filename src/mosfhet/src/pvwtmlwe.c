@@ -748,6 +748,30 @@ void pvmtmlwe_from_DFT(PVW_TMLWE out, PVW_TMLWE_DFT in){
   }
 }
 
+static void pvmtmlwe_addto_torus_poly(TorusPolynomial out, TorusPolynomial in){
+#ifdef AVX512_OPT
+  __m512i * out_v = (__m512i *) out->coeffs;
+  const __m512i * in_v = (const __m512i *) in->coeffs;
+  for (size_t i = 0; i < in->N / 8; i++){
+    out_v[i] = _mm512_add_epi64(out_v[i], in_v[i]);
+  }
+#else
+  polynomial_addto_torus_polynomial(out, in);
+#endif
+}
+
+void pvmtmlwe_from_DFT_add(PVW_TMLWE out, PVW_TMLWE_DFT in,
+    PVW_TMLWE addend){
+  for (size_t i = 0; i < in->k; i++){
+    polynomial_DFT_to_torus(out->a[i], in->a[i]);
+    pvmtmlwe_addto_torus_poly(out->a[i], addend->a[i]);
+  }
+  for (size_t i = 0; i < in->r; i++){
+    polynomial_DFT_to_torus(out->b[i], in->b[i]);
+    pvmtmlwe_addto_torus_poly(out->b[i], addend->b[i]);
+  }
+}
+
 PVW_TMLWE_KS_Key pvmtmlwe_new_KS_key(PVW_TMLWE_Key out_key, PVW_TMLWE_Key in_key, int t, int base_bit){
   const int bit_size = sizeof(Torus) * 8;
   const int N_out = out_key->s[0][0]->N;

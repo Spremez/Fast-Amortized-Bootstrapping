@@ -1,0 +1,4 @@
+run,status,pvw_avg_us,pvw_stddev_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_stddev_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,speedup_stddev
+0,Pass,29787924.000,0.000,7446981.000,39427857.000,0.000,9856964.250,1.324,0.000
+1,Pass,32529288.000,0.000,8132322.000,40031536.000,0.000,10007884.000,1.231,0.000
+2,Pass,30697698.000,0.000,7674424.500,39565356.000,0.000,9891339.000,1.289,0.000

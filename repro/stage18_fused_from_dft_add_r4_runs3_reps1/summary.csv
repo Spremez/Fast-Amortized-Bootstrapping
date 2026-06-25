@@ -1,0 +1,2 @@
+r,runs,reps,status,pvw_mean_us,scalar_repeated_mean_us,speedup_mean,speedup_min,speedup_max,source_summary
+4,3,1,PASS,30098048.667,38671331.667,1.285000,1.255000,1.316000,repro/stage18_fused_from_dft_add_r4_runs3_reps1/r4/summary.csv

@@ -23,6 +23,7 @@ Code artifacts:
   - `MAT_TRGSW_AVX512_SMALLR_SPECIALIZED`
   - `SAB_PVW_POSTPROC_PROFILE`
   - `SAB_PVW_BODY_PROFILE`
+  - `SAB_PVW_FUSED_FROM_DFT_ADD`
 - `src/mosfhet/include/mosfhet.h` PVW sample-array declaration
 - `src/mosfhet/src/misc.c` deterministic test RNG path
 - `src/mosfhet/src/mattrgsw.c` experimental small-r AVX512 MAT external-product dispatch
@@ -33,6 +34,9 @@ Code artifacts:
 - `scripts/run_stage13_postproc_profile.sh`
 - `scripts/run_stage14_body_profile.sh`
 - `scripts/run_stage15_avx512_mat_gate.sh`
+- `scripts/run_stage16_full_sab_audit.sh`
+- `scripts/run_stage17_perf_attribution.sh`
+- `scripts/run_stage18_cmux_profile.sh`
 
 Documentation artifacts:
 
@@ -60,6 +64,10 @@ Documentation artifacts:
 - `docs/stage14_algorithm_to_paper_goal.md`
 - `docs/stage14_body_profile_log.md`
 - `docs/stage15_avx512_mat_expectation_log.md`
+- `docs/stage16_full_sab_audit_log.md`
+- `docs/stage16_plus_execution_plan.md`
+- `docs/stage17_perf_attribution_log.md`
+- `docs/stage18_cmux_profile_and_fusion_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -70,6 +78,10 @@ Documentation artifacts:
 - `experiments/stage13_postproc_validation_plan.md`
 - `experiments/stage14_body_profile_validation_plan.md`
 - `experiments/stage15_avx512_mat_validation_plan.md`
+- `experiments/stage16_full_sab_audit_plan.md`
+- `experiments/stage17_perf_attribution_plan.md`
+- `experiments/stage18_cmux_profile_plan.md`
+- `experiments/stage18_fused_from_dft_add_plan.md`
 
 Repro artifacts:
 
@@ -247,3 +259,38 @@ Repro artifacts:
 - `repro/stage15_avx512_mat_full_sab_r2_reps1_runs1/run_0.log`
 - `repro/stage15_avx512_mat_full_sab_r4_reps1_runs1/summary.csv`
 - `repro/stage15_avx512_mat_full_sab_r4_reps1_runs1/run_0.log`
+- `repro/stage16_avx512_full_sab_audit_runs3_reps1/summary.csv`
+- `repro/stage16_avx512_full_sab_audit_runs3_reps1/r2/summary.csv`
+- `repro/stage16_avx512_full_sab_audit_runs3_reps1/r2/run_0.log`
+- `repro/stage16_avx512_full_sab_audit_runs3_reps1/r2/run_1.log`
+- `repro/stage16_avx512_full_sab_audit_runs3_reps1/r2/run_2.log`
+- `repro/stage16_avx512_full_sab_audit_runs3_reps1/r4/summary.csv`
+- `repro/stage16_avx512_full_sab_audit_runs3_reps1/r4/run_0.log`
+- `repro/stage16_avx512_full_sab_audit_runs3_reps1/r4/run_1.log`
+- `repro/stage16_avx512_full_sab_audit_runs3_reps1/r4/run_2.log`
+- `repro/stage17_perf_attribution_r2/summary.csv`
+- `repro/stage17_perf_attribution_r2/r2/run.log`
+- `repro/stage17_perf_attribution_r2/r2/time.log`
+- `repro/stage17_perf_attribution_r2/r2/perf.log`
+- `repro/stage17_perf_attribution_r2/r2/mattrgsw_instruction_snippet.txt`
+- `repro/stage17_perf_attribution_r4/summary.csv`
+- `repro/stage17_perf_attribution_r4/r4/run.log`
+- `repro/stage17_perf_attribution_r4/r4/time.log`
+- `repro/stage17_perf_attribution_r4/r4/perf.log`
+- `repro/stage17_perf_attribution_r4/r4/mattrgsw_instruction_snippet.txt`
+- `repro/stage18_cmux_profile_avx512_r2_runs1/summary.csv`
+- `repro/stage18_cmux_profile_avx512_r2_runs1/r2/run_0.log`
+- `repro/stage18_cmux_profile_avx512_r4_runs1/summary.csv`
+- `repro/stage18_cmux_profile_avx512_r4_runs1/r4/run_0.log`
+- `repro/stage18_fused_from_dft_add_kernel.log`
+- `repro/stage18_fused_from_dft_add_target_full.log`
+- `repro/stage18_default_avx512_target_full_regression.log`
+- `repro/stage18_fused_from_dft_add_r2_reps1_runs1/summary.csv`
+- `repro/stage18_fused_from_dft_add_r2_reps1_runs1/run_0.log`
+- `repro/stage18_fused_from_dft_add_r4_reps1_runs1/summary.csv`
+- `repro/stage18_fused_from_dft_add_r4_reps1_runs1/run_0.log`
+- `repro/stage18_fused_from_dft_add_r4_runs3_reps1/summary.csv`
+- `repro/stage18_fused_from_dft_add_r4_runs3_reps1/r4/summary.csv`
+- `repro/stage18_fused_from_dft_add_r4_runs3_reps1/r4/run_0.log`
+- `repro/stage18_fused_from_dft_add_r4_runs3_reps1/r4/run_1.log`
+- `repro/stage18_fused_from_dft_add_r4_runs3_reps1/r4/run_2.log`

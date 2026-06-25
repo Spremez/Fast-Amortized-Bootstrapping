@@ -33,6 +33,10 @@ typedef struct {
   uint64_t rgsw_monomial_us, rgsw_monomial_calls;
   uint64_t cmux_us, cmux_calls;
   uint64_t ncmux_us, ncmux_calls;
+  uint64_t cmux_sub_us, cmux_sub_calls;
+  uint64_t cmux_from_dft_us, cmux_from_dft_calls;
+  uint64_t cmux_add_us, cmux_add_calls;
+  uint64_t ncmux_auto_us, ncmux_auto_calls;
   uint64_t mat_ep_us, mat_ep_calls;
   uint64_t sub_a_us, sub_a_calls;
   uint64_t copyback_us, copyback_calls;
@@ -69,6 +73,14 @@ static void sab_pvw_body_profile_print(SAB_PVW_Key sab, uint64_t full_us){
          " cmux_us=%" PRIu64
          " ncmux_calls=%" PRIu64
          " ncmux_us=%" PRIu64
+         " cmux_sub_calls=%" PRIu64
+         " cmux_sub_us=%" PRIu64
+         " cmux_from_dft_calls=%" PRIu64
+         " cmux_from_dft_us=%" PRIu64
+         " cmux_add_calls=%" PRIu64
+         " cmux_add_us=%" PRIu64
+         " ncmux_auto_calls=%" PRIu64
+         " ncmux_auto_us=%" PRIu64
          " mat_ep_calls=%" PRIu64
          " mat_ep_us=%" PRIu64
          " sub_a_calls=%" PRIu64
@@ -88,6 +100,14 @@ static void sab_pvw_body_profile_print(SAB_PVW_Key sab, uint64_t full_us){
          sab_pvw_body_profile.cmux_us,
          sab_pvw_body_profile.ncmux_calls,
          sab_pvw_body_profile.ncmux_us,
+         sab_pvw_body_profile.cmux_sub_calls,
+         sab_pvw_body_profile.cmux_sub_us,
+         sab_pvw_body_profile.cmux_from_dft_calls,
+         sab_pvw_body_profile.cmux_from_dft_us,
+         sab_pvw_body_profile.cmux_add_calls,
+         sab_pvw_body_profile.cmux_add_us,
+         sab_pvw_body_profile.ncmux_auto_calls,
+         sab_pvw_body_profile.ncmux_auto_us,
          sab_pvw_body_profile.mat_ep_calls,
          sab_pvw_body_profile.mat_ep_us,
          sab_pvw_body_profile.sub_a_calls,
@@ -327,8 +347,13 @@ void sab_pvw_CMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
     MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t cmux_begin = sab_pvw_now_us();
+  const uint64_t cmux_sub_begin = sab_pvw_now_us();
 #endif
   pvmtmlwe_sub(sab->tmp->tmlwe, in2, in1);
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_sub_us,
+      &sab_pvw_body_profile.cmux_sub_calls, cmux_sub_begin);
+#endif
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t mat_ep_begin = sab_pvw_now_us();
 #endif
@@ -337,9 +362,42 @@ void sab_pvw_CMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.mat_ep_us,
       &sab_pvw_body_profile.mat_ep_calls, mat_ep_begin);
+  const uint64_t cmux_from_dft_begin = sab_pvw_now_us();
 #endif
+#if defined(SAB_PVW_FUSED_FROM_DFT_ADD)
+  if(out != in1){
+    pvmtmlwe_from_DFT_add(out, sab->tmp->tmlwe_dft, in1);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_from_dft_us,
+        &sab_pvw_body_profile.cmux_from_dft_calls, cmux_from_dft_begin);
+    sab_pvw_body_profile.cmux_add_calls++;
+#endif
+  }else{
+    pvmtmlwe_from_DFT(sab->tmp->tmlwe, sab->tmp->tmlwe_dft);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_from_dft_us,
+        &sab_pvw_body_profile.cmux_from_dft_calls, cmux_from_dft_begin);
+    const uint64_t cmux_add_begin = sab_pvw_now_us();
+#endif
+    pvmtmlwe_add(out, sab->tmp->tmlwe, in1);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_add_us,
+        &sab_pvw_body_profile.cmux_add_calls, cmux_add_begin);
+#endif
+  }
+#else
   pvmtmlwe_from_DFT(sab->tmp->tmlwe, sab->tmp->tmlwe_dft);
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_from_dft_us,
+      &sab_pvw_body_profile.cmux_from_dft_calls, cmux_from_dft_begin);
+  const uint64_t cmux_add_begin = sab_pvw_now_us();
+#endif
   pvmtmlwe_add(out, sab->tmp->tmlwe, in1);
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_add_us,
+      &sab_pvw_body_profile.cmux_add_calls, cmux_add_begin);
+#endif
+#endif
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_us,
       &sab_pvw_body_profile.cmux_calls, cmux_begin);
@@ -350,9 +408,14 @@ void sab_pvw_NCMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
     MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t ncmux_begin = sab_pvw_now_us();
+  const uint64_t ncmux_auto_begin = sab_pvw_now_us();
 #endif
   pvmtmlwe_eval_automorphism(sab->tmp->rotated, in2,
       2 * in2->b[0]->N - 1, sab->aut_minus1);
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.ncmux_auto_us,
+      &sab_pvw_body_profile.ncmux_auto_calls, ncmux_auto_begin);
+#endif
   sab_pvw_CMUX(out, in1, sab->tmp->rotated, selector, sab);
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.ncmux_us,

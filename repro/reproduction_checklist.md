@@ -81,5 +81,17 @@
 - [x] Add Stage 15 target full-output correctness gate for the AVX512 MAT variant.
 - [x] Add Stage 15 r=2/r=4 full SAB smokes for the AVX512 MAT variant.
 - [x] Record Stage 15 scoped dense-MAT expectation decision and rejected r=4 pointer-array sub-variant.
+- [x] Add Stage 16+ execution plan and audit gates.
+- [x] Add Stage 16 full SAB repeated audit script.
+- [x] Run Stage 16 AVX512 MAT repeated full SAB audit for `r=2` and `r=4`.
+- [x] Add Stage 17 perf-counter/objdump attribution probe for the accepted Stage 16 path.
+- [x] Run Stage 17 perf-counter/objdump attribution probe for the accepted Stage 16 path.
+- [x] Define Stage 18 CMUX/NCMUX scratch-fusion implementation plan and gates.
+- [x] Add Stage 18 CMUX/NCMUX fine-grained profile counters and script.
+- [x] Run Stage 18 CMUX/NCMUX fine-grained profile for `r=2` and `r=4`.
+- [x] Add Stage 18 explicit `SAB_PVW_FUSED_FROM_DFT_ADD` candidate.
+- [x] Run Stage 18 fused from-DFT-add correctness and smoke gates.
+- [x] Run Stage 18 fused from-DFT-add repeated full SAB sweep for `r=4`.
+- [x] Record Stage 18 fused from-DFT-add as neutral rather than promotable.
 - [ ] Implement SAB-specific sparse/fused variants after PVW body profile is fixed.
 - [ ] Complete MAT AVX512 promotion audit with repeated full SAB sweeps, counters, and broader shape coverage.

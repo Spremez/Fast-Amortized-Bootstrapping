@@ -12,12 +12,18 @@ hypotheses:
       Load each decomposed DFT row once per vector block and update all
       k+r outputs, reducing repeated dec-row loads and generic function
       dispatch in polynomial_mul_addto_DFT.
-    status: experimentally_not_supported_by_first_variant
-    evidence: docs/stage11_pvw_sab_loop_engineering.md
+    status: partially_supported_same_backend_full_sab_not_topline
+    evidence: docs/stage16_full_sab_audit_log.md
     failure_criteria:
       - target correctness failure
       - staged kernel crash
       - full SAB speedup not better than existing clear-elision evidence
+    current_decision: >
+      Stage 15 and Stage 16 show that the refined FMA-accumulate AVX512 MAT
+      path is correct and faster than repeated scalar SAB under the same
+      spqlios_avx512 backend for r=2/r=4. It does not beat the accepted
+      Stage 10/Stage 8 clear-elision top-line evidence and remains explicit
+      flag only.
   - id: H2_full_pvw_postprocessing
     statement: >
       Extending PVW batching beyond blind rotation into extract, packing KS,
@@ -48,3 +54,26 @@ hypotheses:
       - selector structure is not exploitable after encryption/DFT conversion
       - any sparse shortcut changes CMUX semantics or noise distribution
       - correctness gate fails for target parameters
+  - id: H4_cmux_sparse_schedule_fusion
+    statement: >
+      Reducing the CMUX wrapper, RGSW monomial, and sparse schedule overhead
+      around MAT external products should improve complete SAB throughput more
+      than additional dense MAT AVX512 tuning alone.
+    mechanism: >
+      Stage 14 measured CMUX as about 95%-96% of PVW body time while MAT EP
+      accounted for about 44%-47%, leaving roughly half of the CMUX body in
+      wrapper, scratch, automorphism, and schedule work. Fusing those steps can
+      reduce memory traffic and dispatch/copy overhead without changing the
+      dense MAT arithmetic count.
+    status: profile_supported_first_fusion_candidate_neutral
+    evidence: docs/stage18_cmux_profile_and_fusion_log.md
+    current_decision: >
+      Fine-grained Stage 18 profile shows from_DFT is the largest non-MAT CMUX
+      component. The explicit SAB_PVW_FUSED_FROM_DFT_ADD candidate passes
+      staged and target correctness gates, but the r=4 three-process full SAB
+      sweep is neutral versus Stage 16. It should remain an ablation and not
+      be promoted by default.
+    failure_criteria:
+      - CMUX wrapper-minus-MAT time does not decrease
+      - full SAB throughput does not improve over Stage 16
+      - lane equivalence or target correctness fails

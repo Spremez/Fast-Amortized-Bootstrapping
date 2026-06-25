@@ -1,0 +1,2 @@
+r,status,perf_status,pvw_avg_us,scalar_repeated_avg_us,speedup,run_log,time_log,perf_log,instruction_log
+4,Pass,missing_fallback_time,30571058.000,40786041.000,1.334,repro/stage17_perf_attribution_r4/r4/run.log,repro/stage17_perf_attribution_r4/r4/time.log,repro/stage17_perf_attribution_r4/r4/perf.log,repro/stage17_perf_attribution_r4/r4/mattrgsw_instruction_snippet.txt
