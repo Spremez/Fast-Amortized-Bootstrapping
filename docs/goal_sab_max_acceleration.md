@@ -46,6 +46,7 @@ evidence.
 | Stage 27 novelty audit | external scan | n/a | started | safe engineering claim available; novelty claim blocked by related-work risk |
 | Stage 27 related-work refresh | external scan | n/a | scoped claim matrix available | 2025/2112 strengthens shared-mask novelty block; 2025/686 full text still required for theorem-level citations |
 | Stage 27 final full-SAB rerun | `spqlios_avx512` | 2/4 | scoped performance support | r=2 mean `1.171x` with higher variance; r=4 mean `1.401x`, range `1.331x-1.472x` |
+| Stage 27 final evidence package | aggregation | n/a | scoped engineering package assembled | performance, noise, resource, and claim-boundary matrices generated from recorded artifacts |
 
 Current conclusion:
 
@@ -74,6 +75,10 @@ risky and the full 2025/686 paper is still needed for theorem-level citation
 checks. The Stage 27 final full-SAB performance rerun confirms the current
 promoted explicit path after the Stage 26 harness refactor; r=4 is the
 strongest current target evidence, while r=2 remains positive but noisier.
+The Stage 27 final evidence package now assembles performance/noise/resource
+and claim-boundary evidence for the safe engineering claim. The remaining open
+work is not another engineering smoke result; it is full-paper/manual citation
+review if novelty or theorem-level manuscript claims are desired.
 ```
 
 ## Invariants
@@ -132,5 +137,5 @@ Stage 23: CMUX/NCMUX schedule fusion. [completed, neutral]
 Stage 24: conditional post-processing optimization. [completed, deferred]
 Stage 25: correctness/noise/resource matrix. [50-seed final-output expansion completed for r=2/r=4; stage/resource smoke completed]
 Stage 26: parameter and branch generalization. [initial binary smoke plus added-parameter perf/noise smoke completed; non-binary PVW unsupported]
-Stage 27: novelty and paper package. [started; novelty claim blocked pending full related-work]
+Stage 27: novelty and paper package. [engineering evidence package assembled; novelty claim blocked pending full-paper review]
 ```

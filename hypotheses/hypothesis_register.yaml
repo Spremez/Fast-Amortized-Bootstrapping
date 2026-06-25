@@ -243,7 +243,10 @@ hypotheses:
       public 2025/2112 evidence, records 2025/696 incomplete NTT as adjacent
       acceleration rather than direct PVW/MAT-SAB prior art, and keeps
       theorem-level 2025/686 citation checks blocked until the full paper is
-      manually inspected.
+      manually inspected. The Stage 27 final evidence package now aggregates
+      performance, final-output noise, resource, and claim-boundary matrices
+      for the safe scoped engineering claim; it does not upgrade the novelty
+      claim.
     failure_criteria:
       - related work already covers the claimed algorithmic idea
       - full SAB benchmark evidence is missing or only smoke-level
