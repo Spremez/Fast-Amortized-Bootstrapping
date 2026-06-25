@@ -150,5 +150,6 @@
 - [x] Run Stage 32 citation refresh with network full-text probe enabled.
 - [x] Run Stage 33 current-commit scalar/PVW target smoke.
 - [x] Add and run Stage 34 final recheck option for refreshing current-commit smoke.
+- [x] Generate Stage 35 completion blocker matrix from the final audit.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.

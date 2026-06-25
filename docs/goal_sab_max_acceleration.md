@@ -57,6 +57,7 @@ evidence.
 | Stage 32 citation refresh recheck | network gate | n/a | full text still blocked | 2026-06-26 refresh: ePrint/ACM/ResearchGate direct routes blocked; metadata only elsewhere |
 | Stage 33 current commit smoke | `spqlios_avx512` | n/a | current smoke passed | scalar binary full run, PVW target full gate, and scalar ternary build all pass |
 | Stage 34 current-smoke final recheck | orchestration | n/a | passed | final recheck refreshed Stage 33 current smoke before rebuilding the final audit |
+| Stage 35 completion blocker matrix | audit synthesis | n/a | passed | remaining work classified into scoped-complete, optional expansion, claim guardrail, external blocker, and overall decision lanes |
 
 Current conclusion:
 
@@ -116,6 +117,10 @@ runnable after the evidence-chain tooling work.
 The Stage 34 recheck integration makes that current smoke refreshable through
 the unified final-goal recheck runner so future audit refreshes can include
 current scalar/PVW build-correctness evidence on demand.
+The Stage 35 blocker matrix makes the remaining completion boundary explicit:
+the local scoped engineering chain is ready, while MAT-AVX512 theoretical
+load/store attribution and theorem-level 2025/686 review still require external
+native/perf and full-text evidence.
 ```
 
 ## Invariants
@@ -182,4 +187,10 @@ Stage 31: external evidence intake. [generated and run; no external artifacts su
 Stage 32: citation refresh recheck. [run with network citation probe; direct full text still blocked]
 Stage 33: current commit smoke. [scalar/PVW target smoke passed; no performance claim]
 Stage 34: current-smoke final recheck integration. [completed; explicit refresh mode passed]
+Stage 35: completion blocker matrix. [completed; local scoped-ready and external blockers separated]
+Stage 36: high-statistics claim expansion. [optional; required only for broader statistical claims]
+Stage 37: native perf-counter evidence. [blocked until native/perf-enabled platform]
+Stage 38: full 2025/686 source review. [blocked until full text is supplied]
+Stage 39: optional new algorithmic variants. [only if scope requires beyond current promoted path]
+Stage 40: final paper/release freeze. [after selected blockers or expansions are resolved]
 ```

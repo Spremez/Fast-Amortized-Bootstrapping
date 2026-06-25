@@ -750,3 +750,158 @@ repro/final_goal_recheck/summary.csv, regenerates the final audit afterward,
 and preserves the final decision:
 SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED.
 ```
+
+## Stage 35: Completion Blocker Matrix
+
+Goal:
+
+```text
+Convert the final goal audit into an explicit remaining-work matrix that
+distinguishes scoped-complete evidence, optional expansions, claim guardrails,
+and external blockers.
+```
+
+Tasks:
+
+- read `repro/final_goal_completion_audit.csv`;
+- read optional external-evidence intake state;
+- classify every final audit row into:
+  `complete_or_scoped_complete`, `optional_expansion`, `claim_guardrail`,
+  `external_blocker`, or `overall_scoped_ready`;
+- emit a machine-readable CSV and a Markdown log;
+- keep stronger claims blocked unless external artifacts or expanded evidence
+  are actually supplied.
+
+Gate:
+
+- every final audit row must be represented in the Stage 35 matrix;
+- `A8` and `A8b` must remain external blockers in the current environment;
+- `A9` must remain scoped-ready/stronger-blocked.
+
+Status:
+
+```text
+Stage 35 completed. The generated matrix covers all final audit rows:
+5 scoped-complete items, 2 optional expansions, 1 claim guardrail,
+2 external blockers, and 1 overall scoped-ready decision. The current external
+blockers remain fab686_fulltext=MISSING and
+stage28_native_perf_summary=MISSING.
+```
+
+## Stage 36: High-Statistics Claim Expansion
+
+Goal:
+
+```text
+Only if broad or paper-level statistical wording is required, expand target
+and added-parameter performance/noise/resource evidence beyond the current
+scoped engineering package.
+```
+
+Tasks:
+
+- define run/seed budgets before execution;
+- rerun target full-SAB A/B for promoted r=2/r=4 under one backend;
+- optionally expand Stage 25 stage-level noise beyond smoke;
+- optionally expand Stage 26 added-parameter runs/seeds beyond 5-run/5-seed
+  support;
+- record confidence intervals and failure statistics.
+
+Gate:
+
+- no single-run result may upgrade a claim;
+- resource and noise must be reported with performance;
+- this stage is optional for the current scoped engineering claim and required
+  only for broader statistical claims.
+
+## Stage 37: Native Perf-Counter Evidence
+
+Goal:
+
+```text
+Run MAT-AVX512 load/store/FMA attribution on native Linux or a perf-enabled
+WSL environment.
+```
+
+Tasks:
+
+- run Stage 28 with `STAGE28_RUN_BENCH=1`;
+- collect hardware counters for generic and specialized MAT paths;
+- register the resulting summary through `STAGE28_NATIVE_PERF_SUMMARY`;
+- rerun final recheck.
+
+Gate:
+
+- `perf stat` must run successfully;
+- target full-SAB correctness must pass during any heavy benchmark;
+- without this evidence, theoretical MAT-AVX512 load/store optimality remains
+  blocked.
+
+## Stage 38: Full 2025/686 Source Review
+
+Goal:
+
+```text
+Review the full 2025/686 paper before writing theorem-level SAB protocol
+claims or asserting novelty relative to the base paper.
+```
+
+Tasks:
+
+- provide the full paper through `FAB686_FULLTEXT_PATH`;
+- register the artifact and hash;
+- map every protocol/theorem claim in the report to page/section evidence;
+- update related-work and claim-support matrices.
+
+Gate:
+
+- metadata-only access is insufficient;
+- no theorem-level manuscript citation may be upgraded before full-text review;
+- novelty remains blocked if related work already covers the claimed idea.
+
+## Stage 39: Optional New Algorithmic Variants
+
+Goal:
+
+```text
+Pursue new acceleration only if the desired scope is beyond the current
+promoted active-buffer MAT-SAB engineering result.
+```
+
+Candidate directions:
+
+- non-binary PVW-SAB branch support;
+- deeper sparse-schedule fusion beyond the neutral Stage 23 attempt;
+- MAT key/layout experiments that reduce r=4 dense-matrix pressure;
+- direct post-processing only if a new profile shows a larger tail;
+- AVX512 r-specific kernels backed by native counters.
+
+Gate:
+
+- every candidate starts as explicit-flag experimental code;
+- scalar SAB remains unchanged;
+- full SAB A/B, correctness, noise, and resource gates are required before
+  promotion.
+
+## Stage 40: Final Paper/Release Freeze
+
+Goal:
+
+```text
+Freeze the exact claim scope, reproducibility pack, and manuscript/release
+artifacts after all selected blockers or expansions are resolved.
+```
+
+Tasks:
+
+- rerun final recheck with all selected gates enabled;
+- regenerate final package, final audit, and blocker matrix;
+- freeze claim-support wording;
+- produce final paper/report artifacts with no blocked claims written as
+  completed claims.
+
+Gate:
+
+- final audit must match the selected scope;
+- no stronger claim can be included without its corresponding Stage 36-39
+  evidence.
