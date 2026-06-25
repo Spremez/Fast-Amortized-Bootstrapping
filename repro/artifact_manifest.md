@@ -53,6 +53,7 @@ Code artifacts:
 - `scripts/run_stage25_resource_matrix.sh`
 - `scripts/run_stage26_parameter_target_smoke.sh`
 - `scripts/run_stage26_parameter_perf_noise.sh`
+- `scripts/run_stage27_citation_access_probe.sh`
 - `scripts/build_stage27_final_package.py`
 
 Documentation artifacts:
@@ -101,6 +102,7 @@ Documentation artifacts:
 - `docs/stage27_full_related_work_gate_log.md`
 - `docs/stage27_final_full_sab_performance_log.md`
 - `docs/stage27_related_work_refresh_log.md`
+- `docs/stage27_citation_gate_log.md`
 - `docs/stage27_final_evidence_package.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
@@ -514,11 +516,14 @@ Repro artifacts:
 - `repro/stage27_source_access_matrix.csv`
 - `repro/stage27_related_work_access_refresh.csv`
 - `repro/stage27_claim_support_matrix.csv`
+- `repro/stage27_citation_access_probe/access_probe.csv`
+- `repro/stage27_citation_access_probe/summary.csv`
 - `repro/stage27_final_full_sab_summary.csv`
 - `repro/stage27_final_evidence_package/performance_scope.csv`
 - `repro/stage27_final_evidence_package/noise_scope.csv`
 - `repro/stage27_final_evidence_package/resource_scope.csv`
 - `repro/stage27_final_evidence_package/claim_scope.csv`
+- `repro/stage27_final_evidence_package/citation_gate.csv`
 - `repro/stage27_final_evidence_package/manifest.csv`
 - `repro/stage27_final_full_sab_active_r2_runs3/summary.csv`
 - `repro/stage27_final_full_sab_active_r2_runs3/run_0.log`

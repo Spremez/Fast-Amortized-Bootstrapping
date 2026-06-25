@@ -463,4 +463,10 @@ performance, final-output noise, resource, and claim-boundary evidence into
 `repro/stage27_final_evidence_package/`. This closes the engineering package
 assembly for the safe scoped claim, but not novelty or theorem-level citation
 review.
+
+A reproducible citation-access probe was also added for 2025/686. It confirms
+that ePrint, ACM, and ResearchGate direct full-text routes are blocked in the
+current environment, while Semantic Scholar and DBLP provide metadata only.
+The theorem-level citation gate therefore remains blocked until the full paper
+is manually supplied and inspected.
 ```

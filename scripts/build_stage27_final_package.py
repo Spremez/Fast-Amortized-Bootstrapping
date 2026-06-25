@@ -23,6 +23,7 @@ ADDED_PERF = ROOT / "repro" / "stage26_parameter_perf_noise_avx512_added_binary_
 ADDED_PERF_STATS = ROOT / "repro" / "stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5" / "performance_stats.csv"
 ADDED_NOISE = ROOT / "repro" / "stage26_parameter_perf_noise_avx512_added_binary_r2_r4_runs5_seeds5" / "noise_summary.csv"
 CLAIMS = ROOT / "repro" / "stage27_claim_support_matrix.csv"
+CITATION_PROBE = ROOT / "repro" / "stage27_citation_access_probe" / "summary.csv"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -193,6 +194,18 @@ def build_claims() -> list[dict[str, str]]:
     return rows
 
 
+def build_citation_gate() -> list[dict[str, str]]:
+    if not CITATION_PROBE.exists():
+        return [
+            {
+                "gate": "citation_access_probe",
+                "status": "NOT_RUN",
+                "detail": "Run scripts/run_stage27_citation_access_probe.sh before theorem-level citation claims.",
+            }
+        ]
+    return read_csv(CITATION_PROBE)
+
+
 def markdown_table(rows: list[dict[str, str]], columns: list[str]) -> str:
     header = "| " + " | ".join(columns) + " |"
     sep = "| " + " | ".join(["---"] * len(columns)) + " |"
@@ -207,10 +220,12 @@ def build_doc(
     noise: list[dict[str, str]],
     resource: list[dict[str, str]],
     claims: list[dict[str, str]],
+    citation_gate: list[dict[str, str]],
 ) -> str:
     perf_cols = ["scope", "param", "r", "runs", "mean_speedup", "min_speedup", "max_speedup", "interpretation"]
     noise_cols = ["scope", "param", "r", "seeds", "points", "pvw_failures", "scalar_failures", "pair_failures", "status"]
     claim_cols = ["claim_id", "status_label", "manuscript_action", "claim"]
+    citation_cols = ["gate", "status", "detail"]
 
     pvw_resource = [
         row
@@ -257,6 +272,10 @@ def build_doc(
             "",
             markdown_table(claims, claim_cols),
             "",
+            "## Citation Gate",
+            "",
+            markdown_table(citation_gate, citation_cols),
+            "",
             "## Decision",
             "",
             "```text",
@@ -278,6 +297,7 @@ def main() -> None:
     noise = build_noise()
     resource = build_resource()
     claims = build_claims()
+    citation_gate = build_citation_gate()
 
     write_csv(
         OUT_DIR / "performance_scope.csv",
@@ -354,16 +374,18 @@ def main() -> None:
         ],
         claims,
     )
+    write_csv(OUT_DIR / "citation_gate.csv", ["gate", "status", "detail"], citation_gate)
     manifest_rows = [
         {"artifact": "performance_scope", "path": rel(OUT_DIR / "performance_scope.csv"), "source": rel(TARGET_PERF) + "; " + rel(ADDED_PERF) + "; " + rel(ADDED_PERF_STATS)},
         {"artifact": "noise_scope", "path": rel(OUT_DIR / "noise_scope.csv"), "source": rel(TARGET_NOISE) + "; " + rel(ADDED_NOISE)},
         {"artifact": "resource_scope", "path": rel(OUT_DIR / "resource_scope.csv"), "source": rel(RESOURCE)},
         {"artifact": "claim_scope", "path": rel(OUT_DIR / "claim_scope.csv"), "source": rel(CLAIMS)},
+        {"artifact": "citation_gate", "path": rel(OUT_DIR / "citation_gate.csv"), "source": rel(CITATION_PROBE)},
         {"artifact": "markdown_summary", "path": rel(DOC_PATH), "source": "generated from final package CSVs"},
     ]
     write_csv(OUT_DIR / "manifest.csv", ["artifact", "path", "source"], manifest_rows)
 
-    DOC_PATH.write_text(build_doc(performance, noise, resource, claims), encoding="utf-8", newline="\n")
+    DOC_PATH.write_text(build_doc(performance, noise, resource, claims, citation_gate), encoding="utf-8", newline="\n")
     print(f"Wrote {rel(DOC_PATH)}")
     print(f"Wrote {rel(OUT_DIR / 'manifest.csv')}")
 

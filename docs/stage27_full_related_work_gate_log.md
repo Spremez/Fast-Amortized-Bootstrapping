@@ -36,6 +36,25 @@ Changes relative to the initial gate:
 - GPVL23 and a 2026 bootstrapping survey are added only as background and
   positioning evidence.
 
+## Citation Probe Update
+
+The reproducible 2025/686 citation-access probe is recorded in
+`docs/stage27_citation_gate_log.md` and
+`repro/stage27_citation_access_probe/`.
+
+Result:
+
+```text
+direct_pdf_access: BLOCKED
+semantic_scholar_metadata: METADATA_AVAILABLE_NO_OPEN_ACCESS_PDF
+dblp_title_metadata: TITLE_METADATA_AVAILABLE
+citation_decision: BLOCK_THEOREM_LEVEL_CITATIONS
+```
+
+This confirms that metadata is enough for paper identity and code-lineage
+context, but not enough for theorem, algorithm, remark, table, figure, or
+experiment-number citations.
+
 ## Claim Boundary After This Gate
 
 Allowed:
@@ -77,4 +96,5 @@ FAB686_FULL_TEXT_BLOCKED_IN_CURRENT_ENVIRONMENT
 NOVELTY_CLAIM_STILL_BLOCKED
 SAFE_ENGINEERING_CLAIM_REMAINS_AVAILABLE
 RELATED_WORK_REFRESH_COMPLETED
+CITATION_ACCESS_PROBE_COMPLETED
 ```

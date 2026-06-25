@@ -45,6 +45,7 @@ evidence.
 | Stage 26 non-binary branch scope | `spqlios_avx512` | n/a | explicit unsupported | PVW+TERNARY rejected; scalar TERNARY build still passes |
 | Stage 27 novelty audit | external scan | n/a | started | safe engineering claim available; novelty claim blocked by related-work risk |
 | Stage 27 related-work refresh | external scan | n/a | scoped claim matrix available | 2025/2112 strengthens shared-mask novelty block; 2025/686 full text still required for theorem-level citations |
+| Stage 27 citation access probe | metadata/full-text gate | n/a | theorem-level citation blocked | ePrint/ACM/ResearchGate full-text routes blocked; Semantic Scholar/DBLP metadata available |
 | Stage 27 final full-SAB rerun | `spqlios_avx512` | 2/4 | scoped performance support | r=2 mean `1.171x` with higher variance; r=4 mean `1.401x`, range `1.331x-1.472x` |
 | Stage 27 final evidence package | aggregation | n/a | scoped engineering package assembled | performance, noise, resource, and claim-boundary matrices generated from recorded artifacts |
 
@@ -77,8 +78,10 @@ promoted explicit path after the Stage 26 harness refactor; r=4 is the
 strongest current target evidence, while r=2 remains positive but noisier.
 The Stage 27 final evidence package now assembles performance/noise/resource
 and claim-boundary evidence for the safe engineering claim. The remaining open
-work is not another engineering smoke result; it is full-paper/manual citation
-review if novelty or theorem-level manuscript claims are desired.
+work is not another engineering smoke result; it is manual full-paper citation
+review if novelty or theorem-level manuscript claims are desired. The
+reproducible citation probe confirms metadata is available for 2025/686, but
+direct full text remains blocked in this environment.
 ```
 
 ## Invariants

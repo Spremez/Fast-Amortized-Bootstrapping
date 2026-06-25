@@ -56,6 +56,16 @@ repeated scalar SAB under the same backend and parameter scope.
 | C9 | BLOCKED_DIFFERENT_TECHNIQUE | block_or_limit | Incomplete-NTT work is the same technique as PVW/MAT-SAB |
 | C10 | BLOCKED_FULL_TEXT_REQUIRED | block_or_limit | The project is ready for theorem-level 2025/686 citation checks |
 
+## Citation Gate
+
+| gate | status | detail |
+| --- | --- | --- |
+| direct_pdf_access | BLOCKED | BLOCKED_FULL_TEXT_NOT_AVAILABLE |
+| semantic_scholar_metadata | METADATA_AVAILABLE_NO_OPEN_ACCESS_PDF | Fast Amortized Bootstrapping with Small Keys and Polynomial Noise Overhead |
+| semantic_scholar_open_access_pdf_url | MISSING |  |
+| dblp_title_metadata | TITLE_METADATA_AVAILABLE | hits=2 |
+| citation_decision | BLOCK_THEOREM_LEVEL_CITATIONS | Do not cite 2025/686 theorem/algorithm/remark numbers without full text. |
+
 ## Decision
 
 ```text

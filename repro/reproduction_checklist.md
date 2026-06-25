@@ -140,5 +140,6 @@
 - [x] Refresh Stage 27 related-work source access after Stage 26 5-run/5-seed evidence.
 - [x] Add Stage 27 claim-support matrix separating allowed and blocked manuscript wording.
 - [x] Assemble Stage 27 final scoped engineering performance/noise/resource package.
+- [x] Add reproducible Stage 27 citation-access probe for 2025/686 full-text availability.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.

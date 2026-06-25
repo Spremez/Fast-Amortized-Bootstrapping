@@ -108,6 +108,11 @@ public 2025/2112 evidence is sufficient to treat shared-mask/multiple-body
 TFHE batching as prior-art risky, while `2025/686` full text remains unavailable
 for theorem-level citation checking in this environment.
 
+The reproducible citation probe in `docs/stage27_citation_gate_log.md` confirms
+the same boundary: ePrint, ACM, and ResearchGate full-text routes are blocked;
+Semantic Scholar and DBLP provide metadata only. The resulting decision is
+`BLOCK_THEOREM_LEVEL_CITATIONS`.
+
 ## Final Full-SAB Performance Update
 
 The first consolidated final full-SAB performance rerun is recorded in
@@ -168,6 +173,7 @@ SAFE_ENGINEERING_CLAIM_AVAILABLE
 RELATED_WORK_REFRESH_COMPLETED
 CLAIM_SUPPORT_MATRIX_AVAILABLE
 FINAL_ENGINEERING_EVIDENCE_PACKAGE_ASSEMBLED
+CITATION_ACCESS_PROBE_COMPLETED
 ```
 
 Stage 27 can proceed, but paper-level novelty must stay blocked until the full

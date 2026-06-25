@@ -246,7 +246,10 @@ hypotheses:
       manually inspected. The Stage 27 final evidence package now aggregates
       performance, final-output noise, resource, and claim-boundary matrices
       for the safe scoped engineering claim; it does not upgrade the novelty
-      claim.
+      claim. The reproducible citation-access probe confirms ePrint/ACM/
+      ResearchGate full-text routes are blocked in the current environment,
+      while Semantic Scholar and DBLP provide metadata only; theorem-level
+      2025/686 citations remain blocked.
     failure_criteria:
       - related work already covers the claimed algorithmic idea
       - full SAB benchmark evidence is missing or only smoke-level
