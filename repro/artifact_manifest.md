@@ -78,6 +78,8 @@ Code artifacts:
 - `scripts/build_stage41_external_unlock_packet.py`
 - `scripts/build_stage42_evidence_closure_audit.py`
 - `scripts/verify_stage42_closure.py`
+- `scripts/run_stage44_external_unlock_reprobe.sh`
+- `scripts/build_stage44_external_unlock_reprobe.py`
 
 Documentation artifacts:
 
@@ -147,6 +149,7 @@ Documentation artifacts:
 - `docs/stage42_evidence_closure_audit.md`
 - `docs/stage42_closure_verify_log.md`
 - `docs/stage43_postclosure_current_smoke_log.md`
+- `docs/stage44_external_unlock_reprobe_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -189,6 +192,7 @@ Documentation artifacts:
 - `experiments/stage42_evidence_closure_audit_plan.md`
 - `experiments/stage42_closure_verify_plan.md`
 - `experiments/stage43_postclosure_current_smoke_plan.md`
+- `experiments/stage44_external_unlock_reprobe_plan.md`
 
 Repro artifacts:
 
@@ -671,6 +675,16 @@ Repro artifacts:
 - `repro/stage43_current_smoke_after_stage42/pvw_target_SET_2_3_2048/build.log`
 - `repro/stage43_current_smoke_after_stage42/pvw_target_SET_2_3_2048/run.log`
 - `repro/stage43_current_smoke_after_stage42/scalar_ternary_SET_2_3_2048/build.log`
+- `repro/stage44_external_unlock_reprobe/summary.csv`
+- `repro/stage44_external_unlock_reprobe/citation_probe.log`
+- `repro/stage44_external_unlock_reprobe/citation_probe/summary.csv`
+- `repro/stage44_external_unlock_reprobe/citation_probe/access_probe.csv`
+- `repro/stage44_external_unlock_reprobe/native_perf_gate.log`
+- `repro/stage44_external_unlock_reprobe/native_perf_gate/summary.csv`
+- `repro/stage44_external_unlock_reprobe/native_perf_gate/environment.log`
+- `repro/stage44_external_unlock_reprobe/native_perf_gate/perf_smoke.log`
+- `repro/stage44_external_unlock_reprobe/external_evidence_intake.log`
+- `repro/stage44_external_unlock_reprobe/stage44_log_builder.log`
 - `repro/stage33_current_smoke/summary.csv`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/build.log`
 - `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/run.log`

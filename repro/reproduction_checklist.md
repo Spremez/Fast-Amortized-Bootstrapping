@@ -171,6 +171,7 @@
 - [x] Run default final recheck with Stage 42 closure enabled.
 - [x] Add SHA-256 manifest for stable Stage 42 post-freeze control-plane artifacts.
 - [x] Run Stage 42 read-only closure verifier from a clean worktree input.
+- [x] Add and run Stage 44 external full-text/native-perf unlock re-probe.
 - [ ] Execute remaining Stage 36 optional target-noise/added-parameter campaigns only if broader claims need them.
 - [ ] Review full related-work papers before promoting any novelty claim.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.

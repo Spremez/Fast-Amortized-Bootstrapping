@@ -1044,18 +1044,20 @@ supplied.
 Goal:
 
 ```text
-Machine-check that the Stage 19-43 scoped PVW/MAT-SAB evidence chain is
+Machine-check that the Stage 19-44 scoped PVW/MAT-SAB evidence chain is
 internally consistent after the scoped freeze and external-unlock packet.
 ```
 
 Tasks:
 
-- verify roadmap coverage for Stage 19-43;
+- verify roadmap coverage for Stage 19-44;
 - verify final audit scoped/pass/blocker statuses;
 - verify Stage 41 external-unlock readiness remains waiting for full text and
   native perf evidence;
 - verify Stage 43 current smoke summary has PASS rows for scalar binary, PVW
   target, and scalar ternary build;
+- verify Stage 44 external re-probe summary preserves the current
+  full-text/native-perf external-lock state;
 - generate and verify a SHA-256 manifest for stable post-freeze control-plane
   artifacts;
 - add and run a no-regenerate Stage 42 closure verifier from a clean worktree
@@ -1083,9 +1085,10 @@ Status:
 ```text
 Stage 42 evidence-closure audit generated and passed. It verifies roadmap
 coverage, final-audit status labels, Stage 41 readiness, Stage 40 freeze
-hashes, post-freeze verification, run-log coverage, required files, artifact
-manifest entries, post-freeze control-plane hashes, and claim guardrails. The
-overall result is scoped evidence closure with stronger claims still blocked.
+hashes, Stage 43 current smoke, Stage 44 external re-probe, post-freeze
+verification, run-log coverage, required files, artifact-manifest entries,
+post-freeze control-plane hashes, and claim guardrails. The overall result is
+scoped evidence closure with stronger claims still blocked.
 The audit is also integrated into the final recheck runner and passed in both
 a closure-only recheck output directory and the ordinary default recheck path.
 The read-only closure verifier also passed from a clean `de85276` input commit:
@@ -1127,4 +1130,46 @@ Stage 43 current-head smoke passed on WSL/Linux with `spqlios_avx512`.
 Scalar binary full run, explicit PVW target full gate, and scalar ternary build
 all passed. The result refreshes current-state smoke evidence after the
 closure audit while preserving the stronger-claims-blocked boundary.
+```
+
+## Stage 44: External Unlock Re-probe
+
+Goal:
+
+```text
+Refresh the two remaining external unlock checks after the Stage 42/43 closure
+package: 2025/686 full-text availability and native/perf hardware-counter
+availability.
+```
+
+Tasks:
+
+- rerun the 2025/686 citation/full-text access probe in an isolated Stage 44
+  output directory;
+- rerun the Stage 28 native perf gate in an isolated Stage 44 output directory;
+- register supplied external artifacts if `FAB686_FULLTEXT_PATH` or
+  `STAGE28_NATIVE_PERF_SUMMARY` is provided;
+- summarize whether the project can proceed to manual full-paper review or
+  MAT-AVX512 hardware-counter interpretation;
+- keep all claims scoped unless an external artifact is available and manually
+  reviewed.
+
+Gate:
+
+- `citation_probe_command` must be `PASS`;
+- `stage44_decision` remains `WAIT_EXTERNAL_UNLOCKS` under the current
+  environment;
+- if `stage44_decision` becomes
+  `READY_FOR_MANUAL_REVIEW_OR_PERF_INTERPRETATION`, no claim is upgraded until
+  the relevant manual review is completed and the final audit is updated.
+
+Status:
+
+```text
+Stage 44 external-unlock re-probe completed. The citation probe ran, but direct
+full-text access remains blocked and no open-access PDF was reported. The
+native perf gate also remains blocked in the current WSL2 environment because
+hardware-counter evidence is not available. The stage decision is
+WAIT_EXTERNAL_UNLOCKS, so the scoped engineering claim remains the strongest
+completed result.
 ```

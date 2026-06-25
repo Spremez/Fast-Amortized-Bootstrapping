@@ -64,9 +64,10 @@ evidence.
 | Stage 39 optional variant triage | audit synthesis | n/a | no new variant promoted | non-binary and AVX/layout work blocked by full-text/perf prerequisites; schedule/post-processing variants deferred by prior neutral/small-tail evidence |
 | Stage 40 final scoped freeze | report/freeze | n/a | scoped freeze ready | freeze package is ready for scoped engineering claim; SHA-256 manifest and post-freeze verifier pass; stronger claims remain blocked |
 | Stage 41 external unlock packet | audit synthesis | n/a | generated | current readiness is WAIT_EXTERNAL_FULLTEXT, WAIT_NATIVE_PERF, WAIT_EXTERNAL_ARTIFACTS, and WAIT_UNLOCKS; stronger claims still require external evidence plus manual review |
-| Stage 42 evidence closure audit | audit synthesis | n/a | passed and recheck-integrated | Stage 19-43 scoped evidence chain is internally closed under current artifacts; closure-only final recheck passes; stronger claims remain blocked |
+| Stage 42 evidence closure audit | audit synthesis | n/a | passed and recheck-integrated | Stage 19-44 scoped evidence chain is internally closed under current artifacts; closure-only final recheck passes; stronger claims remain blocked |
 | Stage 42 closure verifier | read-only audit | n/a | passed from clean input | no-regenerate verifier confirmed final audit, Stage 41 readiness, Stage 42 closure, Stage 43 smoke, final recheck closure, run-log rows, and manifest registration |
 | Stage 43 post-closure current smoke | `spqlios_avx512` | n/a | passed | current-head scalar binary full run, explicit PVW target gate, and scalar ternary build all pass; smoke only |
+| Stage 44 external unlock re-probe | network/native gate | n/a | waiting external unlocks | citation/full-text probe and native perf probe rerun; direct full text and hardware-counter evidence remain unavailable, so stronger claims stay blocked |
 
 Current conclusion:
 
@@ -158,7 +159,7 @@ The Stage 41 external-unlock packet then turns the remaining A8/A8b blockers
 into executable gates. It records exact commands and review policies for
 2025/686 full-text intake, native perf-counter intake, external evidence
 registration, and final recheck. It does not upgrade any claim by itself.
-The Stage 42 evidence-closure audit machine-checks that the Stage 19-43 route,
+The Stage 42 evidence-closure audit machine-checks that the Stage 19-44 route,
 final audit labels, Stage 40 hashes, Stage 41 readiness, Stage 43 current
 smoke, run log, artifact manifest, and claim guardrails are mutually
 consistent. It passes under the current scoped-ready/stronger-blocked state.
@@ -178,6 +179,11 @@ The Stage 43 post-closure current smoke then refreshes build/correctness
 evidence at the current repository head. Scalar binary full run, explicit PVW
 target gate, and scalar ternary build all pass under `spqlios_avx512`; this is
 smoke evidence only and does not upgrade performance or novelty claims.
+The Stage 44 external-unlock re-probe then reruns the remaining external gates
+in isolated outputs. It confirms that direct 2025/686 full text and native
+hardware-counter evidence are still unavailable in the current environment.
+The stage therefore records `WAIT_EXTERNAL_UNLOCKS` and preserves the current
+scoped engineering boundary.
 ```
 
 ## Invariants
@@ -251,6 +257,7 @@ Stage 38: full 2025/686 source review. [executed artifact gate; blocked until fu
 Stage 39: optional new algorithmic variants. [triaged; no new variant promoted under current evidence]
 Stage 40: final paper/release freeze. [scoped engineering freeze ready; hash manifest and post-freeze verifier passed; stronger claims blocked]
 Stage 41: external unlock packet. [generated; waiting for full-text/native-perf evidence before stronger claim upgrade]
-Stage 42: evidence closure audit. [passed; scoped evidence chain is internally closed, no-regenerate verifier passed, stronger claims remain blocked]
+Stage 42: evidence closure audit. [passed; scoped evidence chain is internally closed through Stage 44, no-regenerate verifier passed, stronger claims remain blocked]
 Stage 43: post-closure current smoke. [passed; current-head scalar/PVW smoke refreshed without changing claim scope]
+Stage 44: external unlock re-probe. [completed; still waiting for full-text/native-perf unlocks]
 ```
