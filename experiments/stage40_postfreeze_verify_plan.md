@@ -13,8 +13,16 @@ review needs a stable verifier.
 
 ## Command
 
+Recorded evidence mode:
+
 ```bash
 python3 scripts/verify_stage40_freeze.py --out-dir repro/stage40_postfreeze_verify
+```
+
+No-write review mode:
+
+```bash
+python3 scripts/verify_stage40_freeze.py --check-only
 ```
 
 ## Gate
@@ -32,6 +40,10 @@ python3 scripts/verify_stage40_freeze.py --out-dir repro/stage40_postfreeze_veri
 Passing this verifier means the scoped engineering freeze is internally
 consistent and auditable. It does not upgrade external blockers or paper-level
 claims.
+
+Use `--check-only` for a final review from a clean worktree when the verifier
+must not rewrite committed artifacts. Use `--out-dir` only when a new
+reproducibility record should be committed.
 
 ## Artifacts
 

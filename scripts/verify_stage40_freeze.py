@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import subprocess
+import sys
 from pathlib import Path
 from typing import Dict, Iterable, List
 
@@ -62,7 +63,7 @@ def write_csv(path: Path, rows: Iterable[Dict[str, str]]) -> None:
         writer.writerows(rows)
 
 
-def build_checks(status_before_outputs: str) -> List[Dict[str, str]]:
+def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dict[str, str]]:
     freeze = {row.get("item"): row for row in read_csv(FREEZE_SUMMARY)}
     manifest = read_csv(FREEZE_MANIFEST)
     audit = {row.get("item_id"): row for row in read_csv(FINAL_AUDIT)}
@@ -138,7 +139,7 @@ def build_checks(status_before_outputs: str) -> List[Dict[str, str]]:
         {
             "check": "postfreeze_decision",
             "status": "PASS_POSTFREEZE_VERIFY" if pass_all else "FAIL_POSTFREEZE_VERIFY",
-            "evidence": "repro/stage40_postfreeze_verify/summary.csv",
+            "evidence": decision_evidence,
             "detail": "Scoped freeze is internally consistent; stronger claims remain blocked." if pass_all else "Inspect failing checks before relying on freeze.",
         }
     )
@@ -177,19 +178,37 @@ def parse_args() -> argparse.Namespace:
         default="repro/stage40_postfreeze_verify",
         help="Output directory for the verifier summary CSV.",
     )
+    parser.add_argument(
+        "--check-only",
+        action="store_true",
+        help="Print verification CSV to stdout without writing repo artifacts.",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     status_before_outputs = git_status_short()
-    rows = build_checks(status_before_outputs)
+    rows = build_checks(
+        status_before_outputs,
+        "stdout" if args.check_only else "repro/stage40_postfreeze_verify/summary.csv",
+    )
+    decision = row_by(rows, "check", "postfreeze_decision")
+    if args.check_only:
+        writer = csv.DictWriter(
+            sys.stdout,
+            fieldnames=["check", "status", "evidence", "detail"],
+            lineterminator="\n",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+        return 0 if decision.get("status") == "PASS_POSTFREEZE_VERIFY" else 1
+
     out_dir = Path(args.out_dir)
     if not out_dir.is_absolute():
         out_dir = ROOT / out_dir
     write_csv(out_dir / "summary.csv", rows)
     write_md(rows)
-    decision = row_by(rows, "check", "postfreeze_decision")
     print(f"Wrote {(out_dir / 'summary.csv').relative_to(ROOT).as_posix()}")
     print(f"Wrote {OUT_MD.relative_to(ROOT).as_posix()}")
     return 0 if decision.get("status") == "PASS_POSTFREEZE_VERIFY" else 1
