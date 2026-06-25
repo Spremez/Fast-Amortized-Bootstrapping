@@ -137,13 +137,19 @@ hypotheses:
       stores compared with a generic single-poly AVX loop. At r=4, dense
       (1+r)^2 arithmetic and register pressure may cap this benefit; tiling or
       layout changes might reduce spills and memory traffic.
-    status: planned_stage22
-    evidence: theory_checks/mat_avx_memory_model.md
+    status: stage22_practical_expectation_supported_not_theoretical_optimum
+    evidence: docs/stage22_mat_avx512_limit_audit_log.md
     current_decision: >
-      Stage 15/16 support scoped positive AVX512 MAT evidence, but not a
-      theoretical-optimality claim. Stage 22 must compare generic and MAT-aware
-      AVX paths with assembly or perf-counter attribution before any stronger
-      claim is made.
+      Stage 22 compared generic and specialized MAT-AVX512 paths under the
+      same spqlios_avx512 backend and current active-buffer SAB body. The
+      specialized r=4 full-SAB path averaged 28,852,643.333 us versus generic
+      30,005,420.000 us over three process runs, a 1.040x PVW latency
+      improvement, while full-SAB speedup versus repeated scalar improved from
+      1.320x to 1.373x. This supports the explicit specialized kernel as the
+      current practical implementation, but objdump-only attribution and the
+      remaining dense MAT multiply cost do not support a theoretical-optimum
+      claim. Do not spend the next stage on blind r=4 register-pressure-heavy
+      tiling; prioritize schedule fusion or noise/resource validation.
     failure_criteria:
       - microbench does not show expected memory-operation reduction
       - assembly or counters show avoidable spills/traffic remain unexplained

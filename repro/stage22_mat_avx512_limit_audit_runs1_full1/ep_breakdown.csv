@@ -1,0 +1,13 @@
+variant,run,label,r,reps,phase_sum_avg_us,decompose_avg_us,decompose_pct,dft_avg_us,dft_pct,mul_avg_us,mul_pct,source_log
+generic,0,scalar_repeated,1,1000,6.023,0.687,11.41,3.698,61.40,1.638,27.20,repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/kernel_run_0.log
+generic,0,mat_shared_mask,1,1000,6.029,0.727,12.06,3.652,60.57,1.650,27.37,repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/kernel_run_0.log
+generic,0,scalar_repeated,2,1000,13.273,2.111,15.90,7.310,55.07,3.852,29.02,repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/kernel_run_0.log
+generic,0,mat_shared_mask,2,1000,11.170,1.509,13.51,5.577,49.93,4.084,36.56,repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/kernel_run_0.log
+generic,0,scalar_repeated,4,1000,30.464,4.564,14.98,16.582,54.43,9.318,30.59,repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/kernel_run_0.log
+generic,0,mat_shared_mask,4,1000,25.478,2.926,11.48,10.432,40.95,12.120,47.57,repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/kernel_run_0.log
+specialized,0,scalar_repeated,1,1000,8.669,1.080,12.46,5.256,60.63,2.333,26.91,repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/kernel_run_0.log
+specialized,0,mat_shared_mask,1,1000,8.662,1.110,12.81,5.179,59.79,2.373,27.40,repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/kernel_run_0.log
+specialized,0,scalar_repeated,2,1000,19.522,3.053,15.64,11.004,56.37,5.465,27.99,repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/kernel_run_0.log
+specialized,0,mat_shared_mask,2,1000,16.148,2.033,12.59,8.259,51.15,5.856,36.26,repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/kernel_run_0.log
+specialized,0,scalar_repeated,4,1000,40.786,6.299,15.44,21.591,52.94,12.896,31.62,repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/kernel_run_0.log
+specialized,0,mat_shared_mask,4,1000,35.644,3.972,11.14,13.662,38.33,18.010,50.53,repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/kernel_run_0.log

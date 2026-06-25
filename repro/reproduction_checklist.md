@@ -110,7 +110,8 @@
 - [x] Run Stage 21 default target regression to confirm guarded code did not change the non-Stage-21 path.
 - [x] Run Stage 21 target correctness and profile count gates for `r=2` and `r=4`.
 - [x] Run Stage 21 sequential unprofiled full SAB smokes and record the candidate as neutral versus Stage 20.
-- [ ] Complete Stage 22 MAT AVX512 promotion audit with generic-vs-MAT microbench, assembly/perf attribution, and full SAB sweeps.
+- [x] Complete Stage 22 MAT AVX512 promotion audit with generic-vs-specialized microbench, objdump attribution, and r=4 full SAB sweep.
+- [ ] Re-run Stage 22 hardware perf-counter attribution on native Linux if a theoretical load/store claim is needed.
 - [ ] Implement Stage 23 CMUX/NCMUX schedule fusion only after Stage 19/22 identify a material target.
 - [ ] Run Stage 25 correctness/noise/resource matrix for any promoted Stage 20-23 variant.
 - [ ] Run Stage 26 parameter and branch generalization before broad SAB claims.

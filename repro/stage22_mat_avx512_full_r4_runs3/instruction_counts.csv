@@ -1,0 +1,3 @@
+variant,object_scope,vfmadd,vfnmadd,vfmsub,zmm_refs,ymm_refs,vmovapd,vmovupd,source_log
+generic,mattrgsw+polynomial,28,0,24,245,1440,136,64,repro/stage22_mat_avx512_full_r4_runs3/generic/objdump_mattrgsw_polynomial.txt
+specialized,mattrgsw+polynomial,114,26,32,484,1440,239,64,repro/stage22_mat_avx512_full_r4_runs3/specialized/objdump_mattrgsw_polynomial.txt

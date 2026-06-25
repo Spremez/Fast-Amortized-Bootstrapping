@@ -1,0 +1,5 @@
+variant,r,run,status,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,source_log
+generic,2,0,Pass,17865224.000,8932612.000,19856801.000,9928400.500,1.111,repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/full_r2/run_0.log
+generic,4,0,Pass,31236042.000,7809010.500,40456786.000,10114196.500,1.295,repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/full_r4/run_0.log
+specialized,2,0,Pass,16558623.000,8279311.500,18881381.000,9440690.500,1.140,repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/full_r2/run_0.log
+specialized,4,0,Pass,28851014.000,7212753.500,39508969.000,9877242.250,1.369,repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/full_r4/run_0.log

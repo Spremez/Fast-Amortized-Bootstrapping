@@ -1,0 +1,4 @@
+stage,variant,backend,r,runs,pvw_mean_us,scalar_repeated_mean_us,mean_speedup,specialized_vs_generic_pvw,status,artifacts
+22,generic_mat_avx,spqlios_avx512,4,3,30005420.000,39579966.333,1.320,,PASS_REFERENCE,repro/stage22_mat_avx512_full_r4_runs3/full_sab_smoke.csv
+22,specialized_mat_avx,spqlios_avx512,4,3,28852643.333,39593140.667,1.373,1.040,PASS_EXPLICIT_PATH,repro/stage22_mat_avx512_full_r4_runs3/full_sab_smoke.csv
+22,initial_r2_smoke,spqlios_avx512,2,1,16558623.000,18881381.000,1.140,1.079,SMOKE_ONLY,repro/stage22_mat_avx512_limit_audit_runs1_full1/full_sab_smoke.csv

@@ -29,16 +29,18 @@ evidence.
 | Stage 20 active-buffer fusion | `spqlios_avx512` | 2 | current explicit baseline | mean `1.270x`, range `1.173x-1.349x` |
 | Stage 20 active-buffer fusion | `spqlios_avx512` | 4 | current explicit baseline | mean `1.346x`, range `1.323x-1.384x` |
 | Stage 21 sub_a output fusion | `spqlios_avx512` | 2/4 | neutral ablation | one-run `1.136x`/`1.308x`, not above Stage 20 |
+| Stage 22 specialized vs generic MAT-AVX | `spqlios_avx512` | 4 | implementation audit | specialized/generic PVW `1.040x`, full-SAB speedup `1.373x` |
 
 Current conclusion:
 
 ```text
 PVW/MAT-SAB exists and is correct for the tested target path.
 The project has complete SAB speedup evidence, but not a multi-fold result.
-The current best explicit variant is Stage 20 active-buffer fusion. Stage 21
-was validated but not promoted. The next work is Stage 22: audit whether the
-MAT-aware AVX512 external product is near its useful theoretical limit and
-whether any remaining kernel win translates to complete SAB.
+The current best explicit variant remains Stage 20 active-buffer fusion with
+the specialized MAT-AVX512 kernel. Stage 21 was validated but not promoted.
+Stage 22 confirms the specialized kernel is useful but does not justify a
+theoretical-optimality claim. The next work should move to schedule-level
+fusion or noise/resource validation rather than isolated r=4 kernel tuning.
 ```
 
 ## Invariants
@@ -92,8 +94,8 @@ The next implementation loop starts at Stage 19:
 Stage 19: exact sparse schedule audit. [completed]
 Stage 20: active-buffer/copyback fusion. [completed, current explicit baseline]
 Stage 21: sub_a and polynomial rotation optimization. [completed, neutral]
-Stage 22: MAT-aware AVX512 theoretical-limit audit. [next]
-Stage 23: CMUX/NCMUX schedule fusion.
+Stage 22: MAT-aware AVX512 theoretical-limit audit. [completed, practical path confirmed]
+Stage 23: CMUX/NCMUX schedule fusion. [next optimization]
 Stage 24: conditional post-processing optimization.
 Stage 25: correctness/noise/resource matrix.
 Stage 26: parameter and branch generalization.

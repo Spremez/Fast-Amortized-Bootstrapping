@@ -1,0 +1,7 @@
+variant,r,run,status,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,source_log
+generic,4,0,Pass,30483500.000,7620875.000,39345804.000,9836451.000,1.291,repro/stage22_mat_avx512_full_r4_runs3/generic/full_r4/run_0.log
+generic,4,1,Pass,30335150.000,7583787.500,39637091.000,9909272.750,1.307,repro/stage22_mat_avx512_full_r4_runs3/generic/full_r4/run_1.log
+generic,4,2,Pass,29197610.000,7299402.500,39757004.000,9939251.000,1.362,repro/stage22_mat_avx512_full_r4_runs3/generic/full_r4/run_2.log
+specialized,4,0,Pass,29127116.000,7281779.000,39887960.000,9971990.000,1.369,repro/stage22_mat_avx512_full_r4_runs3/specialized/full_r4/run_0.log
+specialized,4,1,Pass,28193894.000,7048473.500,40503700.000,10125925.000,1.437,repro/stage22_mat_avx512_full_r4_runs3/specialized/full_r4/run_1.log
+specialized,4,2,Pass,29236920.000,7309230.000,38387762.000,9596940.500,1.313,repro/stage22_mat_avx512_full_r4_runs3/specialized/full_r4/run_2.log

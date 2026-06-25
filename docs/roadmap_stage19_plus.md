@@ -190,6 +190,17 @@ Performance gate:
 - full SAB repeated A/B must also improve before any bootstrapping claim;
 - backend gains must be separated from algorithmic gains.
 
+Status after execution:
+
+```text
+Generic-vs-specialized same-backend audit completed.
+For r=4 full SAB with active-buffer fusion, specialized MAT-AVX512 improved
+PVW latency over generic MAT-AVX512 by 1.040x over three process runs.
+This supports the explicit specialized kernel as the current practical path,
+but not a theoretical-optimality claim because hardware perf counters were not
+captured and dense MAT multiply cost remains visible.
+```
+
 ## Stage 23: PVW CMUX/NCMUX Schedule Fusion
 
 Goal:

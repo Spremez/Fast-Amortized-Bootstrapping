@@ -44,6 +44,7 @@ Code artifacts:
 - `scripts/run_stage20_active_buffer_bench.sh`
 - `scripts/run_stage21_suba_output_profile.sh`
 - `scripts/run_stage21_suba_output_bench.sh`
+- `scripts/run_stage22_mat_avx512_limit_audit.sh`
 
 Documentation artifacts:
 
@@ -81,6 +82,7 @@ Documentation artifacts:
 - `docs/stage19_sparse_schedule_audit_log.md`
 - `docs/stage20_active_buffer_log.md`
 - `docs/stage21_suba_output_log.md`
+- `docs/stage22_mat_avx512_limit_audit_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -99,6 +101,7 @@ Documentation artifacts:
 - `experiments/stage19_sparse_schedule_audit_plan.md`
 - `experiments/stage20_active_buffer_validation_plan.md`
 - `experiments/stage21_suba_output_validation_plan.md`
+- `experiments/stage22_mat_avx512_limit_audit_plan.md`
 
 Repro artifacts:
 
@@ -339,3 +342,30 @@ Repro artifacts:
 - `repro/stage21_suba_output_bench_r2_reps1_runs1_seq/run_0.log`
 - `repro/stage21_suba_output_bench_r4_reps1_runs1_seq/summary.csv`
 - `repro/stage21_suba_output_bench_r4_reps1_runs1_seq/run_0.log`
+- `repro/stage22_mat_avx512_summary.csv`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/kernel_microbench.csv`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/full_sab_smoke.csv`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/ep_breakdown.csv`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/instruction_counts.csv`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/kernel_run_0.log`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/objdump_mattrgsw_polynomial.txt`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/full_r2/run_0.log`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/generic/full_r4/run_0.log`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/kernel_run_0.log`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/objdump_mattrgsw_polynomial.txt`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/full_r2/run_0.log`
+- `repro/stage22_mat_avx512_limit_audit_runs1_full1/specialized/full_r4/run_0.log`
+- `repro/stage22_mat_avx512_full_r4_runs3/kernel_microbench.csv`
+- `repro/stage22_mat_avx512_full_r4_runs3/full_sab_smoke.csv`
+- `repro/stage22_mat_avx512_full_r4_runs3/ep_breakdown.csv`
+- `repro/stage22_mat_avx512_full_r4_runs3/instruction_counts.csv`
+- `repro/stage22_mat_avx512_full_r4_runs3/generic/kernel_run_0.log`
+- `repro/stage22_mat_avx512_full_r4_runs3/generic/objdump_mattrgsw_polynomial.txt`
+- `repro/stage22_mat_avx512_full_r4_runs3/generic/full_r4/run_0.log`
+- `repro/stage22_mat_avx512_full_r4_runs3/generic/full_r4/run_1.log`
+- `repro/stage22_mat_avx512_full_r4_runs3/generic/full_r4/run_2.log`
+- `repro/stage22_mat_avx512_full_r4_runs3/specialized/kernel_run_0.log`
+- `repro/stage22_mat_avx512_full_r4_runs3/specialized/objdump_mattrgsw_polynomial.txt`
+- `repro/stage22_mat_avx512_full_r4_runs3/specialized/full_r4/run_0.log`
+- `repro/stage22_mat_avx512_full_r4_runs3/specialized/full_r4/run_1.log`
+- `repro/stage22_mat_avx512_full_r4_runs3/specialized/full_r4/run_2.log`

@@ -1,0 +1,13 @@
+variant,run,kind,r,reps,scalar_repeated_avg_us,scalar_lane_avg_us,mat_avg_us,mat_lane_avg_us,speedup_vs_scalar_repeated,source_log
+generic,0,dft_output,1,1000,9.694,9.694,9.048,9.048,1.071,repro/stage22_mat_avx512_full_r4_runs3/generic/kernel_run_0.log
+generic,0,dft_output,2,1000,20.113,10.056,14.018,7.009,1.435,repro/stage22_mat_avx512_full_r4_runs3/generic/kernel_run_0.log
+generic,0,dft_output,4,1000,34.494,8.623,31.426,7.856,1.098,repro/stage22_mat_avx512_full_r4_runs3/generic/kernel_run_0.log
+generic,0,full_output,1,1000,14.442,14.442,13.581,13.581,1.063,repro/stage22_mat_avx512_full_r4_runs3/generic/kernel_run_0.log
+generic,0,full_output,2,1000,27.861,13.931,23.363,11.681,1.193,repro/stage22_mat_avx512_full_r4_runs3/generic/kernel_run_0.log
+generic,0,full_output,4,1000,59.403,14.851,47.587,11.897,1.248,repro/stage22_mat_avx512_full_r4_runs3/generic/kernel_run_0.log
+specialized,0,dft_output,1,1000,7.472,7.472,6.086,6.086,1.228,repro/stage22_mat_avx512_full_r4_runs3/specialized/kernel_run_0.log
+specialized,0,dft_output,2,1000,12.565,6.282,9.441,4.721,1.331,repro/stage22_mat_avx512_full_r4_runs3/specialized/kernel_run_0.log
+specialized,0,dft_output,4,1000,26.765,6.691,21.235,5.309,1.260,repro/stage22_mat_avx512_full_r4_runs3/specialized/kernel_run_0.log
+specialized,0,full_output,1,1000,10.989,10.989,10.654,10.654,1.031,repro/stage22_mat_avx512_full_r4_runs3/specialized/kernel_run_0.log
+specialized,0,full_output,2,1000,21.571,10.786,16.868,8.434,1.279,repro/stage22_mat_avx512_full_r4_runs3/specialized/kernel_run_0.log
+specialized,0,full_output,4,1000,48.617,12.154,40.433,10.108,1.202,repro/stage22_mat_avx512_full_r4_runs3/specialized/kernel_run_0.log

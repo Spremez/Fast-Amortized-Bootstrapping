@@ -1,0 +1,242 @@
+objdump snippets for build/mattrgsw.o and build/polynomial.o
+Filtered to function labels plus AVX/FMA/vector-move instructions.
+0000000000001780 <mat_trgsw_mul_pvmtmlwe_DFT>:
+    17ba:	e8 00 00 00 00       	call   17bf <mat_trgsw_mul_pvmtmlwe_DFT+0x3f>
+    17d4:	0f 84 5d 07 00 00    	je     1f37 <mat_trgsw_mul_pvmtmlwe_DFT+0x7b7>
+    17df:	74 70                	je     1851 <mat_trgsw_mul_pvmtmlwe_DFT+0xd1>
+    17e5:	74 40                	je     1827 <mat_trgsw_mul_pvmtmlwe_DFT+0xa7>
+    17eb:	74 1a                	je     1807 <mat_trgsw_mul_pvmtmlwe_DFT+0x87>
+    1802:	e8 00 00 00 00       	call   1807 <mat_trgsw_mul_pvmtmlwe_DFT+0x87>
+    1822:	e8 00 00 00 00       	call   1827 <mat_trgsw_mul_pvmtmlwe_DFT+0xa7>
+    1842:	e8 00 00 00 00       	call   1847 <mat_trgsw_mul_pvmtmlwe_DFT+0xc7>
+    184f:	74 6e                	je     18bf <mat_trgsw_mul_pvmtmlwe_DFT+0x13f>
+    1861:	e8 00 00 00 00       	call   1866 <mat_trgsw_mul_pvmtmlwe_DFT+0xe6>
+    187a:	e8 00 00 00 00       	call   187f <mat_trgsw_mul_pvmtmlwe_DFT+0xff>
+    1893:	e8 00 00 00 00       	call   1898 <mat_trgsw_mul_pvmtmlwe_DFT+0x118>
+    18b0:	e8 00 00 00 00       	call   18b5 <mat_trgsw_mul_pvmtmlwe_DFT+0x135>
+    18bd:	75 92                	jne    1851 <mat_trgsw_mul_pvmtmlwe_DFT+0xd1>
+    18c5:	0f 84 95 06 00 00    	je     1f60 <mat_trgsw_mul_pvmtmlwe_DFT+0x7e0>
+    18fb:	e8 00 00 00 00       	call   1900 <mat_trgsw_mul_pvmtmlwe_DFT+0x180>
+    190d:	0f 83 49 01 00 00    	jae    1a5c <mat_trgsw_mul_pvmtmlwe_DFT+0x2dc>
+    1916:	0f 84 9e 00 00 00    	je     19ba <mat_trgsw_mul_pvmtmlwe_DFT+0x23a>
+    1920:	74 5e                	je     1980 <mat_trgsw_mul_pvmtmlwe_DFT+0x200>
+    1926:	74 2c                	je     1954 <mat_trgsw_mul_pvmtmlwe_DFT+0x1d4>
+    194f:	e8 00 00 00 00       	call   1954 <mat_trgsw_mul_pvmtmlwe_DFT+0x1d4>
+    197b:	e8 00 00 00 00       	call   1980 <mat_trgsw_mul_pvmtmlwe_DFT+0x200>
+    19a7:	e8 00 00 00 00       	call   19ac <mat_trgsw_mul_pvmtmlwe_DFT+0x22c>
+    19b4:	0f 83 a2 00 00 00    	jae    1a5c <mat_trgsw_mul_pvmtmlwe_DFT+0x2dc>
+    19d6:	e8 00 00 00 00       	call   19db <mat_trgsw_mul_pvmtmlwe_DFT+0x25b>
+    19fb:	e8 00 00 00 00       	call   1a00 <mat_trgsw_mul_pvmtmlwe_DFT+0x280>
+    1a20:	e8 00 00 00 00       	call   1a25 <mat_trgsw_mul_pvmtmlwe_DFT+0x2a5>
+    1a49:	e8 00 00 00 00       	call   1a4e <mat_trgsw_mul_pvmtmlwe_DFT+0x2ce>
+    1a56:	0f 82 5e ff ff ff    	jb     19ba <mat_trgsw_mul_pvmtmlwe_DFT+0x23a>
+    1a5f:	0f 84 ca 04 00 00    	je     1f2f <mat_trgsw_mul_pvmtmlwe_DFT+0x7af>
+    1a8e:	e8 00 00 00 00       	call   1a93 <mat_trgsw_mul_pvmtmlwe_DFT+0x313>
+    1a96:	0f 83 4e 01 00 00    	jae    1bea <mat_trgsw_mul_pvmtmlwe_DFT+0x46a>
+    1a9f:	0f 84 9f 00 00 00    	je     1b44 <mat_trgsw_mul_pvmtmlwe_DFT+0x3c4>
+    1aa9:	74 62                	je     1b0d <mat_trgsw_mul_pvmtmlwe_DFT+0x38d>
+    1aaf:	74 2e                	je     1adf <mat_trgsw_mul_pvmtmlwe_DFT+0x35f>
+    1ada:	e8 00 00 00 00       	call   1adf <mat_trgsw_mul_pvmtmlwe_DFT+0x35f>
+    1b08:	e8 00 00 00 00       	call   1b0d <mat_trgsw_mul_pvmtmlwe_DFT+0x38d>
+    1b36:	e8 00 00 00 00       	call   1b3b <mat_trgsw_mul_pvmtmlwe_DFT+0x3bb>
+    1b3e:	0f 83 a6 00 00 00    	jae    1bea <mat_trgsw_mul_pvmtmlwe_DFT+0x46a>
+    1b66:	e8 00 00 00 00       	call   1b6b <mat_trgsw_mul_pvmtmlwe_DFT+0x3eb>
+    1b89:	e8 00 00 00 00       	call   1b8e <mat_trgsw_mul_pvmtmlwe_DFT+0x40e>
+    1bb1:	e8 00 00 00 00       	call   1bb6 <mat_trgsw_mul_pvmtmlwe_DFT+0x436>
+    1bdc:	e8 00 00 00 00       	call   1be1 <mat_trgsw_mul_pvmtmlwe_DFT+0x461>
+    1be4:	0f 82 5a ff ff ff    	jb     1b44 <mat_trgsw_mul_pvmtmlwe_DFT+0x3c4>
+    1bf0:	0f 86 0f 03 00 00    	jbe    1f05 <mat_trgsw_mul_pvmtmlwe_DFT+0x785>
+    1bfc:	0f 85 1f 03 00 00    	jne    1f21 <mat_trgsw_mul_pvmtmlwe_DFT+0x7a1>
+    1c05:	0f 84 fa 02 00 00    	je     1f05 <mat_trgsw_mul_pvmtmlwe_DFT+0x785>
+    1c29:	0f 84 8e 00 00 00    	je     1cbd <mat_trgsw_mul_pvmtmlwe_DFT+0x53d>
+    1c33:	74 57                	je     1c8c <mat_trgsw_mul_pvmtmlwe_DFT+0x50c>
+    1c39:	74 29                	je     1c64 <mat_trgsw_mul_pvmtmlwe_DFT+0x4e4>
+    1c5f:	e8 00 00 00 00       	call   1c64 <mat_trgsw_mul_pvmtmlwe_DFT+0x4e4>
+    1c87:	e8 00 00 00 00       	call   1c8c <mat_trgsw_mul_pvmtmlwe_DFT+0x50c>
+    1caf:	e8 00 00 00 00       	call   1cb4 <mat_trgsw_mul_pvmtmlwe_DFT+0x534>
+    1cb7:	0f 84 b0 00 00 00    	je     1d6d <mat_trgsw_mul_pvmtmlwe_DFT+0x5ed>
+    1cdd:	e8 00 00 00 00       	call   1ce2 <mat_trgsw_mul_pvmtmlwe_DFT+0x562>
+    1d07:	e8 00 00 00 00       	call   1d0c <mat_trgsw_mul_pvmtmlwe_DFT+0x58c>
+    1d31:	e8 00 00 00 00       	call   1d36 <mat_trgsw_mul_pvmtmlwe_DFT+0x5b6>
+    1d5f:	e8 00 00 00 00       	call   1d64 <mat_trgsw_mul_pvmtmlwe_DFT+0x5e4>
+    1d67:	0f 85 50 ff ff ff    	jne    1cbd <mat_trgsw_mul_pvmtmlwe_DFT+0x53d>
+    1d7f:	0f 84 80 01 00 00    	je     1f05 <mat_trgsw_mul_pvmtmlwe_DFT+0x785>
+    1d8b:	0f 84 83 01 00 00    	je     1f14 <mat_trgsw_mul_pvmtmlwe_DFT+0x794>
+    1da9:	0f 84 8b 00 00 00    	je     1e3a <mat_trgsw_mul_pvmtmlwe_DFT+0x6ba>
+    1db3:	74 54                	je     1e09 <mat_trgsw_mul_pvmtmlwe_DFT+0x689>
+    1db9:	74 28                	je     1de3 <mat_trgsw_mul_pvmtmlwe_DFT+0x663>
+    1dde:	e8 00 00 00 00       	call   1de3 <mat_trgsw_mul_pvmtmlwe_DFT+0x663>
+    1e04:	e8 00 00 00 00       	call   1e09 <mat_trgsw_mul_pvmtmlwe_DFT+0x689>
+    1e2a:	e8 00 00 00 00       	call   1e2f <mat_trgsw_mul_pvmtmlwe_DFT+0x6af>
+    1e34:	0f 84 aa 00 00 00    	je     1ee4 <mat_trgsw_mul_pvmtmlwe_DFT+0x764>
+    1e58:	e8 00 00 00 00       	call   1e5d <mat_trgsw_mul_pvmtmlwe_DFT+0x6dd>
+    1e80:	e8 00 00 00 00       	call   1e85 <mat_trgsw_mul_pvmtmlwe_DFT+0x705>
+    1ea8:	e8 00 00 00 00       	call   1ead <mat_trgsw_mul_pvmtmlwe_DFT+0x72d>
+    1ed4:	e8 00 00 00 00       	call   1ed9 <mat_trgsw_mul_pvmtmlwe_DFT+0x759>
+    1ede:	0f 85 56 ff ff ff    	jne    1e3a <mat_trgsw_mul_pvmtmlwe_DFT+0x6ba>
+    1ee7:	0f 85 33 fd ff ff    	jne    1c20 <mat_trgsw_mul_pvmtmlwe_DFT+0x4a0>
+    1eff:	0f 85 8c fe ff ff    	jne    1d91 <mat_trgsw_mul_pvmtmlwe_DFT+0x611>
+    1f1c:	e9 ff fc ff ff       	jmp    1c20 <mat_trgsw_mul_pvmtmlwe_DFT+0x4a0>
+    1f2a:	e9 62 fe ff ff       	jmp    1d91 <mat_trgsw_mul_pvmtmlwe_DFT+0x611>
+    1f32:	e9 b3 fc ff ff       	jmp    1bea <mat_trgsw_mul_pvmtmlwe_DFT+0x46a>
+    1f3d:	0f 85 88 f9 ff ff    	jne    18cb <mat_trgsw_mul_pvmtmlwe_DFT+0x14b>
+    1f4f:	0f 85 10 fb ff ff    	jne    1a65 <mat_trgsw_mul_pvmtmlwe_DFT+0x2e5>
+    1f55:	eb ae                	jmp    1f05 <mat_trgsw_mul_pvmtmlwe_DFT+0x785>
+    1f69:	e9 ee fa ff ff       	jmp    1a5c <mat_trgsw_mul_pvmtmlwe_DFT+0x2dc>
+    176b:	c5 fd 10 2c 01       	vmovupd (%rcx,%rax,1),%ymm5
+    1775:	c5 fd 11 1c 02       	vmovupd %ymm3,(%rdx,%rax,1)
+    177e:	c5 fd 10 24 01       	vmovupd (%rcx,%rax,1),%ymm4
+    1788:	c5 fd 11 3c 02       	vmovupd %ymm7,(%rdx,%rax,1)
+    1791:	c5 7d 10 04 01       	vmovupd (%rcx,%rax,1),%ymm8
+    179b:	c5 7d 11 0c 02       	vmovupd %ymm9,(%rdx,%rax,1)
+    17a4:	c5 7d 10 14 01       	vmovupd (%rcx,%rax,1),%ymm10
+    17ae:	c5 7d 11 1c 02       	vmovupd %ymm11,(%rdx,%rax,1)
+    17b7:	c5 7d 10 24 01       	vmovupd (%rcx,%rax,1),%ymm12
+    17c1:	c5 7d 11 2c 02       	vmovupd %ymm13,(%rdx,%rax,1)
+    17ca:	c5 7d 10 34 01       	vmovupd (%rcx,%rax,1),%ymm14
+    17d4:	c5 7d 11 3c 02       	vmovupd %ymm15,(%rdx,%rax,1)
+    17e6:	c5 fd 10 04 01       	vmovupd (%rcx,%rax,1),%ymm0
+    17f0:	c5 fd 11 0c 02       	vmovupd %ymm1,(%rdx,%rax,1)
+    17f5:	c5 fd 10 74 01 20    	vmovupd 0x20(%rcx,%rax,1),%ymm6
+    1801:	c5 fd 11 54 02 20    	vmovupd %ymm2,0x20(%rdx,%rax,1)
+    1807:	c5 fd 10 6c 01 40    	vmovupd 0x40(%rcx,%rax,1),%ymm5
+    1813:	c5 fd 11 5c 02 40    	vmovupd %ymm3,0x40(%rdx,%rax,1)
+    1819:	c5 fd 10 64 01 60    	vmovupd 0x60(%rcx,%rax,1),%ymm4
+    1825:	c5 fd 11 7c 02 60    	vmovupd %ymm7,0x60(%rdx,%rax,1)
+    182b:	c5 7d 10 84 01 80 00 	vmovupd 0x80(%rcx,%rax,1),%ymm8
+    183d:	c5 7d 11 8c 02 80 00 	vmovupd %ymm9,0x80(%rdx,%rax,1)
+    1846:	c5 7d 10 94 01 a0 00 	vmovupd 0xa0(%rcx,%rax,1),%ymm10
+    1858:	c5 7d 11 9c 02 a0 00 	vmovupd %ymm11,0xa0(%rdx,%rax,1)
+    1861:	c5 7d 10 a4 01 c0 00 	vmovupd 0xc0(%rcx,%rax,1),%ymm12
+    1873:	c5 7d 11 ac 02 c0 00 	vmovupd %ymm13,0xc0(%rdx,%rax,1)
+    187c:	c5 7d 10 b4 01 e0 00 	vmovupd 0xe0(%rcx,%rax,1),%ymm14
+    188e:	c5 7d 11 bc 02 e0 00 	vmovupd %ymm15,0xe0(%rdx,%rax,1)
+    18c3:	c4 a1 79 10 04 c9    	vmovupd (%rcx,%r9,8),%xmm0
+    18cf:	c4 a1 79 11 0c ca    	vmovupd %xmm1,(%rdx,%r9,8)
+    1a95:	c5 fd 10 31          	vmovupd (%rcx),%ymm6
+    1aa2:	c5 fd 11 12          	vmovupd %ymm2,(%rdx)
+    1ae3:	62 f2 fd 48 19 d1    	vbroadcastsd %xmm1,%zmm2
+    1af6:	62 d1 fd 48 28 1c 01 	vmovapd (%r9,%rax,1),%zmm3
+    1b01:	62 d2 ed 48 a8 1c 00 	vfmadd213pd (%r8,%rax,1),%zmm2,%zmm3
+    1b08:	62 f1 fd 48 29 1c 07 	vmovapd %zmm3,(%rdi,%rax,1)
+    1b2d:	62 d1 fd 48 28 64 01 	vmovapd 0x40(%r9,%rax,1),%zmm4
+    1b39:	62 d2 ed 48 a8 64 00 	vfmadd213pd 0x40(%r8,%rax,1),%zmm2,%zmm4
+    1b41:	62 f1 fd 48 29 64 07 	vmovapd %zmm4,0x40(%rdi,%rax,1)
+    1b63:	62 d1 fd 48 28 6c 01 	vmovapd 0x80(%r9,%rax,1),%zmm5
+    1b6f:	62 d2 ed 48 a8 6c 00 	vfmadd213pd 0x80(%r8,%rax,1),%zmm2,%zmm5
+    1b77:	62 f1 fd 48 29 6c 07 	vmovapd %zmm5,0x80(%rdi,%rax,1)
+    1b99:	62 d1 fd 48 28 74 01 	vmovapd 0xc0(%r9,%rax,1),%zmm6
+    1ba5:	62 d2 ed 48 a8 74 00 	vfmadd213pd 0xc0(%r8,%rax,1),%zmm2,%zmm6
+    1bad:	62 f1 fd 48 29 74 07 	vmovapd %zmm6,0xc0(%rdi,%rax,1)
+    1c8b:	c5 fd 10 2c 01       	vmovupd (%rcx,%rax,1),%ymm5
+    1c95:	c5 fd 11 1c 02       	vmovupd %ymm3,(%rdx,%rax,1)
+    1c9e:	c5 fd 10 24 01       	vmovupd (%rcx,%rax,1),%ymm4
+    1ca8:	c5 fd 11 3c 02       	vmovupd %ymm7,(%rdx,%rax,1)
+    1cb1:	c5 7d 10 04 01       	vmovupd (%rcx,%rax,1),%ymm8
+    1cbb:	c5 7d 11 0c 02       	vmovupd %ymm9,(%rdx,%rax,1)
+    1cc4:	c5 7d 10 14 01       	vmovupd (%rcx,%rax,1),%ymm10
+    1cce:	c5 7d 11 1c 02       	vmovupd %ymm11,(%rdx,%rax,1)
+    1cd7:	c5 7d 10 24 01       	vmovupd (%rcx,%rax,1),%ymm12
+    1ce1:	c5 7d 11 2c 02       	vmovupd %ymm13,(%rdx,%rax,1)
+    1cea:	c5 7d 10 34 01       	vmovupd (%rcx,%rax,1),%ymm14
+    1cf4:	c5 7d 11 3c 02       	vmovupd %ymm15,(%rdx,%rax,1)
+    1d06:	c5 fd 10 04 01       	vmovupd (%rcx,%rax,1),%ymm0
+    1d10:	c5 fd 11 0c 02       	vmovupd %ymm1,(%rdx,%rax,1)
+    1d15:	c5 fd 10 74 01 20    	vmovupd 0x20(%rcx,%rax,1),%ymm6
+    1d21:	c5 fd 11 54 02 20    	vmovupd %ymm2,0x20(%rdx,%rax,1)
+    1d27:	c5 fd 10 6c 01 40    	vmovupd 0x40(%rcx,%rax,1),%ymm5
+    1d33:	c5 fd 11 5c 02 40    	vmovupd %ymm3,0x40(%rdx,%rax,1)
+    1d39:	c5 fd 10 64 01 60    	vmovupd 0x60(%rcx,%rax,1),%ymm4
+    1d45:	c5 fd 11 7c 02 60    	vmovupd %ymm7,0x60(%rdx,%rax,1)
+    1d4b:	c5 7d 10 84 01 80 00 	vmovupd 0x80(%rcx,%rax,1),%ymm8
+    1d5d:	c5 7d 11 8c 02 80 00 	vmovupd %ymm9,0x80(%rdx,%rax,1)
+    1d66:	c5 7d 10 94 01 a0 00 	vmovupd 0xa0(%rcx,%rax,1),%ymm10
+    1d78:	c5 7d 11 9c 02 a0 00 	vmovupd %ymm11,0xa0(%rdx,%rax,1)
+    1d81:	c5 7d 10 a4 01 c0 00 	vmovupd 0xc0(%rcx,%rax,1),%ymm12
+    1d93:	c5 7d 11 ac 02 c0 00 	vmovupd %ymm13,0xc0(%rdx,%rax,1)
+    1d9c:	c5 7d 10 b4 01 e0 00 	vmovupd 0xe0(%rcx,%rax,1),%ymm14
+    1dae:	c5 7d 11 bc 02 e0 00 	vmovupd %ymm15,0xe0(%rdx,%rax,1)
+    1de3:	c4 a1 79 10 04 c9    	vmovupd (%rcx,%r9,8),%xmm0
+    1def:	c4 a1 79 11 0c ca    	vmovupd %xmm1,(%rdx,%r9,8)
+    1fb5:	c5 fd 10 31          	vmovupd (%rcx),%ymm6
+    1fc2:	c5 fd 11 12          	vmovupd %ymm2,(%rdx)
+    26c6:	62 f1 fd 48 6f 0c 07 	vmovdqa64 (%rdi,%rax,1),%zmm1
+    26d1:	62 d1 f5 48 fb 04 00 	vpsubq (%r8,%rax,1),%zmm1,%zmm0
+    26d8:	62 d1 fd 48 7f 04 01 	vmovdqa64 %zmm0,(%r9,%rax,1)
+    26fd:	62 f1 fd 48 6f 54 07 	vmovdqa64 0x40(%rdi,%rax,1),%zmm2
+    2709:	62 d1 ed 48 fb 5c 00 	vpsubq 0x40(%r8,%rax,1),%zmm2,%zmm3
+    2711:	62 d1 fd 48 7f 5c 01 	vmovdqa64 %zmm3,0x40(%r9,%rax,1)
+    2733:	62 f1 fd 48 6f 64 07 	vmovdqa64 0x80(%rdi,%rax,1),%zmm4
+    273f:	62 d1 dd 48 fb 6c 00 	vpsubq 0x80(%r8,%rax,1),%zmm4,%zmm5
+    2747:	62 d1 fd 48 7f 6c 01 	vmovdqa64 %zmm5,0x80(%r9,%rax,1)
+    2769:	62 f1 fd 48 6f 74 07 	vmovdqa64 0xc0(%rdi,%rax,1),%zmm6
+    2775:	62 d1 cd 48 fb 7c 00 	vpsubq 0xc0(%r8,%rax,1),%zmm6,%zmm7
+    277d:	62 d1 fd 48 7f 7c 01 	vmovdqa64 %zmm7,0xc0(%r9,%rax,1)
+    27ce:	62 b1 fd 48 6f 0c 19 	vmovdqa64 (%rcx,%r11,1),%zmm1
+    27d9:	62 91 f5 48 fb 04 18 	vpsubq (%r8,%r11,1),%zmm1,%zmm0
+    27e0:	62 b1 fd 48 7f 04 19 	vmovdqa64 %zmm0,(%rcx,%r11,1)
+    2805:	62 b1 fd 48 6f 54 19 	vmovdqa64 0x40(%rcx,%r11,1),%zmm2
+    2811:	62 91 ed 48 fb 5c 18 	vpsubq 0x40(%r8,%r11,1),%zmm2,%zmm3
+    2819:	62 b1 fd 48 7f 5c 19 	vmovdqa64 %zmm3,0x40(%rcx,%r11,1)
+    283b:	62 b1 fd 48 6f 64 19 	vmovdqa64 0x80(%rcx,%r11,1),%zmm4
+    2847:	62 91 dd 48 fb 6c 18 	vpsubq 0x80(%r8,%r11,1),%zmm4,%zmm5
+    284f:	62 b1 fd 48 7f 6c 19 	vmovdqa64 %zmm5,0x80(%rcx,%r11,1)
+    2871:	62 b1 fd 48 6f 74 19 	vmovdqa64 0xc0(%rcx,%r11,1),%zmm6
+    287d:	62 91 cd 48 fb 7c 18 	vpsubq 0xc0(%r8,%r11,1),%zmm6,%zmm7
+    2885:	62 b1 fd 48 7f 7c 19 	vmovdqa64 %zmm7,0xc0(%rcx,%r11,1)
+00000000000069d0 <polynomial_mul_torus>:
+    6a13:	0f 84 47 04 00 00    	je     6e60 <polynomial_mul_torus+0x490>
+    6a38:	0f 84 92 03 00 00    	je     6dd0 <polynomial_mul_torus+0x400>
+    6a45:	e8 00 00 00 00       	call   6a4a <polynomial_mul_torus+0x7a>
+    6a67:	0f 84 1b 03 00 00    	je     6d88 <polynomial_mul_torus+0x3b8>
+    6a74:	e8 00 00 00 00       	call   6a79 <polynomial_mul_torus+0xa9>
+    6aa3:	0f 8e 9b 02 00 00    	jle    6d44 <polynomial_mul_torus+0x374>
+    6aac:	62 d1 fd 48 28 27    	vmovapd (%r15),%zmm4
+    6ab2:	62 d1 fd 48 28 45 00 	vmovapd 0x0(%r13),%zmm0
+    6adb:	62 d1 fd 48 28 0b    	vmovapd (%r11),%zmm1
+    6ae1:	62 f1 fd 48 28 1f    	vmovapd (%rdi),%zmm3
+    6ae7:	62 f1 f5 48 59 ec    	vmulpd %zmm4,%zmm1,%zmm5
+    6aed:	62 f1 f5 48 59 d3    	vmulpd %zmm3,%zmm1,%zmm2
+    6af3:	62 f2 fd 48 ba d4    	vfmsub231pd %zmm4,%zmm0,%zmm2
+    6af9:	62 f2 d5 48 98 c3    	vfmadd132pd %zmm3,%zmm5,%zmm0
+    6aff:	62 f1 fd 48 29 11    	vmovapd %zmm2,(%rcx)
+    6b05:	62 f1 fd 48 29 02    	vmovapd %zmm0,(%rdx)
+    6b0d:	0f 8d 2b 02 00 00    	jge    6d3e <polynomial_mul_torus+0x36e>
+    6b16:	0f 84 f6 00 00 00    	je     6c12 <polynomial_mul_torus+0x242>
+    6b20:	0f 84 9b 00 00 00    	je     6bc1 <polynomial_mul_torus+0x1f1>
+    6b2a:	74 4c                	je     6b78 <polynomial_mul_torus+0x1a8>
+    6b2c:	62 d1 fd 48 28 73 01 	vmovapd 0x40(%r11),%zmm6
+    6b33:	62 51 fd 48 28 47 01 	vmovapd 0x40(%r15),%zmm8
+    6b44:	62 71 fd 48 28 4f 01 	vmovapd 0x40(%rdi),%zmm9
+    6b4b:	62 d1 fd 48 28 7d 01 	vmovapd 0x40(%r13),%zmm7
+    6b52:	62 51 cd 48 59 d8    	vmulpd %zmm8,%zmm6,%zmm11
+    6b58:	62 51 cd 48 59 d1    	vmulpd %zmm9,%zmm6,%zmm10
+    6b5e:	62 52 c5 48 ba d0    	vfmsub231pd %zmm8,%zmm7,%zmm10
+    6b64:	62 d2 a5 48 98 f9    	vfmadd132pd %zmm9,%zmm11,%zmm7
+    6b6a:	62 71 fd 48 29 51 01 	vmovapd %zmm10,0x40(%rcx)
+    6b71:	62 f1 fd 48 29 7a 01 	vmovapd %zmm7,0x40(%rdx)
+    6b78:	62 51 fd 48 28 24 03 	vmovapd (%r11,%rax,1),%zmm12
+    6b7f:	62 51 fd 48 28 34 07 	vmovapd (%r15,%rax,1),%zmm14
+    6b88:	62 71 fd 48 28 3c 07 	vmovapd (%rdi,%rax,1),%zmm15
+    6b8f:	62 51 fd 48 28 6c 05 	vmovapd 0x0(%r13,%rax,1),%zmm13
+    6b97:	62 d1 9d 48 59 c6    	vmulpd %zmm14,%zmm12,%zmm0
+    6b9d:	62 d1 9d 48 59 cf    	vmulpd %zmm15,%zmm12,%zmm1
+    6ba3:	62 d2 95 48 ba ce    	vfmsub231pd %zmm14,%zmm13,%zmm1
+    6ba9:	62 52 fd 48 98 ef    	vfmadd132pd %zmm15,%zmm0,%zmm13
+    6baf:	62 f1 fd 48 29 0c 01 	vmovapd %zmm1,(%rcx,%rax,1)
+    6bb6:	62 71 fd 48 29 2c 02 	vmovapd %zmm13,(%rdx,%rax,1)
+    6bc1:	62 d1 fd 48 28 2c 03 	vmovapd (%r11,%rax,1),%zmm5
+    6bc8:	62 d1 fd 48 28 24 07 	vmovapd (%r15,%rax,1),%zmm4
+    6bd1:	62 f1 fd 48 28 1c 07 	vmovapd (%rdi,%rax,1),%zmm3
+    6bd8:	62 d1 fd 48 28 74 05 	vmovapd 0x0(%r13,%rax,1),%zmm6
+    6be0:	62 f1 d5 48 59 fc    	vmulpd %zmm4,%zmm5,%zmm7
+    6be6:	62 f1 d5 48 59 d3    	vmulpd %zmm3,%zmm5,%zmm2
+    6bec:	62 f2 cd 48 ba d4    	vfmsub231pd %zmm4,%zmm6,%zmm2
+    6bf2:	62 f2 c5 48 98 f3    	vfmadd132pd %zmm3,%zmm7,%zmm6
+    6bf8:	62 f1 fd 48 29 14 01 	vmovapd %zmm2,(%rcx,%rax,1)
+    6bff:	62 f1 fd 48 29 34 02 	vmovapd %zmm6,(%rdx,%rax,1)
+    6c0c:	0f 8d 2c 01 00 00    	jge    6d3e <polynomial_mul_torus+0x36e>
+    6c12:	62 51 fd 48 28 04 03 	vmovapd (%r11,%rax,1),%zmm8
+    6c19:	62 51 fd 48 28 14 07 	vmovapd (%r15,%rax,1),%zmm10
+    6c23:	62 71 fd 48 28 1c 07 	vmovapd (%rdi,%rax,1),%zmm11
+    6c2a:	62 51 fd 48 28 4c 05 	vmovapd 0x0(%r13,%rax,1),%zmm9

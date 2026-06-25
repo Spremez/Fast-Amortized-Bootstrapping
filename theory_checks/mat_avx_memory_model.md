@@ -151,6 +151,18 @@ no perf-counter-backed comparison has yet shown that the remaining gap is only
 dense MAT arithmetic or unavoidable register pressure.
 ```
 
+Stage 22 same-backend generic-vs-specialized audit adds a more direct
+implementation comparison:
+
+| evidence | r | generic PVW mean us | specialized PVW mean us | specialized/generic |
+|---|---:|---:|---:|---:|
+| full SAB, active-buffer, 3 runs | 4 | 30005420.000 | 28852643.333 | `1.040x` |
+
+The specialized kernel is therefore measurably useful in complete SAB, but the
+gain over the generic AVX512 MAT path is modest. The r=4 phase profile still
+shows MAT multiply time above repeated scalar multiply time, matching the dense
+`25` versus `16` complex-product model.
+
 ## Required Next Checks
 
 Stage 22 must answer the remaining questions:
@@ -169,6 +181,8 @@ Allowed current claim:
 ```text
 MAT-aware AVX512 is theoretically motivated by reduced vector memory traffic
 and is experimentally positive at the scoped kernel and complete-SAB levels.
+The explicit specialized kernel gives a same-backend complete-SAB improvement
+over the generic AVX512 MAT loop for r=4.
 ```
 
 Not yet allowed:
