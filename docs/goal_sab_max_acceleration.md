@@ -39,6 +39,7 @@ evidence.
 | Stage 26 binary parameter smoke | `spqlios_avx512` | 2 | initial scope expansion | `SET_2_3_2048`, `SET_4_5_2048`, `SET_2_3_4096` target gates pass |
 | Stage 26 non-binary branch scope | `spqlios_avx512` | n/a | explicit unsupported | PVW+TERNARY rejected; scalar TERNARY build still passes |
 | Stage 27 novelty audit | external scan | n/a | started | safe engineering claim available; novelty claim blocked by related-work risk |
+| Stage 27 final full-SAB rerun | `spqlios_avx512` | 2/4 | scoped performance support | r=2 mean `1.171x` with higher variance; r=4 mean `1.401x`, range `1.331x-1.472x` |
 
 Current conclusion:
 
@@ -57,7 +58,10 @@ resource validation. Stage 25 now has smoke-level r=1/2/4 stage-noise and
 resource evidence, plus 50-seed final-output noise support for promoted r=2
 and r=4. Stage 26 now has initial binary parameter-smoke support and an
 explicit non-binary PVW unsupported boundary. Stage 27 starts the paper package
-but keeps novelty claims blocked until full related-work review.
+but keeps novelty claims blocked until full related-work review. The Stage 27
+final full-SAB performance rerun confirms the current promoted explicit path
+after the Stage 26 harness refactor; r=4 is the strongest current target
+evidence, while r=2 remains positive but noisier.
 ```
 
 ## Invariants

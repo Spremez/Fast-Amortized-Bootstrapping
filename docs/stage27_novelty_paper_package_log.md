@@ -96,6 +96,22 @@ confirm the current claim boundary: shared-mask/multiple-body TFHE batching is
 prior-art risky, while incomplete-NTT amortized bootstrapping is an adjacent
 acceleration direction.
 
+## Final Full-SAB Performance Update
+
+The first consolidated final full-SAB performance rerun is recorded in
+`docs/stage27_final_full_sab_performance_log.md` and
+`repro/stage27_final_full_sab_summary.csv`. After the Stage 26 harness
+parameterization, the promoted explicit path still improves complete SAB
+throughput on `BINARY SET_2_3_2048` under `spqlios_avx512`:
+
+- r=2: three runs passed correctness, mean speedup `1.171x`, range
+  `1.111x-1.285x`;
+- r=4: three runs passed correctness, mean speedup `1.401x`, range
+  `1.331x-1.472x`.
+
+This supports a scoped engineering throughput claim. It does not support
+novelty, non-binary, theoretical-optimality, or all-parameter claims.
+
 ## Decision
 
 Status:

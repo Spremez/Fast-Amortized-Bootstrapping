@@ -405,4 +405,10 @@ project must not claim invention of the shared-mask batching idea. The open
 paper contribution, if any, must be SAB-specific integration, schedule
 engineering, implementation evidence, or a clearly distinguished algorithmic
 delta after full paper review.
+
+The first final full-SAB performance rerun after Stage 26 parameterized the
+harness also completed. Under `spqlios_avx512`, specialized MAT-AVX512, and
+active-buffer fusion, r=2 averaged 1.171x over three runs and r=4 averaged
+1.401x over three runs. This strengthens the scoped engineering performance
+claim for the current promoted path but does not change the novelty boundary.
 ```
