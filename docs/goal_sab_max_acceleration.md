@@ -55,6 +55,7 @@ evidence.
 | Stage 30 final goal recheck runner | orchestration | n/a | reproducible recheck available | default lightweight recheck regenerates final package/audit and preserves stronger-claim blocks |
 | Stage 31 external evidence intake | artifact intake | n/a | missing, reproducible | no full-text or native perf external evidence supplied; final audit records A8b |
 | Stage 32 citation refresh recheck | network gate | n/a | full text still blocked | 2026-06-26 refresh: ePrint/ACM/ResearchGate direct routes blocked; metadata only elsewhere |
+| Stage 33 current commit smoke | `spqlios_avx512` | n/a | current smoke passed | scalar binary full run, PVW target full gate, and scalar ternary build all pass |
 
 Current conclusion:
 
@@ -108,6 +109,9 @@ native/perf artifacts with hashes, while preserving manual review requirements
 before claim upgrades.
 The Stage 32 citation refresh reran the full-text probe and confirmed that
 theorem-level 2025/686 citations still cannot be upgraded in this environment.
+The Stage 33 current-commit smoke refresh confirms that the scalar baseline,
+explicit PVW target correctness gate, and scalar non-binary build guard remain
+runnable after the evidence-chain tooling work.
 ```
 
 ## Invariants
@@ -172,4 +176,5 @@ Stage 29: final goal completion audit. [generated; scoped engineering chain read
 Stage 30: final goal recheck runner. [generated and run; current decision unchanged]
 Stage 31: external evidence intake. [generated and run; no external artifacts supplied]
 Stage 32: citation refresh recheck. [run with network citation probe; direct full text still blocked]
+Stage 33: current commit smoke. [scalar/PVW target smoke passed; no performance claim]
 ```

@@ -18,6 +18,7 @@ CLAIMS = ROOT / "repro" / "stage27_final_evidence_package" / "claim_scope.csv"
 MANIFEST = ROOT / "repro" / "stage27_final_evidence_package" / "manifest.csv"
 STAGE28 = ROOT / "repro" / "stage28_native_perf_counter_gate" / "summary.csv"
 EXTERNAL = ROOT / "repro" / "external_evidence_intake" / "summary.csv"
+STAGE33 = ROOT / "repro" / "stage33_current_smoke" / "summary.csv"
 RUN_LOG = ROOT / "repro" / "run_log.csv"
 
 
@@ -107,6 +108,7 @@ def audit() -> list[AuditRow]:
     manifest = read_csv(MANIFEST)
     stage28 = read_csv(STAGE28)
     external = read_csv_if_exists(EXTERNAL)
+    stage33 = read_csv_if_exists(STAGE33)
     run_log = read_csv(RUN_LOG)
 
     out: list[AuditRow] = []
@@ -218,6 +220,30 @@ def audit() -> list[AuditRow]:
         )
     )
 
+    stage33_expected = {
+        "scalar_binary_full_run",
+        "pvw_target_full_gate",
+        "scalar_ternary_build",
+    }
+    stage33_passed = {
+        row.get("step")
+        for row in stage33
+        if row.get("status") == "PASS"
+    }
+    out.append(
+        AuditRow(
+            "A5b",
+            "current_smoke",
+            "Current commit scalar baseline, PVW target gate, and scalar ternary build smoke pass",
+            "PASS_CURRENT_SMOKE"
+            if stage33_expected.issubset(stage33_passed)
+            else "MISSING_CURRENT_SMOKE",
+            rel(STAGE33) if STAGE33.exists() else "",
+            "current commit smoke only; not a performance claim",
+            "Run bash scripts/run_stage33_current_smoke.sh before relying on current-commit smoke evidence.",
+        )
+    )
+
     claim_ids = {row.get("claim_id"): row for row in claims}
     blocked_claims = ["C7", "C8", "C10"]
     blocked_ok = all(
@@ -313,16 +339,23 @@ def audit() -> list[AuditRow]:
         )
     )
 
-    scoped_ready = all(row.status.startswith("PASS") for row in out[:7])
-    if scoped_ready and out[7].status in {
+    scoped_ready_ids = {"A1", "A2", "A3", "A4", "A5", "A5b", "A6", "A7"}
+    status_by_id = {row.item_id: row.status for row in out}
+    scoped_ready = all(
+        status_by_id.get(item_id, "").startswith("PASS")
+        for item_id in scoped_ready_ids
+    )
+    theory_status = status_by_id.get("A8", "")
+    external_status = status_by_id.get("A8b", "")
+    if scoped_ready and theory_status in {
         "BLOCKED_EXTERNAL",
         "CONDITIONAL_COUNTER_SMOKE_ONLY",
     }:
-        if out[8].status == "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED":
+        if external_status == "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED":
             overall_status = "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED"
         else:
             overall_status = "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED"
-    elif scoped_ready and out[7].status == "PASS_COUNTER_ATTRIBUTION":
+    elif scoped_ready and theory_status == "PASS_COUNTER_ATTRIBUTION":
         overall_status = "SCOPED_ENGINEERING_CHAIN_READY__COUNTER_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
     else:
         overall_status = "NOT_READY"

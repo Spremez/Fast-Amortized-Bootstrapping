@@ -59,6 +59,7 @@ Code artifacts:
 - `scripts/build_final_goal_completion_audit.py`
 - `scripts/run_final_goal_recheck.sh`
 - `scripts/register_external_evidence.py`
+- `scripts/run_stage33_current_smoke.sh`
 
 Documentation artifacts:
 
@@ -115,6 +116,7 @@ Documentation artifacts:
 - `docs/final_goal_recheck_log.md`
 - `docs/external_evidence_intake_log.md`
 - `docs/stage32_citation_refresh_log.md`
+- `docs/stage33_current_smoke_log.md`
 - `hypotheses/hypothesis_register.yaml`
 - `algorithm_variants/pvw_sab_rspecialized_avx512.md`
 - `algorithm_variants/pvw_sab_direct_lane_extract.md`
@@ -144,6 +146,7 @@ Documentation artifacts:
 - `experiments/final_goal_recheck_plan.md`
 - `experiments/external_evidence_intake_plan.md`
 - `experiments/stage32_citation_refresh_plan.md`
+- `experiments/stage33_current_smoke_plan.md`
 
 Repro artifacts:
 
@@ -561,3 +564,9 @@ Repro artifacts:
 - `repro/final_goal_recheck/external_evidence_intake.log`
 - `repro/final_goal_recheck/final_goal_audit.log`
 - `repro/external_evidence_intake/summary.csv`
+- `repro/stage33_current_smoke/summary.csv`
+- `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/build.log`
+- `repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/run.log`
+- `repro/stage33_current_smoke/pvw_target_SET_2_3_2048/build.log`
+- `repro/stage33_current_smoke/pvw_target_SET_2_3_2048/run.log`
+- `repro/stage33_current_smoke/scalar_ternary_SET_2_3_2048/build.log`

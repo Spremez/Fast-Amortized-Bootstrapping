@@ -677,3 +677,36 @@ and DBLP provide metadata only. The final recheck decision remains:
 
 SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 ```
+
+## Stage 33: Current Commit Smoke
+
+Goal:
+
+```text
+Refresh current-commit scalar baseline and explicit PVW target correctness
+evidence after the final package and recheck orchestration work.
+```
+
+Tasks:
+
+- run the default scalar binary full SAB path on `SET_2_3_2048`;
+- run the explicit `SAB_PVW_TARGET_TEST` target full lane-equivalence gate;
+- build the scalar ternary path to confirm the PVW binary-only guard did not
+  break non-binary scalar compilation;
+- feed the smoke summary into the final goal completion audit.
+
+Gate:
+
+- scalar binary run must end with `Pass`;
+- PVW target gate must report `SAB_PVW target full bootstrap gate: Pass`;
+- scalar ternary build must pass;
+- results are correctness/build smoke only, not performance evidence.
+
+Status after initial execution:
+
+```text
+`bash scripts/run_stage33_current_smoke.sh` passed all three gates under
+`spqlios_avx512` and `SET_2_3_2048`. The final goal audit now includes A5b:
+
+PASS_CURRENT_SMOKE
+```
