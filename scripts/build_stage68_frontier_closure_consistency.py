@@ -1,0 +1,188 @@
+#!/usr/bin/env python3
+"""Build the Stage68 frontier/closure consistency audit."""
+
+from __future__ import annotations
+
+import csv
+import re
+from pathlib import Path
+from typing import Dict, Iterable, List, Tuple
+
+
+ROOT = Path(__file__).resolve().parents[1]
+ROADMAP = ROOT / "docs" / "roadmap_stage19_plus.md"
+STAGE42 = ROOT / "repro" / "stage42_evidence_closure_audit.csv"
+STAGE51 = ROOT / "repro" / "stage51_goal_completion_frontier.csv"
+STAGE57 = ROOT / "repro" / "stage57_scope_label_audit.csv"
+STAGE59 = ROOT / "repro" / "stage59_completion_route_readiness.csv"
+OUT_CSV = ROOT / "repro" / "stage68_frontier_closure_consistency.csv"
+OUT_MD = ROOT / "docs" / "stage68_frontier_closure_consistency_log.md"
+
+
+def read_csv(path: Path) -> List[Dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open(newline="", encoding="utf-8-sig") as f:
+        return list(csv.DictReader(f))
+
+
+def by_key(path: Path, key: str) -> Dict[str, Dict[str, str]]:
+    return {row.get(key, ""): row for row in read_csv(path)}
+
+
+def row(gate: str, status: str, evidence: str, detail: str) -> Dict[str, str]:
+    return {
+        "gate": gate,
+        "status": status,
+        "evidence": evidence,
+        "detail": detail,
+    }
+
+
+def write_csv(path: Path, rows: Iterable[Dict[str, str]]) -> None:
+    rows = list(rows)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=["gate", "status", "evidence", "detail"],
+            lineterminator="\n",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def latest_labels() -> Tuple[str, str]:
+    text = ROADMAP.read_text(encoding="utf-8") if ROADMAP.exists() else ""
+    stages = sorted({int(m.group(1)) for m in re.finditer(r"^## Stage (\d+):", text, re.M)})
+    latest = stages[-1] if stages else 0
+    if not latest:
+        return ("Stage 19-62", "Stage19-62")
+    return (f"Stage 19-{latest}", f"Stage19-{latest}")
+
+
+def build_rows() -> List[Dict[str, str]]:
+    stage42 = by_key(STAGE42, "check_id")
+    stage51 = by_key(STAGE51, "frontier_id")
+    stage57 = by_key(STAGE57, "audit_id")
+    stage59 = by_key(STAGE59, "route_id")
+    spaced_label, compact_label = latest_labels()
+
+    stage42_overall = stage42.get("S42-OVERALL", {})
+    stage42_detail = stage42_overall.get("detail", "")
+    stage42_ok = (
+        stage42_overall.get("status") == "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED"
+        and "Stage67 final-recheck Stage66A integration" in stage42_detail
+    )
+
+    g6 = stage51.get("G6", {})
+    g6_detail = g6.get("interpretation", "")
+    g6_ok = (
+        g6.get("status") == "LOCAL_READY"
+        and compact_label in g6_detail
+        and "Stage67 final-recheck Stage66A integration" in g6_detail
+    )
+
+    stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
+    stage57_detail = stage57.get("S57-ROADMAP-LATEST-STAGE", {}).get("detail", "")
+    stage57_ok = stage57_ok and spaced_label in stage57_detail
+
+    r1 = stage59.get("S59-R1-SCOPED-ENGINEERING", {})
+    r2 = stage59.get("S59-R2-CURRENT-HEAD-REFRESH", {})
+    stage59_ok = (
+        r1.get("status") == "LOCAL_READY"
+        and r2.get("status") == "READY_LOCAL_REFRESH"
+        and "stage67_final_recheck_stage66" in r2.get("evidence", "")
+    )
+
+    rows = [
+        row(
+            "stage68_stage42_label",
+            "PASS" if stage42_ok else "FAIL",
+            STAGE42.relative_to(ROOT).as_posix(),
+            stage42_detail or "missing S42-OVERALL detail",
+        ),
+        row(
+            "stage68_stage51_g6",
+            "PASS" if g6_ok else "FAIL",
+            STAGE51.relative_to(ROOT).as_posix(),
+            f"status={g6.get('status', 'MISSING')}; interpretation={g6_detail}",
+        ),
+        row(
+            "stage68_stage57_scope_label",
+            "PASS" if stage57_ok else "FAIL",
+            STAGE57.relative_to(ROOT).as_posix(),
+            stage57_detail or "missing Stage57 latest-stage row",
+        ),
+        row(
+            "stage68_stage59_route",
+            "PASS" if stage59_ok else "FAIL",
+            STAGE59.relative_to(ROOT).as_posix(),
+            f"R1={r1.get('status', 'MISSING')}; R2={r2.get('status', 'MISSING')}; R2_evidence={r2.get('evidence', '')}",
+        ),
+    ]
+    failures = [item["gate"] for item in rows if item["status"] != "PASS"]
+    rows.append(
+        row(
+            "stage68_decision",
+            "PASS_FRONTIER_CLOSURE_CONSISTENCY"
+            if not failures
+            else "FAIL_FRONTIER_CLOSURE_CONSISTENCY",
+            OUT_CSV.relative_to(ROOT).as_posix(),
+            "Stage42, Stage51 G6, Stage57, and Stage59 are consistent after Stage67"
+            if not failures
+            else f"failed_gates={failures}",
+        )
+    )
+    return rows
+
+
+def write_md(rows: List[Dict[str, str]]) -> None:
+    OUT_MD.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        "# Stage68 Frontier Closure Consistency Log",
+        "",
+        "Date: 2026-06-26",
+        "",
+        "## Purpose",
+        "",
+        "Stage68 verifies that the Stage67 control-plane label propagated from",
+        "Stage42 closure into Stage51 goal frontier, Stage57 scope-label audit,",
+        "and Stage59 completion-route readiness. It is a consistency audit only.",
+        "",
+        "## Gates",
+        "",
+        "| gate | status | evidence | detail |",
+        "|---|---|---|---|",
+    ]
+    for item in rows:
+        lines.append(
+            f"| {item['gate']} | {item['status']} | {item['evidence']} | {item['detail']} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Interpretation",
+            "",
+            "A passing Stage68 means the local scoped evidence chain is internally",
+            "consistent at the control-plane level after Stage67. It does not run",
+            "a new SAB benchmark and does not upgrade stronger claims.",
+        ]
+    )
+    with OUT_MD.open("w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines) + "\n")
+
+
+def main() -> int:
+    rows = build_rows()
+    write_csv(OUT_CSV, rows)
+    write_md(rows)
+    decision = rows[-1]["status"]
+    print(f"Wrote {OUT_CSV.relative_to(ROOT).as_posix()}")
+    print(f"Wrote {OUT_MD.relative_to(ROOT).as_posix()}")
+    print(f"Stage68 frontier closure consistency: {decision}")
+    return 0 if decision.startswith("PASS") else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

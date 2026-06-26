@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-67`. This label tracks the
+Current control-plane closure label: `Stage 19-68`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -78,6 +78,7 @@ evidence.
 | Stage 65A r4 row-unrolled AVX512 | `spqlios_avx512` | 4 | negative ablation | correctness passed, but MAT/full-SAB ratios versus specialized baseline are `0.930815x`/`0.986900x`/`0.803554x`; not promoted |
 | Stage 66A post-variant final recheck | n/a | n/a | control-plane continuity | lightweight final recheck after Stage65A/64A passes and preserves scoped-ready/stronger-blocked claim boundary |
 | Stage 67 final-recheck Stage66A integration | n/a | n/a | final-recheck integration | explicit unified final-recheck switch runs Stage66A; Stage42 closure is rebuilt after the Stage67 summary is finalized |
+| Stage 68 frontier/closure consistency | n/a | n/a | control-plane consistency | Stage42, Stage51 G6, Stage57, and Stage59 agree on the latest control-plane closure label |
 
 Current conclusion:
 
@@ -224,6 +225,8 @@ Stage42 closure/verifier. It is reproducibility evidence only.
 Stage67 then integrates that Stage66A refresh into the unified final recheck
 runner through an explicit switch, then rebuilds Stage42 closure after the
 Stage67 summary is finalized.
+Stage68 then repairs and verifies the closure/frontier label propagation so
+Stage51 G6 returns to `LOCAL_READY` after Stage67.
 ```
 
 ## Invariants
@@ -323,5 +326,6 @@ Stage 64: implementation-refresh campaign. [completed after Stage65A; current-he
 Stage 65: optional variant loop. [started; Stage65A r4 row-unrolled AVX512 negative/not promoted]
 Stage 66A: post-variant final-recheck integration. [passed]
 Stage 67: final-recheck Stage66A integration. [passed]
+Stage 68: frontier/closure consistency. [current control-plane step]
 Stage 66: release/paper package. [waiting for external unlocks or narrowed scope]
 ```

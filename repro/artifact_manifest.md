@@ -966,3 +966,10 @@ Repro artifacts:
 - `repro/stage67_final_recheck_stage66/summary.csv`
 - `repro/stage67_final_recheck_stage66/decision.csv`
 - `repro/stage67_final_recheck_stage66/stage66_post_variant_final_recheck.log`
+
+## Stage 68 Frontier Closure Consistency
+
+- `docs/stage68_frontier_closure_consistency_log.md`
+- `experiments/stage68_frontier_closure_consistency_plan.md`
+- `scripts/build_stage68_frontier_closure_consistency.py`
+- `repro/stage68_frontier_closure_consistency.csv`

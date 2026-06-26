@@ -18,6 +18,7 @@ evidence is supplied.
 | Stage 65 | optional variant loop | Evaluate a concrete new algorithmic or AVX/layout variant from the hypothesis register. | promote/neutral/reject with full correctness, full SAB A/B, noise, resource, and claim-policy rows. | started locally; Stage65A r4 row-unrolled AVX512 is negative/not promoted |
 | Stage 66A | post-variant final recheck | Refresh the lightweight final-recheck control plane after Stage65A and Stage64A, then rebuild Stage42 closure with Stage66A registered. | Stage66A summary, Stage42 closure, and verifier must pass while stronger blockers remain preserved. | passed |
 | Stage 67 | final-recheck Stage66A integration | Add an explicit final-recheck switch that runs Stage66A without recursion, then rebuild Stage42 closure after the Stage67 summary is finalized. | Stage67 final recheck, post-summary Stage42 closure, and verifier must pass while stronger blockers remain preserved. | passed |
+| Stage 68 | frontier/closure consistency | Make Stage42, Stage51 G6, Stage57, and Stage59 agree on the latest control-plane closure label after Stage67. | Stage68 consistency audit, Stage42 closure, and verifier must pass while stronger blockers remain preserved. | in progress |
 | Stage 66 | release/paper package | Freeze the final allowed claim package after external blockers are resolved or the scope is explicitly narrowed. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
 Execution policy:
@@ -33,4 +34,5 @@ Execution policy:
 - After any optional local variant, run Stage64A for current-head continuity,
   Stage66A for final-recheck/control-plane continuity, and Stage67 to verify
   the unified final recheck can refresh that state before relying on updated
-  scoped evidence.
+  scoped evidence. Run Stage68 after changing closure/frontier labels so the
+  completion frontier returns to `LOCAL_READY`.

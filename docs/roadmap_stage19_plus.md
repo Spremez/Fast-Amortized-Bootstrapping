@@ -2043,3 +2043,37 @@ Stage67 summary is finalized. This does not run a new SAB benchmark and cannot
 upgrade speedup, novelty, theorem-level, non-binary, all-parameter, or native
 hardware-counter claims.
 ```
+
+## Stage 68: Frontier Closure Consistency
+
+Goal:
+
+```text
+Repair and verify the post-Stage67 control-plane consistency between Stage42
+closure, Stage51 goal frontier, Stage57 scope-label audit, and Stage59
+completion route.
+```
+
+Tasks:
+
+- make Stage42 overall emit the latest Stage19+ control-plane label;
+- regenerate Stage51, Stage57, and Stage59 after that label is visible;
+- add a Stage68 audit that checks Stage42, Stage51 G6, Stage57, and Stage59
+  agree on the latest control-plane label and local-ready status;
+- register Stage68 in Stage42 closure and the read-only verifier.
+
+Gate:
+
+- Stage42 `S42-OVERALL` must pass and mention the latest Stage19+ label;
+- Stage51 `G6` must be `LOCAL_READY`;
+- Stage57 scope-label audit must pass;
+- Stage59 current-head refresh route must include Stage67 evidence;
+- Stage68 decision must be `PASS_FRONTIER_CLOSURE_CONSISTENCY`.
+
+Status:
+
+```text
+Stage68 is the current control-plane consistency stage. It does not run a new
+SAB benchmark and cannot upgrade speedup, novelty, theorem-level, non-binary,
+all-parameter, or native hardware-counter claims.
+```

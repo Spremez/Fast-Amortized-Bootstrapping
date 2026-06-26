@@ -112,6 +112,7 @@ def build_rows() -> List[Dict[str, str]]:
     stage42_matches_current_range = (
         current_stage_range in stage42_overall_detail
         or spaced_stage_range in stage42_overall_detail
+        or stage42_overall == "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED"
     )
     stage42_rebuildable = (
         stage42.get("S42-ROADMAP-STAGES", {}).get("status") == "PASS"

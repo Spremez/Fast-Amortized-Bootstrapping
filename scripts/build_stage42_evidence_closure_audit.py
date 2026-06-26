@@ -58,6 +58,9 @@ STAGE67_FINAL_RECHECK_STAGE66 = ROOT / "repro" / "stage67_final_recheck_stage66"
 STAGE67_FINAL_RECHECK_STAGE66_DECISION = (
     ROOT / "repro" / "stage67_final_recheck_stage66" / "decision.csv"
 )
+STAGE68_FRONTIER_CLOSURE_CONSISTENCY = (
+    ROOT / "repro" / "stage68_frontier_closure_consistency.csv"
+)
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -234,6 +237,10 @@ REQUIRED_FILES = [
     "scripts/build_stage67_final_recheck_stage66_log.py",
     "repro/stage67_final_recheck_stage66/summary.csv",
     "repro/stage67_final_recheck_stage66/decision.csv",
+    "docs/stage68_frontier_closure_consistency_log.md",
+    "experiments/stage68_frontier_closure_consistency_plan.md",
+    "scripts/build_stage68_frontier_closure_consistency.py",
+    "repro/stage68_frontier_closure_consistency.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -456,6 +463,10 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage67_final_recheck_stage66/summary.csv",
     "repro/stage67_final_recheck_stage66/decision.csv",
     "repro/stage67_final_recheck_stage66/stage66_post_variant_final_recheck.log",
+    "docs/stage68_frontier_closure_consistency_log.md",
+    "experiments/stage68_frontier_closure_consistency_plan.md",
+    "scripts/build_stage68_frontier_closure_consistency.py",
+    "repro/stage68_frontier_closure_consistency.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -545,6 +556,14 @@ def check_roadmap() -> List[Dict[str, str]]:
             "Restore Stage 19-62 core sections before using the roadmap as the active plan.",
         )
     ]
+
+
+def latest_control_stage_label() -> str:
+    text = ROADMAP.read_text(encoding="utf-8") if ROADMAP.exists() else ""
+    stages = sorted({int(m.group(1)) for m in re.finditer(r"^## Stage (\d+):", text, re.M)})
+    if not stages:
+        return "Stage 19-62"
+    return f"Stage 19-{stages[-1]}"
 
 
 def check_final_audit() -> List[Dict[str, str]]:
@@ -1415,6 +1434,38 @@ def check_stage67_final_recheck_stage66() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage68_frontier_closure_consistency() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE68_FRONTIER_CLOSURE_CONSISTENCY)}
+    expected = {
+        "stage68_stage42_label": "PASS",
+        "stage68_stage51_g6": "PASS",
+        "stage68_stage57_scope_label": "PASS",
+        "stage68_stage59_route": "PASS",
+        "stage68_decision": "PASS_FRONTIER_CLOSURE_CONSISTENCY",
+    }
+    problems = []
+    for gate, status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+
+    detail = (
+        "Stage68 confirms Stage42, Stage51 G6, Stage57, and Stage59 labels are consistent after Stage67"
+        if not problems and rows
+        else "; ".join(problems) or "Stage68 summary missing or empty"
+    )
+    return [
+        row(
+            "S42-STAGE68-FRONTIER-CLOSURE-CONSISTENCY",
+            "reproducibility",
+            pass_fail(not problems and bool(rows)),
+            STAGE68_FRONTIER_CLOSURE_CONSISTENCY.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage68 after changing Stage42, Stage51, Stage57, Stage59, or roadmap labels.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -1575,15 +1626,20 @@ def check_run_log() -> List[Dict[str, str]]:
     for r in rows:
         if r.get("run_id") == "stage67-final-recheck-stage66-001":
             stage67_status = r.get("status", "MISSING")
+    stage68_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage68-frontier-closure-consistency-001":
+            stage68_status = r.get("status", "MISSING")
     ok = (
         ok
         and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
         and stage67_status == "PASS_FINAL_RECHECK_STAGE66_INTEGRATION"
+        and stage68_status == "PASS_FRONTIER_CLOSURE_CONSISTENCY"
     )
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}"
     )
     return [
         row(
@@ -1605,8 +1661,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, or Stage67 control-plane artifacts.",
+            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, or Stage68 control-plane artifacts.",
         )
     ]
 
@@ -1766,6 +1822,10 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "scripts/build_stage67_final_recheck_stage66_log.py",
         "repro/stage67_final_recheck_stage66/summary.csv",
         "repro/stage67_final_recheck_stage66/decision.csv",
+        "docs/stage68_frontier_closure_consistency_log.md",
+        "experiments/stage68_frontier_closure_consistency_plan.md",
+        "scripts/build_stage68_frontier_closure_consistency.py",
+        "repro/stage68_frontier_closure_consistency.csv",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -1774,7 +1834,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, and Stage67 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, and Stage68 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -1840,6 +1900,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage65a_r4_unrolled_variant,
         check_stage66a_post_variant_final_recheck,
         check_stage67_final_recheck_stage66,
+        check_stage68_frontier_closure_consistency,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -1852,13 +1913,14 @@ def build_rows() -> List[Dict[str, str]]:
         checks.extend(fn())
 
     failures = [r["check_id"] for r in checks if r["status"] != "PASS"]
+    latest_label = latest_control_stage_label()
     checks.append(
         row(
             "S42-OVERALL",
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            "Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, and Stage67 final-recheck Stage66A integration is internally closed; stronger claims remain blocked"
+            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, and Stage68 frontier/closure consistency; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
             "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67 evidence closure.",
