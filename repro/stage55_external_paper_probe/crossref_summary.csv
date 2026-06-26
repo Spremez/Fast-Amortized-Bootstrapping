@@ -1,0 +1,2 @@
+metadata_id,status,evidence,title,authors,year,venue,doi,page,references_count,detail
+crossref_doi_metadata,PASS,repro/stage55_external_paper_probe/crossref_metadata.json,Fast Amortized Bootstrapping with Small Keys and Polynomial Noise Overhead,Antonio Guimarães; Hilder V. L. Pereira,2025,Proceedings of the 2025 ACM SIGSAC Conference on Computer and Communications Security,10.1145/3719027.3765181,2967-2981,39,"Crossref DOI metadata is available, but it is not theorem-level full text."

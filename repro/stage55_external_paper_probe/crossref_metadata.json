@@ -1,0 +1,433 @@
+{
+  "message": {
+    "DOI": "10.1145/3719027.3765181",
+    "URL": "https://doi.org/10.1145/3719027.3765181",
+    "alternative-id": [
+      "10.1145/3719027.3765181",
+      "10.1145/3719027"
+    ],
+    "assertion": [
+      {
+        "group": {
+          "label": "Publication History",
+          "name": "publication_history"
+        },
+        "label": "Published",
+        "name": "published",
+        "order": 3,
+        "value": "2025-11-22"
+      }
+    ],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0001-5110-6639",
+        "affiliation": [
+          {
+            "name": "IMDEA Software Institute, Madrid, Spain"
+          }
+        ],
+        "authenticated-orcid": false,
+        "family": "Guimarães",
+        "given": "Antonio",
+        "role": [
+          {
+            "role": "author",
+            "vocabulary": "crossref"
+          }
+        ],
+        "sequence": "first"
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-1303-3760",
+        "affiliation": [
+          {
+            "name": "Institute of Computing, University of Campinas (UNICAMP), Campinas, Brazil"
+          }
+        ],
+        "authenticated-orcid": false,
+        "family": "Pereira",
+        "given": "Hilder V. L.",
+        "role": [
+          {
+            "role": "author",
+            "vocabulary": "crossref"
+          }
+        ],
+        "sequence": "additional"
+      }
+    ],
+    "container-title": [
+      "Proceedings of the 2025 ACM SIGSAC Conference on Computer and Communications Security"
+    ],
+    "content-domain": {
+      "crossmark-restriction": true,
+      "domain": [
+        "dl.acm.org"
+      ]
+    },
+    "created": {
+      "date-parts": [
+        [
+          2025,
+          11,
+          22
+        ]
+      ],
+      "date-time": "2025-11-22T23:37:25Z",
+      "timestamp": 1763854645000
+    },
+    "deposited": {
+      "date-parts": [
+        [
+          2025,
+          12,
+          22
+        ]
+      ],
+      "date-time": "2025-12-22T22:23:42Z",
+      "timestamp": 1766442222000
+    },
+    "event": {
+      "acronym": "CCS '25",
+      "location": "Taipei Taiwan",
+      "name": "CCS '25: ACM SIGSAC Conference on Computer and Communications Security",
+      "sponsor": [
+        "SIGSAC ACM Special Interest Group on Security, Audit, and Control"
+      ]
+    },
+    "funder": [
+      {
+        "award": [
+          "2023/12755-8"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "2023/12755-8"
+            ]
+          }
+        ],
+        "name": "São Paulo Research Foundation (FAPESP)"
+      },
+      {
+        "award": [
+          "101096435"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "101096435"
+            ]
+          }
+        ],
+        "name": "Smart Networks and Services Joint Undertaking (SNS JU) under the European Union's Horizon Europe research and innovation programme"
+      },
+      {
+        "award": [
+          "3389/23"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "3389/23"
+            ]
+          }
+        ],
+        "name": "Teaching, Research and Extension Support Fund (FAEPEX) under the Incentive Program for New Professors (PIND)"
+      },
+      {
+        "award": [
+          "101001283"
+        ],
+        "award-info": [
+          {
+            "award-number": [
+              "101001283"
+            ]
+          }
+        ],
+        "name": "European Research Council (ERC) under the European Unions Horizon 2020 research and innovation programme"
+      }
+    ],
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          4,
+          7
+        ]
+      ],
+      "date-time": "2026-04-07T18:04:56Z",
+      "timestamp": 1775585096791,
+      "version": "3.50.1"
+    },
+    "is-referenced-by-count": 2,
+    "issued": {
+      "date-parts": [
+        [
+          2025,
+          11,
+          19
+        ]
+      ]
+    },
+    "link": [
+      {
+        "URL": "https://dl.acm.org/doi/pdf/10.1145/3719027.3765181",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "member": "320",
+    "original-title": [],
+    "page": "2967-2981",
+    "prefix": "10.1145",
+    "published": {
+      "date-parts": [
+        [
+          2025,
+          11,
+          19
+        ]
+      ]
+    },
+    "published-online": {
+      "date-parts": [
+        [
+          2025,
+          11,
+          22
+        ]
+      ]
+    },
+    "published-print": {
+      "date-parts": [
+        [
+          2025,
+          11,
+          19
+        ]
+      ]
+    },
+    "publisher": "ACM",
+    "publisher-location": "New York, NY, USA",
+    "reference": [
+      {
+        "DOI": "10.1007/978-3-662-53018-4_6",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_1_1"
+      },
+      {
+        "DOI": "10.1515/jmc-2015-0016",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_2_1"
+      },
+      {
+        "DOI": "10.1007/978-3-662-44371-2_17",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_3_1"
+      },
+      {
+        "DOI": "10.1007/978-981-96-0875-1_11",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_4_1"
+      },
+      {
+        "DOI": "10.1007/978-3-662-54388-7_10",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_5_1"
+      },
+      {
+        "DOI": "10.1145/3658644.3670376",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_6_1"
+      },
+      {
+        "DOI": "10.1007/978-3-319-89339-6_13",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_7_1"
+      },
+      {
+        "DOI": "10.1007/978-3-031-22966-4_7",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_8_1"
+      },
+      {
+        "DOI": "10.1007/978-3-031-09234-3_26",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_9_1"
+      },
+      {
+        "DOI": "10.1007/978-3-030-40186-3_17",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_10_1"
+      },
+      {
+        "DOI": "10.1145/2633600",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_11_1"
+      },
+      {
+        "DOI": "10.1145/2488608.2488680",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_12_1"
+      },
+      {
+        "DOI": "10.1007/978-3-030-12612-4_6",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_13_1"
+      },
+      {
+        "DOI": "10.1007/978-3-030-78372-3_18",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_14_1"
+      },
+      {
+        "DOI": "10.1145/3658644.3690341",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_15_1"
+      },
+      {
+        "DOI": "10.1007/978-3-319-53177-9_3",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_16_1"
+      },
+      {
+        "DOI": "10.1109/ACCESS.2019.2925425",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_17_1"
+      },
+      {
+        "DOI": "10.1007/978-3-319-70694-8_15",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_18_1"
+      },
+      {
+        "DOI": "10.1007/978-3-662-53887-6_1",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_19_1"
+      },
+      {
+        "DOI": "10.1007/978-3-319-70694-8_14",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_20_1"
+      },
+      {
+        "DOI": "10.1007/978-3-030-92078-4_23",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_21_1"
+      },
+      {
+        "DOI": "10.1007/978-3-031-57728-4_11",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_22_1"
+      },
+      {
+        "DOI": "10.1007/978-3-662-46800-5_24",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_23_1"
+      },
+      {
+        "DOI": "10.1007/978-3-030-92068-5_1",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_24_1"
+      },
+      {
+        "key": "e_1_3_2_1_25_1",
+        "unstructured": "Craig Gentry. 2009. A fully homomorphic encryption scheme. Ph.D. Dissertation. Stanford University. crypto.stanford.edu/craig."
+      },
+      {
+        "DOI": "10.1007/978-3-642-40041-4_5",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_26_1"
+      },
+      {
+        "DOI": "10.46586/tches.v2021.i2.229-253",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_27_1"
+      },
+      {
+        "DOI": "10.1007/978-981-99-8736-8_1",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_28_1"
+      },
+      {
+        "DOI": "10.1007/s13389-024-00359-z",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_29_1"
+      },
+      {
+        "DOI": "10.1007/978-3-319-56620-7_1",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_30_1"
+      },
+      {
+        "DOI": "10.1007/978-3-031-30620-4_8",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_31_1"
+      },
+      {
+        "DOI": "10.1007/978-3-031-30620-4_11",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_32_1"
+      },
+      {
+        "DOI": "10.1007/978-3-031-30620-4_12",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_33_1"
+      },
+      {
+        "DOI": "10.1007/978-981-99-8736-8_4",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_34_1"
+      },
+      {
+        "DOI": "10.1007/978-3-642-13190-5_1",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_35_1"
+      },
+      {
+        "DOI": "10.4230/LIPIcs.ICALP.2018.100",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_36_1"
+      },
+      {
+        "DOI": "10.1145/1060590.1060603",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_37_1"
+      },
+      {
+        "DOI": "10.1007/s10623-012-9720-4",
+        "doi-asserted-by": "publisher",
+        "key": "e_1_3_2_1_38_1"
+      },
+      {
+        "key": "e_1_3_2_1_39_1",
+        "unstructured": "Zama. 2022. TFHE-rs: A Pure Rust Implementation of the TFHE Scheme for Boolean and Integer Arithmetics Over Encrypted Data. https://github.com/zama-ai/tfhe-rs - commit b7d33e6b3f45b432af82637042214fa72bc7036c (Fri Mar 7 08:34:42 2025 0100)."
+      }
+    ],
+    "reference-count": 39,
+    "references-count": 39,
+    "relation": {},
+    "resource": {
+      "primary": {
+        "URL": "https://dl.acm.org/doi/10.1145/3719027.3765181"
+      }
+    },
+    "score": 1,
+    "short-container-title": [],
+    "short-title": [],
+    "source": "Crossref",
+    "subject": [],
+    "subtitle": [],
+    "title": [
+      "Fast Amortized Bootstrapping with Small Keys and Polynomial Noise Overhead"
+    ],
+    "type": "proceedings-article",
+    "update-policy": "https://doi.org/10.1145/crossmark-policy"
+  },
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "status": "ok"
+}

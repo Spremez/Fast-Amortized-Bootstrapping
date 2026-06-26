@@ -797,3 +797,12 @@ Repro artifacts:
 - `repro/stage54_default_final_recheck/stage51_goal_frontier.log`
 - `repro/stage54_default_final_recheck/stage52_external_unlock_readiness.log`
 - `repro/stage54_default_final_recheck/stage42_evidence_closure.log`
+
+## Stage 55 External Paper Probe
+
+- `docs/stage55_external_paper_probe_log.md`
+- `scripts/build_stage55_external_paper_probe.py`
+- `repro/stage55_external_paper_probe/summary.csv`
+- `repro/stage55_external_paper_probe/access_probe.csv`
+- `repro/stage55_external_paper_probe/crossref_summary.csv`
+- `repro/stage55_external_paper_probe/crossref_metadata.json`

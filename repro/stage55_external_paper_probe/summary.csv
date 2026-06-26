@@ -1,0 +1,6 @@
+gate,status,evidence,detail
+crossref_doi_metadata,PASS,repro/stage55_external_paper_probe/crossref_metadata.json,"Crossref DOI metadata is available, but it is not theorem-level full text."
+official_metadata_visibility,PASS,repro/stage55_external_paper_probe/access_probe.csv,FAB686_EPRINT_PAGE=BLOCKED_403; FAB686_ACM_DOI_PAGE=BLOCKED_403; FAB686_AUTHOR_PAGE=METADATA_OR_HTML_ONLY; FAB686_GITHUB=METADATA_OR_HTML_ONLY
+official_fulltext_pdf_access,BLOCKED,repro/stage55_external_paper_probe/access_probe.csv,FAB686_EPRINT_PDF=BLOCKED_403; FAB686_ACM_PDF=BLOCKED_403
+cloudflare_block_recorded,PASS,repro/stage55_external_paper_probe/access_probe.csv,FAB686_EPRINT_PDF=BLOCKED_403; FAB686_EPRINT_PAGE=BLOCKED_403; FAB686_ACM_PDF=BLOCKED_403; FAB686_ACM_DOI_PAGE=BLOCKED_403
+stage55_decision,WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW,repro/stage55_external_paper_probe/summary.csv,"A local PDF/text artifact and manual claim-to-source review are still required before theorem, algorithm, table, figure, or experiment-number claims from 2025/686 are allowed."

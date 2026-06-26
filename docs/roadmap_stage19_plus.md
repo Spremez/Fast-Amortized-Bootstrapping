@@ -1597,3 +1597,43 @@ Stage 54 passed. The default final recheck ran Stage50, Stage51, Stage52, and
 Stage42 closure, and preserved
 SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED.
 ```
+
+## Stage 55: External Paper Metadata and Full-Text Probe
+
+Goal:
+
+```text
+Strengthen the remaining 2025/686 full-text blocker evidence by recording
+official DOI/Crossref metadata, full-text route availability, Cloudflare/403
+blocking, and the exact claim policy for theorem-level review.
+```
+
+Tasks:
+
+- probe the official IACR ePrint PDF/page and ACM DOI PDF/page routes;
+- probe the author publication page and public implementation repository;
+- fetch and store Crossref DOI metadata for `10.1145/3719027.3765181`;
+- distinguish metadata availability from recognized full-text availability;
+- keep theorem, algorithm, table, figure, and experiment-number claims blocked
+  unless a recognized full-text artifact is registered and manually reviewed;
+- add Stage55 artifacts to the Stage42 closure audit so the blocker state is
+  machine-checkable.
+
+Gate:
+
+- Crossref DOI metadata must be `PASS`;
+- official full-text routes must either report `PDF_ACCESSIBLE` or a recorded
+  blocked status such as `BLOCKED_CLOUDFLARE_CHALLENGE`/`BLOCKED_403`;
+- `stage55_decision` must be either
+  `FULLTEXT_AVAILABLE_REVIEW_REQUIRED` or
+  `WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW`;
+- if no full text is available, the stronger-claim blockers remain active.
+
+Status:
+
+```text
+Stage 55 is the current execution stage. It does not change scalar SAB,
+`sab_pvw_*`, performance evidence, or the scoped engineering claim. Its output
+only improves the auditability of the external 2025/686 full-text blocker and
+the next manual-review gate.
+```

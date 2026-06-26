@@ -2,7 +2,7 @@
 """Build the Stage 42 evidence-closure audit.
 
 This script checks whether the current scoped PVW/MAT-SAB evidence chain is
-internally consistent through Stage 54. It does not run benchmarks or upgrade
+internally consistent through Stage 55. It does not run benchmarks or upgrade
 claims; it verifies that the committed artifacts still support the recorded
 scope.
 """
@@ -41,6 +41,7 @@ STAGE51_GOAL_FRONTIER = ROOT / "repro" / "stage51_goal_completion_frontier.csv"
 STAGE52_UNLOCK_READINESS = ROOT / "repro" / "stage52_external_unlock_readiness.csv"
 STAGE53_FINAL_RECHECK = ROOT / "repro" / "stage53_final_recheck_stage50_52" / "summary.csv"
 STAGE54_DEFAULT_FINAL_RECHECK = ROOT / "repro" / "stage54_default_final_recheck" / "summary.csv"
+STAGE55_EXTERNAL_PAPER_PROBE = ROOT / "repro" / "stage55_external_paper_probe" / "summary.csv"
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -94,6 +95,9 @@ EXPECTED_REMAINING_BLOCKERS = {
             "final_A8b=MISSING_OPTIONAL_EXTERNAL_EVIDENCE",
             "cb7=BLOCKED_EXTERNAL_FULLTEXT",
             "stage44_fulltext=BLOCKED",
+            "stage55_fulltext=BLOCKED",
+            "stage55_metadata=PASS",
+            "stage55_decision=WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW",
             "related_fulltext=BLOCKED_FULLTEXT",
             "external_fulltext=MISSING",
         ],
@@ -153,6 +157,12 @@ REQUIRED_FILES = [
     "repro/stage53_final_recheck_stage50_52/summary.csv",
     "docs/stage54_default_final_recheck_log.md",
     "repro/stage54_default_final_recheck/summary.csv",
+    "docs/stage55_external_paper_probe_log.md",
+    "scripts/build_stage55_external_paper_probe.py",
+    "repro/stage55_external_paper_probe/summary.csv",
+    "repro/stage55_external_paper_probe/access_probe.csv",
+    "repro/stage55_external_paper_probe/crossref_summary.csv",
+    "repro/stage55_external_paper_probe/crossref_metadata.json",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -257,6 +267,12 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage54_default_final_recheck/stage51_goal_frontier.log",
     "repro/stage54_default_final_recheck/stage52_external_unlock_readiness.log",
     "repro/stage54_default_final_recheck/stage42_evidence_closure.log",
+    "docs/stage55_external_paper_probe_log.md",
+    "scripts/build_stage55_external_paper_probe.py",
+    "repro/stage55_external_paper_probe/summary.csv",
+    "repro/stage55_external_paper_probe/access_probe.csv",
+    "repro/stage55_external_paper_probe/crossref_summary.csv",
+    "repro/stage55_external_paper_probe/crossref_metadata.json",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -332,7 +348,7 @@ def write_closure_manifest() -> None:
 def check_roadmap() -> List[Dict[str, str]]:
     text = ROADMAP.read_text(encoding="utf-8") if ROADMAP.exists() else ""
     stages = sorted({int(m.group(1)) for m in re.finditer(r"^## Stage (\d+):", text, re.M)})
-    expected = list(range(19, 55))
+    expected = list(range(19, 56))
     return [
         row(
             "S42-ROADMAP-STAGES",
@@ -340,7 +356,7 @@ def check_roadmap() -> List[Dict[str, str]]:
             pass_fail(stages == expected),
             ROADMAP.relative_to(ROOT).as_posix(),
             f"observed={stages}; expected={expected}",
-            "Restore one Stage 19-54 section per stage before using the roadmap as the active plan.",
+            "Restore one Stage 19-55 section per stage before using the roadmap as the active plan.",
         )
     ]
 
@@ -752,6 +768,41 @@ def check_stage54_default_final_recheck() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage55_external_paper_probe() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE55_EXTERNAL_PAPER_PROBE)}
+    problems = []
+    crossref_status = rows.get("crossref_doi_metadata", {}).get("status", "MISSING")
+    fulltext_status = rows.get("official_fulltext_pdf_access", {}).get("status", "MISSING")
+    decision_status = rows.get("stage55_decision", {}).get("status", "MISSING")
+
+    if crossref_status != "PASS":
+        problems.append(f"crossref_doi_metadata:status={crossref_status}")
+    if fulltext_status not in {"PASS", "BLOCKED"}:
+        problems.append(f"official_fulltext_pdf_access:status={fulltext_status}")
+    if decision_status not in {
+        "FULLTEXT_AVAILABLE_REVIEW_REQUIRED",
+        "WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW",
+    }:
+        problems.append(f"stage55_decision:status={decision_status}")
+    if decision_status == "FULLTEXT_AVAILABLE_REVIEW_REQUIRED" and fulltext_status != "PASS":
+        problems.append("decision/fulltext mismatch")
+    if decision_status == "WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW" and fulltext_status != "BLOCKED":
+        problems.append("blocked full-text route should keep wait decision")
+
+    return [
+        row(
+            "S42-STAGE55-EXTERNAL-PAPER-PROBE",
+            "external_evidence",
+            pass_fail(not problems and bool(rows)),
+            STAGE55_EXTERNAL_PAPER_PROBE.relative_to(ROOT).as_posix(),
+            "Stage55 records Crossref metadata while preserving the 2025/686 full-text review blocker"
+            if not problems and rows
+            else "; ".join(problems) or "Stage55 paper probe summary missing or empty",
+            "Regenerate Stage55 and preserve theorem-level claim blockers before relying on 2025/686 source state.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -898,14 +949,14 @@ def check_run_log() -> List[Dict[str, str]]:
                 n = int(stage.split()[1])
             except (IndexError, ValueError):
                 continue
-            if 19 <= n <= 54:
+            if 19 <= n <= 55:
                 stages[n] = stages.get(n, 0) + 1
         if r.get("run_id") == "stage41-external-unlock-packet-001":
             stage41_status = r.get("status", "MISSING")
-    missing = [n for n in range(19, 55) if n not in stages]
+    missing = [n for n in range(19, 56) if n not in stages]
     ok = not missing and stage41_status == "WAIT_EXTERNAL_EVIDENCE"
     detail = (
-        f"stages 19-54 registered; stage41 status={stage41_status}"
+        f"stages 19-55 registered; stage41 status={stage41_status}"
         if ok
         else f"missing_stages={missing}; stage41 status={stage41_status}"
     )
@@ -929,8 +980,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-54 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-54 control-plane artifacts.",
+            "all required Stage 41-55 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-55 control-plane artifacts.",
         )
     ]
 
@@ -1014,6 +1065,12 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/stage54_default_final_recheck/stage51_goal_frontier.log",
         "repro/stage54_default_final_recheck/stage52_external_unlock_readiness.log",
         "repro/stage54_default_final_recheck/stage42_evidence_closure.log",
+        "docs/stage55_external_paper_probe_log.md",
+        "scripts/build_stage55_external_paper_probe.py",
+        "repro/stage55_external_paper_probe/summary.csv",
+        "repro/stage55_external_paper_probe/access_probe.csv",
+        "repro/stage55_external_paper_probe/crossref_summary.csv",
+        "repro/stage55_external_paper_probe/crossref_metadata.json",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -1022,7 +1079,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, and Stage 54 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, and Stage 55 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -1076,6 +1133,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage52_external_unlock_readiness,
         check_stage53_final_recheck_integration,
         check_stage54_default_final_recheck,
+        check_stage55_external_paper_probe,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -1094,10 +1152,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            "Stage 19-54 scoped evidence chain is internally closed; stronger claims remain blocked"
+            "Stage 19-55 scoped evidence chain is internally closed; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-54 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-55 evidence closure.",
         )
     )
     return checks
@@ -1121,7 +1179,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "",
         "## Purpose",
         "",
-        "Stage 42 machine-checks whether the Stage 19-54 PVW/MAT-SAB evidence",
+        "Stage 42 machine-checks whether the Stage 19-55 PVW/MAT-SAB evidence",
         "chain remains internally consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",
         "",

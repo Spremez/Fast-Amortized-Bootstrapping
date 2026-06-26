@@ -1,0 +1,7 @@
+source_id,role,url,expected_kind,http_status,content_type,sample_bytes,effective_url,status,detail
+FAB686_EPRINT_PDF,base_fulltext_candidate,https://eprint.iacr.org/2025/686.pdf,pdf,403,,0,,BLOCKED_403,IACR ePrint PDF route for theorem-level 2025/686 review. error=HTTP Error 403: Forbidden
+FAB686_EPRINT_PAGE,base_metadata_candidate,https://eprint.iacr.org/2025/686,html,403,,0,,BLOCKED_403,IACR ePrint landing page route. error=HTTP Error 403: Forbidden
+FAB686_ACM_PDF,base_fulltext_candidate,https://dl.acm.org/doi/pdf/10.1145/3719027.3765181,pdf,403,,0,,BLOCKED_403,ACM DOI PDF route for the published CCS 2025 version. error=HTTP Error 403: Forbidden
+FAB686_ACM_DOI_PAGE,base_metadata_candidate,https://dl.acm.org/doi/10.1145/3719027.3765181,html,403,,0,,BLOCKED_403,ACM DOI landing page route. error=HTTP Error 403: Forbidden
+FAB686_AUTHOR_PAGE,base_author_metadata,https://antonioguimaraes.org/publication/guimaraes-fast-2025/,html,200,text/html; charset=utf-8,4096,https://antonioguimaraes.org/publication/guimaraes-fast-2025/,METADATA_OR_HTML_ONLY,Author publication page containing base-paper metadata and links.
+FAB686_GITHUB,base_code_metadata,https://github.com/antoniocgj/Fast-Amortized-Bootstrapping,html,200,text/html; charset=utf-8,4096,https://github.com/antoniocgj/Fast-Amortized-Bootstrapping,METADATA_OR_HTML_ONLY,Public implementation repository for the 2025/686 code base.

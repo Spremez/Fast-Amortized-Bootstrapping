@@ -175,5 +175,6 @@
 - [x] Integrate Stage 44 external unlock re-probe into the final recheck runner.
 - [x] Execute Stage 36 added-parameter 10-run/20-seed campaign for added binary r=2/r=4 parameters.
 - [x] Execute Stage 36 target-noise 50-seed campaign for target binary r=2/r=4.
+- [x] Add and run Stage 55 external paper probe with Crossref DOI metadata and official full-text route blocking evidence.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.
