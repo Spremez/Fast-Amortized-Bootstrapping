@@ -111,9 +111,13 @@ def build_rows() -> List[Dict[str, str]]:
             "next local refresh",
             "current-head correctness/performance continuity",
             "READY_LOCAL_REFRESH" if local_ready else "WAIT_LOCAL_EVIDENCE",
-            "repro/stage33_current_smoke/summary.csv; repro/stage49_wsl_repeated_full_sab/summary.csv",
+            (
+                "repro/stage33_current_smoke/summary.csv; "
+                "repro/stage49_wsl_repeated_full_sab/summary.csv; "
+                "repro/stage64_post_variant_refresh/summary.csv"
+            ),
             "Current-head smoke/repeated full-SAB continuity must pass after code or backend changes.",
-            "Run Stage33/47/48/49 before claiming continuity for a changed implementation.",
+            "Stage64A passed after Stage65A; rerun Stage64A before claiming continuity for any future implementation change.",
             "Can refresh continuity wording; does not replace Stage36 high-stat evidence.",
         ),
         route_row(

@@ -1,0 +1,27 @@
+# Stage 64 Post-Variant Refresh Log
+
+Date: 2026-06-26
+
+## Purpose
+
+Stage64 refreshes current-head evidence after the Stage65A code change.
+It checks that the default promoted active-buffer PVW/MAT-SAB path and
+the scalar SAB baseline remain valid. It does not promote Stage65A.
+
+## Gates
+
+| gate | status | evidence | detail |
+|---|---|---|---|
+| stage64_current_smoke | PASS | repro/stage64_post_variant_refresh/current_smoke/summary.csv | scalar binary, PVW target, and scalar ternary gates pass |
+| stage64_full_sab_r2 | PASS | repro/stage64_post_variant_refresh/full_sab_r2/summary.csv | runs=3; pvw_mean_us=14962404.000; scalar_mean_us=18981807.667; speedup_mean=1.269; speedup_min=1.247; speedup_max=1.291; speedup_stddev=0.022 |
+| stage64_full_sab_r4 | PASS | repro/stage64_post_variant_refresh/full_sab_r4/summary.csv | runs=3; pvw_mean_us=28491073.333; scalar_mean_us=41170476.333; speedup_mean=1.445; speedup_min=1.352; speedup_max=1.624; speedup_stddev=0.155 |
+| stage64_final_noise | PASS | repro/stage64_post_variant_refresh/final_noise/aggregate.csv | r=2/r=4 final-output noise smoke passes with zero failures |
+| stage64_stage50_matrix | PASS | repro/stage50_performance_evidence_matrix.csv | Stage50 performance evidence matrix still passes |
+| stage64_decision | PASS_POST_VARIANT_REFRESH | repro/stage64_post_variant_refresh/summary.csv | Stage64 post-variant refresh passes; default promoted path remains valid |
+
+## Interpretation
+
+A passing Stage64 refresh means the repository head remains compatible
+with the scoped engineering PVW/MAT-SAB evidence after a local code
+variant. It is continuity evidence, not a new high-stat performance
+claim and not a novelty claim.

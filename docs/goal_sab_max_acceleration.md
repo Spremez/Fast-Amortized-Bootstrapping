@@ -70,6 +70,7 @@ evidence.
 | Stage 42 closure verifier | read-only audit | n/a | passed from clean input | no-regenerate verifier confirmed final audit, Stage 41 readiness, Stage 42 closure, Stage 43 smoke, final recheck closure, run-log rows, and manifest registration |
 | Stage 43 post-closure current smoke | `spqlios_avx512` | n/a | passed | current-head scalar binary full run, explicit PVW target gate, and scalar ternary build all pass; smoke only |
 | Stage 44 external unlock re-probe | network/native gate | n/a | waiting external unlocks | citation/full-text probe and native perf probe rerun; direct full text and hardware-counter evidence remain unavailable; final-recheck integration passes without upgrading claims |
+| Stage 64A post-variant refresh | `spqlios_avx512` | 2/4 | current-head continuity | after Stage65A, scalar/PVW smoke passed; r=2/r=4 repeated full-SAB mean `1.269x`/`1.445x`; final-output noise smoke zero failures |
 | Stage 65A r4 row-unrolled AVX512 | `spqlios_avx512` | 4 | negative ablation | correctness passed, but MAT/full-SAB ratios versus specialized baseline are `0.930815x`/`0.986900x`/`0.803554x`; not promoted |
 
 Current conclusion:
@@ -207,6 +208,10 @@ unrolling and row-pointer hoisting improves MAT external-product behavior.
 The variant preserved correctness but was slower at kernel and complete-SAB
 levels, so it is recorded as a negative ablation and the promoted explicit path
 remains Stage20 active-buffer plus the existing specialized MAT-AVX512 kernel.
+Stage64A then refreshed the default promoted path after that code change:
+current smoke, r=2/r=4 repeated full-SAB A/B, final-output noise smoke, and
+Stage50 matrix all pass. This is continuity evidence and does not promote the
+Stage65A variant.
 ```
 
 ## Invariants
@@ -302,7 +307,7 @@ Stage 60: final-recheck integration for Stage59. [passed]
 Stage 61: native perf unlock probe. [blocked on current WSL2 because perf is missing]
 Stage 62: 2025/686 full-text unlock probe. [blocked by direct-route 403/Cloudflare and no local full text]
 Stage 63: novelty review. [externally blocked until source-anchor review]
-Stage 64: implementation-refresh campaign. [local after any promoted code variant]
+Stage 64: implementation-refresh campaign. [completed after Stage65A; current-head continuity passed]
 Stage 65: optional variant loop. [started; Stage65A r4 row-unrolled AVX512 negative/not promoted]
 Stage 66: release/paper package. [waiting for external unlocks or narrowed scope]
 ```

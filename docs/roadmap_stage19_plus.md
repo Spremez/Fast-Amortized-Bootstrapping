@@ -1897,6 +1897,39 @@ direct routes are blocked by Cloudflare/403 challenge, and no local
 WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW.
 ```
 
+## Stage 64A: Post-Variant Implementation Refresh
+
+Goal:
+
+```text
+After the Stage65A code change, refresh current-head evidence for the default
+promoted active-buffer PVW/MAT-SAB path and scalar SAB baseline.
+```
+
+Tasks:
+
+- run scalar binary, PVW target, and scalar ternary current smoke;
+- run r=2/r=4 complete-SAB repeated A/B with three process runs per r;
+- run r=2/r=4 final-output noise smoke;
+- confirm Stage50 performance evidence matrix still passes;
+- keep Stage65A negative and not promoted.
+
+Gate:
+
+- scalar binary smoke, PVW target gate, and scalar ternary build must pass;
+- r=2/r=4 repeated full-SAB runs must pass correctness and have speedup_min > 1;
+- r=2/r=4 final-output noise smoke must have zero PVW/scalar/pair failures;
+- Stage50 matrix must pass; this remains continuity evidence, not a new
+  high-stat claim.
+
+Status:
+
+```text
+Stage64A passed after the Stage65A code change. r=2 complete-SAB speedup mean
+was 1.269x with min 1.247x. r=4 mean was 1.445x with min 1.352x. Final-output
+noise smoke passed for r=2/r=4 with zero failures, and Stage50 remained PASS.
+```
+
 ## Stage 65A: R4 Row-Unrolled AVX512 Optional Variant
 
 Goal:

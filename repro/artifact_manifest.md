@@ -892,6 +892,32 @@ Repro artifacts:
 - `repro/stage62_fulltext_unlock_probe/eprint_pdf_head.err`
 - `repro/external_evidence_intake/summary.csv`
 
+## Stage 64A Post-Variant Refresh
+
+- `docs/stage64_post_variant_refresh_log.md`
+- `scripts/run_stage64_post_variant_refresh.sh`
+- `scripts/build_stage64_post_variant_refresh_log.py`
+- `repro/stage64_post_variant_refresh/summary.csv`
+- `repro/stage64_post_variant_refresh/run.log`
+- `repro/stage64_post_variant_refresh/current_smoke/summary.csv`
+- `repro/stage64_post_variant_refresh/current_smoke/scalar_binary_SET_2_3_2048/build.log`
+- `repro/stage64_post_variant_refresh/current_smoke/scalar_binary_SET_2_3_2048/run.log`
+- `repro/stage64_post_variant_refresh/current_smoke/pvw_target_SET_2_3_2048/build.log`
+- `repro/stage64_post_variant_refresh/current_smoke/pvw_target_SET_2_3_2048/run.log`
+- `repro/stage64_post_variant_refresh/current_smoke/scalar_ternary_SET_2_3_2048/build.log`
+- `repro/stage64_post_variant_refresh/full_sab_r2/summary.csv`
+- `repro/stage64_post_variant_refresh/full_sab_r2/run_0.log`
+- `repro/stage64_post_variant_refresh/full_sab_r2/run_1.log`
+- `repro/stage64_post_variant_refresh/full_sab_r2/run_2.log`
+- `repro/stage64_post_variant_refresh/full_sab_r4/summary.csv`
+- `repro/stage64_post_variant_refresh/full_sab_r4/run_0.log`
+- `repro/stage64_post_variant_refresh/full_sab_r4/run_1.log`
+- `repro/stage64_post_variant_refresh/full_sab_r4/run_2.log`
+- `repro/stage64_post_variant_refresh/final_noise/summary.csv`
+- `repro/stage64_post_variant_refresh/final_noise/aggregate.csv`
+- `repro/stage64_post_variant_refresh/final_noise/r2/seed_6864025.log`
+- `repro/stage64_post_variant_refresh/final_noise/r4/seed_6864025.log`
+
 ## Stage 65A R4 Unrolled AVX512 Variant
 
 - `docs/stage65_r4_unrolled_avx512_log.md`

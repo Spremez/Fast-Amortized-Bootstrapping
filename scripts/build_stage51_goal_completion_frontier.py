@@ -88,8 +88,14 @@ def build_rows() -> List[Dict[str, str]]:
     stage50_ok = bool(stage50_rows) and all(row.get("status") == "PASS" for row in stage50_rows)
     stage42_overall = stage42.get("S42-OVERALL", {}).get("status", "MISSING")
     current_stage_range = latest_stage_label()
+    stage64a_closed = stage42.get("S42-STAGE64A-POST-VARIANT-REFRESH", {}).get("status") == "PASS"
     stage65a_closed = stage42.get("S42-STAGE65A-R4-UNROLLED", {}).get("status") == "PASS"
-    optional_stage_note = " plus Stage65A optional negative variant" if stage65a_closed else ""
+    optional_notes = []
+    if stage64a_closed:
+        optional_notes.append("Stage64A post-variant refresh")
+    if stage65a_closed:
+        optional_notes.append("Stage65A optional negative variant")
+    optional_stage_note = " plus " + " and ".join(optional_notes) if optional_notes else ""
     spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
     stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")
     stage42_matches_current_range = (

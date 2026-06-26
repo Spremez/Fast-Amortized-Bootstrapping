@@ -37,6 +37,7 @@ STAGE59_COMPLETION_ROUTE = ROOT / "repro" / "stage59_completion_route_readiness.
 STAGE60_FINAL_RECHECK_STAGE59 = ROOT / "repro" / "stage60_final_recheck_stage59" / "summary.csv"
 STAGE61_NATIVE_PERF_UNLOCK = ROOT / "repro" / "stage61_native_perf_unlock_probe" / "summary.csv"
 STAGE62_FULLTEXT_UNLOCK = ROOT / "repro" / "stage62_fulltext_unlock_probe" / "unlock_summary.csv"
+STAGE64A_POST_VARIANT_REFRESH = ROOT / "repro" / "stage64_post_variant_refresh" / "summary.csv"
 STAGE65A_R4_UNROLLED = ROOT / "repro" / "stage65_r4_unrolled_avx512" / "summary.csv"
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
@@ -140,6 +141,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage60 = {row.get("step"): row for row in read_csv(STAGE60_FINAL_RECHECK_STAGE59)}
     stage61 = {row.get("probe"): row for row in read_csv(STAGE61_NATIVE_PERF_UNLOCK)}
     stage62 = {row.get("gate"): row for row in read_csv(STAGE62_FULLTEXT_UNLOCK)}
+    stage64a = {row.get("gate"): row for row in read_csv(STAGE64A_POST_VARIANT_REFRESH)}
     stage65a = {row.get("gate"): row for row in read_csv(STAGE65A_R4_UNROLLED)}
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
@@ -514,6 +516,22 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage42_stage62_ok = (
         stage42.get("S42-STAGE62-FULLTEXT-UNLOCK", {}).get("status") == "PASS"
     )
+    stage64a_mismatches = []
+    expected_stage64a = {
+        "stage64_current_smoke": "PASS",
+        "stage64_full_sab_r2": "PASS",
+        "stage64_full_sab_r4": "PASS",
+        "stage64_final_noise": "PASS",
+        "stage64_stage50_matrix": "PASS",
+        "stage64_decision": "PASS_POST_VARIANT_REFRESH",
+    }
+    for gate, expected in expected_stage64a.items():
+        got = stage64a.get(gate, {}).get("status", "MISSING")
+        if got != expected:
+            stage64a_mismatches.append(f"{gate}:status={got}")
+    stage42_stage64a_ok = (
+        stage42.get("S42-STAGE64A-POST-VARIANT-REFRESH", {}).get("status") == "PASS"
+    )
     stage65a_mismatches = []
     expected_stage65a = {
         "stage65_correctness": "PASS",
@@ -583,6 +601,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage60-final-recheck-stage59-001",
         "stage61-native-perf-unlock-probe-001",
         "stage62-fulltext-unlock-probe-001",
+        "stage64-post-variant-refresh-001",
         "stage65a-r4-unrolled-avx512-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
@@ -692,6 +711,14 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "repro/stage62_fulltext_unlock_probe/acm_pdf_head.err",
         "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.log",
         "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.err",
+        "docs/stage64_post_variant_refresh_log.md",
+        "scripts/run_stage64_post_variant_refresh.sh",
+        "scripts/build_stage64_post_variant_refresh_log.py",
+        "repro/stage64_post_variant_refresh/summary.csv",
+        "repro/stage64_post_variant_refresh/current_smoke/summary.csv",
+        "repro/stage64_post_variant_refresh/full_sab_r2/summary.csv",
+        "repro/stage64_post_variant_refresh/full_sab_r4/summary.csv",
+        "repro/stage64_post_variant_refresh/final_noise/aggregate.csv",
         "docs/stage65_r4_unrolled_avx512_log.md",
         "experiments/stage65_r4_unrolled_avx512_plan.md",
         "algorithm_variants/pvw_sab_r4_unrolled_avx512.md",
@@ -934,6 +961,15 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             or f"S42-STAGE62-FULLTEXT-UNLOCK:{stage42.get('S42-STAGE62-FULLTEXT-UNLOCK', {}).get('status', 'MISSING')}!=PASS",
         },
         {
+            "check": "stage64a_post_variant_refresh",
+            "status": "PASS" if not stage64a_mismatches and stage42_stage64a_ok else "FAIL",
+            "evidence": "repro/stage64_post_variant_refresh/summary.csv",
+            "detail": "Stage64A post-variant refresh passes for current smoke, repeated full-SAB, noise, and Stage50"
+            if not stage64a_mismatches and stage42_stage64a_ok
+            else "; ".join(stage64a_mismatches)
+            or f"S42-STAGE64A-POST-VARIANT-REFRESH:{stage42.get('S42-STAGE64A-POST-VARIANT-REFRESH', {}).get('status', 'MISSING')}!=PASS",
+        },
+        {
             "check": "stage65a_r4_unrolled_variant",
             "status": "PASS" if not stage65a_mismatches and stage42_stage65a_ok else "FAIL",
             "evidence": "repro/stage65_r4_unrolled_avx512/summary.csv",
@@ -970,7 +1006,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage65A closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -978,7 +1014,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, and Stage65A r4 unrolled variant are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, and Stage65A r4 unrolled variant are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },
