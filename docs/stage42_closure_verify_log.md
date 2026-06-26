@@ -11,7 +11,7 @@ regenerating the Stage 42 audit or manifest.
 
 | check | status | evidence | detail |
 |---|---|---|---|
-| verification_input_commit | e36e26c | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
+| verification_input_commit | dc96bc2 | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
 | worktree_clean_before_outputs | PASS | git status --short --untracked-files=all | tracked and untracked worktree was clean before verifier outputs. |
 | final_audit_A9 | PASS | repro/final_goal_completion_audit.csv | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED |
 | stage41_readiness | PASS | repro/stage41_external_unlock_packet.csv | all readiness rows remain waiting for external evidence |
@@ -40,11 +40,12 @@ regenerating the Stage 42 audit or manifest.
 | stage64a_post_variant_refresh | PASS | repro/stage64_post_variant_refresh/summary.csv | Stage64A post-variant refresh passes for current smoke, repeated full-SAB, noise, and Stage50 |
 | stage65a_r4_unrolled_variant | PASS | repro/stage65_r4_unrolled_avx512/summary.csv | Stage65A r4 row-unrolled AVX512 variant is recorded as negative/not promoted |
 | stage66a_post_variant_final_recheck | PASS | repro/stage66_post_variant_final_recheck/summary.csv | Stage66A post-variant final-recheck control plane passes and closure audit records it |
+| stage67_final_recheck_stage66 | PASS | repro/stage67_final_recheck_stage66/summary.csv; repro/stage67_final_recheck_stage66/decision.csv | Stage67 final recheck runs Stage66A and closure audit records the post-summary Stage42 rebuild |
 | stage44_recheck_integration | PASS | repro/final_goal_recheck_stage44_reprobe/summary.csv | final recheck can refresh Stage44, final audit, and Stage42 closure |
 | default_recheck_closure | PASS | repro/final_goal_recheck/summary.csv | default final recheck includes stage42_evidence_closure=PASS |
 | closure_only_recheck | PASS | repro/final_goal_recheck_stage42_closure/summary.csv | closure-only final recheck includes stage42_evidence_closure=PASS |
-| stage42_run_log_rows | PASS | repro/run_log.csv | all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A closure run rows are present |
-| artifact_manifest_mentions | PASS | repro/artifact_manifest.md | Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, and Stage66A post-variant final recheck are registered |
+| stage42_run_log_rows | PASS | repro/run_log.csv | all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67 closure run rows are present |
+| artifact_manifest_mentions | PASS | repro/artifact_manifest.md | Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, and Stage67 final-recheck Stage66A integration are registered |
 | stage42_verify_decision | PASS_STAGE42_VERIFY_STRONGER_CLAIMS_BLOCKED | repro/stage42_closure_verify/summary.csv | Stage42 closure package is internally consistent; stronger claims remain blocked. |
 
 ## Decision
