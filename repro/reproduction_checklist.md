@@ -215,6 +215,7 @@
 - [x] Run Stage94 local frontier audit; no unblocked local hot-path candidate remains under current evidence and H14-C1 stays the preferred explicit r=6 path.
 - [x] Run Stage95 public source reprobe; public metadata/code routes are visible but direct full-text routes still do not provide a reviewed local artifact.
 - [x] Run Stage96 upstream delta audit; `origin/main` is the current merge-base, local HEAD is ahead-only, local deltas are classified, and tracked PVW/MAT-SAB flags remain default-false.
+- [x] Run Stage97 source delta guard; source deltas are classified, scalar/default SAB files remain symbol-isolated from PVW/MAT-SAB, tracked experiment flags remain default-false and gated, and Stage33/Stage89 scalar/default smoke evidence remains passing.
 - [ ] Run Stage85 repeated complete-SAB/noise/resource promotion gates only if a future preflight is full-SAB positive.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

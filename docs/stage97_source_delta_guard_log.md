@@ -1,0 +1,45 @@
+# Stage97 Source Delta Guard Log
+
+Date: 2026-06-26
+
+## Decision
+
+`PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED`
+
+Source-delta, symbol, flag, and smoke-evidence guards preserve scalar/default separation under the current local PVW/MAT-SAB evidence chain.
+
+Stage97 is a source-isolation and reproducibility guard. It does not
+implement a new SAB variant, run a new benchmark, or upgrade any
+theorem-level, novelty, speedup, or hardware-counter claim.
+
+## Gates
+
+| gate | status | evidence | detail | next action |
+|---|---|---|---|---|
+| stage97_stage96_precondition | PASS | repro/stage96_upstream_delta_audit/summary.csv | stage96_decision=PASS_STAGE96_UPSTREAM_DELTA_AUDIT_LOCAL_PROVENANCE_RECORDED | Refresh Stage96 before interpreting source isolation evidence. |
+| stage97_source_delta_inventory | PASS_SOURCE_DELTA_CLASSIFIED | repro/stage97_source_delta_guard/source_delta.csv | changed_source_files=26; areas=fft_backend,other_source,pvw_mat_kernel,pvw_sab_path,scalar_sab_api,scalar_sab_impl,shared_mosfhet_backend,top_level_harness; pvw_or_mat_files=5; scalar_guarded_files=4 | Inspect source_delta.csv whenever source or backend files change. |
+| stage97_scalar_symbol_guard | PASS_SCALAR_SYMBOLS_ISOLATED | repro/stage97_source_delta_guard/symbol_guard.csv | scalar SAB files contain no PVW/MAT-SAB forbidden symbols | Do not continue optimization until scalar/default route separation is restored. |
+| stage97_shared_backend_symbol_guard | PASS_SHARED_BACKEND_SYMBOLS_ISOLATED | repro/stage97_source_delta_guard/symbol_guard.csv | selected shared backend files contain no sab_pvw symbols | Audit shared backend changes and rerun scalar/default smoke. |
+| stage97_build_flag_guard | PASS_BUILD_FLAGS_DEFAULT_FALSE_AND_GATED | repro/stage97_source_delta_guard/build_flag_guard.csv | all tracked flags are default-false and PVW/MAT sources are gated | Rerun scalar/PVW correctness, performance, noise, and resource gates if any default changes. |
+| stage97_smoke_evidence_guard | PASS_SCALAR_SMOKE_EVIDENCE_PRESENT | repro/stage97_source_delta_guard/smoke_evidence.csv | Stage33 and Stage89 scalar binary/ternary smoke rows are present and passing | Rerun current smoke before claiming source-delta continuity. |
+| stage97_claim_guard | PASS_SOURCE_GUARD_ONLY_NO_SPEEDUP_CLAIM | docs/stage97_source_delta_guard_log.md | Stage97 records source isolation and continuity evidence only; it is not a performance, theorem, novelty, or hardware-counter claim. | Keep Stage97 out of speedup tables except as a guardrail/reproducibility row. |
+| stage97_decision | PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED | repro/stage97_source_delta_guard/summary.csv | Source-delta, symbol, flag, and smoke-evidence guards preserve scalar/default separation under the current local PVW/MAT-SAB evidence chain. | Use Stage97 as the pre-flight guard for subsequent local optimization stages. |
+
+## Source Delta By Area
+
+| area | changed source files |
+|---|---:|
+| fft_backend | 4 |
+| other_source | 3 |
+| pvw_mat_kernel | 3 |
+| pvw_sab_path | 2 |
+| scalar_sab_api | 2 |
+| scalar_sab_impl | 2 |
+| shared_mosfhet_backend | 9 |
+| top_level_harness | 1 |
+
+## Guard Failures
+
+- symbol guard: none
+- build flag guard: none
+- smoke evidence guard: none

@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-96`. This label tracks the
+Current control-plane closure label: `Stage 19-97`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -106,6 +106,7 @@ evidence.
 | Stage 94 local frontier audit | post-Stage93 local routing | n/a | no new hot-path code justified | H14-C1 remains the preferred explicit r=6 local engineering path; H14-C3 half-sub body ceiling is `1.071890`; H13 tile is full-SAB neutral/negative; post-processing tail remains small; sparse selector, AVX512 layout, and non-binary branches remain rejected/deferred/blocked; decision `PASS_STAGE94_LOCAL_FRONTIER_AUDIT_NO_NEW_HOTPATH` |
 | Stage 95 public source reprobe | current public-source refresh | n/a | metadata/code visible, full text still blocked | author page, author BibTeX, DOI metadata, and GitHub code route remain visible; ePrint PDF and ACM PDF routes return `403`, author guessed PDF returns `404`; decision `PASS_STAGE95_PUBLIC_SOURCE_REPROBE_STRONGER_CLAIMS_BLOCKED` |
 | Stage 96 upstream delta audit | public code provenance | n/a | local delta boundary recorded | `origin/main=d251d06` is the merge-base of `HEAD=986f42f`, local branch is ahead `255` and behind `0`; 1681 changed files are classified, including 5 PVW/MAT-SAB source files; tracked PVW/MAT-SAB flags remain default-false; decision `PASS_STAGE96_UPSTREAM_DELTA_AUDIT_LOCAL_PROVENANCE_RECORDED` |
+| Stage 97 source delta guard | source isolation guard | n/a | scalar/default separation recorded | 26 source/hot-path files are classified; 4 scalar SAB files contain no forbidden PVW/MAT-SAB tokens; selected shared backend files contain no `sab_pvw` tokens; tracked PVW/MAT-SAB/AVX512/profile/microbench flags remain default-false and PVW/MAT sources remain gated; Stage33/Stage89 scalar binary/ternary smoke evidence remains passing; decision `PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED` |
 
 Current conclusion:
 

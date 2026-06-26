@@ -208,6 +208,10 @@ def build_rows() -> List[Dict[str, str]]:
         stage42.get("S42-STAGE96-UPSTREAM-DELTA-AUDIT", {}).get("status")
         == "PASS"
     )
+    stage97_closed = (
+        stage42.get("S42-STAGE97-SOURCE-DELTA-GUARD", {}).get("status")
+        == "PASS"
+    )
     optional_notes = []
     if stage64a_closed:
         optional_notes.append("Stage64A post-variant refresh")
@@ -273,6 +277,8 @@ def build_rows() -> List[Dict[str, str]]:
         optional_notes.append("Stage95 public source reprobe")
     if stage96_closed:
         optional_notes.append("Stage96 upstream delta audit")
+    if stage97_closed:
+        optional_notes.append("Stage97 source delta guard")
     optional_stage_note = " plus " + " and ".join(optional_notes) if optional_notes else ""
     spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
     stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")

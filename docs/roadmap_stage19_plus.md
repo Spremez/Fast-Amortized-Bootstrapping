@@ -3210,3 +3210,53 @@ evidence files. All tracked PVW/MAT-SAB experiment flags remain default-false.
 This supports reproducibility and code provenance only; it does not upgrade
 theorem-level 2025/686, novelty, or MAT-AVX512 hardware-counter claims.
 ```
+
+## Stage 97: Source Delta Guard
+
+Goal:
+
+```text
+Turn the Stage96 upstream/local source-delta boundary into a reusable
+pre-flight guard for future PVW/MAT-SAB changes, proving that scalar/default
+SAB separation, experimental build flags, and current smoke evidence remain
+machine-checkable.
+```
+
+Tasks:
+
+- inventory source and hot-path deltas under `main.c`, `include/`, and `src/`
+  relative to `origin/main`;
+- scan scalar SAB files for forbidden PVW/MAT-SAB symbols;
+- scan selected shared MOSFHET backend files for `sab_pvw` symbols;
+- verify all tracked PVW/MAT-SAB, AVX512, profile, and microbench flags remain
+  default-false;
+- verify `pvwtmlwe.c` and `mattrgsw.c` are compiled only under
+  `ENABLE_PVW_TMLWE=true`;
+- bind the guard to Stage33 and Stage89 scalar/default smoke evidence.
+
+Gate:
+
+- Stage96 must still report
+  `PASS_STAGE96_UPSTREAM_DELTA_AUDIT_LOCAL_PROVENANCE_RECORDED`;
+- source delta inventory must be non-empty and classified;
+- scalar SAB files must contain no `SAB_PVW`, `sab_pvw`, `PVW_TMLWE`, or
+  `MAT_TRGSW` tokens;
+- selected shared backend files must contain no `SAB_PVW` or `sab_pvw` tokens;
+- all tracked flags must remain default-false and PVW/MAT sources must remain
+  gated;
+- Stage33 and Stage89 scalar binary/ternary smoke evidence must still pass.
+
+Status:
+
+```text
+Completed as a source isolation guard. Stage97 records
+PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED. The source delta
+inventory classifies 26 source/hot-path files, including 5 explicit PVW/MAT
+files and 4 scalar SAB files under symbol guard. Scalar SAB files contain no
+forbidden PVW/MAT-SAB tokens, selected shared backend files contain no
+`sab_pvw` tokens, all tracked PVW/MAT-SAB/AVX512/profile/microbench flags are
+default-false, and PVW/MAT sources remain gated by `ENABLE_PVW_TMLWE`.
+Stage33 and Stage89 scalar binary/ternary smoke evidence remains passing.
+This is a guardrail and reproducibility result only; it does not upgrade any
+speedup, novelty, theorem-level, or hardware-counter claim.
+```

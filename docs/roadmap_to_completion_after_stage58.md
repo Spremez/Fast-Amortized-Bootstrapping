@@ -165,3 +165,8 @@ Execution policy:
   experiment flags remain default-false. Use this for upstream-vs-local
   explanation only; do not treat it as full-text review, novelty evidence, or
   MAT-AVX512 hardware-counter proof.
+- After Stage97, source-delta isolation is auditable: scalar SAB files contain
+  no forbidden PVW/MAT-SAB symbols, selected shared backend files contain no
+  `sab_pvw` symbols, tracked experiment flags remain default-false and gated,
+  and Stage33/Stage89 scalar/default smoke evidence is still passing. Use this
+  as a pre-flight guard before any further local hot-path work.

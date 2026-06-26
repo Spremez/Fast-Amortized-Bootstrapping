@@ -1,0 +1,23 @@
+guard,flag,status,evidence,detail
+default_false,ENABLE_PVW_TMLWE,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,ENABLE_PVW_TMLWE ?= false
+default_false,MAT_TRGSW_AVX512_SMALLR_SPECIALIZED,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,MAT_TRGSW_AVX512_SMALLR_SPECIALIZED ?= false
+default_false,MAT_TRGSW_AVX512_R4_UNROLLED_ROWS,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,MAT_TRGSW_AVX512_R4_UNROLLED_ROWS ?= false
+default_false,MAT_TRGSW_AVX512_RGT4_FUSED,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,MAT_TRGSW_AVX512_RGT4_FUSED ?= false
+default_false,MAT_TRGSW_AVX512_R6_FULLTILE,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,MAT_TRGSW_AVX512_R6_FULLTILE ?= false
+default_false,SAB_PVW_KERNEL_TEST,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_KERNEL_TEST ?= false
+default_false,SAB_PVW_RGT4_KERNEL_TEST,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_RGT4_KERNEL_TEST ?= false
+default_false,SAB_PVW_TARGET_TEST,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_TARGET_TEST ?= false
+default_false,SAB_PVW_BENCH,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_BENCH ?= false
+default_false,SAB_PVW_NOISE_TEST,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_NOISE_TEST ?= false
+default_false,SAB_PVW_STAGE_NOISE_TEST,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_STAGE_NOISE_TEST ?= false
+default_false,SAB_PVW_RESOURCE_TEST,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_RESOURCE_TEST ?= false
+default_false,SAB_PVW_POSTPROC_PROFILE,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_POSTPROC_PROFILE ?= false
+default_false,SAB_PVW_BODY_PROFILE,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_BODY_PROFILE ?= false
+default_false,SAB_PVW_FUSED_FROM_DFT_ADD,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_FUSED_FROM_DFT_ADD ?= false
+default_false,SAB_PVW_BACKEND_FROM_DFT_ADD,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_BACKEND_FROM_DFT_ADD ?= false
+default_false,SAB_PVW_ACTIVE_BUFFER_FUSION,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_ACTIVE_BUFFER_FUSION ?= false
+default_false,SAB_PVW_SUBA_OUTPUT_FUSION,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_SUBA_OUTPUT_FUSION ?= false
+default_false,SAB_PVW_SCHEDULE_FUSED_CMUX,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PVW_SCHEDULE_FUSED_CMUX ?= false
+default_false,SAB_PROFILE,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_PROFILE ?= false
+default_false,SAB_MICROBENCH,PASS_DEFAULT_FALSE,src/mosfhet/Makefile.def,SAB_MICROBENCH ?= false
+pvw_sources_gated,ENABLE_PVW_TMLWE,PASS_PVW_SOURCES_GATED,src/mosfhet/Makefile.def,pvwtmlwe.c/mattrgsw.c appear under ENABLE_PVW_TMLWE

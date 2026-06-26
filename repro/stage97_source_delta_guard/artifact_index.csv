@@ -1,0 +1,8 @@
+artifact,purpose,producer
+repro/stage97_source_delta_guard/summary.csv,Stage97 gate summary,scripts/build_stage97_source_delta_guard.py
+repro/stage97_source_delta_guard/source_delta.csv,Source delta inventory against origin/main,scripts/build_stage97_source_delta_guard.py
+repro/stage97_source_delta_guard/symbol_guard.csv,Scalar/shared-backend forbidden symbol scan,scripts/build_stage97_source_delta_guard.py
+repro/stage97_source_delta_guard/build_flag_guard.csv,Default-false and source-gating flag guard,scripts/build_stage97_source_delta_guard.py
+repro/stage97_source_delta_guard/smoke_evidence.csv,Current scalar/default smoke evidence guard,scripts/build_stage97_source_delta_guard.py
+repro/stage97_source_delta_guard/artifact_index.csv,Stage97 artifact index,scripts/build_stage97_source_delta_guard.py
+docs/stage97_source_delta_guard_log.md,Human-readable Stage97 log,scripts/build_stage97_source_delta_guard.py

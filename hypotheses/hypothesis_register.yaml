@@ -745,3 +745,41 @@ hypotheses:
         default-path smoke/performance/noise campaign
       - code-route provenance is treated as reviewed full text, novelty
         evidence, or MAT-AVX512 hardware-counter proof
+  - id: H22_source_delta_guard
+    statement: >
+      After Stage96 records upstream/local provenance, the next local
+      pre-flight should prove that the source delta remains isolated from the
+      scalar/default SAB route: scalar SAB files must not acquire PVW/MAT-SAB
+      symbols, selected shared backend files must not acquire sab_pvw symbols,
+      experimental flags must remain default-false and gated, and current
+      scalar/default smoke evidence must still be present.
+    mechanism: >
+      Stage97 inventories source/hot-path deltas under `main.c`, `include/`,
+      and `src/`; scans scalar SAB and selected shared backend files for
+      forbidden symbols; checks all tracked PVW/MAT-SAB, AVX512, profile, and
+      microbench flags in `src/mosfhet/Makefile.def`; verifies
+      `pvwtmlwe.c`/`mattrgsw.c` remain gated by `ENABLE_PVW_TMLWE`; and binds
+      the guard to Stage33 and Stage89 scalar binary/ternary smoke evidence.
+    status: stage97_source_delta_guard_scalar_default_separated
+    evidence: docs/stage97_source_delta_guard_log.md; experiments/stage97_source_delta_guard_plan.md; scripts/run_stage97_source_delta_guard.sh; scripts/build_stage97_source_delta_guard.py; repro/stage97_source_delta_guard/summary.csv; repro/stage97_source_delta_guard/source_delta.csv; repro/stage97_source_delta_guard/symbol_guard.csv; repro/stage97_source_delta_guard/build_flag_guard.csv; repro/stage97_source_delta_guard/smoke_evidence.csv; repro/stage97_source_delta_guard/artifact_index.csv
+    current_decision: >
+      Stage97 records
+      PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED. The source
+      delta inventory classifies 26 source/hot-path files, including 5
+      explicit PVW/MAT files and 4 scalar SAB files under symbol guard. Scalar
+      SAB files contain no forbidden PVW/MAT-SAB tokens, selected shared
+      backend files contain no `sab_pvw` tokens, tracked
+      PVW/MAT-SAB/AVX512/profile/microbench flags remain default-false, and
+      PVW/MAT sources remain gated by `ENABLE_PVW_TMLWE`. Stage33 and Stage89
+      scalar binary/ternary smoke evidence remains passing. This is
+      source-isolation and reproducibility evidence only, not a speedup,
+      novelty, theorem-level, or hardware-counter claim.
+    failure_criteria:
+      - scalar SAB files contain `SAB_PVW`, `sab_pvw`, `PVW_TMLWE`, or
+        `MAT_TRGSW`
+      - selected shared backend files contain `SAB_PVW` or `sab_pvw`
+      - a tracked experimental flag becomes default-true or PVW/MAT sources
+        are compiled without `ENABLE_PVW_TMLWE`
+      - Stage33/Stage89 scalar/default smoke evidence is missing or failing
+      - Stage97 is cited as performance, novelty, theorem-level, or
+        hardware-counter evidence

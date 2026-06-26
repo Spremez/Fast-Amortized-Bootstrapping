@@ -35,6 +35,9 @@ STAGE95_PUBLIC_SOURCE_REPROBE = (
 STAGE96_UPSTREAM_DELTA_AUDIT = (
     ROOT / "repro" / "stage96_upstream_delta_audit" / "summary.csv"
 )
+STAGE97_SOURCE_DELTA_GUARD = (
+    ROOT / "repro" / "stage97_source_delta_guard" / "summary.csv"
+)
 OUT_CSV = ROOT / "repro" / "stage59_completion_route_readiness.csv"
 OUT_MD = ROOT / "docs" / "stage59_completion_route_readiness.md"
 
@@ -98,6 +101,7 @@ def build_rows() -> List[Dict[str, str]]:
     stage94 = by_key(STAGE94_LOCAL_FRONTIER_AUDIT, "gate")
     stage95 = by_key(STAGE95_PUBLIC_SOURCE_REPROBE, "gate")
     stage96 = by_key(STAGE96_UPSTREAM_DELTA_AUDIT, "gate")
+    stage97 = by_key(STAGE97_SOURCE_DELTA_GUARD, "gate")
 
     local_ready = all(
         status_of(frontier, row_id).startswith("LOCAL")
@@ -136,6 +140,10 @@ def build_rows() -> List[Dict[str, str]]:
     stage96_done = (
         status_of(stage96, "stage96_decision")
         == "PASS_STAGE96_UPSTREAM_DELTA_AUDIT_LOCAL_PROVENANCE_RECORDED"
+    )
+    stage97_done = (
+        status_of(stage97, "stage97_decision")
+        == "PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED"
     )
 
     rows = [
@@ -245,10 +253,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage93_external_lane_attempt/summary.csv; "
                 "repro/stage94_local_frontier_audit/summary.csv; "
                 "repro/stage95_public_source_reprobe/summary.csv; "
-                "repro/stage96_upstream_delta_audit/summary.csv"
+                "repro/stage96_upstream_delta_audit/summary.csv; "
+                "repro/stage97_source_delta_guard/summary.csv"
             ),
             "A9 remains scoped unless CB5/CB6/CB7 are resolved; Stage91 must keep stronger claims blocked.",
-            "Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93/94/95/96 after source, backend, external-evidence, upstream-code, or claim-scope changes.",
+            "Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93/94/95/96/97 after source, backend, external-evidence, upstream-code, default-flag, or claim-scope changes.",
             "Provides a scoped final engineering package; does not unlock paper-level or theoretical claims.",
         ),
     ]
@@ -282,6 +291,11 @@ def decision(rows: List[Dict[str, str]]) -> str:
         status_of(stage96, "stage96_decision")
         == "PASS_STAGE96_UPSTREAM_DELTA_AUDIT_LOCAL_PROVENANCE_RECORDED"
     )
+    stage97 = by_key(STAGE97_SOURCE_DELTA_GUARD, "gate")
+    stage97_done = (
+        status_of(stage97, "stage97_decision")
+        == "PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED"
+    )
     expected = {
         "S59-R1-SCOPED-ENGINEERING": "LOCAL_READY",
         "S59-R2-CURRENT-HEAD-REFRESH": "READY_LOCAL_REFRESH",
@@ -298,6 +312,7 @@ def decision(rows: List[Dict[str, str]]) -> str:
         and stage94_done
         and stage95_done
         and stage96_done
+        and stage97_done
     )
     if ok:
         return "PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED"

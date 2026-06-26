@@ -1,0 +1,11 @@
+scope,file,forbidden_tokens,status,detail
+scalar_sab,include/sab.h,SAB_PVW sab_pvw PVW_TMLWE MAT_TRGSW,PASS_NO_FORBIDDEN_SYMBOLS,no forbidden symbols
+scalar_sab,include/sab_b.h,SAB_PVW sab_pvw PVW_TMLWE MAT_TRGSW,PASS_NO_FORBIDDEN_SYMBOLS,no forbidden symbols
+scalar_sab,src/sparse_amortized_bootstrap.c,SAB_PVW sab_pvw PVW_TMLWE MAT_TRGSW,PASS_NO_FORBIDDEN_SYMBOLS,no forbidden symbols
+scalar_sab,src/sparse_amortized_bootstrap_b.c,SAB_PVW sab_pvw PVW_TMLWE MAT_TRGSW,PASS_NO_FORBIDDEN_SYMBOLS,no forbidden symbols
+shared_backend,src/mosfhet/src/bootstrap.c,SAB_PVW sab_pvw,PASS_NO_FORBIDDEN_SYMBOLS,no forbidden symbols
+shared_backend,src/mosfhet/src/keyswitch.c,SAB_PVW sab_pvw,PASS_NO_FORBIDDEN_SYMBOLS,no forbidden symbols
+shared_backend,src/mosfhet/src/trgsw.c,SAB_PVW sab_pvw,PASS_NO_FORBIDDEN_SYMBOLS,no forbidden symbols
+shared_backend,src/mosfhet/src/trlwe.c,SAB_PVW sab_pvw,PASS_NO_FORBIDDEN_SYMBOLS,no forbidden symbols
+shared_backend,src/mosfhet/src/polynomial.c,SAB_PVW sab_pvw,PASS_NO_FORBIDDEN_SYMBOLS,no forbidden symbols
+shared_backend,src/mosfhet/src/misc.c,SAB_PVW sab_pvw,PASS_NO_FORBIDDEN_SYMBOLS,no forbidden symbols

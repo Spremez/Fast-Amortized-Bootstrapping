@@ -1,0 +1,7 @@
+Stage97 source delta guard
+Fri Jun 26 15:17:43 UTC 2026
+5ae114e
+Wrote repro/stage97_source_delta_guard/summary.csv
+Wrote repro/stage97_source_delta_guard/source_delta.csv
+Wrote docs/stage97_source_delta_guard_log.md
+Stage97 source delta guard: PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED

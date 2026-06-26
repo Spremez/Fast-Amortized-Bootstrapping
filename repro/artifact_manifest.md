@@ -1452,3 +1452,15 @@ Repro artifacts:
 - `repro/stage96_upstream_delta_audit/flag_guard.csv`
 - `repro/stage96_upstream_delta_audit/stage96_run.log`
 - `repro/stage96_upstream_delta_audit/artifact_index.csv`
+- `docs/stage97_source_delta_guard_log.md`
+- `experiments/stage97_source_delta_guard_plan.md`
+- `scripts/run_stage97_source_delta_guard.sh`
+- `scripts/build_stage97_source_delta_guard.py`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage97_source_delta_guard/summary.csv`
+- `repro/stage97_source_delta_guard/source_delta.csv`
+- `repro/stage97_source_delta_guard/symbol_guard.csv`
+- `repro/stage97_source_delta_guard/build_flag_guard.csv`
+- `repro/stage97_source_delta_guard/smoke_evidence.csv`
+- `repro/stage97_source_delta_guard/stage97_run.log`
+- `repro/stage97_source_delta_guard/artifact_index.csv`
