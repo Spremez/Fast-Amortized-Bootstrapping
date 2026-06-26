@@ -2798,36 +2798,74 @@ explicit preflight. No code path is promoted and no complete-SAB speedup
 claim is upgraded by this stage.
 ```
 
-## Planned Stage 87: Final Local High-Stat Consolidation
+## Stage 87: H14 Backend FromDFT-Add Preflight
 
 Goal:
 
 ```text
-Freeze the best local explicit SAB/PVW variant after all Stage83+ local
-optimization candidates are promoted, neutral, or rejected.
+Implement the Stage86-selected H14-C1 backend materialization candidate behind
+an explicit flag and run correctness plus one-run complete-SAB smoke against
+the wrapper-level fused baseline.
 ```
 
 Tasks:
 
-- rerun current-head scalar/PVW smoke;
-- rerun target complete-SAB A/B for promoted r values;
-- rerun final-output noise and resource matrix;
+- add `SAB_PVW_BACKEND_FROM_DFT_ADD` without changing scalar/default paths;
+- add backend torus64 `FromDFT+add` materialization writeback;
+- run WSL `spqlios_avx512` staged CMUX/RGSW/MAT and target full-output gates;
+- compare r=6 wrapper fused FromDFT-add versus backend FromDFT-add complete
+  SAB one-run smoke.
+
+Gate:
+
+- explicit flag only; no scalar/default behavior change;
+- correctness gates pass before interpreting performance;
+- one-run full-SAB smoke is positive before opening repeated gates;
+- no promotion from one-run smoke.
+
+Status:
+
+```text
+Completed as a preflight. Stage87 implements `SAB_PVW_BACKEND_FROM_DFT_ADD`.
+WSL `spqlios_avx512` staged CMUX/NCMUX/RGSW/MAT and target full-output gates
+pass. In r=6 one-run complete-SAB smoke, wrapper fused FromDFT-add PVW latency
+is `40196035.000 us` and backend FromDFT-add is `38284667.000 us`, giving a
+backend-vs-wrapper latency ratio of `1.049925x`. This is a promotion candidate
+only; Stage88 repeated/noise/resource gates are required before enabling or
+claiming it.
+```
+
+## Planned Stage 88: H14 Repeated/Noise/Resource Gate
+
+Goal:
+
+```text
+Decide whether the Stage87 H14-C1 backend materialization preflight should be
+promoted, kept experimental, or rejected.
+```
+
+Tasks:
+
+- run repeated r=6 complete-SAB A/B for wrapper fused versus backend-add under
+  the same `spqlios_avx512` backend;
+- run at least target full-output correctness and final-output noise gates;
+- record key size, RSS, keygen time, and any backend-specific constraints;
 - update Stage50/51/57/59/68/42 closure and read-only verifier.
 
 Gate:
 
-- every reported speedup is backed by complete-SAB evidence;
+- repeated complete-SAB speedup is stable, not a single-run artifact;
 - scalar SAB remains runnable and comparable;
 - resource/noise costs are reported with the speedup.
 
 Status:
 
 ```text
-Waiting for the Stage86-selected backend materialization implementation
-preflight to be promoted, neutral, or rejected.
+Waiting for the Stage87 promotion-candidate preflight to enter repeated,
+noise, and resource gates.
 ```
 
-## Planned Stage 88: External Claim Unlock
+## Planned Stage 89: External Claim Unlock
 
 Goal:
 
@@ -2857,7 +2895,7 @@ Blocked on external platform/full-text/manual-review inputs. This remains the
 stronger-claim lane after local Stage83+ optimization work.
 ```
 
-## Planned Stage 89: Final SAB Optimization Package
+## Planned Stage 90: Final SAB Optimization Package
 
 Goal:
 

@@ -476,8 +476,8 @@ hypotheses:
       butterfly-pair sub sharing. The selected H14-C1 candidate keeps the same
       algebra and key format, but attempts to add the torus addend during
       backend inverse materialization rather than in a second torus pass.
-    status: stage86_backend_materialization_preflight_selected
-    evidence: docs/stage82_post_h11_profile_log.md; docs/stage84_h13_r6_tile_sweep_preflight_log.md; docs/stage86_secondary_cmux_materialization_log.md; theory_checks/h14_secondary_cmux_materialization.md; algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md; repro/stage82_post_h11_profile/profile_metrics.csv; repro/stage84_h13_r6_tile_sweep_preflight/summary.csv; repro/stage86_secondary_cmux_materialization/decision.csv; repro/stage86_secondary_cmux_materialization/candidates.csv
+    status: stage87_backend_from_dft_add_promotion_candidate
+    evidence: docs/stage82_post_h11_profile_log.md; docs/stage84_h13_r6_tile_sweep_preflight_log.md; docs/stage86_secondary_cmux_materialization_log.md; docs/stage87_h14_backend_from_dft_add_preflight_log.md; theory_checks/h14_secondary_cmux_materialization.md; algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md; repro/stage82_post_h11_profile/profile_metrics.csv; repro/stage84_h13_r6_tile_sweep_preflight/summary.csv; repro/stage86_secondary_cmux_materialization/decision.csv; repro/stage86_secondary_cmux_materialization/candidates.csv; repro/stage87_h14_backend_from_dft_add_preflight/full_sab_smoke.csv; repro/stage87_h14_backend_from_dft_add_preflight/summary.csv
     current_decision: >
       Stage86 records that the post-H11 r=6 body profile still has a material
       non-MAT share: non-MAT body is 52.31% of full body, from_DFT+add is
@@ -485,8 +485,14 @@ hypotheses:
       fusion, rejects DFT-lazy bit-window for now because it does not reduce
       inverse DFT count and risks large DFT scratch arrays, keeps butterfly
       sub sharing as a fallback, and selects H14-C1 backend FromDFT+add
-      callback as the next explicit preflight. No scalar/default path changes
-      and no complete-SAB acceleration claim are made by Stage86.
+      callback as the next explicit preflight. Stage87 implements H14-C1
+      behind SAB_PVW_BACKEND_FROM_DFT_ADD and passes staged plus target
+      correctness gates. One-run r=6 complete-SAB smoke is positive against
+      wrapper-level fused FromDFT-add: backend PVW latency is 38284667 us
+      versus wrapper 40196035 us, a 1.049925x backend-vs-wrapper latency
+      ratio. This is a promotion candidate only; no scalar/default path
+      changes and no final complete-SAB acceleration claim are made before
+      Stage88 repeated/noise/resource gates.
     failure_criteria:
       - the backend callback is only a wrapper-level fusion equivalent to
         Stage18/23

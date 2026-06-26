@@ -150,6 +150,8 @@ typedef struct{
 FFT_Processor_FFNT new_FFT_Processor_FFNT(int N);
 void execute_reverse_torus64(double * res, const uint64_t * a, FFT_Processor_FFNT proc);
 void execute_direct_torus64(uint64_t * res, const double * a, FFT_Processor_FFNT proc);
+void execute_direct_torus64_add(uint64_t * res, const double * a,
+    const uint64_t * addend, FFT_Processor_FFNT proc);
 
 #ifdef __cplusplus
 }

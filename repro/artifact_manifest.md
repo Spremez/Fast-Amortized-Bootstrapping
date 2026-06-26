@@ -1274,3 +1274,30 @@ Repro artifacts:
 - `algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md`
 - `repro/stage86_secondary_cmux_materialization/candidates.csv`
 - `repro/stage86_secondary_cmux_materialization/decision.csv`
+
+## Stage 87 H14 Backend FromDFT-Add Preflight
+
+- `docs/stage87_h14_backend_from_dft_add_preflight_log.md`
+- `experiments/stage87_h14_backend_from_dft_add_preflight_plan.md`
+- `scripts/run_stage87_h14_backend_from_dft_add_preflight.sh`
+- `scripts/build_stage87_h14_backend_from_dft_add_preflight.py`
+- `theory_checks/h14_secondary_cmux_materialization.md`
+- `algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md`
+- `src/mosfhet/Makefile.def`
+- `src/mosfhet/include/mosfhet.h`
+- `src/mosfhet/src/polynomial.c`
+- `src/mosfhet/src/pvwtmlwe.c`
+- `src/mosfhet/src/fft/spqlios/fft_processor_spqlios.c`
+- `src/mosfhet/src/fft/spqlios/spqlios-fft.h`
+- `src/mosfhet/src/fft/ffnt/ffnt.c`
+- `src/mosfhet/src/fft/ffnt/ffnt.h`
+- `repro/stage87_h14_backend_from_dft_add_preflight/kernel_build.log`
+- `repro/stage87_h14_backend_from_dft_add_preflight/kernel_run.log`
+- `repro/stage87_h14_backend_from_dft_add_preflight/target_build.log`
+- `repro/stage87_h14_backend_from_dft_add_preflight/target_run.log`
+- `repro/stage87_h14_backend_from_dft_add_preflight/full_sab_wrapper_r6/build.log`
+- `repro/stage87_h14_backend_from_dft_add_preflight/full_sab_wrapper_r6/run_0.log`
+- `repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/build.log`
+- `repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/run_0.log`
+- `repro/stage87_h14_backend_from_dft_add_preflight/full_sab_smoke.csv`
+- `repro/stage87_h14_backend_from_dft_add_preflight/summary.csv`

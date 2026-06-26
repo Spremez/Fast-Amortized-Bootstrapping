@@ -98,6 +98,7 @@ def build_rows() -> List[Dict[str, str]]:
                 and "Stage83 MAT body design check" in stage42_detail
                 and "Stage84 H13 r=6 tile-sweep preflight" in stage42_detail
                 and "Stage86 secondary CMUX materialization design gate" in stage42_detail
+                and "Stage87 H14 backend FromDFT-add preflight" in stage42_detail
             )
         )
     )
@@ -118,6 +119,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "Stage83 MAT body design check" in g6_detail
         and "Stage84 H13 r=6 tile-sweep preflight" in g6_detail
         and "Stage86 secondary CMUX materialization design gate" in g6_detail
+        and "Stage87 H14 backend FromDFT-add preflight" in g6_detail
     )
 
     stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
@@ -144,6 +146,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage83_mat_body_design_check" in r6.get("evidence", "")
         and "stage84_h13_r6_tile_sweep_preflight" in r6.get("evidence", "")
         and "stage86_secondary_cmux_materialization" in r6.get("evidence", "")
+        and "stage87_h14_backend_from_dft_add_preflight" in r6.get("evidence", "")
     )
 
     rows = [

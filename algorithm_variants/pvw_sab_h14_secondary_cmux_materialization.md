@@ -6,12 +6,13 @@
 - Focused module: CMUX materialization after MAT external product.
 - Optimization target: complete SAB throughput through reduced materialization
   memory traffic.
-- Status labels: `[experiment pending]`, `[implementation-only constant-factor
-  hypothesis]`, `[not promoted]`.
+- Status labels: `[Stage87 preflight positive]`, `[implementation-only
+  constant-factor hypothesis]`, `[not promoted]`.
 - Main hypothesis: moving the add-back inside the inverse DFT materialization
-  backend should reduce torus-domain load/store traffic relative to the current
-  wrapper-level `pvmtmlwe_from_DFT_add` path, and may improve complete SAB if
-  the backend callback effect survives full-SAB scheduling.
+  backend reduces torus-domain load/store traffic relative to the current
+  wrapper-level `pvmtmlwe_from_DFT_add` path. Stage87 records a positive
+  one-run r=6 complete-SAB smoke, but repeated/noise/resource gates remain
+  required.
 
 ## Mathematical Definition
 
@@ -48,7 +49,7 @@ Output: out = in1 + FromDFT(tmp_dft)
 
 | Original component | Variant component | Relationship | Evidence/status |
 | --- | --- | --- | --- |
-| `pvmtmlwe_from_DFT_add()` wrapper | backend `FromDFTAdd` materialization callback | implements same equation with less torus pass traffic | selected by Stage86 design gate |
+| `pvmtmlwe_from_DFT_add()` wrapper | backend `FromDFTAdd` materialization callback under `SAB_PVW_BACKEND_FROM_DFT_ADD` | implements same equation with less torus pass traffic | implemented by Stage87 |
 | scalar SAB | unchanged | baseline preserved | required invariant |
 | MAT key format | unchanged | key/security boundary preserved | required invariant |
 | Stage18/23 wrapper fusion | backend-boundary callback | different implementation layer | Stage18/23 neutral guard |
@@ -70,7 +71,7 @@ Output: out = in1 + FromDFT(tmp_dft)
 - Proof steps affected: none if the backend callback is bit-exact with
   `FromDFT(dft) + addend`.
 - New lemmas needed: implementation equivalence lemma for backend callback.
-- Current status: selected for flagged preflight only.
+- Current status: flagged Stage87 preflight passes and opens Stage88 only.
 
 ## Potential Failure Reasons
 
@@ -91,6 +92,9 @@ Output: out = in1 + FromDFT(tmp_dft)
   final-output noise, key size, RSS.
 - Ablations: wrapper-level fused path versus backend callback; r=4 versus r=6.
 - Complexity runs: profile from_DFT/add/sub shares before and after.
+- Stage87 smoke result: wrapper r=6 PVW latency `40196035.000 us`, backend r=6
+  PVW latency `38284667.000 us`, backend-vs-wrapper latency ratio
+  `1.049925x`.
 - Robustness runs: repeated full-SAB A/B and deterministic target gate.
 - Statistical checks: repeated process-level samples, mean/min/max, and no
   single-run promotion.
@@ -104,10 +108,9 @@ Output: out = in1 + FromDFT(tmp_dft)
 Conservative current wording:
 
 ```text
-[experiment pending] We identify CMUX materialization as the next local
-constant-factor optimization target after MAT body preflights fail to propagate
-to complete SAB, and select a backend-level FromDFT-add callback as the next
-preflight.
+[preflight positive] We implement a backend-level FromDFT-add materialization
+callback behind an explicit flag and observe a positive r=6 complete-SAB
+one-run smoke against the wrapper-level fused baseline.
 ```
 
 Do not write as a bootstrapping acceleration claim until complete SAB A/B

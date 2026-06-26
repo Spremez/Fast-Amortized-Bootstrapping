@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-86`. This label tracks the
+Current control-plane closure label: `Stage 19-87`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -96,6 +96,7 @@ evidence.
 | Stage 83 MAT body design check | audit synthesis | 6 | Stage84 preflight selected, no code promotion | H13-C1 r=6 full-output tile sweep is selected as the next explicit preflight; sparse selector skipping remains blocked by key-format/security requirements; Amdahl bounds and full-SAB gates are recorded before any implementation claim |
 | Stage 84 H13 r=6 tile-sweep preflight | `spqlios_avx512` | 6 | kernel-only, not promoted | `MAT_TRGSW_AVX512_R6_FULLTILE` passes correctness and improves r=6 MAT microbench by `1.036x` DFT-output and `1.021x` full-output versus tile4, but complete-SAB smoke is `0.974x` versus tile4, so Stage85 is not opened |
 | Stage 86 secondary CMUX materialization | audit synthesis | 6 | backend materialization preflight selected, no code promotion | Stage82 non-MAT body share remains material (`52.31%`), with `from_DFT+add=35.41%` and `sub=13.41%`; Stage86 rejects repeating Stage18/23 epilogue fusion and selects H14-C1 backend `FromDFT+add` callback as the next explicit preflight |
+| Stage 87 H14 backend FromDFT-add preflight | `spqlios_avx512` | 6 | promotion candidate, not promoted | `SAB_PVW_BACKEND_FROM_DFT_ADD` passes staged and target correctness; r=6 one-run complete-SAB backend latency is `38284667.000 us` versus wrapper `40196035.000 us`, a `1.049925x` backend-vs-wrapper latency ratio; Stage88 repeated/noise/resource gates are required |
 
 Current conclusion:
 
@@ -428,7 +429,8 @@ Stage 83: MAT body reduction theory/design check. [completed; H13-C1 r=6 tile-sw
 Stage 84: H13 r=6 MAT tile-sweep preflight. [completed; kernel-only positive but full-SAB not promoted]
 Stage 85: H13 full-SAB promotion gate. [not opened after Stage84; requires future full-SAB-positive preflight]
 Stage 86: secondary CMUX materialization pass. [completed design gate; H14-C1 backend FromDFT+add callback preflight selected, no code promotion]
-Stage 87: final local high-stat consolidation. [waiting for Stage86 implementation preflight decisions]
-Stage 88: external claim unlock. [blocked on native perf, full text, and manual novelty review]
-Stage 89: final SAB optimization package. [waiting for Stage86-88 decisions]
+Stage 87: H14 backend FromDFT-add preflight. [completed; one-run promotion candidate, not promoted]
+Stage 88: H14 repeated/noise/resource gate. [waiting for Stage87 promotion-candidate follow-up]
+Stage 89: external claim unlock. [blocked on native perf, full text, and manual novelty review]
+Stage 90: final SAB optimization package. [waiting for Stage88-89 decisions]
 ```

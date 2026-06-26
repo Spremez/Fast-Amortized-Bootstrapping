@@ -833,7 +833,7 @@ void execute_reverse_torus64(double * res, const uint64_t * a, FFT_Processor_FFN
 void execute_direct_torus32(uint64_t * res, const double * a, FFT_Processor_FFNT proc){
     const int N = proc->N;
     for (size_t i = 0; i < N/2; i++){
-        proc->fpr[i] = a[i]; 
+        proc->fpr[i] = a[i];
         proc->fpi[i] = a[i + N/2];
     }
     memset(&proc->fpr[N/2], 0, sizeof(double)*N/2);
@@ -869,6 +869,29 @@ void execute_direct_torus64(uint64_t * res, const double * a, FFT_Processor_FFNT
         int16_t trans = expo-1075;
         uint64_t val2 = trans>0?(val<<trans):(val>>-trans);
         res[i] = (vals[i]>>63)?-val2:val2;
+    }
+}
+
+void execute_direct_torus64_add(uint64_t * res, const double * a,
+        const uint64_t * addend, FFT_Processor_FFNT proc){
+    const int N = proc->N;
+    for (size_t i = 0; i < N/2; i++){
+        proc->fpr[i] = a[i];
+        proc->fpi[i] = a[i + N/2];
+    }
+    memset(&proc->fpr[N/2], 0, sizeof(double)*N/2);
+    memset(&proc->fpi[N/2], 0, sizeof(double)*N/2);
+    iffnt_transform(proc->ffnt_2n_tables, proc->ifft_n_2_tables, proc->fpr, proc->fpi);
+    const uint64_t* const vals = (const uint64_t*) proc->fpr;
+    static const uint64_t valmask0 = 0x000FFFFFFFFFFFFFul;
+    static const uint64_t valmask1 = 0x0010000000000000ul;
+    static const uint16_t expmask0 = 0x07FFu;
+    for (size_t i = 0; i < N; i++){
+        uint64_t val = (vals[i]&valmask0)|valmask1;
+        uint16_t expo = (vals[i]>>52)&expmask0;
+        int16_t trans = expo-1075;
+        uint64_t val2 = trans>0?(val<<trans):(val>>-trans);
+        res[i] = ((vals[i]>>63)?-val2:val2) + addend[i];
     }
 }
 

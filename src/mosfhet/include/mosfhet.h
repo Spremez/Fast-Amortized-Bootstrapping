@@ -277,6 +277,8 @@ void polynomial_mul_addto_torus(TorusPolynomial out, TorusPolynomial in1, TorusP
 void polynomial_naive_mul_addto_torus(TorusPolynomial out, TorusPolynomial in1, TorusPolynomial in2);
 void polynomial_naive_mul_addto_torus_binary(TorusPolynomial out, TorusPolynomial in1, BinaryPolynomial in2);
 void polynomial_DFT_to_torus(TorusPolynomial out, const DFT_Polynomial in);
+void polynomial_DFT_to_torus_add(TorusPolynomial out, const DFT_Polynomial in,
+    TorusPolynomial addend);
 void polynomial_torus_to_DFT(DFT_Polynomial out, TorusPolynomial in);
 void polynomial_mul_DFT(DFT_Polynomial out, DFT_Polynomial in1, DFT_Polynomial in2);
 void polynomial_mul_addto_DFT(DFT_Polynomial out, DFT_Polynomial in1, DFT_Polynomial in2);

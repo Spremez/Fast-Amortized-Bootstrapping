@@ -358,6 +358,18 @@ void polynomial_DFT_to_torus(TorusPolynomial out, const DFT_Polynomial in){
 #endif
 }
 
+void polynomial_DFT_to_torus_add(TorusPolynomial out, const DFT_Polynomial in,
+    TorusPolynomial addend){
+  init_fft(in->N);
+#ifdef TORUS32
+  execute_direct_torus32(out->coeffs, in->coeffs, fft_proc[in->N >> 10]);
+  polynomial_addto_torus_polynomial(out, addend);
+#else
+  execute_direct_torus64_add(out->coeffs, in->coeffs, addend->coeffs,
+      fft_proc[in->N >> 10]);
+#endif
+}
+
 void polynomial_torus_to_DFT(DFT_Polynomial out, TorusPolynomial in){
   init_fft(in->N);
 #ifdef TORUS32

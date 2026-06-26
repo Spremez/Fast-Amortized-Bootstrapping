@@ -37,9 +37,10 @@ evidence is supplied.
 | Stage 84 | H13 r=6 MAT tile-sweep preflight | Test the selected full-output tile hypothesis behind an explicit flag or isolated harness. | identity-lane correctness, MAT microbench, spill/load sanity, and non-instrumented full-SAB A/B if kernel-positive. | passed as kernel-only/not promoted; full-SAB smoke was 0.974x versus tile4 |
 | Stage 85 | H13 full-SAB promotion gate | If Stage84 is positive, decide promote/neutral/reject with repeated complete-SAB, noise, and resource gates. | full-SAB correctness, repeated speedup, final-output noise, key/RSS/keygen reporting, and closure updates pass. | not opened after Stage84; requires future full-SAB-positive preflight |
 | Stage 86 | secondary CMUX materialization pass | If MAT-body preflight is neutral or capped, revisit from_DFT/add/sub lifetime without repeating prior neutral epilogue fusions. | refreshed profile shows material non-MAT share and complete-SAB A/B improves. | passed as design gate; H14-C1 backend FromDFT+add callback preflight selected |
-| Stage 87 | final local high-stat consolidation | Freeze the best local explicit variant after Stage84-86 candidates are promoted, neutral, or rejected. | current-head smoke, target full-SAB A/B, noise/resource, Stage50/51/57/59/68/42 closure, and verifier pass. | waiting for Stage86 implementation preflight decisions |
-| Stage 88 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | externally blocked |
-| Stage 89 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
+| Stage 87 | H14 backend FromDFT-add preflight | Implement the Stage86-selected backend materialization candidate behind an explicit flag and run correctness plus one-run complete-SAB smoke. | explicit flag, WSL correctness, target full-output correctness, one-run r=6 backend-vs-wrapper smoke, and no default promotion. | passed as promotion candidate; backend-vs-wrapper one-run latency ratio `1.049925x` |
+| Stage 88 | H14 repeated/noise/resource gate | Decide whether the Stage87 H14-C1 backend materialization preflight should be promoted, kept experimental, or rejected. | repeated complete-SAB A/B, final-output noise, key/RSS/keygen, closure, and verifier pass. | waiting for repeated/noise/resource gates |
+| Stage 89 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | externally blocked |
+| Stage 90 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
 Execution policy:
 
@@ -117,8 +118,9 @@ Execution policy:
   (`1.036x` DFT-output, `1.021x` full-output), but complete-SAB smoke is
   `0.974x` versus tile4. Do not open Stage85 from this evidence; route local
   work to Stage86 CMUX/materialization candidate analysis.
-- After Stage86, the selected local preflight is H14-C1 backend
-  `FromDFT+add` materialization callback. It is a design-gate selection only:
-  it must remain behind an explicit flag, preserve scalar/default paths and
-  key format, and pass identity-lane, microbench, complete-SAB A/B, and
-  noise/resource gates before any promotion or bootstrapping-speedup claim.
+- After Stage86, Stage87 implemented the selected H14-C1 backend
+  `FromDFT+add` materialization callback behind `SAB_PVW_BACKEND_FROM_DFT_ADD`.
+  It is a one-run promotion candidate only: it must remain behind an explicit
+  flag, preserve scalar/default paths and key format, and pass Stage88
+  repeated/noise/resource gates before any promotion or bootstrapping-speedup
+  claim.

@@ -2,7 +2,7 @@
 """Build the Stage 42 evidence-closure audit.
 
 This script checks whether the current scoped PVW/MAT-SAB evidence chain and
-Stage86 control-plane/design extensions are internally consistent. It does not run
+Stage87 control-plane/implementation extensions are internally consistent. It does not run
 benchmarks or upgrade claims; it verifies that the committed artifacts still
 support the recorded scope.
 """
@@ -111,6 +111,9 @@ STAGE84_H13_R6_TILE_SWEEP = (
 )
 STAGE86_SECONDARY_CMUX_MATERIALIZATION = (
     ROOT / "repro" / "stage86_secondary_cmux_materialization" / "decision.csv"
+)
+STAGE87_H14_BACKEND_FROM_DFT_ADD = (
+    ROOT / "repro" / "stage87_h14_backend_from_dft_add_preflight" / "summary.csv"
 )
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
@@ -506,6 +509,28 @@ REQUIRED_FILES = [
     "algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md",
     "repro/stage86_secondary_cmux_materialization/candidates.csv",
     "repro/stage86_secondary_cmux_materialization/decision.csv",
+    "docs/stage87_h14_backend_from_dft_add_preflight_log.md",
+    "experiments/stage87_h14_backend_from_dft_add_preflight_plan.md",
+    "scripts/run_stage87_h14_backend_from_dft_add_preflight.sh",
+    "scripts/build_stage87_h14_backend_from_dft_add_preflight.py",
+    "src/mosfhet/Makefile.def",
+    "src/mosfhet/include/mosfhet.h",
+    "src/mosfhet/src/polynomial.c",
+    "src/mosfhet/src/pvwtmlwe.c",
+    "src/mosfhet/src/fft/spqlios/fft_processor_spqlios.c",
+    "src/mosfhet/src/fft/spqlios/spqlios-fft.h",
+    "src/mosfhet/src/fft/ffnt/ffnt.c",
+    "src/mosfhet/src/fft/ffnt/ffnt.h",
+    "repro/stage87_h14_backend_from_dft_add_preflight/kernel_build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/kernel_run.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/target_build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/target_run.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_wrapper_r6/build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_wrapper_r6/run_0.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/run_0.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_smoke.csv",
+    "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -944,6 +969,28 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md",
     "repro/stage86_secondary_cmux_materialization/candidates.csv",
     "repro/stage86_secondary_cmux_materialization/decision.csv",
+    "docs/stage87_h14_backend_from_dft_add_preflight_log.md",
+    "experiments/stage87_h14_backend_from_dft_add_preflight_plan.md",
+    "scripts/run_stage87_h14_backend_from_dft_add_preflight.sh",
+    "scripts/build_stage87_h14_backend_from_dft_add_preflight.py",
+    "src/mosfhet/Makefile.def",
+    "src/mosfhet/include/mosfhet.h",
+    "src/mosfhet/src/polynomial.c",
+    "src/mosfhet/src/pvwtmlwe.c",
+    "src/mosfhet/src/fft/spqlios/fft_processor_spqlios.c",
+    "src/mosfhet/src/fft/spqlios/spqlios-fft.h",
+    "src/mosfhet/src/fft/ffnt/ffnt.c",
+    "src/mosfhet/src/fft/ffnt/ffnt.h",
+    "repro/stage87_h14_backend_from_dft_add_preflight/kernel_build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/kernel_run.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/target_build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/target_run.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_wrapper_r6/build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_wrapper_r6/run_0.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/run_0.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_smoke.csv",
+    "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -2560,6 +2607,36 @@ def check_stage86_secondary_cmux_materialization() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage87_h14_backend_from_dft_add_preflight() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE87_H14_BACKEND_FROM_DFT_ADD)}
+    expected = {
+        "stage87_explicit_flag": "PASS_EXPLICIT_FLAG",
+        "stage87_correctness_smoke": "PASS",
+        "stage87_full_sab_smoke": "PASS_FULL_SAB_POSITIVE",
+        "stage87_decision": "PASS_STAGE87_H14_BACKEND_FROM_DFT_ADD_PREFLIGHT_PROMOTION_CANDIDATE",
+    }
+    problems = []
+    for gate, status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+    detail = (
+        "Stage87 records H14 backend FromDFT-add as a one-run promotion candidate without promoting code"
+        if not problems and rows
+        else "; ".join(problems) or "Stage87 backend FromDFT-add preflight missing"
+    )
+    return [
+        row(
+            "S42-STAGE87-H14-BACKEND-FROM-DFT-ADD",
+            "implementation_preflight",
+            pass_fail(not problems and bool(rows)),
+            STAGE87_H14_BACKEND_FROM_DFT_ADD.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage87 before opening Stage88 repeated/noise/resource gates.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -2792,6 +2869,10 @@ def check_run_log() -> List[Dict[str, str]]:
     for r in rows:
         if r.get("run_id") == "stage86-secondary-cmux-materialization-001":
             stage86_status = r.get("status", "MISSING")
+    stage87_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage87-h14-backend-from-dft-add-preflight-001":
+            stage87_status = r.get("status", "MISSING")
     ok = (
         ok
         and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
@@ -2814,11 +2895,12 @@ def check_run_log() -> List[Dict[str, str]]:
         and stage83_status == "PASS_STAGE83_MAT_BODY_DESIGN_CHECK_SELECT_R6_TILE_SWEEP_PREFLIGHT"
         and stage84_status == "PASS_STAGE84_H13_R6_TILE_SWEEP_KERNEL_ONLY_NOT_PROMOTED"
         and stage86_status == "PASS_STAGE86_SECONDARY_CMUX_MATERIALIZATION_SELECT_BACKEND_PREFLIGHT"
+        and stage87_status == "PASS_STAGE87_H14_BACKEND_FROM_DFT_ADD_PREFLIGHT_PROMOTION_CANDIDATE"
     )
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}; stage87 status={stage87_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}; stage87 status={stage87_status}"
     )
     return [
         row(
@@ -2840,8 +2922,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, Stage82, Stage83, Stage84, or Stage86 control-plane artifacts.",
+            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, Stage82, Stage83, Stage84, Stage86, or Stage87 control-plane artifacts.",
         )
     ]
 
@@ -3189,6 +3271,28 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
     "algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md",
     "repro/stage86_secondary_cmux_materialization/candidates.csv",
     "repro/stage86_secondary_cmux_materialization/decision.csv",
+    "docs/stage87_h14_backend_from_dft_add_preflight_log.md",
+    "experiments/stage87_h14_backend_from_dft_add_preflight_plan.md",
+    "scripts/run_stage87_h14_backend_from_dft_add_preflight.sh",
+    "scripts/build_stage87_h14_backend_from_dft_add_preflight.py",
+    "src/mosfhet/Makefile.def",
+    "src/mosfhet/include/mosfhet.h",
+    "src/mosfhet/src/polynomial.c",
+    "src/mosfhet/src/pvwtmlwe.c",
+    "src/mosfhet/src/fft/spqlios/fft_processor_spqlios.c",
+    "src/mosfhet/src/fft/spqlios/spqlios-fft.h",
+    "src/mosfhet/src/fft/ffnt/ffnt.c",
+    "src/mosfhet/src/fft/ffnt/ffnt.h",
+    "repro/stage87_h14_backend_from_dft_add_preflight/kernel_build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/kernel_run.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/target_build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/target_run.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_wrapper_r6/build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_wrapper_r6/run_0.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/build.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/run_0.log",
+    "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_smoke.csv",
+    "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv",
 ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -3197,7 +3301,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, Stage82, Stage83, Stage84, and Stage86 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, Stage82, Stage83, Stage84, Stage86, and Stage87 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -3281,6 +3385,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage83_mat_body_design_check,
         check_stage84_h13_r6_tile_sweep_preflight,
         check_stage86_secondary_cmux_materialization,
+        check_stage87_h14_backend_from_dft_add_preflight,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -3300,10 +3405,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, and Stage86 secondary CMUX materialization design gate; stronger claims remain blocked"
+            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, Stage86 secondary CMUX materialization design gate, and Stage87 H14 backend FromDFT-add preflight; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87 evidence closure.",
         )
     )
     return checks
@@ -3330,7 +3435,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "Stage 42 machine-checks whether the Stage 19-62 PVW/MAT-SAB evidence",
         "chain plus Stage64A post-variant refresh, the Stage65A optional",
         "negative variant, Stage66A post-variant final recheck, Stage67",
-        "final-recheck Stage66A integration, and Stage68-86 control-plane",
+        "final-recheck Stage66A integration, and Stage68-87 control-plane",
         "closure extensions remain internally",
         "consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",

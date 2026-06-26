@@ -1,0 +1,3 @@
+variant,r,status,reps,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,source_log
+wrapper,6,Pass,1,40196035.000,6699339.167,53309280.000,8884880.000,1.326,repro/stage87_h14_backend_from_dft_add_preflight/full_sab_wrapper_r6/run_0.log
+backend,6,Pass,1,38284667.000,6380777.833,54762327.000,9127054.500,1.430,repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/run_0.log

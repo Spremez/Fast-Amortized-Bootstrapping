@@ -762,6 +762,14 @@ static void pvmtmlwe_addto_torus_poly(TorusPolynomial out, TorusPolynomial in){
 
 void pvmtmlwe_from_DFT_add(PVW_TMLWE out, PVW_TMLWE_DFT in,
     PVW_TMLWE addend){
+#ifdef SAB_PVW_BACKEND_FROM_DFT_ADD
+  for (size_t i = 0; i < in->k; i++){
+    polynomial_DFT_to_torus_add(out->a[i], in->a[i], addend->a[i]);
+  }
+  for (size_t i = 0; i < in->r; i++){
+    polynomial_DFT_to_torus_add(out->b[i], in->b[i], addend->b[i]);
+  }
+#else
   for (size_t i = 0; i < in->k; i++){
     polynomial_DFT_to_torus(out->a[i], in->a[i]);
     pvmtmlwe_addto_torus_poly(out->a[i], addend->a[i]);
@@ -770,6 +778,7 @@ void pvmtmlwe_from_DFT_add(PVW_TMLWE out, PVW_TMLWE_DFT in,
     polynomial_DFT_to_torus(out->b[i], in->b[i]);
     pvmtmlwe_addto_torus_poly(out->b[i], addend->b[i]);
   }
+#endif
 }
 
 PVW_TMLWE_KS_Key pvmtmlwe_new_KS_key(PVW_TMLWE_Key out_key, PVW_TMLWE_Key in_key, int t, int base_bit){

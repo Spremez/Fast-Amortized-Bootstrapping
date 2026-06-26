@@ -116,5 +116,34 @@ H14-C1 can only support a claim after:
 - noise/resource gates if complete SAB is positive;
 - Stage42/51/57/59/68 closure refresh.
 
-Until then, H14 remains `[experiment pending]` and `[implementation-only
-constant-factor hypothesis]`.
+Stage87 now satisfies the first complete-SAB smoke gate, but not the repeated
+or noise/resource gates. H14 remains `[implementation-only constant-factor
+hypothesis]` and `[not promoted]`.
+
+## Stage87 Preflight Result
+
+Stage87 implements H14-C1 as `SAB_PVW_BACKEND_FROM_DFT_ADD`. The code path:
+
+1. keeps scalar SAB unchanged;
+2. keeps the MAT key format and encrypted selector semantics unchanged;
+3. routes `pvmtmlwe_from_DFT_add()` to `polynomial_DFT_to_torus_add()` only
+   when the explicit flag is enabled;
+4. adds backend torus64 output conversion functions that combine inverse-DFT
+   materialization and addend accumulation in the final writeback loop.
+
+Correctness gates:
+
+- WSL `spqlios_avx512` staged CMUX/NCMUX/RGSW/MAT gate passes.
+- WSL target full-output r=2 gate passes.
+- r=6 one-run full-SAB wrapper and backend paths both pass correctness.
+
+One-run r=6 full-SAB smoke:
+
+| variant | PVW latency us | scalar repeated us | speedup vs scalar |
+|---|---:|---:|---:|
+| wrapper fused FromDFT-add | `40196035.000` | `53309280.000` | `1.326x` |
+| backend FromDFT-add | `38284667.000` | `54762327.000` | `1.430x` |
+
+The backend-vs-wrapper latency ratio is `1.049925x`. This is positive smoke
+evidence only. It opens Stage88 repeated/noise/resource gates; it does not
+promote the flag or upgrade the final bootstrapping claim.

@@ -178,3 +178,53 @@ void execute_direct_torus64(uint64_t* res, const double* a, FFT_Processor_Spqlio
     }
     #endif
 }
+
+void execute_direct_torus64_add(uint64_t* res, const double* a,
+        const uint64_t* addend, FFT_Processor_Spqlios proc) {
+    double _2sN = ((double) 2) / ((double) proc->N);
+    {
+    double* dst = proc->real_inout_direct;
+	const double* sit = a;
+	const double* send = a+proc->N;
+	const double* bla = &_2sN;
+	__asm__ __volatile__ (
+		"vbroadcastsd (%3),%%ymm2\n"
+		"1:\n"
+		"vmovupd (%1),%%ymm0\n"
+		"vmulpd	%%ymm2,%%ymm0,%%ymm0\n"
+		"vmovapd %%ymm0,(%0)\n"
+		"addq $32,%1\n"
+		"addq $32,%0\n"
+		"cmpq %2,%1\n"
+		"jb 1b\n"
+		: "=r"(dst),"=r"(sit),"=r"(send),"=r"(bla)
+		: "0"(dst),"1"(sit),"2"(send),"3"(bla)
+		: "%ymm0","%ymm2","memory"
+		);
+    }
+    fft(proc->tables_direct,proc->real_inout_direct);
+    #ifdef AVX512_OPT
+    __m512d * ri512 = (__m512d *) proc->real_inout_direct;
+    __m512i * res512 = (__m512i *) res;
+    const __m512i * add512 = (const __m512i *) addend;
+    const __m512d modc = {64, 64, 64, 64, 64, 64, 64, 64};
+    for (size_t i = 0; i < proc->N/8; i++) {
+        const __m512d _1 = _mm512_scalef_pd (ri512[i], -modc);
+        const __m512d _2 = _mm512_reduce_pd (_1, 0);
+        const __m512d _3 = _mm512_scalef_pd (_2, modc);
+        res512[i] = _mm512_add_epi64(_mm512_cvtpd_epi64 (_3), add512[i]);
+    }
+    #else
+    const uint64_t* const vals = (const uint64_t*) proc->real_inout_direct;
+    static const uint64_t valmask0 = 0x000FFFFFFFFFFFFFul;
+    static const uint64_t valmask1 = 0x0010000000000000ul;
+    static const uint16_t expmask0 = 0x07FFu;
+    for (int i=0; i<proc->N; i++) {
+        uint64_t val = (vals[i]&valmask0)|valmask1;
+        uint16_t expo = (vals[i]>>52)&expmask0;
+        int16_t trans = expo-1075;
+        uint64_t val2 = trans>0?(val<<trans):(val>>-trans);
+        res[i]=((vals[i]>>63)?-val2:val2) + addend[i];
+    }
+    #endif
+}

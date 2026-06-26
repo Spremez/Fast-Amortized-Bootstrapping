@@ -100,6 +100,9 @@ STAGE84_H13_R6_TILE_SWEEP = (
 STAGE86_SECONDARY_CMUX_MATERIALIZATION = (
     ROOT / "repro" / "stage86_secondary_cmux_materialization" / "decision.csv"
 )
+STAGE87_H14_BACKEND_FROM_DFT_ADD = (
+    ROOT / "repro" / "stage87_h14_backend_from_dft_add_preflight" / "summary.csv"
+)
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -234,6 +237,9 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage84 = {row.get("gate"): row for row in read_csv(STAGE84_H13_R6_TILE_SWEEP)}
     stage86 = {
         row.get("gate"): row for row in read_csv(STAGE86_SECONDARY_CMUX_MATERIALIZATION)
+    }
+    stage87 = {
+        row.get("gate"): row for row in read_csv(STAGE87_H14_BACKEND_FROM_DFT_ADD)
     }
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
@@ -1055,6 +1061,21 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         stage42.get("S42-STAGE86-SECONDARY-CMUX-MATERIALIZATION", {}).get("status")
         == "PASS"
     )
+    stage87_mismatches = []
+    expected_stage87 = {
+        "stage87_explicit_flag": "PASS_EXPLICIT_FLAG",
+        "stage87_correctness_smoke": "PASS",
+        "stage87_full_sab_smoke": "PASS_FULL_SAB_POSITIVE",
+        "stage87_decision": "PASS_STAGE87_H14_BACKEND_FROM_DFT_ADD_PREFLIGHT_PROMOTION_CANDIDATE",
+    }
+    for gate, expected in expected_stage87.items():
+        got = stage87.get(gate, {}).get("status", "MISSING")
+        if got != expected:
+            stage87_mismatches.append(f"{gate}:status={got}")
+    stage42_stage87_ok = (
+        stage42.get("S42-STAGE87-H14-BACKEND-FROM-DFT-ADD", {}).get("status")
+        == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -1129,6 +1150,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage83-mat-body-design-check-001",
         "stage84-h13-r6-tile-sweep-preflight-001",
         "stage86-secondary-cmux-materialization-001",
+        "stage87-h14-backend-from-dft-add-preflight-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -1454,6 +1476,28 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md",
         "repro/stage86_secondary_cmux_materialization/candidates.csv",
         "repro/stage86_secondary_cmux_materialization/decision.csv",
+        "docs/stage87_h14_backend_from_dft_add_preflight_log.md",
+        "experiments/stage87_h14_backend_from_dft_add_preflight_plan.md",
+        "scripts/run_stage87_h14_backend_from_dft_add_preflight.sh",
+        "scripts/build_stage87_h14_backend_from_dft_add_preflight.py",
+        "src/mosfhet/Makefile.def",
+        "src/mosfhet/include/mosfhet.h",
+        "src/mosfhet/src/polynomial.c",
+        "src/mosfhet/src/pvwtmlwe.c",
+        "src/mosfhet/src/fft/spqlios/fft_processor_spqlios.c",
+        "src/mosfhet/src/fft/spqlios/spqlios-fft.h",
+        "src/mosfhet/src/fft/ffnt/ffnt.c",
+        "src/mosfhet/src/fft/ffnt/ffnt.h",
+        "repro/stage87_h14_backend_from_dft_add_preflight/kernel_build.log",
+        "repro/stage87_h14_backend_from_dft_add_preflight/kernel_run.log",
+        "repro/stage87_h14_backend_from_dft_add_preflight/target_build.log",
+        "repro/stage87_h14_backend_from_dft_add_preflight/target_run.log",
+        "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_wrapper_r6/build.log",
+        "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_wrapper_r6/run_0.log",
+        "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/build.log",
+        "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/run_0.log",
+        "repro/stage87_h14_backend_from_dft_add_preflight/full_sab_smoke.csv",
+        "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -1944,6 +1988,18 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             ),
         },
         {
+            "check": "stage87_h14_backend_from_dft_add_preflight",
+            "status": "PASS" if not stage87_mismatches and stage42_stage87_ok else "FAIL",
+            "evidence": "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv",
+            "detail": "Stage87 records H14 backend FromDFT-add as a one-run promotion candidate without promoting code"
+            if not stage87_mismatches and stage42_stage87_ok
+            else "; ".join(stage87_mismatches)
+            or (
+                "S42-STAGE87-H14-BACKEND-FROM-DFT-ADD:"
+                f"{stage42.get('S42-STAGE87-H14-BACKEND-FROM-DFT-ADD', {}).get('status', 'MISSING')}!=PASS"
+            ),
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -1971,7 +2027,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -1979,7 +2035,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, and Stage86 secondary CMUX materialization design gate are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, Stage86 secondary CMUX materialization design gate, and Stage87 H14 backend FromDFT-add preflight are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },
