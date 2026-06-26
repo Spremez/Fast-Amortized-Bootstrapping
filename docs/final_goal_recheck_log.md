@@ -24,7 +24,8 @@ bash scripts/run_final_goal_recheck.sh
 The default intentionally skips the network citation probe, related-work
 source-access probe, and current-commit smoke. It refreshes the local/perf
 gate, final package, optional external evidence intake, conditional backlog
-audit, final audit, and Stage 42 evidence-closure audit. It also skips the
+audit, final audit, remaining blocker dashboard, and Stage 42
+evidence-closure audit. It also skips the
 Stage 44 external-unlock re-probe unless explicitly requested. Use
 `FINAL_RECHECK_CITATION=1` only when intentionally refreshing external
 full-text access evidence. Use `FINAL_RECHECK_RELATED_WORK=1` when
@@ -54,6 +55,7 @@ repro/final_goal_recheck/external_evidence_intake.log
 repro/final_goal_recheck/stage33_current_smoke.log
 repro/final_goal_recheck/conditional_backlog_audit.log
 repro/final_goal_recheck/final_goal_audit.log
+repro/final_goal_recheck/remaining_blocker_dashboard.log
 ```
 
 Observed decision:
@@ -150,6 +152,7 @@ FINAL_RECHECK_EXTERNAL_INTAKE=0 \
 FINAL_RECHECK_CURRENT_SMOKE=0 \
 FINAL_RECHECK_CONDITIONAL_BACKLOG=0 \
 FINAL_RECHECK_GOAL_AUDIT=0 \
+FINAL_RECHECK_REMAINING_BLOCKERS=0 \
 bash scripts/run_final_goal_recheck.sh
 ```
 
@@ -186,6 +189,7 @@ FINAL_RECHECK_EXTERNAL_INTAKE=0 \
 FINAL_RECHECK_CURRENT_SMOKE=0 \
 FINAL_RECHECK_CONDITIONAL_BACKLOG=0 \
 FINAL_RECHECK_GOAL_AUDIT=0 \
+FINAL_RECHECK_REMAINING_BLOCKERS=0 \
 FINAL_RECHECK_STAGE42_CLOSURE=1 \
 bash scripts/run_final_goal_recheck.sh
 ```
@@ -207,6 +211,15 @@ The default recheck now runs `scripts/build_conditional_backlog_audit.py`
 before the final audit and Stage 42 closure audit. Set
 `FINAL_RECHECK_CONDITIONAL_BACKLOG=0` only for deliberately narrow recheck
 modes that are not refreshing backlog state.
+
+## Remaining Blocker Dashboard
+
+The default recheck now runs `scripts/build_remaining_blocker_dashboard.py`
+after regenerating the final audit. This produces
+`docs/remaining_blocker_dashboard.md` and
+`repro/remaining_blocker_dashboard.csv`, a unified view of CB5/CB6/CB7 and the
+commands needed to unlock stronger claims. Set
+`FINAL_RECHECK_REMAINING_BLOCKERS=0` only for deliberately narrow recheck modes.
 
 ## Stage44 External Re-probe Recheck
 
@@ -238,6 +251,7 @@ The 2026-06-26 Stage44-explicit recheck passed:
 ```text
 stage44_external_reprobe = PASS
 final_goal_audit = PASS
+remaining_blocker_dashboard = PASS
 stage42_evidence_closure = PASS
 final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 ```

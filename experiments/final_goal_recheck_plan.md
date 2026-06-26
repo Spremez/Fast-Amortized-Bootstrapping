@@ -30,6 +30,7 @@ Default behavior:
   `STAGE28_NATIVE_PERF_SUMMARY` when supplied;
 - regenerate the conditional backlog audit;
 - regenerate the final goal completion audit;
+- regenerate the remaining blocker dashboard;
 - regenerate the Stage 42 evidence-closure audit unless explicitly disabled.
 
 To refresh full-text/citation availability:
@@ -86,6 +87,7 @@ FINAL_RECHECK_EXTERNAL_INTAKE=0 \
 FINAL_RECHECK_CURRENT_SMOKE=0 \
 FINAL_RECHECK_CONDITIONAL_BACKLOG=0 \
 FINAL_RECHECK_GOAL_AUDIT=0 \
+FINAL_RECHECK_REMAINING_BLOCKERS=0 \
 FINAL_RECHECK_STAGE44_REPROBE=0 \
 FINAL_RECHECK_STAGE42_CLOSURE=1 \
 bash scripts/run_final_goal_recheck.sh
@@ -129,6 +131,8 @@ bash scripts/run_final_goal_recheck.sh
   load/store claims.
 - Registered external evidence changes final audit state to review-required,
   not automatically complete.
+- A skipped remaining blocker dashboard does not refresh the unified CB5/CB6/CB7
+  unlock summary.
 - A skipped Stage 42 closure audit does not prove the Stage 19+ evidence chain
   is internally closed.
 - The final decision is read from `repro/final_goal_completion_audit.csv` row
@@ -147,6 +151,7 @@ repro/final_goal_recheck/stage33_current_smoke.log
 repro/final_goal_recheck/conditional_backlog_audit.log
 repro/final_goal_recheck/stage44_external_reprobe.log
 repro/final_goal_recheck/final_goal_audit.log
+repro/final_goal_recheck/remaining_blocker_dashboard.log
 repro/final_goal_recheck/stage42_evidence_closure.log
 ```
 

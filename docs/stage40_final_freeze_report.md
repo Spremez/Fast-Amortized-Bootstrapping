@@ -12,7 +12,7 @@ The current package is a scoped engineering freeze for the tested binary PVW/MAT
 
 | item | status | detail |
 |---|---|---|
-| freeze_input_commit | 4f890f3 | Commit state observed before writing Stage 40 artifacts. The artifact commit is the git commit that contains these generated files. |
+| freeze_input_commit | 9972036 | Commit state observed before writing Stage 40 artifacts. The artifact commit is the git commit that contains these generated files. |
 | final_audit_A9 | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED | complete scoped engineering acceleration evidence exists; novelty/theory/all-parameter claims are not complete |
 | stage39_overall | NO_NEW_VARIANT_PROMOTED_CURRENTLY | The promoted active-buffer MAT-SAB path already has scoped engineering evidence; remaining stronger claims are external or optional rather than an immediate new-code requirement. |
 | external_blockers | PRESERVED | A8=BLOCKED_EXTERNAL; A8b=MISSING_OPTIONAL_EXTERNAL_EVIDENCE |

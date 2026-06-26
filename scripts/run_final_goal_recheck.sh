@@ -9,6 +9,7 @@ run_external_intake="${FINAL_RECHECK_EXTERNAL_INTAKE:-1}"
 run_current_smoke="${FINAL_RECHECK_CURRENT_SMOKE:-0}"
 run_conditional_backlog="${FINAL_RECHECK_CONDITIONAL_BACKLOG:-1}"
 run_goal_audit="${FINAL_RECHECK_GOAL_AUDIT:-1}"
+run_remaining_blockers="${FINAL_RECHECK_REMAINING_BLOCKERS:-1}"
 run_postfreeze_verify="${FINAL_RECHECK_POSTFREEZE_VERIFY:-0}"
 run_stage44_reprobe="${FINAL_RECHECK_STAGE44_REPROBE:-0}"
 stage44_run_native_bench="${FINAL_RECHECK_STAGE44_RUN_NATIVE_BENCH:-1}"
@@ -25,6 +26,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_current_smoke" == "0" \
   && "$run_conditional_backlog" == "0" \
   && "$run_goal_audit" == "0" \
+  && "$run_remaining_blockers" == "0" \
   && "$run_stage44_reprobe" == "0" ]]; then
   run_stage42_closure="0"
 else
@@ -42,6 +44,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_current_smoke" == "0" \
   && "$run_conditional_backlog" == "0" \
   && "$run_goal_audit" == "0" \
+  && "$run_remaining_blockers" == "0" \
   && "$run_stage44_reprobe" == "0" \
   && "$run_stage42_closure" == "0" ]]; then
   out_dir="repro/final_goal_recheck_postfreeze"
@@ -206,6 +209,16 @@ else
     "$python_bin scripts/build_final_goal_completion_audit.py" \
     "" \
     "Set FINAL_RECHECK_GOAL_AUDIT=1 to regenerate final goal completion audit."
+fi
+
+if [[ "$run_remaining_blockers" == "1" ]]; then
+  run_logged "remaining_blocker_dashboard" \
+    "$python_bin scripts/build_remaining_blocker_dashboard.py"
+else
+  csv_row "remaining_blocker_dashboard" "SKIPPED" \
+    "$python_bin scripts/build_remaining_blocker_dashboard.py" \
+    "" \
+    "Set FINAL_RECHECK_REMAINING_BLOCKERS=1 to regenerate the remaining blocker dashboard."
 fi
 
 if [[ "$run_stage42_closure" == "1" ]]; then

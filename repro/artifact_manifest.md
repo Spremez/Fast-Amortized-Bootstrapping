@@ -59,6 +59,7 @@ Code artifacts:
 - `scripts/build_stage27_final_package.py`
 - `scripts/run_stage28_native_perf_counter_gate.sh`
 - `scripts/build_final_goal_completion_audit.py`
+- `scripts/build_remaining_blocker_dashboard.py`
 - `scripts/run_final_goal_recheck.sh`
 - `scripts/register_external_evidence.py`
 - `scripts/run_stage33_current_smoke.sh`
@@ -136,6 +137,7 @@ Documentation artifacts:
 - `docs/stage27_final_engineering_report.md`
 - `docs/stage28_native_perf_counter_gate_log.md`
 - `docs/final_goal_completion_audit.md`
+- `docs/remaining_blocker_dashboard.md`
 - `docs/final_goal_recheck_log.md`
 - `docs/external_evidence_intake_log.md`
 - `docs/stage32_citation_refresh_log.md`
@@ -609,6 +611,7 @@ Repro artifacts:
 - `repro/stage28_native_perf_counter_gate/environment.log`
 - `repro/stage28_native_perf_counter_gate/perf_smoke.log`
 - `repro/final_goal_completion_audit.csv`
+- `repro/remaining_blocker_dashboard.csv`
 - `repro/final_goal_recheck/summary.csv`
 - `repro/final_goal_recheck/stage28_perf_gate.log`
 - `repro/final_goal_recheck/stage27_citation_probe.log`
@@ -618,6 +621,7 @@ Repro artifacts:
 - `repro/final_goal_recheck/stage33_current_smoke.log`
 - `repro/final_goal_recheck/conditional_backlog_audit.log`
 - `repro/final_goal_recheck/final_goal_audit.log`
+- `repro/final_goal_recheck/remaining_blocker_dashboard.log`
 - `repro/final_goal_recheck/stage40_postfreeze_verify.log`
 - `repro/final_goal_recheck/stage42_evidence_closure.log`
 - `repro/final_goal_recheck_postfreeze/summary.csv`
