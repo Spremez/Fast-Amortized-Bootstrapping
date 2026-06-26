@@ -1858,3 +1858,41 @@ Stage 61 ran on the current WSL2 platform. `perf` is missing, so
 `hardware_counter_gate=BLOCKED`; MAT-AVX512 theoretical load/store/FMA
 attribution remains externally blocked.
 ```
+
+## Stage 62: 2025/686 Full-Text Unlock Probe
+
+Goal:
+
+```text
+Rerun the 2025/686 full-text unlock gate and determine whether theorem-level
+protocol citation, complexity, noise/security, and novelty review can start.
+```
+
+Tasks:
+
+- probe official ACM DOI PDF and IACR ePrint PDF direct routes and record
+  access status;
+- run the Stage38 full-text artifact gate into
+  `repro/stage62_fulltext_unlock_probe`;
+- regenerate external evidence intake with the current environment;
+- produce `repro/stage62_fulltext_unlock_probe/unlock_summary.csv` and
+  `docs/stage62_fulltext_unlock_probe_log.md`;
+- add Stage62 to Stage42 closure/verifier checks.
+
+Gate:
+
+- if no recognized `FAB686_FULLTEXT_PATH` artifact is supplied, Stage62 must
+  stay in `WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW`;
+- direct-route 403/Cloudflare blocks are recorded evidence, not an unlock;
+- theorem-level, algorithm/table/figure/experiment-number, and novelty claims
+  remain blocked until a full-text artifact is registered and manually mapped
+  to source anchors.
+
+Status:
+
+```text
+Stage 62 ran on the current WSL2/network path. ACM DOI PDF and IACR ePrint PDF
+direct routes are blocked by Cloudflare/403 challenge, and no local
+`FAB686_FULLTEXT_PATH` artifact is registered. Stage62 remains
+WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW.
+```

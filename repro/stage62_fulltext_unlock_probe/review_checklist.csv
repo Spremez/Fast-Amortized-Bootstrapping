@@ -1,0 +1,7 @@
+review_item,required_evidence,status,paper_anchor,notes
+FAB_PROTOCOL_STAGES,"Map setup_tv_xb, blind rotation, sparse_mul/RGSW monomial, external product, extract, and KS to page/section evidence.",BLOCKED_FULLTEXT_MISSING,,No theorem-level or novelty claim may be upgraded until this row has concrete source anchors.
+FAB_COMPLEXITY_MODEL,"Map the h, r_prec, N, and external-product count formulas to paper equations or algorithm text.",BLOCKED_FULLTEXT_MISSING,,No theorem-level or novelty claim may be upgraded until this row has concrete source anchors.
+FAB_CORRECTNESS_NOISE,Map correctness/noise theorem assumptions to the implemented parameter and noise gates.,BLOCKED_FULLTEXT_MISSING,,No theorem-level or novelty claim may be upgraded until this row has concrete source anchors.
+FAB_PARAMETER_SECURITY,Map parameter-security assumptions and supported branches to the tested binary parameter scope.,BLOCKED_FULLTEXT_MISSING,,No theorem-level or novelty claim may be upgraded until this row has concrete source anchors.
+PVW_SAB_DELTA,Identify exactly where PVW/MAT shared-mask multi-body batching changes the base SAB implementation.,BLOCKED_FULLTEXT_MISSING,,No theorem-level or novelty claim may be upgraded until this row has concrete source anchors.
+NOVELTY_BOUNDARY,Check whether SAB-specific integration or schedule changes remain novel after base-paper and related-work review.,BLOCKED_FULLTEXT_MISSING,,No theorem-level or novelty claim may be upgraded until this row has concrete source anchors.

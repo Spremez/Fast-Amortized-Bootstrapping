@@ -1,0 +1,3 @@
+item,status,kind,path,sha256,size_bytes,detail
+fulltext_artifact,MISSING,paper_fulltext,,,,FAB686_FULLTEXT_PATH was not provided.
+stage38_decision,BLOCKED_FULLTEXT_MISSING,review_gate,,,,Theorem-level 2025/686 citation and novelty review remain blocked.

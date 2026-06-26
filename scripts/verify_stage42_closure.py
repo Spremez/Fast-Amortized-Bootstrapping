@@ -36,6 +36,7 @@ STAGE58_FINAL_RECHECK_STAGE57 = ROOT / "repro" / "stage58_final_recheck_stage57"
 STAGE59_COMPLETION_ROUTE = ROOT / "repro" / "stage59_completion_route_readiness.csv"
 STAGE60_FINAL_RECHECK_STAGE59 = ROOT / "repro" / "stage60_final_recheck_stage59" / "summary.csv"
 STAGE61_NATIVE_PERF_UNLOCK = ROOT / "repro" / "stage61_native_perf_unlock_probe" / "summary.csv"
+STAGE62_FULLTEXT_UNLOCK = ROOT / "repro" / "stage62_fulltext_unlock_probe" / "unlock_summary.csv"
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -137,6 +138,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage59 = {row.get("route_id"): row for row in read_csv(STAGE59_COMPLETION_ROUTE)}
     stage60 = {row.get("step"): row for row in read_csv(STAGE60_FINAL_RECHECK_STAGE59)}
     stage61 = {row.get("probe"): row for row in read_csv(STAGE61_NATIVE_PERF_UNLOCK)}
+    stage62 = {row.get("gate"): row for row in read_csv(STAGE62_FULLTEXT_UNLOCK)}
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
     closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
@@ -484,6 +486,32 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage42_stage61_ok = (
         stage42.get("S42-STAGE61-NATIVE-PERF-UNLOCK", {}).get("status") == "PASS"
     )
+    stage62_mismatches = []
+    stage62_decision = stage62.get("stage62_decision", {}).get("status", "MISSING")
+    stage62_artifact = stage62.get("stage38_fulltext_artifact", {}).get("status", "MISSING")
+    stage62_stage38 = stage62.get("stage38_decision", {}).get("status", "MISSING")
+    stage62_external = stage62.get("external_fulltext_intake", {}).get("status", "MISSING")
+    stage62_checklist = stage62.get("stage38_review_checklist", {}).get("status", "MISSING")
+    if stage62_decision not in {
+        "WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW",
+        "FULLTEXT_AVAILABLE_REVIEW_REQUIRED",
+    }:
+        stage62_mismatches.append(f"stage62_decision:status={stage62_decision}")
+    if stage62_decision == "WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW":
+        expected = {
+            "stage38_fulltext_artifact": stage62_artifact == "MISSING",
+            "stage38_decision": stage62_stage38 == "BLOCKED_FULLTEXT_MISSING",
+            "external_fulltext_intake": stage62_external == "MISSING",
+            "stage38_review_checklist": "BLOCKED_FULLTEXT_MISSING" in stage62_checklist,
+        }
+        for item, ok in expected.items():
+            if not ok:
+                stage62_mismatches.append(f"{item}:unexpected")
+    if stage62_decision == "FULLTEXT_AVAILABLE_REVIEW_REQUIRED" and stage62_artifact != "AVAILABLE_UNREVIEWED":
+        stage62_mismatches.append(f"stage38_fulltext_artifact:status={stage62_artifact}")
+    stage42_stage62_ok = (
+        stage42.get("S42-STAGE62-FULLTEXT-UNLOCK", {}).get("status") == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -535,6 +563,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage59-completion-route-readiness-001",
         "stage60-final-recheck-stage59-001",
         "stage61-native-perf-unlock-probe-001",
+        "stage62-fulltext-unlock-probe-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -634,6 +663,15 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "repro/stage61_native_perf_unlock_probe/summary.csv",
         "repro/stage61_native_perf_unlock_probe/environment.log",
         "repro/stage61_native_perf_unlock_probe/perf_smoke.log",
+        "docs/stage62_fulltext_unlock_probe_log.md",
+        "scripts/build_stage62_fulltext_unlock_probe.py",
+        "repro/stage62_fulltext_unlock_probe/unlock_summary.csv",
+        "repro/stage62_fulltext_unlock_probe/summary.csv",
+        "repro/stage62_fulltext_unlock_probe/review_checklist.csv",
+        "repro/stage62_fulltext_unlock_probe/acm_pdf_head.log",
+        "repro/stage62_fulltext_unlock_probe/acm_pdf_head.err",
+        "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.log",
+        "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.err",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -857,6 +895,15 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             or f"S42-STAGE61-NATIVE-PERF-UNLOCK:{stage42.get('S42-STAGE61-NATIVE-PERF-UNLOCK', {}).get('status', 'MISSING')}!=PASS",
         },
         {
+            "check": "stage62_fulltext_unlock_probe",
+            "status": "PASS" if not stage62_mismatches and stage42_stage62_ok else "FAIL",
+            "evidence": "repro/stage62_fulltext_unlock_probe/unlock_summary.csv",
+            "detail": "Stage62 full-text unlock probe is recorded; current environment still needs a full-text artifact"
+            if not stage62_mismatches and stage42_stage62_ok
+            else "; ".join(stage62_mismatches)
+            or f"S42-STAGE62-FULLTEXT-UNLOCK:{stage42.get('S42-STAGE62-FULLTEXT-UNLOCK', {}).get('status', 'MISSING')}!=PASS",
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -884,7 +931,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -892,7 +939,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, and Stage61 native perf unlock probe are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, and Stage62 full-text unlock probe are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

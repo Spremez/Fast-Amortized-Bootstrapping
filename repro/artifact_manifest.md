@@ -877,3 +877,17 @@ Repro artifacts:
 - `repro/stage61_native_perf_unlock_probe/summary.csv`
 - `repro/stage61_native_perf_unlock_probe/environment.log`
 - `repro/stage61_native_perf_unlock_probe/perf_smoke.log`
+
+## Stage 62 Full-Text Unlock Probe
+
+- `docs/stage62_fulltext_unlock_probe_log.md`
+- `scripts/build_stage62_fulltext_unlock_probe.py`
+- `repro/stage62_fulltext_unlock_probe/unlock_summary.csv`
+- `repro/stage62_fulltext_unlock_probe/summary.csv`
+- `repro/stage62_fulltext_unlock_probe/review_checklist.csv`
+- `repro/stage62_fulltext_unlock_probe/fulltext_gate.log`
+- `repro/stage62_fulltext_unlock_probe/acm_pdf_head.log`
+- `repro/stage62_fulltext_unlock_probe/acm_pdf_head.err`
+- `repro/stage62_fulltext_unlock_probe/eprint_pdf_head.log`
+- `repro/stage62_fulltext_unlock_probe/eprint_pdf_head.err`
+- `repro/external_evidence_intake/summary.csv`

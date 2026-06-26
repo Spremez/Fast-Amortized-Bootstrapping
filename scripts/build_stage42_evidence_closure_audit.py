@@ -2,7 +2,7 @@
 """Build the Stage 42 evidence-closure audit.
 
 This script checks whether the current scoped PVW/MAT-SAB evidence chain is
-internally consistent through Stage 61. It does not run benchmarks or upgrade
+internally consistent through Stage 62. It does not run benchmarks or upgrade
 claims; it verifies that the committed artifacts still support the recorded
 scope.
 """
@@ -48,6 +48,7 @@ STAGE58_FINAL_RECHECK_STAGE57 = ROOT / "repro" / "stage58_final_recheck_stage57"
 STAGE59_COMPLETION_ROUTE = ROOT / "repro" / "stage59_completion_route_readiness.csv"
 STAGE60_FINAL_RECHECK_STAGE59 = ROOT / "repro" / "stage60_final_recheck_stage59" / "summary.csv"
 STAGE61_NATIVE_PERF_UNLOCK = ROOT / "repro" / "stage61_native_perf_unlock_probe" / "summary.csv"
+STAGE62_FULLTEXT_UNLOCK = ROOT / "repro" / "stage62_fulltext_unlock_probe" / "unlock_summary.csv"
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -186,6 +187,15 @@ REQUIRED_FILES = [
     "repro/stage61_native_perf_unlock_probe/summary.csv",
     "repro/stage61_native_perf_unlock_probe/environment.log",
     "repro/stage61_native_perf_unlock_probe/perf_smoke.log",
+    "docs/stage62_fulltext_unlock_probe_log.md",
+    "scripts/build_stage62_fulltext_unlock_probe.py",
+    "repro/stage62_fulltext_unlock_probe/unlock_summary.csv",
+    "repro/stage62_fulltext_unlock_probe/summary.csv",
+    "repro/stage62_fulltext_unlock_probe/review_checklist.csv",
+    "repro/stage62_fulltext_unlock_probe/acm_pdf_head.log",
+    "repro/stage62_fulltext_unlock_probe/acm_pdf_head.err",
+    "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.log",
+    "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.err",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -336,6 +346,16 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage61_native_perf_unlock_probe/summary.csv",
     "repro/stage61_native_perf_unlock_probe/environment.log",
     "repro/stage61_native_perf_unlock_probe/perf_smoke.log",
+    "docs/stage62_fulltext_unlock_probe_log.md",
+    "scripts/build_stage62_fulltext_unlock_probe.py",
+    "repro/stage62_fulltext_unlock_probe/unlock_summary.csv",
+    "repro/stage62_fulltext_unlock_probe/summary.csv",
+    "repro/stage62_fulltext_unlock_probe/review_checklist.csv",
+    "repro/stage62_fulltext_unlock_probe/fulltext_gate.log",
+    "repro/stage62_fulltext_unlock_probe/acm_pdf_head.log",
+    "repro/stage62_fulltext_unlock_probe/acm_pdf_head.err",
+    "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.log",
+    "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.err",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -411,7 +431,7 @@ def write_closure_manifest() -> None:
 def check_roadmap() -> List[Dict[str, str]]:
     text = ROADMAP.read_text(encoding="utf-8") if ROADMAP.exists() else ""
     stages = sorted({int(m.group(1)) for m in re.finditer(r"^## Stage (\d+):", text, re.M)})
-    expected = list(range(19, 62))
+    expected = list(range(19, 63))
     return [
         row(
             "S42-ROADMAP-STAGES",
@@ -419,7 +439,7 @@ def check_roadmap() -> List[Dict[str, str]]:
             pass_fail(stages == expected),
             ROADMAP.relative_to(ROOT).as_posix(),
             f"observed={stages}; expected={expected}",
-            "Restore one Stage 19-61 section per stage before using the roadmap as the active plan.",
+            "Restore one Stage 19-62 section per stage before using the roadmap as the active plan.",
         )
     ]
 
@@ -1103,6 +1123,54 @@ def check_stage61_native_perf_unlock() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage62_fulltext_unlock() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE62_FULLTEXT_UNLOCK)}
+    problems = []
+    decision = rows.get("stage62_decision", {}).get("status", "MISSING")
+    stage38_decision = rows.get("stage38_decision", {}).get("status", "MISSING")
+    artifact_status = rows.get("stage38_fulltext_artifact", {}).get("status", "MISSING")
+    external_status = rows.get("external_fulltext_intake", {}).get("status", "MISSING")
+    checklist_status = rows.get("stage38_review_checklist", {}).get("status", "MISSING")
+
+    if decision not in {
+        "WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW",
+        "FULLTEXT_AVAILABLE_REVIEW_REQUIRED",
+    }:
+        problems.append(f"stage62_decision:status={decision}")
+    if decision == "WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW":
+        if stage38_decision != "BLOCKED_FULLTEXT_MISSING":
+            problems.append(f"stage38_decision:status={stage38_decision}")
+        if artifact_status != "MISSING":
+            problems.append(f"stage38_fulltext_artifact:status={artifact_status}")
+        if external_status != "MISSING":
+            problems.append(f"external_fulltext_intake:status={external_status}")
+        if "BLOCKED_FULLTEXT_MISSING" not in checklist_status:
+            problems.append(f"stage38_review_checklist:status={checklist_status}")
+    if decision == "FULLTEXT_AVAILABLE_REVIEW_REQUIRED":
+        if artifact_status != "AVAILABLE_UNREVIEWED":
+            problems.append(f"stage38_fulltext_artifact:status={artifact_status}")
+        if external_status not in {"AVAILABLE_UNREVIEWED", "MISSING"}:
+            problems.append(f"external_fulltext_intake:status={external_status}")
+
+    detail = (
+        "Stage62 full-text unlock probe is recorded; current environment still needs a full-text artifact"
+        if decision == "WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW"
+        else "Stage62 full-text artifact is available; manual review is required"
+        if decision == "FULLTEXT_AVAILABLE_REVIEW_REQUIRED"
+        else "; ".join(problems) or "Stage62 full-text unlock summary missing or empty"
+    )
+    return [
+        row(
+            "S42-STAGE62-FULLTEXT-UNLOCK",
+            "external_unlock",
+            pass_fail(not problems and bool(rows)),
+            STAGE62_FULLTEXT_UNLOCK.relative_to(ROOT).as_posix(),
+            detail,
+            "Supply FAB686_FULLTEXT_PATH and rerun Stage62 before theorem-level or novelty claim upgrades.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -1249,14 +1317,14 @@ def check_run_log() -> List[Dict[str, str]]:
                 n = int(stage.split()[1])
             except (IndexError, ValueError):
                 continue
-            if 19 <= n <= 61:
+            if 19 <= n <= 62:
                 stages[n] = stages.get(n, 0) + 1
         if r.get("run_id") == "stage41-external-unlock-packet-001":
             stage41_status = r.get("status", "MISSING")
-    missing = [n for n in range(19, 62) if n not in stages]
+    missing = [n for n in range(19, 63) if n not in stages]
     ok = not missing and stage41_status == "WAIT_EXTERNAL_EVIDENCE"
     detail = (
-        f"stages 19-61 registered; stage41 status={stage41_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}"
         if ok
         else f"missing_stages={missing}; stage41 status={stage41_status}"
     )
@@ -1280,8 +1348,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-61 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-61 control-plane artifacts.",
+            "all required Stage 41-62 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62 control-plane artifacts.",
         )
     ]
 
@@ -1403,6 +1471,15 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/stage61_native_perf_unlock_probe/summary.csv",
         "repro/stage61_native_perf_unlock_probe/environment.log",
         "repro/stage61_native_perf_unlock_probe/perf_smoke.log",
+        "docs/stage62_fulltext_unlock_probe_log.md",
+        "scripts/build_stage62_fulltext_unlock_probe.py",
+        "repro/stage62_fulltext_unlock_probe/unlock_summary.csv",
+        "repro/stage62_fulltext_unlock_probe/summary.csv",
+        "repro/stage62_fulltext_unlock_probe/review_checklist.csv",
+        "repro/stage62_fulltext_unlock_probe/acm_pdf_head.log",
+        "repro/stage62_fulltext_unlock_probe/acm_pdf_head.err",
+        "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.log",
+        "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.err",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -1411,7 +1488,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, and Stage 61 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, and Stage 62 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -1472,6 +1549,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage59_completion_route,
         check_stage60_final_recheck_stage59,
         check_stage61_native_perf_unlock,
+        check_stage62_fulltext_unlock,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -1490,10 +1568,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            "Stage 19-61 scoped evidence chain is internally closed; stronger claims remain blocked"
+            "Stage 19-62 scoped evidence chain is internally closed; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-61 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 evidence closure.",
         )
     )
     return checks
@@ -1517,7 +1595,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "",
         "## Purpose",
         "",
-        "Stage 42 machine-checks whether the Stage 19-61 PVW/MAT-SAB evidence",
+        "Stage 42 machine-checks whether the Stage 19-62 PVW/MAT-SAB evidence",
         "chain remains internally consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",
         "",
