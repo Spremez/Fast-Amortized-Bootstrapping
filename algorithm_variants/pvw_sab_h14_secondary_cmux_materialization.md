@@ -6,14 +6,15 @@
 - Focused module: CMUX materialization after MAT external product.
 - Optimization target: complete SAB throughput through reduced materialization
   memory traffic.
-- Status labels: `[Stage88 repeated positive]`, `[implementation-only
-  constant-factor hypothesis]`, `[promotion-policy pending]`.
+- Status labels: `[Stage89 explicit-path promoted]`, `[implementation-only
+  constant-factor hypothesis]`, `[default unchanged]`.
 - Main hypothesis: moving the add-back inside the inverse DFT materialization
   backend reduces torus-domain load/store traffic relative to the current
   wrapper-level `pvmtmlwe_from_DFT_add` path. Stage87 records a positive
   one-run r=6 complete-SAB smoke; Stage88 records positive repeated
-  complete-SAB, final-output noise, and resource gates. The path still remains
-  explicit until promotion-policy integration decides promote/keep/reject.
+  complete-SAB, final-output noise, and resource gates. Stage89 promotes the
+  path as the preferred explicit r=6 local engineering route while keeping
+  scalar/default behavior and paper-level claims unchanged.
 
 ## Mathematical Definition
 
@@ -72,8 +73,9 @@ Output: out = in1 + FromDFT(tmp_dft)
 - Proof steps affected: none if the backend callback is bit-exact with
   `FromDFT(dft) + addend`.
 - New lemmas needed: implementation equivalence lemma for backend callback.
-- Current status: flagged Stage88 repeated gates pass and open promotion-policy
-  integration only.
+- Current status: Stage89 promotes the flagged H14-C1 backend path for
+  explicit r=6 local engineering only; it is not a default-path or paper-level
+  novelty claim.
 
 ## Potential Failure Reasons
 
@@ -101,6 +103,11 @@ Output: out = in1 + FromDFT(tmp_dft)
   and `1.024476x` min over 3 paired runs; backend-vs-repeated-scalar speedup
   `1.437x` mean and `1.435x` min; final-output noise passes 3 seeds with zero
   failures; key/RSS/keygen ratios are `1.122537x`/`1.030722x`/`1.301382x`.
+- Stage89 policy result: current-head scalar binary full run, explicit H14
+  backend PVW target gate, and scalar ternary build pass. The default guard
+  confirms `SAB_PVW_BACKEND_FROM_DFT_ADD` remains explicit/default false.
+  Policy decision is
+  `PASS_STAGE89_H14_BACKEND_PROMOTE_EXPLICIT_PATH_NOT_DEFAULT`.
 - Robustness runs: repeated full-SAB A/B and deterministic target gate.
 - Statistical checks: repeated process-level samples, mean/min/max, and no
   single-run promotion.
@@ -114,12 +121,14 @@ Output: out = in1 + FromDFT(tmp_dft)
 Conservative current wording:
 
 ```text
-[repeated engineering positive] We implement a backend-level FromDFT-add
+[explicit-path engineering positive] We implement a backend-level FromDFT-add
 materialization callback behind an explicit flag and observe a repeated r=6
 complete-SAB throughput improvement over the wrapper-level fused baseline,
-with final-output noise and resource gates recorded.
+with final-output noise and resource gates recorded. The path is promoted as
+the preferred explicit r=6 local engineering route, not as a scalar/default
+replacement or paper-level novelty claim.
 ```
 
 Do not write as a default-path bootstrapping acceleration or novelty claim
-until Stage89 policy integration and the external claim gates decide the
-allowed wording.
+until a separate default-promotion stage and the external claim gates decide
+the allowed wording.

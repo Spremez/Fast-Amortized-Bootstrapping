@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-88`. This label tracks the
+Current control-plane closure label: `Stage 19-89`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -98,6 +98,7 @@ evidence.
 | Stage 86 secondary CMUX materialization | audit synthesis | 6 | backend materialization preflight selected, no code promotion | Stage82 non-MAT body share remains material (`52.31%`), with `from_DFT+add=35.41%` and `sub=13.41%`; Stage86 rejects repeating Stage18/23 epilogue fusion and selects H14-C1 backend `FromDFT+add` callback as the next explicit preflight |
 | Stage 87 H14 backend FromDFT-add preflight | `spqlios_avx512` | 6 | promotion candidate, not promoted | `SAB_PVW_BACKEND_FROM_DFT_ADD` passes staged and target correctness; r=6 one-run complete-SAB backend latency is `38284667.000 us` versus wrapper `40196035.000 us`, a `1.049925x` backend-vs-wrapper latency ratio; Stage88 later repeated this candidate |
 | Stage 88 H14 backend repeated gates | `spqlios_avx512` | 6 | promotion candidate, not promoted | repeated backend-vs-wrapper latency ratio is `1.035516x` mean and `1.024476x` min over 3 paired runs; backend-vs-repeated-scalar speedup is `1.437x` mean and `1.435x` min; 3-seed final-output noise has zero failures; key/RSS/keygen ratios are `1.122537x`/`1.030722x`/`1.301382x`; Stage89 policy integration is required before changing defaults or claims |
+| Stage 89 H14 promotion policy integration | `spqlios_avx512` | 6 | explicit path promoted, defaults unchanged | current-head scalar binary full run, explicit backend PVW target gate, and scalar ternary build pass; `SAB_PVW_BACKEND_FROM_DFT_ADD` remains explicit/default false; policy decision is `PASS_STAGE89_H14_BACKEND_PROMOTE_EXPLICIT_PATH_NOT_DEFAULT`, so H14-C1 is the preferred explicit r=6 local engineering path but not a scalar/default or paper-level claim |
 
 Current conclusion:
 
@@ -432,7 +433,7 @@ Stage 85: H13 full-SAB promotion gate. [not opened after Stage84; requires futur
 Stage 86: secondary CMUX materialization pass. [completed design gate; H14-C1 backend FromDFT+add callback preflight selected, no code promotion]
 Stage 87: H14 backend FromDFT-add preflight. [completed; one-run promotion candidate, not promoted]
 Stage 88: H14 repeated/noise/resource gate. [completed; promotion candidate, not promoted]
-Stage 89: H14 promotion policy integration. [waiting for Stage88 policy follow-up]
+Stage 89: H14 promotion policy integration. [completed; H14 backend is preferred explicit r=6 path, defaults unchanged]
 Stage 90: external claim unlock. [blocked on native perf, full text, and manual novelty review]
-Stage 91: final SAB optimization package. [waiting for Stage89-90 decisions]
+Stage 91: final SAB optimization package. [waiting for Stage90 decisions]
 ```

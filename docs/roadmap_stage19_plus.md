@@ -2831,8 +2831,8 @@ WSL `spqlios_avx512` staged CMUX/NCMUX/RGSW/MAT and target full-output gates
 pass. In r=6 one-run complete-SAB smoke, wrapper fused FromDFT-add PVW latency
 is `40196035.000 us` and backend FromDFT-add is `38284667.000 us`, giving a
 backend-vs-wrapper latency ratio of `1.049925x`. This is a promotion candidate
-only. Stage88 later repeated the candidate and now Stage89 promotion-policy
-integration is required before enabling or claiming it.
+only. Stage88 later repeated the candidate and Stage89 completed policy
+integration without changing defaults.
 ```
 
 ## Stage 88: H14 Repeated/Noise/Resource Gate
@@ -2869,11 +2869,11 @@ Backend-vs-repeated-scalar speedup averages `1.437x` with minimum `1.435x`.
 Final-output noise passes three seeds with zero PVW/scalar/pair failures.
 Resource accounting records key ratio `1.122537x`, keygen ratio
 `1.301382x`, and RSS ratio `1.030722x`. This records H14-C1 as a promotion
-candidate only; promotion-policy integration is required before defaults or
-claim wording change.
+candidate only. Stage89 later promotes it as a preferred explicit r=6
+engineering path while keeping defaults and paper-level claims unchanged.
 ```
 
-## Planned Stage 89: H14 Promotion Policy Integration
+## Stage 89: H14 Promotion Policy Integration
 
 Goal:
 
@@ -2904,7 +2904,17 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage88 promotion-candidate policy integration.
+Completed as a policy integration. Stage89 current-head smoke passes for the
+default scalar binary full run, explicit H14 backend PVW target gate, and
+scalar ternary build. `SAB_PVW_BACKEND_FROM_DFT_ADD` remains explicit and
+default false. Stage89 compares Stage88 against the Stage36 r=4 reference and
+Stage80 promotion-policy precedent: backend-vs-wrapper repeated latency ratio
+is `1.035516x` mean and `1.024476x` min; backend-vs-repeated-scalar speedup is
+`1.437x` mean and `1.435x` min; Stage36 r=4 mean is `1.377x` with CI
+`[1.314893,1.438107]`. The decision is
+`PASS_STAGE89_H14_BACKEND_PROMOTE_EXPLICIT_PATH_NOT_DEFAULT`: H14-C1 is the
+preferred explicit r=6 local engineering path, but scalar/default paths and
+paper-level novelty/theory claims remain unchanged.
 ```
 
 ## Planned Stage 90: External Claim Unlock

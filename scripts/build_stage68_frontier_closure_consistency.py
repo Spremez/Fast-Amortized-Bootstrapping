@@ -100,6 +100,7 @@ def build_rows() -> List[Dict[str, str]]:
                 and "Stage86 secondary CMUX materialization design gate" in stage42_detail
                 and "Stage87 H14 backend FromDFT-add preflight" in stage42_detail
                 and "Stage88 H14 backend repeated gates" in stage42_detail
+                and "Stage89 H14 promotion policy integration" in stage42_detail
             )
         )
     )
@@ -122,6 +123,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "Stage86 secondary CMUX materialization design gate" in g6_detail
         and "Stage87 H14 backend FromDFT-add preflight" in g6_detail
         and "Stage88 H14 backend repeated gates" in g6_detail
+        and "Stage89 H14 promotion policy integration" in g6_detail
     )
 
     stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
@@ -150,6 +152,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage86_secondary_cmux_materialization" in r6.get("evidence", "")
         and "stage87_h14_backend_from_dft_add_preflight" in r6.get("evidence", "")
         and "stage88_h14_backend_repeated_gates" in r6.get("evidence", "")
+        and "stage89_h14_promotion_policy_integration" in r6.get("evidence", "")
     )
 
     rows = [

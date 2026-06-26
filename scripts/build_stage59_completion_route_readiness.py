@@ -175,11 +175,12 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage84_h13_r6_tile_sweep_preflight/summary.csv; "
                 "repro/stage86_secondary_cmux_materialization/decision.csv; "
                 "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv; "
-                "repro/stage88_h14_backend_repeated_gates/summary.csv"
+                "repro/stage88_h14_backend_repeated_gates/summary.csv; "
+                "repro/stage89_h14_promotion_policy_integration/summary.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage88 records H14-C1 backend FromDFT+add as a repeated/noise/resource promotion candidate. Next route is Stage89 promotion-policy integration before any default change or claim wording upgrade.",
-            "Does not upgrade r=6 claims or defaults; Stage88 remains a promotion candidate until Stage89 explicitly decides promote/keep/reject.",
+            "Stage89 promotes H14-C1 backend FromDFT+add as the preferred explicit r=6 local engineering path while keeping scalar/default behavior and paper-level claims unchanged. Next route is Stage90 external claim unlock or a new falsifiable local hypothesis.",
+            "Upgrades the explicit local engineering route only; does not change defaults or unlock paper-level claims.",
         ),
         route_row(
             "S59-R7-FINAL-PAPER-PACKAGE",

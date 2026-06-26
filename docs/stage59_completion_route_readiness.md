@@ -9,7 +9,7 @@ Stage 59 turns the post-Stage58 state into an explicit route to completion. It d
 | S59-R3-NATIVE-PERF | external unlock | MAT-AVX512 hardware-counter attribution | EXTERNAL_BLOCKED | STAGE28_RUN_BENCH=1 bash scripts/run_stage28_native_perf_counter_gate.sh |
 | S59-R4-FULLTEXT-686 | external unlock | 2025/686 theorem/protocol source review | EXTERNAL_FULLTEXT_BLOCKED | FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh |
 | S59-R5-NOVELTY-REVIEW | manual review | novelty and related-work distinction | EXTERNAL_REVIEW_BLOCKED | FINAL_RECHECK_RELATED_WORK=1 bash scripts/run_final_goal_recheck.sh |
-| S59-R6-OPTIONAL-VARIANTS | optional local expansion | future algorithmic variants | READY_OPTIONAL_LOCAL_TRIAGE | Stage88 records H14-C1 backend FromDFT+add as a repeated/noise/resource promotion candidate. Next route is Stage89 promotion-policy integration before any default change or claim wording upgrade. |
+| S59-R6-OPTIONAL-VARIANTS | optional local expansion | future algorithmic variants | READY_OPTIONAL_LOCAL_TRIAGE | Stage89 promotes H14-C1 backend FromDFT+add as the preferred explicit r=6 local engineering path while keeping scalar/default behavior and paper-level claims unchanged. Next route is Stage90 external claim unlock or a new falsifiable local hypothesis. |
 | S59-R7-FINAL-PAPER-PACKAGE | final freeze | paper/release claim package | WAIT_STRONGER_UNLOCKS | Run final recheck and Stage40-style freeze after external unlocks and manual claim review. |
 
 Decision: `PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED`

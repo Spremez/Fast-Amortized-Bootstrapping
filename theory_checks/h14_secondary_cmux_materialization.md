@@ -116,11 +116,11 @@ H14-C1 can only support a claim after:
 - noise/resource gates if complete SAB is positive;
 - Stage42/51/57/59/68 closure refresh.
 
-Stage88 now satisfies the repeated complete-SAB, final-output noise, and
-resource gates for H14-C1. H14 remains `[implementation-only constant-factor
-hypothesis]` until Stage89 promotion-policy integration decides how the
-explicit flag is exposed; it is still not a default-path or paper-level
-novelty/theory claim.
+Stage88 satisfies the repeated complete-SAB, final-output noise, and resource
+gates for H14-C1. Stage89 promotes H14-C1 as the preferred explicit r=6 local
+engineering path. H14 remains `[implementation-only constant-factor
+hypothesis]`; it is still not a default-path or paper-level novelty/theory
+claim.
 
 ## Stage87 Preflight Result
 
@@ -173,3 +173,19 @@ engineering improvement over the wrapper fused `FromDFT+add` reference, with
 no observed final-output noise failure and acceptable recorded RSS overhead.
 This supports promotion-policy review, not direct default promotion or
 paper-level novelty/theory claims.
+
+## Stage89 Promotion Policy Result
+
+Stage89 converts the Stage88 promotion candidate into a policy decision:
+
+| gate | result |
+|---|---|
+| current-head smoke | scalar binary full run, explicit backend PVW target gate, and scalar ternary build pass |
+| default guard | `SAB_PVW_BACKEND_FROM_DFT_ADD` remains explicit and default false |
+| performance policy | backend/scalar mean `1.437x`, min `1.435x`; backend/wrapper mean `1.035516x`, min `1.024476x`; Stage36 r=4 mean `1.377x` |
+| decision | `PASS_STAGE89_H14_BACKEND_PROMOTE_EXPLICIT_PATH_NOT_DEFAULT` |
+
+Interpretation: H14-C1 is the preferred explicit r=6 local engineering path
+for continued PVW/MAT-SAB experiments. It does not change scalar/default
+behavior, and it does not unlock paper-level novelty, theorem, or hardware
+counter claims.

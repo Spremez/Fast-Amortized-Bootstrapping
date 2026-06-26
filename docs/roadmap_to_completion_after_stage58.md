@@ -39,7 +39,7 @@ evidence is supplied.
 | Stage 86 | secondary CMUX materialization pass | If MAT-body preflight is neutral or capped, revisit from_DFT/add/sub lifetime without repeating prior neutral epilogue fusions. | refreshed profile shows material non-MAT share and complete-SAB A/B improves. | passed as design gate; H14-C1 backend FromDFT+add callback preflight selected |
 | Stage 87 | H14 backend FromDFT-add preflight | Implement the Stage86-selected backend materialization candidate behind an explicit flag and run correctness plus one-run complete-SAB smoke. | explicit flag, WSL correctness, target full-output correctness, one-run r=6 backend-vs-wrapper smoke, and no default promotion. | passed as promotion candidate; backend-vs-wrapper one-run latency ratio `1.049925x` |
 | Stage 88 | H14 repeated/noise/resource gate | Decide whether the Stage87 H14-C1 backend materialization preflight should be promoted, kept experimental, or rejected. | repeated complete-SAB A/B, final-output noise, key/RSS/keygen, closure, and verifier pass. | passed as promotion candidate; backend-vs-wrapper repeated mean/min `1.035516x`/`1.024476x` |
-| Stage 89 | H14 promotion policy integration | Decide whether the Stage88 H14-C1 promotion candidate should be promoted for an explicit path, kept experimental, or rejected by policy. | current-head smoke, scalar/default guard, policy decision, closure, and verifier pass. | waiting for policy integration |
+| Stage 89 | H14 promotion policy integration | Decide whether the Stage88 H14-C1 promotion candidate should be promoted for an explicit path, kept experimental, or rejected by policy. | current-head smoke, scalar/default guard, policy decision, closure, and verifier pass. | passed; H14 backend promoted as preferred explicit r=6 path, defaults unchanged |
 | Stage 90 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | externally blocked |
 | Stage 91 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
@@ -131,3 +131,8 @@ Execution policy:
   and three-seed final-output noise has zero failures. It still must remain
   behind an explicit flag until Stage89 promotion-policy integration decides
   promote/keep/reject.
+- After Stage89, H14-C1 is promoted only as the preferred explicit r=6 local
+  engineering path. Current-head scalar binary, explicit backend PVW target,
+  and scalar ternary smoke pass, and `SAB_PVW_BACKEND_FROM_DFT_ADD` remains
+  explicit/default false. Do not change scalar/default behavior or paper-level
+  claim wording without a separate default-promotion or external-unlock stage.

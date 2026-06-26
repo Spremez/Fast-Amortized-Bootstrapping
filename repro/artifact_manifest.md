@@ -1337,3 +1337,21 @@ Repro artifacts:
 - `repro/stage88_h14_backend_repeated_gates/resource_samples.csv`
 - `repro/stage88_h14_backend_repeated_gates/resource_summary.csv`
 - `repro/stage88_h14_backend_repeated_gates/summary.csv`
+
+## Stage 89 H14 Promotion Policy Integration
+
+- `docs/stage89_h14_promotion_policy_integration_log.md`
+- `experiments/stage89_h14_promotion_policy_integration_plan.md`
+- `scripts/run_stage89_h14_promotion_policy_integration.sh`
+- `scripts/build_stage89_h14_promotion_policy_integration.py`
+- `theory_checks/h14_secondary_cmux_materialization.md`
+- `algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage89_h14_promotion_policy_integration/stage89_run.log`
+- `repro/stage89_h14_promotion_policy_integration/current_smoke/summary.csv`
+- `repro/stage89_h14_promotion_policy_integration/current_smoke/scalar_binary_SET_2_3_2048/build.log`
+- `repro/stage89_h14_promotion_policy_integration/current_smoke/scalar_binary_SET_2_3_2048/run.log`
+- `repro/stage89_h14_promotion_policy_integration/current_smoke/backend_pvw_target_SET_2_3_2048/build.log`
+- `repro/stage89_h14_promotion_policy_integration/current_smoke/backend_pvw_target_SET_2_3_2048/run.log`
+- `repro/stage89_h14_promotion_policy_integration/current_smoke/scalar_ternary_SET_2_3_2048/build.log`
+- `repro/stage89_h14_promotion_policy_integration/summary.csv`

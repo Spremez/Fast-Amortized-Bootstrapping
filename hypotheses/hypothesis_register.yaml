@@ -476,8 +476,8 @@ hypotheses:
       butterfly-pair sub sharing. The selected H14-C1 candidate keeps the same
       algebra and key format, but attempts to add the torus addend during
       backend inverse materialization rather than in a second torus pass.
-    status: stage88_backend_from_dft_add_repeated_promotion_candidate
-    evidence: docs/stage82_post_h11_profile_log.md; docs/stage84_h13_r6_tile_sweep_preflight_log.md; docs/stage86_secondary_cmux_materialization_log.md; docs/stage87_h14_backend_from_dft_add_preflight_log.md; docs/stage88_h14_backend_repeated_gates_log.md; theory_checks/h14_secondary_cmux_materialization.md; algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md; repro/stage82_post_h11_profile/profile_metrics.csv; repro/stage84_h13_r6_tile_sweep_preflight/summary.csv; repro/stage86_secondary_cmux_materialization/decision.csv; repro/stage86_secondary_cmux_materialization/candidates.csv; repro/stage87_h14_backend_from_dft_add_preflight/full_sab_smoke.csv; repro/stage87_h14_backend_from_dft_add_preflight/summary.csv; repro/stage88_h14_backend_repeated_gates/full_sab_repeated.csv; repro/stage88_h14_backend_repeated_gates/backend_vs_wrapper.csv; repro/stage88_h14_backend_repeated_gates/noise_summary.csv; repro/stage88_h14_backend_repeated_gates/resource_summary.csv; repro/stage88_h14_backend_repeated_gates/summary.csv
+    status: stage89_backend_from_dft_add_promoted_explicit_not_default
+    evidence: docs/stage82_post_h11_profile_log.md; docs/stage84_h13_r6_tile_sweep_preflight_log.md; docs/stage86_secondary_cmux_materialization_log.md; docs/stage87_h14_backend_from_dft_add_preflight_log.md; docs/stage88_h14_backend_repeated_gates_log.md; docs/stage89_h14_promotion_policy_integration_log.md; theory_checks/h14_secondary_cmux_materialization.md; algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md; repro/stage82_post_h11_profile/profile_metrics.csv; repro/stage84_h13_r6_tile_sweep_preflight/summary.csv; repro/stage86_secondary_cmux_materialization/decision.csv; repro/stage86_secondary_cmux_materialization/candidates.csv; repro/stage87_h14_backend_from_dft_add_preflight/full_sab_smoke.csv; repro/stage87_h14_backend_from_dft_add_preflight/summary.csv; repro/stage88_h14_backend_repeated_gates/full_sab_repeated.csv; repro/stage88_h14_backend_repeated_gates/backend_vs_wrapper.csv; repro/stage88_h14_backend_repeated_gates/noise_summary.csv; repro/stage88_h14_backend_repeated_gates/resource_summary.csv; repro/stage88_h14_backend_repeated_gates/summary.csv; repro/stage89_h14_promotion_policy_integration/current_smoke/summary.csv; repro/stage89_h14_promotion_policy_integration/summary.csv
     current_decision: >
       Stage86 records that the post-H11 r=6 body profile still has a material
       non-MAT share: non-MAT body is 52.31% of full body, from_DFT+add is
@@ -499,8 +499,15 @@ hypotheses:
       minimum. Final-output noise passes three seeds with zero PVW/scalar/pair
       failures, and resource accounting records key/RSS/keygen ratios of
       1.122537x/1.030722x/1.301382x. This is now a repeated promotion
-      candidate, not a default-path promotion; Stage89 policy integration must
-      decide promote/keep/reject before claim wording changes.
+      candidate, not a default-path promotion. Stage89 then runs current-head
+      scalar binary full smoke, explicit backend PVW target smoke, and scalar
+      ternary build; verifies `SAB_PVW_BACKEND_FROM_DFT_ADD` remains
+      explicit/default false; and compares Stage88 evidence with Stage36 r=4
+      and Stage80 policy precedent. Stage89 records
+      PASS_STAGE89_H14_BACKEND_PROMOTE_EXPLICIT_PATH_NOT_DEFAULT. Therefore
+      H14-C1 is the preferred explicit r=6 local engineering path, while
+      scalar/default paths, default `sab_pvw_*` behavior, and paper-level
+      novelty/theory claims remain unchanged.
     failure_criteria:
       - the backend callback is only a wrapper-level fusion equivalent to
         Stage18/23
