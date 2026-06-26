@@ -21,6 +21,7 @@ bash scripts/run_final_goal_recheck.sh
 Default behavior:
 
 - skip network citation probing;
+- skip network related-work source-access probing;
 - skip current-commit scalar/PVW smoke by default;
 - skip Stage 44 external full-text/native-perf re-probe by default;
 - run the Stage 28 native perf-counter gate;
@@ -35,6 +36,12 @@ To refresh full-text/citation availability:
 
 ```bash
 FINAL_RECHECK_CITATION=1 bash scripts/run_final_goal_recheck.sh
+```
+
+To refresh related-work source-access evidence for the novelty gate:
+
+```bash
+FINAL_RECHECK_RELATED_WORK=1 bash scripts/run_final_goal_recheck.sh
 ```
 
 To refresh current-commit scalar/PVW smoke evidence before the final audit:
@@ -72,6 +79,7 @@ To run only the Stage 42 closure audit through the final recheck wrapper:
 FINAL_RECHECK_OUT_DIR=repro/final_goal_recheck_stage42_closure \
 FINAL_RECHECK_POSTFREEZE_VERIFY=0 \
 FINAL_RECHECK_CITATION=0 \
+FINAL_RECHECK_RELATED_WORK=0 \
 FINAL_RECHECK_PERF=0 \
 FINAL_RECHECK_STAGE27_PACKAGE=0 \
 FINAL_RECHECK_EXTERNAL_INTAKE=0 \
@@ -106,6 +114,8 @@ bash scripts/run_final_goal_recheck.sh
 - Any failed command must stop the recheck script.
 - A skipped citation probe does not upgrade theorem-level 2025/686 citation
   claims.
+- A skipped related-work source-access probe does not refresh CB6 novelty-risk
+  source availability or manual-review blockers.
 - A skipped current smoke does not refresh the current-commit scalar/PVW
   smoke evidence in the final audit.
 - A skipped conditional backlog audit does not refresh condition-not-active or
@@ -128,6 +138,7 @@ bash scripts/run_final_goal_recheck.sh
 
 ```text
 repro/final_goal_recheck/summary.csv
+repro/final_goal_recheck/stage27_related_work_access_probe.log
 repro/final_goal_recheck/stage28_perf_gate.log
 repro/final_goal_recheck/stage40_postfreeze_verify.log
 repro/final_goal_recheck/stage27_final_package.log

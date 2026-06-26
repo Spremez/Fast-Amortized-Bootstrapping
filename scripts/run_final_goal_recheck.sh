@@ -2,6 +2,7 @@
 set -euo pipefail
 
 run_citation="${FINAL_RECHECK_CITATION:-0}"
+run_related_work="${FINAL_RECHECK_RELATED_WORK:-0}"
 run_perf="${FINAL_RECHECK_PERF:-1}"
 run_stage27_package="${FINAL_RECHECK_STAGE27_PACKAGE:-1}"
 run_external_intake="${FINAL_RECHECK_EXTERNAL_INTAKE:-1}"
@@ -17,6 +18,7 @@ if [[ -n "${FINAL_RECHECK_STAGE42_CLOSURE+x}" ]]; then
   run_stage42_closure="$FINAL_RECHECK_STAGE42_CLOSURE"
 elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_citation" == "0" \
+  && "$run_related_work" == "0" \
   && "$run_perf" == "0" \
   && "$run_stage27_package" == "0" \
   && "$run_external_intake" == "0" \
@@ -33,6 +35,7 @@ if [[ -n "${FINAL_RECHECK_OUT_DIR+x}" ]]; then
   out_dir="$FINAL_RECHECK_OUT_DIR"
 elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_citation" == "0" \
+  && "$run_related_work" == "0" \
   && "$run_perf" == "0" \
   && "$run_stage27_package" == "0" \
   && "$run_external_intake" == "0" \
@@ -123,6 +126,16 @@ else
     "bash scripts/run_stage27_citation_access_probe.sh" \
     "" \
     "Set FINAL_RECHECK_CITATION=1 to refresh network/full-text citation access."
+fi
+
+if [[ "$run_related_work" == "1" ]]; then
+  run_logged "stage27_related_work_access_probe" \
+    "$python_bin scripts/run_stage27_related_work_access_probe.py"
+else
+  csv_row "stage27_related_work_access_probe" "SKIPPED" \
+    "$python_bin scripts/run_stage27_related_work_access_probe.py" \
+    "" \
+    "Set FINAL_RECHECK_RELATED_WORK=1 to refresh related-work source access."
 fi
 
 if [[ "$run_perf" == "1" ]]; then

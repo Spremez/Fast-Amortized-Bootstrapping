@@ -1,0 +1,3 @@
+Stage 27 related-work access probe: repro/stage27_related_work_access_probe/summary.csv
+Stage 27 related-work access log: docs/stage27_related_work_access_probe_log.md
+Decision: SCOPED_RELATED_WORK_REFRESHED__NOVELTY_STILL_BLOCKED

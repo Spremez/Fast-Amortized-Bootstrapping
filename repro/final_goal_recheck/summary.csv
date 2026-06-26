@@ -1,6 +1,7 @@
 step,status,command,log,notes
 stage40_postfreeze_verify,SKIPPED,python3 scripts/verify_stage40_freeze.py --check-only,,Set FINAL_RECHECK_POSTFREEZE_VERIFY=1 to run the Stage 40 no-write verifier before recheck outputs.
 stage27_citation_probe,SKIPPED,bash scripts/run_stage27_citation_access_probe.sh,,Set FINAL_RECHECK_CITATION=1 to refresh network/full-text citation access.
+stage27_related_work_access_probe,PASS,python3 scripts/run_stage27_related_work_access_probe.py,repro/final_goal_recheck/stage27_related_work_access_probe.log,command completed
 stage28_perf_gate,PASS,bash scripts/run_stage28_native_perf_counter_gate.sh,repro/final_goal_recheck/stage28_perf_gate.log,command completed
 stage27_final_package,PASS,python3 scripts/build_stage27_final_package.py,repro/final_goal_recheck/stage27_final_package.log,command completed
 external_evidence_intake,PASS,python3 scripts/register_external_evidence.py,repro/final_goal_recheck/external_evidence_intake.log,command completed

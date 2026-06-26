@@ -612,6 +612,7 @@ Repro artifacts:
 - `repro/final_goal_recheck/summary.csv`
 - `repro/final_goal_recheck/stage28_perf_gate.log`
 - `repro/final_goal_recheck/stage27_citation_probe.log`
+- `repro/final_goal_recheck/stage27_related_work_access_probe.log`
 - `repro/final_goal_recheck/stage27_final_package.log`
 - `repro/final_goal_recheck/external_evidence_intake.log`
 - `repro/final_goal_recheck/stage33_current_smoke.log`

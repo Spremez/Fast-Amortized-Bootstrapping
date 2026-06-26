@@ -21,14 +21,16 @@ Default lightweight command:
 bash scripts/run_final_goal_recheck.sh
 ```
 
-The default intentionally skips the network citation probe and current-commit
-smoke. It refreshes the local/perf gate, final package, optional external
-evidence intake, conditional backlog audit, final audit, and Stage 42
-evidence-closure audit. It also skips the Stage 44 external-unlock re-probe
-unless explicitly requested. Use `FINAL_RECHECK_CITATION=1` only when
-intentionally refreshing external full-text access evidence. Use
-`FINAL_RECHECK_CURRENT_SMOKE=1` when intentionally refreshing the scalar/PVW
-current-commit smoke before the final audit. Use
+The default intentionally skips the network citation probe, related-work
+source-access probe, and current-commit smoke. It refreshes the local/perf
+gate, final package, optional external evidence intake, conditional backlog
+audit, final audit, and Stage 42 evidence-closure audit. It also skips the
+Stage 44 external-unlock re-probe unless explicitly requested. Use
+`FINAL_RECHECK_CITATION=1` only when intentionally refreshing external
+full-text access evidence. Use `FINAL_RECHECK_RELATED_WORK=1` when
+intentionally refreshing related-work source-access evidence for the novelty
+gate. Use `FINAL_RECHECK_CURRENT_SMOKE=1` when intentionally refreshing the
+scalar/PVW current-commit smoke before the final audit. Use
 `FINAL_RECHECK_STAGE44_REPROBE=1` when intentionally refreshing the combined
 full-text/native-perf unlock state before the final audit and Stage 42 closure
 audit.
@@ -46,6 +48,7 @@ Artifacts:
 ```text
 repro/final_goal_recheck/summary.csv
 repro/final_goal_recheck/stage28_perf_gate.log
+repro/final_goal_recheck/stage27_related_work_access_probe.log
 repro/final_goal_recheck/stage27_final_package.log
 repro/final_goal_recheck/external_evidence_intake.log
 repro/final_goal_recheck/stage33_current_smoke.log
@@ -88,6 +91,20 @@ SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 Direct full-text routes for 2025/686 remained blocked, so theorem-level
 citations are still not allowed.
 
+## Related-Work Access Refresh
+
+The final recheck runner can refresh the Stage 27 related-work source-access
+probe before the conditional backlog audit:
+
+```bash
+FINAL_RECHECK_RELATED_WORK=1 bash scripts/run_final_goal_recheck.sh
+```
+
+This runs `scripts/run_stage27_related_work_access_probe.py` and then rebuilds
+the conditional backlog audit. It is a source-availability refresh only; it
+does not perform manual claim-to-source review and does not upgrade novelty
+claims.
+
 ## Current-Smoke Refresh
 
 Stage 34 adds an explicit current-smoke recheck mode:
@@ -126,6 +143,7 @@ The 2026-06-26 post-freeze-only recheck passed:
 ```bash
 FINAL_RECHECK_POSTFREEZE_VERIFY=1 \
 FINAL_RECHECK_CITATION=0 \
+FINAL_RECHECK_RELATED_WORK=0 \
 FINAL_RECHECK_PERF=0 \
 FINAL_RECHECK_STAGE27_PACKAGE=0 \
 FINAL_RECHECK_EXTERNAL_INTAKE=0 \
@@ -161,6 +179,7 @@ was extended with an explicit Stage 42 closure step:
 FINAL_RECHECK_OUT_DIR=repro/final_goal_recheck_stage42_closure \
 FINAL_RECHECK_POSTFREEZE_VERIFY=0 \
 FINAL_RECHECK_CITATION=0 \
+FINAL_RECHECK_RELATED_WORK=0 \
 FINAL_RECHECK_PERF=0 \
 FINAL_RECHECK_STAGE27_PACKAGE=0 \
 FINAL_RECHECK_EXTERNAL_INTAKE=0 \
@@ -238,6 +257,7 @@ Observed summary:
 
 ```text
 stage28_perf_gate = PASS
+stage27_related_work_access_probe = SKIPPED
 stage27_final_package = PASS
 external_evidence_intake = PASS
 conditional_backlog_audit = PASS
