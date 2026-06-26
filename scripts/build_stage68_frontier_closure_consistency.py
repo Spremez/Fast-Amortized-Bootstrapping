@@ -102,6 +102,7 @@ def build_rows() -> List[Dict[str, str]]:
                 and "Stage88 H14 backend repeated gates" in stage42_detail
                 and "Stage89 H14 promotion policy integration" in stage42_detail
                 and "Stage90 external claim unlock probe" in stage42_detail
+                and "Stage91 final scoped SAB package" in stage42_detail
             )
         )
     )
@@ -126,6 +127,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "Stage88 H14 backend repeated gates" in g6_detail
         and "Stage89 H14 promotion policy integration" in g6_detail
         and "Stage90 external claim unlock" in g6_detail
+        and "Stage91 final scoped SAB package" in g6_detail
     )
 
     stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
@@ -135,6 +137,7 @@ def build_rows() -> List[Dict[str, str]]:
     r1 = stage59.get("S59-R1-SCOPED-ENGINEERING", {})
     r2 = stage59.get("S59-R2-CURRENT-HEAD-REFRESH", {})
     r6 = stage59.get("S59-R6-OPTIONAL-VARIANTS", {})
+    r7 = stage59.get("S59-R7-FINAL-PAPER-PACKAGE", {})
     stage59_ok = (
         r1.get("status") == "LOCAL_READY"
         and r2.get("status") == "READY_LOCAL_REFRESH"
@@ -156,6 +159,8 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage88_h14_backend_repeated_gates" in r6.get("evidence", "")
         and "stage89_h14_promotion_policy_integration" in r6.get("evidence", "")
         and "stage90_external_claim_unlock" in r6.get("evidence", "")
+        and r7.get("status") == "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED"
+        and "stage91_final_package" in r7.get("evidence", "")
     )
 
     rows = [
@@ -181,7 +186,7 @@ def build_rows() -> List[Dict[str, str]]:
             "stage68_stage59_route",
             "PASS" if stage59_ok else "FAIL",
             STAGE59.relative_to(ROOT).as_posix(),
-            f"R1={r1.get('status', 'MISSING')}; R2={r2.get('status', 'MISSING')}; R2_evidence={r2.get('evidence', '')}; R6={r6.get('status', 'MISSING')}; R6_evidence={r6.get('evidence', '')}",
+            f"R1={r1.get('status', 'MISSING')}; R2={r2.get('status', 'MISSING')}; R2_evidence={r2.get('evidence', '')}; R6={r6.get('status', 'MISSING')}; R6_evidence={r6.get('evidence', '')}; R7={r7.get('status', 'MISSING')}; R7_evidence={r7.get('evidence', '')}",
         ),
     ]
     failures = [item["gate"] for item in rows if item["status"] != "PASS"]

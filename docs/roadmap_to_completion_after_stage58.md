@@ -41,7 +41,7 @@ evidence is supplied.
 | Stage 88 | H14 repeated/noise/resource gate | Decide whether the Stage87 H14-C1 backend materialization preflight should be promoted, kept experimental, or rejected. | repeated complete-SAB A/B, final-output noise, key/RSS/keygen, closure, and verifier pass. | passed as promotion candidate; backend-vs-wrapper repeated mean/min `1.035516x`/`1.024476x` |
 | Stage 89 | H14 promotion policy integration | Decide whether the Stage88 H14-C1 promotion candidate should be promoted for an explicit path, kept experimental, or rejected by policy. | current-head smoke, scalar/default guard, policy decision, closure, and verifier pass. | passed; H14 backend promoted as preferred explicit r=6 path, defaults unchanged |
 | Stage 90 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | probe completed; stronger claims remain externally blocked |
-| Stage 91 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
+| Stage 91 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | passed as scoped final package; stronger claims blocked |
 
 Execution policy:
 
@@ -136,3 +136,8 @@ Execution policy:
   and scalar ternary smoke pass, and `SAB_PVW_BACKEND_FROM_DFT_ADD` remains
   explicit/default false. Do not change scalar/default behavior or paper-level
   claim wording without a separate default-promotion or external-unlock stage.
+- After Stage91, the scoped final package is ready for engineering reporting:
+  Stage36 remains the high-stat target r=2/r=4 performance source, Stage88/89
+  record the preferred explicit r=6 path, and Stage90 keeps native-perf,
+  full-text, and novelty claims blocked. Reopen the route only if SAB source
+  code changes, backend/platform changes, or external evidence is supplied.

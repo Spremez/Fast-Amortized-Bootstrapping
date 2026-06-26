@@ -1373,3 +1373,17 @@ Repro artifacts:
 - `repro/stage90_external_claim_unlock/native_perf_gate.log`
 - `repro/stage90_external_claim_unlock/external_evidence_intake.log`
 - `repro/stage90_external_claim_unlock/stage90_builder.log`
+
+## Stage 91 Final SAB Optimization Package
+
+- `docs/stage91_final_sab_optimization_package.md`
+- `experiments/stage91_final_package_plan.md`
+- `scripts/run_stage91_final_package.sh`
+- `scripts/build_stage91_final_package.py`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage91_final_package/summary.csv`
+- `repro/stage91_final_package/performance_claims.csv`
+- `repro/stage91_final_package/noise_resource_claims.csv`
+- `repro/stage91_final_package/claim_boundary.csv`
+- `repro/stage91_final_package/reproduction_commands.csv`
+- `repro/stage91_final_package/artifact_index.csv`

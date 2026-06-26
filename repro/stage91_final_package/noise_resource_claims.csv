@@ -1,0 +1,7 @@
+lane,r,scope,status,failures,resource_or_noise,source
+target_binary_noise,2,50_seed_final_output,PASS,pvw=0; scalar=0; pair=0,noise,repro/stage36_target_noise_seeds50/aggregate.csv
+target_binary_noise,4,50_seed_final_output,PASS,pvw=0; scalar=0; pair=0,noise,repro/stage36_target_noise_seeds50/aggregate.csv
+explicit_r6_h14_noise,6,3_seed_final_output,PASS,pvw=0; scalar=0; pair=0,noise,repro/stage88_h14_backend_repeated_gates/noise_summary.csv
+target_binary_resource,2,3_run_resource,PASS_RESOURCE_3RUN,key_ratio=1.014; rss_max_kb=383236.000,resource,repro/stage36_resource_summary.csv
+target_binary_resource,4,3_run_resource,PASS_RESOURCE_3RUN,key_ratio=1.065; rss_max_kb=769468.000,resource,repro/stage36_resource_summary.csv
+explicit_r6_h14_resource,6,1_run_resource,PASS,key_ratio=1.122537; rss_ratio=1.030722; keygen_ratio=1.301382,resource,repro/stage88_h14_backend_repeated_gates/resource_summary.csv

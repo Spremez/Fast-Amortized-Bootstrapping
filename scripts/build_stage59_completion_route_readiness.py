@@ -19,6 +19,7 @@ FRONTIER = ROOT / "repro" / "stage51_goal_completion_frontier.csv"
 UNLOCK = ROOT / "repro" / "stage52_external_unlock_readiness.csv"
 BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
 PERF_MATRIX = ROOT / "repro" / "stage50_performance_evidence_matrix.csv"
+STAGE91_FINAL_PACKAGE = ROOT / "repro" / "stage91_final_package" / "summary.csv"
 OUT_CSV = ROOT / "repro" / "stage59_completion_route_readiness.csv"
 OUT_MD = ROOT / "docs" / "stage59_completion_route_readiness.md"
 
@@ -76,6 +77,7 @@ def build_rows() -> List[Dict[str, str]]:
     unlock = by_key(UNLOCK, "unlock_id")
     blockers = by_key(BLOCKERS, "blocker_id")
     perf_rows = read_csv(PERF_MATRIX)
+    stage91 = by_key(STAGE91_FINAL_PACKAGE, "gate")
 
     local_ready = all(
         status_of(frontier, row_id).startswith("LOCAL")
@@ -91,6 +93,10 @@ def build_rows() -> List[Dict[str, str]]:
         == "WAIT_MANUAL_FULLTEXT_REVIEW"
     )
     final_waiting = status_of(unlock, "S52-FINAL-RECHECK", "readiness") == "WAIT_UNLOCKS"
+    stage91_done = (
+        status_of(stage91, "stage91_decision")
+        == "PASS_STAGE91_FINAL_SCOPED_PACKAGE_STRONGER_CLAIMS_BLOCKED"
+    )
 
     rows = [
         route_row(
@@ -187,11 +193,17 @@ def build_rows() -> List[Dict[str, str]]:
             "S59-R7-FINAL-PAPER-PACKAGE",
             "final freeze",
             "paper/release claim package",
-            "WAIT_STRONGER_UNLOCKS" if final_waiting else "REVIEW_REQUIRED",
-            "repro/stage52_external_unlock_readiness.csv; repro/remaining_blocker_dashboard.csv",
-            "A9 may move only after CB5/CB6/CB7 are resolved or the scope is explicitly narrowed.",
-            "Run Stage91 scoped final package now only if stronger claims remain explicitly blocked, or rerun Stage90 after external evidence is supplied.",
-            "Keeps the active goal open under current evidence.",
+            "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED"
+            if stage91_done and final_waiting
+            else "REVIEW_REQUIRED",
+            (
+                "repro/stage52_external_unlock_readiness.csv; "
+                "repro/remaining_blocker_dashboard.csv; "
+                "repro/stage91_final_package/summary.csv"
+            ),
+            "A9 remains scoped unless CB5/CB6/CB7 are resolved; Stage91 must keep stronger claims blocked.",
+            "Keep the package scoped; rerun Stage90/91 after source, backend, external-evidence, or claim-scope changes.",
+            "Provides a scoped final engineering package; does not unlock paper-level or theoretical claims.",
         ),
     ]
     return rows
@@ -206,7 +218,7 @@ def decision(rows: List[Dict[str, str]]) -> str:
         "S59-R4-FULLTEXT-686": "EXTERNAL_FULLTEXT_BLOCKED",
         "S59-R5-NOVELTY-REVIEW": "EXTERNAL_REVIEW_BLOCKED",
         "S59-R6-OPTIONAL-VARIANTS": "READY_OPTIONAL_LOCAL_TRIAGE",
-        "S59-R7-FINAL-PAPER-PACKAGE": "WAIT_STRONGER_UNLOCKS",
+        "S59-R7-FINAL-PAPER-PACKAGE": "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED",
     }
     ok = all(by_id.get(route_id, {}).get("status") == status for route_id, status in expected.items())
     if ok:

@@ -550,3 +550,41 @@ hypotheses:
         proof
       - final-package wording omits CB5/CB6/CB7 or hides the remaining unlock
         commands
+  - id: H16_final_scoped_sab_package
+    statement: >
+      After Stage90 records that stronger claims remain blocked, the current
+      PVW/MAT-SAB work can be frozen as a scoped engineering package if the
+      package preserves scalar/default behavior, uses complete-SAB evidence
+      for every speedup statement, separates the preferred explicit r=6 path
+      from the high-stat r=2/r=4 target claim, and keeps native-perf,
+      full-text, and novelty claims blocked.
+    mechanism: >
+      Stage91 aggregates existing evidence instead of creating a new hot-path
+      variant. It checks that Stage89 current-head smoke is still applicable
+      because no SAB source files changed after the Stage89 promotion-policy
+      commit, uses Stage36 r=2/r=4 high-stat complete-SAB evidence as the
+      main target performance source, uses Stage88/89 only for the preferred
+      explicit r=6 engineering path, records Stage36/88 noise and resource
+      support, and imports Stage90 blocker state for stronger claims.
+    status: stage91_final_scoped_package_ready_stronger_claims_blocked
+    evidence: docs/stage91_final_sab_optimization_package.md; experiments/stage91_final_package_plan.md; scripts/run_stage91_final_package.sh; scripts/build_stage91_final_package.py; repro/stage91_final_package/summary.csv; repro/stage91_final_package/performance_claims.csv; repro/stage91_final_package/noise_resource_claims.csv; repro/stage91_final_package/claim_boundary.csv; repro/stage91_final_package/reproduction_commands.csv; repro/stage91_final_package/artifact_index.csv
+    current_decision: >
+      Stage91 records
+      PASS_STAGE91_FINAL_SCOPED_PACKAGE_STRONGER_CLAIMS_BLOCKED. The final
+      scoped package is ready for engineering reporting: target binary r=2/r=4
+      complete-SAB speedups are supported by Stage36 high-stat evidence;
+      H14-C1 is the preferred explicit r=6 local engineering path based on
+      Stage88/89, but not a default or paper-level claim; correctness/noise
+      and resource evidence are reported under their recorded scopes; and
+      Stage90 keeps MAT-AVX512 hardware-counter optimality, theorem-level
+      2025/686 citations, and novelty wording blocked. Stage91 does not add a
+      new algorithm implementation and does not upgrade unsupported claims.
+    failure_criteria:
+      - final package cites kernel-only, smoke-only, or neutral ablations as
+        complete-SAB acceleration claims
+      - r=6 H14 evidence is described as a default-path or high-stat claim
+      - theorem-level 2025/686, novelty, non-binary, all-parameter, or
+        theoretical-optimality wording is upgraded without the blocked external
+        evidence
+      - closure/verifier, run log, artifact manifest, or reproduction commands
+        omit Stage91 artifacts

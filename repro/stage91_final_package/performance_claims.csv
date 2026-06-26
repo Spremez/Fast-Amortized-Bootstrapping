@@ -1,0 +1,4 @@
+lane,param,r,evidence_level,status,mean_speedup,min_speedup,max_speedup,ci95_low,ci95_high,claim_level,source
+target_binary_high_stat,SET_2_3_2048,2,10_run_complete_sab,PASS_TARGET_PERF_10RUN,1.191,1.021,1.454,1.075307,1.306693,scoped_engineering_supported,repro/stage36_target_perf_summary.csv
+target_binary_high_stat,SET_2_3_2048,4,10_run_complete_sab,PASS_TARGET_PERF_10RUN,1.377,1.305,1.585,1.314893,1.438107,scoped_engineering_supported,repro/stage36_target_perf_summary.csv
+preferred_explicit_r6_h14_backend,SET_2_3_2048,6,3_run_complete_sab_plus_stage89_policy,PASS,1.437,1.435,1.439,,,preferred_explicit_engineering_path_not_default,repro/stage88_h14_backend_repeated_gates/full_sab_repeated.csv

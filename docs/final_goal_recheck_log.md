@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-90`. This label is used by the
+Current control-plane closure label: `Stage 19-91`. This label is used by the
 scope-label audit to prevent stale reports; it does not upgrade speedup,
 novelty, theorem-level, or hardware-counter claims.
 

@@ -2959,7 +2959,7 @@ scoped final package unless the user supplies external evidence for another
 unlock pass.
 ```
 
-## Planned Stage 91: Final SAB Optimization Package
+## Stage 91: Final SAB Optimization Package
 
 Goal:
 
@@ -2989,8 +2989,19 @@ Gate:
 Status:
 
 ```text
-Waiting for a scoped final-package pass after Stage90. Under the current
-evidence, Stage91 must preserve the scoped engineering claim, keep native
-perf/full-text/novelty claims blocked, and record the exact promoted explicit
-paths and remaining external unlock commands.
+Completed as the final scoped SAB optimization package. Stage91 records
+PASS_STAGE91_FINAL_SCOPED_PACKAGE_STRONGER_CLAIMS_BLOCKED. The package freezes
+the current engineering evidence without rerunning heavy benchmarks: Stage89
+current-head smoke is inherited because no SAB source files changed after the
+Stage89 promotion-policy commit; Stage36 remains the high-stat complete-SAB
+performance source for target r=2/r=4; Stage88/89 define H14-C1 as the
+preferred explicit r=6 engineering path, not a default or paper-level claim;
+Stage36/88 noise and resource gates are reported under their recorded scopes;
+and Stage90 keeps native-perf, 2025/686 full-text, and novelty/source-review
+claims blocked.
+
+The final package artifacts are `docs/stage91_final_sab_optimization_package.md`
+and `repro/stage91_final_package/`. Stage91 does not mark novelty,
+theorem-level 2025/686 citations, non-binary PVW-SAB, all-parameter speedup,
+or MAT-AVX512 theoretical optimality as supported.
 ```

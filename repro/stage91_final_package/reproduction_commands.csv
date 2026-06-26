@@ -1,0 +1,5 @@
+artifact,command,output
+Stage91 package,bash scripts/run_stage91_final_package.sh,docs/stage91_final_sab_optimization_package.md; repro/stage91_final_package/summary.csv
+Stage90 external claim probe,bash scripts/run_stage90_external_claim_unlock.sh,docs/stage90_external_claim_unlock_log.md; repro/stage90_external_claim_unlock/summary.csv
+closure audit,python scripts/build_stage42_evidence_closure_audit.py,docs/stage42_evidence_closure_audit.md; repro/stage42_evidence_closure_audit.csv
+read-only closure verifier,python scripts/verify_stage42_closure.py --check-only,stdout
