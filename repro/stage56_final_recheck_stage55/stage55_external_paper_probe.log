@@ -1,0 +1,3 @@
+Stage 55 paper probe summary: repro/stage55_external_paper_probe/summary.csv
+Stage 55 paper probe log: docs/stage55_external_paper_probe_log.md
+Decision: WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW

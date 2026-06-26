@@ -806,3 +806,15 @@ Repro artifacts:
 - `repro/stage55_external_paper_probe/access_probe.csv`
 - `repro/stage55_external_paper_probe/crossref_summary.csv`
 - `repro/stage55_external_paper_probe/crossref_metadata.json`
+
+## Stage 56 Stage55 Final-Recheck Integration
+
+- `docs/stage56_final_recheck_stage55_log.md`
+- `scripts/run_final_goal_recheck.sh`
+- `repro/stage56_final_recheck_stage55/summary.csv`
+- `repro/stage56_final_recheck_stage55/stage55_external_paper_probe.log`
+- `repro/stage56_final_recheck_stage55/final_goal_audit.log`
+- `repro/stage56_final_recheck_stage55/remaining_blocker_dashboard.log`
+- `repro/stage56_final_recheck_stage55/stage51_goal_frontier.log`
+- `repro/stage56_final_recheck_stage55/stage52_external_unlock_readiness.log`
+- `repro/stage56_final_recheck_stage55/stage42_evidence_closure.log`

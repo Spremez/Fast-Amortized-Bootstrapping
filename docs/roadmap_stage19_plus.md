@@ -1637,3 +1637,41 @@ Stage 55 is the current execution stage. It does not change scalar SAB,
 only improves the auditability of the external 2025/686 full-text blocker and
 the next manual-review gate.
 ```
+
+## Stage 56: Stage55 Final-Recheck Integration
+
+Goal:
+
+```text
+Make Stage55 refreshable through the unified final recheck runner before
+blocker/frontier/unlock/closure artifacts are regenerated.
+```
+
+Tasks:
+
+- add `FINAL_RECHECK_STAGE55_PAPER_PROBE=1` to
+  `scripts/run_final_goal_recheck.sh`;
+- keep the default final recheck lightweight by not running the network paper
+  probe unless the flag is explicitly enabled;
+- run an isolated final recheck that refreshes Stage55, remaining blockers,
+  Stage51, Stage52, and Stage42 closure;
+- register the Stage56 summary and raw logs in the repro pack;
+- add Stage56 to Stage42 closure and verifier checks.
+
+Gate:
+
+- `stage55_external_paper_probe` must be `PASS`;
+- remaining blocker dashboard, Stage51 frontier, Stage52 unlock readiness, and
+  Stage42 closure must all be `PASS`;
+- final decision must remain
+  `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`;
+- no performance, novelty, or theorem-level claim is upgraded by this stage.
+
+Status:
+
+```text
+Stage 56 passed. The explicit Stage55 final-recheck path regenerated the
+external paper probe and propagated its still-blocked full-text status through
+the remaining blocker dashboard, Stage51 frontier, Stage52 unlock readiness,
+and Stage42 closure. Stronger claims remain blocked.
+```

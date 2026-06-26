@@ -13,6 +13,7 @@ run_remaining_blockers="${FINAL_RECHECK_REMAINING_BLOCKERS:-1}"
 run_postfreeze_verify="${FINAL_RECHECK_POSTFREEZE_VERIFY:-0}"
 run_stage44_reprobe="${FINAL_RECHECK_STAGE44_REPROBE:-0}"
 stage44_run_native_bench="${FINAL_RECHECK_STAGE44_RUN_NATIVE_BENCH:-1}"
+run_stage55_paper_probe="${FINAL_RECHECK_STAGE55_PAPER_PROBE:-0}"
 python_bin="${PYTHON_BIN:-python3}"
 
 light_recheck_default="1"
@@ -26,7 +27,8 @@ if [[ "$run_postfreeze_verify" == "1" \
   && "$run_conditional_backlog" == "0" \
   && "$run_goal_audit" == "0" \
   && "$run_remaining_blockers" == "0" \
-  && "$run_stage44_reprobe" == "0" ]]; then
+  && "$run_stage44_reprobe" == "0" \
+  && "$run_stage55_paper_probe" == "0" ]]; then
   light_recheck_default="0"
 fi
 
@@ -47,6 +49,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_goal_audit" == "0" \
   && "$run_remaining_blockers" == "0" \
   && "$run_stage44_reprobe" == "0" \
+  && "$run_stage55_paper_probe" == "0" \
   && "$run_stage50_matrix" == "0" \
   && "$run_stage51_frontier" == "0" \
   && "$run_stage52_unlock_readiness" == "0" ]]; then
@@ -68,6 +71,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_goal_audit" == "0" \
   && "$run_remaining_blockers" == "0" \
   && "$run_stage44_reprobe" == "0" \
+  && "$run_stage55_paper_probe" == "0" \
   && "$run_stage50_matrix" == "0" \
   && "$run_stage51_frontier" == "0" \
   && "$run_stage52_unlock_readiness" == "0" \
@@ -224,6 +228,16 @@ else
     "bash scripts/run_stage44_external_unlock_reprobe.sh" \
     "" \
     "Set FINAL_RECHECK_STAGE44_REPROBE=1 to refresh external full-text/native-perf unlock state."
+fi
+
+if [[ "$run_stage55_paper_probe" == "1" ]]; then
+  run_logged "stage55_external_paper_probe" \
+    "$python_bin scripts/build_stage55_external_paper_probe.py"
+else
+  csv_row "stage55_external_paper_probe" "SKIPPED" \
+    "$python_bin scripts/build_stage55_external_paper_probe.py" \
+    "" \
+    "Set FINAL_RECHECK_STAGE55_PAPER_PROBE=1 to refresh 2025/686 DOI metadata and full-text route status."
 fi
 
 if [[ "$run_goal_audit" == "1" ]]; then
