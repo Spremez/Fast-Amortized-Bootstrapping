@@ -31,6 +31,7 @@ POSTFREEZE = ROOT / "repro" / "stage40_postfreeze_verify" / "summary.csv"
 STAGE41 = ROOT / "repro" / "stage41_external_unlock_packet.csv"
 STAGE43_SMOKE = ROOT / "repro" / "stage43_current_smoke_after_stage42" / "summary.csv"
 STAGE44_REPROBE = ROOT / "repro" / "stage44_external_unlock_reprobe" / "summary.csv"
+STAGE45_ACTIVE_STATE = ROOT / "repro" / "stage45_active_state_refactor" / "summary.csv"
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -119,6 +120,8 @@ REQUIRED_FILES = [
     "scripts/build_stage44_external_unlock_reprobe.py",
     "scripts/run_stage44_external_unlock_reprobe.sh",
     "repro/stage44_external_unlock_reprobe/summary.csv",
+    "docs/stage45_active_state_refactor_log.md",
+    "repro/stage45_active_state_refactor/summary.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -162,6 +165,11 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage44_external_unlock_reprobe/citation_probe/summary.csv",
     "repro/stage44_external_unlock_reprobe/citation_probe/access_probe.csv",
     "repro/stage44_external_unlock_reprobe/native_perf_gate/summary.csv",
+    "docs/stage45_active_state_refactor_log.md",
+    "repro/stage45_active_state_refactor/summary.csv",
+    "repro/stage45_active_state_refactor/ffnt_kernel_build.log",
+    "repro/stage45_active_state_refactor/ffnt_kernel_run.log",
+    "repro/stage45_active_state_refactor/spqlios_avx512_windows_build.log",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -345,6 +353,31 @@ def check_stage44_reprobe() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage45_active_state() -> List[Dict[str, str]]:
+    rows = {r.get("check"): r for r in read_csv(STAGE45_ACTIVE_STATE)}
+    expected = {
+        "ffnt_active_state_kernel_gate": "PASS",
+        "spqlios_avx512_windows_build": "BLOCKED_WINDOWS_ASSEMBLER",
+    }
+    mismatches = []
+    for check, expected_status in expected.items():
+        got = rows.get(check, {}).get("status", "MISSING")
+        if got != expected_status:
+            mismatches.append(f"{check}:{got}!={expected_status}")
+    return [
+        row(
+            "S42-STAGE45-ACTIVE-STATE",
+            "current_smoke",
+            pass_fail(not mismatches),
+            STAGE45_ACTIVE_STATE.relative_to(ROOT).as_posix(),
+            "active-state refactor correctness passed and Windows AVX512 platform block is recorded"
+            if not mismatches
+            else "; ".join(mismatches),
+            "Rerun or repair Stage 45 active-state refactor evidence before relying on the post-closure code state.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -491,14 +524,14 @@ def check_run_log() -> List[Dict[str, str]]:
                 n = int(stage.split()[1])
             except (IndexError, ValueError):
                 continue
-            if 19 <= n <= 44:
+            if 19 <= n <= 45:
                 stages[n] = stages.get(n, 0) + 1
         if r.get("run_id") == "stage41-external-unlock-packet-001":
             stage41_status = r.get("status", "MISSING")
-    missing = [n for n in range(19, 45) if n not in stages]
+    missing = [n for n in range(19, 46) if n not in stages]
     ok = not missing and stage41_status == "WAIT_EXTERNAL_EVIDENCE"
     detail = (
-        f"stages 19-44 registered; stage41 status={stage41_status}"
+        f"stages 19-45 registered; stage41 status={stage41_status}"
         if ok
         else f"missing_stages={missing}; stage41 status={stage41_status}"
     )
@@ -522,8 +555,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-44 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-44 control-plane artifacts.",
+            "all required Stage 41-45 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-45 control-plane artifacts.",
         )
     ]
 
@@ -555,6 +588,10 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "scripts/build_stage44_external_unlock_reprobe.py",
         "scripts/run_stage44_external_unlock_reprobe.sh",
         "repro/stage44_external_unlock_reprobe/summary.csv",
+        "docs/stage45_active_state_refactor_log.md",
+        "repro/stage45_active_state_refactor/summary.csv",
+        "repro/stage45_active_state_refactor/ffnt_kernel_run.log",
+        "repro/stage45_active_state_refactor/spqlios_avx512_windows_build.log",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -607,6 +644,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage41,
         check_stage43_smoke,
         check_stage44_reprobe,
+        check_stage45_active_state,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -625,10 +663,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            "Stage 19-44 scoped evidence chain is internally closed; stronger claims remain blocked"
+            "Stage 19-45 scoped evidence chain is internally closed; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-44 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-45 evidence closure.",
         )
     )
     return checks
@@ -652,7 +690,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "",
         "## Purpose",
         "",
-        "Stage 42 machine-checks whether the Stage 19-44 PVW/MAT-SAB evidence",
+        "Stage 42 machine-checks whether the Stage 19-45 PVW/MAT-SAB evidence",
         "chain remains internally consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",
         "",
