@@ -245,7 +245,7 @@ def write_closure_manifest() -> None:
 def check_roadmap() -> List[Dict[str, str]]:
     text = ROADMAP.read_text(encoding="utf-8") if ROADMAP.exists() else ""
     stages = sorted({int(m.group(1)) for m in re.finditer(r"^## Stage (\d+):", text, re.M)})
-    expected = list(range(19, 45))
+    expected = list(range(19, 46))
     return [
         row(
             "S42-ROADMAP-STAGES",
@@ -253,7 +253,7 @@ def check_roadmap() -> List[Dict[str, str]]:
             pass_fail(stages == expected),
             ROADMAP.relative_to(ROOT).as_posix(),
             f"observed={stages}; expected={expected}",
-            "Restore one Stage 19-44 section per stage before using the roadmap as the active plan.",
+            "Restore one Stage 19-45 section per stage before using the roadmap as the active plan.",
         )
     ]
 

@@ -17,7 +17,7 @@ guardrail audit, not a new SAB optimization or benchmark.
 
 | check | status | category | evidence | detail |
 |---|---|---|---|---|
-| S42-ROADMAP-STAGES | PASS | roadmap | docs/roadmap_stage19_plus.md | observed=[19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44]; expected=[19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44] |
+| S42-ROADMAP-STAGES | PASS | roadmap | docs/roadmap_stage19_plus.md | observed=[19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45]; expected=[19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45] |
 | S42-FINAL-AUDIT | PASS | claim_scope | repro/final_goal_completion_audit.csv | all expected scoped/blocker statuses present |
 | S42-STAGE41-READINESS | PASS | external_unlock | repro/stage41_external_unlock_packet.csv | all external-unlock rows remain waiting for external evidence |
 | S42-STAGE43-CURRENT-SMOKE | PASS | current_smoke | repro/stage43_current_smoke_after_stage42/summary.csv | scalar binary, PVW target, and scalar ternary smoke rows pass |

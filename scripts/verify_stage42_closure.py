@@ -19,6 +19,7 @@ STAGE42_AUDIT = ROOT / "repro" / "stage42_evidence_closure_audit.csv"
 STAGE42_MANIFEST = ROOT / "repro" / "stage42_evidence_closure_manifest.csv"
 STAGE43_SMOKE = ROOT / "repro" / "stage43_current_smoke_after_stage42" / "summary.csv"
 STAGE44_REPROBE = ROOT / "repro" / "stage44_external_unlock_reprobe" / "summary.csv"
+STAGE45_ACTIVE_STATE = ROOT / "repro" / "stage45_active_state_refactor" / "summary.csv"
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -103,6 +104,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage42 = {row.get("check_id"): row for row in read_csv(STAGE42_AUDIT)}
     stage43 = {row.get("step"): row for row in read_csv(STAGE43_SMOKE)}
     stage44 = {row.get("item"): row for row in read_csv(STAGE44_REPROBE)}
+    stage45 = {row.get("check"): row for row in read_csv(STAGE45_ACTIVE_STATE)}
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
     closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
@@ -141,6 +143,20 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         if got != expected:
             stage44_mismatches.append(f"{item}:{got}!={expected}")
 
+    stage45_mismatches = []
+    expected_stage45 = {
+        "ffnt_active_state_kernel_gate": "PASS",
+        "spqlios_avx512_windows_build": "BLOCKED_WINDOWS_ASSEMBLER",
+    }
+    for item, expected in expected_stage45.items():
+        got = stage45.get(item, {}).get("status", "MISSING")
+        if got != expected:
+            stage45_mismatches.append(f"{item}:{got}!={expected}")
+
+    stage42_stage45_ok = (
+        stage42.get("S42-STAGE45-ACTIVE-STATE", {}).get("status") == "PASS"
+    )
+
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
         "stage44_external_reprobe": "PASS",
@@ -174,6 +190,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage43-postclosure-current-smoke-001",
         "stage44-external-unlock-reprobe-001",
         "stage44-final-recheck-reprobe-001",
+        "stage45-active-state-refactor-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -183,6 +200,10 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "scripts/build_stage44_external_unlock_reprobe.py",
         "repro/stage44_external_unlock_reprobe/summary.csv",
         "repro/final_goal_recheck_stage44_reprobe/summary.csv",
+        "docs/stage45_active_state_refactor_log.md",
+        "repro/stage45_active_state_refactor/summary.csv",
+        "repro/stage45_active_state_refactor/ffnt_kernel_run.log",
+        "repro/stage45_active_state_refactor/spqlios_avx512_windows_build.log",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -254,6 +275,15 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             else "; ".join(stage44_mismatches),
         },
         {
+            "check": "stage45_active_state",
+            "status": "PASS" if not stage45_mismatches and stage42_stage45_ok else "FAIL",
+            "evidence": "repro/stage45_active_state_refactor/summary.csv",
+            "detail": "Stage45 active-state correctness passes and closure audit records it"
+            if not stage45_mismatches and stage42_stage45_ok
+            else "; ".join(stage45_mismatches)
+            or f"S42-STAGE45-ACTIVE-STATE:{stage42.get('S42-STAGE45-ACTIVE-STATE', {}).get('status', 'MISSING')}!=PASS",
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -281,7 +311,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44 closure run rows are present"
+            "detail": "all Stage42/43/44/45 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -289,7 +319,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, and Stage44 re-probe are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, and Stage45 refactor are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

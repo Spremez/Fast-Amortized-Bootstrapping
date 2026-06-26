@@ -1198,3 +1198,47 @@ runner with `FINAL_RECHECK_STAGE44_REPROBE=1`. The isolated
 closure, and preserved
 `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`.
 ```
+
+## Stage 45: Active-State Refactor Maintenance
+
+Goal:
+
+```text
+Keep the promoted Stage 20 active-buffer/copyback fusion implementation
+maintainable by making the internal PVW accumulator ping-pong state explicit,
+without changing scalar SAB, the public sab_pvw_* API, or any performance
+claim.
+```
+
+Tasks:
+
+- introduce an internal accumulator state structure carrying the two PVW
+  buffers, active buffer index, lane count, `in_N`, and `r_prec`;
+- route the active-buffer sparse path through this state instead of raw local
+  pointer/parity variables;
+- preserve public API normalization for `sab_pvw_RGSW_monomial_mul()`;
+- record a portable correctness gate and any current-platform AVX512 build
+  limitation in the repro pack;
+- add Stage45 to closure/manifest/verifier checks so post-closure code changes
+  remain auditable.
+
+Gate:
+
+- `SAB_PVW_KERNEL_TEST=true` with `SAB_PVW_ACTIVE_BUFFER_FUSION=true` must pass
+  r=1/2/4 sparse_mul and full bootstrap lane equivalence;
+- Windows/MSYS `spqlios_avx512` failures may only be recorded as platform
+  limitations, not as performance or algorithmic evidence;
+- Stage42 closure must include `S42-STAGE45-ACTIVE-STATE=PASS` before relying
+  on the post-closure code state.
+
+Status:
+
+```text
+Stage 45 added `SAB_PVW_Accumulator_State` inside `src/sab_pvw.c`. The public
+PVW API and scalar SAB path remain unchanged. The portable FFNT active-state
+kernel gate passed for r=1/2/4 sparse_mul and full bootstrap lane equivalence.
+The current Windows/MSYS `spqlios_avx512` build remains blocked by assembler
+`.seh_savexmm` errors, so no AVX512 correctness or performance conclusion is
+drawn from that platform. The Stage42 closure audit now checks the Stage45
+summary and keeps the final decision scoped-ready with stronger claims blocked.
+```
