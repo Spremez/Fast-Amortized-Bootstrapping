@@ -117,6 +117,10 @@ def build_rows() -> List[Dict[str, str]]:
         stage42.get("S42-STAGE72-EXTERNAL-SOURCE-REFRESH", {}).get("status")
         == "PASS"
     )
+    stage73_closed = (
+        stage42.get("S42-STAGE73-FINAL-RECHECK-STAGE72", {}).get("status")
+        == "PASS"
+    )
     optional_notes = []
     if stage64a_closed:
         optional_notes.append("Stage64A post-variant refresh")
@@ -136,6 +140,8 @@ def build_rows() -> List[Dict[str, str]]:
         optional_notes.append("Stage71 final-recheck Stage70 integration")
     if stage72_closed:
         optional_notes.append("Stage72 external source refresh")
+    if stage73_closed:
+        optional_notes.append("Stage73 final-recheck Stage72 integration")
     optional_stage_note = " plus " + " and ".join(optional_notes) if optional_notes else ""
     spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
     stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")

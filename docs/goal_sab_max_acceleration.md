@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-72`. This label tracks the
+Current control-plane closure label: `Stage 19-73`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -82,6 +82,8 @@ evidence.
 | Stage 69 local variant feasibility | n/a | n/a | routing/theory control | remaining H2/H3/H4/H7/H8 local candidates are deferred, rejected, neutral, or externally blocked under current evidence |
 | Stage 70 external unlock preflight | n/a | n/a | external prerequisite routing | native-perf, full-text, novelty, and local-variant unlock actions are machine-checkable |
 | Stage 71 final-recheck Stage70 integration | n/a | n/a | final-recheck integration | unified final recheck can refresh Stage70 before Stage42 closure |
+| Stage 72 external source refresh | n/a | n/a | external-source evidence | author metadata, DOI metadata, and code route are reachable; reviewed full text remains blocked |
+| Stage 73 final-recheck Stage72 integration | n/a | n/a | final-recheck integration | unified final recheck can refresh Stage72 before blocker/frontier/closure rebuilds |
 
 Current conclusion:
 
@@ -241,6 +243,11 @@ runner so Stage42 closure cannot depend on a stale external-unlock preflight.
 Stage72 then refreshes current author, DOI, code, and direct full-text source
 routes for 2025/686; metadata/code routes are reachable, but reviewed local
 full text remains unavailable, so stronger paper claims stay blocked.
+Stage73 integrates that Stage72 source-refresh route into the unified final
+recheck, so blocker dashboards, frontier labels, and Stage42 closure can be
+rebuilt after current source availability is refreshed. This is control-plane
+evidence only and does not upgrade speedup, novelty, theorem-level, or
+hardware-counter claims.
 ```
 
 ## Invariants
@@ -345,5 +352,6 @@ Stage 69: local variant feasibility. [passed]
 Stage 70: external unlock preflight. [passed]
 Stage 71: final-recheck Stage70 integration. [passed; waiting for external unlocks or new hypothesis]
 Stage 72: external source refresh. [passed; metadata/code reachable, reviewed full text still blocked]
+Stage 73: final-recheck Stage72 integration. [passed; Stage72 source refresh is now covered by unified final recheck]
 Stage 66: release/paper package. [waiting for external unlocks or narrowed scope]
 ```

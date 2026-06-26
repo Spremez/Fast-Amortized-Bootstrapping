@@ -1,0 +1,4 @@
+gate,status,evidence,detail
+stage73_final_recheck_stage72,PASS,repro/stage73_final_recheck_stage72/summary.csv,"final recheck refreshed Stage72, blocker dashboard, Stage51, Stage52, Stage57, Stage59, Stage70, and Stage42 closure"
+stage73_stage72_summary,PASS,repro/stage72_external_source_refresh/summary.csv,Stage72 external-source refresh remains passed after final-recheck integration
+stage73_decision,PASS_FINAL_RECHECK_STAGE72_INTEGRATION,repro/stage73_final_recheck_stage72/decision.csv,Stage73 integrates Stage72 into the explicit final-recheck path without upgrading stronger claims

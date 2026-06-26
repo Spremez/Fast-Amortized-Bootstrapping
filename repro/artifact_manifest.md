@@ -1019,3 +1019,21 @@ Repro artifacts:
 - `repro/stage72_external_source_refresh/crossref_summary.csv`
 - `repro/stage72_external_source_refresh/crossref_metadata.json`
 - `repro/stage72_external_source_refresh/author_cite.bib`
+
+## Stage 73 Final-Recheck Stage72 Integration
+
+- `docs/stage73_final_recheck_stage72_log.md`
+- `experiments/stage73_final_recheck_stage72_plan.md`
+- `scripts/build_stage73_final_recheck_stage72_log.py`
+- `scripts/run_final_goal_recheck.sh`
+- `repro/stage73_final_recheck_stage72/summary.csv`
+- `repro/stage73_final_recheck_stage72/decision.csv`
+- `repro/stage73_final_recheck_stage72/stage72_external_source_refresh.log`
+- `repro/stage73_final_recheck_stage72/final_goal_audit.log`
+- `repro/stage73_final_recheck_stage72/remaining_blocker_dashboard.log`
+- `repro/stage73_final_recheck_stage72/stage51_goal_frontier.log`
+- `repro/stage73_final_recheck_stage72/stage52_external_unlock_readiness.log`
+- `repro/stage73_final_recheck_stage72/stage57_scope_label_audit.log`
+- `repro/stage73_final_recheck_stage72/stage59_completion_route.log`
+- `repro/stage73_final_recheck_stage72/stage70_external_unlock_preflight.log`
+- `repro/stage73_final_recheck_stage72/stage42_evidence_closure.log`

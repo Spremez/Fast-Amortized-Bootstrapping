@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-72`. This label is used by the
+Current control-plane closure label: `Stage 19-73`. This label is used by the
 scope-label audit to prevent stale reports; it does not upgrade speedup,
 novelty, theorem-level, or hardware-counter claims.
 
@@ -51,6 +51,18 @@ canonical Stage66A summary. For self-consistent closure-manifest hashes, the
 Stage67 flow runs Stage66A with `FINAL_RECHECK_STAGE42_CLOSURE=0`, builds the
 Stage67 decision log, then rebuilds Stage42 closure after the final recheck
 summary is finalized.
+
+Stage73 added an explicit Stage72 external-source refresh switch:
+
+```bash
+FINAL_RECHECK_STAGE72_SOURCE_REFRESH=1 bash scripts/run_final_goal_recheck.sh
+```
+
+Use this when the caller wants the unified final recheck to refresh current
+2025/686 author, DOI, code, and full-text route state before rebuilding the
+remaining blocker dashboard, Stage51/52/57/59/70 control artifacts, and
+Stage42 closure. This is a source-availability/control-plane refresh only; it
+does not run full SAB benchmarks or upgrade stronger claims.
 
 ## Initial Run
 

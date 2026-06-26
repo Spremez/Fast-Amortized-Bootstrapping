@@ -40,6 +40,7 @@ run_stage52_unlock_readiness="${FINAL_RECHECK_STAGE52_UNLOCK_READINESS:-$light_r
 run_stage57_scope_label_audit="${FINAL_RECHECK_STAGE57_SCOPE_LABEL_AUDIT:-$light_recheck_default}"
 run_stage59_completion_route="${FINAL_RECHECK_STAGE59_COMPLETION_ROUTE:-$light_recheck_default}"
 run_stage70_unlock_preflight="${FINAL_RECHECK_STAGE70_UNLOCK_PREFLIGHT:-$light_recheck_default}"
+run_stage72_source_refresh="${FINAL_RECHECK_STAGE72_SOURCE_REFRESH:-$light_recheck_default}"
 
 if [[ -n "${FINAL_RECHECK_STAGE42_CLOSURE+x}" ]]; then
   run_stage42_closure="$FINAL_RECHECK_STAGE42_CLOSURE"
@@ -61,7 +62,8 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_stage52_unlock_readiness" == "0" ]]; then
   if [[ "$run_stage57_scope_label_audit" != "0" \
     || "$run_stage59_completion_route" != "0" \
-    || "$run_stage70_unlock_preflight" != "0" ]]; then
+    || "$run_stage70_unlock_preflight" != "0" \
+    || "$run_stage72_source_refresh" != "0" ]]; then
     run_stage42_closure="1"
   else
     run_stage42_closure="0"
@@ -91,6 +93,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_stage57_scope_label_audit" == "0" \
   && "$run_stage59_completion_route" == "0" \
   && "$run_stage70_unlock_preflight" == "0" \
+  && "$run_stage72_source_refresh" == "0" \
   && "$run_stage42_closure" == "0" ]]; then
   out_dir="repro/final_goal_recheck_postfreeze"
 else
@@ -254,6 +257,16 @@ else
     "$python_bin scripts/build_stage55_external_paper_probe.py" \
     "" \
     "Set FINAL_RECHECK_STAGE55_PAPER_PROBE=1 to refresh 2025/686 DOI metadata and full-text route status."
+fi
+
+if [[ "$run_stage72_source_refresh" == "1" ]]; then
+  run_logged "stage72_external_source_refresh" \
+    "$python_bin scripts/build_stage72_external_source_refresh.py"
+else
+  csv_row "stage72_external_source_refresh" "SKIPPED" \
+    "$python_bin scripts/build_stage72_external_source_refresh.py" \
+    "" \
+    "Set FINAL_RECHECK_STAGE72_SOURCE_REFRESH=1 to refresh current 2025/686 external source routes."
 fi
 
 if [[ "$run_goal_audit" == "1" ]]; then

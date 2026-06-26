@@ -2230,3 +2230,44 @@ the author-linked implementation route are reachable, while direct ePrint/ACM
 PDF routes remain blocked or unavailable as a reviewed local full-text
 artifact. It is external-source evidence only.
 ```
+
+## Stage 73: Final-Recheck Stage72 Integration
+
+Goal:
+
+```text
+Make Stage72 external-source refresh available through the unified final
+recheck before blocker dashboards, frontier summaries, and Stage42 closure are
+rebuilt.
+```
+
+Tasks:
+
+- add `FINAL_RECHECK_STAGE72_SOURCE_REFRESH` to
+  `scripts/run_final_goal_recheck.sh`;
+- run an isolated final recheck that refreshes Stage72, final audit,
+  remaining blockers, Stage51, Stage52, Stage57, Stage59, Stage70, and Stage42
+  closure while skipping heavy gates;
+- build a Stage73 decision log from the final recheck summary and canonical
+  Stage72 source-refresh summary;
+- register Stage73 in the repro pack and Stage42 closure/verifier.
+
+Gate:
+
+- Stage72 must pass inside the final recheck summary;
+- Stage42 closure must pass after Stage72 is refreshed;
+- final decision must remain
+  `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`;
+- heavy benchmark, citation, related-work, current-smoke, Stage55, Stage50,
+  and Stage66 refreshes must remain explicitly skipped for this control-plane
+  run;
+- no SAB benchmark, scalar/PVW code path, speedup, novelty, theorem-level,
+  non-binary, all-parameter, or hardware-counter claim is upgraded.
+
+Status:
+
+```text
+Stage73 passed. The unified final recheck can refresh Stage72 external-source
+availability before rebuilding blocker/frontier/closure evidence. It is
+control-plane evidence only.
+```

@@ -1,0 +1,3 @@
+Stage 57 scope label audit: repro/stage57_scope_label_audit.csv
+Stage 57 scope label log: docs/stage57_scope_label_audit.md
+Decision: PASS_SCOPE_LABELS_MATCH_LATEST_STAGE

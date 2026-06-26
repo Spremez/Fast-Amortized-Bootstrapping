@@ -23,6 +23,7 @@ evidence is supplied.
 | Stage 70 | external unlock preflight | Make native-perf, full-text, novelty-review, and local-variant unlock requirements machine-checkable after Stage69. | Stage70 decision must be `PASS_EXTERNAL_UNLOCK_PREFLIGHT_STRONGER_CLAIMS_BLOCKED`. | passed |
 | Stage 71 | final-recheck Stage70 integration | Make Stage70 refreshable through the unified final recheck before Stage42 closure. | Stage71 decision must be `PASS_FINAL_RECHECK_STAGE70_INTEGRATION`. | passed |
 | Stage 72 | external source refresh | Refresh current author/DOI/code/full-text routes for 2025/686 after Stage71. | Stage72 decision must be `PASS_EXTERNAL_SOURCE_REFRESH_STRONGER_CLAIMS_BLOCKED`. | passed |
+| Stage 73 | final-recheck Stage72 integration | Make Stage72 refreshable through the unified final recheck before blocker/frontier/closure rebuilds. | Stage73 decision must be `PASS_FINAL_RECHECK_STAGE72_INTEGRATION`. | passed |
 | Stage 66 | release/paper package | Freeze the final allowed claim package after external blockers are resolved or the scope is explicitly narrowed. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
 Execution policy:
@@ -50,3 +51,5 @@ Execution policy:
 - After Stage71, run Stage72 when external source availability may have
   changed; metadata/code visibility alone does not unlock theorem-level or
   novelty claims without reviewed full text.
+- After Stage72, run Stage73 so the unified final recheck refreshes current
+  source-route state before relying on blocker, frontier, or closure evidence.
