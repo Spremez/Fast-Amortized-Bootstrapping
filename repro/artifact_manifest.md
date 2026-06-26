@@ -770,3 +770,6 @@ Repro artifacts:
 - `docs/stage50_performance_evidence_matrix.md`
 - `scripts/build_stage50_performance_evidence_matrix.py`
 - `repro/stage50_performance_evidence_matrix.csv`
+- `docs/stage51_goal_completion_frontier.md`
+- `scripts/build_stage51_goal_completion_frontier.py`
+- `repro/stage51_goal_completion_frontier.csv`

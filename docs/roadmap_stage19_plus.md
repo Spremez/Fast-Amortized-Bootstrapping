@@ -1440,3 +1440,45 @@ corresponding Stage36 CI95 bands. Stage47 is retained as historical one-run
 smoke and is superseded by Stage49 for current-head continuity wording.
 Stronger claims remain blocked.
 ```
+
+## Stage 51: Goal Completion Frontier
+
+Goal:
+
+```text
+Convert the current Stage19+ evidence state into an auditable frontier:
+which parts of the original PVW/MAT-SAB acceleration goal are locally ready,
+which parts remain scoped-only, and which stronger claims still require
+external evidence or manual review.
+```
+
+Tasks:
+
+- generate `repro/stage51_goal_completion_frontier.csv`;
+- generate `docs/stage51_goal_completion_frontier.md`;
+- read authoritative status from the final audit, Stage42 closure, Stage50
+  performance matrix, and remaining blocker dashboard;
+- classify local engineering/performance/noise/resource/reproducibility lanes;
+- preserve external blockers for native perf attribution, novelty review, and
+  2025/686 full-text theorem/protocol review;
+- explicitly keep the active goal open unless external blockers are resolved
+  or the user narrows the goal scope.
+
+Gate:
+
+- G1-G6 local lanes must be `LOCAL_READY` or `LOCAL_SCOPED_READY`;
+- B1-B3 blocker lanes must remain blocked unless concrete external evidence is
+  registered;
+- G9 must remain
+  `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`;
+- Stage42 closure/verifier must include Stage51 before relying on the frontier.
+
+Status:
+
+```text
+Stage 51 passed with `PASS_GOAL_FRONTIER_SCOPED_READY_STRONGER_BLOCKED`.
+The scoped engineering chain is locally ready for target binary PVW/MAT-SAB
+acceleration evidence. The active goal remains open because MAT-AVX512 native
+perf attribution, novelty/full related-work review, and 2025/686 full-text
+theorem/protocol citation review remain externally blocked.
+```

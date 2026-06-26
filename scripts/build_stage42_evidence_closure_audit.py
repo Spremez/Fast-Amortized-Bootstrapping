@@ -2,7 +2,7 @@
 """Build the Stage 42 evidence-closure audit.
 
 This script checks whether the current scoped PVW/MAT-SAB evidence chain is
-internally consistent through Stage 50. It does not run benchmarks or upgrade
+internally consistent through Stage 51. It does not run benchmarks or upgrade
 claims; it verifies that the committed artifacts still support the recorded
 scope.
 """
@@ -37,6 +37,7 @@ STAGE47_WSL_FULL_SAB = ROOT / "repro" / "stage47_wsl_active_state_full_sab_smoke
 STAGE48_WSL_NOISE = ROOT / "repro" / "stage48_wsl_active_state_noise_smoke" / "aggregate.csv"
 STAGE49_WSL_REPEATED_FULL_SAB = ROOT / "repro" / "stage49_wsl_repeated_full_sab" / "summary.csv"
 STAGE50_PERF_MATRIX = ROOT / "repro" / "stage50_performance_evidence_matrix.csv"
+STAGE51_GOAL_FRONTIER = ROOT / "repro" / "stage51_goal_completion_frontier.csv"
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -139,6 +140,9 @@ REQUIRED_FILES = [
     "docs/stage50_performance_evidence_matrix.md",
     "scripts/build_stage50_performance_evidence_matrix.py",
     "repro/stage50_performance_evidence_matrix.csv",
+    "docs/stage51_goal_completion_frontier.md",
+    "scripts/build_stage51_goal_completion_frontier.py",
+    "repro/stage51_goal_completion_frontier.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -217,6 +221,9 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "docs/stage50_performance_evidence_matrix.md",
     "scripts/build_stage50_performance_evidence_matrix.py",
     "repro/stage50_performance_evidence_matrix.csv",
+    "docs/stage51_goal_completion_frontier.md",
+    "scripts/build_stage51_goal_completion_frontier.py",
+    "repro/stage51_goal_completion_frontier.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -292,7 +299,7 @@ def write_closure_manifest() -> None:
 def check_roadmap() -> List[Dict[str, str]]:
     text = ROADMAP.read_text(encoding="utf-8") if ROADMAP.exists() else ""
     stages = sorted({int(m.group(1)) for m in re.finditer(r"^## Stage (\d+):", text, re.M)})
-    expected = list(range(19, 51))
+    expected = list(range(19, 52))
     return [
         row(
             "S42-ROADMAP-STAGES",
@@ -300,7 +307,7 @@ def check_roadmap() -> List[Dict[str, str]]:
             pass_fail(stages == expected),
             ROADMAP.relative_to(ROOT).as_posix(),
             f"observed={stages}; expected={expected}",
-            "Restore one Stage 19-50 section per stage before using the roadmap as the active plan.",
+            "Restore one Stage 19-51 section per stage before using the roadmap as the active plan.",
         )
     ]
 
@@ -580,6 +587,34 @@ def check_stage50_performance_matrix() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage51_goal_frontier() -> List[Dict[str, str]]:
+    rows = {r.get("frontier_id"): r for r in read_csv(STAGE51_GOAL_FRONTIER)}
+    problems = []
+    for frontier_id in ["G1", "G2", "G3", "G4", "G5", "G6"]:
+        status = rows.get(frontier_id, {}).get("status", "MISSING")
+        if not status.startswith("LOCAL"):
+            problems.append(f"{frontier_id}:status={status}")
+    for frontier_id in ["B1", "B2", "B3"]:
+        status = rows.get(frontier_id, {}).get("status", "MISSING")
+        if "BLOCKED" not in status:
+            problems.append(f"{frontier_id}:status={status}")
+    g9_status = rows.get("G9", {}).get("status", "MISSING")
+    if g9_status != "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED":
+        problems.append(f"G9:status={g9_status}")
+    return [
+        row(
+            "S42-STAGE51-GOAL-FRONTIER",
+            "claim_scope",
+            pass_fail(not problems and bool(rows)),
+            STAGE51_GOAL_FRONTIER.relative_to(ROOT).as_posix(),
+            "Stage51 goal frontier separates local scoped-ready evidence from stronger external blockers"
+            if not problems and rows
+            else "; ".join(problems) or "frontier missing or empty",
+            "Regenerate Stage51 before relying on local-ready versus externally-blocked goal frontier wording.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -726,14 +761,14 @@ def check_run_log() -> List[Dict[str, str]]:
                 n = int(stage.split()[1])
             except (IndexError, ValueError):
                 continue
-            if 19 <= n <= 50:
+            if 19 <= n <= 51:
                 stages[n] = stages.get(n, 0) + 1
         if r.get("run_id") == "stage41-external-unlock-packet-001":
             stage41_status = r.get("status", "MISSING")
-    missing = [n for n in range(19, 51) if n not in stages]
+    missing = [n for n in range(19, 52) if n not in stages]
     ok = not missing and stage41_status == "WAIT_EXTERNAL_EVIDENCE"
     detail = (
-        f"stages 19-50 registered; stage41 status={stage41_status}"
+        f"stages 19-51 registered; stage41 status={stage41_status}"
         if ok
         else f"missing_stages={missing}; stage41 status={stage41_status}"
     )
@@ -757,8 +792,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-50 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-50 control-plane artifacts.",
+            "all required Stage 41-51 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-51 control-plane artifacts.",
         )
     ]
 
@@ -824,6 +859,9 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "docs/stage50_performance_evidence_matrix.md",
         "scripts/build_stage50_performance_evidence_matrix.py",
         "repro/stage50_performance_evidence_matrix.csv",
+        "docs/stage51_goal_completion_frontier.md",
+        "scripts/build_stage51_goal_completion_frontier.py",
+        "repro/stage51_goal_completion_frontier.csv",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -832,7 +870,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, and Stage 50 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, and Stage 51 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -882,6 +920,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage48_wsl_noise,
         check_stage49_wsl_repeated_full_sab,
         check_stage50_performance_matrix,
+        check_stage51_goal_frontier,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -900,10 +939,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            "Stage 19-50 scoped evidence chain is internally closed; stronger claims remain blocked"
+            "Stage 19-51 scoped evidence chain is internally closed; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-50 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-51 evidence closure.",
         )
     )
     return checks
@@ -927,7 +966,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "",
         "## Purpose",
         "",
-        "Stage 42 machine-checks whether the Stage 19-50 PVW/MAT-SAB evidence",
+        "Stage 42 machine-checks whether the Stage 19-51 PVW/MAT-SAB evidence",
         "chain remains internally consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",
         "",
