@@ -447,13 +447,18 @@ Stage 90: external claim unlock. [completed as probe; stronger claims remain blo
 Stage 91: final SAB optimization package. [completed; scoped final package ready, stronger claims remain blocked]
 Stage 92: external unlock execution packet. [completed; executable external lanes recorded, stronger claims remain blocked]
 Stage 93: external lane attempt. [completed; current local environment still lacks native perf and 2025/686 full text]
+Stage 99: external blocker reprobe. [completed; local 2025/686 PDF registered, manual review required]
+Stage 100: full-text anchor prefill. [completed; candidate anchors generated, manual review required]
 ```
 
 ## Current Closure Label
 
-Current control-plane closure range: `Stage 19-99`.
+Current control-plane closure range: `Stage 19-100`.
 
 Stage99 adds an external blocker reprobe after the Stage98 smoke refresh. It
 records that native perf is still blocked in the current WSL2 environment,
-while a local 2025/686 PDF has been registered by Stage38 and now requires
-manual source-anchor review before theorem-level or novelty claims can move.
+while a local 2025/686 PDF has been registered by Stage38. Stage100 then
+generates candidate-only page anchors for the Stage38 checklist. The candidate
+anchors are not reviewed source anchors; theorem-level, novelty, and native
+perf claims still require manual review or external evidence before they can
+move.

@@ -1,0 +1,5 @@
+stage=Stage 100
+script=scripts/run_stage100_fulltext_anchor_prefill.sh
+pwd=/mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping
+date=2026-06-26T16:09:11Z
+Python 3.12.3

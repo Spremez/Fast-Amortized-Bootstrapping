@@ -1,0 +1,140 @@
+review_item,page,score,matched_terms,section_hint
+FAB_PROTOCOL_STAGES,4,4,extraction; key switching,4 Antonio Guimarães and Hilder V. L. Pereira; 2 76.27MB 9.8ms 9.8ms; 8 3.25GB 1.1s 1.1s; 2 17.1MB 8.2s 4.0ms
+FAB_PROTOCOL_STAGES,5,5,Algorithm 1; MPmul; external product,1.2 Overview of our contributions and techniques
+FAB_PROTOCOL_STAGES,6,12,MPmul; external product,6 Antonio Guimarães and Hilder V. L. Pereira
+FAB_PROTOCOL_STAGES,7,1,extraction,2 Preliminaries
+FAB_PROTOCOL_STAGES,10,4,test vectors; external product; extraction,10 Antonio Guimarães and Hilder V. L. Pereira; 2 2 2; 2 2; 2.2 Test vectors and extraction
+FAB_PROTOCOL_STAGES,11,6,Algorithm 1; MPmul; external product; CMUX,"0 1 L; 0 ≤ i ≤ L, where L is any upper bound on the number of bits of v (for instance,; 2 + N log 2 2"
+FAB_PROTOCOL_STAGES,12,5,Algorithm 1; MPmul,12 Antonio Guimarães and Hilder V. L. Pereira; Algorithm 1: Monomial-times-polynomial multiplication (MPmul); 1 for 0 ≤ i ≤ log B − 1 do; 2 for 0 ≤ j < 2i do 
+FAB_PROTOCOL_STAGES,13,15,Algorithm 2; MPmul; test vectors,"Algorithm 2: Subtract a·s when s is a binary sparse secret (bin-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log j=0; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_PROTOCOL_STAGES,14,9,Algorithm 3; MPmul; external product; CMUX,14 Antonio Guimarães and Hilder V. L. Pereira; 4.2 Bootstrapping with ternary secrets
+FAB_PROTOCOL_STAGES,15,11,Algorithm 2; Algorithm 3; MPmul; test vectors; external product; sparse amortized bootstrapping,"Algorithm 3: Ternary Sparse Amortized Bootstrapping (tern-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log j=0; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_PROTOCOL_STAGES,16,10,Algorithm 4; MPmul; external product,16 Antonio Guimarães and Hilder V. L. Pereira; 2 + Nℓ; 2 + Nℓ; 4.3 Bootstrapping with general sparse secrets
+FAB_PROTOCOL_STAGES,17,9,Algorithm 4; MPmul; test vectors; external product; sparse amortized bootstrapping,"Algorithm 4: General Sparse Amortized Bootstrapping (ρ-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log B−1; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_PROTOCOL_STAGES,18,8,CMUX; key switching,18 Antonio Guimarães and Hilder V. L. Pereira; 5 Packing Key Switching
+FAB_PROTOCOL_STAGES,19,3,CMUX; key switching,"Algorithm 5: Packing key switching for sparse secrets; 1 . Output: a ciphertext c ∈ Rq LWEs′ ( i=0 mi ); 2 f : Zq 7→ Rq , given by f (x0 , ..., xn−1 ) 7→ i=0 xi X; 3 c ← (0, f ([bi ]i=0,...,n−1 ))"
+FAB_PROTOCOL_STAGES,20,5,Algorithm 6; test vectors; key switching,"20 Antonio Guimarães and Hilder V. L. Pereira; 6 Our amortized functional bootstrapping; Algorithm 6: Amortized functional bootstrapping; 1 For each fi , define a test vector ti ∈ R"
+FAB_PROTOCOL_STAGES,21,8,Algorithm 6; external product; extraction,"Lemma 6.1 (Noise overhead of amortized functional bootstrapping).; Corollary 6.2. Assuming β, βksk , EG , Eksk ∈ O(1), Algorithm 6 has amortized; 6.1 The choice of the parameter B and efficiency"
+FAB_PROTOCOL_STAGES,22,3,external product; key switching,22 Antonio Guimarães and Hilder V. L. Pereira; 6.2 The choice of the parameter B and security; 7 Practical results; 7.1 Parameter selection
+FAB_PROTOCOL_STAGES,23,3,key switching,"6 bits) and large (8 bits) messages, respectively. The keys for automorphisms"
+FAB_PROTOCOL_STAGES,25,2,key switching; sparse amortized bootstrapping,7.2 Main results
+FAB_PROTOCOL_STAGES,26,2,MPmul; key switching,26 Antonio Guimarães and Hilder V. L. Pereira; 1 9.8ms 9.8ms 1.0; 2 13.6ms 6.8ms 1.4; 2048 8.2s 4.01ms 2.5
+FAB_PROTOCOL_STAGES,27,6,Algorithm 4; CMUX; key switching; sparse amortized bootstrapping,7.3 Results for arbitrary sparse secrets; 4096 RPC2 +FBS1 84.00MB 4 2−73 23.71s 5.79ms; 8192 RPC3 +FBS1 86.00MB 4 2−73 51.37s 6.27ms; 4096 RPC2 +FBS2 1.08GB 6 2−72 169.02s 41.26ms
+FAB_PROTOCOL_STAGES,32,2,key switching,32 Antonio Guimarães and Hilder V. L. Pereira; Algorithm 7: Sparse packing key switching - key generation; 1 V ← {0}; C ← {0}; 2 for j ← 0 to N/B do
+FAB_PROTOCOL_STAGES,33,5,external product; CMUX; key switching,2 β 2 2 1 q 2; 2 12 β ℓA; 2 β 2 1 q; 2 12 β ℓA
+FAB_COMPLEXITY_MODEL,1,2,complexity; N h,1 Introduction
+FAB_COMPLEXITY_MODEL,2,1,complexity,2 Antonio Guimarães and Hilder V. L. Pereira
+FAB_COMPLEXITY_MODEL,3,3,complexity; N h,1.1 Overview of existing amortized bootstrapping algorithms
+FAB_COMPLEXITY_MODEL,4,1,complexity,4 Antonio Guimarães and Hilder V. L. Pereira; 2 76.27MB 9.8ms 9.8ms; 8 3.25GB 1.1s 1.1s; 2 17.1MB 8.2s 4.0ms
+FAB_COMPLEXITY_MODEL,5,4,N h; external product,1.2 Overview of our contributions and techniques
+FAB_COMPLEXITY_MODEL,6,5,complexity; external product,6 Antonio Guimarães and Hilder V. L. Pereira
+FAB_COMPLEXITY_MODEL,9,2,N h,2.1 LWE and RLWE encryption schemes; 0 1 ℓ−1
+FAB_COMPLEXITY_MODEL,10,2,external product,10 Antonio Guimarães and Hilder V. L. Pereira; 2 2 2; 2 2; 2.2 Test vectors and extraction
+FAB_COMPLEXITY_MODEL,11,4,N h; external product,"0 1 L; 0 ≤ i ≤ L, where L is any upper bound on the number of bits of v (for instance,; 2 + N log 2 2"
+FAB_COMPLEXITY_MODEL,13,1,complexity,"Algorithm 2: Subtract a·s when s is a binary sparse secret (bin-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log j=0; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_COMPLEXITY_MODEL,14,5,complexity; external product,14 Antonio Guimarães and Hilder V. L. Pereira; 4.2 Bootstrapping with ternary secrets
+FAB_COMPLEXITY_MODEL,15,6,complexity; external product,"Algorithm 3: Ternary Sparse Amortized Bootstrapping (tern-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log j=0; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_COMPLEXITY_MODEL,16,5,N h; external product,16 Antonio Guimarães and Hilder V. L. Pereira; 2 + Nℓ; 2 + Nℓ; 4.3 Bootstrapping with general sparse secrets
+FAB_COMPLEXITY_MODEL,17,3,complexity; external product,"Algorithm 4: General Sparse Amortized Bootstrapping (ρ-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log B−1; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_COMPLEXITY_MODEL,21,28,complexity; amortized complexity; h log B; N h; Lemma 6.1; Corollary 6.2; Algorithm 6 runs; external product,"Lemma 6.1 (Noise overhead of amortized functional bootstrapping).; Corollary 6.2. Assuming β, βksk , EG , Eksk ∈ O(1), Algorithm 6 has amortized; 6.1 The choice of the parameter B and efficiency"
+FAB_COMPLEXITY_MODEL,22,3,N h; external product,22 Antonio Guimarães and Hilder V. L. Pereira; 6.2 The choice of the parameter B and security; 7 Practical results; 7.1 Parameter selection
+FAB_COMPLEXITY_MODEL,24,1,N h,24 Antonio Guimarães and Hilder V. L. Pereira; 15 7
+FAB_COMPLEXITY_MODEL,30,1,N h,30 Antonio Guimarães and Hilder V. L. Pereira
+FAB_COMPLEXITY_MODEL,31,1,N h,"14443 of LNCS, pages 3–35. Springer, Singapore, December 2023."
+FAB_COMPLEXITY_MODEL,32,1,N h,32 Antonio Guimarães and Hilder V. L. Pereira; Algorithm 7: Sparse packing key switching - key generation; 1 V ← {0}; C ← {0}; 2 for j ← 0 to N/B do
+FAB_COMPLEXITY_MODEL,33,1,external product,2 β 2 2 1 q 2; 2 12 β ℓA; 2 β 2 1 q; 2 12 β ℓA
+FAB_CORRECTNESS_NOISE,1,2,noise,1 Introduction
+FAB_CORRECTNESS_NOISE,2,8,noise,2 Antonio Guimarães and Hilder V. L. Pereira
+FAB_CORRECTNESS_NOISE,3,8,noise,1.1 Overview of existing amortized bootstrapping algorithms
+FAB_CORRECTNESS_NOISE,4,2,noise,4 Antonio Guimarães and Hilder V. L. Pereira; 2 76.27MB 9.8ms 9.8ms; 8 3.25GB 1.1s 1.1s; 2 17.1MB 8.2s 4.0ms
+FAB_CORRECTNESS_NOISE,5,2,noise,1.2 Overview of our contributions and techniques
+FAB_CORRECTNESS_NOISE,6,3,noise,6 Antonio Guimarães and Hilder V. L. Pereira
+FAB_CORRECTNESS_NOISE,7,7,noise,2 Preliminaries
+FAB_CORRECTNESS_NOISE,8,2,noise,"8 Antonio Guimarães and Hilder V. L. Pereira; 2 exp(−λ) < 2 . In other words, |X| is less than σ λ/π with probability"
+FAB_CORRECTNESS_NOISE,9,5,noise,2.1 LWE and RLWE encryption schemes; 0 1 ℓ−1
+FAB_CORRECTNESS_NOISE,10,1,noise,10 Antonio Guimarães and Hilder V. L. Pereira; 2 2 2; 2 2; 2.2 Test vectors and extraction
+FAB_CORRECTNESS_NOISE,11,9,noise,"0 1 L; 0 ≤ i ≤ L, where L is any upper bound on the number of bits of v (for instance,; 2 + N log 2 2"
+FAB_CORRECTNESS_NOISE,12,3,noise; Lemma 3.1,12 Antonio Guimarães and Hilder V. L. Pereira; Algorithm 1: Monomial-times-polynomial multiplication (MPmul); 1 for 0 ≤ i ≤ log B − 1 do; 2 for 0 ≤ j < 2i do 
+FAB_CORRECTNESS_NOISE,13,5,correctness; noise,"Algorithm 2: Subtract a·s when s is a binary sparse secret (bin-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log j=0; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_CORRECTNESS_NOISE,14,8,correctness; noise; Lemma 3.1,14 Antonio Guimarães and Hilder V. L. Pereira; 4.2 Bootstrapping with ternary secrets
+FAB_CORRECTNESS_NOISE,15,6,correctness; noise; Lemma 4.2,"Algorithm 3: Ternary Sparse Amortized Bootstrapping (tern-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log j=0; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_CORRECTNESS_NOISE,16,3,noise,16 Antonio Guimarães and Hilder V. L. Pereira; 2 + Nℓ; 2 + Nℓ; 4.3 Bootstrapping with general sparse secrets
+FAB_CORRECTNESS_NOISE,17,5,correctness; noise,"Algorithm 4: General Sparse Amortized Bootstrapping (ρ-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log B−1; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_CORRECTNESS_NOISE,18,5,noise; probability of failure; negligible,18 Antonio Guimarães and Hilder V. L. Pereira; 5 Packing Key Switching
+FAB_CORRECTNESS_NOISE,19,5,noise; negligible,"Algorithm 5: Packing key switching for sparse secrets; 1 . Output: a ciphertext c ∈ Rq LWEs′ ( i=0 mi ); 2 f : Zq 7→ Rq , given by f (x0 , ..., xn−1 ) 7→ i=0 xi X; 3 c ← (0, f ([bi ]i=0,...,n−1 ))"
+FAB_CORRECTNESS_NOISE,20,2,noise,"20 Antonio Guimarães and Hilder V. L. Pereira; 6 Our amortized functional bootstrapping; Algorithm 6: Amortized functional bootstrapping; 1 For each fi , define a test vector ti ∈ R"
+FAB_CORRECTNESS_NOISE,21,15,noise; Lemma 4.2; Lemma 6.1,"Lemma 6.1 (Noise overhead of amortized functional bootstrapping).; Corollary 6.2. Assuming β, βksk , EG , Eksk ∈ O(1), Algorithm 6 has amortized; 6.1 The choice of the parameter B and efficiency"
+FAB_CORRECTNESS_NOISE,22,5,noise; negligible,22 Antonio Guimarães and Hilder V. L. Pereira; 6.2 The choice of the parameter B and security; 7 Practical results; 7.1 Parameter selection
+FAB_CORRECTNESS_NOISE,23,4,noise,"6 bits) and large (8 bits) messages, respectively. The keys for automorphisms"
+FAB_CORRECTNESS_NOISE,24,4,noise; probability of failure,24 Antonio Guimarães and Hilder V. L. Pereira; 15 7
+FAB_CORRECTNESS_NOISE,25,2,noise,7.2 Main results
+FAB_CORRECTNESS_NOISE,26,1,probability of failure,26 Antonio Guimarães and Hilder V. L. Pereira; 1 9.8ms 9.8ms 1.0; 2 13.6ms 6.8ms 1.4; 2048 8.2s 4.01ms 2.5
+FAB_CORRECTNESS_NOISE,27,2,noise,7.3 Results for arbitrary sparse secrets; 4096 RPC2 +FBS1 84.00MB 4 2−73 23.71s 5.79ms; 8192 RPC3 +FBS1 86.00MB 4 2−73 51.37s 6.27ms; 4096 RPC2 +FBS2 1.08GB 6 2−72 169.02s 41.26ms
+FAB_CORRECTNESS_NOISE,28,4,noise,28 Antonio Guimarães and Hilder V. L. Pereira; 7.4 Comparison with other works
+FAB_CORRECTNESS_NOISE,29,1,noise,References
+FAB_CORRECTNESS_NOISE,31,1,noise,"14443 of LNCS, pages 3–35. Springer, Singapore, December 2023."
+FAB_CORRECTNESS_NOISE,32,1,noise,32 Antonio Guimarães and Hilder V. L. Pereira; Algorithm 7: Sparse packing key switching - key generation; 1 V ← {0}; C ← {0}; 2 for j ← 0 to N/B do
+FAB_CORRECTNESS_NOISE,33,8,noise,2 β 2 2 1 q 2; 2 12 β ℓA; 2 β 2 1 q; 2 12 β ℓA
+FAB_PARAMETER_SECURITY,1,4,security,1 Introduction
+FAB_PARAMETER_SECURITY,2,4,security; Table,2 Antonio Guimarães and Hilder V. L. Pereira
+FAB_PARAMETER_SECURITY,3,3,security; sparse secrets; Table,1.1 Overview of existing amortized bootstrapping algorithms
+FAB_PARAMETER_SECURITY,4,2,Table,4 Antonio Guimarães and Hilder V. L. Pereira; 2 76.27MB 9.8ms 9.8ms; 8 3.25GB 1.1s 1.1s; 2 17.1MB 8.2s 4.0ms
+FAB_PARAMETER_SECURITY,5,3,binary,1.2 Overview of our contributions and techniques
+FAB_PARAMETER_SECURITY,7,1,Table,2 Preliminaries
+FAB_PARAMETER_SECURITY,11,1,binary,"0 1 L; 0 ≤ i ≤ L, where L is any upper bound on the number of bits of v (for instance,; 2 + N log 2 2"
+FAB_PARAMETER_SECURITY,13,5,binary; Table,"Algorithm 2: Subtract a·s when s is a binary sparse secret (bin-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log j=0; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_PARAMETER_SECURITY,14,1,ternary,14 Antonio Guimarães and Hilder V. L. Pereira; 4.2 Bootstrapping with ternary secrets
+FAB_PARAMETER_SECURITY,15,2,binary; ternary,"Algorithm 3: Ternary Sparse Amortized Bootstrapping (tern-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log j=0; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_PARAMETER_SECURITY,16,1,sparse secrets,16 Antonio Guimarães and Hilder V. L. Pereira; 2 + Nℓ; 2 + Nℓ; 4.3 Bootstrapping with general sparse secrets
+FAB_PARAMETER_SECURITY,17,1,binary,"Algorithm 4: General Sparse Amortized Bootstrapping (ρ-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log B−1; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+FAB_PARAMETER_SECURITY,19,5,security; sparse secrets; binary; Table,"Algorithm 5: Packing key switching for sparse secrets; 1 . Output: a ciphertext c ∈ Rq LWEs′ ( i=0 mi ); 2 f : Zq 7→ Rq , given by f (x0 , ..., xn−1 ) 7→ i=0 xi X; 3 c ← (0, f ([bi ]i=0,...,n−1 ))"
+FAB_PARAMETER_SECURITY,20,2,binary; ternary,"20 Antonio Guimarães and Hilder V. L. Pereira; 6 Our amortized functional bootstrapping; Algorithm 6: Amortized functional bootstrapping; 1 For each fi , define a test vector ti ∈ R"
+FAB_PARAMETER_SECURITY,21,1,binary,"Lemma 6.1 (Noise overhead of amortized functional bootstrapping).; Corollary 6.2. Assuming β, βksk , EG , Eksk ∈ O(1), Algorithm 6 has amortized; 6.1 The choice of the parameter B and efficiency"
+FAB_PARAMETER_SECURITY,22,9,parameter selection; security; ternary; Table,22 Antonio Guimarães and Hilder V. L. Pereira; 6.2 The choice of the parameter B and security; 7 Practical results; 7.1 Parameter selection
+FAB_PARAMETER_SECURITY,23,12,security; binary; ternary; Table,"6 bits) and large (8 bits) messages, respectively. The keys for automorphisms"
+FAB_PARAMETER_SECURITY,24,9,security; sparse secrets; binary; ternary; Table,24 Antonio Guimarães and Hilder V. L. Pereira; 15 7
+FAB_PARAMETER_SECURITY,25,6,binary; ternary; Table,7.2 Main results
+FAB_PARAMETER_SECURITY,26,8,binary; ternary; Table,26 Antonio Guimarães and Hilder V. L. Pereira; 1 9.8ms 9.8ms 1.0; 2 13.6ms 6.8ms 1.4; 2048 8.2s 4.01ms 2.5
+FAB_PARAMETER_SECURITY,27,13,security; sparse secrets; binary; ternary; arbitrary sparse secrets; Table,7.3 Results for arbitrary sparse secrets; 4096 RPC2 +FBS1 84.00MB 4 2−73 23.71s 5.79ms; 8192 RPC3 +FBS1 86.00MB 4 2−73 51.37s 6.27ms; 4096 RPC2 +FBS2 1.08GB 6 2−72 169.02s 41.26ms
+FAB_PARAMETER_SECURITY,28,3,security; sparse secrets; Table,28 Antonio Guimarães and Hilder V. L. Pereira; 7.4 Comparison with other works
+FAB_PARAMETER_SECURITY,29,1,security,References
+FAB_PARAMETER_SECURITY,30,5,security; ternary,30 Antonio Guimarães and Hilder V. L. Pereira
+FAB_PARAMETER_SECURITY,33,2,sparse secrets; Table,2 β 2 2 1 q 2; 2 12 β ℓA; 2 β 2 1 q; 2 12 β ℓA
+FAB_PARAMETER_SECURITY,34,2,security; Table,34 Antonio Guimarães and Hilder V. L. Pereira; 17 - 4.21 0.19 0; 18 - 3.71 0.15 0; 19 - 3.29 0.12 0
+PVW_SAB_DELTA,1,2,multi,1 Introduction
+PVW_SAB_DELTA,2,1,multi,2 Antonio Guimarães and Hilder V. L. Pereira
+PVW_SAB_DELTA,4,3,packing; key switching,4 Antonio Guimarães and Hilder V. L. Pereira; 2 76.27MB 9.8ms 9.8ms; 8 3.25GB 1.1s 1.1s; 2 17.1MB 8.2s 4.0ms
+PVW_SAB_DELTA,5,12,external product; multi,1.2 Overview of our contributions and techniques
+PVW_SAB_DELTA,6,11,external product; multi; packing,6 Antonio Guimarães and Hilder V. L. Pereira
+PVW_SAB_DELTA,7,2,packing; amortized functional bootstrapping,2 Preliminaries
+PVW_SAB_DELTA,9,1,multi,2.1 LWE and RLWE encryption schemes; 0 1 ℓ−1
+PVW_SAB_DELTA,10,6,external product; multi,10 Antonio Guimarães and Hilder V. L. Pereira; 2 2 2; 2 2; 2.2 Test vectors and extraction
+PVW_SAB_DELTA,11,11,external product; CMUX; multi,"0 1 L; 0 ≤ i ≤ L, where L is any upper bound on the number of bits of v (for instance,; 2 + N log 2 2"
+PVW_SAB_DELTA,12,3,multi,12 Antonio Guimarães and Hilder V. L. Pereira; Algorithm 1: Monomial-times-polynomial multiplication (MPmul); 1 for 0 ≤ i ≤ log B − 1 do; 2 for 0 ≤ j < 2i do 
+PVW_SAB_DELTA,13,2,multi,"Algorithm 2: Subtract a·s when s is a binary sparse secret (bin-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log j=0; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+PVW_SAB_DELTA,14,5,external product; CMUX; multi,14 Antonio Guimarães and Hilder V. L. Pereira; 4.2 Bootstrapping with ternary secrets
+PVW_SAB_DELTA,15,4,external product; multi,"Algorithm 3: Ternary Sparse Amortized Bootstrapping (tern-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log j=0; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+PVW_SAB_DELTA,16,7,external product; multi,16 Antonio Guimarães and Hilder V. L. Pereira; 2 + Nℓ; 2 + Nℓ; 4.3 Bootstrapping with general sparse secrets
+PVW_SAB_DELTA,17,2,external product; multi,"Algorithm 4: General Sparse Amortized Bootstrapping (ρ-SAB); 0 ≤ i ≤ h, 0 ≤ j < log B, where log B−1; 1 Let c := (c0 , ..., cn−1 ) where ci = FHE.MultPtxt(ti , X i ); 2 for 0 ≤ i ≤ h − 1 do"
+PVW_SAB_DELTA,18,18,CMUX; matrix; multi; packing; key switching,18 Antonio Guimarães and Hilder V. L. Pereira; 5 Packing Key Switching
+PVW_SAB_DELTA,19,7,CMUX; multi; packing; key switching,"Algorithm 5: Packing key switching for sparse secrets; 1 . Output: a ciphertext c ∈ Rq LWEs′ ( i=0 mi ); 2 f : Zq 7→ Rq , given by f (x0 , ..., xn−1 ) 7→ i=0 xi X; 3 c ← (0, f ([bi ]i=0,...,n−1 ))"
+PVW_SAB_DELTA,20,5,packing; key switching; amortized functional bootstrapping,"20 Antonio Guimarães and Hilder V. L. Pereira; 6 Our amortized functional bootstrapping; Algorithm 6: Amortized functional bootstrapping; 1 For each fi , define a test vector ti ∈ R"
+PVW_SAB_DELTA,21,5,external product; amortized functional bootstrapping,"Lemma 6.1 (Noise overhead of amortized functional bootstrapping).; Corollary 6.2. Assuming β, βksk , EG , Eksk ∈ O(1), Algorithm 6 has amortized; 6.1 The choice of the parameter B and efficiency"
+PVW_SAB_DELTA,22,4,external product; packing; key switching,22 Antonio Guimarães and Hilder V. L. Pereira; 6.2 The choice of the parameter B and security; 7 Practical results; 7.1 Parameter selection
+PVW_SAB_DELTA,23,10,packing; key switching,"6 bits) and large (8 bits) messages, respectively. The keys for automorphisms"
+PVW_SAB_DELTA,25,2,packing; key switching,7.2 Main results
+PVW_SAB_DELTA,26,10,multi; packing; key switching,26 Antonio Guimarães and Hilder V. L. Pereira; 1 9.8ms 9.8ms 1.0; 2 13.6ms 6.8ms 1.4; 2048 8.2s 4.01ms 2.5
+PVW_SAB_DELTA,27,7,CMUX; packing; key switching,7.3 Results for arbitrary sparse secrets; 4096 RPC2 +FBS1 84.00MB 4 2−73 23.71s 5.79ms; 8192 RPC3 +FBS1 86.00MB 4 2−73 51.37s 6.27ms; 4096 RPC2 +FBS2 1.08GB 6 2−72 169.02s 41.26ms
+PVW_SAB_DELTA,30,1,multi,30 Antonio Guimarães and Hilder V. L. Pereira
+PVW_SAB_DELTA,32,8,multi; packing; key switching; amortized functional bootstrapping,32 Antonio Guimarães and Hilder V. L. Pereira; Algorithm 7: Sparse packing key switching - key generation; 1 V ← {0}; C ← {0}; 2 for j ← 0 to N/B do
+PVW_SAB_DELTA,33,5,external product; CMUX; key switching,2 β 2 2 1 q 2; 2 12 β ℓA; 2 β 2 1 q; 2 12 β ℓA
+NOVELTY_BOUNDARY,5,2,contributions; techniques,1.2 Overview of our contributions and techniques
+NOVELTY_BOUNDARY,7,2,practical results,2 Preliminaries
+NOVELTY_BOUNDARY,12,1,techniques,12 Antonio Guimarães and Hilder V. L. Pereira; Algorithm 1: Monomial-times-polynomial multiplication (MPmul); 1 for 0 ≤ i ≤ log B − 1 do; 2 for 0 ≤ j < 2i do 
+NOVELTY_BOUNDARY,18,1,techniques,18 Antonio Guimarães and Hilder V. L. Pereira; 5 Packing Key Switching
+NOVELTY_BOUNDARY,22,1,practical results,22 Antonio Guimarães and Hilder V. L. Pereira; 6.2 The choice of the parameter B and security; 7 Practical results; 7.1 Parameter selection
+NOVELTY_BOUNDARY,26,2,techniques,26 Antonio Guimarães and Hilder V. L. Pereira; 1 9.8ms 9.8ms 1.0; 2 13.6ms 6.8ms 1.4; 2048 8.2s 4.01ms 2.5
+NOVELTY_BOUNDARY,27,1,techniques,7.3 Results for arbitrary sparse secrets; 4096 RPC2 +FBS1 84.00MB 4 2−73 23.71s 5.79ms; 8192 RPC3 +FBS1 86.00MB 4 2−73 51.37s 6.27ms; 4096 RPC2 +FBS2 1.08GB 6 2−72 169.02s 41.26ms
+NOVELTY_BOUNDARY,28,2,comparison with other works; techniques,28 Antonio Guimarães and Hilder V. L. Pereira; 7.4 Comparison with other works
+NOVELTY_BOUNDARY,29,1,References,References
+NOVELTY_BOUNDARY,30,1,techniques,30 Antonio Guimarães and Hilder V. L. Pereira

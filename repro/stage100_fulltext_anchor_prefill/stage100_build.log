@@ -1,0 +1,5 @@
+Wrote repro/stage100_fulltext_anchor_prefill/summary.csv
+Wrote repro/stage100_fulltext_anchor_prefill/page_keyword_hits.csv
+Wrote repro/stage100_fulltext_anchor_prefill/anchor_candidates.csv
+Wrote docs/stage100_fulltext_anchor_prefill_log.md
+Stage100 fulltext anchor prefill: PASS_STAGE100_FULLTEXT_ANCHOR_PREFILL_REVIEW_REQUIRED

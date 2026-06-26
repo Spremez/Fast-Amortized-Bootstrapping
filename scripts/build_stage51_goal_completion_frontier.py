@@ -220,6 +220,10 @@ def build_rows() -> List[Dict[str, str]]:
         stage42.get("S42-STAGE99-EXTERNAL-BLOCKER-REPROBE", {}).get("status")
         == "PASS"
     )
+    stage100_closed = (
+        stage42.get("S42-STAGE100-FULLTEXT-ANCHOR-PREFILL", {}).get("status")
+        == "PASS"
+    )
     optional_notes = []
     if stage64a_closed:
         optional_notes.append("Stage64A post-variant refresh")
@@ -291,6 +295,8 @@ def build_rows() -> List[Dict[str, str]]:
         optional_notes.append("Stage98 current-head smoke refresh")
     if stage99_closed:
         optional_notes.append("Stage99 external blocker reprobe")
+    if stage100_closed:
+        optional_notes.append("Stage100 full-text anchor prefill")
     optional_stage_note = " plus " + " and ".join(optional_notes) if optional_notes else ""
     spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
     stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")

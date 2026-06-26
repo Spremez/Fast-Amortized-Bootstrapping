@@ -1,0 +1,8 @@
+gate,status,evidence,detail,next_action
+stage100_stage99_precondition,PASS,repro/stage99_external_blocker_reprobe/summary.csv,stage99_decision=PASS_STAGE99_EXTERNAL_BLOCKERS_REPROBED_REVIEW_REQUIRED,Refresh Stage99 before running Stage100.
+stage100_fulltext_artifact,PASS,repro/external_evidence_intake/summary.csv,status=AVAILABLE_UNREVIEWED; path=/mnt/c/Users/spremez/Documents/BTS/papers/eprint-2025-686.pdf,Register a valid 2025/686 full-text artifact before anchor prefill.
+stage100_text_extract,PASS,temporary pdftotext extraction; full text not persisted,pages=35; pdf_sha256=84b694a59fe50dc0062ff9f24bd26f1a9cdc335b5ef9becae36aad83362cd335,Use only generated metadata unless manual review requires opening the PDF.
+stage100_anchor_candidates,CANDIDATE_ANCHORS_GENERATED_REVIEW_REQUIRED,repro/stage100_fulltext_anchor_prefill/anchor_candidates.csv,review_items=6; hit_rows=139,Manually verify candidate pages and replace candidates with source anchors.
+stage100_stage38_prefill,REVIEW_CHECKLIST_PREFILLED_REVIEW_REQUIRED,repro/stage38_fulltext_review_gate/review_checklist.csv,Stage38 checklist now contains candidate-only page anchors.,Do not mark reviewed until each row is manually checked against the PDF.
+stage100_claim_guard,PASS_NO_CLAIM_UPGRADE,docs/stage100_fulltext_anchor_prefill_log.md,"Candidate anchors do not upgrade theorem, novelty, or MAT-AVX512 claims.",Keep final audit external-review-required until manual review passes.
+stage100_decision,PASS_STAGE100_FULLTEXT_ANCHOR_PREFILL_REVIEW_REQUIRED,repro/stage100_fulltext_anchor_prefill/summary.csv,2025/686 candidate anchors generated; manual source review remains required.,Run manual Stage38 source review using the generated candidate pages.

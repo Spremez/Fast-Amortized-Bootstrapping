@@ -315,9 +315,11 @@ recheck path while preserving the final claim boundary.
 
 ## Current Closure Label
 
-Current control-plane closure range: `Stage 19-99`.
+Current control-plane closure range: `Stage 19-100`.
 
 Stage99 moves the 2025/686 full-text lane from artifact-missing to
-artifact-registered/source-review-required. Native perf remains externally
-blocked, so final paper-level and MAT-AVX512 counter-attribution claims remain
-outside the current scoped engineering claim.
+artifact-registered/source-review-required. Stage100 adds candidate-only page
+anchors for the Stage38 checklist. Native perf remains externally blocked and
+the candidate anchors still need manual verification, so final paper-level and
+MAT-AVX512 counter-attribution claims remain outside the current scoped
+engineering claim.

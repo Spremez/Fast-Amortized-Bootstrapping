@@ -848,3 +848,28 @@ hypotheses:
         superiority is claimed
       - closure/verifier, run log, artifact manifest, or reproduction
         checklist omit Stage99 artifacts
+  - id: H25_fulltext_anchor_prefill_after_stage99
+    statement: >
+      Once a 2025/686 PDF is registered but unreviewed, the next useful local
+      action is to generate candidate source-anchor pages for the Stage38
+      review checklist while keeping all claims review-required.
+    mechanism: >
+      Stage100 uses temporary `pdftotext` extraction, page-level keyword
+      matching, and candidate-only checklist prefill. It avoids persisting full
+      paper text and does not convert keyword hits into reviewed citations.
+    status: stage100_fulltext_anchor_prefill_review_required
+    evidence: docs/stage100_fulltext_anchor_prefill_log.md; experiments/stage100_fulltext_anchor_prefill_plan.md; scripts/build_stage100_fulltext_anchor_prefill.py; repro/stage100_fulltext_anchor_prefill/summary.csv; repro/stage100_fulltext_anchor_prefill/anchor_candidates.csv; repro/stage100_fulltext_anchor_prefill/page_keyword_hits.csv; repro/stage38_fulltext_review_gate/review_checklist.csv
+    current_decision: >
+      Stage100 records
+      PASS_STAGE100_FULLTEXT_ANCHOR_PREFILL_REVIEW_REQUIRED. Candidate pages
+      were generated for all six Stage38 review rows, and the checklist was
+      prefilled with candidate-only anchors. The final claim state remains
+      external-review-required until manual source-anchor review and native
+      perf evidence are complete.
+    failure_criteria:
+      - Stage100 stores or republishes the full paper text in the repo
+      - candidate keyword pages are treated as verified page/section anchors
+      - theorem-level, novelty, or MAT-AVX512 optimality claims are upgraded
+        before manual review
+      - Stage100 artifacts are omitted from the run log, artifact manifest, or
+        closure audits

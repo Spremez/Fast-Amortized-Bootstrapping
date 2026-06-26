@@ -1504,3 +1504,17 @@ Repro artifacts:
 - `repro/stage38_fulltext_review_gate/summary.csv`
 - `repro/stage38_fulltext_review_gate/review_checklist.csv`
 - `repro/external_evidence_intake/summary.csv`
+
+## Stage 100 Full-Text Anchor Prefill
+
+- `docs/stage100_fulltext_anchor_prefill_log.md`
+- `experiments/stage100_fulltext_anchor_prefill_plan.md`
+- `scripts/run_stage100_fulltext_anchor_prefill.sh`
+- `scripts/build_stage100_fulltext_anchor_prefill.py`
+- `repro/stage100_fulltext_anchor_prefill/summary.csv`
+- `repro/stage100_fulltext_anchor_prefill/page_keyword_hits.csv`
+- `repro/stage100_fulltext_anchor_prefill/anchor_candidates.csv`
+- `repro/stage100_fulltext_anchor_prefill/artifact_index.csv`
+- `repro/stage100_fulltext_anchor_prefill/stage100_run.log`
+- `repro/stage100_fulltext_anchor_prefill/stage100_build.log`
+- `repro/stage38_fulltext_review_gate/review_checklist.csv`

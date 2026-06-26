@@ -6,9 +6,11 @@ Date: 2026-06-26
 
 The project already has a complete Stage19+ route for the scoped
 PVW/MAT-SAB engineering goal. The local SAB optimization chain is currently
-closed through Stage98: scalar/default SAB remains isolated, the explicit
-`sab_pvw_*` paths remain gated, current-head smoke gates pass, and the scoped
-complete-SAB performance/noise/resource evidence is registered.
+closed through Stage100: scalar/default SAB remains isolated, the explicit
+`sab_pvw_*` paths remain gated, current-head smoke gates pass, the scoped
+complete-SAB performance/noise/resource evidence is registered, and the
+registered 2025/686 full-text artifact now has candidate source-anchor pages
+for manual review.
 
 The route is not a paper-level completion yet. Three stronger-claim blockers
 remain:
@@ -38,16 +40,19 @@ benchmark gates are satisfied.
 3. Treat H14-C1 as the preferred explicit local r=6 engineering path, not a
    default path and not a paper-level claim.
 4. Use Stage99 to reprobe the post-Stage98 external blocker state.
-5. If native perf becomes available, rerun Stage28 with
+5. Use Stage100 candidate anchors only as a manual-review accelerator; they
+   are not verified source anchors and do not upgrade theorem-level or novelty
+   claims.
+6. If native perf becomes available, rerun Stage28 with
    `STAGE28_RUN_BENCH=1` and perform manual counter interpretation before
    claiming MAT-AVX512 theoretical memory-traffic superiority.
-6. Use the registered 2025/686 artifact from Stage38 only after filling the
+7. Use the registered 2025/686 artifact from Stage38 only after filling the
    Stage38 review checklist with concrete source anchors for protocol,
    complexity, correctness/noise, parameter/security, PVW-SAB delta, and
    novelty-boundary rows.
-7. If both source review and related-work review are completed, refresh the
+8. If both source review and related-work review are completed, refresh the
    final package and claim boundary. Until then, keep the final status scoped:
-   `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`.
+   `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED`.
 
 ## Completion Standard
 

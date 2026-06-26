@@ -3352,3 +3352,47 @@ engineering PVW/MAT-SAB chain remains ready, while theorem-level 2025/686,
 novelty, and MAT-AVX512 hardware-counter claims still require manual review or
 native-perf evidence.
 ```
+
+## Stage 100: Full-Text Anchor Prefill
+
+Goal:
+
+```text
+Use the Stage99/Stage38 registered 2025/686 PDF to generate candidate
+page-level anchors for the Stage38 manual review checklist, without storing
+full paper text and without upgrading any theorem-level, novelty, or
+MAT-AVX512 optimality claim.
+```
+
+Tasks:
+
+- parse the registered local PDF with `pdftotext` into a temporary file only;
+- split the paper by page and search predefined protocol, complexity,
+  correctness/noise, parameter/security, PVW-SAB delta, and novelty-boundary
+  keyword sets;
+- write candidate page/keyword metadata to
+  `repro/stage100_fulltext_anchor_prefill/`;
+- prefill `repro/stage38_fulltext_review_gate/review_checklist.csv` with
+  candidate-only page lists;
+- keep all checklist rows in review-required status until a human verifies
+  the PDF pages and replaces candidates with exact source anchors.
+
+Gate:
+
+- Stage99 must report
+  `PASS_STAGE99_EXTERNAL_BLOCKERS_REPROBED_REVIEW_REQUIRED`;
+- `fab686_fulltext` must be `AVAILABLE_UNREVIEWED` and point to an existing
+  PDF;
+- candidate anchors must remain review-required;
+- no Stage100 result may be cited as reviewed theorem-level evidence.
+
+Status:
+
+```text
+Completed as candidate-anchor prefill. Stage100 records
+PASS_STAGE100_FULLTEXT_ANCHOR_PREFILL_REVIEW_REQUIRED. It generated candidate
+pages for all six Stage38 review rows and updated the Stage38 checklist with
+candidate-only anchors. The claim state remains
+SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED because manual
+source-anchor review and native-perf evidence are still incomplete.
+```

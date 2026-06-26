@@ -44,6 +44,9 @@ STAGE98_CURRENT_SMOKE_REFRESH = (
 STAGE99_EXTERNAL_BLOCKER_REPROBE = (
     ROOT / "repro" / "stage99_external_blocker_reprobe" / "summary.csv"
 )
+STAGE100_FULLTEXT_ANCHOR_PREFILL = (
+    ROOT / "repro" / "stage100_fulltext_anchor_prefill" / "summary.csv"
+)
 OUT_CSV = ROOT / "repro" / "stage59_completion_route_readiness.csv"
 OUT_MD = ROOT / "docs" / "stage59_completion_route_readiness.md"
 
@@ -110,6 +113,7 @@ def build_rows() -> List[Dict[str, str]]:
     stage97 = by_key(STAGE97_SOURCE_DELTA_GUARD, "gate")
     stage98 = by_key(STAGE98_CURRENT_SMOKE_REFRESH, "gate")
     stage99 = by_key(STAGE99_EXTERNAL_BLOCKER_REPROBE, "gate")
+    stage100 = by_key(STAGE100_FULLTEXT_ANCHOR_PREFILL, "gate")
 
     local_ready = all(
         status_of(frontier, row_id).startswith("LOCAL")
@@ -166,6 +170,10 @@ def build_rows() -> List[Dict[str, str]]:
     stage99_done = (
         status_of(stage99, "stage99_decision")
         == "PASS_STAGE99_EXTERNAL_BLOCKERS_REPROBED_REVIEW_REQUIRED"
+    )
+    stage100_done = (
+        status_of(stage100, "stage100_decision")
+        == "PASS_STAGE100_FULLTEXT_ANCHOR_PREFILL_REVIEW_REQUIRED"
     )
 
     rows = [
@@ -285,10 +293,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage96_upstream_delta_audit/summary.csv; "
                 "repro/stage97_source_delta_guard/summary.csv; "
                 "repro/stage98_current_smoke_refresh/summary.csv; "
-                "repro/stage99_external_blocker_reprobe/summary.csv"
+                "repro/stage99_external_blocker_reprobe/summary.csv; "
+                "repro/stage100_fulltext_anchor_prefill/summary.csv"
             ),
             "A9 remains scoped/review-required unless CB5/CB6/CB7 are resolved; Stage91 must keep stronger claims guarded.",
-            "Use Stage92 lane commands for native perf and Stage38 review checklist for source anchors; rerun Stage90/91/92/93/94/95/96/97/98/99 after source, backend, external-evidence, upstream-code, default-flag, or claim-scope changes.",
+            "Use Stage92 lane commands for native perf and Stage38 review checklist for source anchors; rerun Stage90/91/92/93/94/95/96/97/98/99/100 after source, backend, external-evidence, upstream-code, default-flag, or claim-scope changes.",
             "Provides a scoped final engineering package; does not unlock paper-level or theoretical claims.",
         ),
     ]
@@ -329,6 +338,7 @@ def decision(rows: List[Dict[str, str]]) -> str:
     )
     stage98 = by_key(STAGE98_CURRENT_SMOKE_REFRESH, "gate")
     stage99 = by_key(STAGE99_EXTERNAL_BLOCKER_REPROBE, "gate")
+    stage100 = by_key(STAGE100_FULLTEXT_ANCHOR_PREFILL, "gate")
     stage98_done = (
         status_of(stage98, "stage98_decision")
         == "PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH"
@@ -336,6 +346,10 @@ def decision(rows: List[Dict[str, str]]) -> str:
     stage99_done = (
         status_of(stage99, "stage99_decision")
         == "PASS_STAGE99_EXTERNAL_BLOCKERS_REPROBED_REVIEW_REQUIRED"
+    )
+    stage100_done = (
+        status_of(stage100, "stage100_decision")
+        == "PASS_STAGE100_FULLTEXT_ANCHOR_PREFILL_REVIEW_REQUIRED"
     )
     expected = {
         "S59-R1-SCOPED-ENGINEERING": "LOCAL_READY",
@@ -360,6 +374,7 @@ def decision(rows: List[Dict[str, str]]) -> str:
         and stage97_done
         and stage98_done
         and stage99_done
+        and stage100_done
     )
     if ok:
         if expected["S59-R7-FINAL-PAPER-PACKAGE"] == "SCOPED_FINAL_PACKAGE_READY_EXTERNAL_REVIEW_REQUIRED":

@@ -111,6 +111,7 @@ def build_rows() -> List[Dict[str, str]]:
                 and "Stage97 source delta guard" in stage42_detail
                 and "Stage98 current-head smoke refresh" in stage42_detail
                 and "Stage99 external blocker reprobe" in stage42_detail
+                and "Stage100 full-text anchor prefill" in stage42_detail
             )
         )
     )
@@ -144,6 +145,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "Stage97 source delta guard" in g6_detail
         and "Stage98 current-head smoke refresh" in g6_detail
         and "Stage99 external blocker reprobe" in g6_detail
+        and "Stage100 full-text anchor prefill" in g6_detail
     )
 
     stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
@@ -190,6 +192,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage97_source_delta_guard" in r7.get("evidence", "")
         and "stage98_current_smoke_refresh" in r7.get("evidence", "")
         and "stage99_external_blocker_reprobe" in r7.get("evidence", "")
+        and "stage100_fulltext_anchor_prefill" in r7.get("evidence", "")
     )
 
     rows = [
