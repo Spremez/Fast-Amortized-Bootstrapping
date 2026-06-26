@@ -1,3 +1,3 @@
 item,status,kind,path,sha256,size_bytes,detail
-fulltext_artifact,MISSING,paper_fulltext,,,,FAB686_FULLTEXT_PATH was not provided.
-stage38_decision,BLOCKED_FULLTEXT_MISSING,review_gate,,,,Theorem-level 2025/686 citation and novelty review remain blocked.
+fulltext_artifact,AVAILABLE_UNREVIEWED,pdf,/mnt/c/Users/spremez/Documents/BTS/papers/eprint-2025-686.pdf,84b694a59fe50dc0062ff9f24bd26f1a9cdc335b5ef9becae36aad83362cd335,857894,Full-text artifact is available; manual claim-to-source review is still required.
+stage38_decision,FULLTEXT_AVAILABLE_REVIEW_REQUIRED,review_gate,/mnt/c/Users/spremez/Documents/BTS/papers/eprint-2025-686.pdf,84b694a59fe50dc0062ff9f24bd26f1a9cdc335b5ef9becae36aad83362cd335,857894,Full-text artifact is available; manual claim-to-source review is still required.

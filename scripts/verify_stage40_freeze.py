@@ -97,12 +97,37 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
                 actual_hash = sha256_file(path)
                 if actual_hash != expected_hash:
                     manifest_hash_mismatches.append(f"{rel_path}:sha256_mismatch")
-    external_blockers = [
+    preserved_blockers = [
         row
         for row in blockers
-        if row.get("lane") == "external_blocker"
+        if row.get("lane") in {"external_blocker", "review_required"}
     ]
+    blockers_preserved = (
+        any(
+            row.get("item_id") == "A8" and row.get("status") == "BLOCKED_EXTERNAL"
+            for row in preserved_blockers
+        )
+        and any(
+            row.get("item_id") == "A8b"
+            and row.get("status") == "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
+            for row in preserved_blockers
+        )
+        and any(
+            row.get("item_id") == "A9"
+            and row.get("status") == "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED"
+            for row in preserved_blockers
+        )
+    ) or len([row for row in preserved_blockers if row.get("lane") == "external_blocker"]) >= 2
     stage40_run = any(row.get("run_id") == "stage40-final-freeze-001" for row in run_log)
+
+    accepted_freeze_decisions = {
+        "SCOPED_FREEZE_READY_STRONGER_CLAIMS_BLOCKED",
+        "SCOPED_FREEZE_READY_EXTERNAL_REVIEW_REQUIRED",
+    }
+    accepted_final_a9 = {
+        "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED",
+        "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED",
+    }
 
     checks = [
         {
@@ -119,13 +144,13 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         },
         {
             "check": "stage40_decision",
-            "status": "PASS" if freeze.get("stage40_decision", {}).get("status") == "SCOPED_FREEZE_READY_STRONGER_CLAIMS_BLOCKED" else "FAIL",
+            "status": "PASS" if freeze.get("stage40_decision", {}).get("status") in accepted_freeze_decisions else "FAIL",
             "evidence": "repro/stage40_final_freeze_summary.csv",
             "detail": freeze.get("stage40_decision", {}).get("status", "MISSING"),
         },
         {
             "check": "final_audit_A9",
-            "status": "PASS" if audit.get("A9", {}).get("status") == "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED" else "FAIL",
+            "status": "PASS" if audit.get("A9", {}).get("status") in accepted_final_a9 else "FAIL",
             "evidence": "repro/final_goal_completion_audit.csv",
             "detail": audit.get("A9", {}).get("status", "MISSING"),
         },
@@ -137,9 +162,9 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         },
         {
             "check": "external_blockers_preserved",
-            "status": "PASS" if len(external_blockers) >= 2 else "FAIL",
+            "status": "PASS" if blockers_preserved else "FAIL",
             "evidence": "repro/stage35_completion_blockers.csv",
-            "detail": "; ".join(f"{row.get('item_id')}={row.get('status')}" for row in external_blockers),
+            "detail": "; ".join(f"{row.get('item_id')}={row.get('status')}" for row in preserved_blockers),
         },
         {
             "check": "freeze_manifest_paths",
@@ -167,7 +192,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "postfreeze_decision",
             "status": "PASS_POSTFREEZE_VERIFY" if pass_all else "FAIL_POSTFREEZE_VERIFY",
             "evidence": decision_evidence,
-            "detail": "Scoped freeze is internally consistent; stronger claims remain blocked." if pass_all else "Inspect failing checks before relying on freeze.",
+            "detail": "Scoped freeze is internally consistent; stronger claims remain blocked or source-review-required." if pass_all else "Inspect failing checks before relying on freeze.",
         }
     )
     return checks

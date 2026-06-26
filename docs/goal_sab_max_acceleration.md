@@ -448,3 +448,12 @@ Stage 91: final SAB optimization package. [completed; scoped final package ready
 Stage 92: external unlock execution packet. [completed; executable external lanes recorded, stronger claims remain blocked]
 Stage 93: external lane attempt. [completed; current local environment still lacks native perf and 2025/686 full text]
 ```
+
+## Current Closure Label
+
+Current control-plane closure range: `Stage 19-99`.
+
+Stage99 adds an external blocker reprobe after the Stage98 smoke refresh. It
+records that native perf is still blocked in the current WSL2 environment,
+while a local 2025/686 PDF has been registered by Stage38 and now requires
+manual source-anchor review before theorem-level or novelty claims can move.

@@ -1,3 +1,3 @@
 evidence_id,status,kind,path,sha256,size_bytes,detail
-fab686_fulltext,MISSING,paper_fulltext,,,,No path provided.
+fab686_fulltext,AVAILABLE_UNREVIEWED,pdf,/mnt/c/Users/spremez/Documents/BTS/papers/eprint-2025-686.pdf,84b694a59fe50dc0062ff9f24bd26f1a9cdc335b5ef9becae36aad83362cd335,857894,Full-text artifact registered. Manual theorem/algorithm/citation review is still required before claim upgrade. Preserved because no replacement path was provided.
 stage28_native_perf_summary,MISSING,hardware_counter_summary,,,,No path provided.

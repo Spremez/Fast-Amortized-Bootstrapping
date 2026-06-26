@@ -10,28 +10,30 @@ Stage 38 records whether the full 2025/686 paper is available for theorem-level 
 
 | item | status | kind | path | detail |
 |---|---|---|---|---|
-| fulltext_artifact | MISSING | paper_fulltext |  | FAB686_FULLTEXT_PATH was not provided. |
-| stage38_decision | BLOCKED_FULLTEXT_MISSING | review_gate |  | Theorem-level 2025/686 citation and novelty review remain blocked. |
+| fulltext_artifact | AVAILABLE_UNREVIEWED | pdf | /mnt/c/Users/spremez/Documents/BTS/papers/eprint-2025-686.pdf | Full-text artifact is available; manual claim-to-source review is still required. |
+| stage38_decision | FULLTEXT_AVAILABLE_REVIEW_REQUIRED | review_gate | /mnt/c/Users/spremez/Documents/BTS/papers/eprint-2025-686.pdf | Full-text artifact is available; manual claim-to-source review is still required. |
 
 ## Manual Review Checklist
 
 | review item | status | required evidence |
 |---|---|---|
-| FAB_PROTOCOL_STAGES | BLOCKED_FULLTEXT_MISSING | Map setup_tv_xb, blind rotation, sparse_mul/RGSW monomial, external product, extract, and KS to page/section evidence. |
-| FAB_COMPLEXITY_MODEL | BLOCKED_FULLTEXT_MISSING | Map the h, r_prec, N, and external-product count formulas to paper equations or algorithm text. |
-| FAB_CORRECTNESS_NOISE | BLOCKED_FULLTEXT_MISSING | Map correctness/noise theorem assumptions to the implemented parameter and noise gates. |
-| FAB_PARAMETER_SECURITY | BLOCKED_FULLTEXT_MISSING | Map parameter-security assumptions and supported branches to the tested binary parameter scope. |
-| PVW_SAB_DELTA | BLOCKED_FULLTEXT_MISSING | Identify exactly where PVW/MAT shared-mask multi-body batching changes the base SAB implementation. |
-| NOVELTY_BOUNDARY | BLOCKED_FULLTEXT_MISSING | Check whether SAB-specific integration or schedule changes remain novel after base-paper and related-work review. |
+| FAB_PROTOCOL_STAGES | PENDING_MANUAL_REVIEW | Map setup_tv_xb, blind rotation, sparse_mul/RGSW monomial, external product, extract, and KS to page/section evidence. |
+| FAB_COMPLEXITY_MODEL | PENDING_MANUAL_REVIEW | Map the h, r_prec, N, and external-product count formulas to paper equations or algorithm text. |
+| FAB_CORRECTNESS_NOISE | PENDING_MANUAL_REVIEW | Map correctness/noise theorem assumptions to the implemented parameter and noise gates. |
+| FAB_PARAMETER_SECURITY | PENDING_MANUAL_REVIEW | Map parameter-security assumptions and supported branches to the tested binary parameter scope. |
+| PVW_SAB_DELTA | PENDING_MANUAL_REVIEW | Identify exactly where PVW/MAT shared-mask multi-body batching changes the base SAB implementation. |
+| NOVELTY_BOUNDARY | PENDING_MANUAL_REVIEW | Check whether SAB-specific integration or schedule changes remain novel after base-paper and related-work review. |
 
 ## External Intake / Final Audit
 
 | item | status | detail |
 |---|---|---|
-| external fab686_fulltext | MISSING | No path provided. |
-| final audit A8b | MISSING_OPTIONAL_EXTERNAL_EVIDENCE | no full-text or native perf external evidence registered |
-| final audit A9 | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED | complete scoped engineering acceleration evidence exists; novelty/theory/all-parameter claims are not complete |
+| external fab686_fulltext | AVAILABLE_UNREVIEWED | Full-text artifact registered. Manual theorem/algorithm/citation review is still required before claim upgrade. |
+| final audit A8b | EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED | external artifact registered; manual citation/perf interpretation gates still required before claim upgrade |
+| final audit A9 | SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED | complete scoped engineering acceleration evidence exists; novelty/theory/all-parameter claims are not complete |
 
 ## Decision
 
-No full-text artifact is available. Theorem-level 2025/686 citations and novelty review remain blocked; metadata-only evidence is insufficient.
+A full-text artifact is available and hashed. The next step is manual claim-to-source mapping before theorem-level or novelty wording is upgraded.
+
+Registered artifact SHA-256: `84b694a59fe50dc0062ff9f24bd26f1a9cdc335b5ef9becae36aad83362cd335`

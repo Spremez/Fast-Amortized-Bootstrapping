@@ -1480,3 +1480,27 @@ Repro artifacts:
 - `repro/stage98_current_smoke_refresh/backend_pvw_target_SET_2_3_2048/build.log`
 - `repro/stage98_current_smoke_refresh/backend_pvw_target_SET_2_3_2048/run.log`
 - `repro/stage98_current_smoke_refresh/scalar_ternary_SET_2_3_2048/build.log`
+
+## Stage 99 External Blocker Reprobe
+
+- `docs/current_codex_goal_sab_completion.md`
+- `docs/stage99_external_blocker_reprobe_log.md`
+- `experiments/stage99_external_blocker_reprobe_plan.md`
+- `scripts/run_stage99_external_blocker_reprobe.sh`
+- `scripts/build_stage99_external_blocker_reprobe.py`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage99_external_blocker_reprobe/summary.csv`
+- `repro/stage99_external_blocker_reprobe/route_matrix.csv`
+- `repro/stage99_external_blocker_reprobe/local_fulltext_search.csv`
+- `repro/stage99_external_blocker_reprobe/artifact_index.csv`
+- `repro/stage99_external_blocker_reprobe/stage99_run.log`
+- `repro/stage99_external_blocker_reprobe/native_perf_probe.log`
+- `repro/stage99_external_blocker_reprobe/citation_probe.log`
+- `repro/stage99_external_blocker_reprobe/native_perf_probe/summary.csv`
+- `repro/stage99_external_blocker_reprobe/native_perf_probe/environment.log`
+- `repro/stage99_external_blocker_reprobe/native_perf_probe/perf_smoke.log`
+- `repro/stage99_external_blocker_reprobe/citation_probe/summary.csv`
+- `repro/stage99_external_blocker_reprobe/citation_probe/access_probe.csv`
+- `repro/stage38_fulltext_review_gate/summary.csv`
+- `repro/stage38_fulltext_review_gate/review_checklist.csv`
+- `repro/external_evidence_intake/summary.csv`

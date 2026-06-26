@@ -18,6 +18,8 @@ from typing import Dict, Iterable, List
 ROOT = Path(__file__).resolve().parents[1]
 OUT_CSV = ROOT / "repro" / "conditional_backlog_audit.csv"
 OUT_MD = ROOT / "docs" / "conditional_backlog_audit.md"
+FINAL_AUDIT = ROOT / "repro" / "final_goal_completion_audit.csv"
+STAGE38 = ROOT / "repro" / "stage38_fulltext_review_gate" / "summary.csv"
 
 
 ROWS: List[Dict[str, str]] = [
@@ -105,6 +107,47 @@ ROWS: List[Dict[str, str]] = [
 ]
 
 
+def read_csv(path: Path) -> List[Dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open(newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def status(path: Path, key: str, value: str, field: str = "status") -> str:
+    for row in read_csv(path):
+        if row.get(key) == value:
+            return row.get(field, "MISSING")
+    return "MISSING"
+
+
+def current_rows() -> List[Dict[str, str]]:
+    rows = [dict(row) for row in ROWS]
+    stage38_decision = status(STAGE38, "item", "stage38_decision")
+    audit_a8b = status(FINAL_AUDIT, "item_id", "A8b")
+    for row in rows:
+        if row.get("item_id") != "CB7":
+            continue
+        if (
+            stage38_decision == "FULLTEXT_AVAILABLE_REVIEW_REQUIRED"
+            or audit_a8b == "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
+        ):
+            row["status"] = "EXTERNAL_FULLTEXT_REVIEW_REQUIRED"
+            row["rationale"] = (
+                "A 2025/686 full-text artifact is registered and hashed, but "
+                "Stage38 review checklist rows remain PENDING_MANUAL_REVIEW. "
+                "Theorem-level citations and protocol/table/figure claims are "
+                "therefore review-blocked rather than artifact-missing."
+            )
+            row["next_gate"] = (
+                "Fill Stage38 review_checklist paper anchors for protocol, "
+                "complexity, noise/security, PVW-SAB delta, and novelty before "
+                "any theorem-level claim upgrade."
+            )
+        break
+    return rows
+
+
 def write_csv(path: Path, rows: Iterable[Dict[str, str]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fields = ["item_id", "checklist_item", "status", "evidence", "rationale", "next_gate"]
@@ -153,8 +196,9 @@ def write_md(rows: List[Dict[str, str]]) -> None:
 
 
 def main() -> int:
-    write_csv(OUT_CSV, ROWS)
-    write_md(ROWS)
+    rows = current_rows()
+    write_csv(OUT_CSV, rows)
+    write_md(rows)
     print(f"Wrote {OUT_CSV.relative_to(ROOT).as_posix()}")
     print(f"Wrote {OUT_MD.relative_to(ROOT).as_posix()}")
     return 0

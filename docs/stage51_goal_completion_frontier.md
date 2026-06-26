@@ -11,7 +11,7 @@ a goal-complete declaration.
 
 ## Frontier
 
-- current closure range: `Stage19-98`
+- current closure range: `Stage19-99`
 
 | frontier_id | lane | status | completion_effect | next_action |
 | --- | --- | --- | --- | --- |
@@ -23,13 +23,13 @@ a goal-complete declaration.
 | G6 | reproducibility | LOCAL_READY | Supports reproducibility of the scoped engineering chain. | Extend closure/verifier whenever new stages or artifacts are added. |
 | B1 | external_perf_theory | EXTERNAL_BLOCKED | Blocks theoretical MAT-AVX512 optimality or load/store-superiority claims. | STAGE28_RUN_BENCH=1 bash scripts/run_stage28_native_perf_counter_gate.sh |
 | B2 | external_novelty | EXTERNAL_REVIEW_BLOCKED | Blocks novelty wording beyond scoped engineering/systems contribution. | FINAL_RECHECK_RELATED_WORK=1 bash scripts/run_final_goal_recheck.sh |
-| B3 | external_2025_686_fulltext | EXTERNAL_FULLTEXT_BLOCKED | Blocks theorem, algorithm, table, figure, or experiment-number claims from 2025/686. | FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh |
-| G9 | overall | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED | Goal remains active: scoped engineering chain is ready, stronger claims remain blocked. | Keep the active goal open until external full-text/perf/native evidence is supplied or the scope is explicitly narrowed. |
+| B3 | external_2025_686_fulltext | EXTERNAL_REVIEW_REQUIRED | Blocks theorem, algorithm, table, figure, or experiment-number claims from 2025/686. | Complete repro/stage38_fulltext_review_gate/review_checklist.csv with concrete paper anchors. |
+| G9 | overall | SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED | Goal remains active: scoped engineering chain is ready, stronger claims remain blocked. | Keep the active goal open until external full-text/perf/native evidence is supplied or the scope is explicitly narrowed. |
 
 ## Decision
 
-`PASS_GOAL_FRONTIER_SCOPED_READY_STRONGER_BLOCKED`
+`PASS_GOAL_FRONTIER_SCOPED_READY_EXTERNAL_REVIEW_REQUIRED`
 
 The active goal remains open because the scoped engineering acceleration
-chain is ready, but external native perf evidence, full-text 2025/686
+chain is ready, but external native perf evidence, 2025/686 source
 review, and novelty claim review remain unresolved.

@@ -142,7 +142,7 @@ def build_rows() -> List[Dict[str, str]]:
             final_recheck.get("command", ""),
             "repro/final_goal_recheck/summary.csv; repro/final_goal_completion_audit.csv; repro/remaining_blocker_dashboard.csv",
             "A9 may move only after A8/A8b/CB5/CB6/CB7 are no longer blocked and claim wording is manually checked.",
-            "If any stronger-claim blocker remains blocked, preserve SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED.",
+            "If any stronger-claim blocker remains blocked or review-required, preserve the scoped/review-required final status.",
             frontier.get("G9", {}).get("next_action", ""),
         ),
     ]
@@ -150,16 +150,16 @@ def build_rows() -> List[Dict[str, str]]:
 
 def gate_status(rows: List[Dict[str, str]]) -> str:
     expected = {
-        "S52-NATIVE-PERF": "WAIT_NATIVE_PERF",
-        "S52-FULLTEXT-686": "WAIT_EXTERNAL_FULLTEXT",
-        "S52-NOVELTY-REVIEW": "WAIT_MANUAL_FULLTEXT_REVIEW",
-        "S52-EXTERNAL-REGISTRATION": "WAIT_EXTERNAL_ARTIFACTS",
-        "S52-FINAL-RECHECK": "WAIT_UNLOCKS",
+        "S52-NATIVE-PERF": {"WAIT_NATIVE_PERF"},
+        "S52-FULLTEXT-686": {"WAIT_EXTERNAL_FULLTEXT", "READY_FOR_MANUAL_REVIEW"},
+        "S52-NOVELTY-REVIEW": {"WAIT_MANUAL_FULLTEXT_REVIEW"},
+        "S52-EXTERNAL-REGISTRATION": {"WAIT_EXTERNAL_ARTIFACTS", "READY_TO_REGISTER"},
+        "S52-FINAL-RECHECK": {"WAIT_UNLOCKS", "READY_AFTER_UNLOCKS"},
     }
     by_id = {row["unlock_id"]: row for row in rows}
     ok = True
-    for unlock_id, readiness in expected.items():
-        ok = ok and by_id.get(unlock_id, {}).get("readiness") == readiness
+    for unlock_id, readiness_values in expected.items():
+        ok = ok and by_id.get(unlock_id, {}).get("readiness") in readiness_values
         ok = ok and bool(by_id.get(unlock_id, {}).get("command", "").strip())
         ok = ok and bool(by_id.get(unlock_id, {}).get("expected_artifacts", "").strip())
         ok = ok and bool(by_id.get(unlock_id, {}).get("acceptance_gate", "").strip())

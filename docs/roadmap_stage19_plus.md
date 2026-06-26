@@ -3305,3 +3305,50 @@ and the scalar ternary build passes. Raw build/run logs are preserved under
 evidence only; it does not upgrade speedup, novelty, theorem-level, or
 hardware-counter claims.
 ```
+
+## Stage 99: External Blocker Reprobe
+
+Goal:
+
+```text
+After Stage98 current-head smoke continuity, reprobe the remaining external
+blockers and current Codex goal route: native perf, public 2025/686 routes,
+local 2025/686 full-text availability, and novelty/source-review state.
+```
+
+Tasks:
+
+- run the lightweight Stage28 native perf-counter probe in a Stage99 output
+  directory;
+- rerun the Stage27 citation/source access probe in a Stage99 output
+  directory;
+- search configured local roots for 2025/686 full-text candidates;
+- register the current Codex goal and completion route in
+  `docs/current_codex_goal_sab_completion.md`;
+- if a full-text candidate is found, run Stage38 to register the artifact and
+  keep theorem-level claims blocked until manual source-anchor review.
+
+Gate:
+
+- Stage98 must report `PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH`;
+- native perf remains blocked unless hardware counters are usable and a correct
+  benchmark run is recorded under perf;
+- full-text availability moves only to review-required until Stage38 checklist
+  rows are filled with concrete anchors;
+- novelty remains blocked until manual related-work/source review is complete;
+- no Stage99 result may be used as a new speedup or novelty claim.
+
+Status:
+
+```text
+Completed as an external blocker reprobe. Stage99 records
+PASS_STAGE99_EXTERNAL_BLOCKERS_REPROBED_REVIEW_REQUIRED. Native perf remains
+blocked in the current WSL2 environment because `perf` is unavailable. Direct
+public 2025/686 PDF routes remain blocked or metadata-only, but local search
+found `/mnt/c/Users/spremez/Documents/BTS/papers/eprint-2025-686.pdf` and
+Stage38 registered it as a hashed PDF artifact. The final state is therefore
+`SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED`: the scoped
+engineering PVW/MAT-SAB chain remains ready, while theorem-level 2025/686,
+novelty, and MAT-AVX512 hardware-counter claims still require manual review or
+native-perf evidence.
+```

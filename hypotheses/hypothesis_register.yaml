@@ -813,3 +813,38 @@ hypotheses:
       - raw build/run logs are missing from the Stage98 repro package
       - Stage98 is cited as a performance benchmark, novelty claim, theorem
         review, or hardware-counter proof
+  - id: H24_external_blocker_reprobe_after_stage98
+    statement: >
+      After Stage98 proves current-head smoke continuity, the completion route
+      should reprobe external blockers and distinguish artifact availability
+      from reviewed claims: native perf can remain blocked while a local
+      2025/686 full-text artifact moves CB7 from artifact-missing to
+      source-review-required.
+    mechanism: >
+      Stage99 reruns the lightweight Stage28 native perf probe, reruns the
+      Stage27 citation/source access probe, searches configured local roots for
+      2025/686 full-text candidates, and writes a current Codex goal document.
+      When a candidate PDF is found, Stage38 registers the artifact hash and
+      preserves manual review checklist rows before any theorem-level or
+      novelty claim is upgraded.
+    status: stage99_external_blocker_reprobe_review_required
+    evidence: docs/current_codex_goal_sab_completion.md; docs/stage99_external_blocker_reprobe_log.md; docs/stage38_fulltext_review_log.md; experiments/stage99_external_blocker_reprobe_plan.md; scripts/run_stage99_external_blocker_reprobe.sh; scripts/build_stage99_external_blocker_reprobe.py; repro/stage99_external_blocker_reprobe/summary.csv; repro/stage99_external_blocker_reprobe/route_matrix.csv; repro/stage99_external_blocker_reprobe/local_fulltext_search.csv; repro/stage38_fulltext_review_gate/summary.csv; repro/stage38_fulltext_review_gate/review_checklist.csv; repro/external_evidence_intake/summary.csv
+    current_decision: >
+      Stage99 records
+      PASS_STAGE99_EXTERNAL_BLOCKERS_REPROBED_REVIEW_REQUIRED. Current WSL2
+      still lacks usable `perf`, so MAT-AVX512 counter attribution remains
+      blocked. Direct public PDF routes remain blocked or metadata-only, but
+      local search found `/mnt/c/Users/spremez/Documents/BTS/papers/eprint-2025-686.pdf`.
+      Stage38 registers that PDF as AVAILABLE_UNREVIEWED with SHA-256
+      `84b694a59fe50dc0062ff9f24bd26f1a9cdc335b5ef9becae36aad83362cd335`.
+      The final state is scoped engineering ready with external review
+      required, not paper-level completion.
+    failure_criteria:
+      - Stage99 treats metadata or local artifact discovery as reviewed
+        theorem-level evidence
+      - Stage38 checklist rows remain empty but theorem/algorithm/table/figure
+        claims are upgraded
+      - native perf remains missing but MAT-AVX512 theoretical load/store
+        superiority is claimed
+      - closure/verifier, run log, artifact manifest, or reproduction
+        checklist omit Stage99 artifacts

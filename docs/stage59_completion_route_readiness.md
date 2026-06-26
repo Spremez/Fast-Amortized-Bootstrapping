@@ -7,11 +7,11 @@ Stage 59 turns the post-Stage58 state into an explicit route to completion. It d
 | S59-R1-SCOPED-ENGINEERING | current | local scoped engineering evidence | LOCAL_READY | After future implementation changes, rerun Stage33/36/49/50/51/52/57/42 as needed. |
 | S59-R2-CURRENT-HEAD-REFRESH | next local refresh | current-head correctness/performance continuity | READY_LOCAL_REFRESH | Stage98 is the latest current-head smoke refresh after Stage97; rerun Stage64A/66A/67 and Stage98 before claiming continuity for any future implementation change. |
 | S59-R3-NATIVE-PERF | external unlock | MAT-AVX512 hardware-counter attribution | EXTERNAL_BLOCKED | STAGE28_RUN_BENCH=1 bash scripts/run_stage28_native_perf_counter_gate.sh |
-| S59-R4-FULLTEXT-686 | external unlock | 2025/686 theorem/protocol source review | EXTERNAL_FULLTEXT_BLOCKED | FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh |
+| S59-R4-FULLTEXT-686 | external unlock | 2025/686 theorem/protocol source review | EXTERNAL_REVIEW_REQUIRED | FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh |
 | S59-R5-NOVELTY-REVIEW | manual review | novelty and related-work distinction | EXTERNAL_REVIEW_BLOCKED | FINAL_RECHECK_RELATED_WORK=1 bash scripts/run_final_goal_recheck.sh |
 | S59-R6-OPTIONAL-VARIANTS | optional local expansion | future algorithmic variants | READY_OPTIONAL_LOCAL_TRIAGE | Stage89 promotes H14-C1 backend FromDFT+add as the preferred explicit r=6 local engineering path while keeping scalar/default behavior and paper-level claims unchanged. Stage94 audits the remaining local frontier and records no new hot-path implementation is justified under current evidence. |
-| S59-R7-FINAL-PAPER-PACKAGE | final freeze | paper/release claim package | SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED | Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93/94/95/96/97/98 after source, backend, external-evidence, upstream-code, default-flag, or claim-scope changes. |
+| S59-R7-FINAL-PAPER-PACKAGE | final freeze | paper/release claim package | SCOPED_FINAL_PACKAGE_READY_EXTERNAL_REVIEW_REQUIRED | Use Stage92 lane commands for native perf and Stage38 review checklist for source anchors; rerun Stage90/91/92/93/94/95/96/97/98/99 after source, backend, external-evidence, upstream-code, default-flag, or claim-scope changes. |
 
-Decision: `PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED`
+Decision: `PASS_COMPLETION_ROUTE_READY__EXTERNAL_REVIEW_REQUIRED`
 
 Interpretation: local scoped engineering evidence remains ready, while stronger MAT-AVX512 theory, novelty, and theorem-level 2025/686 claims remain blocked until the external gates in `repro/stage52_external_unlock_readiness.csv` are satisfied.

@@ -114,18 +114,42 @@ def main() -> int:
     manifest = build_manifest()
     manifest_ok = all(row["exists"] == "yes" for row in manifest)
     manifest_hashes_recorded = all(row["sha256"] for row in manifest)
-    external_blockers = [
+    preserved_blockers = [
         row
         for row in blockers
-        if row.get("lane") == "external_blocker"
+        if row.get("lane") in {"external_blocker", "review_required"}
     ]
     run_log_stage40_exists = any(row.get("run_id") == "stage40-final-freeze-001" for row in run_log)
 
-    scoped_ready = a9.get("status") == "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED"
+    scoped_status = a9.get("status")
+    scoped_ready = scoped_status in {
+        "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED",
+        "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED",
+    }
     triage_ready = s39.get("decision") == "NO_NEW_VARIANT_PROMOTED_CURRENTLY"
-    blockers_preserved = len(external_blockers) >= 2
+    blockers_preserved = (
+        any(
+            row.get("item_id") == "A8" and row.get("status") == "BLOCKED_EXTERNAL"
+            for row in preserved_blockers
+        )
+        and any(
+            row.get("item_id") == "A8b"
+            and row.get("status") == "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
+            for row in preserved_blockers
+        )
+        and any(
+            row.get("item_id") == "A9"
+            and row.get("status") == "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED"
+            for row in preserved_blockers
+        )
+    ) or len([row for row in preserved_blockers if row.get("lane") == "external_blocker"]) >= 2
+    freeze_ready_status = (
+        "SCOPED_FREEZE_READY_EXTERNAL_REVIEW_REQUIRED"
+        if scoped_status == "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED"
+        else "SCOPED_FREEZE_READY_STRONGER_CLAIMS_BLOCKED"
+    )
     decision = (
-        "SCOPED_FREEZE_READY_STRONGER_CLAIMS_BLOCKED"
+        freeze_ready_status
         if scoped_ready and triage_ready and blockers_preserved and manifest_ok and manifest_hashes_recorded
         else "FREEZE_NOT_READY"
     )
@@ -156,7 +180,7 @@ def main() -> int:
             "item": "external_blockers",
             "status": "PRESERVED" if blockers_preserved else "MISSING",
             "evidence": "repro/stage35_completion_blockers.csv",
-            "detail": "; ".join(f"{row.get('item_id')}={row.get('status')}" for row in external_blockers),
+            "detail": "; ".join(f"{row.get('item_id')}={row.get('status')}" for row in preserved_blockers),
         },
         {
             "item": "required_artifacts",
@@ -183,7 +207,7 @@ def main() -> int:
             "status": decision,
             "evidence": "repro/stage40_final_freeze_summary.csv",
             "detail": (
-                "Freeze scoped engineering package only; stronger claims remain blocked."
+                "Freeze scoped engineering package only; stronger claims remain blocked or source-review-required."
                 if decision.startswith("SCOPED_FREEZE")
                 else "Fix missing evidence before freezing."
             ),
@@ -212,7 +236,7 @@ def main() -> int:
         "",
         "The current package is a scoped engineering freeze for the tested "
         "binary PVW/MAT-SAB path. It is not a freeze for stronger novelty, "
-        "theoretical-optimality, non-binary, or all-parameter claims.",
+        "theoretical-optimality, non-binary, source-unreviewed, or all-parameter claims.",
         "",
         "## Summary",
         "",

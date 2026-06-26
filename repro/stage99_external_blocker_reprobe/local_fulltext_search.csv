@@ -1,0 +1,9 @@
+source,path,status,sha256,detail
+FAB686_FULLTEXT_PATH,,NOT_SET,,No user-provided full-text path.
+local_root,/mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping,NO_MATCH,,No configured candidate pattern matched under this root.
+local_root,/mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/external,NO_MATCH,,No configured candidate pattern matched under this root.
+local_root,/mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/papers,ROOT_MISSING,,Search root does not exist.
+local_root,/mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/docs,NO_MATCH,,No configured candidate pattern matched under this root.
+local_root,/mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/repro,NO_MATCH,,No configured candidate pattern matched under this root.
+local_root,/mnt/c/Users/spremez/Downloads,NO_MATCH,,No configured candidate pattern matched under this root.
+local_find,/mnt/c/Users/spremez/Documents/BTS/papers/eprint-2025-686.pdf,FOUND_CANDIDATE,84b694a59fe50dc0062ff9f24bd26f1a9cdc335b5ef9becae36aad83362cd335,Candidate path matched *2025*686*.pdf; run Stage38 before treating it as reviewed 2025/686 full text.

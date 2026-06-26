@@ -101,7 +101,7 @@ def build_rows() -> List[Dict[str, str]]:
             "required_evidence": "Updated external intake, Stage 38/Stage 28 outputs, and regenerated final audit.",
             "command": "FINAL_RECHECK_CITATION=1 FINAL_RECHECK_PERF=1 FINAL_RECHECK_EXTERNAL_INTAKE=1 bash scripts/run_final_goal_recheck.sh",
             "review_gate": "A9 may only move beyond scoped-ready after A8/A8b are no longer blocked and claim wording is manually checked.",
-            "claim_policy": "Keep SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED until all stronger-claim rows have direct evidence.",
+            "claim_policy": "Keep the final status scoped/review-required until all stronger-claim rows have direct evidence and source review.",
         },
     ]
 

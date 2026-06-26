@@ -106,6 +106,20 @@ def build_rows() -> List[Dict[str, str]]:
 
     fulltext_external = by_key(external, "evidence_id", "fab686_fulltext").get("status", "MISSING")
     perf_external = by_key(external, "evidence_id", "stage28_native_perf_summary").get("status", "MISSING")
+    fulltext_registered = (
+        a8b == "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
+        or fulltext_external == "AVAILABLE_UNREVIEWED"
+    )
+    cb7_condition = (
+        "A 2025/686 full-text artifact is registered and hashed, but manual claim-to-source review is still incomplete."
+        if fulltext_registered
+        else "The 2025/686 DOI/author metadata is available, but the full text is not registered or accessible through current direct routes."
+    )
+    cb7_unlock = (
+        "Complete repro/stage38_fulltext_review_gate/review_checklist.csv with concrete paper anchors."
+        if fulltext_registered
+        else "FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh"
+    )
 
     return [
         row(
@@ -132,9 +146,9 @@ def build_rows() -> List[Dict[str, str]]:
             "CB7",
             "2025/686 theorem-level protocol and citation review",
             f"final_A8b={a8b}; cb7={cb7.get('status', 'MISSING')}; stage44_fulltext={stage44_fulltext}; stage55_fulltext={stage55_fulltext}; stage55_metadata={stage55_metadata}; stage55_decision={stage55_decision}; stage72_fulltext={stage72_fulltext}; stage72_author={stage72_author}; stage72_decision={stage72_decision}; related_fulltext={related_fulltext}; external_fulltext={fulltext_external}",
-            "The 2025/686 DOI/author metadata is available, but the full text is not registered or accessible through current direct routes.",
+            cb7_condition,
             f"{rel(FINAL_AUDIT)}; {rel(CONDITIONAL)}; {rel(STAGE44)}; {rel(STAGE55)}; {rel(STAGE72)}; {rel(RELATED)}; {rel(EXTERNAL)}",
-            "FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh",
+            cb7_unlock,
             s41_fulltext.get("review_gate", "Map protocol stages, complexity formulas, and assumptions to concrete source anchors."),
             "Do not cite theorem, algorithm, table, figure, or experiment numbers from 2025/686 until full text is supplied and reviewed.",
         ),
@@ -146,7 +160,7 @@ def build_rows() -> List[Dict[str, str]]:
             f"{rel(FINAL_AUDIT)}; {rel(STAGE41)}; {rel(STAGE44)}; {rel(OUT_CSV)}",
             "FINAL_RECHECK_CITATION=1 FINAL_RECHECK_RELATED_WORK=1 FINAL_RECHECK_STAGE44_REPROBE=1 bash scripts/run_final_goal_recheck.sh",
             s41_final.get("review_gate", "Only upgrade A9 after external evidence and manual claim review."),
-            "Keep `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED` until CB5/CB6/CB7 are resolved or the goal scope is explicitly narrowed.",
+            "Keep the final status scoped/review-required until CB5/CB6/CB7 are resolved or the goal scope is explicitly narrowed.",
         ),
     ]
 

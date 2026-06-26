@@ -312,3 +312,12 @@ The Stage 28 gate remains a recorded blocked-gate refresh in this WSL2
 environment because `perf` is unavailable. The new default behavior adds the
 conditional backlog audit and the Stage 42 closure audit to the ordinary
 recheck path while preserving the final claim boundary.
+
+## Current Closure Label
+
+Current control-plane closure range: `Stage 19-99`.
+
+Stage99 moves the 2025/686 full-text lane from artifact-missing to
+artifact-registered/source-review-required. Native perf remains externally
+blocked, so final paper-level and MAT-AVX512 counter-attribution claims remain
+outside the current scoped engineering claim.

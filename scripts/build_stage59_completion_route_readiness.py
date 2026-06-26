@@ -41,6 +41,9 @@ STAGE97_SOURCE_DELTA_GUARD = (
 STAGE98_CURRENT_SMOKE_REFRESH = (
     ROOT / "repro" / "stage98_current_smoke_refresh" / "summary.csv"
 )
+STAGE99_EXTERNAL_BLOCKER_REPROBE = (
+    ROOT / "repro" / "stage99_external_blocker_reprobe" / "summary.csv"
+)
 OUT_CSV = ROOT / "repro" / "stage59_completion_route_readiness.csv"
 OUT_MD = ROOT / "docs" / "stage59_completion_route_readiness.md"
 
@@ -106,6 +109,7 @@ def build_rows() -> List[Dict[str, str]]:
     stage96 = by_key(STAGE96_UPSTREAM_DELTA_AUDIT, "gate")
     stage97 = by_key(STAGE97_SOURCE_DELTA_GUARD, "gate")
     stage98 = by_key(STAGE98_CURRENT_SMOKE_REFRESH, "gate")
+    stage99 = by_key(STAGE99_EXTERNAL_BLOCKER_REPROBE, "gate")
 
     local_ready = all(
         status_of(frontier, row_id).startswith("LOCAL")
@@ -116,11 +120,17 @@ def build_rows() -> List[Dict[str, str]]:
     fulltext_waiting = (
         status_of(unlock, "S52-FULLTEXT-686", "readiness") == "WAIT_EXTERNAL_FULLTEXT"
     )
+    fulltext_review_ready = (
+        status_of(unlock, "S52-FULLTEXT-686", "readiness") == "READY_FOR_MANUAL_REVIEW"
+    )
     novelty_waiting = (
         status_of(unlock, "S52-NOVELTY-REVIEW", "readiness")
         == "WAIT_MANUAL_FULLTEXT_REVIEW"
     )
     final_waiting = status_of(unlock, "S52-FINAL-RECHECK", "readiness") == "WAIT_UNLOCKS"
+    final_review_ready = (
+        status_of(unlock, "S52-FINAL-RECHECK", "readiness") == "READY_AFTER_UNLOCKS"
+    )
     stage91_done = (
         status_of(stage91, "stage91_decision")
         == "PASS_STAGE91_FINAL_SCOPED_PACKAGE_STRONGER_CLAIMS_BLOCKED"
@@ -152,6 +162,10 @@ def build_rows() -> List[Dict[str, str]]:
     stage98_done = (
         status_of(stage98, "stage98_decision")
         == "PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH"
+    )
+    stage99_done = (
+        status_of(stage99, "stage99_decision")
+        == "PASS_STAGE99_EXTERNAL_BLOCKERS_REPROBED_REVIEW_REQUIRED"
     )
 
     rows = [
@@ -199,7 +213,11 @@ def build_rows() -> List[Dict[str, str]]:
             "S59-R4-FULLTEXT-686",
             "external unlock",
             "2025/686 theorem/protocol source review",
-            "EXTERNAL_FULLTEXT_BLOCKED" if fulltext_waiting else "REVIEW_REQUIRED",
+            "EXTERNAL_REVIEW_REQUIRED"
+            if fulltext_review_ready
+            else "EXTERNAL_FULLTEXT_BLOCKED"
+            if fulltext_waiting
+            else "REVIEW_REQUIRED",
             blockers.get("CB7", {}).get("evidence", ""),
             unlock.get("S52-FULLTEXT-686", {}).get("acceptance_gate", ""),
             unlock.get("S52-FULLTEXT-686", {}).get("command", ""),
@@ -251,7 +269,9 @@ def build_rows() -> List[Dict[str, str]]:
             "S59-R7-FINAL-PAPER-PACKAGE",
             "final freeze",
             "paper/release claim package",
-            "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED"
+            "SCOPED_FINAL_PACKAGE_READY_EXTERNAL_REVIEW_REQUIRED"
+            if stage91_done and final_review_ready
+            else "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED"
             if stage91_done and final_waiting
             else "REVIEW_REQUIRED",
             (
@@ -264,10 +284,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage95_public_source_reprobe/summary.csv; "
                 "repro/stage96_upstream_delta_audit/summary.csv; "
                 "repro/stage97_source_delta_guard/summary.csv; "
-                "repro/stage98_current_smoke_refresh/summary.csv"
+                "repro/stage98_current_smoke_refresh/summary.csv; "
+                "repro/stage99_external_blocker_reprobe/summary.csv"
             ),
-            "A9 remains scoped unless CB5/CB6/CB7 are resolved; Stage91 must keep stronger claims blocked.",
-            "Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93/94/95/96/97/98 after source, backend, external-evidence, upstream-code, default-flag, or claim-scope changes.",
+            "A9 remains scoped/review-required unless CB5/CB6/CB7 are resolved; Stage91 must keep stronger claims guarded.",
+            "Use Stage92 lane commands for native perf and Stage38 review checklist for source anchors; rerun Stage90/91/92/93/94/95/96/97/98/99 after source, backend, external-evidence, upstream-code, default-flag, or claim-scope changes.",
             "Provides a scoped final engineering package; does not unlock paper-level or theoretical claims.",
         ),
     ]
@@ -307,18 +328,27 @@ def decision(rows: List[Dict[str, str]]) -> str:
         == "PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED"
     )
     stage98 = by_key(STAGE98_CURRENT_SMOKE_REFRESH, "gate")
+    stage99 = by_key(STAGE99_EXTERNAL_BLOCKER_REPROBE, "gate")
     stage98_done = (
         status_of(stage98, "stage98_decision")
         == "PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH"
+    )
+    stage99_done = (
+        status_of(stage99, "stage99_decision")
+        == "PASS_STAGE99_EXTERNAL_BLOCKERS_REPROBED_REVIEW_REQUIRED"
     )
     expected = {
         "S59-R1-SCOPED-ENGINEERING": "LOCAL_READY",
         "S59-R2-CURRENT-HEAD-REFRESH": "READY_LOCAL_REFRESH",
         "S59-R3-NATIVE-PERF": "EXTERNAL_BLOCKED",
-        "S59-R4-FULLTEXT-686": "EXTERNAL_FULLTEXT_BLOCKED",
+        "S59-R4-FULLTEXT-686": "EXTERNAL_REVIEW_REQUIRED"
+        if status_of(by_key(UNLOCK, "unlock_id"), "S52-FULLTEXT-686", "readiness") == "READY_FOR_MANUAL_REVIEW"
+        else "EXTERNAL_FULLTEXT_BLOCKED",
         "S59-R5-NOVELTY-REVIEW": "EXTERNAL_REVIEW_BLOCKED",
         "S59-R6-OPTIONAL-VARIANTS": "READY_OPTIONAL_LOCAL_TRIAGE",
-        "S59-R7-FINAL-PAPER-PACKAGE": "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED",
+        "S59-R7-FINAL-PAPER-PACKAGE": "SCOPED_FINAL_PACKAGE_READY_EXTERNAL_REVIEW_REQUIRED"
+        if status_of(by_key(UNLOCK, "unlock_id"), "S52-FINAL-RECHECK", "readiness") == "READY_AFTER_UNLOCKS"
+        else "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED",
     }
     ok = (
         all(by_id.get(route_id, {}).get("status") == status for route_id, status in expected.items())
@@ -329,8 +359,11 @@ def decision(rows: List[Dict[str, str]]) -> str:
         and stage96_done
         and stage97_done
         and stage98_done
+        and stage99_done
     )
     if ok:
+        if expected["S59-R7-FINAL-PAPER-PACKAGE"] == "SCOPED_FINAL_PACKAGE_READY_EXTERNAL_REVIEW_REQUIRED":
+            return "PASS_COMPLETION_ROUTE_READY__EXTERNAL_REVIEW_REQUIRED"
         return "PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED"
     return "FAIL_COMPLETION_ROUTE_INCONSISTENT"
 

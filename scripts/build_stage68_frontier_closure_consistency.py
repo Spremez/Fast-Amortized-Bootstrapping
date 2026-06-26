@@ -110,6 +110,7 @@ def build_rows() -> List[Dict[str, str]]:
                 and "Stage96 upstream delta audit" in stage42_detail
                 and "Stage97 source delta guard" in stage42_detail
                 and "Stage98 current-head smoke refresh" in stage42_detail
+                and "Stage99 external blocker reprobe" in stage42_detail
             )
         )
     )
@@ -142,6 +143,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "Stage96 upstream delta audit" in g6_detail
         and "Stage97 source delta guard" in g6_detail
         and "Stage98 current-head smoke refresh" in g6_detail
+        and "Stage99 external blocker reprobe" in g6_detail
     )
 
     stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
@@ -175,7 +177,10 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage89_h14_promotion_policy_integration" in r6.get("evidence", "")
         and "stage90_external_claim_unlock" in r6.get("evidence", "")
         and "stage94_local_frontier_audit" in r6.get("evidence", "")
-        and r7.get("status") == "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED"
+        and r7.get("status") in {
+            "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED",
+            "SCOPED_FINAL_PACKAGE_READY_EXTERNAL_REVIEW_REQUIRED",
+        }
         and "stage91_final_package" in r7.get("evidence", "")
         and "stage92_external_unlock_execution" in r7.get("evidence", "")
         and "stage93_external_lane_attempt" in r7.get("evidence", "")
@@ -184,6 +189,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage96_upstream_delta_audit" in r7.get("evidence", "")
         and "stage97_source_delta_guard" in r7.get("evidence", "")
         and "stage98_current_smoke_refresh" in r7.get("evidence", "")
+        and "stage99_external_blocker_reprobe" in r7.get("evidence", "")
     )
 
     rows = [

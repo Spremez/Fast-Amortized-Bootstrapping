@@ -216,6 +216,10 @@ def build_rows() -> List[Dict[str, str]]:
         stage42.get("S42-STAGE98-CURRENT-SMOKE-REFRESH", {}).get("status")
         == "PASS"
     )
+    stage99_closed = (
+        stage42.get("S42-STAGE99-EXTERNAL-BLOCKER-REPROBE", {}).get("status")
+        == "PASS"
+    )
     optional_notes = []
     if stage64a_closed:
         optional_notes.append("Stage64A post-variant refresh")
@@ -285,6 +289,8 @@ def build_rows() -> List[Dict[str, str]]:
         optional_notes.append("Stage97 source delta guard")
     if stage98_closed:
         optional_notes.append("Stage98 current-head smoke refresh")
+    if stage99_closed:
+        optional_notes.append("Stage99 external blocker reprobe")
     optional_stage_note = " plus " + " and ".join(optional_notes) if optional_notes else ""
     spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
     stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")
@@ -296,6 +302,18 @@ def build_rows() -> List[Dict[str, str]]:
     stage42_rebuildable = (
         stage42.get("S42-ROADMAP-STAGES", {}).get("status") == "PASS"
         and stage42.get("S42-CLAIM-GUARDRAILS", {}).get("status") == "PASS"
+    )
+    cb7_status = blocker_status(blockers, "CB7")
+    cb7_review_required = (
+        "final_A8b=EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED" in cb7_status
+        or "external_fulltext=AVAILABLE_UNREVIEWED" in cb7_status
+    )
+    cb7_frontier_status = (
+        "EXTERNAL_REVIEW_REQUIRED"
+        if cb7_review_required
+        else "EXTERNAL_FULLTEXT_BLOCKED"
+        if "BLOCKED" in cb7_status
+        else "REVIEW_REQUIRED"
     )
 
     rows = [
@@ -395,9 +413,9 @@ def build_rows() -> List[Dict[str, str]]:
             "B3",
             "external_2025_686_fulltext",
             "2025/686 theorem-level protocol/citation review requires a registered full text.",
-            "EXTERNAL_FULLTEXT_BLOCKED" if "BLOCKED" in blocker_status(blockers, "CB7") else "REVIEW_REQUIRED",
+            cb7_frontier_status,
             blockers.get("CB7", {}).get("evidence", ""),
-            blocker_status(blockers, "CB7"),
+            cb7_status,
             blockers.get("CB7", {}).get("unlock_command", ""),
             "Blocks theorem, algorithm, table, figure, or experiment-number claims from 2025/686.",
         ),
@@ -417,15 +435,24 @@ def build_rows() -> List[Dict[str, str]]:
 
 def gate_status(rows: List[Dict[str, str]]) -> str:
     required_ready = ["G1", "G2", "G3", "G4", "G5", "G6"]
-    required_blocked = ["B1", "B2", "B3"]
     by_id = {row["frontier_id"]: row for row in rows}
     ready_ok = all(by_id.get(fid, {}).get("status", "").startswith("LOCAL") for fid in required_ready)
-    blocked_ok = all("BLOCKED" in by_id.get(fid, {}).get("status", "") for fid in required_blocked)
-    overall_ok = (
-        by_id.get("G9", {}).get("status")
-        == "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED"
+    external_ok = (
+        "BLOCKED" in by_id.get("B1", {}).get("status", "")
+        and "BLOCKED" in by_id.get("B2", {}).get("status", "")
+        and (
+            "BLOCKED" in by_id.get("B3", {}).get("status", "")
+            or by_id.get("B3", {}).get("status") == "EXTERNAL_REVIEW_REQUIRED"
+        )
     )
-    if ready_ok and blocked_ok and overall_ok:
+    overall_status = by_id.get("G9", {}).get("status")
+    overall_ok = overall_status in {
+        "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED",
+        "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED",
+    }
+    if ready_ok and external_ok and overall_ok:
+        if overall_status == "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED":
+            return "PASS_GOAL_FRONTIER_SCOPED_READY_EXTERNAL_REVIEW_REQUIRED"
         return "PASS_GOAL_FRONTIER_SCOPED_READY_STRONGER_BLOCKED"
     return "FAIL_GOAL_FRONTIER_INCONSISTENT"
 
@@ -476,7 +503,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         f"`{decision}`",
         "",
         "The active goal remains open because the scoped engineering acceleration",
-        "chain is ready, but external native perf evidence, full-text 2025/686",
+        "chain is ready, but external native perf evidence, 2025/686 source",
         "review, and novelty claim review remain unresolved.",
     ]
     OUT_MD.parent.mkdir(parents=True, exist_ok=True)

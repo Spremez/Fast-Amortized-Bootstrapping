@@ -38,6 +38,16 @@ def file_kind(path: Path) -> str:
     return "unknown"
 
 
+def existing_evidence_row(evidence_id: str) -> dict[str, str] | None:
+    if not OUT_CSV.exists():
+        return None
+    with OUT_CSV.open(newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            if row.get("evidence_id") == evidence_id and row.get("status") != "MISSING":
+                return dict(row)
+    return None
+
+
 def read_stage28_gate(path: Path) -> str:
     rows = list(csv.DictReader(path.open(newline="", encoding="utf-8")))
     for row in rows:
@@ -48,6 +58,13 @@ def read_stage28_gate(path: Path) -> str:
 
 def evidence_row(evidence_id: str, input_path: str | None, kind: str) -> dict[str, str]:
     if not input_path:
+        existing = existing_evidence_row(evidence_id)
+        if existing:
+            existing["detail"] = (
+                existing.get("detail", "")
+                + " Preserved because no replacement path was provided."
+            ).strip()
+            return existing
         return {
             "evidence_id": evidence_id,
             "status": "MISSING",

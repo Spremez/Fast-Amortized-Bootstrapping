@@ -23,7 +23,7 @@ repro/final_goal_completion_audit.csv
 ## Decision
 
 ```text
-SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
+SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED
 ```
 
 Interpretation:
@@ -49,5 +49,5 @@ complete scoped engineering acceleration evidence exists; novelty/theory/all-par
 | A6 | claim_boundary | PASS_BLOCKED_BOUNDARY | Novelty, non-binary support, and theorem-level 2025/686 citation claims remain explicitly blocked | blocked claims are preserved as part of the evidence chain | Restore blocked labels before drafting stronger manuscript claims. |
 | A7 | generalization | PASS_ADDED_PARAM_10RUN_20SEED | Added binary parameters have r=2/r=4 performance and noise support | added binary SET_4_5_2048 and SET_2_3_4096, r=2/r=4, 10-run performance and 20-seed noise | Keep non-binary and all-parameter claims blocked unless separate implementations and gates are added. |
 | A8 | theory_backend | BLOCKED_EXTERNAL | MAT-AVX512 theoretical load/store optimality has hardware-counter support | No perf command; MAT-AVX512 theoretical load/store claim remains blocked. | Run Stage 28 on native Linux or perf-enabled WSL with STAGE28_RUN_BENCH=1 before claiming theoretical optimality. |
-| A8b | external_evidence | MISSING_OPTIONAL_EXTERNAL_EVIDENCE | Optional external full-text and native perf artifacts are registered when supplied | no full-text or native perf external evidence registered | Register external artifacts with scripts/register_external_evidence.py, then rerun final recheck. |
-| A9 | overall | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED | Original optimization goal status under current evidence | complete scoped engineering acceleration evidence exists; novelty/theory/all-parameter claims are not complete | Keep the active goal open until external full-text/perf/native evidence is supplied or the scope is explicitly narrowed. |
+| A8b | external_evidence | EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED | Optional external full-text and native perf artifacts are registered when supplied | external artifact registered; manual citation/perf interpretation gates still required before claim upgrade | Register external artifacts with scripts/register_external_evidence.py, then rerun final recheck. |
+| A9 | overall | SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED | Original optimization goal status under current evidence | complete scoped engineering acceleration evidence exists; novelty/theory/all-parameter claims are not complete | Keep the active goal open until external full-text/perf/native evidence is supplied or the scope is explicitly narrowed. |

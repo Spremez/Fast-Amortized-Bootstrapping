@@ -20,7 +20,7 @@ hardware-counter claims.
 | CB4 | CONDITION_NOT_ACTIVE | docs/stage24_postproc_tail_log.md; repro/stage24_postproc_tail_avx512_runs1/summary.csv; repro/stage39_variant_triage.csv | Do not implement until a refreshed profile crosses the tail threshold. |
 | CB5 | BLOCKED_EXTERNAL | docs/stage37_native_perf_counter_log.md; repro/stage37_native_perf_counter_audit/summary.csv; repro/final_goal_completion_audit.csv | Run Stage 37/Stage 28 on native Linux or perf-enabled WSL and register the resulting summary. |
 | CB6 | BLOCKED_EXTERNAL_REVIEW | docs/stage27_novelty_paper_package_log.md; docs/stage27_related_work_access_probe_log.md; repro/stage27_related_work_access_probe/summary.csv; docs/stage38_fulltext_review_log.md; repro/final_goal_completion_audit.csv | Supply full texts and run the manual claim-to-source review before any novelty upgrade. |
-| CB7 | BLOCKED_EXTERNAL_FULLTEXT | docs/stage38_fulltext_review_log.md; repro/stage38_fulltext_review_gate/summary.csv; repro/final_goal_completion_audit.csv | Set FAB686_FULLTEXT_PATH to the paper PDF/text artifact and rerun Stage 38. |
+| CB7 | EXTERNAL_FULLTEXT_REVIEW_REQUIRED | docs/stage38_fulltext_review_log.md; repro/stage38_fulltext_review_gate/summary.csv; repro/final_goal_completion_audit.csv | Fill Stage38 review_checklist paper anchors for protocol, complexity, noise/security, PVW-SAB delta, and novelty before any theorem-level claim upgrade. |
 
 ## Decision
 
