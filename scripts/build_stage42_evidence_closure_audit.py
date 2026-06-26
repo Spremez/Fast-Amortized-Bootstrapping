@@ -64,6 +64,9 @@ STAGE68_FRONTIER_CLOSURE_CONSISTENCY = (
 STAGE69_LOCAL_VARIANT_FEASIBILITY = (
     ROOT / "repro" / "stage69_local_variant_feasibility.csv"
 )
+STAGE70_EXTERNAL_UNLOCK_PREFLIGHT = (
+    ROOT / "repro" / "stage70_external_unlock_preflight.csv"
+)
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -250,6 +253,10 @@ REQUIRED_FILES = [
     "repro/stage69_local_variant_feasibility.csv",
     "theory_checks/h3_sparse_selector_feasibility.md",
     "algorithm_variants/pvw_sab_sparse_selector_shortcut.md",
+    "docs/stage70_external_unlock_preflight_log.md",
+    "experiments/stage70_external_unlock_preflight_plan.md",
+    "scripts/build_stage70_external_unlock_preflight.py",
+    "repro/stage70_external_unlock_preflight.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -482,6 +489,10 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage69_local_variant_feasibility.csv",
     "theory_checks/h3_sparse_selector_feasibility.md",
     "algorithm_variants/pvw_sab_sparse_selector_shortcut.md",
+    "docs/stage70_external_unlock_preflight_log.md",
+    "experiments/stage70_external_unlock_preflight_plan.md",
+    "scripts/build_stage70_external_unlock_preflight.py",
+    "repro/stage70_external_unlock_preflight.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -1516,6 +1527,49 @@ def check_stage69_local_variant_feasibility() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage70_external_unlock_preflight() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE70_EXTERNAL_UNLOCK_PREFLIGHT)}
+    expected = {
+        "stage70_route_inputs": "PASS",
+        "stage70_native_perf_preflight": "WAIT_NATIVE_PERF",
+        "stage70_fulltext_stage62_preflight": "WAIT_FULLTEXT_ARTIFACT",
+        "stage70_novelty_preflight": "WAIT_FULLTEXT_OR_MANUAL_REVIEW",
+        "stage70_local_variant_preflight": "NO_LOCAL_VARIANT_READY",
+        "stage70_decision": "PASS_EXTERNAL_UNLOCK_PREFLIGHT_STRONGER_CLAIMS_BLOCKED",
+    }
+    problems = []
+    for gate, status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+    fulltext_env = rows.get("stage70_fulltext_env_preflight", {}).get(
+        "status", "MISSING"
+    )
+    if fulltext_env not in {
+        "MISSING_ENV",
+        "PATH_NOT_FOUND",
+        "INVALID_FILE",
+        "AVAILABLE_UNREVIEWED",
+    }:
+        problems.append(f"stage70_fulltext_env_preflight:status={fulltext_env}")
+
+    detail = (
+        "Stage70 records external unlock prerequisites; stronger claims remain blocked until native perf/full-text/novelty gates are satisfied"
+        if not problems and rows
+        else "; ".join(problems) or "Stage70 summary missing or empty"
+    )
+    return [
+        row(
+            "S42-STAGE70-EXTERNAL-UNLOCK-PREFLIGHT",
+            "reproducibility",
+            pass_fail(not problems and bool(rows)),
+            STAGE70_EXTERNAL_UNLOCK_PREFLIGHT.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage70 before relying on external-unlock readiness.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -1684,17 +1738,22 @@ def check_run_log() -> List[Dict[str, str]]:
     for r in rows:
         if r.get("run_id") == "stage69-local-variant-feasibility-001":
             stage69_status = r.get("status", "MISSING")
+    stage70_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage70-external-unlock-preflight-001":
+            stage70_status = r.get("status", "MISSING")
     ok = (
         ok
         and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
         and stage67_status == "PASS_FINAL_RECHECK_STAGE66_INTEGRATION"
         and stage68_status == "PASS_FRONTIER_CLOSURE_CONSISTENCY"
         and stage69_status == "PASS_LOCAL_VARIANT_FEASIBILITY_AUDIT_STRONGER_CLAIMS_BLOCKED"
+        and stage70_status == "PASS_EXTERNAL_UNLOCK_PREFLIGHT_STRONGER_CLAIMS_BLOCKED"
     )
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}"
     )
     return [
         row(
@@ -1716,8 +1775,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, or Stage69 control-plane artifacts.",
+            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, or Stage70 control-plane artifacts.",
         )
     ]
 
@@ -1887,6 +1946,10 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/stage69_local_variant_feasibility.csv",
         "theory_checks/h3_sparse_selector_feasibility.md",
         "algorithm_variants/pvw_sab_sparse_selector_shortcut.md",
+        "docs/stage70_external_unlock_preflight_log.md",
+        "experiments/stage70_external_unlock_preflight_plan.md",
+        "scripts/build_stage70_external_unlock_preflight.py",
+        "repro/stage70_external_unlock_preflight.csv",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -1895,7 +1958,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, and Stage69 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, and Stage70 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -1963,6 +2026,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage67_final_recheck_stage66,
         check_stage68_frontier_closure_consistency,
         check_stage69_local_variant_feasibility,
+        check_stage70_external_unlock_preflight,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -1982,10 +2046,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, and Stage69 local variant feasibility; stronger claims remain blocked"
+            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, and Stage70 external unlock preflight; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70 evidence closure.",
         )
     )
     return checks

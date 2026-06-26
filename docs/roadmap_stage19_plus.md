@@ -2118,3 +2118,41 @@ theory-control step only; any future implementation change still needs a
 separate Stage65-style correctness, full-SAB A/B, noise, resource, and
 post-variant refresh loop.
 ```
+
+## Stage 70: External Unlock Preflight
+
+Goal:
+
+```text
+Make the remaining native-perf, 2025/686 full-text, novelty-review, and
+local-variant unlock requirements machine-checkable after Stage69.
+```
+
+Tasks:
+
+- read Stage59, Stage61, Stage62, and Stage69 evidence;
+- check whether `FAB686_FULLTEXT_PATH` is set to a non-empty local file;
+- record the native-perf, full-text, novelty, and local-variant next actions
+  in a single preflight artifact;
+- register Stage70 in the repro pack and Stage42 closure/verifier;
+- preserve the scalar SAB baseline and promoted PVW/MAT-SAB path.
+
+Gate:
+
+- Stage70 decision must be
+  `PASS_EXTERNAL_UNLOCK_PREFLIGHT_STRONGER_CLAIMS_BLOCKED`;
+- if native perf is unavailable, MAT-AVX512 load/store/FMA optimality wording
+  remains blocked;
+- if no reviewed 2025/686 full text is registered, theorem-level and novelty
+  claims remain blocked;
+- if Stage69 reports no unblocked local variant, no new code work starts
+  without a new falsifiable hypothesis.
+
+Status:
+
+```text
+Stage70 passed. It records the native-perf, full-text, novelty-review, and
+local-variant prerequisites needed for stronger claims after Stage69. It is an
+audit and handoff step only; it cannot upgrade speedup, novelty, theorem-level,
+non-binary, all-parameter, or hardware-counter claims.
+```

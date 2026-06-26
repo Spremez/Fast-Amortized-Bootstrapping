@@ -982,3 +982,10 @@ Repro artifacts:
 - `repro/stage69_local_variant_feasibility.csv`
 - `theory_checks/h3_sparse_selector_feasibility.md`
 - `algorithm_variants/pvw_sab_sparse_selector_shortcut.md`
+
+## Stage 70 External Unlock Preflight
+
+- `docs/stage70_external_unlock_preflight_log.md`
+- `experiments/stage70_external_unlock_preflight_plan.md`
+- `scripts/build_stage70_external_unlock_preflight.py`
+- `repro/stage70_external_unlock_preflight.csv`

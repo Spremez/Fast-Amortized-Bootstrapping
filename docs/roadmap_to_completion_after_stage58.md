@@ -20,6 +20,7 @@ evidence is supplied.
 | Stage 67 | final-recheck Stage66A integration | Add an explicit final-recheck switch that runs Stage66A without recursion, then rebuild Stage42 closure after the Stage67 summary is finalized. | Stage67 final recheck, post-summary Stage42 closure, and verifier must pass while stronger blockers remain preserved. | passed |
 | Stage 68 | frontier/closure consistency | Make Stage42, Stage51 G6, Stage57, and Stage59 agree on the latest control-plane closure label after Stage67. | Stage68 consistency audit, Stage42 closure, and verifier must pass while stronger blockers remain preserved. | passed |
 | Stage 69 | local variant feasibility | Decide whether any remaining local H2/H3/H4/H7/H8 candidate is ready for new code after Stage65A and Stage68. | Stage69 CSV decision must be `PASS_LOCAL_VARIANT_FEASIBILITY_AUDIT_STRONGER_CLAIMS_BLOCKED`. | passed |
+| Stage 70 | external unlock preflight | Make native-perf, full-text, novelty-review, and local-variant unlock requirements machine-checkable after Stage69. | Stage70 decision must be `PASS_EXTERNAL_UNLOCK_PREFLIGHT_STRONGER_CLAIMS_BLOCKED`. | passed |
 | Stage 66 | release/paper package | Freeze the final allowed claim package after external blockers are resolved or the scope is explicitly narrowed. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
 Execution policy:
@@ -40,3 +41,5 @@ Execution policy:
 - Before adding another optional local variant, run Stage69 or an equivalent
   feasibility audit so code work starts from a falsifiable hypothesis rather
   than from a previously neutral or blocked direction.
+- After Stage69, run Stage70 to confirm whether external native-perf,
+  full-text, novelty-review, or new-hypothesis prerequisites are now available.

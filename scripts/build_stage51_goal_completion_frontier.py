@@ -105,6 +105,10 @@ def build_rows() -> List[Dict[str, str]]:
         stage42.get("S42-STAGE69-LOCAL-VARIANT-FEASIBILITY", {}).get("status")
         == "PASS"
     )
+    stage70_closed = (
+        stage42.get("S42-STAGE70-EXTERNAL-UNLOCK-PREFLIGHT", {}).get("status")
+        == "PASS"
+    )
     optional_notes = []
     if stage64a_closed:
         optional_notes.append("Stage64A post-variant refresh")
@@ -118,6 +122,8 @@ def build_rows() -> List[Dict[str, str]]:
         optional_notes.append("Stage68 frontier/closure consistency")
     if stage69_closed:
         optional_notes.append("Stage69 local variant feasibility")
+    if stage70_closed:
+        optional_notes.append("Stage70 external unlock preflight")
     optional_stage_note = " plus " + " and ".join(optional_notes) if optional_notes else ""
     spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
     stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")
