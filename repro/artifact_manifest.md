@@ -750,3 +750,8 @@ Repro artifacts:
 - `repro/stage47_wsl_active_state_full_sab_smoke/r2/run_0.log`
 - `repro/stage47_wsl_active_state_full_sab_smoke/r4/summary.csv`
 - `repro/stage47_wsl_active_state_full_sab_smoke/r4/run_0.log`
+- `docs/stage48_wsl_noise_smoke_log.md`
+- `repro/stage48_wsl_active_state_noise_smoke/summary.csv`
+- `repro/stage48_wsl_active_state_noise_smoke/aggregate.csv`
+- `repro/stage48_wsl_active_state_noise_smoke/r2/seed_6862025.log`
+- `repro/stage48_wsl_active_state_noise_smoke/r4/seed_6862025.log`

@@ -1316,3 +1316,43 @@ specialized MAT-AVX512, and active-buffer fusion. This preserves current-head
 continuity after the active-state refactor; Stage 36 remains the high-stat
 performance evidence for claims.
 ```
+
+## Stage 48: WSL Final-Output Noise Smoke
+
+Goal:
+
+```text
+Refresh current-head final-output noise and correctness smoke evidence on
+WSL/Linux after the active-state refactor and the Stage 47 complete-SAB A/B
+smoke, while keeping Stage 36 as the high-stat noise evidence.
+```
+
+Tasks:
+
+- run `scripts/run_stage25_final_noise_sweep.sh` at current head for r=2 and
+  r=4;
+- keep `spqlios_avx512`, specialized MAT-AVX512, and active-buffer fusion
+  enabled;
+- record one seed with `SAB_PVW_NOISE_TRIALS=1` as current-head continuity
+  evidence;
+- report the result as smoke-only, not as a replacement for the Stage 36
+  50-seed target-noise campaign.
+
+Gate:
+
+- each r must produce a `PASS` aggregate row;
+- `pvw_failures`, `scalar_failures`, and `pair_failures` must be zero for
+  r=2 and r=4;
+- Stage42 closure/verifier must include Stage48 before relying on this
+  current-head noise smoke.
+
+Status:
+
+```text
+Stage 48 WSL/Linux final-output noise smoke passed. r=2 covered 4096 points
+with zero PVW/scalar/pair failures and pvw_minus_scalar_log2=0.603. r=4
+covered 8192 points with zero PVW/scalar/pair failures and
+pvw_minus_scalar_log2=-0.555. This preserves current-head noise continuity
+after the active-state refactor; Stage 36 remains the high-stat noise evidence
+for claims.
+```
