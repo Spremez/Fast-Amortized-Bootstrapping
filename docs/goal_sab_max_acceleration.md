@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-68`. This label tracks the
+Current control-plane closure label: `Stage 19-69`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -79,6 +79,7 @@ evidence.
 | Stage 66A post-variant final recheck | n/a | n/a | control-plane continuity | lightweight final recheck after Stage65A/64A passes and preserves scoped-ready/stronger-blocked claim boundary |
 | Stage 67 final-recheck Stage66A integration | n/a | n/a | final-recheck integration | explicit unified final-recheck switch runs Stage66A; Stage42 closure is rebuilt after the Stage67 summary is finalized |
 | Stage 68 frontier/closure consistency | n/a | n/a | control-plane consistency | Stage42, Stage51 G6, Stage57, and Stage59 agree on the latest control-plane closure label |
+| Stage 69 local variant feasibility | n/a | n/a | routing/theory control | remaining H2/H3/H4/H7/H8 local candidates are deferred, rejected, neutral, or externally blocked under current evidence |
 
 Current conclusion:
 
@@ -227,6 +228,10 @@ runner through an explicit switch, then rebuilds Stage42 closure after the
 Stage67 summary is finalized.
 Stage68 then repairs and verifies the closure/frontier label propagation so
 Stage51 G6 returns to `LOCAL_READY` after Stage67.
+Stage69 then audits the remaining local variant space and rejects the direct
+H3 sparse-selector shortcut under the current encrypted-selector/key-format
+boundary, leaving further code work gated on native perf, full-text review, or
+a new falsifiable hypothesis.
 ```
 
 ## Invariants
@@ -326,6 +331,7 @@ Stage 64: implementation-refresh campaign. [completed after Stage65A; current-he
 Stage 65: optional variant loop. [started; Stage65A r4 row-unrolled AVX512 negative/not promoted]
 Stage 66A: post-variant final-recheck integration. [passed]
 Stage 67: final-recheck Stage66A integration. [passed]
-Stage 68: frontier/closure consistency. [current control-plane step]
+Stage 68: frontier/closure consistency. [passed]
+Stage 69: local variant feasibility. [current routing/theory-control step]
 Stage 66: release/paper package. [waiting for external unlocks or narrowed scope]
 ```

@@ -56,8 +56,16 @@ hypotheses:
       structure can be preserved or partially exposed in the evaluation form,
       some dense row-output products may be skipped or fused with automorphism
       and monomial rotation.
-    status: theory_unverified
-    evidence: docs/stage11_pvw_sab_loop_engineering.md
+    status: stage69_current_shortcut_rejected_theory_gap
+    evidence: docs/stage11_pvw_sab_loop_engineering.md; theory_checks/h3_sparse_selector_feasibility.md; algorithm_variants/pvw_sab_sparse_selector_shortcut.md
+    current_decision: >
+      Stage69 rejects the direct sparse-selector shortcut under the current
+      implementation. The evaluator has encrypted MAT_TRGSW_DFT selector
+      ciphertexts, not plaintext selector bits, and encrypted zero selector
+      bits are still dense noisy ciphertext objects. Adding plaintext skip
+      metadata for secret-dependent SAB gaps would require a new key-format and
+      leakage/security argument before any code change. Keep H3 open only as a
+      future design problem, not as an immediate local implementation task.
     failure_criteria:
       - selector structure is not exploitable after encryption/DFT conversion
       - any sparse shortcut changes CMUX semantics or noise distribution

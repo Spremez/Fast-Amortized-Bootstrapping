@@ -973,3 +973,12 @@ Repro artifacts:
 - `experiments/stage68_frontier_closure_consistency_plan.md`
 - `scripts/build_stage68_frontier_closure_consistency.py`
 - `repro/stage68_frontier_closure_consistency.csv`
+
+## Stage 69 Local Variant Feasibility
+
+- `docs/stage69_local_variant_feasibility_log.md`
+- `experiments/stage69_local_variant_feasibility_plan.md`
+- `scripts/build_stage69_local_variant_feasibility.py`
+- `repro/stage69_local_variant_feasibility.csv`
+- `theory_checks/h3_sparse_selector_feasibility.md`
+- `algorithm_variants/pvw_sab_sparse_selector_shortcut.md`

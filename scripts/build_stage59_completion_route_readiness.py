@@ -160,10 +160,11 @@ def build_rows() -> List[Dict[str, str]]:
             (
                 "repro/stage39_optional_variant_triage.csv; "
                 "hypotheses/hypothesis_register.yaml; "
-                "repro/stage65_r4_unrolled_avx512/summary.csv"
+                "repro/stage65_r4_unrolled_avx512/summary.csv; "
+                "repro/stage69_local_variant_feasibility.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage65A r4 row-unrolled AVX512 is recorded as negative/not promoted; select a different concrete hypothesis before new code work.",
+            "Stage69 records no unblocked local variant under current evidence; unlock native perf/full text or introduce a new falsifiable hypothesis before new code work.",
             "May improve engineering evidence; no claim upgrade without full SAB A/B and noise/resource gates.",
         ),
         route_row(
