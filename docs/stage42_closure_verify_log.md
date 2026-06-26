@@ -11,7 +11,7 @@ regenerating the Stage 42 audit or manifest.
 
 | check | status | evidence | detail |
 |---|---|---|---|
-| verification_input_commit | 4b1d648 | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
+| verification_input_commit | 48cfcaf | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
 | worktree_clean_before_outputs | PASS | git status --short --untracked-files=all | tracked and untracked worktree was clean before verifier outputs. |
 | final_audit_A9 | PASS | repro/final_goal_completion_audit.csv | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED |
 | stage41_readiness | PASS | repro/stage41_external_unlock_packet.csv | all readiness rows remain waiting for external evidence |
@@ -19,11 +19,12 @@ regenerating the Stage 42 audit or manifest.
 | stage42_manifest_hashes | PASS | repro/stage42_evidence_closure_manifest.csv | all closure manifest hashes match |
 | stage43_current_smoke | PASS | repro/stage43_current_smoke_after_stage42/summary.csv | scalar binary, PVW target, and scalar ternary smoke rows pass |
 | stage44_external_reprobe | PASS | repro/stage44_external_unlock_reprobe/summary.csv | external full-text/native-perf unlocks remain unavailable and recorded |
+| stage45_active_state | PASS | repro/stage45_active_state_refactor/summary.csv | Stage45 active-state correctness passes and closure audit records it |
 | stage44_recheck_integration | PASS | repro/final_goal_recheck_stage44_reprobe/summary.csv | final recheck can refresh Stage44, final audit, and Stage42 closure |
 | default_recheck_closure | PASS | repro/final_goal_recheck/summary.csv | default final recheck includes stage42_evidence_closure=PASS |
 | closure_only_recheck | PASS | repro/final_goal_recheck_stage42_closure/summary.csv | closure-only final recheck includes stage42_evidence_closure=PASS |
-| stage42_run_log_rows | PASS | repro/run_log.csv | all Stage42/43/44 closure run rows are present |
-| artifact_manifest_mentions | PASS | repro/artifact_manifest.md | Stage42 verifier, closure manifest, and Stage44 re-probe are registered |
+| stage42_run_log_rows | PASS | repro/run_log.csv | all Stage42/43/44/45 closure run rows are present |
+| artifact_manifest_mentions | PASS | repro/artifact_manifest.md | Stage42 verifier, closure manifest, Stage44 re-probe, and Stage45 refactor are registered |
 | stage42_verify_decision | PASS_STAGE42_VERIFY_STRONGER_CLAIMS_BLOCKED | repro/stage42_closure_verify/summary.csv | Stage42 closure package is internally consistent; stronger claims remain blocked. |
 
 ## Decision
