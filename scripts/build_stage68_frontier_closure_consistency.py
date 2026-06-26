@@ -94,7 +94,7 @@ def build_rows() -> List[Dict[str, str]]:
             stage42_self_refresh_only
             or (
                 "Stage67 final-recheck Stage66A integration" in stage42_detail
-                and "Stage81 next-variant triage" in stage42_detail
+                and "Stage82 post-H11 profile" in stage42_detail
             )
         )
     )
@@ -111,7 +111,7 @@ def build_rows() -> List[Dict[str, str]]:
         (g6_status == "LOCAL_READY" or g6_accepts_refresh_pending)
         and compact_label in g6_detail
         and "Stage67 final-recheck Stage66A integration" in g6_detail
-        and "Stage81 next-variant triage" in g6_detail
+        and "Stage82 post-H11 profile" in g6_detail
     )
 
     stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
@@ -134,6 +134,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage79_rgt4_fused_high_stat" in r6.get("evidence", "")
         and "stage80_promotion_policy_audit" in r6.get("evidence", "")
         and "stage81_next_variant_triage" in r6.get("evidence", "")
+        and "stage82_post_h11_profile" in r6.get("evidence", "")
     )
 
     rows = [

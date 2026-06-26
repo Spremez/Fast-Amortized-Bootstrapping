@@ -1223,3 +1223,15 @@ Repro artifacts:
 - `experiments/stage81_next_variant_triage_plan.md`
 - `scripts/build_stage81_next_variant_triage.py`
 - `repro/stage81_next_variant_triage.csv`
+
+## Stage 82 Post-H11 Fused R6 Profile
+
+- `docs/stage82_post_h11_profile_log.md`
+- `experiments/stage82_post_h11_profile_plan.md`
+- `scripts/run_stage82_post_h11_profile.sh`
+- `scripts/build_stage82_post_h11_profile.py`
+- `repro/stage82_post_h11_profile/stage82_run.log`
+- `repro/stage82_post_h11_profile/body_profile_fused_r6/summary.csv`
+- `repro/stage82_post_h11_profile/body_profile_fused_r6/r6/run_0.log`
+- `repro/stage82_post_h11_profile/profile_metrics.csv`
+- `repro/stage82_post_h11_profile/decision.csv`

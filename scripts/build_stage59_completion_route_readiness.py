@@ -169,11 +169,12 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage78_rgt4_fused_repeated_gates/summary.csv; "
                 "repro/stage79_rgt4_fused_high_stat/summary.csv; "
                 "repro/stage80_promotion_policy_audit/summary.csv; "
-                "repro/stage81_next_variant_triage.csv"
+                "repro/stage81_next_variant_triage.csv; "
+                "repro/stage82_post_h11_profile/decision.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage81 records that no immediate new hot-path code variant is justified after Stage80. The next local action is post-H11 fused r=6 profile attribution before opening another implementation hypothesis.",
-            "Does not upgrade r=6 claims or defaults; future variants require profile attribution, a new hypothesis, full current-head gates, and a separate promote/neutral/reject decision.",
+            "Stage82 records the post-H11 fused r=6 profile attribution required by Stage81. MAT body remains the primary profile target, so the next local work is a theory/design check for reducing dense MAT body work without key-format risk.",
+            "Does not upgrade r=6 claims or defaults; future variants require a new theory/design hypothesis, full current-head gates, and a separate promote/neutral/reject decision.",
         ),
         route_row(
             "S59-R7-FINAL-PAPER-PACKAGE",

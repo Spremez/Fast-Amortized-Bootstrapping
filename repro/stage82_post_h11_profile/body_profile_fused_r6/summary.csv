@@ -1,0 +1,2 @@
+r,run,status,pvw_avg_us,scalar_repeated_avg_us,speedup,in_N,h,r_prec,rgsw_monomial_calls,cmux_calls,expected_cmux,ncmux_calls,expected_ncmux,mat_ep_calls,sub_a_calls,expected_sub_a,copyback_calls,expected_active_copyback,legacy_copyback,copyback_saved,source_log
+6,0,PASS,39023343.000,54826196.000,1.405,2048,39,7,40,573440,573440,5080,5080,573440,39,39,0,0,40,40,repro/stage82_post_h11_profile/body_profile_fused_r6/r6/run_0.log

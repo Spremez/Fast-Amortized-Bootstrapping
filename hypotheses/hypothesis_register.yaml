@@ -393,8 +393,8 @@ hypotheses:
       whether the remaining cost is MAT multiply/layout, from_DFT/add/sub
       materialization, CMUX/RGSW wrapper work, sub_a/rotation, allocation, or
       post-processing tail before any new variant is designed.
-    status: stage81_selected_profile_first_no_code_promotion
-    evidence: docs/stage81_next_variant_triage_log.md; repro/stage81_next_variant_triage.csv
+    status: stage82_profile_completed_mat_body_primary
+    evidence: docs/stage81_next_variant_triage_log.md; docs/stage82_post_h11_profile_log.md; repro/stage81_next_variant_triage.csv; repro/stage82_post_h11_profile/decision.csv
     current_decision: >
       Stage81 reads Stage24, Stage69, Stage74, Stage75, Stage76, Stage79, and
       Stage80. It records that sparse/structured MAT shortcuts remain blocked
@@ -403,6 +403,14 @@ hypotheses:
       H11 r=6 fused MAT remains explicit experimental evidence only. Therefore
       no immediate hot-path code variant is promoted or selected. The next
       local engineering action is profile-only post-H11 fused r=6 attribution.
+      Stage82 runs that profile. The explicit H11 fused r=6 path preserves
+      exact schedule counts: CMUX/MAT EP 573440, NCMUX 5080, sub_a 39, and
+      active-buffer copyback 0. The profile-only instrumented speedup is
+      1.405x and is not a final latency claim. MAT EP remains the primary
+      single component at 47.6916% of full body time, with from_DFT at
+      21.7231%, add at 13.6870%, sub at 13.4137%, and non-MAT body at
+      52.3084%. Therefore the next local action is a MAT body theory/design
+      check, not direct code.
     failure_criteria:
       - profile attribution cannot reproduce Stage75/Stage80 correctness and
         schedule gates
@@ -412,3 +420,33 @@ hypotheses:
         new full-SAB implementation gate
       - a proposed follow-up skips hypothesis, theory, correctness,
         full-SAB A/B, noise/resource, or claim-policy gates
+  - id: H13_mat_body_reduction_design
+    statement: >
+      Because Stage82 shows the post-H11 fused r=6 profile is still MAT-body
+      dominated, a future local optimization should first test whether dense
+      MAT body work can be reduced by layout, decomposition streaming,
+      register/cache blocking, or mathematically justified structure without
+      changing the scalar baseline or leaking selector information.
+    mechanism: >
+      The profile has invariant SAB schedule counts, so another schedule-count
+      reduction is not the immediate target. Any useful design must reduce the
+      cost per MAT external-product update or its materialization overhead
+      while preserving encrypted selector semantics and the current key-format
+      safety boundary unless a separate security argument is supplied.
+    status: stage82_selected_for_theory_design_check_not_implementation
+    evidence: docs/stage82_post_h11_profile_log.md; repro/stage82_post_h11_profile/profile_metrics.csv
+    current_decision: >
+      H13 is not authorized for code yet. Stage82 only authorizes a
+      theory/design check that enumerates candidate MAT body reductions,
+      expected arithmetic and memory effects, key-format/security risks,
+      isolated correctness gates, and full-SAB A/B gates. Implementation can
+      start only after that check selects a falsifiable low-risk candidate.
+    failure_criteria:
+      - the proposed design only changes loop shape without a credible
+        arithmetic, memory, or materialization reduction
+      - the design requires plaintext selector knowledge or secret-dependent
+        metadata without a security proof
+      - expected gains cannot plausibly beat Stage80/Stage82 profile evidence
+        after accounting for register pressure and memory traffic
+      - the candidate lacks staged correctness, full-SAB A/B, noise/resource,
+        and claim-policy gates

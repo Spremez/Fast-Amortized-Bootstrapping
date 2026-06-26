@@ -2,7 +2,7 @@
 """Build the Stage 42 evidence-closure audit.
 
 This script checks whether the current scoped PVW/MAT-SAB evidence chain and
-Stage81 control-plane/kernel extensions are internally consistent. It does not run
+Stage82 control-plane/kernel extensions are internally consistent. It does not run
 benchmarks or upgrade claims; it verifies that the committed artifacts still
 support the recorded scope.
 """
@@ -102,6 +102,7 @@ STAGE80_PROMOTION_POLICY_AUDIT = (
     ROOT / "repro" / "stage80_promotion_policy_audit" / "summary.csv"
 )
 STAGE81_NEXT_VARIANT_TRIAGE = ROOT / "repro" / "stage81_next_variant_triage.csv"
+STAGE82_POST_H11_PROFILE = ROOT / "repro" / "stage82_post_h11_profile" / "decision.csv"
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -457,6 +458,15 @@ REQUIRED_FILES = [
     "experiments/stage81_next_variant_triage_plan.md",
     "scripts/build_stage81_next_variant_triage.py",
     "repro/stage81_next_variant_triage.csv",
+    "docs/stage82_post_h11_profile_log.md",
+    "experiments/stage82_post_h11_profile_plan.md",
+    "scripts/run_stage82_post_h11_profile.sh",
+    "scripts/build_stage82_post_h11_profile.py",
+    "repro/stage82_post_h11_profile/stage82_run.log",
+    "repro/stage82_post_h11_profile/body_profile_fused_r6/summary.csv",
+    "repro/stage82_post_h11_profile/body_profile_fused_r6/r6/run_0.log",
+    "repro/stage82_post_h11_profile/profile_metrics.csv",
+    "repro/stage82_post_h11_profile/decision.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -856,6 +866,15 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "experiments/stage81_next_variant_triage_plan.md",
     "scripts/build_stage81_next_variant_triage.py",
     "repro/stage81_next_variant_triage.csv",
+    "docs/stage82_post_h11_profile_log.md",
+    "experiments/stage82_post_h11_profile_plan.md",
+    "scripts/run_stage82_post_h11_profile.sh",
+    "scripts/build_stage82_post_h11_profile.py",
+    "repro/stage82_post_h11_profile/stage82_run.log",
+    "repro/stage82_post_h11_profile/body_profile_fused_r6/summary.csv",
+    "repro/stage82_post_h11_profile/body_profile_fused_r6/r6/run_0.log",
+    "repro/stage82_post_h11_profile/profile_metrics.csv",
+    "repro/stage82_post_h11_profile/decision.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -2345,6 +2364,37 @@ def check_stage81_next_variant_triage() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage82_post_h11_profile() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE82_POST_H11_PROFILE)}
+    expected = {
+        "stage82_inputs_available": "PASS",
+        "stage82_fused_r6_profile_counts": "PASS",
+        "stage82_fused_vs_generic_profile": "PROFILE_ONLY_RECORDED",
+        "stage82_component_attribution": "MAT_BODY_REMAINS_PRIMARY",
+        "stage82_decision": "PASS_STAGE82_POST_H11_PROFILE_MAT_BODY_PRIMARY",
+    }
+    problems = []
+    for gate, status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+    detail = (
+        "Stage82 profiles explicit H11 fused r=6 and records MAT body as the primary profile target without promoting new code"
+        if not problems and rows
+        else "; ".join(problems) or "Stage82 profile missing"
+    )
+    return [
+        row(
+            "S42-STAGE82-POST-H11-PROFILE",
+            "profile_attribution",
+            pass_fail(not problems and bool(rows)),
+            STAGE82_POST_H11_PROFILE.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage82 before opening another local SAB/MAT implementation hypothesis.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -2561,6 +2611,10 @@ def check_run_log() -> List[Dict[str, str]]:
     for r in rows:
         if r.get("run_id") == "stage81-next-variant-triage-001":
             stage81_status = r.get("status", "MISSING")
+    stage82_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage82-post-h11-profile-001":
+            stage82_status = r.get("status", "MISSING")
     ok = (
         ok
         and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
@@ -2579,11 +2633,12 @@ def check_run_log() -> List[Dict[str, str]]:
         and stage79_status == "PASS_RGT4_FUSED_HIGH_STAT_RECORDED_REVIEW_REQUIRED"
         and stage80_status == "PASS_RGT4_FUSED_KEEP_EXPERIMENTAL_NOT_PROMOTED"
         and stage81_status == "PASS_STAGE81_NEXT_VARIANT_TRIAGE_PROFILE_FIRST_NO_CODE_PROMOTION"
+        and stage82_status == "PASS_STAGE82_POST_H11_PROFILE_MAT_BODY_PRIMARY"
     )
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}"
     )
     return [
         row(
@@ -2605,8 +2660,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, or Stage81 control-plane artifacts.",
+            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, or Stage82 control-plane artifacts.",
         )
     ]
 
@@ -2915,6 +2970,15 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
     "experiments/stage81_next_variant_triage_plan.md",
     "scripts/build_stage81_next_variant_triage.py",
     "repro/stage81_next_variant_triage.csv",
+    "docs/stage82_post_h11_profile_log.md",
+    "experiments/stage82_post_h11_profile_plan.md",
+    "scripts/run_stage82_post_h11_profile.sh",
+    "scripts/build_stage82_post_h11_profile.py",
+    "repro/stage82_post_h11_profile/stage82_run.log",
+    "repro/stage82_post_h11_profile/body_profile_fused_r6/summary.csv",
+    "repro/stage82_post_h11_profile/body_profile_fused_r6/r6/run_0.log",
+    "repro/stage82_post_h11_profile/profile_metrics.csv",
+    "repro/stage82_post_h11_profile/decision.csv",
 ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -2923,7 +2987,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, and Stage81 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, and Stage82 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -3003,6 +3067,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage79_rgt4_fused_high_stat,
         check_stage80_promotion_policy_audit,
         check_stage81_next_variant_triage,
+        check_stage82_post_h11_profile,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -3022,10 +3087,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, and Stage81 next-variant triage; stronger claims remain blocked"
+            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, and Stage82 post-H11 profile; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82 evidence closure.",
         )
     )
     return checks
@@ -3052,7 +3117,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "Stage 42 machine-checks whether the Stage 19-62 PVW/MAT-SAB evidence",
         "chain plus Stage64A post-variant refresh, the Stage65A optional",
         "negative variant, Stage66A post-variant final recheck, Stage67",
-        "final-recheck Stage66A integration, and Stage68-81 control-plane",
+        "final-recheck Stage66A integration, and Stage68-82 control-plane",
         "closure extensions remain internally",
         "consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",

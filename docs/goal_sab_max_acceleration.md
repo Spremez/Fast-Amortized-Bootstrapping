@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-81`. This label tracks the
+Current control-plane closure label: `Stage 19-82`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -92,6 +92,7 @@ evidence.
 | Stage 79 r>4 fused high-stat confirmation | `spqlios_avx512` | 6 | high-stat review required, defaults unchanged | 10-run complete-SAB mean `1.367x`, CI `[1.341302,1.392098]`, min `1.314x`; 20-seed final-output noise zero failures; 3-run key ratio `1.122537`, RSS ratio mean `1.030715`; performance lands in r=4 reference region but below Stage36 r=4 mean `1.377x`, so no automatic promotion |
 | Stage 80 promotion policy audit | `spqlios_avx512` | 6 | keep experimental, not promoted | Stage80 reads Stage79, passes current-head scalar/PVW smoke and static default-path guards, and records `PASS_RGT4_FUSED_KEEP_EXPERIMENTAL_NOT_PROMOTED`; `MAT_TRGSW_AVX512_RGT4_FUSED` remains explicit only, scalar/default paths unchanged |
 | Stage 81 next-variant triage | audit synthesis | n/a | profile first, no code promotion | no immediate new hot-path code variant is justified; H3 remains security/key-format blocked, r>4/r=8 tiling is not selected, post-processing remains below threshold, and the next local step is post-H11 fused r=6 profile attribution |
+| Stage 82 post-H11 fused r=6 profile | `spqlios_avx512` | 6 | MAT body primary, no code promotion | profile-only run preserves CMUX/MAT EP `573440`, NCMUX `5080`, sub_a `39`, copyback `0`; instrumented speedup `1.405x` is attribution-only; MAT EP is `47.6916%` of full body time and remains the primary single target |
 
 Current conclusion:
 
@@ -293,7 +294,9 @@ do not promote it, and do not alter scalar/default paths. Stage81 is the next
 local variant-triage entry. Stage81 then records that no immediate new
 hot-path implementation is justified from the current evidence. The next local
 engineering action, before any new code variant, is profile-only post-H11
-fused r=6 attribution to identify the actual remaining bottleneck.
+fused r=6 attribution to identify the actual remaining bottleneck. Stage82
+runs that profile and records MAT body as the primary single target without
+promoting new code or changing default paths.
 ```
 
 ## Invariants
@@ -407,6 +410,7 @@ Stage 78: r>4 fused repeated gates. [passed as r=6 promotion candidate; high-sta
 Stage 79: r>4 fused high-stat confirmation. [completed; review required, not automatically promoted]
 Stage 80: promotion integration or rejection audit. [completed; H11 r=6 fused kept experimental, not promoted]
 Stage 81: next variant triage. [completed; profile-first, no code promotion]
-Stage 82: external claim unlock. [blocked on native perf, full text, and manual novelty review]
-Stage 83: final SAB optimization package. [waiting for Stage82 and future profile-backed variants]
+Stage 82: post-H11 fused r=6 profile attribution. [completed; MAT body primary, no code promotion]
+Stage 83: external claim unlock. [blocked on native perf, full text, and manual novelty review]
+Stage 84: final SAB optimization package. [waiting for Stage83 and future profile-backed variants]
 ```

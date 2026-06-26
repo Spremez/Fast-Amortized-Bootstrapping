@@ -32,8 +32,9 @@ evidence is supplied.
 | Stage 79 | r>4 fused high-stat confirmation | Confirm or reject the Stage78 r=6 promotion candidate with 10-run style complete-SAB evidence and expanded noise/resource gates. | r=6 fused must pass correctness/noise/resource and retain a practical advantage over the r=4 reference with enough statistics. | passed as review-required, not automatic promotion |
 | Stage 80 | promotion integration or rejection audit | Decide whether the Stage79 r=6 fused review-required result is kept as an explicit experimental path or rejected from the promoted line. | scalar SAB and existing r=2/r=4 path remain unchanged; current-head refresh and closure/verifier pass. | passed as keep experimental/not promoted |
 | Stage 81 | next variant triage | Select the next local optimization only after H11 is explicitly kept or rejected by Stage80. | new variants require hypothesis, theory check, staged correctness, full-SAB A/B, noise/resource, and promote/neutral/reject decision. | passed as profile-first/no code promotion |
-| Stage 82 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | externally blocked |
-| Stage 83 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
+| Stage 82 | post-H11 fused r=6 profile attribution | Run the profile-only attribution required by Stage81 before any new local implementation hypothesis. | profile correctness and exact schedule counts pass; component shares are recorded as attribution only. | passed as MAT-body-primary/no code promotion |
+| Stage 83 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | externally blocked |
+| Stage 84 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
 Execution policy:
 
@@ -94,3 +95,9 @@ Execution policy:
   selected, and post-processing remains below threshold. If local optimization
   continues before external unlocks, run profile-only post-H11 fused r=6
   attribution first and open a new hypothesis only from that profile.
+- After Stage82, treat the explicit H11 fused r=6 profile as attribution only:
+  schedule counts still match the target model, instrumented speedup is not a
+  final latency claim, and MAT EP remains the primary single component at
+  47.6916% of full body time. Future local code must start from a MAT body
+  theory/design check and then pass staged correctness, non-instrumented
+  full-SAB A/B, noise/resource, and claim-policy gates.

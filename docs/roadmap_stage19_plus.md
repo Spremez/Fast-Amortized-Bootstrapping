@@ -2612,7 +2612,46 @@ engineering action is profile-only post-H11 fused r=6 attribution before any
 new SAB/MAT optimization hypothesis is opened.
 ```
 
-## Planned Stage 82: External Claim Unlock
+## Stage 82: Post-H11 Fused R6 Profile Attribution
+
+Goal:
+
+```text
+Run the profile-only attribution required by Stage81 on the explicit H11 fused
+r=6 path before opening any new local SAB/MAT implementation hypothesis.
+```
+
+Tasks:
+
+- run `SAB_PVW_BODY_PROFILE` for `r=6` with
+  `MAT_TRGSW_AVX512_RGT4_FUSED=true`;
+- confirm target correctness and exact schedule counts;
+- record component shares for MAT EP, from_DFT, add/sub, NCMUX, sub_a, and
+  non-MAT body cost;
+- compare only as profile attribution, not as a final latency claim.
+
+Gate:
+
+- schedule counts must remain CMUX/MAT EP `573440`, NCMUX `5080`, sub_a `39`,
+  and active-buffer copyback `0`;
+- Stage80 policy must remain unchanged: H11 is explicit experimental only;
+- no new speedup or default-path claim can be made from the instrumented
+  profile timing.
+
+Status:
+
+```text
+Completed. Stage82 profiles the explicit H11 fused r=6 path and records
+PASS_STAGE82_POST_H11_PROFILE_MAT_BODY_PRIMARY. The profile run preserves
+target schedule counts and active-buffer copyback=0. Instrumented profile
+speedup is 1.405x, recorded only for attribution. MAT EP is 47.6916% of full
+body time, from_DFT is 21.7231%, add is 13.6870%, sub is 13.4137%, and
+non-MAT body time is 52.3084%. The next local work is a theory/design check
+for reducing dense MAT body work without key-format risk; no new code path is
+promoted.
+```
+
+## Planned Stage 83: External Claim Unlock
 
 Goal:
 
@@ -2639,11 +2678,11 @@ Status:
 
 ```text
 Blocked on external platform/full-text/manual-review inputs. This remains the
-next stronger-claim lane after Stage81; local code work should not resume
-without post-H11 fused r=6 profile attribution and a new hypothesis.
+next stronger-claim lane after Stage82; local code work should not resume
+without a new MAT body theory/design hypothesis and full gates.
 ```
 
-## Planned Stage 83: Final SAB Optimization Package
+## Planned Stage 84: Final SAB Optimization Package
 
 Goal:
 
@@ -2673,6 +2712,6 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage82 decisions and any future post-H11 profile-backed local
+Waiting for Stage83 decisions and any future Stage82 profile-backed local
 variant.
 ```

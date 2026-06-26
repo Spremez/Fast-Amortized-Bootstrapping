@@ -201,6 +201,7 @@
 - [x] Add and run Stage79 r>4 fused high-stat confirmation for r=6; complete-SAB/noise/resource pass, but performance is review-required rather than automatic promotion versus the r=4 reference.
 - [x] Add and run Stage80 explicit keep/reject integration audit; H11 r=6 fused MAT is kept behind an explicit experimental flag and is not promoted or made default.
 - [x] Add and run Stage81 next-variant triage; no immediate new hot-path code variant is selected, and local continuation must start with post-H11 fused r=6 profile attribution.
-- [ ] Run a post-H11 fused r=6 profile-attribution stage before opening any new local SAB/MAT implementation hypothesis.
+- [x] Add and run Stage82 post-H11 fused r=6 profile attribution; exact schedule counts pass and MAT body remains the primary single profile target.
+- [ ] Run a MAT body theory/design check before implementing any new local SAB/MAT hot-path variant after Stage82.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

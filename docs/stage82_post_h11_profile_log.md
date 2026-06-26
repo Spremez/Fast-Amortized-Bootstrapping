@@ -1,0 +1,34 @@
+# Stage82 Post-H11 Fused R6 Profile Log
+
+Date: 2026-06-26
+
+## Purpose
+
+Stage82 runs the profile-only attribution required by Stage81. It profiles
+the explicit H11 fused r=6 path and does not promote H11 or change scalar
+or default SAB behavior.
+
+## Gates
+
+| gate | status | metric | value | evidence | detail | next_action |
+|---|---|---|---|---|---|---|
+| stage82_inputs_available | PASS | stage81;stage80;stage79;stage75;body_summary | missing=[]; stage81=True; stage80=True; stage79=True | repro/stage81_next_variant_triage.csv; repro/stage80_promotion_policy_audit/summary.csv; repro/stage79_rgt4_fused_high_stat/summary.csv; repro/stage75_rgt4_profile_boundary/profile_metrics.csv; repro/stage82_post_h11_profile/body_profile_fused_r6/summary.csv | Stage82 has the Stage81 profile-first precondition and H11 policy evidence | Rerun Stage81/80/79 or Stage82 profile if any precondition is false. |
+| stage82_fused_r6_profile_counts | PASS | cmux;mat_ep;ncmux;sub_a;copyback | 573440;573440;5080;39;0 | repro/stage82_post_h11_profile/body_profile_fused_r6/summary.csv | r=6 fused body profile preserves target schedule counts and active-buffer copyback=0 | Do not optimize until schedule counts are understood and stable. |
+| stage82_fused_vs_generic_profile | PROFILE_ONLY_RECORDED | fused_profile_speedup;stage75_generic_profile_speedup;stage79_high_stat_mean | 1.405;1.304;1.367 | repro/stage82_post_h11_profile/profile_metrics.csv; repro/stage75_rgt4_profile_boundary/profile_metrics.csv; repro/stage79_rgt4_fused_high_stat/summary.csv | Instrumented profile timing is recorded for attribution only and is not a final latency claim. | Use non-instrumented repeated A/B before any speedup claim or promotion. |
+| stage82_component_attribution | MAT_BODY_REMAINS_PRIMARY | mat_ep_share;from_dft_share;add_share;sub_share;non_mat_share | 0.476916;0.217231;0.136870;0.134137;0.523084 | repro/stage82_post_h11_profile/profile_metrics.csv | Stage82 records the dominant post-H11 fused r=6 body-profile components. | Open a theory/design check for MAT multiply/layout only if it can reduce dense body work without key-format risk. |
+| stage82_decision | PASS_STAGE82_POST_H11_PROFILE_MAT_BODY_PRIMARY | profile_policy |  | repro/stage82_post_h11_profile/decision.csv | Stage82 completes the profile-first requirement without promoting new code | Open a theory/design check for MAT multiply/layout only if it can reduce dense body work without key-format risk. |
+
+## Profile Metrics
+
+| r | speedup | pvw_avg_us | full_us | mat_ep_us | mat_ep/full | from_DFT/full | add/full | sub/full | non-MAT/full |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 6 | 1.405 | 39023343.000 | 38589387 | 18403901 | 0.476916 | 0.217231 | 0.136870 | 0.134137 | 0.523084 |
+
+## Decision
+
+`PASS_STAGE82_POST_H11_PROFILE_MAT_BODY_PRIMARY`
+
+Profile timing is instrumentation evidence only. Any future
+implementation or speedup claim still requires a new hypothesis, theory
+check, staged correctness, non-instrumented full-SAB A/B, noise/resource
+gates, and claim-policy update.
