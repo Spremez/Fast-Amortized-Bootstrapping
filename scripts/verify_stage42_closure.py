@@ -83,6 +83,9 @@ STAGE77_RGT4_FUSED_MAT_KERNEL = (
 STAGE78_RGT4_FUSED_REPEATED_GATES = (
     ROOT / "repro" / "stage78_rgt4_fused_repeated_gates" / "summary.csv"
 )
+STAGE79_RGT4_FUSED_HIGH_STAT = (
+    ROOT / "repro" / "stage79_rgt4_fused_high_stat" / "summary.csv"
+)
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -209,6 +212,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage76 = {row.get("gate"): row for row in read_csv(STAGE76_RGT4_KERNEL_FEASIBILITY)}
     stage77 = {row.get("gate"): row for row in read_csv(STAGE77_RGT4_FUSED_MAT_KERNEL)}
     stage78 = {row.get("gate"): row for row in read_csv(STAGE78_RGT4_FUSED_REPEATED_GATES)}
+    stage79 = {row.get("gate"): row for row in read_csv(STAGE79_RGT4_FUSED_HIGH_STAT)}
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
     closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
@@ -911,6 +915,22 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         stage42.get("S42-STAGE78-RGT4-FUSED-REPEATED-GATES", {}).get("status")
         == "PASS"
     )
+    stage79_mismatches = []
+    expected_stage79 = {
+        "stage79_stage78_precondition": "PASS",
+        "stage79_r6_high_stat_full_sab": "PASS_R4_REGION_NOT_CONFIRMED",
+        "stage79_r6_final_noise": "PASS",
+        "stage79_r6_resource": "PASS",
+        "stage79_decision": "PASS_RGT4_FUSED_HIGH_STAT_RECORDED_REVIEW_REQUIRED",
+    }
+    for gate, expected in expected_stage79.items():
+        got = stage79.get(gate, {}).get("status", "MISSING")
+        if got != expected:
+            stage79_mismatches.append(f"{gate}:status={got}")
+    stage42_stage79_ok = (
+        stage42.get("S42-STAGE79-RGT4-FUSED-HIGH-STAT", {}).get("status")
+        == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -978,6 +998,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage76-rgt4-kernel-feasibility-001",
         "stage77-rgt4-fused-mat-kernel-001",
         "stage78-rgt4-fused-repeated-gates-001",
+        "stage79-rgt4-fused-high-stat-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -1243,6 +1264,16 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "repro/stage78_rgt4_fused_repeated_gates/resource/r8/pvw.time.log",
         "repro/stage78_rgt4_fused_repeated_gates/resource/r8/scalar.log",
         "repro/stage78_rgt4_fused_repeated_gates/resource/r8/scalar.time.log",
+        "docs/stage79_rgt4_fused_high_stat_log.md",
+        "experiments/stage79_rgt4_fused_high_stat_plan.md",
+        "scripts/run_stage79_rgt4_fused_high_stat.sh",
+        "scripts/build_stage79_rgt4_fused_high_stat.py",
+        "repro/stage79_rgt4_fused_high_stat/stage79_run.log",
+        "repro/stage79_rgt4_fused_high_stat/full_sab_high_stat.csv",
+        "repro/stage79_rgt4_fused_high_stat/noise_summary.csv",
+        "repro/stage79_rgt4_fused_high_stat/resource_samples.csv",
+        "repro/stage79_rgt4_fused_high_stat/resource_summary.csv",
+        "repro/stage79_rgt4_fused_high_stat/summary.csv",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -1649,6 +1680,18 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             ),
         },
         {
+            "check": "stage79_rgt4_fused_high_stat",
+            "status": "PASS" if not stage79_mismatches and stage42_stage79_ok else "FAIL",
+            "evidence": "repro/stage79_rgt4_fused_high_stat/summary.csv",
+            "detail": "Stage79 records H11 r=6 fused r>4 MAT high-stat evidence as review-required, not automatically promoted"
+            if not stage79_mismatches and stage42_stage79_ok
+            else "; ".join(stage79_mismatches)
+            or (
+                "S42-STAGE79-RGT4-FUSED-HIGH-STAT:"
+                f"{stage42.get('S42-STAGE79-RGT4-FUSED-HIGH-STAT', {}).get('status', 'MISSING')}!=PASS"
+            ),
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -1676,7 +1719,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -1684,7 +1727,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, and Stage78 r>4 fused repeated gates are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, and Stage79 r>4 fused high-stat review gate are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

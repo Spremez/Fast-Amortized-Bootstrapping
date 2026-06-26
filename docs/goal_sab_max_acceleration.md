@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-78`. This label tracks the
+Current control-plane closure label: `Stage 19-79`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -89,6 +89,7 @@ evidence.
 | Stage 76 r>4 kernel feasibility | `spqlios_avx512` | 6/8 | kernel boundary | identity-lane correctness passes, but DFT-output MAT is `0.984x`/`0.912x`; full-output smoke is only `1.168x`/`1.044x`; MAT shared-mask multiply share rises to `55.72%`/`61.20%`, so current r>4 kernel is not promoted |
 | Stage 77 r>4 fused MAT kernel | `spqlios_avx512` | 6/8 | positive smoke, not promoted | `MAT_TRGSW_AVX512_RGT4_FUSED` beats generic r>4 kernel: DFT-output `1.582x`/`1.431x`, full-output `1.510x`/`1.370x`; full-SAB one-run fused/generic is `1.120x`/`1.102x`, but repeated/noise/resource gates are still required |
 | Stage 78 r>4 fused repeated gates | `spqlios_avx512` | 6/8 | r=6 promotion candidate, defaults unchanged | r=6 complete-SAB repeated A/B has 3 passing samples with mean `1.408x`, min `1.361x`; r=8 stress is `1.350x`; r=6/r=8 three-seed final-output noise has zero failures; resource key ratios are `1.122537`/`1.181090` and RSS ratios `1.030750`/`1.071251` |
+| Stage 79 r>4 fused high-stat confirmation | `spqlios_avx512` | 6 | high-stat review required, defaults unchanged | 10-run complete-SAB mean `1.367x`, CI `[1.341302,1.392098]`, min `1.314x`; 20-seed final-output noise zero failures; 3-run key ratio `1.122537`, RSS ratio mean `1.030715`; performance lands in r=4 reference region but below Stage36 r=4 mean `1.377x`, so no automatic promotion |
 
 Current conclusion:
 
@@ -281,6 +282,12 @@ the Stage36 r=4 mean 1.377x, with zero final-output noise failures in the
 three-seed gate and recorded resource overhead. This still does not change
 defaults: Stage79 must run high-stat confirmation before any claim upgrade or
 path promotion.
+Stage79 runs that high-stat confirmation. The r=6 fused path remains correct
+and resource-bounded in the tested scope, but the 10-run mean speedup 1.367x
+does not exceed the Stage36 r=4 mean 1.377x. H11 is therefore recorded as
+review-required rather than automatically promoted. Stage80 must decide
+whether to keep it as an explicit experimental path or reject it from the
+promoted line.
 ```
 
 ## Invariants
@@ -391,9 +398,9 @@ Stage 75: r>4 profile boundary. [passed as profile-backed negative/not promoted;
 Stage 76: r>4 kernel feasibility. [passed as kernel-level negative/not promoted; current generic r>4 MAT is correct but DFT-output speedup is below scalar]
 Stage 77: r>4 fused MAT kernel. [positive smoke candidate; fused r=6/r=8 beats generic r>4 kernel and one-run full-SAB, repeated gates required]
 Stage 78: r>4 fused repeated gates. [passed as r=6 promotion candidate; high-stat confirmation required before defaults or claims change]
-Stage 79: r>4 fused high-stat confirmation. [next]
-Stage 80: promotion integration or rejection audit. [waiting]
-Stage 81: next variant triage. [waiting]
+Stage 79: r>4 fused high-stat confirmation. [completed; review required, not automatically promoted]
+Stage 80: promotion integration or rejection audit. [next]
+Stage 81: next variant triage. [waiting for Stage80]
 Stage 82: external claim unlock. [blocked on native perf, full text, and manual novelty review]
 Stage 83: final SAB optimization package. [waiting]
 ```

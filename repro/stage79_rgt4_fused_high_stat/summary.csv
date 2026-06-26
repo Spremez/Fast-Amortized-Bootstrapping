@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,detail
+stage79_stage78_precondition,PASS,stage78_decision,PASS_RGT4_FUSED_REPEATED_GATES_RECORDED_PROMOTION_CANDIDATE,repro/stage78_rgt4_fused_repeated_gates/summary.csv,Stage79 can only confirm a candidate if Stage78 recorded H11 r=6 as a promotion candidate.
+stage79_r6_high_stat_full_sab,PASS_R4_REGION_NOT_CONFIRMED,samples;mean;ci95_low;min;r4_mean;r4_ci95_low,10;1.367;1.341302;1.314;1.377;1.314893,repro/stage79_rgt4_fused_high_stat/full_sab_fused_r6_runs10/summary.csv,Main high-stat complete-SAB A/B gate for r=6 fused MAT.
+stage79_r6_final_noise,PASS,seeds;points;failures;avg_gap_log2,20;245760;0;-0.107800,repro/stage79_rgt4_fused_high_stat/final_noise/aggregate.csv,Expanded final-output noise gate for r=6 fused MAT.
+stage79_r6_resource,PASS,runs;key_ratio_mean;rss_ratio_mean;rss_ratio_max,3;1.122537;1.030715;1.030764,repro/stage79_rgt4_fused_high_stat/resource_summary.csv,Repeated resource gate for r=6 fused MAT against repeated scalar.
+stage79_decision,PASS_RGT4_FUSED_HIGH_STAT_RECORDED_REVIEW_REQUIRED,promotion_policy,,repro/stage79_rgt4_fused_high_stat/summary.csv,"r=6 fused MAT correctness/noise/resource evidence is usable, but the performance boundary is not strong enough for automatic promotion; Stage80 must keep or reject it explicitly."

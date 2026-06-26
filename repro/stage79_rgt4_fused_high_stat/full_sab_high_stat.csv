@@ -1,0 +1,2 @@
+r,samples,statuses,pvw_mean_us,scalar_repeated_mean_us,mean_speedup,min_speedup,max_speedup,stddev_speedup,ci95_low,ci95_high,stage36_r4_mean_reference,stage36_r4_ci95_low_reference,stage36_r4_ci95_high_reference,stage78_r6_mean_reference,stage78_r6_min_reference,status,source
+6,10,Pass,43228883.300,59042652.200,1.367,1.314,1.457,0.040977,1.341302,1.392098,1.377,1.314893,1.438107,1.408,1.361,PASS_R4_REGION_NOT_CONFIRMED,repro/stage79_rgt4_fused_high_stat/full_sab_fused_r6_runs10/summary.csv

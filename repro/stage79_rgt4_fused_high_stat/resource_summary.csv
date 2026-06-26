@@ -1,0 +1,2 @@
+r,runs,key_ratio_mean,key_ratio_min,key_ratio_max,keygen_ratio_mean,rss_ratio_mean,rss_ratio_min,rss_ratio_max,pvw_rss_mean_kb,scalar_rss_mean_kb,status,source_csvs
+6,3,1.122537,1.122537,1.122537,1.287628,1.030715,1.030677,1.030764,1191700.000,1156188.000,PASS,repro/stage79_rgt4_fused_high_stat/resource_run_0/summary.csv;repro/stage79_rgt4_fused_high_stat/resource_run_1/summary.csv;repro/stage79_rgt4_fused_high_stat/resource_run_2/summary.csv

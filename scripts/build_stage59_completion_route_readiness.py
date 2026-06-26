@@ -166,11 +166,12 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage75_rgt4_profile_boundary/decision.csv; "
                 "repro/stage76_rgt4_kernel_feasibility/summary.csv; "
                 "repro/stage77_rgt4_fused_mat_kernel/summary.csv; "
-                "repro/stage78_rgt4_fused_repeated_gates/summary.csv"
+                "repro/stage78_rgt4_fused_repeated_gates/summary.csv; "
+                "repro/stage79_rgt4_fused_high_stat/summary.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage78 makes H11 r=6 a promotion candidate: repeated full-SAB, final-output noise, and resource gates pass under the explicit fused r>4 flag. Next local work is Stage79 high-stat confirmation before any default/path promotion or claim upgrade.",
-            "May improve engineering evidence; no claim upgrade without high-stat confirmation and current-head refresh.",
+            "Stage79 records H11 r=6 high-stat evidence as review-required: complete-SAB/noise/resource pass, but the performance boundary does not strongly confirm automatic promotion over the r=4 reference. Next local work is Stage80 explicit keep/reject integration audit; no default/path promotion or claim upgrade yet.",
+            "May improve engineering evidence only if Stage80 explicitly keeps the path behind policy; no claim upgrade without a promoted decision and current-head refresh.",
         ),
         route_row(
             "S59-R7-FINAL-PAPER-PACKAGE",

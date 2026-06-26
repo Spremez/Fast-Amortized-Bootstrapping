@@ -1,0 +1,2 @@
+r,seeds,points,pvw_failures,scalar_failures,pair_failures,min_pvw_minus_scalar_log2,max_pvw_minus_scalar_log2,avg_pvw_minus_scalar_log2,status,source
+6,20,245760,0,0,0,-0.417,0.478,-0.107800,PASS,repro/stage79_rgt4_fused_high_stat/final_noise/aggregate.csv

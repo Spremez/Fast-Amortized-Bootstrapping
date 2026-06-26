@@ -141,6 +141,10 @@ def build_rows() -> List[Dict[str, str]]:
         stage42.get("S42-STAGE78-RGT4-FUSED-REPEATED-GATES", {}).get("status")
         == "PASS"
     )
+    stage79_closed = (
+        stage42.get("S42-STAGE79-RGT4-FUSED-HIGH-STAT", {}).get("status")
+        == "PASS"
+    )
     optional_notes = []
     if stage64a_closed:
         optional_notes.append("Stage64A post-variant refresh")
@@ -172,6 +176,8 @@ def build_rows() -> List[Dict[str, str]]:
         optional_notes.append("Stage77 r>4 fused MAT smoke")
     if stage78_closed:
         optional_notes.append("Stage78 r>4 fused repeated gates")
+    if stage79_closed:
+        optional_notes.append("Stage79 r>4 fused high-stat review")
     optional_stage_note = " plus " + " and ".join(optional_notes) if optional_notes else ""
     spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
     stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")

@@ -2490,7 +2490,7 @@ Resource accounting records key ratios 1.122537/1.181090 and RSS ratios
 confirmation before any default/path promotion or stronger claim change.
 ```
 
-## Planned Stage 79: R>4 Fused High-Stat Confirmation
+## Stage 79: R>4 Fused High-Stat Confirmation
 
 Goal:
 
@@ -2525,7 +2525,15 @@ Gate:
 Status:
 
 ```text
-Not started. This is the current next local stage after Stage78.
+Completed as high-stat evidence recorded, review required. r=6 fused complete
+SAB A/B has 10 passing process samples with mean speedup 1.367x, min 1.314x,
+max 1.457x, stddev 0.040977, and CI95 [1.341302, 1.392098]. This is above
+the Stage36 r=4 CI95 low 1.314893 but below the Stage36 r=4 mean 1.377x, so
+it does not strongly confirm automatic promotion over the r=4 reference.
+r=6 final-output noise passes 20 seeds with zero PVW/scalar/pair failures and
+avg PVW-minus-scalar log2 gap -0.107800. Resource accounting passes 3 runs
+with key ratio 1.122537 and RSS ratio mean/max 1.030715/1.030764. The Stage79
+decision is PASS_RGT4_FUSED_HIGH_STAT_RECORDED_REVIEW_REQUIRED.
 ```
 
 ## Planned Stage 80: Promotion Integration Or Rejection Audit
@@ -2559,7 +2567,10 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage79.
+Next. Stage79 did not justify automatic default/path promotion. Stage80 must
+make an explicit keep/reject policy decision for H11 r=6 fused MAT, likely
+keeping it experimental unless a current-head refresh plus policy review
+justifies a scoped non-default path.
 ```
 
 ## Planned Stage 81: Next Variant Triage
@@ -2590,7 +2601,7 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage79/Stage80.
+Waiting for Stage80.
 ```
 
 ## Planned Stage 82: External Claim Unlock
@@ -2652,5 +2663,5 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage79-82 decisions.
+Waiting for Stage80-82 decisions.
 ```

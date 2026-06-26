@@ -324,8 +324,8 @@ hypotheses:
       output bodies before eviction. The arithmetic remains dense
       O((1+r)^2 * l * N), so the hypothesis is about constant-factor and
       layout/register effects, not asymptotic improvement.
-    status: stage78_promotion_candidate_high_stat_required
-    evidence: docs/stage76_rgt4_kernel_feasibility_log.md; docs/stage77_rgt4_fused_mat_kernel_log.md; docs/stage78_rgt4_fused_repeated_gates_log.md; theory_checks/h11_rgt4_fused_mat_kernel.md; algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md
+    status: stage79_high_stat_review_required_not_automatically_promoted
+    evidence: docs/stage76_rgt4_kernel_feasibility_log.md; docs/stage77_rgt4_fused_mat_kernel_log.md; docs/stage78_rgt4_fused_repeated_gates_log.md; docs/stage79_rgt4_fused_high_stat_log.md; theory_checks/h11_rgt4_fused_mat_kernel.md; algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md
     current_decision: >
       Stage76 added an explicit r>4 kernel smoke harness and parsed the raw
       log into kernel and phase-breakdown artifacts. The existing generic r>4
@@ -355,7 +355,18 @@ hypotheses:
       records key ratios 1.122537/1.181090 and RSS ratios 1.030750/1.071251
       for r=6/r=8. H11 is now a promotion candidate, but not a default path:
       Stage79 must run high-stat complete-SAB and expanded noise/resource
-      confirmation before any claim upgrade or default integration.
+      confirmation before any claim upgrade or default integration. Stage79
+      ran that confirmation for r=6. Complete-SAB A/B has 10 passing process
+      samples with mean speedup 1.367x, min 1.314x, max 1.457x, stddev
+      0.040977, and CI95 [1.341302,1.392098]. This is still in the r=4
+      reference region and has CI95 low above the Stage36 r=4 CI95 low
+      1.314893, but the mean is below the Stage36 r=4 mean 1.377x. Final-output
+      noise passes 20 seeds with zero PVW/scalar/pair failures and avg
+      PVW-minus-scalar log2 gap -0.107800. Resource accounting passes three
+      runs with key ratio 1.122537 and RSS ratio mean/max
+      1.030715/1.030764. Therefore H11 is not automatically promoted. Stage80
+      must explicitly keep it behind a non-default experimental policy or
+      reject it from the promoted line before new variant triage.
     failure_criteria:
       - r>4 fused kernel fails identity-lane or SAB staged equivalence
       - DFT-output microbench does not beat the current generic MAT path and

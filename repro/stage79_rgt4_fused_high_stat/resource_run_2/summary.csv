@@ -1,0 +1,3 @@
+backend,r,mode,keygen_us,keygen_lane_avg_us,estimated_key_bytes,estimated_key_bytes_ratio_vs_scalar_repeated,internal_vmhwm_kb,time_max_rss_kb,source_log,time_log,notes
+spqlios_avx512,6,pvw,4184032,697338.667,1032871032,1.122537,1191628,1191740,repro/stage79_rgt4_fused_high_stat/resource_run_2/r6/pvw.log,repro/stage79_rgt4_fused_high_stat/resource_run_2/r6/pvw.time.log,public bootstrap key estimate excludes secret keys and tmp scratch
+spqlios_avx512,6,scalar,3419531,569921.833,920121648,1.000000,1155820,1156172,repro/stage79_rgt4_fused_high_stat/resource_run_2/r6/scalar.log,repro/stage79_rgt4_fused_high_stat/resource_run_2/r6/scalar.time.log,public bootstrap key estimate excludes secret keys and tmp scratch
