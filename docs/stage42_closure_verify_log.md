@@ -11,7 +11,7 @@ regenerating the Stage 42 audit or manifest.
 
 | check | status | evidence | detail |
 |---|---|---|---|
-| verification_input_commit | f1944f3 | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
+| verification_input_commit | 0d70284 | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
 | worktree_clean_before_outputs | PASS | git status --short --untracked-files=all | tracked and untracked worktree was clean before verifier outputs. |
 | final_audit_A9 | PASS | repro/final_goal_completion_audit.csv | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED |
 | stage41_readiness | PASS | repro/stage41_external_unlock_packet.csv | all readiness rows remain waiting for external evidence |
@@ -37,12 +37,13 @@ regenerating the Stage 42 audit or manifest.
 | stage60_final_recheck_stage59 | PASS | repro/stage60_final_recheck_stage59/summary.csv | Stage60 final recheck refreshes Stage59 before Stage42 closure |
 | stage61_native_perf_unlock_probe | PASS | repro/stage61_native_perf_unlock_probe/summary.csv | Stage61 native perf unlock probe is recorded; current platform remains blocked |
 | stage62_fulltext_unlock_probe | PASS | repro/stage62_fulltext_unlock_probe/unlock_summary.csv | Stage62 full-text unlock probe is recorded; current environment still needs a full-text artifact |
+| stage64a_post_variant_refresh | PASS | repro/stage64_post_variant_refresh/summary.csv | Stage64A post-variant refresh passes for current smoke, repeated full-SAB, noise, and Stage50 |
 | stage65a_r4_unrolled_variant | PASS | repro/stage65_r4_unrolled_avx512/summary.csv | Stage65A r4 row-unrolled AVX512 variant is recorded as negative/not promoted |
 | stage44_recheck_integration | PASS | repro/final_goal_recheck_stage44_reprobe/summary.csv | final recheck can refresh Stage44, final audit, and Stage42 closure |
 | default_recheck_closure | PASS | repro/final_goal_recheck/summary.csv | default final recheck includes stage42_evidence_closure=PASS |
 | closure_only_recheck | PASS | repro/final_goal_recheck_stage42_closure/summary.csv | closure-only final recheck includes stage42_evidence_closure=PASS |
-| stage42_run_log_rows | PASS | repro/run_log.csv | all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage65A closure run rows are present |
-| artifact_manifest_mentions | PASS | repro/artifact_manifest.md | Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, and Stage65A r4 unrolled variant are registered |
+| stage42_run_log_rows | PASS | repro/run_log.csv | all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A closure run rows are present |
+| artifact_manifest_mentions | PASS | repro/artifact_manifest.md | Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, and Stage65A r4 unrolled variant are registered |
 | stage42_verify_decision | PASS_STAGE42_VERIFY_STRONGER_CLAIMS_BLOCKED | repro/stage42_closure_verify/summary.csv | Stage42 closure package is internally consistent; stronger claims remain blocked. |
 
 ## Decision
