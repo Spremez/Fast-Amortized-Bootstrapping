@@ -59,8 +59,8 @@
 - [x] Add Stage 12 explicit v2 staged kernel and microbench log.
 - [x] Add Stage 12 explicit v2 target full-output correctness log.
 - [x] Add Stage 12 explicit v2 one-run full SAB smokes for `r=2` and `r=4`.
-- [ ] Add Stage 12 v2 three-process full SAB sweep if the variant remains worth promoting.
-- [ ] Add Stage 12 v2 noise/seed gate if promoted beyond kernel experiment.
+- [x] Close Stage 12 v2 three-process sweep as condition-not-active under the current promoted path.
+- [x] Close Stage 12 v2 noise/seed gate as condition-not-active because v2 was not promoted beyond kernel/smoke evidence.
 - [x] Add Stage 13 PVW post-processing goal, algorithm card, and validation plan.
 - [x] Preserve Stage 13 failed direct extraction staged gate as negative evidence.
 - [x] Implement fixed direct lane extraction in full-output `sab_pvw_bootstrap_binary`.
@@ -69,8 +69,8 @@
 - [x] Add Stage 13 fixed direct extraction target full-output correctness log.
 - [x] Add Stage 13 `r=2`/`r=4` post-processing profile smokes.
 - [x] Add Stage 13 `r=2`/`r=4` unprofiled one-run full SAB smokes.
-- [ ] Add Stage 13 direct extraction three-process full SAB sweep only if promoted beyond cleanup.
-- [ ] Implement PVW-aware direct-to-packing KS only if the measured tail justifies the complexity.
+- [x] Close Stage 13 direct extraction three-process sweep as condition-not-active beyond cleanup.
+- [x] Defer PVW-aware direct-to-packing KS because Stage 24 tail remains below the implementation threshold.
 - [x] Add Stage 14 algorithm-to-paper goal and MAT AVX512 completeness boundary.
 - [x] Add `SAB_PVW_BODY_PROFILE` profile switch for PVW no-extract body.
 - [x] Add Stage 14 `r=2`/`r=4` target body profile smokes and parseable CSV.
@@ -111,7 +111,7 @@
 - [x] Run Stage 21 target correctness and profile count gates for `r=2` and `r=4`.
 - [x] Run Stage 21 sequential unprofiled full SAB smokes and record the candidate as neutral versus Stage 20.
 - [x] Complete Stage 22 MAT AVX512 promotion audit with generic-vs-specialized microbench, objdump attribution, and r=4 full SAB sweep.
-- [ ] Re-run Stage 22 hardware perf-counter attribution on native Linux if a theoretical load/store claim is needed.
+- [ ] Re-run Stage 22 hardware perf-counter attribution on native Linux if a theoretical load/store claim is needed; tracked by conditional backlog audit CB5.
 - [x] Implement Stage 23 CMUX/NCMUX schedule-fused epilogue candidate behind `SAB_PVW_SCHEDULE_FUSED_CMUX`.
 - [x] Run Stage 23 target correctness and default target regression gates.
 - [x] Run Stage 23 schedule count profile for `r=2` and `r=4`.
@@ -175,5 +175,5 @@
 - [x] Integrate Stage 44 external unlock re-probe into the final recheck runner.
 - [x] Execute Stage 36 added-parameter 10-run/20-seed campaign for added binary r=2/r=4 parameters.
 - [x] Execute Stage 36 target-noise 50-seed campaign for target binary r=2/r=4.
-- [ ] Review full related-work papers before promoting any novelty claim.
-- [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations.
+- [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
+- [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

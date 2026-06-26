@@ -22,12 +22,12 @@ guardrail audit, not a new SAB optimization or benchmark.
 | S42-STAGE41-READINESS | PASS | external_unlock | repro/stage41_external_unlock_packet.csv | all external-unlock rows remain waiting for external evidence |
 | S42-STAGE43-CURRENT-SMOKE | PASS | current_smoke | repro/stage43_current_smoke_after_stage42/summary.csv | scalar binary, PVW target, and scalar ternary smoke rows pass |
 | S42-STAGE44-EXTERNAL-REPROBE | PASS | external_unlock | repro/stage44_external_unlock_reprobe/summary.csv | external full-text/native-perf unlocks remain unavailable and recorded |
-| S42-STAGE40-FREEZE-HASHES | PASS | reproducibility | repro/stage40_final_freeze_manifest.csv | 17 freeze artifacts match recorded SHA-256 hashes |
-| S42-CLOSURE-MANIFEST-HASHES | PASS | reproducibility | repro/stage42_evidence_closure_manifest.csv | 34 post-freeze control artifacts match recorded SHA-256 hashes |
+| S42-STAGE40-FREEZE-HASHES | PASS | reproducibility | repro/stage40_final_freeze_manifest.csv | 19 freeze artifacts match recorded SHA-256 hashes |
+| S42-CLOSURE-MANIFEST-HASHES | PASS | reproducibility | repro/stage42_evidence_closure_manifest.csv | 37 post-freeze control artifacts match recorded SHA-256 hashes |
 | S42-POSTFREEZE-VERIFY | PASS | reproducibility | repro/stage40_postfreeze_verify/summary.csv | post-freeze verifier preserves hashes and external blockers |
 | S42-RUN-LOG-COVERAGE | PASS | reproducibility | repro/run_log.csv | stages 19-44 registered; stage41 status=WAIT_EXTERNAL_EVIDENCE |
 | S42-REQUIRED-FILES | PASS | reproducibility | docs/goal_sab_max_acceleration.md; docs/roadmap_stage19_plus.md; docs/loop_engineering.md; docs/stage41_external_unlock_packet.md; experiments/stage41_external_unlock_plan.md; scripts/build_stage41_external_unlock_packet.py; scripts/build_stage42_evidence_closure_audit.py; repro/stage41_external_unlock_packet.csv; docs/stage43_postclosure_current_smoke_log.md; experiments/stage43_postclosure_current_smoke_plan.md; repro/stage43_current_smoke_after_stage42/summary.csv; docs/stage44_external_unlock_reprobe_log.md; experiments/stage44_external_unlock_reprobe_plan.md; scripts/build_stage44_external_unlock_reprobe.py; scripts/run_stage44_external_unlock_reprobe.sh; repro/stage44_external_unlock_reprobe/summary.csv; repro/final_goal_recheck_stage42_closure/summary.csv; repro/stage42_evidence_closure_manifest.csv | all required Stage 41-44 files exist |
-| S42-ARTIFACT-MANIFEST | PASS | reproducibility | repro/artifact_manifest.md | Stage 23 flag plus Stage 41, Stage 43, and Stage 44 artifacts are registered |
+| S42-ARTIFACT-MANIFEST | PASS | reproducibility | repro/artifact_manifest.md | Stage 23 flag plus conditional backlog and Stage 41, Stage 43, and Stage 44 artifacts are registered |
 | S42-CLAIM-GUARDRAILS | PASS | claim_scope | docs/goal_sab_max_acceleration.md; docs/loop_engineering.md; docs/roadmap_stage19_plus.md | scoped-ready and external-waiting guardrails are visible |
 
 ## Decision

@@ -62,6 +62,7 @@ Code artifacts:
 - `scripts/register_external_evidence.py`
 - `scripts/run_stage33_current_smoke.sh`
 - `scripts/build_stage35_completion_blockers.py`
+- `scripts/build_conditional_backlog_audit.py`
 - `scripts/build_stage36_high_stat_plan.py`
 - `scripts/run_stage36_high_stat_expansion.sh`
 - `scripts/build_stage36_target_perf_summary.py`
@@ -139,6 +140,7 @@ Documentation artifacts:
 - `docs/stage33_current_smoke_log.md`
 - `docs/stage34_current_smoke_recheck_log.md`
 - `docs/stage35_completion_blocker_matrix.md`
+- `docs/conditional_backlog_audit.md`
 - `docs/stage36_high_stat_expansion_log.md`
 - `docs/stage37_native_perf_counter_log.md`
 - `docs/stage38_fulltext_review_log.md`
@@ -622,6 +624,7 @@ Repro artifacts:
 - `repro/final_goal_recheck_stage44_reprobe/stage42_evidence_closure.log`
 - `repro/external_evidence_intake/summary.csv`
 - `repro/stage35_completion_blockers.csv`
+- `repro/conditional_backlog_audit.csv`
 - `repro/stage36_high_stat_plan.csv`
 - `repro/stage36_target_perf_summary.csv`
 - `repro/stage36_target_perf_samples.csv`

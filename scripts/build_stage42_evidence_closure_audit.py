@@ -85,6 +85,7 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "docs/goal_sab_max_acceleration.md",
     "docs/roadmap_stage19_plus.md",
     "docs/final_goal_recheck_log.md",
+    "docs/conditional_backlog_audit.md",
     "docs/stage41_external_unlock_packet.md",
     "docs/stage43_postclosure_current_smoke_log.md",
     "docs/stage44_external_unlock_reprobe_log.md",
@@ -95,6 +96,7 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "experiments/stage43_postclosure_current_smoke_plan.md",
     "experiments/stage44_external_unlock_reprobe_plan.md",
     "scripts/build_stage41_external_unlock_packet.py",
+    "scripts/build_conditional_backlog_audit.py",
     "scripts/build_stage42_evidence_closure_audit.py",
     "scripts/verify_stage42_closure.py",
     "scripts/build_stage44_external_unlock_reprobe.py",
@@ -103,6 +105,7 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/artifact_manifest.md",
     "repro/reproduction_checklist.md",
     "repro/run_log.csv",
+    "repro/conditional_backlog_audit.csv",
     "repro/stage41_external_unlock_packet.csv",
     "repro/stage43_current_smoke_after_stage42/summary.csv",
     "repro/stage43_current_smoke_after_stage42/scalar_binary_SET_2_3_2048/build.log",
@@ -455,6 +458,9 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
         "repro/final_goal_recheck/stage42_evidence_closure.log",
         "repro/stage42_evidence_closure_manifest.csv",
+        "scripts/build_conditional_backlog_audit.py",
+        "docs/conditional_backlog_audit.md",
+        "repro/conditional_backlog_audit.csv",
         "docs/stage44_external_unlock_reprobe_log.md",
         "experiments/stage44_external_unlock_reprobe_plan.md",
         "scripts/build_stage44_external_unlock_reprobe.py",
@@ -468,7 +474,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus Stage 41, Stage 43, and Stage 44 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, and Stage 44 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
