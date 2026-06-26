@@ -11,7 +11,7 @@ a goal-complete declaration.
 
 ## Frontier
 
-- current closure range: `Stage19-60`
+- current closure range: `Stage19-61`
 
 | frontier_id | lane | status | completion_effect | next_action |
 | --- | --- | --- | --- | --- |

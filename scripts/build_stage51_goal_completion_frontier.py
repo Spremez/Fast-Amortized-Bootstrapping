@@ -87,11 +87,17 @@ def build_rows() -> List[Dict[str, str]]:
 
     stage50_ok = bool(stage50_rows) and all(row.get("status") == "PASS" for row in stage50_rows)
     stage42_overall = stage42.get("S42-OVERALL", {}).get("status", "MISSING")
+    current_stage_range = latest_stage_label()
+    spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
+    stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")
+    stage42_matches_current_range = (
+        current_stage_range in stage42_overall_detail
+        or spaced_stage_range in stage42_overall_detail
+    )
     stage42_rebuildable = (
         stage42.get("S42-ROADMAP-STAGES", {}).get("status") == "PASS"
         and stage42.get("S42-CLAIM-GUARDRAILS", {}).get("status") == "PASS"
     )
-    current_stage_range = latest_stage_label()
 
     rows = [
         frontier_row(
@@ -157,6 +163,7 @@ def build_rows() -> List[Dict[str, str]]:
             "Stage19+ evidence chain is machine-checked and registered.",
             "LOCAL_READY"
             if stage42_overall == "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED"
+            and stage42_matches_current_range
             else "LOCAL_REFRESH_PENDING"
             if stage42_rebuildable
             else "MISSING_LOCAL_EVIDENCE",

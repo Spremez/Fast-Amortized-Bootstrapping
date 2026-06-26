@@ -869,3 +869,11 @@ Repro artifacts:
 - `repro/stage60_final_recheck_stage59_failed_attempt3/stage42_evidence_closure.log`
 - `repro/stage60_final_recheck_stage59_failed_attempt4/summary.csv`
 - `repro/stage60_final_recheck_stage59_failed_attempt4/stage42_evidence_closure.log`
+
+## Stage 61 Native Perf Unlock Probe
+
+- `docs/stage61_native_perf_unlock_probe_log.md`
+- `scripts/run_stage28_native_perf_counter_gate.sh`
+- `repro/stage61_native_perf_unlock_probe/summary.csv`
+- `repro/stage61_native_perf_unlock_probe/environment.log`
+- `repro/stage61_native_perf_unlock_probe/perf_smoke.log`

@@ -1823,3 +1823,38 @@ Stage 60 passed. The unified final recheck can now refresh Stage59 route
 readiness before Stage42 closure and preserves
 `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`.
 ```
+
+## Stage 61: Native Perf Unlock Probe
+
+Goal:
+
+```text
+Rerun the native perf-counter unlock command from Stage52 and determine whether
+the current platform can unlock MAT-AVX512 hardware-counter attribution.
+```
+
+Tasks:
+
+- run `scripts/run_stage28_native_perf_counter_gate.sh` with
+  `STAGE28_RUN_BENCH=1` into `repro/stage61_native_perf_unlock_probe`;
+- record platform metadata, perf command availability, and the
+  `hardware_counter_gate` decision;
+- add Stage61 to Stage42 closure/verifier checks;
+- preserve CB5/A8 as blocked unless `hardware_counter_gate=PASS` and
+  `bench_correctness=PASS`.
+
+Gate:
+
+- if `perf` is missing or counters are unusable, Stage61 must be recorded as a
+  blocked unlock probe and must not upgrade MAT-AVX512 theory claims;
+- if `hardware_counter_gate=PASS`, the raw counter logs and correctness row
+  must be reviewed before any load/store/FMA attribution wording is promoted;
+- scalar SAB and `sab_pvw_*` code paths are not modified by this stage.
+
+Status:
+
+```text
+Stage 61 ran on the current WSL2 platform. `perf` is missing, so
+`hardware_counter_gate=BLOCKED`; MAT-AVX512 theoretical load/store/FMA
+attribution remains externally blocked.
+```
