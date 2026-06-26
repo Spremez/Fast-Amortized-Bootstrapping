@@ -113,6 +113,13 @@ the same boundary: ePrint, ACM, and ResearchGate full-text routes are blocked;
 Semantic Scholar and DBLP provide metadata only. The resulting decision is
 `BLOCK_THEOREM_LEVEL_CITATIONS`.
 
+The reproducible related-work access probe in
+`docs/stage27_related_work_access_probe_log.md` records current source access
+for the novelty boundary. It keeps the decision at
+`SCOPED_RELATED_WORK_REFRESHED__NOVELTY_STILL_BLOCKED`: shared-mask prior-art
+metadata is visible, adjacent incomplete-NTT and amortized-bootstrapping
+lineage PDFs are accessible, and 2025/686 full text remains blocked.
+
 ## Final Full-SAB Performance Update
 
 The first consolidated final full-SAB performance rerun is recorded in

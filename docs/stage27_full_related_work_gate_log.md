@@ -55,6 +55,24 @@ This confirms that metadata is enough for paper identity and code-lineage
 context, but not enough for theorem, algorithm, remark, table, figure, or
 experiment-number citations.
 
+## Related-Work Access Probe Update
+
+The reproducible related-work source-access probe is recorded in
+`docs/stage27_related_work_access_probe_log.md` and
+`repro/stage27_related_work_access_probe/`.
+
+Current machine-readable decision:
+
+```text
+SCOPED_RELATED_WORK_REFRESHED__NOVELTY_STILL_BLOCKED
+```
+
+The probe records visible shared-mask prior-art metadata, accessible adjacent
+incomplete-NTT and amortized-bootstrapping lineage PDFs, and the continued
+block on 2025/686 full text. It is source-access evidence only; manual
+claim-to-source review is still required before any novelty wording is
+promoted.
+
 ## Claim Boundary After This Gate
 
 Allowed:

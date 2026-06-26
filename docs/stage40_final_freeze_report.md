@@ -12,7 +12,7 @@ The current package is a scoped engineering freeze for the tested binary PVW/MAT
 
 | item | status | detail |
 |---|---|---|
-| freeze_input_commit | c9e22be | Commit state observed before writing Stage 40 artifacts. The artifact commit is the git commit that contains these generated files. |
+| freeze_input_commit | 43594d0 | Commit state observed before writing Stage 40 artifacts. The artifact commit is the git commit that contains these generated files. |
 | final_audit_A9 | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED | complete scoped engineering acceleration evidence exists; novelty/theory/all-parameter claims are not complete |
 | stage39_overall | NO_NEW_VARIANT_PROMOTED_CURRENTLY | The promoted active-buffer MAT-SAB path already has scoped engineering evidence; remaining stronger claims are external or optional rather than an immediate new-code requirement. |
 | external_blockers | PRESERVED | A8=BLOCKED_EXTERNAL; A8b=MISSING_OPTIONAL_EXTERNAL_EVIDENCE |
@@ -27,14 +27,14 @@ The current package is a scoped engineering freeze for the tested binary PVW/MAT
 | docs/stage27_final_engineering_report.md | yes | 7074 | `8d52ccb34bc961e94483061f50571292abc3549604483628503aca69e57b4afe` |
 | docs/final_goal_completion_audit.md | yes | 4927 | `c83bf94d275246d61c8fc6abef3f7e24690985f1c04dd6f6bd8c7ea97705cb3f` |
 | docs/stage35_completion_blocker_matrix.md | yes | 4172 | `b4a6b4955d668533954d11dde090137d96cd50ab96dcf10754ac9f6a0d877363` |
-| docs/conditional_backlog_audit.md | yes | 2468 | `e2b74687c34b6241e55b4c3357a0e70d6ec4ff714e3454d0a0eb1e5b352f702b` |
+| docs/conditional_backlog_audit.md | yes | 2568 | `ded6dffe767c47abe702668ff7e45688f4d799317782e383eec8c24e7bb0eac8` |
 | docs/stage36_high_stat_expansion_log.md | yes | 8067 | `bd2790181a95e4c7f27109ad861743e767fc57bf2b956cf99e1d395ee86f0c36` |
 | docs/stage37_native_perf_counter_log.md | yes | 2167 | `43653a3bd9c8ae0a6bdd600c8bf84687d930cdbf3fcf683e591d4e6a67575953` |
 | docs/stage38_fulltext_review_log.md | yes | 2168 | `acc7566099cba6aeba88be4e8eea66c38861b1a438ebee44c107251aed15520e` |
 | docs/stage39_variant_triage_log.md | yes | 2040 | `06937306b6434807c294d9ea496a76a721c8af0cf944e80ca78727f63a82dedf` |
 | repro/final_goal_completion_audit.csv | yes | 4865 | `fe195eba5d6b22d4a17e1c6e2203429921c63f52375855861a161ee1a7282564` |
 | repro/stage35_completion_blockers.csv | yes | 5187 | `d31c053a72035216355bc8d6510cb942246487e8a053a2624e580961f03bf980` |
-| repro/conditional_backlog_audit.csv | yes | 3312 | `45d49b6aa7c85f938fc12d8bdd90debda95e8f13179fc22925b3dce0593fc249` |
+| repro/conditional_backlog_audit.csv | yes | 3502 | `b9bf6e05b2051f8cd46f33b00ba4afb32b7d12d1de9b83f8cbd350cdf5868aba` |
 | repro/stage36_target_perf_summary.csv | yes | 521 | `f472544dbb5601b8d9edd6527931408b85bc6c1e2369541c21c1c596c58425de` |
 | repro/stage36_target_noise_seeds50/summary.csv | yes | 11642 | `751732b24e7323f05e81262f6cf17aba00aff6810234444dd4f1829c5f087db4` |
 | repro/stage36_target_noise_seeds50/aggregate.csv | yes | 235 | `9910c7e7a25c1e7256f34215a026fcd9603c35f96c871a6d215816e05620e0e5` |

@@ -54,6 +54,7 @@ Code artifacts:
 - `scripts/run_stage25_resource_matrix.sh`
 - `scripts/run_stage26_parameter_target_smoke.sh`
 - `scripts/run_stage26_parameter_perf_noise.sh`
+- `scripts/run_stage27_related_work_access_probe.py`
 - `scripts/run_stage27_citation_access_probe.sh`
 - `scripts/build_stage27_final_package.py`
 - `scripts/run_stage28_native_perf_counter_gate.sh`
@@ -128,6 +129,7 @@ Documentation artifacts:
 - `docs/stage27_full_related_work_gate_log.md`
 - `docs/stage27_final_full_sab_performance_log.md`
 - `docs/stage27_related_work_refresh_log.md`
+- `docs/stage27_related_work_access_probe_log.md`
 - `docs/stage27_citation_gate_log.md`
 - `docs/stage27_final_evidence_package.md`
 - `docs/stage27_completion_readiness_audit.md`
@@ -581,6 +583,8 @@ Repro artifacts:
 - `repro/stage27_literature_matrix.csv`
 - `repro/stage27_source_access_matrix.csv`
 - `repro/stage27_related_work_access_refresh.csv`
+- `repro/stage27_related_work_access_probe/access_probe.csv`
+- `repro/stage27_related_work_access_probe/summary.csv`
 - `repro/stage27_claim_support_matrix.csv`
 - `repro/stage27_citation_access_probe/access_probe.csv`
 - `repro/stage27_citation_access_probe/summary.csv`

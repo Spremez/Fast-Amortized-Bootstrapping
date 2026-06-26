@@ -82,10 +82,12 @@ ROWS: List[Dict[str, str]] = [
         "item_id": "CB6",
         "checklist_item": "Review full related-work papers before promoting any novelty claim.",
         "status": "BLOCKED_EXTERNAL_REVIEW",
-        "evidence": "docs/stage27_novelty_paper_package_log.md; docs/stage38_fulltext_review_log.md; repro/final_goal_completion_audit.csv",
+        "evidence": "docs/stage27_novelty_paper_package_log.md; docs/stage27_related_work_access_probe_log.md; repro/stage27_related_work_access_probe/summary.csv; docs/stage38_fulltext_review_log.md; repro/final_goal_completion_audit.csv",
         "rationale": (
-            "The scoped engineering claim is ready, but novelty wording still "
-            "requires full related-work and base-paper review."
+            "The scoped engineering claim is ready, and the related-work access "
+            "probe records visible prior-art and adjacent-source availability. "
+            "Novelty wording still requires manual full-text claim-to-source "
+            "review."
         ),
         "next_gate": "Supply full texts and run the manual claim-to-source review before any novelty upgrade.",
     },

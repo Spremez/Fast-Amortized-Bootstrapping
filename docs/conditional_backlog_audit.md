@@ -19,7 +19,7 @@ hardware-counter claims.
 | CB3 | CONDITION_NOT_ACTIVE | docs/stage13_postproc_profile_log.md; repro/stage13_postproc_summary.csv; docs/stage24_postproc_tail_log.md; repro/stage39_variant_triage.csv | Reopen only if a new body optimization raises post-processing tail above the Stage 24 threshold. |
 | CB4 | CONDITION_NOT_ACTIVE | docs/stage24_postproc_tail_log.md; repro/stage24_postproc_tail_avx512_runs1/summary.csv; repro/stage39_variant_triage.csv | Do not implement until a refreshed profile crosses the tail threshold. |
 | CB5 | BLOCKED_EXTERNAL | docs/stage37_native_perf_counter_log.md; repro/stage37_native_perf_counter_audit/summary.csv; repro/final_goal_completion_audit.csv | Run Stage 37/Stage 28 on native Linux or perf-enabled WSL and register the resulting summary. |
-| CB6 | BLOCKED_EXTERNAL_REVIEW | docs/stage27_novelty_paper_package_log.md; docs/stage38_fulltext_review_log.md; repro/final_goal_completion_audit.csv | Supply full texts and run the manual claim-to-source review before any novelty upgrade. |
+| CB6 | BLOCKED_EXTERNAL_REVIEW | docs/stage27_novelty_paper_package_log.md; docs/stage27_related_work_access_probe_log.md; repro/stage27_related_work_access_probe/summary.csv; docs/stage38_fulltext_review_log.md; repro/final_goal_completion_audit.csv | Supply full texts and run the manual claim-to-source review before any novelty upgrade. |
 | CB7 | BLOCKED_EXTERNAL_FULLTEXT | docs/stage38_fulltext_review_log.md; repro/stage38_fulltext_review_gate/summary.csv; repro/final_goal_completion_audit.csv | Set FAB686_FULLTEXT_PATH to the paper PDF/text artifact and rerun Stage 38. |
 
 ## Decision
