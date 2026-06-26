@@ -1051,3 +1051,17 @@ Repro artifacts:
 - `repro/stage74_r_scaling_boundary/r6_reps1_runs1/run_0.log`
 - `repro/stage74_r_scaling_boundary/r8_reps1_runs1/summary.csv`
 - `repro/stage74_r_scaling_boundary/r8_reps1_runs1/run_0.log`
+
+## Stage 75 R>4 Profile Boundary
+
+- `docs/stage75_rgt4_profile_boundary_log.md`
+- `experiments/stage75_rgt4_profile_boundary_plan.md`
+- `scripts/build_stage75_rgt4_profile_boundary.py`
+- `theory_checks/h10_r_gt4_lane_scaling.md`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage75_rgt4_profile_boundary/decision.csv`
+- `repro/stage75_rgt4_profile_boundary/profile_metrics.csv`
+- `repro/stage75_rgt4_profile_boundary/body_profile_r6/summary.csv`
+- `repro/stage75_rgt4_profile_boundary/body_profile_r6/r6/run_0.log`
+- `repro/stage75_rgt4_profile_boundary/body_profile_r8/summary.csv`
+- `repro/stage75_rgt4_profile_boundary/body_profile_r8/r8/run_0.log`

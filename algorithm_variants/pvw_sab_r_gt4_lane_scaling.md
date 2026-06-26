@@ -47,15 +47,28 @@ Stage74 ran one complete-SAB smoke for each larger lane count:
 The current r=4 Stage36 10-run reference is mean `1.377x` with CI
 `[1.314893, 1.438107]`.
 
+Stage75 then profiled the same direct larger-r path:
+
+| r | profile status | CMUX/MAT EP | NCMUX | sub_a | copyback | MAT EP/full | evidence |
+|---:|---|---:|---:|---:|---:|---:|---|
+| 6 | PASS | 573440 | 5080 | 39 | 0 | 0.549836 | `repro/stage75_rgt4_profile_boundary/profile_metrics.csv` |
+| 8 | PASS | 573440 | 5080 | 39 | 0 | 0.550237 | `repro/stage75_rgt4_profile_boundary/profile_metrics.csv` |
+
+This rules out a schedule-count explanation for the r>4 boundary under the
+tested target path.
+
 ## Decision
 
 `NEGATIVE_NOT_PROMOTED`.
 
 Direct r>4 lane scaling passes correctness and remains faster than repeated
-scalar SAB, but it does not beat the r=4 promoted evidence. Do not run the
-full repeated/noise/resource campaign for direct r>4 under the current generic
-MAT path. Future large-r work needs a new r>4-specific layout or kernel
-hypothesis before code changes.
+scalar SAB, but it does not beat the r=4 promoted evidence. Stage75 confirms
+the SAB schedule counts are invariant for r=6/r=8, so the remaining boundary
+is per-update MAT/body cost rather than extra schedule iterations. Do not run
+the full repeated/noise/resource campaign for direct r>4 under the current
+generic MAT path. Future large-r work needs a new r>4-specific layout,
+register/cache-blocking, or sparse/structured-MAT hypothesis before code
+changes.
 
 ## Required Evidence For Reopening
 

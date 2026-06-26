@@ -1,0 +1,2 @@
+r,run,status,pvw_avg_us,scalar_repeated_avg_us,speedup,in_N,h,r_prec,rgsw_monomial_calls,cmux_calls,expected_cmux,ncmux_calls,expected_ncmux,mat_ep_calls,sub_a_calls,expected_sub_a,copyback_calls,expected_active_copyback,legacy_copyback,copyback_saved,source_log
+6,0,PASS,42192077.000,55024765.000,1.304,2048,39,7,40,573440,573440,5080,5080,573440,39,39,0,0,40,40,repro/stage75_rgt4_profile_boundary/body_profile_r6/r6/run_0.log

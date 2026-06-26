@@ -2310,3 +2310,47 @@ one-run speedups, 1.251x and 1.199x, were below the Stage36 r=4 10-run CI
 lower bound 1.314893. Direct r>4 lane-count expansion is not promoted without
 a new r>4-specific kernel/layout/sparse-MAT hypothesis.
 ```
+
+## Stage 75: R>4 Profile Boundary Diagnosis
+
+Goal:
+
+```text
+Explain the Stage74 r>4 boundary by checking whether r=6/r=8 preserve the
+exact SAB schedule counts and by attributing the remaining cost to MAT/body
+work.
+```
+
+Tasks:
+
+- run body-profile complete-SAB smokes for `r=6` and `r=8` under the same
+  `spqlios_avx512`, specialized MAT-AVX512, active-buffer path as Stage74;
+- verify exact target counts:
+  `cmux_calls == mat_ep_calls == 573440`, `ncmux_calls == 5080`,
+  `sub_a_calls == 39`, and active-buffer `copyback_calls == 0`;
+- parse raw `SAB_PVW_BODY_PROFILE` logs into `profile_metrics.csv` so the
+  r>4 boundary has component attribution;
+- update H10 and the completion route so future large-r work starts from a
+  dedicated r>4 layout/kernel/sparse-MAT hypothesis rather than direct lane
+  scaling.
+
+Gate:
+
+- r=6 and r=8 complete-SAB correctness and count gates must pass;
+- Stage74 must remain not promoted unless repeated full-SAB evidence beats
+  the current r=4 promoted boundary;
+- if counts fail, fix the schedule model before optimizing r>4;
+- no scalar SAB path, default `sab_pvw_*` path, key format, novelty,
+  theorem-level, all-parameter, or hardware-counter claim is upgraded.
+
+Status:
+
+```text
+Stage75 passed as a profile-backed boundary. r=6 and r=8 preserve the exact
+target schedule: CMUX/MAT EP 573440, NCMUX 5080, sub_a 39, and active-buffer
+copyback 0. The profile samples show MAT EP is about 55% of full body time
+for both r=6 and r=8, so direct r>4 underperformance is attributed to
+per-update MAT/body cost under invariant schedule counts. Direct r>4 remains
+not promoted; future large-r work requires a new r>4-specific layout, tiling,
+register/cache-blocking, or sparse/structured-MAT hypothesis.
+```

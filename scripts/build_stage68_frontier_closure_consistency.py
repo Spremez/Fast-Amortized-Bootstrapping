@@ -123,6 +123,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage67_final_recheck_stage66" in r2.get("evidence", "")
         and r6.get("status") == "READY_OPTIONAL_LOCAL_TRIAGE"
         and "stage74_r_scaling_boundary" in r6.get("evidence", "")
+        and "stage75_rgt4_profile_boundary" in r6.get("evidence", "")
     )
 
     rows = [

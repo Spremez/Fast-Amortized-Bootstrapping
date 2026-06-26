@@ -162,10 +162,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "hypotheses/hypothesis_register.yaml; "
                 "repro/stage65_r4_unrolled_avx512/summary.csv; "
                 "repro/stage69_local_variant_feasibility.csv; "
-                "repro/stage74_r_scaling_boundary/decision.csv"
+                "repro/stage74_r_scaling_boundary/decision.csv; "
+                "repro/stage75_rgt4_profile_boundary/decision.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage74 records direct r>4 scaling as not promoted; unlock native perf/full text or introduce a new r>4 kernel/layout/sparse-MAT hypothesis before new large-r code work.",
+            "Stage75 confirms r>4 schedule counts are invariant and direct lane scaling is not promoted; unlock native perf/full text or introduce a dedicated r>4 kernel/layout/register-blocking/sparse-MAT hypothesis before new large-r code work.",
             "May improve engineering evidence; no claim upgrade without full SAB A/B and noise/resource gates.",
         ),
         route_row(

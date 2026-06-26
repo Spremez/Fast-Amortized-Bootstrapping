@@ -287,8 +287,8 @@ hypotheses:
       bootstrapping cost; the expected failure mode is that dense MAT output
       accumulation, generic large-r loops, cache traffic, and register pressure
       dominate the saved schedule work.
-    status: stage74_direct_r_gt4_negative_not_promoted
-    evidence: docs/stage74_r_scaling_boundary_log.md; theory_checks/h10_r_gt4_lane_scaling.md; algorithm_variants/pvw_sab_r_gt4_lane_scaling.md
+    status: stage75_profile_backed_r_gt4_boundary_not_promoted
+    evidence: docs/stage74_r_scaling_boundary_log.md; docs/stage75_rgt4_profile_boundary_log.md; theory_checks/h10_r_gt4_lane_scaling.md; algorithm_variants/pvw_sab_r_gt4_lane_scaling.md
     current_decision: >
       Stage74 tested the existing active-buffer `sab_pvw_*` path at r=6 and
       r=8 under spqlios_avx512 with MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true.
@@ -296,8 +296,14 @@ hypotheses:
       repeated scalar SAB: r=6 reached 1.251x and r=8 reached 1.199x. Both are
       below the Stage36 r=4 10-run reference mean 1.377x and below the r=4
       CI lower bound 1.314893. Direct r>4 lane-count expansion is therefore
-      recorded as a negative boundary and is not promoted. Reopen large-r work
-      only with a new r>4-specific layout, tiling, or sparse-MAT hypothesis.
+      recorded as a negative boundary and is not promoted. Stage75 then
+      profiled r=6/r=8 and confirmed that the SAB schedule counts are
+      invariant: CMUX/MAT EP 573440, NCMUX 5080, sub_a 39, and active-buffer
+      copyback 0. The same profile shows MAT EP at roughly 55% of full body
+      time for both r=6 and r=8, so the boundary is attributed to per-update
+      body/MAT cost and generic large-r pressure rather than extra schedule
+      iterations. Reopen large-r work only with a new r>4-specific layout,
+      tiling, register/cache-blocking, or sparse-MAT hypothesis.
     failure_criteria:
       - r>4 full-SAB correctness fails
       - r>4 speedup does not exceed current r=4 promoted evidence
