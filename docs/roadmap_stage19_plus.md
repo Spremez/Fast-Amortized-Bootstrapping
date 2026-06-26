@@ -1482,3 +1482,44 @@ acceleration evidence. The active goal remains open because MAT-AVX512 native
 perf attribution, novelty/full related-work review, and 2025/686 full-text
 theorem/protocol citation review remain externally blocked.
 ```
+
+## Stage 52: External-Unlock Readiness Packet
+
+Goal:
+
+```text
+Turn the remaining external blockers into an exact input/command/artifact/gate
+packet so native perf, 2025/686 full-text, novelty review, external
+registration, and final recheck can be executed reproducibly when the missing
+external inputs become available.
+```
+
+Tasks:
+
+- generate `repro/stage52_external_unlock_readiness.csv`;
+- generate `docs/stage52_external_unlock_readiness.md`;
+- derive rows from Stage41 external unlock packet, Stage51 frontier, and the
+  remaining blocker dashboard;
+- record required inputs, commands, expected artifacts, acceptance gates, and
+  failure policies for CB5, CB6, CB7, A8/A8b, and A9;
+- preserve the rule that external artifact registration alone does not upgrade
+  paper/theory claims.
+
+Gate:
+
+- native perf row must remain `WAIT_NATIVE_PERF` with a Stage28 command and
+  hardware-counter acceptance gate;
+- 2025/686 full-text row must remain `WAIT_EXTERNAL_FULLTEXT` with a Stage38
+  command and hash/recognized-source acceptance gate;
+- novelty row must remain `WAIT_MANUAL_FULLTEXT_REVIEW`;
+- final recheck row must remain `WAIT_UNLOCKS`;
+- Stage42 closure/verifier must include Stage52 before relying on the unlock
+  readiness packet.
+
+Status:
+
+```text
+Stage 52 passed with `PASS_EXTERNAL_UNLOCK_READINESS_PACKET`. The packet fixes
+the exact commands and artifacts needed to unlock stronger claims, while
+preserving the current scoped-ready/stronger-blocked decision.
+```

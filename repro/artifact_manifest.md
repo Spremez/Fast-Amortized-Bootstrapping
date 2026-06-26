@@ -773,3 +773,6 @@ Repro artifacts:
 - `docs/stage51_goal_completion_frontier.md`
 - `scripts/build_stage51_goal_completion_frontier.py`
 - `repro/stage51_goal_completion_frontier.csv`
+- `docs/stage52_external_unlock_readiness.md`
+- `scripts/build_stage52_external_unlock_readiness.py`
+- `repro/stage52_external_unlock_readiness.csv`
