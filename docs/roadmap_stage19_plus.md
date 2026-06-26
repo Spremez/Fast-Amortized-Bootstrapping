@@ -1964,3 +1964,41 @@ ratio 0.930815x, full-output MAT ratio 0.986900x, and one-run complete-SAB r=4
 PVW latency ratio 0.803554x. Objdump proxy counts were unchanged. The variant
 is retained as a negative ablation and is not promoted.
 ```
+
+## Stage 66A: Post-Variant Final-Recheck Integration
+
+Goal:
+
+```text
+After Stage65A and Stage64A, verify that the lightweight final-recheck control
+plane can refresh the post-variant evidence state and preserve the scoped-ready
+/ stronger-blocked claim boundary.
+```
+
+Tasks:
+
+- run the final recheck with network citation probes, related-work probes,
+  native `perf`, current smoke, Stage44 re-probe, and Stage55 paper probe
+  disabled;
+- regenerate the Stage27 final package, external evidence intake,
+  conditional backlog, final audit, remaining blocker dashboard, Stage50,
+  Stage51, Stage52, Stage57, and Stage59;
+- intentionally skip Stage42 closure inside the recheck, then rebuild Stage42
+  closure after the Stage66A summary exists;
+- record Stage64A as still passed and Stage65A as still negative/not promoted.
+
+Gate:
+
+- Stage66A final-recheck core must pass;
+- Stage64A continuity must remain `PASS_POST_VARIANT_REFRESH`;
+- Stage65A must remain `NEGATIVE_NOT_PROMOTED`;
+- Stage42 closure and verifier must register Stage66A before relying on the
+  updated post-variant control plane.
+
+Status:
+
+```text
+Stage66A is the current local control-plane step. It does not modify scalar
+SAB, sab_pvw_*, MAT kernels, parameters, or benchmarks. It can only strengthen
+reproducibility and claim-boundary evidence.
+```

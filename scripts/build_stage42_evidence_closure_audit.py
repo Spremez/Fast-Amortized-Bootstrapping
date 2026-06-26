@@ -51,6 +51,9 @@ STAGE61_NATIVE_PERF_UNLOCK = ROOT / "repro" / "stage61_native_perf_unlock_probe"
 STAGE62_FULLTEXT_UNLOCK = ROOT / "repro" / "stage62_fulltext_unlock_probe" / "unlock_summary.csv"
 STAGE64A_POST_VARIANT_REFRESH = ROOT / "repro" / "stage64_post_variant_refresh" / "summary.csv"
 STAGE65A_R4_UNROLLED = ROOT / "repro" / "stage65_r4_unrolled_avx512" / "summary.csv"
+STAGE66A_POST_VARIANT_FINAL_RECHECK = (
+    ROOT / "repro" / "stage66_post_variant_final_recheck" / "summary.csv"
+)
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -216,6 +219,12 @@ REQUIRED_FILES = [
     "repro/stage65_r4_unrolled_avx512/full_sab_smoke.csv",
     "repro/stage65_r4_unrolled_avx512/instruction_counts.csv",
     "repro/stage65_r4_unrolled_avx512/default_scalar_ffnt_smoke.log",
+    "docs/stage66_post_variant_final_recheck_log.md",
+    "experiments/stage66_post_variant_final_recheck_plan.md",
+    "scripts/run_stage66_post_variant_final_recheck.sh",
+    "scripts/build_stage66_post_variant_final_recheck_log.py",
+    "repro/stage66_post_variant_final_recheck/summary.csv",
+    "repro/stage66_post_variant_final_recheck/final_recheck/summary.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -416,6 +425,22 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage65_r4_unrolled_avx512/r4_unrolled/kernel_run_0.log",
     "repro/stage65_r4_unrolled_avx512/r4_unrolled/full_r4/run_0.log",
     "repro/stage65_r4_unrolled_avx512/r4_unrolled/objdump_mattrgsw_polynomial.txt",
+    "docs/stage66_post_variant_final_recheck_log.md",
+    "experiments/stage66_post_variant_final_recheck_plan.md",
+    "scripts/run_stage66_post_variant_final_recheck.sh",
+    "scripts/build_stage66_post_variant_final_recheck_log.py",
+    "repro/stage66_post_variant_final_recheck/summary.csv",
+    "repro/stage66_post_variant_final_recheck/final_recheck/summary.csv",
+    "repro/stage66_post_variant_final_recheck/final_recheck/stage27_final_package.log",
+    "repro/stage66_post_variant_final_recheck/final_recheck/external_evidence_intake.log",
+    "repro/stage66_post_variant_final_recheck/final_recheck/conditional_backlog_audit.log",
+    "repro/stage66_post_variant_final_recheck/final_recheck/final_goal_audit.log",
+    "repro/stage66_post_variant_final_recheck/final_recheck/remaining_blocker_dashboard.log",
+    "repro/stage66_post_variant_final_recheck/final_recheck/stage50_performance_matrix.log",
+    "repro/stage66_post_variant_final_recheck/final_recheck/stage51_goal_frontier.log",
+    "repro/stage66_post_variant_final_recheck/final_recheck/stage52_external_unlock_readiness.log",
+    "repro/stage66_post_variant_final_recheck/final_recheck/stage57_scope_label_audit.log",
+    "repro/stage66_post_variant_final_recheck/final_recheck/stage59_completion_route.log",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -1298,6 +1323,37 @@ def check_stage64a_post_variant_refresh() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage66a_post_variant_final_recheck() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE66A_POST_VARIANT_FINAL_RECHECK)}
+    expected = {
+        "stage66_final_recheck_core": "PASS",
+        "stage66_stage64a_continuity": "PASS",
+        "stage66_stage65a_negative_variant": "PASS",
+        "stage66_decision": "PASS_POST_VARIANT_FINAL_RECHECK",
+    }
+    problems = []
+    for gate, status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+
+    detail = (
+        "Stage66A post-variant final-recheck control plane passed and preserves stronger blockers"
+        if not problems and rows
+        else "; ".join(problems) or "Stage66A summary missing or empty"
+    )
+    return [
+        row(
+            "S42-STAGE66A-POST-VARIANT-FINAL-RECHECK",
+            "final_recheck",
+            pass_fail(not problems and bool(rows)),
+            STAGE66A_POST_VARIANT_FINAL_RECHECK.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage66A after future post-variant refreshes before relying on final-recheck continuity.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -1450,10 +1506,15 @@ def check_run_log() -> List[Dict[str, str]]:
             stage41_status = r.get("status", "MISSING")
     missing = [n for n in range(19, 63) if n not in stages]
     ok = not missing and stage41_status == "WAIT_EXTERNAL_EVIDENCE"
+    stage66_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage66a-post-variant-final-recheck-001":
+            stage66_status = r.get("status", "MISSING")
+    ok = ok and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}"
     )
     return [
         row(
@@ -1475,8 +1536,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 plus Stage64A/Stage65A files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62, Stage64A, or Stage65A control-plane artifacts.",
+            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62, Stage64A, Stage65A, or Stage66A control-plane artifacts.",
         )
     ]
 
@@ -1625,6 +1686,12 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/stage65_r4_unrolled_avx512/full_sab_smoke.csv",
         "repro/stage65_r4_unrolled_avx512/instruction_counts.csv",
         "repro/stage65_r4_unrolled_avx512/default_scalar_ffnt_smoke.log",
+        "docs/stage66_post_variant_final_recheck_log.md",
+        "experiments/stage66_post_variant_final_recheck_plan.md",
+        "scripts/run_stage66_post_variant_final_recheck.sh",
+        "scripts/build_stage66_post_variant_final_recheck_log.py",
+        "repro/stage66_post_variant_final_recheck/summary.csv",
+        "repro/stage66_post_variant_final_recheck/final_recheck/summary.csv",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -1633,7 +1700,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, and Stage65A artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, and Stage66A artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -1697,6 +1764,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage62_fulltext_unlock,
         check_stage64a_post_variant_refresh,
         check_stage65a_r4_unrolled_variant,
+        check_stage66a_post_variant_final_recheck,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -1715,10 +1783,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            "Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh and Stage65A optional negative variant is internally closed; stronger claims remain blocked"
+            "Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, and Stage66A post-variant final recheck is internally closed; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A evidence closure.",
         )
     )
     return checks
@@ -1743,8 +1811,8 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "## Purpose",
         "",
         "Stage 42 machine-checks whether the Stage 19-62 PVW/MAT-SAB evidence",
-        "chain plus Stage64A post-variant refresh and the Stage65A optional",
-        "negative variant remain internally",
+        "chain plus Stage64A post-variant refresh, the Stage65A optional",
+        "negative variant, and Stage66A post-variant final recheck remain internally",
         "consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",
         "",

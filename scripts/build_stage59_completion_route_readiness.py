@@ -114,10 +114,11 @@ def build_rows() -> List[Dict[str, str]]:
             (
                 "repro/stage33_current_smoke/summary.csv; "
                 "repro/stage49_wsl_repeated_full_sab/summary.csv; "
-                "repro/stage64_post_variant_refresh/summary.csv"
+                "repro/stage64_post_variant_refresh/summary.csv; "
+                "repro/stage66_post_variant_final_recheck/summary.csv"
             ),
             "Current-head smoke/repeated full-SAB continuity must pass after code or backend changes.",
-            "Stage64A passed after Stage65A; rerun Stage64A before claiming continuity for any future implementation change.",
+            "Stage64A and Stage66A passed after Stage65A; rerun Stage64A then Stage66A before claiming continuity for any future implementation change.",
             "Can refresh continuity wording; does not replace Stage36 high-stat evidence.",
         ),
         route_row(

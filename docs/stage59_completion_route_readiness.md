@@ -5,7 +5,7 @@ Stage 59 turns the post-Stage58 state into an explicit route to completion. It d
 | route_id | planned_stage | lane | status | next_action |
 |---|---|---|---|---|
 | S59-R1-SCOPED-ENGINEERING | current | local scoped engineering evidence | LOCAL_READY | After future implementation changes, rerun Stage33/36/49/50/51/52/57/42 as needed. |
-| S59-R2-CURRENT-HEAD-REFRESH | next local refresh | current-head correctness/performance continuity | READY_LOCAL_REFRESH | Stage64A passed after Stage65A; rerun Stage64A before claiming continuity for any future implementation change. |
+| S59-R2-CURRENT-HEAD-REFRESH | next local refresh | current-head correctness/performance continuity | READY_LOCAL_REFRESH | Stage64A and Stage66A passed after Stage65A; rerun Stage64A then Stage66A before claiming continuity for any future implementation change. |
 | S59-R3-NATIVE-PERF | external unlock | MAT-AVX512 hardware-counter attribution | EXTERNAL_BLOCKED | STAGE28_RUN_BENCH=1 bash scripts/run_stage28_native_perf_counter_gate.sh |
 | S59-R4-FULLTEXT-686 | external unlock | 2025/686 theorem/protocol source review | EXTERNAL_FULLTEXT_BLOCKED | FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh |
 | S59-R5-NOVELTY-REVIEW | manual review | novelty and related-work distinction | EXTERNAL_REVIEW_BLOCKED | FINAL_RECHECK_RELATED_WORK=1 bash scripts/run_final_goal_recheck.sh |

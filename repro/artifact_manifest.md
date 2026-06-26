@@ -937,3 +937,22 @@ Repro artifacts:
 - `repro/stage65_r4_unrolled_avx512/r4_unrolled/kernel_run_0.log`
 - `repro/stage65_r4_unrolled_avx512/r4_unrolled/full_r4/run_0.log`
 - `repro/stage65_r4_unrolled_avx512/r4_unrolled/objdump_mattrgsw_polynomial.txt`
+
+## Stage 66A Post-Variant Final Recheck
+
+- `docs/stage66_post_variant_final_recheck_log.md`
+- `experiments/stage66_post_variant_final_recheck_plan.md`
+- `scripts/run_stage66_post_variant_final_recheck.sh`
+- `scripts/build_stage66_post_variant_final_recheck_log.py`
+- `repro/stage66_post_variant_final_recheck/summary.csv`
+- `repro/stage66_post_variant_final_recheck/final_recheck/summary.csv`
+- `repro/stage66_post_variant_final_recheck/final_recheck/stage27_final_package.log`
+- `repro/stage66_post_variant_final_recheck/final_recheck/external_evidence_intake.log`
+- `repro/stage66_post_variant_final_recheck/final_recheck/conditional_backlog_audit.log`
+- `repro/stage66_post_variant_final_recheck/final_recheck/final_goal_audit.log`
+- `repro/stage66_post_variant_final_recheck/final_recheck/remaining_blocker_dashboard.log`
+- `repro/stage66_post_variant_final_recheck/final_recheck/stage50_performance_matrix.log`
+- `repro/stage66_post_variant_final_recheck/final_recheck/stage51_goal_frontier.log`
+- `repro/stage66_post_variant_final_recheck/final_recheck/stage52_external_unlock_readiness.log`
+- `repro/stage66_post_variant_final_recheck/final_recheck/stage57_scope_label_audit.log`
+- `repro/stage66_post_variant_final_recheck/final_recheck/stage59_completion_route.log`

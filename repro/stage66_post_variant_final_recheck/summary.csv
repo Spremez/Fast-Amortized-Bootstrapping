@@ -1,0 +1,5 @@
+gate,status,evidence,detail
+stage66_final_recheck_core,PASS,repro/stage66_post_variant_final_recheck/final_recheck/summary.csv,"lightweight final recheck refreshed Stage27 package, external intake, conditional backlog, final audit, blocker dashboard, Stage50/51/52/57/59; external probes and Stage42 closure were intentionally skipped"
+stage66_stage64a_continuity,PASS,repro/stage64_post_variant_refresh/summary.csv,Stage64A post-variant refresh remains passed
+stage66_stage65a_negative_variant,PASS,repro/stage65_r4_unrolled_avx512/summary.csv,Stage65A remains recorded as negative/not promoted
+stage66_decision,PASS_POST_VARIANT_FINAL_RECHECK,repro/stage66_post_variant_final_recheck/summary.csv,Stage66A confirms the post-variant final-recheck control plane is current while preserving stronger-claim blockers

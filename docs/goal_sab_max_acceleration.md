@@ -72,6 +72,7 @@ evidence.
 | Stage 44 external unlock re-probe | network/native gate | n/a | waiting external unlocks | citation/full-text probe and native perf probe rerun; direct full text and hardware-counter evidence remain unavailable; final-recheck integration passes without upgrading claims |
 | Stage 64A post-variant refresh | `spqlios_avx512` | 2/4 | current-head continuity | after Stage65A, scalar/PVW smoke passed; r=2/r=4 repeated full-SAB mean `1.269x`/`1.445x`; final-output noise smoke zero failures |
 | Stage 65A r4 row-unrolled AVX512 | `spqlios_avx512` | 4 | negative ablation | correctness passed, but MAT/full-SAB ratios versus specialized baseline are `0.930815x`/`0.986900x`/`0.803554x`; not promoted |
+| Stage 66A post-variant final recheck | n/a | n/a | control-plane continuity | lightweight final recheck after Stage65A/64A; intended to preserve scoped-ready/stronger-blocked claim boundary |
 
 Current conclusion:
 
@@ -212,6 +213,9 @@ Stage64A then refreshed the default promoted path after that code change:
 current smoke, r=2/r=4 repeated full-SAB A/B, final-output noise smoke, and
 Stage50 matrix all pass. This is continuity evidence and does not promote the
 Stage65A variant.
+Stage66A then checks that the post-variant evidence state can still be
+refreshed by the lightweight final-recheck control plane and registered by
+Stage42 closure/verifier. It is reproducibility evidence only.
 ```
 
 ## Invariants
@@ -309,5 +313,6 @@ Stage 62: 2025/686 full-text unlock probe. [blocked by direct-route 403/Cloudfla
 Stage 63: novelty review. [externally blocked until source-anchor review]
 Stage 64: implementation-refresh campaign. [completed after Stage65A; current-head continuity passed]
 Stage 65: optional variant loop. [started; Stage65A r4 row-unrolled AVX512 negative/not promoted]
+Stage 66A: post-variant final-recheck integration. [current control-plane step]
 Stage 66: release/paper package. [waiting for external unlocks or narrowed scope]
 ```
