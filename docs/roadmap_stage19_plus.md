@@ -1746,3 +1746,43 @@ Stage 58 passed. The unified final recheck can now refresh Stage57 before
 Stage42 closure and preserves
 `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`.
 ```
+
+## Stage 59: Completion Route Readiness
+
+Goal:
+
+```text
+Convert the post-Stage58 state into an explicit, machine-checkable route to
+completion so Codex can keep moving without silently narrowing the original
+PVW/MAT-SAB acceleration goal.
+```
+
+Tasks:
+
+- add `docs/roadmap_to_completion_after_stage58.md` as the forward route for
+  Stage60+ work;
+- generate `repro/stage59_completion_route_readiness.csv` from Stage50,
+  Stage51, Stage52, and the remaining blocker dashboard;
+- generate `docs/stage59_completion_route_readiness.md`;
+- separate local-refresh lanes from external native-perf, full-text, novelty,
+  and final-freeze lanes;
+- add Stage59 to Stage42 closure/verifier checks.
+
+Gate:
+
+- local scoped engineering evidence must remain `LOCAL_READY`;
+- current-head refresh must be `READY_LOCAL_REFRESH`;
+- native perf, 2025/686 full text, and novelty review lanes must remain
+  explicitly blocked unless their external gates are actually satisfied;
+- final route decision must be
+  `PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED`;
+- no performance, theorem-level, novelty, or hardware-counter claim is
+  upgraded by this route-codification stage.
+
+Status:
+
+```text
+Stage 59 is the current execution stage. It codifies the route from the scoped
+engineering closure to eventual stronger-claim completion while preserving the
+current blocker boundary.
+```

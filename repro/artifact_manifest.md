@@ -841,3 +841,10 @@ Repro artifacts:
 - `repro/stage58_final_recheck_stage57/stage52_external_unlock_readiness.log`
 - `repro/stage58_final_recheck_stage57/stage57_scope_label_audit.log`
 - `repro/stage58_final_recheck_stage57/stage42_evidence_closure.log`
+
+## Stage 59 Completion Route Readiness
+
+- `docs/roadmap_to_completion_after_stage58.md`
+- `docs/stage59_completion_route_readiness.md`
+- `scripts/build_stage59_completion_route_readiness.py`
+- `repro/stage59_completion_route_readiness.csv`

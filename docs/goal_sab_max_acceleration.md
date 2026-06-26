@@ -66,7 +66,7 @@ evidence.
 | Stage 39 optional variant triage | audit synthesis | n/a | no new variant promoted | non-binary and AVX/layout work blocked by full-text/perf prerequisites; schedule/post-processing variants deferred by prior neutral/small-tail evidence |
 | Stage 40 final scoped freeze | report/freeze | n/a | scoped freeze ready | freeze package is ready for scoped engineering claim; SHA-256 manifest and post-freeze verifier pass; stronger claims remain blocked |
 | Stage 41 external unlock packet | audit synthesis | n/a | generated | current readiness is WAIT_EXTERNAL_FULLTEXT, WAIT_NATIVE_PERF, WAIT_EXTERNAL_ARTIFACTS, and WAIT_UNLOCKS; stronger claims still require external evidence plus manual review |
-| Stage 42 evidence closure audit | audit synthesis | n/a | passed and recheck-integrated | Stage 19-58 scoped evidence chain is internally closed under current artifacts; closure-only final recheck passes; stronger claims remain blocked |
+| Stage 42 evidence closure audit | audit synthesis | n/a | passed and recheck-integrated | Stage 19-59 scoped evidence chain is internally closed under current artifacts; closure-only final recheck passes; stronger claims remain blocked |
 | Stage 42 closure verifier | read-only audit | n/a | passed from clean input | no-regenerate verifier confirmed final audit, Stage 41 readiness, Stage 42 closure, Stage 43 smoke, final recheck closure, run-log rows, and manifest registration |
 | Stage 43 post-closure current smoke | `spqlios_avx512` | n/a | passed | current-head scalar binary full run, explicit PVW target gate, and scalar ternary build all pass; smoke only |
 | Stage 44 external unlock re-probe | network/native gate | n/a | waiting external unlocks | citation/full-text probe and native perf probe rerun; direct full text and hardware-counter evidence remain unavailable; final-recheck integration passes without upgrading claims |
@@ -173,7 +173,7 @@ The Stage 41 external-unlock packet then turns the remaining A8/A8b blockers
 into executable gates. It records exact commands and review policies for
 2025/686 full-text intake, native perf-counter intake, external evidence
 registration, and final recheck. It does not upgrade any claim by itself.
-The Stage 42 evidence-closure audit machine-checks that the Stage 19-58 route,
+The Stage 42 evidence-closure audit machine-checks that the Stage 19-59 route,
 final audit labels, Stage 40 hashes, Stage 41 readiness, Stage 43 current
 smoke, run log, artifact manifest, and claim guardrails are mutually
 consistent. It passes under the current scoped-ready/stronger-blocked state.
