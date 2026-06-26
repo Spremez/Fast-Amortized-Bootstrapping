@@ -49,6 +49,7 @@ STAGE59_COMPLETION_ROUTE = ROOT / "repro" / "stage59_completion_route_readiness.
 STAGE60_FINAL_RECHECK_STAGE59 = ROOT / "repro" / "stage60_final_recheck_stage59" / "summary.csv"
 STAGE61_NATIVE_PERF_UNLOCK = ROOT / "repro" / "stage61_native_perf_unlock_probe" / "summary.csv"
 STAGE62_FULLTEXT_UNLOCK = ROOT / "repro" / "stage62_fulltext_unlock_probe" / "unlock_summary.csv"
+STAGE65A_R4_UNROLLED = ROOT / "repro" / "stage65_r4_unrolled_avx512" / "summary.csv"
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -196,6 +197,16 @@ REQUIRED_FILES = [
     "repro/stage62_fulltext_unlock_probe/acm_pdf_head.err",
     "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.log",
     "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.err",
+    "docs/stage65_r4_unrolled_avx512_log.md",
+    "experiments/stage65_r4_unrolled_avx512_plan.md",
+    "algorithm_variants/pvw_sab_r4_unrolled_avx512.md",
+    "scripts/run_stage65_r4_unrolled_avx512.sh",
+    "scripts/build_stage65_r4_unrolled_avx512_log.py",
+    "repro/stage65_r4_unrolled_avx512/summary.csv",
+    "repro/stage65_r4_unrolled_avx512/kernel_microbench.csv",
+    "repro/stage65_r4_unrolled_avx512/full_sab_smoke.csv",
+    "repro/stage65_r4_unrolled_avx512/instruction_counts.csv",
+    "repro/stage65_r4_unrolled_avx512/default_scalar_ffnt_smoke.log",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -356,6 +367,23 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage62_fulltext_unlock_probe/acm_pdf_head.err",
     "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.log",
     "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.err",
+    "docs/stage65_r4_unrolled_avx512_log.md",
+    "experiments/stage65_r4_unrolled_avx512_plan.md",
+    "algorithm_variants/pvw_sab_r4_unrolled_avx512.md",
+    "scripts/run_stage65_r4_unrolled_avx512.sh",
+    "scripts/build_stage65_r4_unrolled_avx512_log.py",
+    "repro/stage65_r4_unrolled_avx512/summary.csv",
+    "repro/stage65_r4_unrolled_avx512/kernel_microbench.csv",
+    "repro/stage65_r4_unrolled_avx512/full_sab_smoke.csv",
+    "repro/stage65_r4_unrolled_avx512/instruction_counts.csv",
+    "repro/stage65_r4_unrolled_avx512/run.log",
+    "repro/stage65_r4_unrolled_avx512/default_scalar_ffnt_smoke.log",
+    "repro/stage65_r4_unrolled_avx512/specialized/kernel_run_0.log",
+    "repro/stage65_r4_unrolled_avx512/specialized/full_r4/run_0.log",
+    "repro/stage65_r4_unrolled_avx512/specialized/objdump_mattrgsw_polynomial.txt",
+    "repro/stage65_r4_unrolled_avx512/r4_unrolled/kernel_run_0.log",
+    "repro/stage65_r4_unrolled_avx512/r4_unrolled/full_r4/run_0.log",
+    "repro/stage65_r4_unrolled_avx512/r4_unrolled/objdump_mattrgsw_polynomial.txt",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -1171,6 +1199,40 @@ def check_stage62_fulltext_unlock() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage65a_r4_unrolled_variant() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE65A_R4_UNROLLED)}
+    expected = {
+        "stage65_correctness": "PASS",
+        "stage65_kernel_dft_output": "NEGATIVE",
+        "stage65_kernel_full_output": "NEGATIVE",
+        "stage65_full_sab_r4": "NEGATIVE",
+        "stage65_instruction_proxy": "RECORDED",
+        "stage65_scalar_baseline_smoke": "PASS",
+        "stage65_decision": "NEGATIVE_NOT_PROMOTED",
+    }
+    problems = []
+    for gate, status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+
+    detail = (
+        "Stage65A r4 row-unrolled AVX512 variant is recorded as negative/not promoted"
+        if not problems and rows
+        else "; ".join(problems) or "Stage65A summary missing or empty"
+    )
+    return [
+        row(
+            "S42-STAGE65A-R4-UNROLLED",
+            "optional_variant",
+            pass_fail(not problems and bool(rows)),
+            STAGE65A_R4_UNROLLED.relative_to(ROOT).as_posix(),
+            detail,
+            "Keep the variant behind MAT_TRGSW_AVX512_R4_UNROLLED_ROWS and do not promote without new full-SAB evidence.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -1348,8 +1410,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62 control-plane artifacts.",
+            "all required Stage 41-62 and Stage65A files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62 or Stage65A control-plane artifacts.",
         )
     ]
 
@@ -1480,6 +1542,16 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/stage62_fulltext_unlock_probe/acm_pdf_head.err",
         "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.log",
         "repro/stage62_fulltext_unlock_probe/eprint_pdf_head.err",
+        "docs/stage65_r4_unrolled_avx512_log.md",
+        "experiments/stage65_r4_unrolled_avx512_plan.md",
+        "algorithm_variants/pvw_sab_r4_unrolled_avx512.md",
+        "scripts/run_stage65_r4_unrolled_avx512.sh",
+        "scripts/build_stage65_r4_unrolled_avx512_log.py",
+        "repro/stage65_r4_unrolled_avx512/summary.csv",
+        "repro/stage65_r4_unrolled_avx512/kernel_microbench.csv",
+        "repro/stage65_r4_unrolled_avx512/full_sab_smoke.csv",
+        "repro/stage65_r4_unrolled_avx512/instruction_counts.csv",
+        "repro/stage65_r4_unrolled_avx512/default_scalar_ffnt_smoke.log",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -1488,7 +1560,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, and Stage 62 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, and Stage65A artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -1550,6 +1622,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage60_final_recheck_stage59,
         check_stage61_native_perf_unlock,
         check_stage62_fulltext_unlock,
+        check_stage65a_r4_unrolled_variant,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -1568,10 +1641,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            "Stage 19-62 scoped evidence chain is internally closed; stronger claims remain blocked"
+            "Stage 19-62 scoped evidence chain plus Stage65A optional negative variant is internally closed; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage65A evidence closure.",
         )
     )
     return checks
@@ -1596,7 +1669,8 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "## Purpose",
         "",
         "Stage 42 machine-checks whether the Stage 19-62 PVW/MAT-SAB evidence",
-        "chain remains internally consistent. It is a reproducibility and claim",
+        "chain plus the Stage65A optional negative variant remain internally",
+        "consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",
         "",
         "## Summary",

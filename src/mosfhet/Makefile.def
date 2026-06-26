@@ -8,9 +8,16 @@ LIB_FLAGS = -O3 $(FLAGS)
 __SRC = keyswitch.c bootstrap.c bootstrap_ga.c tlwe.c trlwe.c trgsw.c misc.c polynomial.c register.c pvwtlwe.c sha3/fips202.c fft/karatsuba.c
 ENABLE_PVW_TMLWE ?= false
 MAT_TRGSW_AVX512_SMALLR_SPECIALIZED ?= false
+MAT_TRGSW_AVX512_R4_UNROLLED_ROWS ?= false
+ifeq ($(MAT_TRGSW_AVX512_R4_UNROLLED_ROWS),true)
+	MAT_TRGSW_AVX512_SMALLR_SPECIALIZED := true
+endif
 ifeq ($(MAT_TRGSW_AVX512_SMALLR_SPECIALIZED),true)
 	FLAGS += -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED
 	ENABLE_PVW_TMLWE := true
+endif
+ifeq ($(MAT_TRGSW_AVX512_R4_UNROLLED_ROWS),true)
+	FLAGS += -DMAT_TRGSW_AVX512_R4_UNROLLED_ROWS
 endif
 SAB_PVW_KERNEL_TEST ?= false
 ifeq ($(SAB_PVW_KERNEL_TEST),true)

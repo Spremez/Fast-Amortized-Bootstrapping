@@ -70,6 +70,7 @@ evidence.
 | Stage 42 closure verifier | read-only audit | n/a | passed from clean input | no-regenerate verifier confirmed final audit, Stage 41 readiness, Stage 42 closure, Stage 43 smoke, final recheck closure, run-log rows, and manifest registration |
 | Stage 43 post-closure current smoke | `spqlios_avx512` | n/a | passed | current-head scalar binary full run, explicit PVW target gate, and scalar ternary build all pass; smoke only |
 | Stage 44 external unlock re-probe | network/native gate | n/a | waiting external unlocks | citation/full-text probe and native perf probe rerun; direct full text and hardware-counter evidence remain unavailable; final-recheck integration passes without upgrading claims |
+| Stage 65A r4 row-unrolled AVX512 | `spqlios_avx512` | 4 | negative ablation | correctness passed, but MAT/full-SAB ratios versus specialized baseline are `0.930815x`/`0.986900x`/`0.803554x`; not promoted |
 
 Current conclusion:
 
@@ -200,6 +201,12 @@ The stage therefore records `WAIT_EXTERNAL_UNLOCKS` and preserves the current
 scoped engineering boundary. The unified final recheck runner can now execute
 this re-probe before final-audit and Stage 42 closure refreshes by setting
 `FINAL_RECHECK_STAGE44_REPROBE=1`.
+Stage65A then tested a concrete optional local variant,
+`MAT_TRGSW_AVX512_R4_UNROLLED_ROWS=true`, to check whether explicit r=4 row
+unrolling and row-pointer hoisting improves MAT external-product behavior.
+The variant preserved correctness but was slower at kernel and complete-SAB
+levels, so it is recorded as a negative ablation and the promoted explicit path
+remains Stage20 active-buffer plus the existing specialized MAT-AVX512 kernel.
 ```
 
 ## Invariants
@@ -273,7 +280,29 @@ Stage 38: full 2025/686 source review. [executed artifact gate; blocked until fu
 Stage 39: optional new algorithmic variants. [triaged; no new variant promoted under current evidence]
 Stage 40: final paper/release freeze. [scoped engineering freeze ready; hash manifest and post-freeze verifier passed; stronger claims blocked]
 Stage 41: external unlock packet. [generated; waiting for full-text/native-perf evidence before stronger claim upgrade]
-Stage 42: evidence closure audit. [passed; scoped evidence chain is internally closed through Stage 44, no-regenerate verifier passed, stronger claims remain blocked]
+Stage 42: evidence closure audit. [passed; scoped evidence chain is internally closed through Stage 19-62, no-regenerate verifier passed, stronger claims remain blocked]
 Stage 43: post-closure current smoke. [passed; current-head scalar/PVW smoke refreshed without changing claim scope]
 Stage 44: external unlock re-probe. [completed; still waiting for full-text/native-perf unlocks]
+Stage 45: active-state refactor. [completed; correctness-preserving maintenance]
+Stage 46: WSL active-state target smoke. [passed]
+Stage 47: WSL active-state full-SAB smoke. [passed; positive smoke]
+Stage 48: WSL active-state noise smoke. [passed]
+Stage 49: WSL repeated full-SAB stability. [passed; speedup_min > 1]
+Stage 50: performance evidence matrix. [generated; claim boundaries preserved]
+Stage 51: goal completion frontier. [generated; local scoped-ready, stronger blocked]
+Stage 52: external unlock readiness. [generated; commands and gates recorded]
+Stage 53: final-recheck integration for Stage50-52. [passed]
+Stage 54: default final recheck. [passed]
+Stage 55: external paper probe. [metadata found; full text still blocked]
+Stage 56: final-recheck integration for Stage55. [passed]
+Stage 57: scope-label audit. [passed]
+Stage 58: final-recheck integration for Stage57. [passed]
+Stage 59: completion-route readiness. [passed]
+Stage 60: final-recheck integration for Stage59. [passed]
+Stage 61: native perf unlock probe. [blocked on current WSL2 because perf is missing]
+Stage 62: 2025/686 full-text unlock probe. [blocked by direct-route 403/Cloudflare and no local full text]
+Stage 63: novelty review. [externally blocked until source-anchor review]
+Stage 64: implementation-refresh campaign. [local after any promoted code variant]
+Stage 65: optional variant loop. [started; Stage65A r4 row-unrolled AVX512 negative/not promoted]
+Stage 66: release/paper package. [waiting for external unlocks or narrowed scope]
 ```

@@ -1896,3 +1896,38 @@ direct routes are blocked by Cloudflare/403 challenge, and no local
 `FAB686_FULLTEXT_PATH` artifact is registered. Stage62 remains
 WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW.
 ```
+
+## Stage 65A: R4 Row-Unrolled AVX512 Optional Variant
+
+Goal:
+
+```text
+Evaluate a reversible r=4 MAT external-product implementation variant without
+changing scalar SAB, the default promoted PVW path, or the MAT_TRGSW key layout.
+```
+
+Tasks:
+
+- add explicit compile flag `MAT_TRGSW_AVX512_R4_UNROLLED_ROWS`;
+- implement a `k=1,l=1,r=4` AVX512 row-unrolled MAT external-product variant;
+- compare it against the current specialized MAT-AVX512 baseline under the
+  same `spqlios_avx512` backend;
+- record staged kernel, complete-SAB smoke, objdump proxy, and default scalar
+  baseline smoke evidence.
+
+Gate:
+
+- correctness must pass for both specialized and r4-unrolled variants;
+- any positive kernel result must still pass complete-SAB A/B before promotion;
+- one-run smoke cannot upgrade the promoted path;
+- scalar SAB default behavior must remain buildable and runnable.
+
+Status:
+
+```text
+Stage65A ran on WSL/Linux. The r4 row-unrolled AVX512 variant preserved
+correctness, but was negative versus the specialized baseline: dft-output MAT
+ratio 0.930815x, full-output MAT ratio 0.986900x, and one-run complete-SAB r=4
+PVW latency ratio 0.803554x. Objdump proxy counts were unchanged. The variant
+is retained as a negative ablation and is not promoted.
+```

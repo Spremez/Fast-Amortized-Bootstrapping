@@ -1,0 +1,28 @@
+# Stage 65A R4 Unrolled AVX512 Variant Log
+
+Date: 2026-06-26
+
+## Purpose
+
+Stage65A evaluates a reversible r=4 MAT external-product variant,
+`MAT_TRGSW_AVX512_R4_UNROLLED_ROWS=true`. The variant is limited to
+`k=1,l=1,r=4` AVX512 MAT/PVW external product code and does not alter
+scalar SAB, default PVW behavior, or the MAT_TRGSW key format.
+
+## Gates
+
+| gate | status | metric | value | evidence | detail |
+|---|---|---|---|---|---|
+| stage65_correctness | PASS | kernel_variants;full_sab_statuses | variants=['r4_unrolled', 'specialized']; full=['Pass', 'Pass'] | repro/stage65_r4_unrolled_avx512/kernel_microbench.csv; repro/stage65_r4_unrolled_avx512/full_sab_smoke.csv | staged kernel rows exist and full-SAB smoke rows pass when present |
+| stage65_kernel_dft_output | NEGATIVE | specialized_mat_avg_us / r4_unrolled_mat_avg_us | 0.930815 | repro/stage65_r4_unrolled_avx512/kernel_microbench.csv | dft_output: specialized_mean_us=22.697; r4_unrolled_mean_us=24.384; ratio=0.930815x |
+| stage65_kernel_full_output | NEGATIVE | specialized_mat_avg_us / r4_unrolled_mat_avg_us | 0.986900 | repro/stage65_r4_unrolled_avx512/kernel_microbench.csv | full_output: specialized_mean_us=34.429; r4_unrolled_mean_us=34.886; ratio=0.986900x |
+| stage65_full_sab_r4 | NEGATIVE | specialized_pvw_avg_us / r4_unrolled_pvw_avg_us | 0.803554 | repro/stage65_r4_unrolled_avx512/full_sab_smoke.csv | full_sab_r4: specialized_mean_us=28851329.000; r4_unrolled_mean_us=35904664.000; ratio=0.803554x |
+| stage65_instruction_proxy | RECORDED | objdump instruction proxy | 2 | repro/stage65_r4_unrolled_avx512/instruction_counts.csv | specialized: zmm=484 vfmadd=114 vfnmadd=26 vfmsub=32 vmovapd=239 vmovupd=64; r4_unrolled: zmm=484 vfmadd=114 vfnmadd=26 vfmsub=32 vmovapd=239 vmovupd=64 |
+| stage65_scalar_baseline_smoke | PASS | default scalar ffnt smoke | Pass | repro/stage65_r4_unrolled_avx512/default_scalar_ffnt_smoke.log | default scalar SAB builds and runs without PVW or Stage65 flags |
+| stage65_decision | NEGATIVE_NOT_PROMOTED | promotion_policy |  | repro/stage65_r4_unrolled_avx512/kernel_microbench.csv; repro/stage65_r4_unrolled_avx512/full_sab_smoke.csv | Stage65A does not change the default promoted path; full repeated A/B plus noise/resource gates are required before any promotion. |
+
+## Decision Policy
+
+A positive kernel result is not a bootstrapping acceleration claim.
+The variant can only be promoted after repeated complete-SAB A/B,
+correctness/noise, resource, and Stage42 closure gates pass.

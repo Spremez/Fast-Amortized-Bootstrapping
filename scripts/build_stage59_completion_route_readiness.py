@@ -151,9 +151,13 @@ def build_rows() -> List[Dict[str, str]]:
             "optional local expansion",
             "future algorithmic variants",
             "READY_OPTIONAL_LOCAL_TRIAGE",
-            "repro/stage39_optional_variant_triage.csv; hypotheses/hypothesis_register.yaml",
+            (
+                "repro/stage39_optional_variant_triage.csv; "
+                "hypotheses/hypothesis_register.yaml; "
+                "repro/stage65_r4_unrolled_avx512/summary.csv"
+            ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Only start after selecting a concrete hypothesis and preserving scalar baseline.",
+            "Stage65A r4 row-unrolled AVX512 is recorded as negative/not promoted; select a different concrete hypothesis before new code work.",
             "May improve engineering evidence; no claim upgrade without full SAB A/B and noise/resource gates.",
         ),
         route_row(
@@ -211,7 +215,7 @@ def write_csv(path: Path, rows: Iterable[Dict[str, str]]) -> None:
 
 def write_md(path: Path, rows: List[Dict[str, str]], gate: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
+    with path.open("w", encoding="utf-8", newline="\n") as f:
         f.write("# Stage 59 Completion Route Readiness\n\n")
         f.write(
             "Stage 59 turns the post-Stage58 state into an explicit route to "

@@ -169,15 +169,34 @@ Linux `perf` is not available in PATH and `perf_event_paranoid=2` was recorded.
 Therefore hardware-counter-backed load/store attribution remains unavailable
 for this environment.
 
+Stage65A tested the simplest reversible r=4 source-schedule hypothesis:
+explicitly hoist all five decomposed-row pointers and selector-output pointers
+outside the coefficient loop, then unroll rows 1-4 under
+`MAT_TRGSW_AVX512_R4_UNROLLED_ROWS=true`. This did not improve the kernel or
+complete SAB:
+
+| evidence | specialized baseline us | r4-unrolled us | baseline/unrolled |
+|---|---:|---:|---:|
+| r=4 DFT-output MAT microbench | 22.697 | 24.384 | `0.930815x` |
+| r=4 full-output MAT microbench | 34.429 | 34.886 | `0.986900x` |
+| r=4 complete-SAB smoke PVW latency | 28851329.000 | 35904664.000 | `0.803554x` |
+
+The objdump proxy counts were unchanged between the two builds. This suggests
+that GCC/AVX512 code generation already handles the trivial row-loop structure
+well enough, or that the remaining bottleneck is not reducible by source-level
+row unrolling. Stage65A is therefore a negative ablation, not a new promoted
+path.
+
 ## Required Next Checks
 
-Stage 22 must answer the remaining questions:
+The remaining MAT-AVX questions are now narrower:
 
 - generic single-poly AVX path versus MAT-aware AVX path under the same binary;
 - retired load/store and FMA evidence where hardware counters are available;
 - assembly audit for expected AVX512 FMA instructions and absence of avoidable
   output load/store cycles;
-- r=2 register-resident and r=4 lower-pressure tiling comparison;
+- r=2 register-resident and r=4 lower-pressure tiling comparison, but not
+  another row-unroll-only variant unless native counters justify it;
 - full SAB A/B check for any kernel-level win.
 
 ## Decision Boundary
@@ -191,6 +210,8 @@ The explicit specialized kernel gives a same-backend complete-SAB improvement
 over the generic AVX512 MAT loop for r=4.
 Stage 28 proves that the current WSL2 environment cannot upgrade this into a
 hardware-counter-backed load/store claim because `perf` is missing.
+Stage65A shows that r=4 source-level row unrolling is a negative ablation and
+does not improve the current specialized implementation.
 ```
 
 Not yet allowed:

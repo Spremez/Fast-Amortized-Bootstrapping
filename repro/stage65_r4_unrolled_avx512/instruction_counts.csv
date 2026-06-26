@@ -1,0 +1,3 @@
+variant,object_scope,vfmadd,vfnmadd,vfmsub,zmm_refs,ymm_refs,vmovapd,vmovupd,source_log
+specialized,mattrgsw+polynomial,114,26,32,484,1440,239,64,repro/stage65_r4_unrolled_avx512/specialized/objdump_mattrgsw_polynomial.txt
+r4_unrolled,mattrgsw+polynomial,114,26,32,484,1440,239,64,repro/stage65_r4_unrolled_avx512/r4_unrolled/objdump_mattrgsw_polynomial.txt

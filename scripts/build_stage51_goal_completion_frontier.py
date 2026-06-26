@@ -88,6 +88,8 @@ def build_rows() -> List[Dict[str, str]]:
     stage50_ok = bool(stage50_rows) and all(row.get("status") == "PASS" for row in stage50_rows)
     stage42_overall = stage42.get("S42-OVERALL", {}).get("status", "MISSING")
     current_stage_range = latest_stage_label()
+    stage65a_closed = stage42.get("S42-STAGE65A-R4-UNROLLED", {}).get("status") == "PASS"
+    optional_stage_note = " plus Stage65A optional negative variant" if stage65a_closed else ""
     spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
     stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")
     stage42_matches_current_range = (
@@ -168,7 +170,7 @@ def build_rows() -> List[Dict[str, str]]:
             if stage42_rebuildable
             else "MISSING_LOCAL_EVIDENCE",
             STAGE42.relative_to(ROOT).as_posix(),
-            f"Stage42 closure currently verifies the {current_stage_range} evidence chain and preserves stronger-claim blockers.",
+            f"Stage42 closure currently verifies the {current_stage_range} evidence chain{optional_stage_note} and preserves stronger-claim blockers.",
             "Extend closure/verifier whenever new stages or artifacts are added.",
             "Supports reproducibility of the scoped engineering chain.",
         ),

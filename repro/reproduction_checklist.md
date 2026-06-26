@@ -183,5 +183,6 @@
 - [x] Add and run Stage 60 explicit final recheck path for refreshing Stage59 before Stage42 closure regeneration.
 - [x] Add and run Stage 61 native perf unlock probe; current WSL2 remains blocked because `perf` is missing.
 - [x] Add and run Stage 62 full-text unlock probe; current direct routes remain Cloudflare/403 blocked and no local `FAB686_FULLTEXT_PATH` is registered.
+- [x] Add and run Stage65A r=4 row-unrolled AVX512 optional variant; correctness passed but performance was negative, so the variant is not promoted.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

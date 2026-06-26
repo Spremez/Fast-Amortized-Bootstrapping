@@ -161,8 +161,8 @@ hypotheses:
       stores compared with a generic single-poly AVX loop. At r=4, dense
       (1+r)^2 arithmetic and register pressure may cap this benefit; tiling or
       layout changes might reduce spills and memory traffic.
-    status: stage22_practical_expectation_supported_not_theoretical_optimum
-    evidence: docs/stage22_mat_avx512_limit_audit_log.md
+    status: stage65a_r4_unrolled_negative_not_promoted
+    evidence: docs/stage22_mat_avx512_limit_audit_log.md; docs/stage65_r4_unrolled_avx512_log.md
     current_decision: >
       Stage 22 compared generic and specialized MAT-AVX512 paths under the
       same spqlios_avx512 backend and current active-buffer SAB body. The
@@ -173,7 +173,16 @@ hypotheses:
       current practical implementation, but objdump-only attribution and the
       remaining dense MAT multiply cost do not support a theoretical-optimum
       claim. Do not spend the next stage on blind r=4 register-pressure-heavy
-      tiling; prioritize schedule fusion or noise/resource validation.
+      tiling; prioritize schedule fusion or noise/resource validation. Stage65A
+      then tested an isolated no-key-layout-change r=4 row-unrolled AVX512
+      variant, `MAT_TRGSW_AVX512_R4_UNROLLED_ROWS=true`. It preserved staged
+      kernel and full-SAB correctness, but did not reduce objdump proxy
+      instruction counts and was slower in both r=4 MAT microbench and one-run
+      full-SAB smoke: dft-output MAT ratio 0.930815x, full-output MAT ratio
+      0.986900x, and complete-SAB r=4 PVW latency ratio 0.803554x versus the
+      specialized baseline. Keep this variant as a negative ablation and do
+      not reopen row-unroll-only r=4 work without native counter evidence or a
+      different layout hypothesis.
     failure_criteria:
       - microbench does not show expected memory-operation reduction
       - assembly or counters show avoidable spills/traffic remain unexplained

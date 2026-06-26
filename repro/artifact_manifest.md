@@ -891,3 +891,23 @@ Repro artifacts:
 - `repro/stage62_fulltext_unlock_probe/eprint_pdf_head.log`
 - `repro/stage62_fulltext_unlock_probe/eprint_pdf_head.err`
 - `repro/external_evidence_intake/summary.csv`
+
+## Stage 65A R4 Unrolled AVX512 Variant
+
+- `docs/stage65_r4_unrolled_avx512_log.md`
+- `experiments/stage65_r4_unrolled_avx512_plan.md`
+- `algorithm_variants/pvw_sab_r4_unrolled_avx512.md`
+- `scripts/run_stage65_r4_unrolled_avx512.sh`
+- `scripts/build_stage65_r4_unrolled_avx512_log.py`
+- `repro/stage65_r4_unrolled_avx512/summary.csv`
+- `repro/stage65_r4_unrolled_avx512/kernel_microbench.csv`
+- `repro/stage65_r4_unrolled_avx512/full_sab_smoke.csv`
+- `repro/stage65_r4_unrolled_avx512/instruction_counts.csv`
+- `repro/stage65_r4_unrolled_avx512/run.log`
+- `repro/stage65_r4_unrolled_avx512/default_scalar_ffnt_smoke.log`
+- `repro/stage65_r4_unrolled_avx512/specialized/kernel_run_0.log`
+- `repro/stage65_r4_unrolled_avx512/specialized/full_r4/run_0.log`
+- `repro/stage65_r4_unrolled_avx512/specialized/objdump_mattrgsw_polynomial.txt`
+- `repro/stage65_r4_unrolled_avx512/r4_unrolled/kernel_run_0.log`
+- `repro/stage65_r4_unrolled_avx512/r4_unrolled/full_r4/run_0.log`
+- `repro/stage65_r4_unrolled_avx512/r4_unrolled/objdump_mattrgsw_polynomial.txt`
