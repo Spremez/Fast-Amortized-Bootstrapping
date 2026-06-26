@@ -38,6 +38,9 @@ STAGE96_UPSTREAM_DELTA_AUDIT = (
 STAGE97_SOURCE_DELTA_GUARD = (
     ROOT / "repro" / "stage97_source_delta_guard" / "summary.csv"
 )
+STAGE98_CURRENT_SMOKE_REFRESH = (
+    ROOT / "repro" / "stage98_current_smoke_refresh" / "summary.csv"
+)
 OUT_CSV = ROOT / "repro" / "stage59_completion_route_readiness.csv"
 OUT_MD = ROOT / "docs" / "stage59_completion_route_readiness.md"
 
@@ -102,6 +105,7 @@ def build_rows() -> List[Dict[str, str]]:
     stage95 = by_key(STAGE95_PUBLIC_SOURCE_REPROBE, "gate")
     stage96 = by_key(STAGE96_UPSTREAM_DELTA_AUDIT, "gate")
     stage97 = by_key(STAGE97_SOURCE_DELTA_GUARD, "gate")
+    stage98 = by_key(STAGE98_CURRENT_SMOKE_REFRESH, "gate")
 
     local_ready = all(
         status_of(frontier, row_id).startswith("LOCAL")
@@ -145,6 +149,10 @@ def build_rows() -> List[Dict[str, str]]:
         status_of(stage97, "stage97_decision")
         == "PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED"
     )
+    stage98_done = (
+        status_of(stage98, "stage98_decision")
+        == "PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH"
+    )
 
     rows = [
         route_row(
@@ -170,10 +178,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage49_wsl_repeated_full_sab/summary.csv; "
                 "repro/stage64_post_variant_refresh/summary.csv; "
                 "repro/stage66_post_variant_final_recheck/summary.csv; "
-                "repro/stage67_final_recheck_stage66/summary.csv"
+                "repro/stage67_final_recheck_stage66/summary.csv; "
+                "repro/stage98_current_smoke_refresh/summary.csv"
             ),
             "Current-head smoke/repeated full-SAB continuity must pass after code or backend changes.",
-            "Stage64A, Stage66A, and Stage67 passed after Stage65A; rerun Stage64A, Stage66A, and Stage67 before claiming continuity for any future implementation change.",
+            "Stage98 is the latest current-head smoke refresh after Stage97; rerun Stage64A/66A/67 and Stage98 before claiming continuity for any future implementation change.",
             "Can refresh continuity wording; does not replace Stage36 high-stat evidence.",
         ),
         route_row(
@@ -254,10 +263,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage94_local_frontier_audit/summary.csv; "
                 "repro/stage95_public_source_reprobe/summary.csv; "
                 "repro/stage96_upstream_delta_audit/summary.csv; "
-                "repro/stage97_source_delta_guard/summary.csv"
+                "repro/stage97_source_delta_guard/summary.csv; "
+                "repro/stage98_current_smoke_refresh/summary.csv"
             ),
             "A9 remains scoped unless CB5/CB6/CB7 are resolved; Stage91 must keep stronger claims blocked.",
-            "Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93/94/95/96/97 after source, backend, external-evidence, upstream-code, default-flag, or claim-scope changes.",
+            "Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93/94/95/96/97/98 after source, backend, external-evidence, upstream-code, default-flag, or claim-scope changes.",
             "Provides a scoped final engineering package; does not unlock paper-level or theoretical claims.",
         ),
     ]
@@ -296,6 +306,11 @@ def decision(rows: List[Dict[str, str]]) -> str:
         status_of(stage97, "stage97_decision")
         == "PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED"
     )
+    stage98 = by_key(STAGE98_CURRENT_SMOKE_REFRESH, "gate")
+    stage98_done = (
+        status_of(stage98, "stage98_decision")
+        == "PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH"
+    )
     expected = {
         "S59-R1-SCOPED-ENGINEERING": "LOCAL_READY",
         "S59-R2-CURRENT-HEAD-REFRESH": "READY_LOCAL_REFRESH",
@@ -313,6 +328,7 @@ def decision(rows: List[Dict[str, str]]) -> str:
         and stage95_done
         and stage96_done
         and stage97_done
+        and stage98_done
     )
     if ok:
         return "PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED"

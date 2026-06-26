@@ -783,3 +783,33 @@ hypotheses:
       - Stage33/Stage89 scalar/default smoke evidence is missing or failing
       - Stage97 is cited as performance, novelty, theorem-level, or
         hardware-counter evidence
+  - id: H23_current_head_smoke_refresh
+    statement: >
+      After Stage97 proves source-delta isolation, the next local continuity
+      check should rerun current-head smoke gates directly instead of relying
+      only on earlier Stage33/89 smoke evidence.
+    mechanism: >
+      Stage98 runs the default scalar binary full program, the explicit
+      active-buffer PVW target full-bootstrap gate, the explicit H14 backend
+      FromDFT-add PVW target full-bootstrap gate, and the scalar ternary build
+      on the current HEAD. It preserves raw build/run logs and aggregates the
+      results into a machine-checkable summary while keeping the claim limited
+      to current-head continuity.
+    status: stage98_current_head_smoke_refresh_passed
+    evidence: docs/stage98_current_smoke_refresh_log.md; experiments/stage98_current_smoke_refresh_plan.md; scripts/run_stage98_current_smoke_refresh.sh; scripts/build_stage98_current_smoke_refresh.py; repro/stage98_current_smoke_refresh/summary.csv; repro/stage98_current_smoke_refresh/raw_smoke.csv; repro/stage98_current_smoke_refresh/artifact_index.csv
+    current_decision: >
+      Stage98 records PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH. On
+      `HEAD=e89b76f`, the default scalar binary full run, explicit
+      active-buffer PVW target gate, explicit H14 backend PVW target gate, and
+      scalar ternary build all pass under `spqlios_avx512`. Raw logs are
+      preserved under `repro/stage98_current_smoke_refresh/`. This is
+      current-head continuity evidence only, not speedup, novelty,
+      theorem-level, or hardware-counter evidence.
+    failure_criteria:
+      - scalar binary full run does not end with `Pass`
+      - active-buffer or H14 backend PVW target gate does not print
+        `SAB_PVW target full bootstrap gate: Pass`
+      - scalar ternary build fails
+      - raw build/run logs are missing from the Stage98 repro package
+      - Stage98 is cited as a performance benchmark, novelty claim, theorem
+        review, or hardware-counter proof

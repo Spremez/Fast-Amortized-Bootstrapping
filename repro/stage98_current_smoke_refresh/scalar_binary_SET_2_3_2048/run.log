@@ -1,0 +1,11 @@
+Sparse bootstrapping with binary keys
+Input: (N=2048, h=39, binary, σ=2^-15)
+Packing: (N=2048, h=256, ternary, σ=2^-44)
+Output: (N=2048, h=512, ternary, σ=2^-50)
+Decomposition: BS(ℓ=1, β=2^23) PCK(ℓ=2, β=2^14) KS(ℓ=12, β=2^1)
+Message precision: 3 - Repetitions: 3
+
+Max monomial distance (log B): 7
+Rejection Sampling Attempts: 262
+Bootstrapping time: 9,059,097μs +- 238795.574676
+Pass

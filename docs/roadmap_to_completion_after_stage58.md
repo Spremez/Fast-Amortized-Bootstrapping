@@ -170,3 +170,7 @@ Execution policy:
   `sab_pvw` symbols, tracked experiment flags remain default-false and gated,
   and Stage33/Stage89 scalar/default smoke evidence is still passing. Use this
   as a pre-flight guard before any further local hot-path work.
+- After Stage98, current-head smoke continuity is refreshed on `HEAD=e89b76f`:
+  scalar binary full run, explicit active-buffer PVW target gate, explicit H14
+  backend PVW target gate, and scalar ternary build all pass. This is not a
+  performance or novelty result; it is the latest local continuity gate.

@@ -1,0 +1,7 @@
+Stage98 current-head smoke refresh
+Fri Jun 26 15:22:20 UTC 2026
+e89b76f
+Wrote repro/stage98_current_smoke_refresh/summary.csv
+Wrote repro/stage98_current_smoke_refresh/artifact_index.csv
+Wrote docs/stage98_current_smoke_refresh_log.md
+Stage98 current-head smoke refresh: PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH

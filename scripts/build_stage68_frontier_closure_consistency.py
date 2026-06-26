@@ -109,6 +109,7 @@ def build_rows() -> List[Dict[str, str]]:
                 and "Stage95 public source reprobe" in stage42_detail
                 and "Stage96 upstream delta audit" in stage42_detail
                 and "Stage97 source delta guard" in stage42_detail
+                and "Stage98 current-head smoke refresh" in stage42_detail
             )
         )
     )
@@ -140,6 +141,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "Stage95 public source reprobe" in g6_detail
         and "Stage96 upstream delta audit" in g6_detail
         and "Stage97 source delta guard" in g6_detail
+        and "Stage98 current-head smoke refresh" in g6_detail
     )
 
     stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
@@ -154,6 +156,7 @@ def build_rows() -> List[Dict[str, str]]:
         r1.get("status") == "LOCAL_READY"
         and r2.get("status") == "READY_LOCAL_REFRESH"
         and "stage67_final_recheck_stage66" in r2.get("evidence", "")
+        and "stage98_current_smoke_refresh" in r2.get("evidence", "")
         and r6.get("status") == "READY_OPTIONAL_LOCAL_TRIAGE"
         and "stage74_r_scaling_boundary" in r6.get("evidence", "")
         and "stage75_rgt4_profile_boundary" in r6.get("evidence", "")
@@ -180,6 +183,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage95_public_source_reprobe" in r7.get("evidence", "")
         and "stage96_upstream_delta_audit" in r7.get("evidence", "")
         and "stage97_source_delta_guard" in r7.get("evidence", "")
+        and "stage98_current_smoke_refresh" in r7.get("evidence", "")
     )
 
     rows = [

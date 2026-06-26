@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-97`. This label tracks the
+Current control-plane closure label: `Stage 19-98`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -107,6 +107,7 @@ evidence.
 | Stage 95 public source reprobe | current public-source refresh | n/a | metadata/code visible, full text still blocked | author page, author BibTeX, DOI metadata, and GitHub code route remain visible; ePrint PDF and ACM PDF routes return `403`, author guessed PDF returns `404`; decision `PASS_STAGE95_PUBLIC_SOURCE_REPROBE_STRONGER_CLAIMS_BLOCKED` |
 | Stage 96 upstream delta audit | public code provenance | n/a | local delta boundary recorded | `origin/main=d251d06` is the merge-base of `HEAD=986f42f`, local branch is ahead `255` and behind `0`; 1681 changed files are classified, including 5 PVW/MAT-SAB source files; tracked PVW/MAT-SAB flags remain default-false; decision `PASS_STAGE96_UPSTREAM_DELTA_AUDIT_LOCAL_PROVENANCE_RECORDED` |
 | Stage 97 source delta guard | source isolation guard | n/a | scalar/default separation recorded | 26 source/hot-path files are classified; 4 scalar SAB files contain no forbidden PVW/MAT-SAB tokens; selected shared backend files contain no `sab_pvw` tokens; tracked PVW/MAT-SAB/AVX512/profile/microbench flags remain default-false and PVW/MAT sources remain gated; Stage33/Stage89 scalar binary/ternary smoke evidence remains passing; decision `PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED` |
+| Stage 98 current-head smoke refresh | `spqlios_avx512` | n/a | current-head continuity passed | On `HEAD=e89b76f`, scalar binary full run, explicit active-buffer PVW target gate, explicit H14 backend PVW target gate, and scalar ternary build all pass; raw logs are preserved; decision `PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH` |
 
 Current conclusion:
 

@@ -131,6 +131,9 @@ STAGE96_UPSTREAM_DELTA_AUDIT = (
 STAGE97_SOURCE_DELTA_GUARD = (
     ROOT / "repro" / "stage97_source_delta_guard" / "summary.csv"
 )
+STAGE98_CURRENT_SMOKE_REFRESH = (
+    ROOT / "repro" / "stage98_current_smoke_refresh" / "summary.csv"
+)
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -304,6 +307,25 @@ STAGE97_ARTIFACTS = [
     "repro/stage97_source_delta_guard/artifact_index.csv",
 ]
 
+STAGE98_ARTIFACTS = [
+    "docs/stage98_current_smoke_refresh_log.md",
+    "experiments/stage98_current_smoke_refresh_plan.md",
+    "scripts/run_stage98_current_smoke_refresh.sh",
+    "scripts/build_stage98_current_smoke_refresh.py",
+    "hypotheses/hypothesis_register.yaml",
+    "repro/stage98_current_smoke_refresh/summary.csv",
+    "repro/stage98_current_smoke_refresh/raw_smoke.csv",
+    "repro/stage98_current_smoke_refresh/artifact_index.csv",
+    "repro/stage98_current_smoke_refresh/stage98_run.log",
+    "repro/stage98_current_smoke_refresh/scalar_binary_SET_2_3_2048/build.log",
+    "repro/stage98_current_smoke_refresh/scalar_binary_SET_2_3_2048/run.log",
+    "repro/stage98_current_smoke_refresh/active_pvw_target_SET_2_3_2048/build.log",
+    "repro/stage98_current_smoke_refresh/active_pvw_target_SET_2_3_2048/run.log",
+    "repro/stage98_current_smoke_refresh/backend_pvw_target_SET_2_3_2048/build.log",
+    "repro/stage98_current_smoke_refresh/backend_pvw_target_SET_2_3_2048/run.log",
+    "repro/stage98_current_smoke_refresh/scalar_ternary_SET_2_3_2048/build.log",
+]
+
 
 def read_csv(path: Path) -> List[Dict[str, str]]:
     if not path.exists():
@@ -463,6 +485,9 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     }
     stage97 = {
         row.get("gate"): row for row in read_csv(STAGE97_SOURCE_DELTA_GUARD)
+    }
+    stage98 = {
+        row.get("gate"): row for row in read_csv(STAGE98_CURRENT_SMOKE_REFRESH)
     }
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
@@ -1477,6 +1502,25 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         stage42.get("S42-STAGE97-SOURCE-DELTA-GUARD", {}).get("status")
         == "PASS"
     )
+    stage98_mismatches = []
+    expected_stage98 = {
+        "stage98_stage97_precondition": "PASS",
+        "stage98_scalar_binary_smoke": "PASS_SCALAR_BINARY_FULL_RUN",
+        "stage98_active_pvw_target_smoke": "PASS_ACTIVE_PVW_TARGET_GATE",
+        "stage98_backend_pvw_target_smoke": "PASS_BACKEND_PVW_TARGET_GATE",
+        "stage98_scalar_ternary_build": "PASS_SCALAR_TERNARY_BUILD",
+        "stage98_raw_log_guard": "PASS_RAW_LOGS_PRESENT",
+        "stage98_claim_guard": "PASS_CURRENT_SMOKE_ONLY_NO_SPEEDUP_CLAIM",
+        "stage98_decision": "PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH",
+    }
+    for gate, expected in expected_stage98.items():
+        got = stage98.get(gate, {}).get("status", "MISSING")
+        if got != expected:
+            stage98_mismatches.append(f"{gate}:status={got}")
+    stage42_stage98_ok = (
+        stage42.get("S42-STAGE98-CURRENT-SMOKE-REFRESH", {}).get("status")
+        == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -1562,6 +1606,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage95-public-source-reprobe-001",
         "stage96-upstream-delta-audit-001",
         "stage97-source-delta-guard-001",
+        "stage98-current-smoke-refresh-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -1919,6 +1964,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         *STAGE95_ARTIFACTS,
         *STAGE96_ARTIFACTS,
         *STAGE97_ARTIFACTS,
+        *STAGE98_ARTIFACTS,
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -2541,6 +2587,18 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             ),
         },
         {
+            "check": "stage98_current_smoke_refresh",
+            "status": "PASS" if not stage98_mismatches and stage42_stage98_ok else "FAIL",
+            "evidence": "repro/stage98_current_smoke_refresh/summary.csv",
+            "detail": "Stage98 current-head smoke refresh passes scalar/default, active PVW target, backend PVW target, and scalar ternary checks"
+            if not stage98_mismatches and stage42_stage98_ok
+            else "; ".join(stage98_mismatches)
+            or (
+                "S42-STAGE98-CURRENT-SMOKE-REFRESH:"
+                f"{stage42.get('S42-STAGE98-CURRENT-SMOKE-REFRESH', {}).get('status', 'MISSING')}!=PASS"
+            ),
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -2568,7 +2626,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87/Stage88/Stage89/Stage90/Stage91/Stage92/Stage93/Stage94/Stage95/Stage96/Stage97 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87/Stage88/Stage89/Stage90/Stage91/Stage92/Stage93/Stage94/Stage95/Stage96/Stage97/Stage98 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -2576,7 +2634,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, Stage86 secondary CMUX materialization design gate, Stage87 H14 backend FromDFT-add preflight, Stage88 H14 backend repeated gates, Stage89 H14 promotion policy integration, Stage90 external claim unlock, Stage91 final scoped package, Stage92 external unlock packet, Stage93 external lane attempt, Stage94 local frontier audit, Stage95 public source reprobe, Stage96 upstream delta audit, and Stage97 source delta guard are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, Stage86 secondary CMUX materialization design gate, Stage87 H14 backend FromDFT-add preflight, Stage88 H14 backend repeated gates, Stage89 H14 promotion policy integration, Stage90 external claim unlock, Stage91 final scoped package, Stage92 external unlock packet, Stage93 external lane attempt, Stage94 local frontier audit, Stage95 public source reprobe, Stage96 upstream delta audit, Stage97 source delta guard, and Stage98 current-head smoke refresh are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

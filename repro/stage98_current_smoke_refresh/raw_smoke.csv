@@ -1,0 +1,5 @@
+step,backend,key,param,status,build_log,run_log,notes
+scalar_binary_full_run,spqlios_avx512,BINARY,SET_2_3_2048,PASS,repro/stage98_current_smoke_refresh/scalar_binary_SET_2_3_2048/build.log,repro/stage98_current_smoke_refresh/scalar_binary_SET_2_3_2048/run.log,default scalar SAB path full run passed
+active_pvw_target_full_gate,spqlios_avx512,BINARY,SET_2_3_2048,PASS,repro/stage98_current_smoke_refresh/active_pvw_target_SET_2_3_2048/build.log,repro/stage98_current_smoke_refresh/active_pvw_target_SET_2_3_2048/run.log,explicit active-buffer sab_pvw target full bootstrap lane-equivalence gate passed
+backend_pvw_target_full_gate,spqlios_avx512,BINARY,SET_2_3_2048,PASS,repro/stage98_current_smoke_refresh/backend_pvw_target_SET_2_3_2048/build.log,repro/stage98_current_smoke_refresh/backend_pvw_target_SET_2_3_2048/run.log,explicit H14 backend sab_pvw target full bootstrap lane-equivalence gate passed
+scalar_ternary_build,spqlios_avx512,TERNARY,SET_2_3_2048,PASS,repro/stage98_current_smoke_refresh/scalar_ternary_SET_2_3_2048/build.log,,scalar non-binary build remains independent of PVW binary guards

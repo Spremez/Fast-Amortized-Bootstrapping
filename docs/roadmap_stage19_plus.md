@@ -3260,3 +3260,48 @@ Stage33 and Stage89 scalar binary/ternary smoke evidence remains passing.
 This is a guardrail and reproducibility result only; it does not upgrade any
 speedup, novelty, theorem-level, or hardware-counter claim.
 ```
+
+## Stage 98: Current-Head Smoke Refresh
+
+Goal:
+
+```text
+Refresh current-head smoke evidence after Stage97 so scalar/default SAB,
+explicit active-buffer PVW, explicit H14 backend PVW, and scalar ternary build
+continuity are directly proven on the latest committed code state.
+```
+
+Tasks:
+
+- run the default scalar binary full program for `BINARY SET_2_3_2048`;
+- run the explicit active-buffer PVW target full bootstrap gate;
+- run the explicit H14 backend FromDFT-add PVW target full bootstrap gate;
+- build the scalar ternary target to preserve non-binary scalar independence;
+- preserve raw build/run logs and aggregate them into a machine-checkable
+  summary;
+- keep the result scoped to current-head smoke continuity.
+
+Gate:
+
+- Stage97 must still report
+  `PASS_STAGE97_SOURCE_DELTA_GUARD_SCALAR_DEFAULT_SEPARATED`;
+- scalar binary run must end with `Pass`;
+- active-buffer PVW target gate must print
+  `SAB_PVW target full bootstrap gate: Pass`;
+- H14 backend PVW target gate must print
+  `SAB_PVW target full bootstrap gate: Pass`;
+- scalar ternary build must complete;
+- raw build/run logs must be present.
+
+Status:
+
+```text
+Completed as a current-head smoke refresh. Stage98 records
+PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH. On `HEAD=e89b76f`, the default scalar
+binary full run passes, the explicit active-buffer PVW target full bootstrap
+gate passes, the explicit H14 backend PVW target full bootstrap gate passes,
+and the scalar ternary build passes. Raw build/run logs are preserved under
+`repro/stage98_current_smoke_refresh/`. This is current-head continuity
+evidence only; it does not upgrade speedup, novelty, theorem-level, or
+hardware-counter claims.
+```
