@@ -1632,10 +1632,10 @@ Gate:
 Status:
 
 ```text
-Stage 55 is the current execution stage. It does not change scalar SAB,
-`sab_pvw_*`, performance evidence, or the scoped engineering claim. Its output
-only improves the auditability of the external 2025/686 full-text blocker and
-the next manual-review gate.
+Stage55 passed and remains part of the Stage19-71 control-plane closure. It
+does not change scalar SAB, `sab_pvw_*`, performance evidence, or the scoped
+engineering claim. Its output only improves the auditability of the external
+2025/686 full-text blocker and the next manual-review gate.
 ```
 
 ## Stage 56: Stage55 Final-Recheck Integration
@@ -2073,10 +2073,11 @@ Gate:
 Status:
 
 ```text
-Stage68 passed. Stage42, Stage51 G6, Stage57, and Stage59 agree on the latest
-control-plane closure label after Stage67. It did not run a new SAB benchmark
-and did not upgrade speedup, novelty, theorem-level, non-binary,
-all-parameter, or native hardware-counter claims.
+Stage68 passed and remains consistent after the Stage71 closure refresh.
+Stage42, Stage51 G6, Stage57, and Stage59 agree on the latest control-plane
+closure label. It did not run a new SAB benchmark and did not upgrade speedup,
+novelty, theorem-level, non-binary, all-parameter, or native hardware-counter
+claims.
 ```
 
 ## Stage 69: Local Variant Feasibility Audit
@@ -2113,8 +2114,8 @@ Gate:
 Status:
 
 ```text
-Stage69 is the current local variant feasibility stage. It is a routing and
-theory-control step only; any future implementation change still needs a
+Stage69 passed and is registered in the Stage19-71 closure. It is a routing
+and theory-control step only; any future implementation change still needs a
 separate Stage65-style correctness, full-SAB A/B, noise, resource, and
 post-variant refresh loop.
 ```

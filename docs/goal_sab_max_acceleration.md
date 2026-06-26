@@ -229,7 +229,7 @@ Stage67 then integrates that Stage66A refresh into the unified final recheck
 runner through an explicit switch, then rebuilds Stage42 closure after the
 Stage67 summary is finalized.
 Stage68 then repairs and verifies the closure/frontier label propagation so
-Stage51 G6 returns to `LOCAL_READY` after Stage67.
+Stage51 G6 remains `LOCAL_READY` through the Stage71 closure refresh.
 Stage69 then audits the remaining local variant space and rejects the direct
 H3 sparse-selector shortcut under the current encrypted-selector/key-format
 boundary, leaving further code work gated on native perf, full-text review, or
