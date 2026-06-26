@@ -767,3 +767,6 @@ Repro artifacts:
 - `repro/stage49_wsl_repeated_full_sab/r4/run_0.log`
 - `repro/stage49_wsl_repeated_full_sab/r4/run_1.log`
 - `repro/stage49_wsl_repeated_full_sab/r4/run_2.log`
+- `docs/stage50_performance_evidence_matrix.md`
+- `scripts/build_stage50_performance_evidence_matrix.py`
+- `repro/stage50_performance_evidence_matrix.csv`

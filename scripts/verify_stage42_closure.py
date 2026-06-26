@@ -24,6 +24,7 @@ STAGE46_WSL_TARGET = ROOT / "repro" / "stage46_wsl_active_state_target_smoke" / 
 STAGE47_WSL_FULL_SAB = ROOT / "repro" / "stage47_wsl_active_state_full_sab_smoke" / "summary.csv"
 STAGE48_WSL_NOISE = ROOT / "repro" / "stage48_wsl_active_state_noise_smoke" / "aggregate.csv"
 STAGE49_WSL_REPEATED_FULL_SAB = ROOT / "repro" / "stage49_wsl_repeated_full_sab" / "summary.csv"
+STAGE50_PERF_MATRIX = ROOT / "repro" / "stage50_performance_evidence_matrix.csv"
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -113,6 +114,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage47 = {row.get("r"): row for row in read_csv(STAGE47_WSL_FULL_SAB)}
     stage48 = {row.get("r"): row for row in read_csv(STAGE48_WSL_NOISE)}
     stage49 = {row.get("r"): row for row in read_csv(STAGE49_WSL_REPEATED_FULL_SAB)}
+    stage50 = {row.get("evidence_id"): row for row in read_csv(STAGE50_PERF_MATRIX)}
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
     closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
@@ -218,6 +220,41 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage42_stage49_ok = (
         stage42.get("S42-STAGE49-WSL-REPEATED-FULL-SAB", {}).get("status") == "PASS"
     )
+    stage50_mismatches = []
+    required_stage50_ids = [
+        "stage36_target_perf_r2",
+        "stage47_current_head_smoke_r2",
+        "stage49_current_head_repeated_r2",
+        "stage36_target_perf_r4",
+        "stage47_current_head_smoke_r4",
+        "stage49_current_head_repeated_r4",
+    ]
+    for evidence_id in required_stage50_ids:
+        row_data = stage50.get(evidence_id)
+        if not row_data:
+            stage50_mismatches.append(f"{evidence_id}:missing")
+            continue
+        if row_data.get("status") != "PASS":
+            stage50_mismatches.append(f"{evidence_id}:status={row_data.get('status')}")
+    for evidence_id in ["stage36_target_perf_r2", "stage36_target_perf_r4"]:
+        row_data = stage50.get(evidence_id, {})
+        try:
+            ci95_low = float(row_data.get("ci95_low", "0"))
+        except ValueError:
+            ci95_low = 0.0
+        if ci95_low <= 1.0:
+            stage50_mismatches.append(f"{evidence_id}:ci95_low={row_data.get('ci95_low')}")
+        if "not novelty/theory/all-parameter" not in row_data.get("claim_policy", ""):
+            stage50_mismatches.append(f"{evidence_id}:claim_policy_missing_guardrail")
+    for evidence_id in ["stage49_current_head_repeated_r2", "stage49_current_head_repeated_r4"]:
+        row_data = stage50.get(evidence_id, {})
+        if row_data.get("consistency_with_stage36") != "CURRENT_HEAD_MEAN_WITHIN_STAGE36_CI95":
+            stage50_mismatches.append(f"{evidence_id}:consistency={row_data.get('consistency_with_stage36')}")
+        if row_data.get("stats_sanity_label") != "CURRENT_HEAD_STABILITY_SUPPORTED_NOT_HIGH_STAT_CLAIM":
+            stage50_mismatches.append(f"{evidence_id}:stats_label={row_data.get('stats_sanity_label')}")
+    stage42_stage50_ok = (
+        stage42.get("S42-STAGE50-PERFORMANCE-MATRIX", {}).get("status") == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -257,6 +294,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage47-wsl-full-sab-smoke-001",
         "stage48-wsl-noise-smoke-001",
         "stage49-wsl-repeated-full-sab-001",
+        "stage50-performance-evidence-matrix-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -297,6 +335,9 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "repro/stage49_wsl_repeated_full_sab/r4/run_0.log",
         "repro/stage49_wsl_repeated_full_sab/r4/run_1.log",
         "repro/stage49_wsl_repeated_full_sab/r4/run_2.log",
+        "docs/stage50_performance_evidence_matrix.md",
+        "scripts/build_stage50_performance_evidence_matrix.py",
+        "repro/stage50_performance_evidence_matrix.csv",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -412,6 +453,15 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             or f"S42-STAGE49-WSL-REPEATED-FULL-SAB:{stage42.get('S42-STAGE49-WSL-REPEATED-FULL-SAB', {}).get('status', 'MISSING')}!=PASS",
         },
         {
+            "check": "stage50_performance_matrix",
+            "status": "PASS" if not stage50_mismatches and stage42_stage50_ok else "FAIL",
+            "evidence": "repro/stage50_performance_evidence_matrix.csv",
+            "detail": "Stage50 performance evidence matrix preserves high-stat/current-head/smoke claim boundaries and closure audit records it"
+            if not stage50_mismatches and stage42_stage50_ok
+            else "; ".join(stage50_mismatches)
+            or f"S42-STAGE50-PERFORMANCE-MATRIX:{stage42.get('S42-STAGE50-PERFORMANCE-MATRIX', {}).get('status', 'MISSING')}!=PASS",
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -439,7 +489,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -447,7 +497,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, and Stage49 repeated full-SAB stability are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, and Stage50 performance matrix are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

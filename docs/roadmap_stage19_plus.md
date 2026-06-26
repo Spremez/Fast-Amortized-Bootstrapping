@@ -1397,3 +1397,46 @@ speedup 1.376x over 3 runs, with range 1.356x-1.396x. This strengthens
 post-refactor current-head continuity for the promoted explicit path; Stage 36
 remains the high-stat performance evidence for claims.
 ```
+
+## Stage 50: Performance Evidence Matrix
+
+Goal:
+
+```text
+Unify Stage 36 high-stat target performance, Stage 47 current-head smoke, and
+Stage 49 current-head repeated stability into a single claim-boundary matrix
+so performance wording cannot confuse smoke, stability, and high-stat evidence.
+```
+
+Tasks:
+
+- generate `repro/stage50_performance_evidence_matrix.csv`;
+- generate `docs/stage50_performance_evidence_matrix.md`;
+- verify r=2/r=4 Stage 36 rows remain 10-run target-performance references;
+- verify r=2/r=4 Stage 49 rows remain current-head repeated stability only;
+- verify Stage47 is explicitly marked single-run smoke and superseded by
+  Stage49 for current-head continuity wording;
+- preserve stronger-claim blockers for novelty, theorem-level 2025/686,
+  native hardware-counter attribution, non-binary, and all-parameter claims.
+
+Gate:
+
+- all matrix rows must be `PASS`;
+- Stage36 r=2/r=4 CI95 lower bounds must remain above 1.0;
+- Stage49 r=2/r=4 mean speedups must remain within the Stage36 CI95 band;
+- stats/claim labels must distinguish high-stat target performance from
+  current-head stability and single-run smoke;
+- Stage42 closure/verifier must include Stage50 before relying on the updated
+  performance evidence boundary.
+
+Status:
+
+```text
+Stage 50 passed. Stage36 remains the performance claim source: r=2 mean
+1.191x with CI95 [1.075307, 1.306693], and r=4 mean 1.377x with CI95
+[1.314893, 1.438107]. Stage49 current-head repeated stability is consistent
+with Stage36: r=2 mean 1.265x and r=4 mean 1.376x both fall within the
+corresponding Stage36 CI95 bands. Stage47 is retained as historical one-run
+smoke and is superseded by Stage49 for current-head continuity wording.
+Stronger claims remain blocked.
+```
