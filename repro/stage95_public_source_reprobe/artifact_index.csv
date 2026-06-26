@@ -1,0 +1,5 @@
+artifact,purpose,producer
+repro/stage95_public_source_reprobe/summary.csv,Stage95 gate summary,scripts/build_stage95_public_source_reprobe.py
+repro/stage95_public_source_reprobe/route_matrix.csv,Public source route matrix,scripts/build_stage95_public_source_reprobe.py
+repro/stage95_public_source_reprobe/artifact_index.csv,Stage95 artifact index,scripts/build_stage95_public_source_reprobe.py
+docs/stage95_public_source_reprobe_log.md,Human-readable Stage95 log,scripts/build_stage95_public_source_reprobe.py

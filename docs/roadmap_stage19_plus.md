@@ -3127,3 +3127,41 @@ unsafe without a new key/security design, further AVX512 layout work still
 needs native counters or a distinct falsifiable hypothesis, and non-binary
 PVW-SAB remains blocked on reviewed 2025/686 branch semantics.
 ```
+
+## Stage 95: Public Source Reprobe
+
+Goal:
+
+```text
+Refresh public 2025/686 source routes after Stage94 and decide whether the
+full-text or novelty blockers can move.
+```
+
+Tasks:
+
+- rerun the Stage72 external source refresh;
+- summarize author metadata, DOI metadata, GitHub code route, ePrint PDF,
+  ACM PDF, and author-site PDF availability;
+- keep metadata/code visibility separate from reviewed theorem-level full
+  text;
+- preserve Stage91 claim guard unless an actual PDF/text artifact becomes
+  locally available and Stage38/manual review gates pass.
+
+Gate:
+
+- Stage94 must pass first;
+- Stage72 current source refresh must pass;
+- metadata/code route visibility must not be treated as reviewed full text;
+- direct PDF/text route accessibility is required before CB7 can move.
+
+Status:
+
+```text
+Completed as a public-source reprobe. Stage95 records
+PASS_STAGE95_PUBLIC_SOURCE_REPROBE_STRONGER_CLAIMS_BLOCKED. Author metadata,
+author BibTeX, DOI metadata, and the GitHub code route are visible, but the
+ePrint PDF and ACM PDF routes still report `403`, and the author-site guessed
+PDF reports `404`. Therefore public metadata improves citation context but
+does not unlock theorem-level 2025/686 source review, novelty claims, or
+paper-level claim upgrades.
+```

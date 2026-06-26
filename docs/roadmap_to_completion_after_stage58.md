@@ -156,3 +156,7 @@ Execution policy:
   deferred on low Amdahl ceiling, H13 remains full-SAB neutral/negative,
   post-processing tail remains below threshold, and the remaining branches are
   rejected or externally blocked.
+- After Stage95, public metadata/code routes are refreshed but do not unlock
+  theorem-level full-text review. Continue to require a local PDF/text artifact
+  via `FAB686_FULLTEXT_PATH` before Stage38/manual source-anchor review can
+  upgrade CB7 or novelty wording.

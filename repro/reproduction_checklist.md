@@ -213,6 +213,7 @@
 - [x] Run Stage92 external unlock execution packet; native-perf, 2025/686 full-text, novelty-review, registration, and final-refresh commands plus acceptance gates are recorded while stronger claims remain blocked.
 - [x] Run Stage93 external lane attempt; current WSL2/local environment still lacks usable native perf and recognized 2025/686 full text, so stronger claims remain blocked.
 - [x] Run Stage94 local frontier audit; no unblocked local hot-path candidate remains under current evidence and H14-C1 stays the preferred explicit r=6 path.
+- [x] Run Stage95 public source reprobe; public metadata/code routes are visible but direct full-text routes still do not provide a reviewed local artifact.
 - [ ] Run Stage85 repeated complete-SAB/noise/resource promotion gates only if a future preflight is full-SAB positive.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

@@ -29,6 +29,9 @@ STAGE93_EXTERNAL_LANE_ATTEMPT = (
 STAGE94_LOCAL_FRONTIER_AUDIT = (
     ROOT / "repro" / "stage94_local_frontier_audit" / "summary.csv"
 )
+STAGE95_PUBLIC_SOURCE_REPROBE = (
+    ROOT / "repro" / "stage95_public_source_reprobe" / "summary.csv"
+)
 OUT_CSV = ROOT / "repro" / "stage59_completion_route_readiness.csv"
 OUT_MD = ROOT / "docs" / "stage59_completion_route_readiness.md"
 
@@ -90,6 +93,7 @@ def build_rows() -> List[Dict[str, str]]:
     stage92 = by_key(STAGE92_EXTERNAL_UNLOCK, "gate")
     stage93 = by_key(STAGE93_EXTERNAL_LANE_ATTEMPT, "gate")
     stage94 = by_key(STAGE94_LOCAL_FRONTIER_AUDIT, "gate")
+    stage95 = by_key(STAGE95_PUBLIC_SOURCE_REPROBE, "gate")
 
     local_ready = all(
         status_of(frontier, row_id).startswith("LOCAL")
@@ -120,6 +124,10 @@ def build_rows() -> List[Dict[str, str]]:
     stage94_done = (
         status_of(stage94, "stage94_decision")
         == "PASS_STAGE94_LOCAL_FRONTIER_AUDIT_NO_NEW_HOTPATH"
+    )
+    stage95_done = (
+        status_of(stage95, "stage95_decision")
+        == "PASS_STAGE95_PUBLIC_SOURCE_REPROBE_STRONGER_CLAIMS_BLOCKED"
     )
 
     rows = [
@@ -227,10 +235,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage91_final_package/summary.csv; "
                 "repro/stage92_external_unlock_execution/summary.csv; "
                 "repro/stage93_external_lane_attempt/summary.csv; "
-                "repro/stage94_local_frontier_audit/summary.csv"
+                "repro/stage94_local_frontier_audit/summary.csv; "
+                "repro/stage95_public_source_reprobe/summary.csv"
             ),
             "A9 remains scoped unless CB5/CB6/CB7 are resolved; Stage91 must keep stronger claims blocked.",
-            "Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93/94 after source, backend, external-evidence, or claim-scope changes.",
+            "Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93/94/95 after source, backend, external-evidence, or claim-scope changes.",
             "Provides a scoped final engineering package; does not unlock paper-level or theoretical claims.",
         ),
     ]
@@ -254,6 +263,11 @@ def decision(rows: List[Dict[str, str]]) -> str:
         status_of(stage94, "stage94_decision")
         == "PASS_STAGE94_LOCAL_FRONTIER_AUDIT_NO_NEW_HOTPATH"
     )
+    stage95 = by_key(STAGE95_PUBLIC_SOURCE_REPROBE, "gate")
+    stage95_done = (
+        status_of(stage95, "stage95_decision")
+        == "PASS_STAGE95_PUBLIC_SOURCE_REPROBE_STRONGER_CLAIMS_BLOCKED"
+    )
     expected = {
         "S59-R1-SCOPED-ENGINEERING": "LOCAL_READY",
         "S59-R2-CURRENT-HEAD-REFRESH": "READY_LOCAL_REFRESH",
@@ -268,6 +282,7 @@ def decision(rows: List[Dict[str, str]]) -> str:
         and stage92_done
         and stage93_done
         and stage94_done
+        and stage95_done
     )
     if ok:
         return "PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED"

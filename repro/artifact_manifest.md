@@ -1426,3 +1426,14 @@ Repro artifacts:
 - `repro/stage94_local_frontier_audit/summary.csv`
 - `repro/stage94_local_frontier_audit/candidates.csv`
 - `repro/stage94_local_frontier_audit/artifact_index.csv`
+
+## Stage 95 Public Source Reprobe
+
+- `docs/stage95_public_source_reprobe_log.md`
+- `experiments/stage95_public_source_reprobe_plan.md`
+- `scripts/run_stage95_public_source_reprobe.sh`
+- `scripts/build_stage95_public_source_reprobe.py`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage95_public_source_reprobe/summary.csv`
+- `repro/stage95_public_source_reprobe/route_matrix.csv`
+- `repro/stage95_public_source_reprobe/artifact_index.csv`

@@ -681,3 +681,33 @@ hypotheses:
       - Stage94 changes scalar/default behavior or upgrades stronger claims
       - closure/verifier, run log, artifact manifest, or reproduction
         checklist omit Stage94 artifacts
+  - id: H20_public_source_reprobe
+    statement: >
+      After Stage94 closes the current local optimization frontier, public
+      source routes for 2025/686 should be reprobed because external
+      availability can change, but metadata/code visibility must not be treated
+      as reviewed theorem-level full text.
+    mechanism: >
+      Stage95 reruns the Stage72 external source refresh and summarizes the
+      ePrint, ACM, author page, author BibTeX, DOI metadata, and GitHub code
+      routes. It then checks Stage91 claim boundaries and keeps CB7/CB6
+      blocked unless an actual PDF/text artifact is locally available for
+      Stage38 and manual source-anchor review.
+    status: stage95_public_source_reprobe_stronger_claims_blocked
+    evidence: docs/stage95_public_source_reprobe_log.md; experiments/stage95_public_source_reprobe_plan.md; scripts/run_stage95_public_source_reprobe.sh; scripts/build_stage95_public_source_reprobe.py; repro/stage95_public_source_reprobe/summary.csv; repro/stage95_public_source_reprobe/route_matrix.csv; repro/stage95_public_source_reprobe/artifact_index.csv
+    current_decision: >
+      Stage95 records PASS_STAGE95_PUBLIC_SOURCE_REPROBE_STRONGER_CLAIMS_BLOCKED.
+      Author metadata, author BibTeX, DOI metadata, and the GitHub code route
+      are visible. Direct full-text routes remain blocked in the current
+      command-line reprobe: ePrint PDF and ACM PDF return 403/challenge, and
+      the author-site guessed PDF returns 404. Therefore public metadata/code
+      routes improve context but do not unlock theorem-level citations,
+      novelty wording, or paper-level claim upgrades.
+    failure_criteria:
+      - Stage95 treats metadata or code route visibility as reviewed full text
+      - Stage95 upgrades CB7/CB6 without a saved and hashed local PDF/text
+        artifact plus Stage38/manual review
+      - Stage95 omits ePrint/ACM/author/GitHub route statuses from the route
+        matrix
+      - closure/verifier, run log, artifact manifest, or reproduction
+        checklist omit Stage95 artifacts
