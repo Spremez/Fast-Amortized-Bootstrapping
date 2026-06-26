@@ -461,3 +461,38 @@ hypotheses:
         after accounting for register pressure and memory traffic
       - the candidate lacks staged correctness, full-SAB A/B, noise/resource,
         and claim-policy gates
+  - id: H14_secondary_cmux_materialization
+    statement: >
+      Because Stage84 shows the selected MAT-body tile preflight does not
+      propagate to complete SAB, and Stage82 still leaves a material non-MAT
+      body share, the next local optimization should test whether CMUX
+      materialization traffic can be reduced below the prior wrapper-level
+      from_DFT/add fusions.
+    mechanism: >
+      The current CMUX computes `out = in1 + FromDFT(MAT * (in2 - in1))`.
+      Stage18/23 already tested wrapper-level from_DFT/add fusion and found it
+      neutral. Stage86 therefore screens candidates that move to a distinct
+      layer: either backend inverse-DFT materialization, DFT-lazy lifetime, or
+      butterfly-pair sub sharing. The selected H14-C1 candidate keeps the same
+      algebra and key format, but attempts to add the torus addend during
+      backend inverse materialization rather than in a second torus pass.
+    status: stage86_backend_materialization_preflight_selected
+    evidence: docs/stage82_post_h11_profile_log.md; docs/stage84_h13_r6_tile_sweep_preflight_log.md; docs/stage86_secondary_cmux_materialization_log.md; theory_checks/h14_secondary_cmux_materialization.md; algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md; repro/stage82_post_h11_profile/profile_metrics.csv; repro/stage84_h13_r6_tile_sweep_preflight/summary.csv; repro/stage86_secondary_cmux_materialization/decision.csv; repro/stage86_secondary_cmux_materialization/candidates.csv
+    current_decision: >
+      Stage86 records that the post-H11 r=6 body profile still has a material
+      non-MAT share: non-MAT body is 52.31% of full body, from_DFT+add is
+      35.41%, and sub is 13.41%. It rejects repeating Stage18/23 epilogue-only
+      fusion, rejects DFT-lazy bit-window for now because it does not reduce
+      inverse DFT count and risks large DFT scratch arrays, keeps butterfly
+      sub sharing as a fallback, and selects H14-C1 backend FromDFT+add
+      callback as the next explicit preflight. No scalar/default path changes
+      and no complete-SAB acceleration claim are made by Stage86.
+    failure_criteria:
+      - the backend callback is only a wrapper-level fusion equivalent to
+        Stage18/23
+      - materialization microbench improves but complete-SAB repeated A/B is
+        neutral or negative
+      - the implementation requires key-format changes, plaintext selector
+        knowledge, or secret-dependent metadata without a security proof
+      - correctness, noise, resource, or closure gates are skipped before
+        promotion

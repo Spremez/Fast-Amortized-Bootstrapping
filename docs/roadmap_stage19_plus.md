@@ -2763,7 +2763,7 @@ complete-SAB smoke. This stage remains conditional on a future Stage84-style
 candidate that is positive at full-SAB level.
 ```
 
-## Planned Stage 86: Secondary CMUX Materialization Pass
+## Stage 86: Secondary CMUX Materialization Pass
 
 Goal:
 
@@ -2789,10 +2789,13 @@ Gate:
 Status:
 
 ```text
-Next local route after Stage84. The first action is to decide whether the
-Stage82 non-MAT body share can be reduced with a schedule-window/lifetime
-change that is materially different from prior neutral Stage18/23 epilogue
-fusions.
+Completed as a design gate. Stage86 reads the Stage82 r=6 profile and the
+Stage84 not-promoted decision, confirms that non-MAT CMUX/body work remains
+material (`52.31%` full-body share, with `from_DFT+add=35.41%` and
+`sub=13.41%`), rejects repeating Stage18/23 epilogue-only fusions, and
+selects H14-C1 backend `FromDFT+add` materialization callback as the next
+explicit preflight. No code path is promoted and no complete-SAB speedup
+claim is upgraded by this stage.
 ```
 
 ## Planned Stage 87: Final Local High-Stat Consolidation
@@ -2820,7 +2823,8 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage86 decisions.
+Waiting for the Stage86-selected backend materialization implementation
+preflight to be promoted, neutral, or rejected.
 ```
 
 ## Planned Stage 88: External Claim Unlock

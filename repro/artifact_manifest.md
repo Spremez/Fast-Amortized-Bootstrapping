@@ -1264,3 +1264,13 @@ Repro artifacts:
 - `repro/stage84_h13_r6_tile_sweep_preflight/full_sab_tile4_r6/run_0.log`
 - `repro/stage84_h13_r6_tile_sweep_preflight/full_sab_fulltile_r6/summary.csv`
 - `repro/stage84_h13_r6_tile_sweep_preflight/full_sab_fulltile_r6/run_0.log`
+
+## Stage 86 Secondary CMUX Materialization
+
+- `docs/stage86_secondary_cmux_materialization_log.md`
+- `experiments/stage86_secondary_cmux_materialization_plan.md`
+- `scripts/build_stage86_secondary_cmux_materialization.py`
+- `theory_checks/h14_secondary_cmux_materialization.md`
+- `algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md`
+- `repro/stage86_secondary_cmux_materialization/candidates.csv`
+- `repro/stage86_secondary_cmux_materialization/decision.csv`

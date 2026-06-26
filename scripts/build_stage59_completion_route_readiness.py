@@ -172,11 +172,12 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage81_next_variant_triage.csv; "
                 "repro/stage82_post_h11_profile/decision.csv; "
                 "repro/stage83_mat_body_design_check/decision.csv; "
-                "repro/stage84_h13_r6_tile_sweep_preflight/summary.csv"
+                "repro/stage84_h13_r6_tile_sweep_preflight/summary.csv; "
+                "repro/stage86_secondary_cmux_materialization/decision.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage84 completed the H13-C1 r=6 full-output tile-sweep preflight as kernel-only/not promoted because complete-SAB smoke was neutral/negative. Do not open Stage85 from this evidence; the next local route is Stage86 secondary CMUX/materialization candidate routing.",
-            "Does not upgrade r=6 claims or defaults; Stage84 is recorded as a not-promoted preflight, and Stage86 is the next optimization route.",
+            "Stage86 selected H14-C1 backend FromDFT+add materialization as the next explicit local preflight after Stage84 remained kernel-only/not promoted. Implement it only behind an explicit flag, then run correctness, microbench, full-SAB A/B, and noise/resource gates.",
+            "Does not upgrade r=6 claims or defaults; Stage84 remains a not-promoted preflight, and Stage86 is design-only until the H14-C1 implementation gate passes.",
         ),
         route_row(
             "S59-R7-FINAL-PAPER-PACKAGE",

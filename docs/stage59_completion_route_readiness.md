@@ -9,7 +9,7 @@ Stage 59 turns the post-Stage58 state into an explicit route to completion. It d
 | S59-R3-NATIVE-PERF | external unlock | MAT-AVX512 hardware-counter attribution | EXTERNAL_BLOCKED | STAGE28_RUN_BENCH=1 bash scripts/run_stage28_native_perf_counter_gate.sh |
 | S59-R4-FULLTEXT-686 | external unlock | 2025/686 theorem/protocol source review | EXTERNAL_FULLTEXT_BLOCKED | FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh |
 | S59-R5-NOVELTY-REVIEW | manual review | novelty and related-work distinction | EXTERNAL_REVIEW_BLOCKED | FINAL_RECHECK_RELATED_WORK=1 bash scripts/run_final_goal_recheck.sh |
-| S59-R6-OPTIONAL-VARIANTS | optional local expansion | future algorithmic variants | READY_OPTIONAL_LOCAL_TRIAGE | Stage84 completed the H13-C1 r=6 full-output tile-sweep preflight as kernel-only/not promoted because complete-SAB smoke was neutral/negative. Do not open Stage85 from this evidence; the next local route is Stage86 secondary CMUX/materialization candidate routing. |
+| S59-R6-OPTIONAL-VARIANTS | optional local expansion | future algorithmic variants | READY_OPTIONAL_LOCAL_TRIAGE | Stage86 selected H14-C1 backend FromDFT+add materialization as the next explicit local preflight after Stage84 remained kernel-only/not promoted. Implement it only behind an explicit flag, then run correctness, microbench, full-SAB A/B, and noise/resource gates. |
 | S59-R7-FINAL-PAPER-PACKAGE | final freeze | paper/release claim package | WAIT_STRONGER_UNLOCKS | Run final recheck and Stage40-style freeze after external unlocks and manual claim review. |
 
 Decision: `PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED`

@@ -204,7 +204,8 @@
 - [x] Add and run Stage82 post-H11 fused r=6 profile attribution; exact schedule counts pass and MAT body remains the primary single profile target.
 - [x] Add and run Stage83 MAT body theory/design check; H13-C1 r=6 full-output tile sweep is selected as the next explicit preflight, and sparse selector skipping remains key-format/security blocked.
 - [x] Add and run Stage84 H13 r=6 MAT tile-sweep preflight behind `MAT_TRGSW_AVX512_R6_FULLTILE`; correctness and MAT microbench are positive, but complete-SAB smoke is not, so it is not promoted.
-- [ ] Run Stage86 secondary CMUX/materialization candidate routing before adding another local hot-path variant.
+- [x] Run Stage86 secondary CMUX/materialization candidate routing; H14-C1 backend `FromDFT+add` callback preflight is selected, with no code promotion.
+- [ ] Implement the Stage86-selected H14-C1 backend materialization preflight behind an explicit flag and run correctness, microbench, full-SAB A/B, and noise/resource gates before any promotion.
 - [ ] Run Stage85 repeated complete-SAB/noise/resource promotion gates only if a future preflight is full-SAB positive.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.
