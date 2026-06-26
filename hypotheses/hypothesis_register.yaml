@@ -433,8 +433,8 @@ hypotheses:
       cost per MAT external-product update or its materialization overhead
       while preserving encrypted selector semantics and the current key-format
       safety boundary unless a separate security argument is supplied.
-    status: stage83_design_check_completed_stage84_preflight_selected
-    evidence: docs/stage82_post_h11_profile_log.md; docs/stage83_mat_body_design_check_log.md; theory_checks/h13_mat_body_reduction_design.md; algorithm_variants/pvw_sab_h13_mat_body_design.md; repro/stage82_post_h11_profile/profile_metrics.csv; repro/stage83_mat_body_design_check/decision.csv
+    status: stage84_kernel_only_not_promoted
+    evidence: docs/stage82_post_h11_profile_log.md; docs/stage83_mat_body_design_check_log.md; docs/stage84_h13_r6_tile_sweep_preflight_log.md; theory_checks/h13_mat_body_reduction_design.md; algorithm_variants/pvw_sab_h13_mat_body_design.md; repro/stage82_post_h11_profile/profile_metrics.csv; repro/stage83_mat_body_design_check/decision.csv; repro/stage84_h13_r6_tile_sweep_preflight/summary.csv
     current_decision: >
       Stage83 completes the H13 theory/design check and selects exactly one
       next local preflight: H13-C1 r=6 full-output tile sweep. The candidate
@@ -443,9 +443,15 @@ hypotheses:
       flag or isolated harness. It does not reduce dense m^2 selector/FMA
       arithmetic and therefore cannot support a SAB speedup claim without
       non-instrumented complete-SAB A/B. Sparse selector skipping remains
-      blocked by key-format/security requirements. Stage84 may implement only
-      the selected preflight; promotion still requires correctness,
-      repeated full-SAB, noise/resource, and closure gates.
+      blocked by key-format/security requirements. Stage84 implements the
+      selected preflight behind MAT_TRGSW_AVX512_R6_FULLTILE. Correctness
+      passes and r=6 MAT microbench is mildly positive versus tile4:
+      1.036x at the DFT-output boundary and 1.021x at the full-output
+      boundary. Complete-SAB smoke does not propagate the kernel signal:
+      fulltile/tile4 is 0.974x and scalar speedup drops from 1.392x to
+      1.328x. Therefore H13-C1 is kept as a kernel-only ablation and is not
+      promoted; Stage85 is not opened from this evidence. The next local route
+      is Stage86 secondary CMUX/materialization analysis.
     failure_criteria:
       - the proposed design only changes loop shape without a credible
         arithmetic, memory, or materialization reduction

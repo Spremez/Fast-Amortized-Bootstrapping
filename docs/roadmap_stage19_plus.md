@@ -2693,7 +2693,7 @@ skipping remains blocked by key-format/security requirements. Stage83 does not
 promote code or change claim scope.
 ```
 
-## Planned Stage 84: H13 R6 MAT Tile-Sweep Preflight
+## Stage 84: H13 R6 MAT Tile-Sweep Preflight
 
 Goal:
 
@@ -2722,7 +2722,14 @@ Gate:
 Status:
 
 ```text
-Planned after Stage83. This is the next local executable optimization stage.
+Completed. Stage84 implements `MAT_TRGSW_AVX512_R6_FULLTILE=true` behind an
+explicit flag. Kernel correctness passes and r=6 MAT microbench is mildly
+positive versus the current r>4 tile4 fused path: DFT-output `1.036x` and
+full-output `1.021x`. The complete-SAB r=6 one-run smoke is not positive:
+fulltile/tile4 is `0.974x`, with scalar speedup dropping from `1.392x` to
+`1.328x`. The decision is
+PASS_STAGE84_H13_R6_TILE_SWEEP_KERNEL_ONLY_NOT_PROMOTED. Stage85 is not opened
+from this evidence; the local route moves to Stage86 candidate routing.
 ```
 
 ## Planned Stage 85: H13 Full-SAB Promotion Gate
@@ -2751,7 +2758,9 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage84.
+Not opened after Stage84 because the r=6 tile-sweep preflight did not improve
+complete-SAB smoke. This stage remains conditional on a future Stage84-style
+candidate that is positive at full-SAB level.
 ```
 
 ## Planned Stage 86: Secondary CMUX Materialization Pass
@@ -2780,7 +2789,10 @@ Gate:
 Status:
 
 ```text
-Conditional fallback after Stage84/85.
+Next local route after Stage84. The first action is to decide whether the
+Stage82 non-MAT body share can be reduced with a schedule-window/lifetime
+change that is materially different from prior neutral Stage18/23 epilogue
+fusions.
 ```
 
 ## Planned Stage 87: Final Local High-Stat Consolidation
@@ -2808,7 +2820,7 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage84/85/86 decisions.
+Waiting for Stage86 decisions.
 ```
 
 ## Planned Stage 88: External Claim Unlock
@@ -2871,5 +2883,5 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage84-88 decisions.
+Waiting for Stage86-88 decisions.
 ```

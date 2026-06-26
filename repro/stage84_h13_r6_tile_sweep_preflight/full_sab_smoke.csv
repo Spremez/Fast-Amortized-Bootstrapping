@@ -1,0 +1,2 @@
+r,tile4_status,fulltile_status,tile4_pvw_avg_us,fulltile_pvw_avg_us,fulltile_vs_tile4,tile4_speedup_vs_scalar,fulltile_speedup_vs_scalar,tile4_evidence,fulltile_evidence
+6,Pass,Pass,39879943.000,40964582.000,0.974,1.392,1.328,repro/stage84_h13_r6_tile_sweep_preflight/full_sab_tile4_r6/summary.csv,repro/stage84_h13_r6_tile_sweep_preflight/full_sab_fulltile_r6/summary.csv

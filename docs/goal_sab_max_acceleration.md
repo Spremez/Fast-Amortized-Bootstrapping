@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-83`. This label tracks the
+Current control-plane closure label: `Stage 19-84`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -94,6 +94,7 @@ evidence.
 | Stage 81 next-variant triage | audit synthesis | n/a | profile first, no code promotion | no immediate new hot-path code variant is justified; H3 remains security/key-format blocked, r>4/r=8 tiling is not selected, post-processing remains below threshold, and the next local step is post-H11 fused r=6 profile attribution |
 | Stage 82 post-H11 fused r=6 profile | `spqlios_avx512` | 6 | MAT body primary, no code promotion | profile-only run preserves CMUX/MAT EP `573440`, NCMUX `5080`, sub_a `39`, copyback `0`; instrumented speedup `1.405x` is attribution-only; MAT EP is `47.6916%` of full body time and remains the primary single target |
 | Stage 83 MAT body design check | audit synthesis | 6 | Stage84 preflight selected, no code promotion | H13-C1 r=6 full-output tile sweep is selected as the next explicit preflight; sparse selector skipping remains blocked by key-format/security requirements; Amdahl bounds and full-SAB gates are recorded before any implementation claim |
+| Stage 84 H13 r=6 tile-sweep preflight | `spqlios_avx512` | 6 | kernel-only, not promoted | `MAT_TRGSW_AVX512_R6_FULLTILE` passes correctness and improves r=6 MAT microbench by `1.036x` DFT-output and `1.021x` full-output versus tile4, but complete-SAB smoke is `0.974x` versus tile4, so Stage85 is not opened |
 
 Current conclusion:
 
@@ -301,7 +302,10 @@ promoting new code or changing default paths. Stage83 then converts that
 profile into the H13 MAT-body design route: the next local executable
 candidate is an explicit r=6 full-output tile preflight, while sparse selector
 skipping remains blocked and no speedup, default-path, theorem-level, or
-novelty claim is upgraded.
+novelty claim is upgraded. Stage84 implements that preflight behind
+`MAT_TRGSW_AVX512_R6_FULLTILE`; the kernel-level signal is mildly positive,
+but the complete-SAB r=6 smoke is not positive, so the candidate is kept as a
+kernel-only ablation and not promoted.
 ```
 
 ## Invariants
@@ -417,10 +421,10 @@ Stage 80: promotion integration or rejection audit. [completed; H11 r=6 fused ke
 Stage 81: next variant triage. [completed; profile-first, no code promotion]
 Stage 82: post-H11 fused r=6 profile attribution. [completed; MAT body primary, no code promotion]
 Stage 83: MAT body reduction theory/design check. [completed; H13-C1 r=6 tile-sweep preflight selected, no code promotion]
-Stage 84: H13 r=6 MAT tile-sweep preflight. [next local executable optimization stage]
-Stage 85: H13 full-SAB promotion gate. [waiting for Stage84]
-Stage 86: secondary CMUX materialization pass. [conditional fallback]
-Stage 87: final local high-stat consolidation. [waiting for Stage84-86 decisions]
+Stage 84: H13 r=6 MAT tile-sweep preflight. [completed; kernel-only positive but full-SAB not promoted]
+Stage 85: H13 full-SAB promotion gate. [not opened after Stage84; requires future full-SAB-positive preflight]
+Stage 86: secondary CMUX materialization pass. [next local route]
+Stage 87: final local high-stat consolidation. [waiting for Stage86 decisions]
 Stage 88: external claim unlock. [blocked on native perf, full text, and manual novelty review]
-Stage 89: final SAB optimization package. [waiting for Stage84-88 decisions]
+Stage 89: final SAB optimization package. [waiting for Stage86-88 decisions]
 ```

@@ -96,6 +96,7 @@ def build_rows() -> List[Dict[str, str]]:
                 "Stage67 final-recheck Stage66A integration" in stage42_detail
                 and "Stage82 post-H11 profile" in stage42_detail
                 and "Stage83 MAT body design check" in stage42_detail
+                and "Stage84 H13 r=6 tile-sweep preflight" in stage42_detail
             )
         )
     )
@@ -114,6 +115,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "Stage67 final-recheck Stage66A integration" in g6_detail
         and "Stage82 post-H11 profile" in g6_detail
         and "Stage83 MAT body design check" in g6_detail
+        and "Stage84 H13 r=6 tile-sweep preflight" in g6_detail
     )
 
     stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
@@ -138,6 +140,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage81_next_variant_triage" in r6.get("evidence", "")
         and "stage82_post_h11_profile" in r6.get("evidence", "")
         and "stage83_mat_body_design_check" in r6.get("evidence", "")
+        and "stage84_h13_r6_tile_sweep_preflight" in r6.get("evidence", "")
     )
 
     rows = [

@@ -1,0 +1,5 @@
+bench,r,tile4_mat_avg_us,fulltile_mat_avg_us,fulltile_vs_tile4,tile4_speedup_vs_scalar,fulltile_speedup_vs_scalar,tile4_log,fulltile_log
+dft_output,6,31.074,29.999,1.036,1.226,1.230,repro/stage84_h13_r6_tile_sweep_preflight/tile4.log,repro/stage84_h13_r6_tile_sweep_preflight/fulltile.log
+dft_output,8,45.133,46.014,0.981,1.161,1.079,repro/stage84_h13_r6_tile_sweep_preflight/tile4.log,repro/stage84_h13_r6_tile_sweep_preflight/fulltile.log
+full_output,6,45.086,44.173,1.021,1.417,1.425,repro/stage84_h13_r6_tile_sweep_preflight/tile4.log,repro/stage84_h13_r6_tile_sweep_preflight/fulltile.log
+full_output,8,70.040,68.053,1.029,1.283,1.199,repro/stage84_h13_r6_tile_sweep_preflight/tile4.log,repro/stage84_h13_r6_tile_sweep_preflight/fulltile.log

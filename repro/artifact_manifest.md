@@ -1245,3 +1245,22 @@ Repro artifacts:
 - `algorithm_variants/pvw_sab_h13_mat_body_design.md`
 - `repro/stage83_mat_body_design_check/candidates.csv`
 - `repro/stage83_mat_body_design_check/decision.csv`
+
+## Stage 84 H13 R6 Tile-Sweep Preflight
+
+- `docs/stage84_h13_r6_tile_sweep_preflight_log.md`
+- `experiments/stage84_h13_r6_tile_sweep_preflight_plan.md`
+- `scripts/run_stage84_h13_r6_tile_sweep_preflight.sh`
+- `scripts/build_stage84_h13_r6_tile_sweep_preflight.py`
+- `src/mosfhet/Makefile.def`
+- `src/mosfhet/src/mattrgsw.c`
+- `repro/stage84_h13_r6_tile_sweep_preflight/stage84_run.log`
+- `repro/stage84_h13_r6_tile_sweep_preflight/tile4.log`
+- `repro/stage84_h13_r6_tile_sweep_preflight/fulltile.log`
+- `repro/stage84_h13_r6_tile_sweep_preflight/kernel_comparison.csv`
+- `repro/stage84_h13_r6_tile_sweep_preflight/full_sab_smoke.csv`
+- `repro/stage84_h13_r6_tile_sweep_preflight/summary.csv`
+- `repro/stage84_h13_r6_tile_sweep_preflight/full_sab_tile4_r6/summary.csv`
+- `repro/stage84_h13_r6_tile_sweep_preflight/full_sab_tile4_r6/run_0.log`
+- `repro/stage84_h13_r6_tile_sweep_preflight/full_sab_fulltile_r6/summary.csv`
+- `repro/stage84_h13_r6_tile_sweep_preflight/full_sab_fulltile_r6/run_0.log`
