@@ -433,14 +433,19 @@ hypotheses:
       cost per MAT external-product update or its materialization overhead
       while preserving encrypted selector semantics and the current key-format
       safety boundary unless a separate security argument is supplied.
-    status: stage82_selected_for_theory_design_check_not_implementation
-    evidence: docs/stage82_post_h11_profile_log.md; repro/stage82_post_h11_profile/profile_metrics.csv
+    status: stage83_design_check_completed_stage84_preflight_selected
+    evidence: docs/stage82_post_h11_profile_log.md; docs/stage83_mat_body_design_check_log.md; theory_checks/h13_mat_body_reduction_design.md; algorithm_variants/pvw_sab_h13_mat_body_design.md; repro/stage82_post_h11_profile/profile_metrics.csv; repro/stage83_mat_body_design_check/decision.csv
     current_decision: >
-      H13 is not authorized for code yet. Stage82 only authorizes a
-      theory/design check that enumerates candidate MAT body reductions,
-      expected arithmetic and memory effects, key-format/security risks,
-      isolated correctness gates, and full-SAB A/B gates. Implementation can
-      start only after that check selects a falsifiable low-risk candidate.
+      Stage83 completes the H13 theory/design check and selects exactly one
+      next local preflight: H13-C1 r=6 full-output tile sweep. The candidate
+      is low key-format risk because it keeps the current MAT_TRGSW_DFT layout
+      and tests dec-row reuse/register-pressure tradeoffs behind an explicit
+      flag or isolated harness. It does not reduce dense m^2 selector/FMA
+      arithmetic and therefore cannot support a SAB speedup claim without
+      non-instrumented complete-SAB A/B. Sparse selector skipping remains
+      blocked by key-format/security requirements. Stage84 may implement only
+      the selected preflight; promotion still requires correctness,
+      repeated full-SAB, noise/resource, and closure gates.
     failure_criteria:
       - the proposed design only changes loop shape without a credible
         arithmetic, memory, or materialization reduction

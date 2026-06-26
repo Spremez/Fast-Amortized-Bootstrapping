@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-82`. This label tracks the
+Current control-plane closure label: `Stage 19-83`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -93,6 +93,7 @@ evidence.
 | Stage 80 promotion policy audit | `spqlios_avx512` | 6 | keep experimental, not promoted | Stage80 reads Stage79, passes current-head scalar/PVW smoke and static default-path guards, and records `PASS_RGT4_FUSED_KEEP_EXPERIMENTAL_NOT_PROMOTED`; `MAT_TRGSW_AVX512_RGT4_FUSED` remains explicit only, scalar/default paths unchanged |
 | Stage 81 next-variant triage | audit synthesis | n/a | profile first, no code promotion | no immediate new hot-path code variant is justified; H3 remains security/key-format blocked, r>4/r=8 tiling is not selected, post-processing remains below threshold, and the next local step is post-H11 fused r=6 profile attribution |
 | Stage 82 post-H11 fused r=6 profile | `spqlios_avx512` | 6 | MAT body primary, no code promotion | profile-only run preserves CMUX/MAT EP `573440`, NCMUX `5080`, sub_a `39`, copyback `0`; instrumented speedup `1.405x` is attribution-only; MAT EP is `47.6916%` of full body time and remains the primary single target |
+| Stage 83 MAT body design check | audit synthesis | 6 | Stage84 preflight selected, no code promotion | H13-C1 r=6 full-output tile sweep is selected as the next explicit preflight; sparse selector skipping remains blocked by key-format/security requirements; Amdahl bounds and full-SAB gates are recorded before any implementation claim |
 
 Current conclusion:
 
@@ -296,7 +297,11 @@ hot-path implementation is justified from the current evidence. The next local
 engineering action, before any new code variant, is profile-only post-H11
 fused r=6 attribution to identify the actual remaining bottleneck. Stage82
 runs that profile and records MAT body as the primary single target without
-promoting new code or changing default paths.
+promoting new code or changing default paths. Stage83 then converts that
+profile into the H13 MAT-body design route: the next local executable
+candidate is an explicit r=6 full-output tile preflight, while sparse selector
+skipping remains blocked and no speedup, default-path, theorem-level, or
+novelty claim is upgraded.
 ```
 
 ## Invariants
@@ -411,6 +416,11 @@ Stage 79: r>4 fused high-stat confirmation. [completed; review required, not aut
 Stage 80: promotion integration or rejection audit. [completed; H11 r=6 fused kept experimental, not promoted]
 Stage 81: next variant triage. [completed; profile-first, no code promotion]
 Stage 82: post-H11 fused r=6 profile attribution. [completed; MAT body primary, no code promotion]
-Stage 83: external claim unlock. [blocked on native perf, full text, and manual novelty review]
-Stage 84: final SAB optimization package. [waiting for Stage83 and future profile-backed variants]
+Stage 83: MAT body reduction theory/design check. [completed; H13-C1 r=6 tile-sweep preflight selected, no code promotion]
+Stage 84: H13 r=6 MAT tile-sweep preflight. [next local executable optimization stage]
+Stage 85: H13 full-SAB promotion gate. [waiting for Stage84]
+Stage 86: secondary CMUX materialization pass. [conditional fallback]
+Stage 87: final local high-stat consolidation. [waiting for Stage84-86 decisions]
+Stage 88: external claim unlock. [blocked on native perf, full text, and manual novelty review]
+Stage 89: final SAB optimization package. [waiting for Stage84-88 decisions]
 ```

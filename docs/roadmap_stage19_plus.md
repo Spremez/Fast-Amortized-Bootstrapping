@@ -2651,7 +2651,167 @@ for reducing dense MAT body work without key-format risk; no new code path is
 promoted.
 ```
 
-## Planned Stage 83: External Claim Unlock
+## Stage 83: MAT Body Reduction Theory/Design Check
+
+Goal:
+
+```text
+Convert the Stage82 post-H11 fused r=6 profile into a concrete MAT-body
+optimization route without writing hot-path code or changing scalar/default
+behavior.
+```
+
+Tasks:
+
+- screen candidate MAT body reductions from the Stage82 profile;
+- separate low-risk no-key-format candidates from blocked sparse/selector
+  arithmetic shortcuts;
+- record Amdahl-style bounds so a MAT-body-only kernel result is not
+  overclaimed as full bootstrapping acceleration;
+- choose the next local preflight only if it has staged correctness,
+  microbench, full-SAB A/B, noise/resource, and promote/neutral/reject gates.
+
+Gate:
+
+- Stage81 profile-first policy and Stage82 MAT-body-primary profile must be
+  present;
+- any sparse selector shortcut remains blocked unless a new key-format and
+  security argument exists;
+- the selected candidate must not alter scalar SAB or default `sab_pvw_*`;
+- no speedup, novelty, theorem-level, or hardware-counter claim is upgraded.
+
+Status:
+
+```text
+Completed. Stage83 records
+PASS_STAGE83_MAT_BODY_DESIGN_CHECK_SELECT_R6_TILE_SWEEP_PREFLIGHT. The selected
+Stage84 local preflight is H13-C1: an explicit r=6 full-output tile sweep for
+the r>4 MAT body. It is selected only as a preflight because it can reduce
+dec-row reloads without changing key format, while dense m^2 selector/FMA work
+remains unchanged and register pressure may erase the gain. Sparse selector
+skipping remains blocked by key-format/security requirements. Stage83 does not
+promote code or change claim scope.
+```
+
+## Planned Stage 84: H13 R6 MAT Tile-Sweep Preflight
+
+Goal:
+
+```text
+Test the selected Stage83 r=6 MAT full-output tile hypothesis behind an
+explicit flag or isolated harness before any full-SAB promotion campaign.
+```
+
+Tasks:
+
+- add an explicit flag or isolated kernel path for r=6 full-output tile
+  accumulation;
+- compare against the current `MAT_TRGSW_AVX512_RGT4_FUSED` tile-of-4 path;
+- run identity-lane MAT/PVW correctness;
+- run DFT-output and full-output MAT microbench under the same backend;
+- inspect objdump and native counters when available for spills/load changes;
+- run non-instrumented complete-SAB A/B only if the kernel signal is positive.
+
+Gate:
+
+- scalar/default paths remain unchanged;
+- any correctness failure rejects the candidate;
+- a kernel win without full-SAB propagation remains kernel-only evidence;
+- no promotion occurs until Stage85 repeated/noise/resource gates pass.
+
+Status:
+
+```text
+Planned after Stage83. This is the next local executable optimization stage.
+```
+
+## Planned Stage 85: H13 Full-SAB Promotion Gate
+
+Goal:
+
+```text
+If Stage84 is positive, decide whether the H13 candidate improves complete
+SAB throughput enough to become a promoted explicit variant.
+```
+
+Tasks:
+
+- run repeated complete-SAB A/B for the positive Stage84 candidate;
+- run final-output noise and resource gates for the candidate r values;
+- compare against Stage36 r=4 promoted evidence and Stage79 r=6 H11 evidence;
+- classify the candidate as promote, neutral, or reject.
+
+Gate:
+
+- repeated full-SAB correctness must pass;
+- final-output noise failures must not exceed baseline under tested scope;
+- key size, keygen time, RSS, and scratch overhead must be reported;
+- promoted wording must remain scoped and same-backend.
+
+Status:
+
+```text
+Waiting for Stage84.
+```
+
+## Planned Stage 86: Secondary CMUX Materialization Pass
+
+Goal:
+
+```text
+If MAT-body preflight is neutral or exposes a new balance, revisit the
+Stage82 non-MAT body share without repeating the known neutral Stage18/23
+epilogue-only fusions.
+```
+
+Tasks:
+
+- profile from_DFT/add/sub after any Stage84/85 candidate;
+- design only schedule-window or lifetime reductions that are distinct from
+  prior neutral epilogue fusions;
+- validate per-CMUX phase equivalence and complete-SAB A/B.
+
+Gate:
+
+- do not pursue if refreshed non-MAT share is not material;
+- any materialization optimization must beat complete-SAB repeated A/B, not
+  just profile counters.
+
+Status:
+
+```text
+Conditional fallback after Stage84/85.
+```
+
+## Planned Stage 87: Final Local High-Stat Consolidation
+
+Goal:
+
+```text
+Freeze the best local explicit SAB/PVW variant after all Stage83+ local
+optimization candidates are promoted, neutral, or rejected.
+```
+
+Tasks:
+
+- rerun current-head scalar/PVW smoke;
+- rerun target complete-SAB A/B for promoted r values;
+- rerun final-output noise and resource matrix;
+- update Stage50/51/57/59/68/42 closure and read-only verifier.
+
+Gate:
+
+- every reported speedup is backed by complete-SAB evidence;
+- scalar SAB remains runnable and comparable;
+- resource/noise costs are reported with the speedup.
+
+Status:
+
+```text
+Waiting for Stage84/85/86 decisions.
+```
+
+## Planned Stage 88: External Claim Unlock
 
 Goal:
 
@@ -2678,11 +2838,10 @@ Status:
 
 ```text
 Blocked on external platform/full-text/manual-review inputs. This remains the
-next stronger-claim lane after Stage82; local code work should not resume
-without a new MAT body theory/design hypothesis and full gates.
+stronger-claim lane after local Stage83+ optimization work.
 ```
 
-## Planned Stage 84: Final SAB Optimization Package
+## Planned Stage 89: Final SAB Optimization Package
 
 Goal:
 
@@ -2712,6 +2871,5 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage83 decisions and any future Stage82 profile-backed local
-variant.
+Waiting for Stage84-88 decisions.
 ```

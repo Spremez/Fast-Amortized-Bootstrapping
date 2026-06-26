@@ -1235,3 +1235,13 @@ Repro artifacts:
 - `repro/stage82_post_h11_profile/body_profile_fused_r6/r6/run_0.log`
 - `repro/stage82_post_h11_profile/profile_metrics.csv`
 - `repro/stage82_post_h11_profile/decision.csv`
+
+## Stage 83 MAT Body Design Check
+
+- `docs/stage83_mat_body_design_check_log.md`
+- `experiments/stage83_mat_body_design_check_plan.md`
+- `scripts/build_stage83_mat_body_design_check.py`
+- `theory_checks/h13_mat_body_reduction_design.md`
+- `algorithm_variants/pvw_sab_h13_mat_body_design.md`
+- `repro/stage83_mat_body_design_check/candidates.csv`
+- `repro/stage83_mat_body_design_check/decision.csv`

@@ -91,6 +91,9 @@ STAGE80_PROMOTION_POLICY_AUDIT = (
 )
 STAGE81_NEXT_VARIANT_TRIAGE = ROOT / "repro" / "stage81_next_variant_triage.csv"
 STAGE82_POST_H11_PROFILE = ROOT / "repro" / "stage82_post_h11_profile" / "decision.csv"
+STAGE83_MAT_BODY_DESIGN_CHECK = (
+    ROOT / "repro" / "stage83_mat_body_design_check" / "decision.csv"
+)
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -221,6 +224,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage80 = {row.get("gate"): row for row in read_csv(STAGE80_PROMOTION_POLICY_AUDIT)}
     stage81 = {row.get("gate"): row for row in read_csv(STAGE81_NEXT_VARIANT_TRIAGE)}
     stage82 = {row.get("gate"): row for row in read_csv(STAGE82_POST_H11_PROFILE)}
+    stage83 = {row.get("gate"): row for row in read_csv(STAGE83_MAT_BODY_DESIGN_CHECK)}
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
     closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
@@ -990,6 +994,23 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         stage42.get("S42-STAGE82-POST-H11-PROFILE", {}).get("status")
         == "PASS"
     )
+    stage83_mismatches = []
+    expected_stage83 = {
+        "stage83_inputs_available": "PASS",
+        "stage83_profile_bound": "PASS_MAT_BODY_PRIMARY_BUT_NOT_EXCLUSIVE",
+        "stage83_amdahl_bound": "PASS_RECORDED",
+        "stage83_security_boundary": "PASS_BLOCK_SPARSE_SKIP_WITHOUT_KEY_SECURITY_DESIGN",
+        "stage83_candidate_screen": "SELECT_STAGE84_R6_TILE_SWEEP_PREFLIGHT",
+        "stage83_decision": "PASS_STAGE83_MAT_BODY_DESIGN_CHECK_SELECT_R6_TILE_SWEEP_PREFLIGHT",
+    }
+    for gate, expected in expected_stage83.items():
+        got = stage83.get(gate, {}).get("status", "MISSING")
+        if got != expected:
+            stage83_mismatches.append(f"{gate}:status={got}")
+    stage42_stage83_ok = (
+        stage42.get("S42-STAGE83-MAT-BODY-DESIGN-CHECK", {}).get("status")
+        == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -1061,6 +1082,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage80-promotion-policy-audit-001",
         "stage81-next-variant-triage-001",
         "stage82-post-h11-profile-001",
+        "stage83-mat-body-design-check-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -1356,6 +1378,13 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "repro/stage82_post_h11_profile/body_profile_fused_r6/r6/run_0.log",
         "repro/stage82_post_h11_profile/profile_metrics.csv",
         "repro/stage82_post_h11_profile/decision.csv",
+        "docs/stage83_mat_body_design_check_log.md",
+        "experiments/stage83_mat_body_design_check_plan.md",
+        "scripts/build_stage83_mat_body_design_check.py",
+        "theory_checks/h13_mat_body_reduction_design.md",
+        "algorithm_variants/pvw_sab_h13_mat_body_design.md",
+        "repro/stage83_mat_body_design_check/candidates.csv",
+        "repro/stage83_mat_body_design_check/decision.csv",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -1810,6 +1839,18 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             ),
         },
         {
+            "check": "stage83_mat_body_design_check",
+            "status": "PASS" if not stage83_mismatches and stage42_stage83_ok else "FAIL",
+            "evidence": "repro/stage83_mat_body_design_check/decision.csv",
+            "detail": "Stage83 selects H13 r=6 full-output tile-sweep preflight and keeps sparse selector skipping blocked"
+            if not stage83_mismatches and stage42_stage83_ok
+            else "; ".join(stage83_mismatches)
+            or (
+                "S42-STAGE83-MAT-BODY-DESIGN-CHECK:"
+                f"{stage42.get('S42-STAGE83-MAT-BODY-DESIGN-CHECK', {}).get('status', 'MISSING')}!=PASS"
+            ),
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -1837,7 +1878,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -1845,7 +1886,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, and Stage82 post-H11 profile are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, and Stage83 MAT body design check are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

@@ -202,6 +202,8 @@
 - [x] Add and run Stage80 explicit keep/reject integration audit; H11 r=6 fused MAT is kept behind an explicit experimental flag and is not promoted or made default.
 - [x] Add and run Stage81 next-variant triage; no immediate new hot-path code variant is selected, and local continuation must start with post-H11 fused r=6 profile attribution.
 - [x] Add and run Stage82 post-H11 fused r=6 profile attribution; exact schedule counts pass and MAT body remains the primary single profile target.
-- [ ] Run a MAT body theory/design check before implementing any new local SAB/MAT hot-path variant after Stage82.
+- [x] Add and run Stage83 MAT body theory/design check; H13-C1 r=6 full-output tile sweep is selected as the next explicit preflight, and sparse selector skipping remains key-format/security blocked.
+- [ ] Run Stage84 H13 r=6 MAT tile-sweep preflight behind an explicit flag or isolated harness.
+- [ ] If Stage84 is positive, run Stage85 repeated complete-SAB/noise/resource promotion gates before any claim or default-path change.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

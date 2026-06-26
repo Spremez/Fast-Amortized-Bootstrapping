@@ -33,8 +33,13 @@ evidence is supplied.
 | Stage 80 | promotion integration or rejection audit | Decide whether the Stage79 r=6 fused review-required result is kept as an explicit experimental path or rejected from the promoted line. | scalar SAB and existing r=2/r=4 path remain unchanged; current-head refresh and closure/verifier pass. | passed as keep experimental/not promoted |
 | Stage 81 | next variant triage | Select the next local optimization only after H11 is explicitly kept or rejected by Stage80. | new variants require hypothesis, theory check, staged correctness, full-SAB A/B, noise/resource, and promote/neutral/reject decision. | passed as profile-first/no code promotion |
 | Stage 82 | post-H11 fused r=6 profile attribution | Run the profile-only attribution required by Stage81 before any new local implementation hypothesis. | profile correctness and exact schedule counts pass; component shares are recorded as attribution only. | passed as MAT-body-primary/no code promotion |
-| Stage 83 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | externally blocked |
-| Stage 84 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
+| Stage 83 | MAT body reduction theory/design check | Convert Stage82 MAT-body-primary profile into a complete candidate route before writing more hot-path code. | H13 candidates are screened, key-format/security blockers are recorded, and the next preflight has full correctness/performance gates. | passed; H13-C1 r=6 tile-sweep preflight selected |
+| Stage 84 | H13 r=6 MAT tile-sweep preflight | Test the selected full-output tile hypothesis behind an explicit flag or isolated harness. | identity-lane correctness, MAT microbench, spill/load sanity, and non-instrumented full-SAB A/B if kernel-positive. | next local executable optimization stage |
+| Stage 85 | H13 full-SAB promotion gate | If Stage84 is positive, decide promote/neutral/reject with repeated complete-SAB, noise, and resource gates. | full-SAB correctness, repeated speedup, final-output noise, key/RSS/keygen reporting, and closure updates pass. | waiting for Stage84 |
+| Stage 86 | secondary CMUX materialization pass | If MAT-body preflight is neutral or capped, revisit from_DFT/add/sub lifetime without repeating prior neutral epilogue fusions. | refreshed profile shows material non-MAT share and complete-SAB A/B improves. | conditional fallback |
+| Stage 87 | final local high-stat consolidation | Freeze the best local explicit variant after Stage84-86 candidates are promoted, neutral, or rejected. | current-head smoke, target full-SAB A/B, noise/resource, Stage50/51/57/59/68/42 closure, and verifier pass. | waiting for Stage84-86 decisions |
+| Stage 88 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | externally blocked |
+| Stage 89 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
 Execution policy:
 
@@ -101,3 +106,9 @@ Execution policy:
   47.6916% of full body time. Future local code must start from a MAT body
   theory/design check and then pass staged correctness, non-instrumented
   full-SAB A/B, noise/resource, and claim-policy gates.
+- After Stage83, the selected local preflight is H13-C1 r=6 full-output tile
+  sweep. Implement it only behind an explicit flag or isolated harness. Its
+  first gate is kernel/identity-lane correctness and MAT microbench; a kernel
+  win must still propagate to non-instrumented complete-SAB A/B before any
+  bootstrapping claim. Sparse selector skipping remains blocked without a
+  new key-format/security proof.

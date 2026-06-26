@@ -170,11 +170,12 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage79_rgt4_fused_high_stat/summary.csv; "
                 "repro/stage80_promotion_policy_audit/summary.csv; "
                 "repro/stage81_next_variant_triage.csv; "
-                "repro/stage82_post_h11_profile/decision.csv"
+                "repro/stage82_post_h11_profile/decision.csv; "
+                "repro/stage83_mat_body_design_check/decision.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage82 records the post-H11 fused r=6 profile attribution required by Stage81. MAT body remains the primary profile target, so the next local work is a theory/design check for reducing dense MAT body work without key-format risk.",
-            "Does not upgrade r=6 claims or defaults; future variants require a new theory/design hypothesis, full current-head gates, and a separate promote/neutral/reject decision.",
+            "Stage83 selects H13-C1 r=6 full-output tile sweep as the next explicit Stage84 preflight. Implement only behind an explicit flag or isolated harness, then require correctness, MAT microbench, full-SAB A/B, noise/resource, and promote/neutral/reject gates before any claim or default change.",
+            "Does not upgrade r=6 claims or defaults; Stage84 remains a preflight until full SAB evidence and promotion policy pass.",
         ),
         route_row(
             "S59-R7-FINAL-PAPER-PACKAGE",
