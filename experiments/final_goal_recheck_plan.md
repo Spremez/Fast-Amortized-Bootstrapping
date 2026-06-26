@@ -27,6 +27,7 @@ Default behavior:
 - rebuild the Stage 27 final evidence package;
 - register optional external evidence from `FAB686_FULLTEXT_PATH` and
   `STAGE28_NATIVE_PERF_SUMMARY` when supplied;
+- regenerate the conditional backlog audit;
 - regenerate the final goal completion audit;
 - regenerate the Stage 42 evidence-closure audit unless explicitly disabled.
 
@@ -75,6 +76,7 @@ FINAL_RECHECK_PERF=0 \
 FINAL_RECHECK_STAGE27_PACKAGE=0 \
 FINAL_RECHECK_EXTERNAL_INTAKE=0 \
 FINAL_RECHECK_CURRENT_SMOKE=0 \
+FINAL_RECHECK_CONDITIONAL_BACKLOG=0 \
 FINAL_RECHECK_GOAL_AUDIT=0 \
 FINAL_RECHECK_STAGE44_REPROBE=0 \
 FINAL_RECHECK_STAGE42_CLOSURE=1 \
@@ -106,6 +108,8 @@ bash scripts/run_final_goal_recheck.sh
   claims.
 - A skipped current smoke does not refresh the current-commit scalar/PVW
   smoke evidence in the final audit.
+- A skipped conditional backlog audit does not refresh condition-not-active or
+  external-only backlog classifications.
 - A skipped Stage 44 external re-probe does not refresh direct full-text or
   native/perf unlock state.
 - A skipped post-freeze verifier does not check the frozen Stage 40 package.
@@ -129,6 +133,7 @@ repro/final_goal_recheck/stage40_postfreeze_verify.log
 repro/final_goal_recheck/stage27_final_package.log
 repro/final_goal_recheck/external_evidence_intake.log
 repro/final_goal_recheck/stage33_current_smoke.log
+repro/final_goal_recheck/conditional_backlog_audit.log
 repro/final_goal_recheck/stage44_external_reprobe.log
 repro/final_goal_recheck/final_goal_audit.log
 repro/final_goal_recheck/stage42_evidence_closure.log

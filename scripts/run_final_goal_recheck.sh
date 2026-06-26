@@ -6,6 +6,7 @@ run_perf="${FINAL_RECHECK_PERF:-1}"
 run_stage27_package="${FINAL_RECHECK_STAGE27_PACKAGE:-1}"
 run_external_intake="${FINAL_RECHECK_EXTERNAL_INTAKE:-1}"
 run_current_smoke="${FINAL_RECHECK_CURRENT_SMOKE:-0}"
+run_conditional_backlog="${FINAL_RECHECK_CONDITIONAL_BACKLOG:-1}"
 run_goal_audit="${FINAL_RECHECK_GOAL_AUDIT:-1}"
 run_postfreeze_verify="${FINAL_RECHECK_POSTFREEZE_VERIFY:-0}"
 run_stage44_reprobe="${FINAL_RECHECK_STAGE44_REPROBE:-0}"
@@ -20,6 +21,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_stage27_package" == "0" \
   && "$run_external_intake" == "0" \
   && "$run_current_smoke" == "0" \
+  && "$run_conditional_backlog" == "0" \
   && "$run_goal_audit" == "0" \
   && "$run_stage44_reprobe" == "0" ]]; then
   run_stage42_closure="0"
@@ -35,6 +37,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_stage27_package" == "0" \
   && "$run_external_intake" == "0" \
   && "$run_current_smoke" == "0" \
+  && "$run_conditional_backlog" == "0" \
   && "$run_goal_audit" == "0" \
   && "$run_stage44_reprobe" == "0" \
   && "$run_stage42_closure" == "0" ]]; then
@@ -160,6 +163,16 @@ else
     "bash scripts/run_stage33_current_smoke.sh" \
     "" \
     "Set FINAL_RECHECK_CURRENT_SMOKE=1 to refresh current scalar/PVW smoke evidence."
+fi
+
+if [[ "$run_conditional_backlog" == "1" ]]; then
+  run_logged "conditional_backlog_audit" \
+    "$python_bin scripts/build_conditional_backlog_audit.py"
+else
+  csv_row "conditional_backlog_audit" "SKIPPED" \
+    "$python_bin scripts/build_conditional_backlog_audit.py" \
+    "" \
+    "Set FINAL_RECHECK_CONDITIONAL_BACKLOG=1 to refresh the conditional backlog audit."
 fi
 
 if [[ "$run_stage44_reprobe" == "1" ]]; then

@@ -23,14 +23,15 @@ bash scripts/run_final_goal_recheck.sh
 
 The default intentionally skips the network citation probe and current-commit
 smoke. It refreshes the local/perf gate, final package, optional external
-evidence intake, final audit, and Stage 42 evidence-closure audit. It also
-skips the Stage 44 external-unlock re-probe unless explicitly requested. Use
-`FINAL_RECHECK_CITATION=1` only when intentionally refreshing external
-full-text access evidence. Use `FINAL_RECHECK_CURRENT_SMOKE=1` when
-intentionally refreshing the scalar/PVW current-commit smoke before the final
-audit. Use `FINAL_RECHECK_STAGE44_REPROBE=1` when intentionally refreshing the
-combined full-text/native-perf unlock state before the final audit and Stage 42
-closure audit.
+evidence intake, conditional backlog audit, final audit, and Stage 42
+evidence-closure audit. It also skips the Stage 44 external-unlock re-probe
+unless explicitly requested. Use `FINAL_RECHECK_CITATION=1` only when
+intentionally refreshing external full-text access evidence. Use
+`FINAL_RECHECK_CURRENT_SMOKE=1` when intentionally refreshing the scalar/PVW
+current-commit smoke before the final audit. Use
+`FINAL_RECHECK_STAGE44_REPROBE=1` when intentionally refreshing the combined
+full-text/native-perf unlock state before the final audit and Stage 42 closure
+audit.
 
 ## Initial Run
 
@@ -48,6 +49,7 @@ repro/final_goal_recheck/stage28_perf_gate.log
 repro/final_goal_recheck/stage27_final_package.log
 repro/final_goal_recheck/external_evidence_intake.log
 repro/final_goal_recheck/stage33_current_smoke.log
+repro/final_goal_recheck/conditional_backlog_audit.log
 repro/final_goal_recheck/final_goal_audit.log
 ```
 
@@ -128,6 +130,7 @@ FINAL_RECHECK_PERF=0 \
 FINAL_RECHECK_STAGE27_PACKAGE=0 \
 FINAL_RECHECK_EXTERNAL_INTAKE=0 \
 FINAL_RECHECK_CURRENT_SMOKE=0 \
+FINAL_RECHECK_CONDITIONAL_BACKLOG=0 \
 FINAL_RECHECK_GOAL_AUDIT=0 \
 bash scripts/run_final_goal_recheck.sh
 ```
@@ -162,6 +165,7 @@ FINAL_RECHECK_PERF=0 \
 FINAL_RECHECK_STAGE27_PACKAGE=0 \
 FINAL_RECHECK_EXTERNAL_INTAKE=0 \
 FINAL_RECHECK_CURRENT_SMOKE=0 \
+FINAL_RECHECK_CONDITIONAL_BACKLOG=0 \
 FINAL_RECHECK_GOAL_AUDIT=0 \
 FINAL_RECHECK_STAGE42_CLOSURE=1 \
 bash scripts/run_final_goal_recheck.sh
@@ -177,6 +181,13 @@ final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 This mode proves that the unified recheck wrapper can refresh the Stage 19-44
 evidence-closure audit without rerunning citation probes, perf gates, final
 package generation, external intake, current smoke, or final audit generation.
+
+## Conditional Backlog Refresh
+
+The default recheck now runs `scripts/build_conditional_backlog_audit.py`
+before the final audit and Stage 42 closure audit. Set
+`FINAL_RECHECK_CONDITIONAL_BACKLOG=0` only for deliberately narrow recheck
+modes that are not refreshing backlog state.
 
 ## Stage44 External Re-probe Recheck
 
@@ -229,6 +240,7 @@ Observed summary:
 stage28_perf_gate = PASS
 stage27_final_package = PASS
 external_evidence_intake = PASS
+conditional_backlog_audit = PASS
 final_goal_audit = PASS
 stage42_evidence_closure = PASS
 final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
@@ -236,5 +248,5 @@ final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 
 The Stage 28 gate remains a recorded blocked-gate refresh in this WSL2
 environment because `perf` is unavailable. The new default behavior adds the
-Stage 42 closure audit to the ordinary recheck path while preserving the final
-claim boundary.
+conditional backlog audit and the Stage 42 closure audit to the ordinary
+recheck path while preserving the final claim boundary.

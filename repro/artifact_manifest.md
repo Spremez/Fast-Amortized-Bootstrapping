@@ -611,6 +611,7 @@ Repro artifacts:
 - `repro/final_goal_recheck/stage27_final_package.log`
 - `repro/final_goal_recheck/external_evidence_intake.log`
 - `repro/final_goal_recheck/stage33_current_smoke.log`
+- `repro/final_goal_recheck/conditional_backlog_audit.log`
 - `repro/final_goal_recheck/final_goal_audit.log`
 - `repro/final_goal_recheck/stage40_postfreeze_verify.log`
 - `repro/final_goal_recheck/stage42_evidence_closure.log`
