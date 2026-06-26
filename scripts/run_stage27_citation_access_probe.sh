@@ -62,17 +62,46 @@ probe_url "FAB686_ACM_PDF" \
 probe_url "FAB686_SEMANTIC_PAGE" \
   "https://www.semanticscholar.org/paper/ac77b3b95d4d7c2bea17775158435e000f18857e" \
   "Semantic Scholar paper page"
+probe_url "FAB686_AUTHOR_PAGE" \
+  "https://antonioguimaraes.org/tag/amortized-bootstrapping/" \
+  "author publication page with title/abstract/code links"
 probe_url "FAB686_RESEARCHGATE" \
   "https://www.researchgate.net/publication/397881480_Fast_Amortized_Bootstrapping_with_Small_Keys_and_Polynomial_Noise_Overhead" \
   "ResearchGate publication page"
 
-curl -L --max-time "$timeout_s" -A "$agent" \
+curl -L --max-time "$timeout_s" --retry 2 --retry-delay 1 -A "$agent" \
   "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1145/3719027.3765181?fields=title,authors,year,venue,externalIds,openAccessPdf,url,abstract" \
   > "$semantic_tmp" 2>/dev/null || true
 
-curl -L --max-time "$timeout_s" -A "$agent" \
-  "https://dblp.org/search/publ/api?q=Fast%20Amortized%20Bootstrapping%20with%20Small%20Keys%20and%20Polynomial%20Noise%20Overhead&format=json" \
-  > "$dblp_tmp" 2>/dev/null || true
+python3 - "$dblp_tmp" "$agent" "$timeout_s" <<'PY' || true
+import sys
+import time
+import urllib.request
+
+out_path, agent, timeout_s = sys.argv[1:]
+url = (
+    "https://dblp.org/search/publ/api?"
+    "q=Fast%20Amortized%20Bootstrapping%20with%20Small%20Keys%20and%20Polynomial%20Noise%20Overhead"
+    "&format=json"
+)
+req = urllib.request.Request(url, headers={"User-Agent": agent})
+last_exc = None
+for attempt in range(3):
+    try:
+        with urllib.request.urlopen(req, timeout=float(timeout_s)) as resp:
+            data = resp.read()
+        with open(out_path, "wb") as f:
+            f.write(data)
+        break
+    except Exception as exc:  # pragma: no cover - external network probe
+        last_exc = exc
+        time.sleep(1 + attempt)
+else:
+    # DBLP metadata is helpful but not a full-text gate. Leave the temp file
+    # empty on transient 5xx/rate-limit failures so the summary records an
+    # optional metadata miss without failing the citation probe.
+    open(out_path, "wb").close()
+PY
 
 STAGE27_CITATION_PROBE_OUT_DIR="$out_dir" \
 STAGE27_SEMANTIC_TMP="$semantic_tmp" \
@@ -93,7 +122,10 @@ semantic_pdf = ""
 semantic_title = ""
 if semantic_path.exists() and semantic_path.stat().st_size:
     try:
-        data = json.loads(semantic_path.read_text(encoding="utf-8"))
+        raw = semantic_path.read_text(encoding="utf-8")
+        if not raw.lstrip().startswith("{"):
+            raise ValueError("non-JSON response")
+        data = json.loads(raw)
         semantic_title = data.get("title", "")
         semantic_pdf = (data.get("openAccessPdf") or {}).get("url") or ""
         semantic_status = "METADATA_AVAILABLE_NO_OPEN_ACCESS_PDF" if not semantic_pdf else "OPEN_ACCESS_PDF_REPORTED"
@@ -101,11 +133,14 @@ if semantic_path.exists() and semantic_path.stat().st_size:
         semantic_status = f"JSON_PARSE_ERROR:{exc}"
 
 dblp_path = Path(os.environ["STAGE27_DBLP_TMP"])
-dblp_status = "UNREAD"
+dblp_status = "OPTIONAL_METADATA_UNAVAILABLE"
 dblp_hits = ""
 if dblp_path.exists() and dblp_path.stat().st_size:
     try:
-        data = json.loads(dblp_path.read_text(encoding="utf-8"))
+        raw = dblp_path.read_text(encoding="utf-8")
+        if not raw.lstrip().startswith("{"):
+            raise ValueError("non-JSON response")
+        data = json.loads(raw)
         hits = data.get("result", {}).get("hits", {}).get("@total", "")
         dblp_hits = str(hits)
         dblp_status = "TITLE_METADATA_AVAILABLE" if hits and hits != "0" else "NO_HITS"
@@ -114,11 +149,16 @@ if dblp_path.exists() and dblp_path.stat().st_size:
 
 pdf_accessible = any(row["status"] == "PDF_ACCESSIBLE" for row in access_rows)
 full_text_gate = "PASS_FULL_TEXT_AVAILABLE" if pdf_accessible else "BLOCKED_FULL_TEXT_NOT_AVAILABLE"
+author_page = next((row for row in access_rows if row["id"] == "FAB686_AUTHOR_PAGE"), {})
+author_status = author_page.get("status", "MISSING")
+author_gate = "AVAILABLE_HTML" if author_status == "METADATA_OR_HTML_ONLY" else author_status
+author_detail = author_page.get("effective_url", "") or author_page.get("url", "")
 
 with summary.open("w", newline="", encoding="utf-8") as f:
     writer = csv.writer(f, lineterminator="\n")
     writer.writerow(["gate", "status", "detail"])
     writer.writerow(["direct_pdf_access", "PASS" if pdf_accessible else "BLOCKED", full_text_gate])
+    writer.writerow(["author_page_metadata", author_gate, author_detail])
     writer.writerow(["semantic_scholar_metadata", semantic_status, semantic_title])
     writer.writerow(["semantic_scholar_open_access_pdf_url", "FOUND" if semantic_pdf else "MISSING", semantic_pdf])
     writer.writerow(["dblp_title_metadata", dblp_status, f"hits={dblp_hits}"])

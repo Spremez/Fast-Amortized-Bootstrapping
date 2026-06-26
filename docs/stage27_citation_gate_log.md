@@ -23,9 +23,10 @@ bash scripts/run_stage27_citation_access_probe.sh
 | ACM DOI landing page `https://dl.acm.org/doi/10.1145/3719027.3765181` | `403` |
 | ACM PDF `https://dl.acm.org/doi/pdf/10.1145/3719027.3765181` | `403` |
 | Semantic Scholar page | metadata/html only, no open-access PDF |
+| Author page `https://antonioguimaraes.org/tag/amortized-bootstrapping/` | metadata/html only; title, abstract, ePrint, and code links |
 | ResearchGate publication page | `403` |
 | Semantic Scholar API | metadata available, `openAccessPdf.url` missing |
-| DBLP title API | metadata available, two hits |
+| DBLP title API | optional metadata route; may report title hits when DBLP responds |
 
 Raw probe summaries:
 

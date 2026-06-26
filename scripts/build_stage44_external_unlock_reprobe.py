@@ -62,6 +62,7 @@ def build(out_dir: Path) -> List[Dict[str, str]]:
 
     direct_pdf = by_key(citation_rows, "gate", "direct_pdf_access")
     citation_decision = by_key(citation_rows, "gate", "citation_decision")
+    author_page = by_key(citation_rows, "gate", "author_page_metadata")
     semantic_pdf = by_key(citation_rows, "gate", "semantic_scholar_open_access_pdf_url")
     hardware_gate = by_key(native_rows, "probe", "hardware_counter_gate")
     perf_command = by_key(native_rows, "probe", "perf_command")
@@ -71,6 +72,7 @@ def build(out_dir: Path) -> List[Dict[str, str]]:
     direct_status = direct_pdf.get("status", "MISSING")
     citation_status = citation_decision.get("status", "MISSING")
     semantic_pdf_status = semantic_pdf.get("status", "MISSING")
+    author_page_status = author_page.get("status", "MISSING")
     hardware_status = hardware_gate.get("status", "MISSING")
     perf_cmd_status = perf_command.get("status", "MISSING")
     fulltext_status = fulltext_external.get("status", "MISSING")
@@ -120,6 +122,12 @@ def build(out_dir: Path) -> List[Dict[str, str]]:
             semantic_pdf_status,
             rel(citation_summary),
             semantic_pdf.get("detail", ""),
+        ),
+        csv_row(
+            "author_page_metadata",
+            author_page_status,
+            rel(citation_summary),
+            author_page.get("detail", ""),
         ),
         csv_row(
             "blocked_fulltext_routes",

@@ -61,9 +61,10 @@ repeated scalar SAB under the same backend and parameter scope.
 | gate | status | detail |
 | --- | --- | --- |
 | direct_pdf_access | BLOCKED | BLOCKED_FULL_TEXT_NOT_AVAILABLE |
+| author_page_metadata | AVAILABLE_HTML | https://antonioguimaraes.org/tag/amortized-bootstrapping/ |
 | semantic_scholar_metadata | METADATA_AVAILABLE_NO_OPEN_ACCESS_PDF | Fast Amortized Bootstrapping with Small Keys and Polynomial Noise Overhead |
 | semantic_scholar_open_access_pdf_url | MISSING |  |
-| dblp_title_metadata | TITLE_METADATA_AVAILABLE | hits=2 |
+| dblp_title_metadata | OPTIONAL_METADATA_UNAVAILABLE | hits= |
 | citation_decision | BLOCK_THEOREM_LEVEL_CITATIONS | Do not cite 2025/686 theorem/algorithm/remark numbers without full text. |
 
 ## Completion Readiness

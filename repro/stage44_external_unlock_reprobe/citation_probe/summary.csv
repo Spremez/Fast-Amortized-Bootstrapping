@@ -1,5 +1,6 @@
 gate,status,detail
 direct_pdf_access,BLOCKED,BLOCKED_FULL_TEXT_NOT_AVAILABLE
+author_page_metadata,AVAILABLE_HTML,https://antonioguimaraes.org/tag/amortized-bootstrapping/
 semantic_scholar_metadata,METADATA_AVAILABLE_NO_OPEN_ACCESS_PDF,Fast Amortized Bootstrapping with Small Keys and Polynomial Noise Overhead
 semantic_scholar_open_access_pdf_url,MISSING,
 dblp_title_metadata,TITLE_METADATA_AVAILABLE,hits=2
