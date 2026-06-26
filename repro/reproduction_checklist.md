@@ -123,8 +123,8 @@
 - [x] Run Stage 25 initial smoke matrix for `r=1/2/4`.
 - [x] Record Stage 25 resource costs: keygen time, public key estimate, internal HWM, and max RSS.
 - [x] Expand Stage 25 promoted-path final-output correctness/noise to 50 seeds for `r=2` and `r=4`.
-- [ ] Expand Stage 25 stage-level noise beyond smoke if final report requires stage-by-stage statistical evidence.
-- [ ] Re-run a consolidated Stage 25 repeated full SAB A/B table if it is needed as the final promoted-variant performance package.
+- [x] Expand stage-level noise beyond smoke through the Stage 36 10-seed stage-noise campaign.
+- [x] Re-run consolidated target full SAB A/B evidence through the Stage 36 10-run target-performance campaign.
 - [x] Parameterize PVW target harness so `PARAM=SET_*` affects PVW gates.
 - [x] Run Stage 26 initial binary parameter target smoke.
 - [x] Record non-binary PVW branch as unsupported while keeping scalar TERNARY buildable.
@@ -133,7 +133,7 @@
 - [x] Expand Stage 26 `SET_2_3_4096` r=4 to 3-run/3-seed repeated smoke.
 - [x] Expand Stage 26 added binary r=2 parameters to 3-run/3-seed repeated smoke.
 - [x] Expand Stage 26 added binary r=2/r=4 parameters to 5-run/5-seed small-sample support.
-- [ ] Increase Stage 26 added-parameter evidence beyond 5 runs/seeds before broad statistical performance claims.
+- [x] Increase added-parameter evidence beyond 5 runs/seeds through the Stage 36 10-run/20-seed added-binary campaign.
 - [x] Add Stage 27 initial related-work and claim-boundary matrix.
 - [x] Record Stage 27 full-source access attempt and claim boundary.
 - [x] Re-run final consolidated full-SAB performance table for promoted r=2/r=4 target path after Stage 26 harness changes.
