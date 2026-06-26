@@ -11,6 +11,8 @@ a goal-complete declaration.
 
 ## Frontier
 
+- current closure range: `Stage19-57`
+
 | frontier_id | lane | status | completion_effect | next_action |
 | --- | --- | --- | --- | --- |
 | G1 | local_engineering | LOCAL_READY | Supports scoped engineering continuity only. | Rerun current smoke after implementation changes. |

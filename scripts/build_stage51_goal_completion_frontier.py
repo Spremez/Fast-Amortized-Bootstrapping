@@ -9,6 +9,7 @@ does not mark the active goal complete and it does not upgrade claim strength.
 from __future__ import annotations
 
 import csv
+import re
 from pathlib import Path
 from typing import Dict, Iterable, List
 
@@ -18,6 +19,7 @@ FINAL_AUDIT = ROOT / "repro" / "final_goal_completion_audit.csv"
 BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
 STAGE42 = ROOT / "repro" / "stage42_evidence_closure_audit.csv"
 STAGE50 = ROOT / "repro" / "stage50_performance_evidence_matrix.csv"
+ROADMAP = ROOT / "docs" / "roadmap_stage19_plus.md"
 OUT_CSV = ROOT / "repro" / "stage51_goal_completion_frontier.csv"
 OUT_MD = ROOT / "docs" / "stage51_goal_completion_frontier.md"
 
@@ -67,6 +69,16 @@ def blocker_status(blockers: Dict[str, Dict[str, str]], blocker_id: str) -> str:
     return blockers.get(blocker_id, {}).get("current_status", "MISSING")
 
 
+def latest_stage_label() -> str:
+    if not ROADMAP.exists():
+        return "Stage19+"
+    text = ROADMAP.read_text(encoding="utf-8")
+    stages = sorted({int(m.group(1)) for m in re.finditer(r"^## Stage (\d+):", text, re.M)})
+    if not stages:
+        return "Stage19+"
+    return f"Stage19-{stages[-1]}"
+
+
 def build_rows() -> List[Dict[str, str]]:
     audit = by_key(FINAL_AUDIT, "item_id")
     blockers = by_key(BLOCKERS, "blocker_id")
@@ -75,6 +87,7 @@ def build_rows() -> List[Dict[str, str]]:
 
     stage50_ok = bool(stage50_rows) and all(row.get("status") == "PASS" for row in stage50_rows)
     stage42_overall = stage42.get("S42-OVERALL", {}).get("status", "MISSING")
+    current_stage_range = latest_stage_label()
 
     rows = [
         frontier_row(
@@ -142,7 +155,7 @@ def build_rows() -> List[Dict[str, str]]:
             if stage42_overall == "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED"
             else "MISSING_LOCAL_EVIDENCE",
             STAGE42.relative_to(ROOT).as_posix(),
-            "Stage42 closure currently verifies the Stage19-50 evidence chain and preserves stronger-claim blockers.",
+            f"Stage42 closure currently verifies the {current_stage_range} evidence chain and preserves stronger-claim blockers.",
             "Extend closure/verifier whenever new stages or artifacts are added.",
             "Supports reproducibility of the scoped engineering chain.",
         ),
@@ -227,6 +240,7 @@ def md_table(rows: List[Dict[str, str]]) -> List[str]:
 
 def write_md(rows: List[Dict[str, str]]) -> None:
     decision = gate_status(rows)
+    current_stage_range = latest_stage_label()
     lines = [
         "# Stage 51 Goal Completion Frontier",
         "",
@@ -240,6 +254,8 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "a goal-complete declaration.",
         "",
         "## Frontier",
+        "",
+        f"- current closure range: `{current_stage_range}`",
         "",
         *md_table(rows),
         "",

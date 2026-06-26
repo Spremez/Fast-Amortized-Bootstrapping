@@ -177,5 +177,6 @@
 - [x] Execute Stage 36 target-noise 50-seed campaign for target binary r=2/r=4.
 - [x] Add and run Stage 55 external paper probe with Crossref DOI metadata and official full-text route blocking evidence.
 - [x] Add and run Stage 56 explicit final recheck path for refreshing Stage55 before blocker/frontier/unlock/closure regeneration.
+- [x] Add and run Stage 57 scope-label consistency audit so current control files track the latest Stage19+ closure range.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

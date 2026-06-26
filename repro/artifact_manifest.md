@@ -818,3 +818,14 @@ Repro artifacts:
 - `repro/stage56_final_recheck_stage55/stage51_goal_frontier.log`
 - `repro/stage56_final_recheck_stage55/stage52_external_unlock_readiness.log`
 - `repro/stage56_final_recheck_stage55/stage42_evidence_closure.log`
+
+## Stage 57 Scope Label Consistency Audit
+
+- `docs/stage57_scope_label_audit.md`
+- `scripts/build_stage57_scope_label_audit.py`
+- `scripts/build_stage51_goal_completion_frontier.py`
+- `docs/stage51_goal_completion_frontier.md`
+- `repro/stage51_goal_completion_frontier.csv`
+- `docs/stage52_external_unlock_readiness.md`
+- `repro/stage52_external_unlock_readiness.csv`
+- `repro/stage57_scope_label_audit.csv`

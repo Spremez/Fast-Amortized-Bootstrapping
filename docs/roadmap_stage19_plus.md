@@ -1675,3 +1675,37 @@ external paper probe and propagated its still-blocked full-text status through
 the remaining blocker dashboard, Stage51 frontier, Stage52 unlock readiness,
 and Stage42 closure. Stronger claims remain blocked.
 ```
+
+## Stage 57: Scope Label Consistency Audit
+
+Goal:
+
+```text
+Prevent current control-plane reports from citing stale Stage19+ closure
+ranges after later stages extend the evidence chain.
+```
+
+Tasks:
+
+- make Stage51 derive the latest closure range from the roadmap instead of a
+  hard-coded Stage19 range;
+- scan current scope/control files for stale `Stage 19-44`, `Stage19-44`,
+  `Stage 19-50`, or `Stage19-50` labels;
+- verify Stage42 overall, Stage51 G6, and current scope files all point to the
+  latest roadmap range;
+- record the audit in the repro pack and Stage42 closure/verifier.
+
+Gate:
+
+- roadmap latest stage must be at least the current stage;
+- Stage42 overall must mention the latest `Stage 19-*` range;
+- Stage51 G6 must mention the latest `Stage19-*` range;
+- current scope files must not contain stale Stage19-44/50 labels.
+
+Status:
+
+```text
+Stage 57 passed. Stage51 now emits the current closure range dynamically, and
+the scope-label audit confirms that current control files refer to the latest
+Stage19+ closure range while preserving stronger-claim blockers.
+```
