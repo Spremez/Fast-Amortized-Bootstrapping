@@ -1,0 +1,3 @@
+r,samples,statuses,pvw_mean_us,scalar_repeated_mean_us,mean_speedup,min_speedup,max_speedup,stddev_speedup,stage77_one_run_speedup,r4_mean_reference,r4_ci95_low_reference,status,source
+6,3,Pass,38992508.667,54912575.333,1.408,1.361,1.435,0.041102,1.385,1.377,1.314893,PASS,repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/summary.csv
+8,1,Pass,54048221.000,72975915.000,1.350,1.350,1.350,0.000000,1.290,1.377,1.314893,PASS,repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r8_runs1/summary.csv

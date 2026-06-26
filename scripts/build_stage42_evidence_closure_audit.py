@@ -2,7 +2,7 @@
 """Build the Stage 42 evidence-closure audit.
 
 This script checks whether the current scoped PVW/MAT-SAB evidence chain and
-Stage77 control-plane/kernel extensions are internally consistent. It does not run
+Stage78 control-plane/kernel extensions are internally consistent. It does not run
 benchmarks or upgrade claims; it verifies that the committed artifacts still
 support the recorded scope.
 """
@@ -91,6 +91,9 @@ STAGE76_RGT4_KERNEL_FEASIBILITY = (
 )
 STAGE77_RGT4_FUSED_MAT_KERNEL = (
     ROOT / "repro" / "stage77_rgt4_fused_mat_kernel" / "summary.csv"
+)
+STAGE78_RGT4_FUSED_REPEATED_GATES = (
+    ROOT / "repro" / "stage78_rgt4_fused_repeated_gates" / "summary.csv"
 )
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
@@ -365,6 +368,38 @@ REQUIRED_FILES = [
     "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/run_0.log",
     "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/summary.csv",
     "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/run_0.log",
+    "docs/stage78_rgt4_fused_repeated_gates_log.md",
+    "experiments/stage78_rgt4_fused_repeated_gates_plan.md",
+    "scripts/run_stage78_rgt4_fused_repeated_gates.sh",
+    "scripts/build_stage78_rgt4_fused_repeated_gates.py",
+    "repro/stage78_rgt4_fused_repeated_gates/stage78_run.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_repeated.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_0.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_1.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_2.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r8_runs1/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r8_runs1/run_0.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/aggregate.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862025.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862026.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862027.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862025.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862026.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862027.log",
+    "repro/stage78_rgt4_fused_repeated_gates/noise_summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/resource_summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/pvw.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/pvw.time.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/scalar.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/scalar.time.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/pvw.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/pvw.time.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/scalar.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/scalar.time.log",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -682,6 +717,38 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/run_0.log",
     "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/summary.csv",
     "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/run_0.log",
+    "docs/stage78_rgt4_fused_repeated_gates_log.md",
+    "experiments/stage78_rgt4_fused_repeated_gates_plan.md",
+    "scripts/run_stage78_rgt4_fused_repeated_gates.sh",
+    "scripts/build_stage78_rgt4_fused_repeated_gates.py",
+    "repro/stage78_rgt4_fused_repeated_gates/stage78_run.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_repeated.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_0.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_1.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_2.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r8_runs1/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r8_runs1/run_0.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/aggregate.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862025.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862026.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862027.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862025.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862026.log",
+    "repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862027.log",
+    "repro/stage78_rgt4_fused_repeated_gates/noise_summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/resource_summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/pvw.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/pvw.time.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/scalar.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/scalar.time.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/pvw.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/pvw.time.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/scalar.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/scalar.time.log",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -2042,6 +2109,39 @@ def check_stage77_rgt4_fused_mat_kernel() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage78_rgt4_fused_repeated_gates() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE78_RGT4_FUSED_REPEATED_GATES)}
+    expected = {
+        "stage78_stage77_precondition": "PASS",
+        "stage78_r6_repeated_full_sab": "PASS",
+        "stage78_r8_stress_full_sab": "PASS",
+        "stage78_r6_noise": "PASS",
+        "stage78_r8_noise": "PASS",
+        "stage78_resource": "PASS",
+        "stage78_decision": "PASS_RGT4_FUSED_REPEATED_GATES_RECORDED_PROMOTION_CANDIDATE",
+    }
+    problems = []
+    for gate, status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+    detail = (
+        "Stage78 records H11 r=6 fused r>4 MAT as a promotion candidate after repeated full-SAB/noise/resource gates; Stage79 high-stat confirmation remains required"
+        if not problems and rows
+        else "; ".join(problems) or "Stage78 decision missing"
+    )
+    return [
+        row(
+            "S42-STAGE78-RGT4-FUSED-REPEATED-GATES",
+            "variant_repeated_gate",
+            pass_fail(not problems and bool(rows)),
+            STAGE78_RGT4_FUSED_REPEATED_GATES.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage78 before relying on the H11 fused r>4 MAT promotion-candidate result.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -2242,6 +2342,10 @@ def check_run_log() -> List[Dict[str, str]]:
     for r in rows:
         if r.get("run_id") == "stage77-rgt4-fused-mat-kernel-001":
             stage77_status = r.get("status", "MISSING")
+    stage78_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage78-rgt4-fused-repeated-gates-001":
+            stage78_status = r.get("status", "MISSING")
     ok = (
         ok
         and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
@@ -2256,11 +2360,12 @@ def check_run_log() -> List[Dict[str, str]]:
         and stage75_status == "PASS_RGT4_PROFILE_BOUNDARY_RECORDED_NOT_PROMOTED"
         and stage76_status == "PASS_RGT4_KERNEL_FEASIBILITY_RECORDED_NO_PROMOTION"
         and stage77_status == "PASS_RGT4_FUSED_SMOKE_RECORDED_REPEATED_GATES_REQUIRED"
+        and stage78_status == "PASS_RGT4_FUSED_REPEATED_GATES_RECORDED_PROMOTION_CANDIDATE"
     )
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}"
     )
     return [
         row(
@@ -2282,8 +2387,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, or Stage77 control-plane artifacts.",
+            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, or Stage78 control-plane artifacts.",
         )
     ]
 
@@ -2535,11 +2640,43 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r6/run_0.log",
         "repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r8/summary.csv",
         "repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r8/run_0.log",
-        "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/summary.csv",
-        "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/run_0.log",
-        "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/summary.csv",
-        "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/run_0.log",
-    ]
+    "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/summary.csv",
+    "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/run_0.log",
+    "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/summary.csv",
+    "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/run_0.log",
+    "docs/stage78_rgt4_fused_repeated_gates_log.md",
+    "experiments/stage78_rgt4_fused_repeated_gates_plan.md",
+    "scripts/run_stage78_rgt4_fused_repeated_gates.sh",
+    "scripts/build_stage78_rgt4_fused_repeated_gates.py",
+    "repro/stage78_rgt4_fused_repeated_gates/stage78_run.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_repeated.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_0.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_1.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_2.log",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r8_runs1/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r8_runs1/run_0.log",
+        "repro/stage78_rgt4_fused_repeated_gates/final_noise/summary.csv",
+        "repro/stage78_rgt4_fused_repeated_gates/final_noise/aggregate.csv",
+        "repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862025.log",
+        "repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862026.log",
+        "repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862027.log",
+        "repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862025.log",
+        "repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862026.log",
+        "repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862027.log",
+        "repro/stage78_rgt4_fused_repeated_gates/noise_summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/resource_summary.csv",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/pvw.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/pvw.time.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/scalar.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r6/scalar.time.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/pvw.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/pvw.time.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/scalar.log",
+    "repro/stage78_rgt4_fused_repeated_gates/resource/r8/scalar.time.log",
+]
     missing = [m for m in required_mentions if m not in text]
     return [
         row(
@@ -2547,7 +2684,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, and Stage77 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, and Stage78 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -2623,6 +2760,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage75_rgt4_profile_boundary,
         check_stage76_rgt4_kernel_feasibility,
         check_stage77_rgt4_fused_mat_kernel,
+        check_stage78_rgt4_fused_repeated_gates,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -2642,10 +2780,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, and Stage77 r>4 fused MAT smoke; stronger claims remain blocked"
+            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, and Stage78 r>4 fused repeated gates; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78 evidence closure.",
         )
     )
     return checks
@@ -2672,7 +2810,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "Stage 42 machine-checks whether the Stage 19-62 PVW/MAT-SAB evidence",
         "chain plus Stage64A post-variant refresh, the Stage65A optional",
         "negative variant, Stage66A post-variant final recheck, Stage67",
-        "final-recheck Stage66A integration, and Stage68-74 control-plane",
+        "final-recheck Stage66A integration, and Stage68-78 control-plane",
         "closure extensions remain internally",
         "consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",

@@ -28,8 +28,12 @@ evidence is supplied.
 | Stage 75 | r>4 profile boundary | Attribute the Stage74 r>4 boundary with exact body-profile counts and component timing. | Stage75 decision must be `PASS_RGT4_PROFILE_BOUNDARY_RECORDED_NOT_PROMOTED` unless profile evidence opens a new promotion candidate. | passed as profile-backed negative/not promoted |
 | Stage 76 | r>4 kernel feasibility | Test whether the current generic r=6/r=8 MAT external-product kernel is promotable or whether large-r work needs a fused MAT multiply/layout hypothesis. | Stage76 decision must be `PASS_RGT4_KERNEL_FEASIBILITY_RECORDED_NO_PROMOTION` unless DFT-output and full-output evidence justify new full-SAB gates. | passed as kernel-level negative/not promoted |
 | Stage 77 | r>4 fused MAT kernel smoke | Implement H11 behind `MAT_TRGSW_AVX512_RGT4_FUSED` and check whether r=6/r=8 kernel gains propagate to complete SAB smoke. | Stage77 decision must be `PASS_RGT4_FUSED_SMOKE_RECORDED_REPEATED_GATES_REQUIRED` before any repeated promotion campaign starts. | passed as positive smoke/not promoted |
-| Stage 78 | r>4 fused repeated gates | Repeat full-SAB, correctness/noise, and resource gates for the Stage77 fused candidate. | Promote only if repeated full-SAB, noise, and resource evidence beat the relevant r=4/r>4 baselines under the same backend. | next |
-| Stage 66 | release/paper package | Freeze the final allowed claim package after external blockers are resolved or the scope is explicitly narrowed. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
+| Stage 78 | r>4 fused repeated gates | Repeat full-SAB, correctness/noise, and resource gates for the Stage77 fused candidate. | Promote only if repeated full-SAB, noise, and resource evidence beat the relevant r=4/r>4 baselines under the same backend. | passed as r=6 promotion candidate; defaults unchanged |
+| Stage 79 | r>4 fused high-stat confirmation | Confirm or reject the Stage78 r=6 promotion candidate with 10-run style complete-SAB evidence and expanded noise/resource gates. | r=6 fused must pass correctness/noise/resource and retain a practical advantage over the r=4 reference with enough statistics. | next |
+| Stage 80 | promotion integration or rejection audit | If Stage79 passes, expose the r=6 fused path under explicit policy; if it fails, record H11 as neutral/rejected and return to triage. | scalar SAB and existing r=2/r=4 path remain unchanged; current-head refresh and closure/verifier pass. | waiting |
+| Stage 81 | next variant triage | Select the next local optimization only after H11 is confirmed or rejected. | new variants require hypothesis, theory check, staged correctness, full-SAB A/B, noise/resource, and promote/neutral/reject decision. | waiting |
+| Stage 82 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | externally blocked |
+| Stage 83 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
 Execution policy:
 
@@ -72,3 +76,10 @@ Execution policy:
   r=6/r=8 kernel improves same-stage generic r>4, and one-run full-SAB
   improves for both r values, but defaults and claims must not change until
   Stage78 repeated full-SAB/noise/resource gates pass.
+- After Stage78, treat H11 r=6 as a promotion candidate, not a default change.
+  The repeated r=6 full-SAB mean reaches the r=4 reference region and
+  noise/resource gates pass, but Stage79 high-stat confirmation must run before
+  changing defaults or upgrading claim strength. r=8 remains diagnostic.
+- After Stage79, either promote the r=6 fused path through Stage80 with a
+  current-head refresh and closure update, or record it as neutral/rejected and
+  return to Stage81 variant triage.

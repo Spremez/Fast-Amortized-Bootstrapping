@@ -2442,3 +2442,215 @@ repeated scalar, r=8 full-SAB remains below the r=4 reference, and both r
 values need repeated full-SAB/noise/resource gates. Stage78 should test r=6
 as the main candidate and r=8 as a stress case.
 ```
+
+## Stage 78: R>4 Fused Repeated Gates
+
+Goal:
+
+```text
+Test whether the Stage77 H11 fused r>4 MAT kernel remains positive under
+repeated complete-SAB, final-output noise, and resource gates.
+```
+
+Tasks:
+
+- add a Stage78 runner that explicitly sets
+  `MAT_TRGSW_AVX512_RGT4_FUSED=true`, `MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true`,
+  and `SAB_PVW_ACTIVE_BUFFER_FUSION=true`;
+- run r=6 complete-SAB repeated A/B as the main promotion screen;
+- run r=8 complete-SAB as a large-r stress case;
+- run r=6/r=8 final-output noise and correctness seeds;
+- run r=6/r=8 resource accounting for PVW and repeated scalar modes;
+- aggregate all results into full-SAB, noise, resource, summary, and log
+  artifacts without changing default paths.
+
+Gate:
+
+- Stage77 must already be recorded as
+  `PASS_RGT4_FUSED_SMOKE_RECORDED_REPEATED_GATES_REQUIRED`;
+- r=6 repeated full-SAB must have at least three passing process samples and
+  min speedup greater than 1.0;
+- r=6 mean speedup must be compared against the Stage36 r=4 10-run mean and
+  CI95 lower bound;
+- r=6/r=8 final-output noise must have zero PVW/scalar/pair failures;
+- resource overhead must be reported with the speedup evidence;
+- no scalar SAB path, default `sab_pvw_*` path, key format, novelty,
+  theorem-level, all-parameter, or hardware-counter claim is upgraded.
+
+Status:
+
+```text
+Stage78 passed as a promotion candidate, not a default change. r=6 complete
+SAB repeated A/B has 3 passing samples with mean speedup 1.408x, min 1.361x,
+and max 1.435x, exceeding the Stage36 r=4 reference mean 1.377x and CI95 low
+1.314893. r=8 stress passes one full-SAB sample at 1.350x. r=6/r=8
+final-output noise has 3 seeds each with zero PVW/scalar/pair failures.
+Resource accounting records key ratios 1.122537/1.181090 and RSS ratios
+1.030750/1.071251 for r=6/r=8. The next step is Stage79 high-stat
+confirmation before any default/path promotion or stronger claim change.
+```
+
+## Planned Stage 79: R>4 Fused High-Stat Confirmation
+
+Goal:
+
+```text
+Confirm or reject the Stage78 r=6 promotion candidate with enough repeated
+complete-SAB and noise evidence to compare it fairly with the Stage36 r=4
+high-stat reference.
+```
+
+Tasks:
+
+- run r=6 fused complete-SAB A/B with at least 10 process samples under the
+  same `spqlios_avx512` backend and flags as Stage78;
+- run r=6 final-output noise with at least 20 seeds, preferably 50 if runtime
+  budget permits;
+- repeat resource accounting enough to determine whether keygen/RSS overhead
+  is stable;
+- compare r=6 fused against Stage36 r=4 and against Stage78 itself using
+  mean, min/max, standard deviation, and confidence interval;
+- decide whether H11 becomes promoted, remains a candidate, or is rejected.
+
+Gate:
+
+- all complete-SAB samples must pass correctness;
+- noise failures must stay at zero or be explained by a parameter/security
+  adjustment before promotion;
+- r=6 fused must preserve a practical throughput advantage after resource
+  overhead is reported;
+- if the confidence interval overlaps r=4 without clear practical gain, mark
+  the result as inconclusive rather than promoted.
+
+Status:
+
+```text
+Not started. This is the current next local stage after Stage78.
+```
+
+## Planned Stage 80: Promotion Integration Or Rejection Audit
+
+Goal:
+
+```text
+If Stage79 confirms the r=6 fused candidate, decide how it is exposed without
+breaking scalar SAB or the existing r=2/r=4 path. If Stage79 does not confirm
+it, record the candidate as neutral/rejected and return to variant triage.
+```
+
+Tasks:
+
+- keep scalar `sab_rlwe_bootstrap` unchanged;
+- keep r=2/r=4 defaults unchanged unless a separate gate justifies a default
+  change;
+- expose r=6 fused only behind an explicit flag or documented `sab_pvw_*`
+  variant unless promotion policy is satisfied;
+- rerun current-head scalar/PVW smoke, repeated full-SAB continuity, noise,
+  resource, frontier, closure, and verifier checks after any integration
+  change.
+
+Gate:
+
+- no default behavior changes without a passing current-head refresh;
+- verifier and artifact manifest must include the promoted or rejected status;
+- claim wording must distinguish r=6 fused engineering evidence from the
+  existing r=2/r=4 scoped baseline.
+
+Status:
+
+```text
+Waiting for Stage79.
+```
+
+## Planned Stage 81: Next Variant Triage
+
+Goal:
+
+```text
+After the H11 r=6 fused decision, select the next local optimization only if
+the current evidence identifies a bottleneck that can be falsifiably improved.
+```
+
+Candidate directions:
+
+- sparse/structured MAT layout that reduces dense `(1+r)^2` work;
+- r=8-specific register/cache tiling if Stage79 leaves r=6 strong but r=8
+  weak;
+- SAB schedule/body fusion only if post-Stage79 profiles show non-MAT costs
+  dominate;
+- post-processing or extraction changes only if tail cost rises above the
+  Stage24 threshold.
+
+Gate:
+
+- every candidate must have a hypothesis, theory check, isolated correctness
+  gate, full-SAB A/B gate, noise/resource gate, and promote/neutral/reject
+  decision.
+
+Status:
+
+```text
+Waiting for Stage79/Stage80.
+```
+
+## Planned Stage 82: External Claim Unlock
+
+Goal:
+
+```text
+Unlock stronger paper/theory claims that are intentionally blocked in the
+current local environment.
+```
+
+Tasks:
+
+- rerun native perf-counter attribution on native Linux or perf-enabled WSL
+  before claiming MAT-AVX512 load/store/FMA optimality;
+- register and manually inspect the 2025/686 full text before theorem-level
+  algorithm, noise, security, table, figure, or experiment citations;
+- complete related-work claim-to-source review before novelty wording.
+
+Gate:
+
+- native perf must provide hardware counters, not only WSL proxy evidence;
+- full-text review must have source anchors;
+- novelty claims must be downgraded if related work already covers the idea.
+
+Status:
+
+```text
+Blocked on external platform/full-text/manual-review inputs.
+```
+
+## Planned Stage 83: Final SAB Optimization Package
+
+Goal:
+
+```text
+Freeze the final engineering and paper/release package after all promoted
+variants and external claim unlocks are either complete or explicitly scoped
+out.
+```
+
+Tasks:
+
+- produce final algorithm description, complexity model, experiment tables,
+  resource/noise/security discussion, negative ablations, and reproduction
+  commands;
+- run final smoke, performance, noise, resource, closure, and verifier checks;
+- record exactly which claims are engineering-supported, paper-ready, blocked,
+  or out of scope.
+
+Gate:
+
+- scalar baseline is still runnable and comparable;
+- complete-SAB benchmark evidence supports every speedup claim;
+- algorithmic gains are separated from backend/SIMD gains;
+- reproduction pack includes commit, command, backend, CPU flags, logs,
+  summaries, and decisions.
+
+Status:
+
+```text
+Waiting for Stage79-82 decisions.
+```

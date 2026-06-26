@@ -1104,3 +1104,38 @@ Repro artifacts:
 - `repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/run_0.log`
 - `repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/summary.csv`
 - `repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/run_0.log`
+
+## Stage 78 R>4 Fused Repeated Gates
+
+- `docs/stage78_rgt4_fused_repeated_gates_log.md`
+- `experiments/stage78_rgt4_fused_repeated_gates_plan.md`
+- `scripts/run_stage78_rgt4_fused_repeated_gates.sh`
+- `scripts/build_stage78_rgt4_fused_repeated_gates.py`
+- `repro/stage78_rgt4_fused_repeated_gates/stage78_run.log`
+- `repro/stage78_rgt4_fused_repeated_gates/full_sab_repeated.csv`
+- `repro/stage78_rgt4_fused_repeated_gates/summary.csv`
+- `repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/summary.csv`
+- `repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_0.log`
+- `repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_1.log`
+- `repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r6_runs3/run_2.log`
+- `repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r8_runs1/summary.csv`
+- `repro/stage78_rgt4_fused_repeated_gates/full_sab_fused_r8_runs1/run_0.log`
+- `repro/stage78_rgt4_fused_repeated_gates/final_noise/summary.csv`
+- `repro/stage78_rgt4_fused_repeated_gates/final_noise/aggregate.csv`
+- `repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862025.log`
+- `repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862026.log`
+- `repro/stage78_rgt4_fused_repeated_gates/final_noise/r6/seed_6862027.log`
+- `repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862025.log`
+- `repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862026.log`
+- `repro/stage78_rgt4_fused_repeated_gates/final_noise/r8/seed_6862027.log`
+- `repro/stage78_rgt4_fused_repeated_gates/noise_summary.csv`
+- `repro/stage78_rgt4_fused_repeated_gates/resource/summary.csv`
+- `repro/stage78_rgt4_fused_repeated_gates/resource_summary.csv`
+- `repro/stage78_rgt4_fused_repeated_gates/resource/r6/pvw.log`
+- `repro/stage78_rgt4_fused_repeated_gates/resource/r6/pvw.time.log`
+- `repro/stage78_rgt4_fused_repeated_gates/resource/r6/scalar.log`
+- `repro/stage78_rgt4_fused_repeated_gates/resource/r6/scalar.time.log`
+- `repro/stage78_rgt4_fused_repeated_gates/resource/r8/pvw.log`
+- `repro/stage78_rgt4_fused_repeated_gates/resource/r8/pvw.time.log`
+- `repro/stage78_rgt4_fused_repeated_gates/resource/r8/scalar.log`
+- `repro/stage78_rgt4_fused_repeated_gates/resource/r8/scalar.time.log`

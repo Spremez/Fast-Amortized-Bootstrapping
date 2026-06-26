@@ -324,8 +324,8 @@ hypotheses:
       output bodies before eviction. The arithmetic remains dense
       O((1+r)^2 * l * N), so the hypothesis is about constant-factor and
       layout/register effects, not asymptotic improvement.
-    status: stage77_positive_smoke_repeated_gates_required
-    evidence: docs/stage76_rgt4_kernel_feasibility_log.md; docs/stage77_rgt4_fused_mat_kernel_log.md; theory_checks/h11_rgt4_fused_mat_kernel.md; algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md
+    status: stage78_promotion_candidate_high_stat_required
+    evidence: docs/stage76_rgt4_kernel_feasibility_log.md; docs/stage77_rgt4_fused_mat_kernel_log.md; docs/stage78_rgt4_fused_repeated_gates_log.md; theory_checks/h11_rgt4_fused_mat_kernel.md; algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md
     current_decision: >
       Stage76 added an explicit r>4 kernel smoke harness and parsed the raw
       log into kernel and phase-breakdown artifacts. The existing generic r>4
@@ -346,7 +346,16 @@ hypotheses:
       1.120x for r=6 and 1.102x for r=8. This is positive smoke only: r=8
       DFT-output remains below repeated scalar, r=8 complete-SAB remains
       below the r=4 reference, and repeated full-SAB/noise/resource gates are
-      required before any promotion.
+      required before any promotion. Stage78 ran those gates. r=6 has three
+      passing complete-SAB repeated samples with mean speedup 1.408x, min
+      1.361x, and max 1.435x, which reaches the Stage36 r=4 reference region
+      and exceeds the r=4 mean 1.377x in this small sample. r=8 stress passes
+      one full-SAB sample at 1.350x. r=6/r=8 final-output noise passes three
+      seeds each with zero PVW/scalar/pair failures. Resource accounting
+      records key ratios 1.122537/1.181090 and RSS ratios 1.030750/1.071251
+      for r=6/r=8. H11 is now a promotion candidate, but not a default path:
+      Stage79 must run high-stat complete-SAB and expanded noise/resource
+      confirmation before any claim upgrade or default integration.
     failure_criteria:
       - r>4 fused kernel fails identity-lane or SAB staged equivalence
       - DFT-output microbench does not beat the current generic MAT path and
