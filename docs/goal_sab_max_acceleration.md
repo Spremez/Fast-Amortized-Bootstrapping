@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-95`. This label tracks the
+Current control-plane closure label: `Stage 19-96`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -105,6 +105,7 @@ evidence.
 | Stage 93 external lane attempt | current environment probe | n/a | local attempts recorded, stronger claims blocked | current WSL2 attempt records `perf` missing and `hardware_counter_gate=BLOCKED`; local full-text filename search finds no 2025/686 candidate; external intake remains missing; decision `PASS_STAGE93_EXTERNAL_LANE_ATTEMPT_RECORDED_STRONGER_CLAIMS_BLOCKED` |
 | Stage 94 local frontier audit | post-Stage93 local routing | n/a | no new hot-path code justified | H14-C1 remains the preferred explicit r=6 local engineering path; H14-C3 half-sub body ceiling is `1.071890`; H13 tile is full-SAB neutral/negative; post-processing tail remains small; sparse selector, AVX512 layout, and non-binary branches remain rejected/deferred/blocked; decision `PASS_STAGE94_LOCAL_FRONTIER_AUDIT_NO_NEW_HOTPATH` |
 | Stage 95 public source reprobe | current public-source refresh | n/a | metadata/code visible, full text still blocked | author page, author BibTeX, DOI metadata, and GitHub code route remain visible; ePrint PDF and ACM PDF routes return `403`, author guessed PDF returns `404`; decision `PASS_STAGE95_PUBLIC_SOURCE_REPROBE_STRONGER_CLAIMS_BLOCKED` |
+| Stage 96 upstream delta audit | public code provenance | n/a | local delta boundary recorded | `origin/main=d251d06` is the merge-base of `HEAD=986f42f`, local branch is ahead `255` and behind `0`; 1681 changed files are classified, including 5 PVW/MAT-SAB source files; tracked PVW/MAT-SAB flags remain default-false; decision `PASS_STAGE96_UPSTREAM_DELTA_AUDIT_LOCAL_PROVENANCE_RECORDED` |
 
 Current conclusion:
 

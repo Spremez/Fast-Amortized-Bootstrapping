@@ -1,0 +1,256 @@
+ordinal_from_head,commit,subject
+1,986f42f,Add Stage95 public source reprobe
+2,84aede4,Add Stage94 local frontier audit
+3,73a6165,Add Stage93 external lane attempt
+4,8d288d9,Add Stage92 external unlock execution packet
+5,24d144c,Refresh Stage42 manifest after Stage91
+6,4eb92f5,Add Stage91 final scoped SAB package
+7,0776146,Refresh Stage42 manifest after Stage90
+8,bfffb88,Add Stage90 external claim unlock probe
+9,36bec71,Refresh Stage 42 verifier after Stage89
+10,8422cf5,Add Stage89 H14 promotion policy integration
+11,543e62b,Refresh Stage 42 verifier after Stage88
+12,af3104a,Add Stage88 backend repeated gates
+13,8e37171,Refresh Stage 42 verifier after Stage87
+14,8810a51,Add Stage87 backend FromDFT-add preflight
+15,13a9ccc,Refresh Stage 42 verifier after Stage86
+16,3de465f,Add Stage86 CMUX materialization design gate
+17,c146280,Refresh Stage 42 verifier after Stage84
+18,bfcb103,Add Stage84 r6 tile sweep preflight
+19,2cfc53b,Refresh Stage 42 verifier after Stage83
+20,d147b4f,Add Stage83 MAT body design check
+21,1dc4503,Refresh Stage 42 verifier after Stage82
+22,7f09c5f,Add Stage82 post-H11 fused profile
+23,1953c53,Refresh Stage 42 verifier after Stage81
+24,74703a4,Add Stage81 next variant triage
+25,7e9581d,Refresh Stage 42 verifier after Stage80
+26,74fd37c,Add Stage80 promotion policy audit
+27,b09c5d1,Refresh Stage 42 verifier after Stage79
+28,f7414ca,Add Stage79 rgt4 fused high-stat confirmation
+29,c6e30b6,Refresh Stage 42 verifier after Stage78
+30,09a53ba,Add Stage78 rgt4 fused repeated gates
+31,1027b4b,Refresh Stage 42 verifier after Stage77
+32,2423090,Add Stage77 rgt4 fused MAT kernel smoke
+33,dea0daf,Refresh Stage 42 verifier after Stage76
+34,14b905c,Add Stage76 rgt4 kernel feasibility
+35,1be0c59,Refresh Stage 42 verifier after Stage75
+36,8a4d535,Add Stage75 rgt4 profile boundary
+37,6a57ab0,Refresh Stage 42 verifier after Stage74
+38,4a38619,Add Stage74 r-scaling boundary
+39,4ed271d,Refresh Stage 42 verifier after Stage73
+40,9084943,Integrate Stage72 into final recheck
+41,a7daeea,Refresh Stage 42 verifier after Stage72
+42,4d610c2,Add Stage72 external source refresh
+43,a090833,Refresh Stage 42 verifier after Stage71 cleanup
+44,516a5ab,Clean up Stage71 roadmap status
+45,589ab33,Refresh Stage 42 verifier after Stage71
+46,5e06106,Integrate Stage70 into final recheck
+47,108c0b9,Refresh Stage 42 verifier after Stage70
+48,a03b25b,Add Stage70 external unlock preflight
+49,d7b9fcc,Refresh Stage 42 verifier after Stage69
+50,3dd2c72,Add Stage69 local variant feasibility audit
+51,61fe3a2,Refresh Stage 42 verifier after Stage68
+52,0945edf,Add Stage68 frontier closure consistency
+53,01a2050,Refresh Stage 42 verifier after Stage67
+54,dc96bc2,Integrate Stage66 into final recheck
+55,308d67a,Refresh Stage 42 verifier after Stage66
+56,e36e26c,Add Stage66 post-variant final recheck
+57,a196019,Refresh Stage 42 verifier after Stage64
+58,0d70284,Refresh Stage 42 manifest after Stage64
+59,cf9fec4,Add Stage64 post-variant refresh
+60,e3a9ada,Refresh Stage 42 verifier after Stage65A ablation
+61,f1944f3,Add Stage65A r4 unrolled AVX512 ablation
+62,cefdfcb,Refresh Stage 42 verifier after Stage 62 probe
+63,75edc7b,Add Stage 62 full-text unlock probe
+64,3f2f8f1,Refresh Stage 42 verifier after Stage 61 probe
+65,ef2828a,Add Stage 61 native perf unlock probe
+66,be5d88b,Refresh Stage 42 verifier after Stage 60 integration
+67,dd6e41e,Integrate Stage 59 into final recheck
+68,7ddd2b9,Refresh Stage 42 verifier after Stage 59 route
+69,ac3763f,Add Stage 59 completion route readiness
+70,ec1225d,Refresh Stage 42 verifier after Stage 58 integration
+71,e82f97b,Integrate Stage 57 into final recheck
+72,b8228da,Refresh Stage 42 verifier after Stage 57 audit
+73,1a0542a,Add Stage 57 scope label audit
+74,e783357,Refresh Stage 42 verifier after Stage 56 integration
+75,eb20f27,Integrate Stage 55 into final recheck
+76,fd2b10b,Refresh Stage 42 verifier after Stage 55 probe
+77,11721ae,Add Stage 55 external paper probe
+78,fea57fc,Refresh Stage 42 verifier after default final recheck
+79,7219889,Refresh Stage 40 verifier after default final recheck
+80,3ac9100,Add default final recheck coverage
+81,59aa2dd,Refresh Stage 42 verifier after final recheck integration
+82,fc3d904,Refresh Stage 40 verifier after final recheck integration
+83,bc087da,Integrate latest stages into final recheck
+84,4f0c9f0,Refresh Stage 42 verifier after unlock readiness packet
+85,9a032ea,Refresh Stage 40 verifier after unlock readiness packet
+86,af6c550,Add external unlock readiness packet
+87,3be918e,Refresh Stage 42 verifier after goal frontier
+88,e01a4be,Refresh Stage 40 verifier after goal frontier
+89,ee8ab0d,Add goal completion frontier
+90,d6c1e47,Refresh Stage 42 verifier after performance matrix
+91,8366747,Refresh Stage 40 verifier after performance matrix
+92,a37a76d,Add performance evidence matrix
+93,96bf138,Refresh Stage 42 verifier after repeated full SAB check
+94,24b75a3,Refresh Stage 40 verifier after repeated full SAB check
+95,450932b,Add WSL repeated full SAB stability check
+96,8c3fd2f,Refresh Stage 42 verifier after WSL noise smoke
+97,5e2f103,Refresh Stage 40 verifier after WSL noise smoke
+98,98e0bef,Add WSL noise smoke after active state refactor
+99,8309e82,Refresh Stage 42 verifier after WSL full SAB smoke
+100,3cb6935,Refresh Stage 40 verifier after WSL full SAB smoke
+101,d39f62c,Add WSL full SAB smoke after active state refactor
+102,55fd43a,Refresh Stage 42 verifier after WSL target smoke
+103,3388259,Refresh Stage 40 verifier after WSL target smoke
+104,4aac539,Add WSL target smoke after active state refactor
+105,bd11be3,Refresh Stage 42 verifier with Stage 45 direct check
+106,48cfcaf,Refresh Stage 40 verifier after Stage 45 roadmap alignment
+107,b00a84f,Align Stage 45 roadmap and closure verifier
+108,4e0a74b,Refresh Stage 42 verifier after active state refactor
+109,4b1d648,Refresh Stage 40 verifier after active state refactor
+110,e37dc9b,Include active state refactor in closure audit
+111,17d76c6,Make SAB PVW active state explicit
+112,347fa86,Refresh Stage 42 verifier after blocker dashboard closure check
+113,67a8ab3,Refresh Stage 40 verifier after blocker dashboard closure check
+114,59b16b6,Check blocker dashboard in Stage 42 closure
+115,c2ada50,Refresh Stage 42 verifier after blocker dashboard
+116,cc1b4b9,Refresh Stage 40 verifier after blocker dashboard
+117,52e9bda,Add remaining blocker dashboard to final recheck
+118,9972036,Refresh Stage 42 verifier after related-work recheck integration
+119,d351b79,Refresh Stage 40 verifier after related-work recheck integration
+120,495db85,Add related-work refresh to final recheck
+121,4f890f3,Refresh Stage 42 verifier after related-work probe
+122,daed0ec,Refresh Stage 40 verifier after related-work probe
+123,f450654,Add related-work access probe for novelty gate
+124,43594d0,Refresh Stage 42 verifier after citation probe update
+125,dce8d96,Refresh Stage 40 verifier after citation probe update
+126,6dbc195,Track author metadata in citation unlock probes
+127,c9e22be,Refresh Stage 42 verifier after final recheck integration
+128,66791a1,Refresh Stage 40 verifier after final recheck integration
+129,b6941ab,Integrate conditional backlog into final recheck
+130,73748fd,Refresh Stage 42 verifier after conditional backlog audit
+131,ad4c75b,Refresh Stage 40 verifier after conditional backlog audit
+132,f8e1838,Audit conditional backlog after scoped closure
+133,7437e19,Refresh Stage 42 verifier after checklist cleanup
+134,a576974,Refresh checklist after Stage 36 high-stat runs
+135,f5b9092,Refresh Stage 42 verifier for Stage 36 target noise
+136,7a0eae8,Refresh Stage 40 verifier for Stage 36 target noise
+137,60658d9,Add Stage 36 target-noise high-stat evidence
+138,fdd6ff7,Refresh Stage 42 verifier for Stage 36 added params
+139,548935c,Refresh Stage 40 and Stage 42 verification hashes
+140,6593253,Add Stage 36 added-parameter high-stat evidence
+141,eeb21dd,Refresh Stage 42 verifier for Stage 44 recheck
+142,506c14f,Integrate Stage 44 re-probe into final recheck
+143,27414fb,Refresh Stage 42 verifier for Stage 44
+144,a69ee51,Add Stage 44 external unlock re-probe
+145,ed5db5e,Record Stage 42 closure verifier evidence
+146,de85276,Add Stage 42 closure verifier
+147,49c002c,Add Stage 42 closure artifact manifest
+148,4f66616,Record default recheck Stage 42 closure
+149,60231ef,Integrate Stage 42 closure into final recheck
+150,fc065ca,Add Stage 43 post-closure smoke refresh
+151,78b56cf,Add Stage 42 evidence closure audit
+152,284dd2b,Add Stage 41 external unlock packet
+153,6469deb,Record hash-enabled post-freeze recheck
+154,5b43896,Record Stage 40 hash verification evidence
+155,0be1e66,Add Stage 40 freeze artifact hashes
+156,5434f90,Separate final recheck post-freeze evidence
+157,99c00f4,Separate post-freeze recheck outputs
+158,bd2b908,Record final recheck post-freeze verification
+159,03aa0ca,Add Stage 40 verifier to final recheck
+160,33cb1b1,Add no-write Stage 40 freeze verifier mode
+161,286d4a9,Add Stage 40 post-freeze verification evidence
+162,dd0448a,Add Stage 40 post-freeze verifier
+163,14b954b,Clarify Stage 40 freeze input commit
+164,429d1fe,Add Stage 40 scoped freeze package
+165,01db760,Normalize Stage 39 triage log output
+166,a67f58d,Add Stage 39 variant triage
+167,600236b,Add Stage 38 fulltext review gate
+168,ebb19fa,Add Stage 37 native perf audit
+169,568baa2,Add Stage 36 resource evidence
+170,50281b8,Add Stage 36 stage noise evidence
+171,2707603,Add Stage 36 target performance evidence
+172,9354837,Add high-stat expansion plan
+173,3474780,Add completion blocker roadmap
+174,1de1298,Add current smoke final recheck option
+175,4b90075,Add current commit SAB smoke gate
+176,2bd8779,Refresh citation gate through final recheck
+177,306b7cc,Add external evidence intake gate
+178,67b21d3,Add final goal recheck runner
+179,5b08e0c,Add final goal completion audit
+180,7be551d,Add Stage 28 native perf counter gate
+181,206de95,Add Stage 27 final engineering report
+182,ec4df31,Add Stage 27 completion readiness audit
+183,d0fce3e,Add Stage 27 citation access gate
+184,8dc341f,Assemble Stage 27 final engineering evidence package
+185,8e37121,Refresh Stage 27 related-work claim boundary
+186,d9367e3,Expand Stage 26 added binary evidence to 5 runs
+187,7363237,Expand Stage 26 added r2 parameter evidence
+188,7beacd1,Expand Stage 26 SET_2_3_4096 r4 evidence
+189,ed080fd,Expand Stage 26 SET_4_5_2048 r4 evidence
+190,3b1e463,Add Stage 26 parameter performance noise smoke
+191,ba7325f,Add Stage 27 final full SAB performance package
+192,7cfb87b,Record Stage 27 full source access gate
+193,eedc791,Add Stage 27 novelty claim boundary audit
+194,f97d671,Add Stage 26 parameter smoke coverage
+195,84f87b3,Add Stage 25 final noise seed expansion
+196,9524673,Add Stage 25 initial noise and resource matrix
+197,eae4d8d,Record Stage 24 post-processing tail deferral
+198,111e859,Record Stage 23 schedule fused CMUX ablation
+199,88e345b,Add Stage 22 MAT AVX512 limit audit
+200,dbc66ca,Record Stage 21 sub_a output fusion ablation
+201,04c541f,Add Stage 20 active-buffer PVW SAB path
+202,d3fe274,Add Stage 19 sparse schedule audit
+203,e2c589c,Document Stage 19 PVW-SAB acceleration roadmap
+204,b007c0c,Plan and audit post-AVX512 SAB stages
+205,6e52e1b,Improve AVX512 MAT external product gate
+206,b94d194,Add Stage 14 PVW body profiling
+207,48940a4,Profile PVW post-processing and direct lane extraction
+208,ef8df9e,Fix AVX512 staged gate and add small-r v2 kernel
+209,8a9ba67,Start Stage 11 PVW SAB optimization loop
+210,ea659b1,Add Stage 10 engineering evidence report
+211,d2e587e,Add Stage 9 stage-level noise probe
+212,1dcae20,Add Stage 9 failure-rate evidence summary
+213,22b21c0,Add Stage 8 clear elision r4 50-seed sweep
+214,80866a8,Add Stage 9 initial novelty scan
+215,2031dc8,Record Stage 8 engineering exit assessment
+216,d5a6b1b,Add Stage 8 full bootstrap gain separation
+217,69b6082,Add Stage 8 clear elision r2 50-seed sweep
+218,1def209,Add Stage 8 clear elision seed sweeps
+219,3f48f60,Add Stage 8 clear elision r2 and noise evidence
+220,9e04a19,Add Stage 8 clear elision r4 benchmark
+221,9370c04,Implement Stage 8 MAT clear elision
+222,dc6ee70,Add Stage 8 repeated AVX512 backend matrix
+223,1336424,Add Stage 8 AVX512 backend smoke
+224,acab5c1,Add Stage 8 r-scaling ablation plan
+225,66a2b7c,Add Stage 7 FFNT backend smoke
+226,a1784be,Add Stage 7 repeated benchmark sweep
+227,1326c70,Add Stage 7 resource metrics
+228,2962018,Add Stage 7 benchmark summary table
+229,0865e90,Add Stage 7 r4 full benchmark evidence
+230,bd5ef9b,Add Stage 6 r4 10-seed sweep evidence
+231,474c11a,Add Stage 6 r4 noise smoke evidence
+232,b240fcc,Add Stage 6 50-seed sweep evidence
+233,51ba496,Add Stage 6 10-seed sweep evidence
+234,5909a74,Add Stage 6 seed sweep automation
+235,fa5edfa,Add deterministic RNG switch for SAB repro
+236,4871c42,Add PVW full bootstrap noise gate
+237,29ab0b6,Add paired PVW benchmark statistics
+238,34aa7e9,Add PVW full bootstrap benchmark harness
+239,a926b0c,Add PVW full bootstrap target gate
+240,a1cf3a5,Add PVW packing HW-KS equivalence gate
+241,364ea08,Add PVW extract equivalence gate
+242,02ab530,Add PVW bootstrap wo extract gate
+243,53b01ba,Add SAB PVW sparse path skeleton
+244,c9a332c,Add isolated PVW binary sparse mul test
+245,7d7e64a,Add PVW automorphism keyswitch tests
+246,14eb587,Add Stage 5 PVW RGSW monomial equivalence tests
+247,a1b3c80,Add Stage 4 PVW lane equivalence tests
+248,2f56704,Document PVW SAB roadmap and finish kernel checks
+249,ebb921a,Add MAT_TRGSW PVW external product kernel
+250,540cf17,Plan PVW matrix kernel path
+251,68e9ca9,Add SAB microbench measurements
+252,1a0ca3d,Add SAB profiling instrumentation
+253,b59d557,Document SAB baseline and cost model
+254,4537798,Fix portable baseline build
+255,b59a125,Initial project version

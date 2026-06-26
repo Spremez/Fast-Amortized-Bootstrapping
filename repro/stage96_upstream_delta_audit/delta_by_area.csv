@@ -1,0 +1,12 @@
+area,changed_files,hotpath_source_files,interpretation
+algorithm_variants,9,0,algorithm/theory evidence delta
+docs,132,0,reproducibility/control-plane evidence delta
+experiments,67,0,reproducibility/control-plane evidence delta
+hypotheses,1,0,algorithm/theory evidence delta
+other,1,0,miscellaneous local delta
+pvw_mat_sab_source,5,5,local PVW/MAT-SAB source delta relative to public upstream
+repro,1328,0,reproducibility/control-plane evidence delta
+scripts,109,0,reproducibility/control-plane evidence delta
+source_or_backend,20,20,non-PVW or shared source/backend delta that may affect reproducibility
+theory,7,0,algorithm/theory evidence delta
+top_level_build_or_harness,2,1,top-level harness/build delta for tests and benchmarks

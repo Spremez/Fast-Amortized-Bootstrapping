@@ -10,7 +10,7 @@ Stage 59 turns the post-Stage58 state into an explicit route to completion. It d
 | S59-R4-FULLTEXT-686 | external unlock | 2025/686 theorem/protocol source review | EXTERNAL_FULLTEXT_BLOCKED | FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh |
 | S59-R5-NOVELTY-REVIEW | manual review | novelty and related-work distinction | EXTERNAL_REVIEW_BLOCKED | FINAL_RECHECK_RELATED_WORK=1 bash scripts/run_final_goal_recheck.sh |
 | S59-R6-OPTIONAL-VARIANTS | optional local expansion | future algorithmic variants | READY_OPTIONAL_LOCAL_TRIAGE | Stage89 promotes H14-C1 backend FromDFT+add as the preferred explicit r=6 local engineering path while keeping scalar/default behavior and paper-level claims unchanged. Stage94 audits the remaining local frontier and records no new hot-path implementation is justified under current evidence. |
-| S59-R7-FINAL-PAPER-PACKAGE | final freeze | paper/release claim package | SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED | Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93/94/95 after source, backend, external-evidence, or claim-scope changes. |
+| S59-R7-FINAL-PAPER-PACKAGE | final freeze | paper/release claim package | SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED | Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93/94/95/96 after source, backend, external-evidence, upstream-code, or claim-scope changes. |
 
 Decision: `PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED`
 

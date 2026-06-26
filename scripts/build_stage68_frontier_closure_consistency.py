@@ -107,6 +107,7 @@ def build_rows() -> List[Dict[str, str]]:
                 and "Stage93 external lane attempt" in stage42_detail
                 and "Stage94 local frontier audit" in stage42_detail
                 and "Stage95 public source reprobe" in stage42_detail
+                and "Stage96 upstream delta audit" in stage42_detail
             )
         )
     )
@@ -136,6 +137,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "Stage93 external lane attempt" in g6_detail
         and "Stage94 local frontier audit" in g6_detail
         and "Stage95 public source reprobe" in g6_detail
+        and "Stage96 upstream delta audit" in g6_detail
     )
 
     stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
@@ -174,6 +176,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage93_external_lane_attempt" in r7.get("evidence", "")
         and "stage94_local_frontier_audit" in r7.get("evidence", "")
         and "stage95_public_source_reprobe" in r7.get("evidence", "")
+        and "stage96_upstream_delta_audit" in r7.get("evidence", "")
     )
 
     rows = [

@@ -1437,3 +1437,18 @@ Repro artifacts:
 - `repro/stage95_public_source_reprobe/summary.csv`
 - `repro/stage95_public_source_reprobe/route_matrix.csv`
 - `repro/stage95_public_source_reprobe/artifact_index.csv`
+
+## Stage 96 Upstream Delta Audit
+
+- `docs/stage96_upstream_delta_audit_log.md`
+- `experiments/stage96_upstream_delta_audit_plan.md`
+- `scripts/run_stage96_upstream_delta_audit.sh`
+- `scripts/build_stage96_upstream_delta_audit.py`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage96_upstream_delta_audit/summary.csv`
+- `repro/stage96_upstream_delta_audit/delta_by_area.csv`
+- `repro/stage96_upstream_delta_audit/delta_files.csv`
+- `repro/stage96_upstream_delta_audit/commit_range.csv`
+- `repro/stage96_upstream_delta_audit/flag_guard.csv`
+- `repro/stage96_upstream_delta_audit/stage96_run.log`
+- `repro/stage96_upstream_delta_audit/artifact_index.csv`

@@ -1,0 +1,8 @@
+artifact,purpose,producer
+repro/stage96_upstream_delta_audit/summary.csv,Stage96 gate summary,scripts/build_stage96_upstream_delta_audit.py
+repro/stage96_upstream_delta_audit/delta_by_area.csv,Changed-file counts by area,scripts/build_stage96_upstream_delta_audit.py
+repro/stage96_upstream_delta_audit/delta_files.csv,Changed-file classification relative to origin/main,scripts/build_stage96_upstream_delta_audit.py
+repro/stage96_upstream_delta_audit/commit_range.csv,Local commit range relative to origin/main,scripts/build_stage96_upstream_delta_audit.py
+repro/stage96_upstream_delta_audit/flag_guard.csv,Default-false PVW/MAT-SAB flag guard,scripts/build_stage96_upstream_delta_audit.py
+repro/stage96_upstream_delta_audit/artifact_index.csv,Stage96 artifact index,scripts/build_stage96_upstream_delta_audit.py
+docs/stage96_upstream_delta_audit_log.md,Human-readable Stage96 log,scripts/build_stage96_upstream_delta_audit.py

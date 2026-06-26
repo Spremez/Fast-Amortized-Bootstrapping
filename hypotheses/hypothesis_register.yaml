@@ -711,3 +711,37 @@ hypotheses:
         matrix
       - closure/verifier, run log, artifact manifest, or reproduction
         checklist omit Stage95 artifacts
+  - id: H21_upstream_delta_provenance
+    statement: >
+      After Stage95 confirms the public GitHub code route is visible but full
+      text remains blocked, the local PVW/MAT-SAB evidence chain should record
+      whether `origin/main` is a stable public-code baseline and whether the
+      local optimization delta remains explicit rather than silently changing
+      scalar/default behavior.
+    mechanism: >
+      Stage96 fetches origin, resolves `origin/main`, computes merge-base,
+      ahead/behind counts, classifies files changed since upstream by area,
+      and checks that tracked PVW/MAT-SAB feature flags in
+      `src/mosfhet/Makefile.def` remain default-false. It then preserves
+      Stage91 claim boundaries so code provenance is not treated as theorem,
+      novelty, or hardware-counter evidence.
+    status: stage96_upstream_delta_audit_local_provenance_recorded
+    evidence: docs/stage96_upstream_delta_audit_log.md; experiments/stage96_upstream_delta_audit_plan.md; scripts/run_stage96_upstream_delta_audit.sh; scripts/build_stage96_upstream_delta_audit.py; repro/stage96_upstream_delta_audit/summary.csv; repro/stage96_upstream_delta_audit/delta_by_area.csv; repro/stage96_upstream_delta_audit/delta_files.csv; repro/stage96_upstream_delta_audit/commit_range.csv; repro/stage96_upstream_delta_audit/flag_guard.csv; repro/stage96_upstream_delta_audit/artifact_index.csv
+    current_decision: >
+      Stage96 records
+      PASS_STAGE96_UPSTREAM_DELTA_AUDIT_LOCAL_PROVENANCE_RECORDED. After
+      fetching origin, `origin/main=d251d06` is the merge-base of
+      `HEAD=986f42f`; local HEAD is ahead by 255 commits and behind by 0. The
+      local delta has 1681 changed files, including 5 PVW/MAT-SAB source files
+      and 20 other source/backend files; the remaining files are classified as
+      docs, scripts, repro, experiments, theory, algorithm variants,
+      hypotheses, or miscellaneous evidence. All tracked PVW/MAT-SAB flags
+      remain default-false, so scalar/default baseline claims remain guarded.
+      This is provenance support only and does not unlock stronger claims.
+    failure_criteria:
+      - origin/main cannot be resolved or is no longer the merge-base
+      - local HEAD is behind upstream and upstream drift is ignored
+      - a tracked PVW/MAT-SAB experiment flag is default-true without a new
+        default-path smoke/performance/noise campaign
+      - code-route provenance is treated as reviewed full text, novelty
+        evidence, or MAT-AVX512 hardware-counter proof

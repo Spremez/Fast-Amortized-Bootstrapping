@@ -1,0 +1,9 @@
+Stage96 upstream delta audit
+Fri Jun 26 14:59:05 UTC 2026
+986f42f
+origin	https://github.com/antoniocgj/Fast-Amortized-Bootstrapping (fetch)
+origin	https://github.com/antoniocgj/Fast-Amortized-Bootstrapping (push)
+Wrote repro/stage96_upstream_delta_audit/summary.csv
+Wrote repro/stage96_upstream_delta_audit/delta_by_area.csv
+Wrote docs/stage96_upstream_delta_audit_log.md
+Stage96 upstream delta audit: PASS_STAGE96_UPSTREAM_DELTA_AUDIT_LOCAL_PROVENANCE_RECORDED

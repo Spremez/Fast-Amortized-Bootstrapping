@@ -3165,3 +3165,48 @@ PDF reports `404`. Therefore public metadata improves citation context but
 does not unlock theorem-level 2025/686 source review, novelty claims, or
 paper-level claim upgrades.
 ```
+
+## Stage 96: Upstream Delta Audit
+
+Goal:
+
+```text
+Record the provenance boundary between the public 2025/686 implementation
+route (`origin/main`) and the local PVW/MAT-SAB optimization chain.
+```
+
+Tasks:
+
+- fetch `origin` and resolve `origin/main`, `HEAD`, merge-base, ahead count,
+  and behind count;
+- classify all files changed since `origin/main` by source/docs/repro/theory
+  area;
+- verify tracked PVW/MAT-SAB experiment flags remain default-false in
+  `src/mosfhet/Makefile.def`;
+- keep code-route provenance separate from theorem-level 2025/686 full-text
+  review, novelty, and hardware-counter optimality claims.
+
+Gate:
+
+- Stage95 must still report
+  `PASS_STAGE95_PUBLIC_SOURCE_REPROBE_STRONGER_CLAIMS_BLOCKED`;
+- `origin/main` must resolve and be the current merge-base of `HEAD`;
+- local branch may be ahead, but must not be silently behind unreviewed
+  upstream changes;
+- default flag guard must pass;
+- Stage91 C3/C4/C5 stronger claim boundaries must remain blocked or
+  missing-optional.
+
+Status:
+
+```text
+Completed as an upstream/local provenance audit. Stage96 records
+PASS_STAGE96_UPSTREAM_DELTA_AUDIT_LOCAL_PROVENANCE_RECORDED. After fetching
+origin, `origin/main=d251d06` is the merge-base of `HEAD=986f42f`, local HEAD
+is ahead by 255 commits and behind by 0, and the local delta contains 1681
+changed files. The delta classification records 5 PVW/MAT-SAB source files,
+20 other source/backend files, and the remaining docs/scripts/repro/theory
+evidence files. All tracked PVW/MAT-SAB experiment flags remain default-false.
+This supports reproducibility and code provenance only; it does not upgrade
+theorem-level 2025/686, novelty, or MAT-AVX512 hardware-counter claims.
+```

@@ -160,3 +160,8 @@ Execution policy:
   theorem-level full-text review. Continue to require a local PDF/text artifact
   via `FAB686_FULLTEXT_PATH` before Stage38/manual source-anchor review can
   upgrade CB7 or novelty wording.
+- After Stage96, public-code provenance is auditable: `origin/main` is the
+  current merge-base, local PVW/MAT-SAB changes are classified, and all tracked
+  experiment flags remain default-false. Use this for upstream-vs-local
+  explanation only; do not treat it as full-text review, novelty evidence, or
+  MAT-AVX512 hardware-counter proof.

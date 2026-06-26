@@ -125,6 +125,9 @@ STAGE94_LOCAL_FRONTIER_AUDIT = (
 STAGE95_PUBLIC_SOURCE_REPROBE = (
     ROOT / "repro" / "stage95_public_source_reprobe" / "summary.csv"
 )
+STAGE96_UPSTREAM_DELTA_AUDIT = (
+    ROOT / "repro" / "stage96_upstream_delta_audit" / "summary.csv"
+)
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -266,6 +269,21 @@ STAGE95_ARTIFACTS = [
     "repro/stage95_public_source_reprobe/summary.csv",
     "repro/stage95_public_source_reprobe/route_matrix.csv",
     "repro/stage95_public_source_reprobe/artifact_index.csv",
+]
+
+STAGE96_ARTIFACTS = [
+    "docs/stage96_upstream_delta_audit_log.md",
+    "experiments/stage96_upstream_delta_audit_plan.md",
+    "scripts/run_stage96_upstream_delta_audit.sh",
+    "scripts/build_stage96_upstream_delta_audit.py",
+    "hypotheses/hypothesis_register.yaml",
+    "repro/stage96_upstream_delta_audit/summary.csv",
+    "repro/stage96_upstream_delta_audit/delta_by_area.csv",
+    "repro/stage96_upstream_delta_audit/delta_files.csv",
+    "repro/stage96_upstream_delta_audit/commit_range.csv",
+    "repro/stage96_upstream_delta_audit/flag_guard.csv",
+    "repro/stage96_upstream_delta_audit/stage96_run.log",
+    "repro/stage96_upstream_delta_audit/artifact_index.csv",
 ]
 
 
@@ -421,6 +439,9 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     }
     stage95 = {
         row.get("gate"): row for row in read_csv(STAGE95_PUBLIC_SOURCE_REPROBE)
+    }
+    stage96 = {
+        row.get("gate"): row for row in read_csv(STAGE96_UPSTREAM_DELTA_AUDIT)
     }
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
@@ -1398,6 +1419,24 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         stage42.get("S42-STAGE95-PUBLIC-SOURCE-REPROBE", {}).get("status")
         == "PASS"
     )
+    stage96_mismatches = []
+    expected_stage96 = {
+        "stage96_stage95_precondition": "PASS",
+        "stage96_remote_origin_main": "PASS_UPSTREAM_REF_AVAILABLE",
+        "stage96_upstream_relation": "PASS_LOCAL_AHEAD_OF_UPSTREAM",
+        "stage96_delta_classification": "PASS_DELTA_CLASSIFIED",
+        "stage96_default_guard": "PASS_EXPLICIT_FLAGS_DEFAULT_FALSE",
+        "stage96_claim_guard": "PASS_STRONGER_CLAIMS_BLOCKED",
+        "stage96_decision": "PASS_STAGE96_UPSTREAM_DELTA_AUDIT_LOCAL_PROVENANCE_RECORDED",
+    }
+    for gate, expected in expected_stage96.items():
+        got = stage96.get(gate, {}).get("status", "MISSING")
+        if got != expected:
+            stage96_mismatches.append(f"{gate}:status={got}")
+    stage42_stage96_ok = (
+        stage42.get("S42-STAGE96-UPSTREAM-DELTA-AUDIT", {}).get("status")
+        == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -1481,6 +1520,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage93-external-lane-attempt-001",
         "stage94-local-frontier-audit-001",
         "stage95-public-source-reprobe-001",
+        "stage96-upstream-delta-audit-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -1836,6 +1876,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         *STAGE93_ARTIFACTS,
         *STAGE94_ARTIFACTS,
         *STAGE95_ARTIFACTS,
+        *STAGE96_ARTIFACTS,
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -2434,6 +2475,18 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             ),
         },
         {
+            "check": "stage96_upstream_delta_audit",
+            "status": "PASS" if not stage96_mismatches and stage42_stage96_ok else "FAIL",
+            "evidence": "repro/stage96_upstream_delta_audit/summary.csv",
+            "detail": "Stage96 records upstream/local provenance and default-false flag guards"
+            if not stage96_mismatches and stage42_stage96_ok
+            else "; ".join(stage96_mismatches)
+            or (
+                "S42-STAGE96-UPSTREAM-DELTA-AUDIT:"
+                f"{stage42.get('S42-STAGE96-UPSTREAM-DELTA-AUDIT', {}).get('status', 'MISSING')}!=PASS"
+            ),
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -2461,7 +2514,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87/Stage88/Stage89/Stage90/Stage91/Stage92/Stage93/Stage94/Stage95 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87/Stage88/Stage89/Stage90/Stage91/Stage92/Stage93/Stage94/Stage95/Stage96 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -2469,7 +2522,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, Stage86 secondary CMUX materialization design gate, Stage87 H14 backend FromDFT-add preflight, Stage88 H14 backend repeated gates, Stage89 H14 promotion policy integration, Stage90 external claim unlock, Stage91 final scoped package, Stage92 external unlock packet, Stage93 external lane attempt, Stage94 local frontier audit, and Stage95 public source reprobe are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, Stage86 secondary CMUX materialization design gate, Stage87 H14 backend FromDFT-add preflight, Stage88 H14 backend repeated gates, Stage89 H14 promotion policy integration, Stage90 external claim unlock, Stage91 final scoped package, Stage92 external unlock packet, Stage93 external lane attempt, Stage94 local frontier audit, Stage95 public source reprobe, and Stage96 upstream delta audit are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },
