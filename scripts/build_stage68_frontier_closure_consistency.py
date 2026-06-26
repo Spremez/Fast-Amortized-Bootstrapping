@@ -105,6 +105,7 @@ def build_rows() -> List[Dict[str, str]]:
                 and "Stage91 final scoped SAB package" in stage42_detail
                 and "Stage92 external unlock execution packet" in stage42_detail
                 and "Stage93 external lane attempt" in stage42_detail
+                and "Stage94 local frontier audit" in stage42_detail
             )
         )
     )
@@ -132,6 +133,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "Stage91 final scoped SAB package" in g6_detail
         and "Stage92 external unlock execution packet" in g6_detail
         and "Stage93 external lane attempt" in g6_detail
+        and "Stage94 local frontier audit" in g6_detail
     )
 
     stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
@@ -163,10 +165,12 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage88_h14_backend_repeated_gates" in r6.get("evidence", "")
         and "stage89_h14_promotion_policy_integration" in r6.get("evidence", "")
         and "stage90_external_claim_unlock" in r6.get("evidence", "")
+        and "stage94_local_frontier_audit" in r6.get("evidence", "")
         and r7.get("status") == "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED"
         and "stage91_final_package" in r7.get("evidence", "")
         and "stage92_external_unlock_execution" in r7.get("evidence", "")
         and "stage93_external_lane_attempt" in r7.get("evidence", "")
+        and "stage94_local_frontier_audit" in r7.get("evidence", "")
     )
 
     rows = [

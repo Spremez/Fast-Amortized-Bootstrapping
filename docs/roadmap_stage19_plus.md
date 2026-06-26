@@ -3084,3 +3084,46 @@ blocked. No recognized local 2025/686 full-text candidate is found in the
 configured search roots, and external evidence intake still reports missing
 full text and missing native perf summary. Stronger claims remain blocked.
 ```
+
+## Stage 94: Local Frontier Audit
+
+Goal:
+
+```text
+After the Stage93 external lane attempt, determine whether any remaining local
+PVW/MAT-SAB hot-path candidate is justified before writing more code.
+```
+
+Tasks:
+
+- aggregate Stage69, Stage81/82, Stage84, Stage86, Stage89, Stage91, and
+  Stage93 evidence into a candidate frontier;
+- keep H14-C1 backend FromDFT-add as the preferred explicit r=6 local path if
+  Stage89 still passes;
+- quantify the H14-C3 dual-butterfly fallback using the Stage82 sub-share and
+  Amdahl ceiling;
+- preserve deferred/rejected decisions for post-processing tail, H13 tile
+  sweep, sparse selector, blind AVX512 layout work, and non-binary PVW-SAB;
+- prove no SAB source or default-path change happened after the Stage89 policy
+  anchor.
+
+Gate:
+
+- all input stage decisions must match their scoped statuses;
+- H14-C1 must remain explicit/default false;
+- no unblocked local hot-path candidate may remain in the frontier;
+- C3/C4/C5 stronger claims must remain blocked.
+
+Status:
+
+```text
+Completed as a post-Stage93 local frontier audit. Stage94 records
+PASS_STAGE94_LOCAL_FRONTIER_AUDIT_NO_NEW_HOTPATH. H14-C1 remains the preferred
+explicit r=6 engineering path; H14-C3 is deferred because Stage82 gives
+CMUX sub share `0.134137`, so even halving it has only `1.071890` body-level
+ceiling. H13 r=6 tile sweep stays rejected for full-SAB promotion, the
+post-processing tail remains below threshold, sparse-selector skipping remains
+unsafe without a new key/security design, further AVX512 layout work still
+needs native counters or a distinct falsifiable hypothesis, and non-binary
+PVW-SAB remains blocked on reviewed 2025/686 branch semantics.
+```

@@ -1,0 +1,5 @@
+artifact,purpose,producer
+repro/stage94_local_frontier_audit/summary.csv,Stage94 gate summary,scripts/build_stage94_local_frontier_audit.py
+repro/stage94_local_frontier_audit/candidates.csv,Remaining local candidate frontier,scripts/build_stage94_local_frontier_audit.py
+repro/stage94_local_frontier_audit/artifact_index.csv,Stage94 artifact index,scripts/build_stage94_local_frontier_audit.py
+docs/stage94_local_frontier_audit_log.md,Human-readable Stage94 log,scripts/build_stage94_local_frontier_audit.py

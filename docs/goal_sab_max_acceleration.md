@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-93`. This label tracks the
+Current control-plane closure label: `Stage 19-94`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -103,6 +103,7 @@ evidence.
 | Stage 91 final SAB package | aggregation/claim freeze | n/a | scoped final package ready, stronger claims blocked | final package decision `PASS_STAGE91_FINAL_SCOPED_PACKAGE_STRONGER_CLAIMS_BLOCKED`; records Stage36 r=2/r=4 high-stat performance, Stage88/89 preferred explicit r=6 path, Stage36/88 noise/resource, reproduction commands, and blocked claim boundaries |
 | Stage 92 external unlock execution packet | external handoff | n/a | unlock commands recorded, stronger claims blocked | final external-unlock packet decision `PASS_STAGE92_EXTERNAL_UNLOCK_PACKET_RECORDED_STRONGER_CLAIMS_BLOCKED`; records exact native-perf, 2025/686 full-text, novelty-review, external-registration, and final-refresh commands plus acceptance/failure criteria |
 | Stage 93 external lane attempt | current environment probe | n/a | local attempts recorded, stronger claims blocked | current WSL2 attempt records `perf` missing and `hardware_counter_gate=BLOCKED`; local full-text filename search finds no 2025/686 candidate; external intake remains missing; decision `PASS_STAGE93_EXTERNAL_LANE_ATTEMPT_RECORDED_STRONGER_CLAIMS_BLOCKED` |
+| Stage 94 local frontier audit | post-Stage93 local routing | n/a | no new hot-path code justified | H14-C1 remains the preferred explicit r=6 local engineering path; H14-C3 half-sub body ceiling is `1.071890`; H13 tile is full-SAB neutral/negative; post-processing tail remains small; sparse selector, AVX512 layout, and non-binary branches remain rejected/deferred/blocked; decision `PASS_STAGE94_LOCAL_FRONTIER_AUDIT_NO_NEW_HOTPATH` |
 
 Current conclusion:
 

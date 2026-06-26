@@ -647,3 +647,37 @@ hypotheses:
       - missing local full text or missing perf is hidden from the final packet
       - claim wording changes without registered external artifacts and manual
         review
+  - id: H19_local_frontier_audit
+    statement: >
+      After Stage93 records that the current environment cannot unlock native
+      perf or reviewed 2025/686 full-text evidence, the next local action
+      should be a frontier audit rather than another hot-path implementation
+      unless a remaining candidate has material expected gain, a falsifiable
+      gate, and no unresolved key/security or external-evidence blocker.
+    mechanism: >
+      Stage94 reads Stage69 local variant feasibility, Stage81/82 profile
+      routing, Stage84 H13 tile-sweep results, Stage86 H14 candidate matrix,
+      Stage89 H14 promotion policy, Stage91 claim boundary, and Stage93
+      external lane attempt. It keeps H14-C1 as the preferred explicit r=6
+      local engineering path and classifies the remaining candidates as
+      deferred, rejected, or externally blocked under current evidence.
+    status: stage94_local_frontier_audit_no_new_hotpath
+    evidence: docs/stage94_local_frontier_audit_log.md; experiments/stage94_local_frontier_audit_plan.md; scripts/run_stage94_local_frontier_audit.sh; scripts/build_stage94_local_frontier_audit.py; repro/stage94_local_frontier_audit/summary.csv; repro/stage94_local_frontier_audit/candidates.csv; repro/stage94_local_frontier_audit/artifact_index.csv
+    current_decision: >
+      Stage94 records PASS_STAGE94_LOCAL_FRONTIER_AUDIT_NO_NEW_HOTPATH. H14-C1
+      remains the preferred explicit r=6 local engineering path. H14-C3 is
+      deferred because Stage82 records CMUX sub share 0.134137 and halving it
+      gives only a 1.071890 body-level Amdahl ceiling after H14-C1 has already
+      succeeded. H13 r=6 tile-sweep remains kernel-positive but full-SAB
+      neutral/negative, post-processing remains below the materiality
+      threshold, sparse selector skipping remains unsafe without a new
+      key/security design, AVX512 layout work remains blocked on native
+      counters or a distinct falsifiable hypothesis, and non-binary PVW-SAB
+      remains blocked on reviewed 2025/686 branch semantics.
+    failure_criteria:
+      - Stage94 hides an unblocked local candidate with a material expected
+        full-SAB gain
+      - Stage94 treats a deferred/rejected candidate as implemented evidence
+      - Stage94 changes scalar/default behavior or upgrades stronger claims
+      - closure/verifier, run log, artifact manifest, or reproduction
+        checklist omit Stage94 artifacts

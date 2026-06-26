@@ -196,6 +196,10 @@ def build_rows() -> List[Dict[str, str]]:
         stage42.get("S42-STAGE93-EXTERNAL-LANE-ATTEMPT", {}).get("status")
         == "PASS"
     )
+    stage94_closed = (
+        stage42.get("S42-STAGE94-LOCAL-FRONTIER-AUDIT", {}).get("status")
+        == "PASS"
+    )
     optional_notes = []
     if stage64a_closed:
         optional_notes.append("Stage64A post-variant refresh")
@@ -255,6 +259,8 @@ def build_rows() -> List[Dict[str, str]]:
         optional_notes.append("Stage92 external unlock execution packet")
     if stage93_closed:
         optional_notes.append("Stage93 external lane attempt")
+    if stage94_closed:
+        optional_notes.append("Stage94 local frontier audit")
     optional_stage_note = " plus " + " and ".join(optional_notes) if optional_notes else ""
     spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
     stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")

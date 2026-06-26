@@ -26,6 +26,9 @@ STAGE92_EXTERNAL_UNLOCK = (
 STAGE93_EXTERNAL_LANE_ATTEMPT = (
     ROOT / "repro" / "stage93_external_lane_attempt" / "summary.csv"
 )
+STAGE94_LOCAL_FRONTIER_AUDIT = (
+    ROOT / "repro" / "stage94_local_frontier_audit" / "summary.csv"
+)
 OUT_CSV = ROOT / "repro" / "stage59_completion_route_readiness.csv"
 OUT_MD = ROOT / "docs" / "stage59_completion_route_readiness.md"
 
@@ -86,6 +89,7 @@ def build_rows() -> List[Dict[str, str]]:
     stage91 = by_key(STAGE91_FINAL_PACKAGE, "gate")
     stage92 = by_key(STAGE92_EXTERNAL_UNLOCK, "gate")
     stage93 = by_key(STAGE93_EXTERNAL_LANE_ATTEMPT, "gate")
+    stage94 = by_key(STAGE94_LOCAL_FRONTIER_AUDIT, "gate")
 
     local_ready = all(
         status_of(frontier, row_id).startswith("LOCAL")
@@ -112,6 +116,10 @@ def build_rows() -> List[Dict[str, str]]:
     stage93_done = (
         status_of(stage93, "stage93_decision")
         == "PASS_STAGE93_EXTERNAL_LANE_ATTEMPT_RECORDED_STRONGER_CLAIMS_BLOCKED"
+    )
+    stage94_done = (
+        status_of(stage94, "stage94_decision")
+        == "PASS_STAGE94_LOCAL_FRONTIER_AUDIT_NO_NEW_HOTPATH"
     )
 
     rows = [
@@ -199,10 +207,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv; "
                 "repro/stage88_h14_backend_repeated_gates/summary.csv; "
                 "repro/stage89_h14_promotion_policy_integration/summary.csv; "
-                "repro/stage90_external_claim_unlock/summary.csv"
+                "repro/stage90_external_claim_unlock/summary.csv; "
+                "repro/stage94_local_frontier_audit/summary.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage89 promotes H14-C1 backend FromDFT+add as the preferred explicit r=6 local engineering path while keeping scalar/default behavior and paper-level claims unchanged. Stage90 then records the external claim unlock probe and keeps stronger claims blocked.",
+            "Stage89 promotes H14-C1 backend FromDFT+add as the preferred explicit r=6 local engineering path while keeping scalar/default behavior and paper-level claims unchanged. Stage94 audits the remaining local frontier and records no new hot-path implementation is justified under current evidence.",
             "Upgrades the explicit local engineering route only; does not change defaults or unlock paper-level claims.",
         ),
         route_row(
@@ -217,10 +226,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/remaining_blocker_dashboard.csv; "
                 "repro/stage91_final_package/summary.csv; "
                 "repro/stage92_external_unlock_execution/summary.csv; "
-                "repro/stage93_external_lane_attempt/summary.csv"
+                "repro/stage93_external_lane_attempt/summary.csv; "
+                "repro/stage94_local_frontier_audit/summary.csv"
             ),
             "A9 remains scoped unless CB5/CB6/CB7 are resolved; Stage91 must keep stronger claims blocked.",
-            "Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93 after source, backend, external-evidence, or claim-scope changes.",
+            "Use Stage92 lane commands for external evidence; rerun Stage90/91/92/93/94 after source, backend, external-evidence, or claim-scope changes.",
             "Provides a scoped final engineering package; does not unlock paper-level or theoretical claims.",
         ),
     ]
@@ -239,6 +249,11 @@ def decision(rows: List[Dict[str, str]]) -> str:
         status_of(stage93, "stage93_decision")
         == "PASS_STAGE93_EXTERNAL_LANE_ATTEMPT_RECORDED_STRONGER_CLAIMS_BLOCKED"
     )
+    stage94 = by_key(STAGE94_LOCAL_FRONTIER_AUDIT, "gate")
+    stage94_done = (
+        status_of(stage94, "stage94_decision")
+        == "PASS_STAGE94_LOCAL_FRONTIER_AUDIT_NO_NEW_HOTPATH"
+    )
     expected = {
         "S59-R1-SCOPED-ENGINEERING": "LOCAL_READY",
         "S59-R2-CURRENT-HEAD-REFRESH": "READY_LOCAL_REFRESH",
@@ -252,6 +267,7 @@ def decision(rows: List[Dict[str, str]]) -> str:
         all(by_id.get(route_id, {}).get("status") == status for route_id, status in expected.items())
         and stage92_done
         and stage93_done
+        and stage94_done
     )
     if ok:
         return "PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED"

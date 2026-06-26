@@ -121,7 +121,7 @@ def external_intake_gate() -> Dict[str, str]:
     native = rows.get("stage28_native_perf_summary", {}).get("status", "MISSING")
     if fulltext == "AVAILABLE_UNREVIEWED" or native == "PASS_COUNTER_ATTRIBUTION_AVAILABLE":
         status = "EXTERNAL_EVIDENCE_REGISTERED_REVIEW_REQUIRED"
-        next_action = "Run Stage90/91/92/93/42 refresh after manual review."
+        next_action = "Run Stage90/91/92/93/94/42 refresh after manual review."
     else:
         status = "PASS_EXTERNAL_INTAKE_STILL_MISSING"
         next_action = "Register external artifacts only after actual full-text or native perf evidence exists."
@@ -149,7 +149,7 @@ def claim_guard_gate() -> Dict[str, str]:
         "C3/C4/C5 remain blocked after current external lane attempts."
         if ok
         else f"claim_statuses={blocked}",
-        "Do not change claim wording until Stage90/91/92/93/42 acceptance gates pass.",
+        "Do not change claim wording until Stage90/91/92/93/94/42 acceptance gates pass.",
     )
 
 
@@ -180,7 +180,7 @@ def build_summary(out_dir: Path) -> List[Dict[str, str]]:
             decision,
             rel(out_dir / "summary.csv"),
             detail,
-            "Supply native perf or reviewed full text, then rerun Stage90/91/92/93/42 before claim changes.",
+            "Supply native perf or reviewed full text, then rerun Stage90/91/92/93/94/42 before claim changes.",
         )
     )
     return rows

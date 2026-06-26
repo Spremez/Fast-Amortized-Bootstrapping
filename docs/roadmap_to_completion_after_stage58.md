@@ -151,3 +151,8 @@ Execution policy:
   stronger claims: `perf` is still missing and no recognized 2025/686 full-text
   artifact was found. The next real unlock requires native/perf-enabled Linux
   or a supplied `FAB686_FULLTEXT_PATH`.
+- After Stage94, do not add another local hot-path implementation from the
+  current evidence. H14-C1 remains the preferred explicit r=6 path; H14-C3 is
+  deferred on low Amdahl ceiling, H13 remains full-SAB neutral/negative,
+  post-processing tail remains below threshold, and the remaining branches are
+  rejected or externally blocked.

@@ -1415,3 +1415,14 @@ Repro artifacts:
 - `repro/stage93_external_lane_attempt/native_perf_gate/perf_smoke.log`
 - `repro/stage93_external_lane_attempt/native_perf_gate.log`
 - `repro/stage93_external_lane_attempt/local_fulltext_search.csv`
+
+## Stage 94 Local Frontier Audit
+
+- `docs/stage94_local_frontier_audit_log.md`
+- `experiments/stage94_local_frontier_audit_plan.md`
+- `scripts/run_stage94_local_frontier_audit.sh`
+- `scripts/build_stage94_local_frontier_audit.py`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage94_local_frontier_audit/summary.csv`
+- `repro/stage94_local_frontier_audit/candidates.csv`
+- `repro/stage94_local_frontier_audit/artifact_index.csv`
