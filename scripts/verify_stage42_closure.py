@@ -86,6 +86,9 @@ STAGE78_RGT4_FUSED_REPEATED_GATES = (
 STAGE79_RGT4_FUSED_HIGH_STAT = (
     ROOT / "repro" / "stage79_rgt4_fused_high_stat" / "summary.csv"
 )
+STAGE80_PROMOTION_POLICY_AUDIT = (
+    ROOT / "repro" / "stage80_promotion_policy_audit" / "summary.csv"
+)
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -213,6 +216,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage77 = {row.get("gate"): row for row in read_csv(STAGE77_RGT4_FUSED_MAT_KERNEL)}
     stage78 = {row.get("gate"): row for row in read_csv(STAGE78_RGT4_FUSED_REPEATED_GATES)}
     stage79 = {row.get("gate"): row for row in read_csv(STAGE79_RGT4_FUSED_HIGH_STAT)}
+    stage80 = {row.get("gate"): row for row in read_csv(STAGE80_PROMOTION_POLICY_AUDIT)}
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
     closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
@@ -931,6 +935,23 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         stage42.get("S42-STAGE79-RGT4-FUSED-HIGH-STAT", {}).get("status")
         == "PASS"
     )
+    stage80_mismatches = []
+    expected_stage80 = {
+        "stage80_stage79_precondition": "PASS",
+        "stage80_performance_policy": "KEEP_EXPERIMENTAL_NOT_PROMOTED",
+        "stage80_noise_resource_guard": "PASS",
+        "stage80_default_path_guard": "PASS",
+        "stage80_current_head_smoke": "PASS",
+        "stage80_decision": "PASS_RGT4_FUSED_KEEP_EXPERIMENTAL_NOT_PROMOTED",
+    }
+    for gate, expected in expected_stage80.items():
+        got = stage80.get(gate, {}).get("status", "MISSING")
+        if got != expected:
+            stage80_mismatches.append(f"{gate}:status={got}")
+    stage42_stage80_ok = (
+        stage42.get("S42-STAGE80-PROMOTION-POLICY-AUDIT", {}).get("status")
+        == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -999,6 +1020,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage77-rgt4-fused-mat-kernel-001",
         "stage78-rgt4-fused-repeated-gates-001",
         "stage79-rgt4-fused-high-stat-001",
+        "stage80-promotion-policy-audit-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -1274,6 +1296,13 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "repro/stage79_rgt4_fused_high_stat/resource_samples.csv",
         "repro/stage79_rgt4_fused_high_stat/resource_summary.csv",
         "repro/stage79_rgt4_fused_high_stat/summary.csv",
+        "docs/stage80_promotion_policy_audit_log.md",
+        "experiments/stage80_promotion_policy_audit_plan.md",
+        "scripts/run_stage80_promotion_policy_audit.sh",
+        "scripts/build_stage80_promotion_policy_audit.py",
+        "repro/stage80_promotion_policy_audit/stage80_run.log",
+        "repro/stage80_promotion_policy_audit/summary.csv",
+        "repro/stage80_promotion_policy_audit/current_smoke/summary.csv",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -1692,6 +1721,18 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             ),
         },
         {
+            "check": "stage80_promotion_policy_audit",
+            "status": "PASS" if not stage80_mismatches and stage42_stage80_ok else "FAIL",
+            "evidence": "repro/stage80_promotion_policy_audit/summary.csv",
+            "detail": "Stage80 keeps H11 r=6 fused MAT as explicit experimental evidence only and does not promote or default it"
+            if not stage80_mismatches and stage42_stage80_ok
+            else "; ".join(stage80_mismatches)
+            or (
+                "S42-STAGE80-PROMOTION-POLICY-AUDIT:"
+                f"{stage42.get('S42-STAGE80-PROMOTION-POLICY-AUDIT', {}).get('status', 'MISSING')}!=PASS"
+            ),
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -1719,7 +1760,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -1727,7 +1768,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, and Stage79 r>4 fused high-stat review gate are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, and Stage80 promotion policy audit are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

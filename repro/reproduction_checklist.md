@@ -199,6 +199,7 @@
 - [x] Add and run Stage77 r>4 fused MAT kernel smoke; fused r=6/r=8 beats same-stage generic in kernel and one-run full-SAB smoke, but repeated/noise/resource gates are still required.
 - [x] Add and run Stage78 r>4 fused repeated gates; r=6 is a promotion candidate with three passing full-SAB samples, zero three-seed noise failures, and recorded resource overhead, but Stage79 high-stat confirmation is required before default/path promotion.
 - [x] Add and run Stage79 r>4 fused high-stat confirmation for r=6; complete-SAB/noise/resource pass, but performance is review-required rather than automatic promotion versus the r=4 reference.
-- [ ] Run Stage80 explicit keep/reject integration audit for the Stage79 r=6 fused review-required result before any default/path promotion.
+- [x] Add and run Stage80 explicit keep/reject integration audit; H11 r=6 fused MAT is kept behind an explicit experimental flag and is not promoted or made default.
+- [ ] Run Stage81 next-variant triage from the Stage80 policy state before adding another SAB/MAT optimization.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

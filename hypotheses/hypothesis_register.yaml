@@ -324,8 +324,8 @@ hypotheses:
       output bodies before eviction. The arithmetic remains dense
       O((1+r)^2 * l * N), so the hypothesis is about constant-factor and
       layout/register effects, not asymptotic improvement.
-    status: stage79_high_stat_review_required_not_automatically_promoted
-    evidence: docs/stage76_rgt4_kernel_feasibility_log.md; docs/stage77_rgt4_fused_mat_kernel_log.md; docs/stage78_rgt4_fused_repeated_gates_log.md; docs/stage79_rgt4_fused_high_stat_log.md; theory_checks/h11_rgt4_fused_mat_kernel.md; algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md
+    status: stage80_keep_experimental_not_promoted
+    evidence: docs/stage76_rgt4_kernel_feasibility_log.md; docs/stage77_rgt4_fused_mat_kernel_log.md; docs/stage78_rgt4_fused_repeated_gates_log.md; docs/stage79_rgt4_fused_high_stat_log.md; docs/stage80_promotion_policy_audit_log.md; theory_checks/h11_rgt4_fused_mat_kernel.md; algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md
     current_decision: >
       Stage76 added an explicit r>4 kernel smoke harness and parsed the raw
       log into kernel and phase-breakdown artifacts. The existing generic r>4
@@ -366,7 +366,12 @@ hypotheses:
       runs with key ratio 1.122537 and RSS ratio mean/max
       1.030715/1.030764. Therefore H11 is not automatically promoted. Stage80
       must explicitly keep it behind a non-default experimental policy or
-      reject it from the promoted line before new variant triage.
+      reject it from the promoted line before new variant triage. Stage80 keeps
+      H11 behind MAT_TRGSW_AVX512_RGT4_FUSED as explicit experimental evidence
+      only, passes current-head scalar/PVW smoke and default-path guards, and
+      records PASS_RGT4_FUSED_KEEP_EXPERIMENTAL_NOT_PROMOTED. H11 is not the
+      promoted line and cannot upgrade r=6 claims without a new promotion
+      campaign.
     failure_criteria:
       - r>4 fused kernel fails identity-lane or SAB staged equivalence
       - DFT-output microbench does not beat the current generic MAT path and

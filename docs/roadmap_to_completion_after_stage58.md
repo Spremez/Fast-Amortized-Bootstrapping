@@ -30,8 +30,8 @@ evidence is supplied.
 | Stage 77 | r>4 fused MAT kernel smoke | Implement H11 behind `MAT_TRGSW_AVX512_RGT4_FUSED` and check whether r=6/r=8 kernel gains propagate to complete SAB smoke. | Stage77 decision must be `PASS_RGT4_FUSED_SMOKE_RECORDED_REPEATED_GATES_REQUIRED` before any repeated promotion campaign starts. | passed as positive smoke/not promoted |
 | Stage 78 | r>4 fused repeated gates | Repeat full-SAB, correctness/noise, and resource gates for the Stage77 fused candidate. | Promote only if repeated full-SAB, noise, and resource evidence beat the relevant r=4/r>4 baselines under the same backend. | passed as r=6 promotion candidate; defaults unchanged |
 | Stage 79 | r>4 fused high-stat confirmation | Confirm or reject the Stage78 r=6 promotion candidate with 10-run style complete-SAB evidence and expanded noise/resource gates. | r=6 fused must pass correctness/noise/resource and retain a practical advantage over the r=4 reference with enough statistics. | passed as review-required, not automatic promotion |
-| Stage 80 | promotion integration or rejection audit | Decide whether the Stage79 r=6 fused review-required result is kept as an explicit experimental path or rejected from the promoted line. | scalar SAB and existing r=2/r=4 path remain unchanged; current-head refresh and closure/verifier pass. | next |
-| Stage 81 | next variant triage | Select the next local optimization only after H11 is explicitly kept or rejected by Stage80. | new variants require hypothesis, theory check, staged correctness, full-SAB A/B, noise/resource, and promote/neutral/reject decision. | waiting for Stage80 |
+| Stage 80 | promotion integration or rejection audit | Decide whether the Stage79 r=6 fused review-required result is kept as an explicit experimental path or rejected from the promoted line. | scalar SAB and existing r=2/r=4 path remain unchanged; current-head refresh and closure/verifier pass. | passed as keep experimental/not promoted |
+| Stage 81 | next variant triage | Select the next local optimization only after H11 is explicitly kept or rejected by Stage80. | new variants require hypothesis, theory check, staged correctness, full-SAB A/B, noise/resource, and promote/neutral/reject decision. | next |
 | Stage 82 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | externally blocked |
 | Stage 83 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
@@ -85,3 +85,7 @@ Execution policy:
   the Stage36 r=4 mean 1.377x. Stage80 must explicitly keep it behind a
   non-default experimental policy or reject it from the promoted line before
   Stage81 variant triage.
+- After Stage80, keep H11 r=6 fused MAT as explicit experimental evidence
+  only. It is not the promoted path, does not change defaults, and cannot be
+  used to upgrade r=6 claims without a new current-head promotion campaign.
+  Stage81 should select a fresh falsifiable optimization hypothesis.

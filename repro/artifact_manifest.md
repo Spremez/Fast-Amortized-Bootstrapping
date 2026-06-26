@@ -1201,3 +1201,18 @@ Repro artifacts:
 - `repro/stage79_rgt4_fused_high_stat/resource_run_2/r6/pvw.time.log`
 - `repro/stage79_rgt4_fused_high_stat/resource_run_2/r6/scalar.log`
 - `repro/stage79_rgt4_fused_high_stat/resource_run_2/r6/scalar.time.log`
+
+## Stage 80 Promotion Policy Audit
+
+- `docs/stage80_promotion_policy_audit_log.md`
+- `experiments/stage80_promotion_policy_audit_plan.md`
+- `scripts/run_stage80_promotion_policy_audit.sh`
+- `scripts/build_stage80_promotion_policy_audit.py`
+- `repro/stage80_promotion_policy_audit/stage80_run.log`
+- `repro/stage80_promotion_policy_audit/summary.csv`
+- `repro/stage80_promotion_policy_audit/current_smoke/summary.csv`
+- `repro/stage80_promotion_policy_audit/current_smoke/scalar_binary_SET_2_3_2048/build.log`
+- `repro/stage80_promotion_policy_audit/current_smoke/scalar_binary_SET_2_3_2048/run.log`
+- `repro/stage80_promotion_policy_audit/current_smoke/pvw_target_SET_2_3_2048/build.log`
+- `repro/stage80_promotion_policy_audit/current_smoke/pvw_target_SET_2_3_2048/run.log`
+- `repro/stage80_promotion_policy_audit/current_smoke/scalar_ternary_SET_2_3_2048/build.log`

@@ -2536,7 +2536,7 @@ with key ratio 1.122537 and RSS ratio mean/max 1.030715/1.030764. The Stage79
 decision is PASS_RGT4_FUSED_HIGH_STAT_RECORDED_REVIEW_REQUIRED.
 ```
 
-## Planned Stage 80: Promotion Integration Or Rejection Audit
+## Stage 80: Promotion Integration Or Rejection Audit
 
 Goal:
 
@@ -2567,10 +2567,13 @@ Gate:
 Status:
 
 ```text
-Next. Stage79 did not justify automatic default/path promotion. Stage80 must
-make an explicit keep/reject policy decision for H11 r=6 fused MAT, likely
-keeping it experimental unless a current-head refresh plus policy review
-justifies a scoped non-default path.
+Completed. Stage80 reads the Stage79 high-stat result, runs current-head smoke,
+checks static default-path guards, and records
+PASS_RGT4_FUSED_KEEP_EXPERIMENTAL_NOT_PROMOTED. H11 r=6 fused MAT remains
+available only behind the explicit MAT_TRGSW_AVX512_RGT4_FUSED flag; it is
+not promoted, not made default, and does not change scalar SAB or the existing
+r=2/r=4 scoped promoted path. Stage81 is now the next local variant triage
+entry.
 ```
 
 ## Planned Stage 81: Next Variant Triage
@@ -2601,7 +2604,9 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage80.
+Next. Stage80 kept H11 r=6 fused MAT as explicit experimental evidence only,
+so Stage81 must select a fresh falsifiable optimization hypothesis instead of
+upgrading the r=6 fused path by policy.
 ```
 
 ## Planned Stage 82: External Claim Unlock
@@ -2663,5 +2668,5 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage80-82 decisions.
+Waiting for Stage81-82 decisions.
 ```

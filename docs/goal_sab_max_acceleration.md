@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-79`. This label tracks the
+Current control-plane closure label: `Stage 19-80`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -90,6 +90,7 @@ evidence.
 | Stage 77 r>4 fused MAT kernel | `spqlios_avx512` | 6/8 | positive smoke, not promoted | `MAT_TRGSW_AVX512_RGT4_FUSED` beats generic r>4 kernel: DFT-output `1.582x`/`1.431x`, full-output `1.510x`/`1.370x`; full-SAB one-run fused/generic is `1.120x`/`1.102x`, but repeated/noise/resource gates are still required |
 | Stage 78 r>4 fused repeated gates | `spqlios_avx512` | 6/8 | r=6 promotion candidate, defaults unchanged | r=6 complete-SAB repeated A/B has 3 passing samples with mean `1.408x`, min `1.361x`; r=8 stress is `1.350x`; r=6/r=8 three-seed final-output noise has zero failures; resource key ratios are `1.122537`/`1.181090` and RSS ratios `1.030750`/`1.071251` |
 | Stage 79 r>4 fused high-stat confirmation | `spqlios_avx512` | 6 | high-stat review required, defaults unchanged | 10-run complete-SAB mean `1.367x`, CI `[1.341302,1.392098]`, min `1.314x`; 20-seed final-output noise zero failures; 3-run key ratio `1.122537`, RSS ratio mean `1.030715`; performance lands in r=4 reference region but below Stage36 r=4 mean `1.377x`, so no automatic promotion |
+| Stage 80 promotion policy audit | `spqlios_avx512` | 6 | keep experimental, not promoted | Stage80 reads Stage79, passes current-head scalar/PVW smoke and static default-path guards, and records `PASS_RGT4_FUSED_KEEP_EXPERIMENTAL_NOT_PROMOTED`; `MAT_TRGSW_AVX512_RGT4_FUSED` remains explicit only, scalar/default paths unchanged |
 
 Current conclusion:
 
@@ -285,9 +286,10 @@ path promotion.
 Stage79 runs that high-stat confirmation. The r=6 fused path remains correct
 and resource-bounded in the tested scope, but the 10-run mean speedup 1.367x
 does not exceed the Stage36 r=4 mean 1.377x. H11 is therefore recorded as
-review-required rather than automatically promoted. Stage80 must decide
-whether to keep it as an explicit experimental path or reject it from the
-promoted line.
+review-required rather than automatically promoted. Stage80 then makes the
+policy decision: keep H11 available only as an explicit experimental flag,
+do not promote it, and do not alter scalar/default paths. Stage81 is the next
+local variant-triage entry.
 ```
 
 ## Invariants
@@ -399,8 +401,8 @@ Stage 76: r>4 kernel feasibility. [passed as kernel-level negative/not promoted;
 Stage 77: r>4 fused MAT kernel. [positive smoke candidate; fused r=6/r=8 beats generic r>4 kernel and one-run full-SAB, repeated gates required]
 Stage 78: r>4 fused repeated gates. [passed as r=6 promotion candidate; high-stat confirmation required before defaults or claims change]
 Stage 79: r>4 fused high-stat confirmation. [completed; review required, not automatically promoted]
-Stage 80: promotion integration or rejection audit. [next]
-Stage 81: next variant triage. [waiting for Stage80]
+Stage 80: promotion integration or rejection audit. [completed; H11 r=6 fused kept experimental, not promoted]
+Stage 81: next variant triage. [next]
 Stage 82: external claim unlock. [blocked on native perf, full text, and manual novelty review]
 Stage 83: final SAB optimization package. [waiting]
 ```
