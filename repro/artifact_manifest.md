@@ -1387,3 +1387,16 @@ Repro artifacts:
 - `repro/stage91_final_package/claim_boundary.csv`
 - `repro/stage91_final_package/reproduction_commands.csv`
 - `repro/stage91_final_package/artifact_index.csv`
+
+## Stage 92 External Unlock Execution Packet
+
+- `docs/stage92_external_unlock_execution_packet.md`
+- `experiments/stage92_external_unlock_execution_plan.md`
+- `scripts/run_stage92_external_unlock_execution_packet.sh`
+- `scripts/build_stage92_external_unlock_execution_packet.py`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage92_external_unlock_execution/summary.csv`
+- `repro/stage92_external_unlock_execution/lane_matrix.csv`
+- `repro/stage92_external_unlock_execution/commands.csv`
+- `repro/stage92_external_unlock_execution/acceptance_matrix.csv`
+- `repro/stage92_external_unlock_execution/artifact_index.csv`

@@ -588,3 +588,35 @@ hypotheses:
         evidence
       - closure/verifier, run log, artifact manifest, or reproduction commands
         omit Stage91 artifacts
+  - id: H17_external_unlock_execution_packet
+    statement: >
+      After Stage91 freezes the scoped final SAB package, the next meaningful
+      progress toward stronger claims is not new hot-path code but an
+      executable external-unlock packet that specifies how CB5, CB6, CB7, and
+      A9 can be resolved without weakening claim guardrails.
+    mechanism: >
+      Stage92 reads the Stage91 final package, Stage52 external unlock
+      readiness, the remaining blocker dashboard, and the Stage91 claim
+      boundary. It emits lane, command, and acceptance matrices for native
+      perf, 2025/686 full text, novelty review, external evidence
+      registration, and final refresh. Each lane records required inputs,
+      expected artifacts, pass/fail conditions, and claim effects.
+    status: stage92_external_unlock_packet_recorded_stronger_claims_blocked
+    evidence: docs/stage92_external_unlock_execution_packet.md; experiments/stage92_external_unlock_execution_plan.md; scripts/run_stage92_external_unlock_execution_packet.sh; scripts/build_stage92_external_unlock_execution_packet.py; repro/stage92_external_unlock_execution/summary.csv; repro/stage92_external_unlock_execution/lane_matrix.csv; repro/stage92_external_unlock_execution/commands.csv; repro/stage92_external_unlock_execution/acceptance_matrix.csv; repro/stage92_external_unlock_execution/artifact_index.csv
+    current_decision: >
+      Stage92 records
+      PASS_STAGE92_EXTERNAL_UNLOCK_PACKET_RECORDED_STRONGER_CLAIMS_BLOCKED.
+      The external execution path is now explicit: run Stage28 on a native
+      perf-enabled AVX512 platform for CB5, supply and hash the 2025/686 full
+      text for CB7, complete manual source-anchor novelty review for CB6,
+      register external artifact hashes, and rerun final audit, Stage90,
+      Stage91, Stage42 closure, and verifier before changing claim wording.
+      No stronger claim is unlocked by Stage92 itself.
+    failure_criteria:
+      - Stage92 treats an external command listing as proof that the external
+        evidence has already been collected
+      - native perf, full-text, novelty, or final-refresh lanes omit expected
+        artifacts or acceptance gates
+      - claim boundary C3/C4/C5 is upgraded without Stage92 acceptance evidence
+      - closure/verifier, run log, artifact manifest, or reproduction checklist
+        omit Stage92 artifacts

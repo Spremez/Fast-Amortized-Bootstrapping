@@ -42,6 +42,7 @@ evidence is supplied.
 | Stage 89 | H14 promotion policy integration | Decide whether the Stage88 H14-C1 promotion candidate should be promoted for an explicit path, kept experimental, or rejected by policy. | current-head smoke, scalar/default guard, policy decision, closure, and verifier pass. | passed; H14 backend promoted as preferred explicit r=6 path, defaults unchanged |
 | Stage 90 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | probe completed; stronger claims remain externally blocked |
 | Stage 91 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | passed as scoped final package; stronger claims blocked |
+| Stage 92 | external unlock execution packet | Convert the remaining stronger-claim blockers into executable external lanes after the scoped final package is frozen. | lane matrix, command matrix, acceptance matrix, claim guard, closure audit, and verifier all pass. | passed; external execution packet recorded, stronger claims blocked |
 
 Execution policy:
 
@@ -141,3 +142,7 @@ Execution policy:
   record the preferred explicit r=6 path, and Stage90 keeps native-perf,
   full-text, and novelty claims blocked. Reopen the route only if SAB source
   code changes, backend/platform changes, or external evidence is supplied.
+- After Stage92, external unlock work is no longer ambiguous: run only the
+  relevant lane command, register the resulting artifact hashes, and rerun
+  Stage90, Stage91, Stage42 closure, and verifier before changing claim
+  wording.

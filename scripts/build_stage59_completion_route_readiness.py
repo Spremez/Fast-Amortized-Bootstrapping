@@ -20,6 +20,9 @@ UNLOCK = ROOT / "repro" / "stage52_external_unlock_readiness.csv"
 BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
 PERF_MATRIX = ROOT / "repro" / "stage50_performance_evidence_matrix.csv"
 STAGE91_FINAL_PACKAGE = ROOT / "repro" / "stage91_final_package" / "summary.csv"
+STAGE92_EXTERNAL_UNLOCK = (
+    ROOT / "repro" / "stage92_external_unlock_execution" / "summary.csv"
+)
 OUT_CSV = ROOT / "repro" / "stage59_completion_route_readiness.csv"
 OUT_MD = ROOT / "docs" / "stage59_completion_route_readiness.md"
 
@@ -78,6 +81,7 @@ def build_rows() -> List[Dict[str, str]]:
     blockers = by_key(BLOCKERS, "blocker_id")
     perf_rows = read_csv(PERF_MATRIX)
     stage91 = by_key(STAGE91_FINAL_PACKAGE, "gate")
+    stage92 = by_key(STAGE92_EXTERNAL_UNLOCK, "gate")
 
     local_ready = all(
         status_of(frontier, row_id).startswith("LOCAL")
@@ -96,6 +100,10 @@ def build_rows() -> List[Dict[str, str]]:
     stage91_done = (
         status_of(stage91, "stage91_decision")
         == "PASS_STAGE91_FINAL_SCOPED_PACKAGE_STRONGER_CLAIMS_BLOCKED"
+    )
+    stage92_done = (
+        status_of(stage92, "stage92_decision")
+        == "PASS_STAGE92_EXTERNAL_UNLOCK_PACKET_RECORDED_STRONGER_CLAIMS_BLOCKED"
     )
 
     rows = [
@@ -199,10 +207,11 @@ def build_rows() -> List[Dict[str, str]]:
             (
                 "repro/stage52_external_unlock_readiness.csv; "
                 "repro/remaining_blocker_dashboard.csv; "
-                "repro/stage91_final_package/summary.csv"
+                "repro/stage91_final_package/summary.csv; "
+                "repro/stage92_external_unlock_execution/summary.csv"
             ),
             "A9 remains scoped unless CB5/CB6/CB7 are resolved; Stage91 must keep stronger claims blocked.",
-            "Keep the package scoped; rerun Stage90/91 after source, backend, external-evidence, or claim-scope changes.",
+            "Use Stage92 lane commands for external evidence; rerun Stage90/91/92 after source, backend, external-evidence, or claim-scope changes.",
             "Provides a scoped final engineering package; does not unlock paper-level or theoretical claims.",
         ),
     ]
@@ -211,6 +220,11 @@ def build_rows() -> List[Dict[str, str]]:
 
 def decision(rows: List[Dict[str, str]]) -> str:
     by_id = {row["route_id"]: row for row in rows}
+    stage92 = by_key(STAGE92_EXTERNAL_UNLOCK, "gate")
+    stage92_done = (
+        status_of(stage92, "stage92_decision")
+        == "PASS_STAGE92_EXTERNAL_UNLOCK_PACKET_RECORDED_STRONGER_CLAIMS_BLOCKED"
+    )
     expected = {
         "S59-R1-SCOPED-ENGINEERING": "LOCAL_READY",
         "S59-R2-CURRENT-HEAD-REFRESH": "READY_LOCAL_REFRESH",
@@ -220,7 +234,7 @@ def decision(rows: List[Dict[str, str]]) -> str:
         "S59-R6-OPTIONAL-VARIANTS": "READY_OPTIONAL_LOCAL_TRIAGE",
         "S59-R7-FINAL-PAPER-PACKAGE": "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED",
     }
-    ok = all(by_id.get(route_id, {}).get("status") == status for route_id, status in expected.items())
+    ok = all(by_id.get(route_id, {}).get("status") == status for route_id, status in expected.items()) and stage92_done
     if ok:
         return "PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED"
     return "FAIL_COMPLETION_ROUTE_INCONSISTENT"

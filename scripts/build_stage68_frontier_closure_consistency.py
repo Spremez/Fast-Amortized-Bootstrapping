@@ -103,6 +103,7 @@ def build_rows() -> List[Dict[str, str]]:
                 and "Stage89 H14 promotion policy integration" in stage42_detail
                 and "Stage90 external claim unlock probe" in stage42_detail
                 and "Stage91 final scoped SAB package" in stage42_detail
+                and "Stage92 external unlock execution packet" in stage42_detail
             )
         )
     )
@@ -128,6 +129,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "Stage89 H14 promotion policy integration" in g6_detail
         and "Stage90 external claim unlock" in g6_detail
         and "Stage91 final scoped SAB package" in g6_detail
+        and "Stage92 external unlock execution packet" in g6_detail
     )
 
     stage57_ok = bool(stage57) and all(r.get("status") == "PASS" for r in stage57.values())
@@ -161,6 +163,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage90_external_claim_unlock" in r6.get("evidence", "")
         and r7.get("status") == "SCOPED_FINAL_PACKAGE_READY_STRONGER_BLOCKED"
         and "stage91_final_package" in r7.get("evidence", "")
+        and "stage92_external_unlock_execution" in r7.get("evidence", "")
     )
 
     rows = [

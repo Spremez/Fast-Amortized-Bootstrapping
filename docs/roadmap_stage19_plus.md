@@ -3005,3 +3005,45 @@ and `repro/stage91_final_package/`. Stage91 does not mark novelty,
 theorem-level 2025/686 citations, non-binary PVW-SAB, all-parameter speedup,
 or MAT-AVX512 theoretical optimality as supported.
 ```
+
+## Stage 92: External Unlock Execution Packet
+
+Goal:
+
+```text
+Convert the remaining post-Stage91 stronger-claim blockers into executable
+external unlock lanes with explicit commands, expected artifacts, acceptance
+gates, failure policy, and claim effects.
+```
+
+Tasks:
+
+- record the native/perf lane for CB5 without treating WSL proxy evidence as
+  hardware-counter proof;
+- record the 2025/686 full-text lane for CB7 without treating metadata or
+  blocked download routes as theorem-level evidence;
+- record the novelty/source-anchor lane for CB6 without upgrading novelty
+  wording before manual review;
+- record the final-refresh route that reruns final audit, Stage90, Stage91,
+  and closure verification after external evidence changes.
+
+Gate:
+
+- Stage91 must remain
+  `PASS_STAGE91_FINAL_SCOPED_PACKAGE_STRONGER_CLAIMS_BLOCKED`;
+- CB5, CB6, CB7, and A9 must remain visible in the blocker dashboard;
+- every external lane must have a command, expected artifacts, acceptance
+  gate, failure policy, and claim effect;
+- Stage92 must preserve the Stage91 claim boundary and must not mark any
+  stronger claim as supported.
+
+Status:
+
+```text
+Completed as an external unlock execution handoff. Stage92 records
+PASS_STAGE92_EXTERNAL_UNLOCK_PACKET_RECORDED_STRONGER_CLAIMS_BLOCKED. The
+packet names the exact commands for native/perf Stage28, 2025/686 full-text
+Stage38, external evidence registration, novelty review, and final refresh.
+It does not execute native perf, fetch or review full text, or upgrade any
+novelty/theory/paper-level claim.
+```
