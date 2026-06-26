@@ -191,5 +191,6 @@
 - [x] Add and run Stage69 local variant feasibility audit; remaining local H2/H3/H4/H7/H8 candidates are not ready for new code without external unlocks or a new hypothesis.
 - [x] Add and run Stage70 external unlock preflight; native-perf, full-text, novelty, and local-variant next actions are machine-checkable.
 - [x] Add and run Stage71 final-recheck integration for Stage70; unified final recheck can refresh Stage70 before Stage42 closure.
+- [x] Add and run Stage72 external source refresh; author metadata, DOI metadata, and code route are reachable while reviewed 2025/686 full text remains blocked.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

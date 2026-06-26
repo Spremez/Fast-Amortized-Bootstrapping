@@ -1,0 +1,7 @@
+gate,status,evidence,detail
+stage72_author_metadata_route,PASS,repro/stage72_external_source_refresh/access_probe.csv; repro/stage72_external_source_refresh/author_cite.bib,author page and author BibTeX metadata are available
+stage72_doi_metadata_route,PASS,repro/stage72_external_source_refresh/crossref_metadata.json,DOI metadata is available; this is not full text.
+stage72_code_route,PASS,repro/stage72_external_source_refresh/access_probe.csv,FAB686_GITHUB_REPO=PASS_HTTP_200_MARKER_MISSING
+stage72_official_fulltext_routes,WAIT_FULLTEXT_ARTIFACT,repro/stage72_external_source_refresh/access_probe.csv,FAB686_EPRINT_PDF=BLOCKED_403_OR_CHALLENGE; FAB686_ACM_PDF=BLOCKED_403_OR_CHALLENGE; FAB686_AUTHOR_GUESSED_PDF=NOT_FOUND
+stage72_claim_policy,KEEP_STRONGER_CLAIMS_BLOCKED,repro/stage72_external_source_refresh/summary.csv,metadata/code routes are not sufficient for theorem-level or novelty claims without reviewed full text
+stage72_decision,PASS_EXTERNAL_SOURCE_REFRESH_STRONGER_CLAIMS_BLOCKED,repro/stage72_external_source_refresh/summary.csv,External source routes were refreshed; stronger claims remain blocked pending reviewed full text.

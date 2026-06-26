@@ -71,6 +71,9 @@ STAGE71_FINAL_RECHECK_STAGE70 = ROOT / "repro" / "stage71_final_recheck_stage70"
 STAGE71_FINAL_RECHECK_STAGE70_DECISION = (
     ROOT / "repro" / "stage71_final_recheck_stage70" / "decision.csv"
 )
+STAGE72_EXTERNAL_SOURCE_REFRESH = (
+    ROOT / "repro" / "stage72_external_source_refresh" / "summary.csv"
+)
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -127,6 +130,8 @@ EXPECTED_REMAINING_BLOCKERS = {
             "stage55_fulltext=BLOCKED",
             "stage55_metadata=PASS",
             "stage55_decision=WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW",
+            "stage72_fulltext=WAIT_FULLTEXT_ARTIFACT",
+            "stage72_decision=PASS_EXTERNAL_SOURCE_REFRESH_STRONGER_CLAIMS_BLOCKED",
             "related_fulltext=BLOCKED_FULLTEXT",
             "external_fulltext=MISSING",
         ],
@@ -276,6 +281,14 @@ REQUIRED_FILES = [
     "repro/stage71_final_recheck_stage70/stage42_evidence_closure.log",
     "repro/stage71_final_recheck_stage70_failed_attempt1/decision.csv",
     "repro/stage71_final_recheck_stage70_failed_attempt1/stage71_log_failed.md",
+    "docs/stage72_external_source_refresh_log.md",
+    "experiments/stage72_external_source_refresh_plan.md",
+    "scripts/build_stage72_external_source_refresh.py",
+    "repro/stage72_external_source_refresh/summary.csv",
+    "repro/stage72_external_source_refresh/access_probe.csv",
+    "repro/stage72_external_source_refresh/crossref_summary.csv",
+    "repro/stage72_external_source_refresh/crossref_metadata.json",
+    "repro/stage72_external_source_refresh/author_cite.bib",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -527,6 +540,14 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage71_final_recheck_stage70/stage42_evidence_closure.log",
     "repro/stage71_final_recheck_stage70_failed_attempt1/decision.csv",
     "repro/stage71_final_recheck_stage70_failed_attempt1/stage71_log_failed.md",
+    "docs/stage72_external_source_refresh_log.md",
+    "experiments/stage72_external_source_refresh_plan.md",
+    "scripts/build_stage72_external_source_refresh.py",
+    "repro/stage72_external_source_refresh/summary.csv",
+    "repro/stage72_external_source_refresh/access_probe.csv",
+    "repro/stage72_external_source_refresh/crossref_summary.csv",
+    "repro/stage72_external_source_refresh/crossref_metadata.json",
+    "repro/stage72_external_source_refresh/author_cite.bib",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -1657,6 +1678,38 @@ def check_stage71_final_recheck_stage70() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage72_external_source_refresh() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE72_EXTERNAL_SOURCE_REFRESH)}
+    expected = {
+        "stage72_author_metadata_route": "PASS",
+        "stage72_doi_metadata_route": "PASS",
+        "stage72_code_route": "PASS",
+        "stage72_official_fulltext_routes": "WAIT_FULLTEXT_ARTIFACT",
+        "stage72_claim_policy": "KEEP_STRONGER_CLAIMS_BLOCKED",
+        "stage72_decision": "PASS_EXTERNAL_SOURCE_REFRESH_STRONGER_CLAIMS_BLOCKED",
+    }
+    problems = []
+    for gate, status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+    detail = (
+        "Stage72 refreshes author/DOI/code source routes while preserving full-text and stronger-claim blockers"
+        if not problems and rows
+        else "; ".join(problems) or "Stage72 summary missing"
+    )
+    return [
+        row(
+            "S42-STAGE72-EXTERNAL-SOURCE-REFRESH",
+            "external_evidence",
+            pass_fail(not problems and bool(rows)),
+            STAGE72_EXTERNAL_SOURCE_REFRESH.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage72 before relying on current external source availability.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -1833,6 +1886,10 @@ def check_run_log() -> List[Dict[str, str]]:
     for r in rows:
         if r.get("run_id") == "stage71-final-recheck-stage70-001":
             stage71_status = r.get("status", "MISSING")
+    stage72_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage72-external-source-refresh-001":
+            stage72_status = r.get("status", "MISSING")
     ok = (
         ok
         and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
@@ -1841,11 +1898,12 @@ def check_run_log() -> List[Dict[str, str]]:
         and stage69_status == "PASS_LOCAL_VARIANT_FEASIBILITY_AUDIT_STRONGER_CLAIMS_BLOCKED"
         and stage70_status == "PASS_EXTERNAL_UNLOCK_PREFLIGHT_STRONGER_CLAIMS_BLOCKED"
         and stage71_status == "PASS_FINAL_RECHECK_STAGE70_INTEGRATION"
+        and stage72_status == "PASS_EXTERNAL_SOURCE_REFRESH_STRONGER_CLAIMS_BLOCKED"
     )
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}"
     )
     return [
         row(
@@ -1867,8 +1925,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, or Stage71 control-plane artifacts.",
+            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, or Stage72 control-plane artifacts.",
         )
     ]
 
@@ -2058,6 +2116,14 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/stage71_final_recheck_stage70/stage42_evidence_closure.log",
         "repro/stage71_final_recheck_stage70_failed_attempt1/decision.csv",
         "repro/stage71_final_recheck_stage70_failed_attempt1/stage71_log_failed.md",
+        "docs/stage72_external_source_refresh_log.md",
+        "experiments/stage72_external_source_refresh_plan.md",
+        "scripts/build_stage72_external_source_refresh.py",
+        "repro/stage72_external_source_refresh/summary.csv",
+        "repro/stage72_external_source_refresh/access_probe.csv",
+        "repro/stage72_external_source_refresh/crossref_summary.csv",
+        "repro/stage72_external_source_refresh/crossref_metadata.json",
+        "repro/stage72_external_source_refresh/author_cite.bib",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -2066,7 +2132,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, and Stage71 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, and Stage72 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -2136,6 +2202,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage69_local_variant_feasibility,
         check_stage70_external_unlock_preflight,
         check_stage71_final_recheck_stage70,
+        check_stage72_external_source_refresh,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -2155,10 +2222,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, and Stage71 final-recheck Stage70 integration; stronger claims remain blocked"
+            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, and Stage72 external source refresh; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72 evidence closure.",
         )
     )
     return checks

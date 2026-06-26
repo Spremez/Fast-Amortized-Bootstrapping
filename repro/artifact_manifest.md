@@ -1008,3 +1008,14 @@ Repro artifacts:
 - `repro/stage71_final_recheck_stage70/stage42_evidence_closure.log`
 - `repro/stage71_final_recheck_stage70_failed_attempt1/decision.csv`
 - `repro/stage71_final_recheck_stage70_failed_attempt1/stage71_log_failed.md`
+
+## Stage 72 External Source Refresh
+
+- `docs/stage72_external_source_refresh_log.md`
+- `experiments/stage72_external_source_refresh_plan.md`
+- `scripts/build_stage72_external_source_refresh.py`
+- `repro/stage72_external_source_refresh/summary.csv`
+- `repro/stage72_external_source_refresh/access_probe.csv`
+- `repro/stage72_external_source_refresh/crossref_summary.csv`
+- `repro/stage72_external_source_refresh/crossref_metadata.json`
+- `repro/stage72_external_source_refresh/author_cite.bib`

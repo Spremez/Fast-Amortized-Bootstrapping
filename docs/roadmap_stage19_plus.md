@@ -2192,3 +2192,41 @@ Status:
 Stage71 passed. The unified final recheck can refresh Stage70 external-unlock
 preflight before rebuilding Stage42 closure. It is control-plane evidence only.
 ```
+
+## Stage 72: External Source Refresh
+
+Goal:
+
+```text
+Refresh current external source availability for 2025/686 after Stage71 and
+record whether metadata/code/full-text routes can support stronger claim work.
+```
+
+Tasks:
+
+- probe official ePrint and ACM full-text routes;
+- probe the author publication page and author-provided BibTeX route;
+- probe Crossref DOI metadata and the author-linked GitHub implementation
+  route;
+- record the access matrix and claim policy in the repro pack;
+- update the remaining blocker dashboard and Stage42 closure/verifier.
+
+Gate:
+
+- author metadata and BibTeX metadata must be available or explicitly failed;
+- DOI metadata must be available or explicitly failed;
+- direct ePrint/ACM PDF routes must either provide a PDF or remain recorded as
+  blocked;
+- `stage72_decision` must be
+  `PASS_EXTERNAL_SOURCE_REFRESH_STRONGER_CLAIMS_BLOCKED`;
+- no SAB benchmark, scalar/PVW code path, speedup, novelty, theorem-level,
+  non-binary, all-parameter, or hardware-counter claim is upgraded.
+
+Status:
+
+```text
+Stage72 passed. Author metadata, BibTeX metadata, Crossref DOI metadata, and
+the author-linked implementation route are reachable, while direct ePrint/ACM
+PDF routes remain blocked or unavailable as a reviewed local full-text
+artifact. It is external-source evidence only.
+```
