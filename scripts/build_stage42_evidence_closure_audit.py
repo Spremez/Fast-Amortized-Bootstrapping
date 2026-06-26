@@ -32,6 +32,7 @@ STAGE41 = ROOT / "repro" / "stage41_external_unlock_packet.csv"
 STAGE43_SMOKE = ROOT / "repro" / "stage43_current_smoke_after_stage42" / "summary.csv"
 STAGE44_REPROBE = ROOT / "repro" / "stage44_external_unlock_reprobe" / "summary.csv"
 STAGE45_ACTIVE_STATE = ROOT / "repro" / "stage45_active_state_refactor" / "summary.csv"
+STAGE46_WSL_TARGET = ROOT / "repro" / "stage46_wsl_active_state_target_smoke" / "summary.csv"
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -122,6 +123,8 @@ REQUIRED_FILES = [
     "repro/stage44_external_unlock_reprobe/summary.csv",
     "docs/stage45_active_state_refactor_log.md",
     "repro/stage45_active_state_refactor/summary.csv",
+    "docs/stage46_wsl_active_state_target_smoke_log.md",
+    "repro/stage46_wsl_active_state_target_smoke/summary.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -170,6 +173,10 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage45_active_state_refactor/ffnt_kernel_build.log",
     "repro/stage45_active_state_refactor/ffnt_kernel_run.log",
     "repro/stage45_active_state_refactor/spqlios_avx512_windows_build.log",
+    "docs/stage46_wsl_active_state_target_smoke_log.md",
+    "repro/stage46_wsl_active_state_target_smoke/summary.csv",
+    "repro/stage46_wsl_active_state_target_smoke/build.log",
+    "repro/stage46_wsl_active_state_target_smoke/run.log",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -245,7 +252,7 @@ def write_closure_manifest() -> None:
 def check_roadmap() -> List[Dict[str, str]]:
     text = ROADMAP.read_text(encoding="utf-8") if ROADMAP.exists() else ""
     stages = sorted({int(m.group(1)) for m in re.finditer(r"^## Stage (\d+):", text, re.M)})
-    expected = list(range(19, 46))
+    expected = list(range(19, 47))
     return [
         row(
             "S42-ROADMAP-STAGES",
@@ -253,7 +260,7 @@ def check_roadmap() -> List[Dict[str, str]]:
             pass_fail(stages == expected),
             ROADMAP.relative_to(ROOT).as_posix(),
             f"observed={stages}; expected={expected}",
-            "Restore one Stage 19-45 section per stage before using the roadmap as the active plan.",
+            "Restore one Stage 19-46 section per stage before using the roadmap as the active plan.",
         )
     ]
 
@@ -374,6 +381,23 @@ def check_stage45_active_state() -> List[Dict[str, str]]:
             if not mismatches
             else "; ".join(mismatches),
             "Rerun or repair Stage 45 active-state refactor evidence before relying on the post-closure code state.",
+        )
+    ]
+
+
+def check_stage46_wsl_target() -> List[Dict[str, str]]:
+    rows = {r.get("check"): r for r in read_csv(STAGE46_WSL_TARGET)}
+    status = rows.get("wsl_spqlios_avx512_target_gate", {}).get("status", "MISSING")
+    return [
+        row(
+            "S42-STAGE46-WSL-TARGET",
+            "current_smoke",
+            pass_fail(status == "PASS"),
+            STAGE46_WSL_TARGET.relative_to(ROOT).as_posix(),
+            "WSL spqlios_avx512 target full bootstrap gate passes after active-state refactor"
+            if status == "PASS"
+            else f"wsl_spqlios_avx512_target_gate:{status}!=PASS",
+            "Rerun or repair Stage 46 WSL target smoke before relying on current-head target correctness.",
         )
     ]
 
@@ -524,14 +548,14 @@ def check_run_log() -> List[Dict[str, str]]:
                 n = int(stage.split()[1])
             except (IndexError, ValueError):
                 continue
-            if 19 <= n <= 45:
+            if 19 <= n <= 46:
                 stages[n] = stages.get(n, 0) + 1
         if r.get("run_id") == "stage41-external-unlock-packet-001":
             stage41_status = r.get("status", "MISSING")
-    missing = [n for n in range(19, 46) if n not in stages]
+    missing = [n for n in range(19, 47) if n not in stages]
     ok = not missing and stage41_status == "WAIT_EXTERNAL_EVIDENCE"
     detail = (
-        f"stages 19-45 registered; stage41 status={stage41_status}"
+        f"stages 19-46 registered; stage41 status={stage41_status}"
         if ok
         else f"missing_stages={missing}; stage41 status={stage41_status}"
     )
@@ -555,8 +579,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-45 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-45 control-plane artifacts.",
+            "all required Stage 41-46 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-46 control-plane artifacts.",
         )
     ]
 
@@ -592,6 +616,10 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/stage45_active_state_refactor/summary.csv",
         "repro/stage45_active_state_refactor/ffnt_kernel_run.log",
         "repro/stage45_active_state_refactor/spqlios_avx512_windows_build.log",
+        "docs/stage46_wsl_active_state_target_smoke_log.md",
+        "repro/stage46_wsl_active_state_target_smoke/summary.csv",
+        "repro/stage46_wsl_active_state_target_smoke/build.log",
+        "repro/stage46_wsl_active_state_target_smoke/run.log",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -645,6 +673,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage43_smoke,
         check_stage44_reprobe,
         check_stage45_active_state,
+        check_stage46_wsl_target,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -663,10 +692,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            "Stage 19-45 scoped evidence chain is internally closed; stronger claims remain blocked"
+            "Stage 19-46 scoped evidence chain is internally closed; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-45 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-46 evidence closure.",
         )
     )
     return checks
@@ -690,7 +719,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "",
         "## Purpose",
         "",
-        "Stage 42 machine-checks whether the Stage 19-45 PVW/MAT-SAB evidence",
+        "Stage 42 machine-checks whether the Stage 19-46 PVW/MAT-SAB evidence",
         "chain remains internally consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",
         "",

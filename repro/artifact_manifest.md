@@ -740,3 +740,7 @@ Repro artifacts:
 - `repro/stage45_active_state_refactor/ffnt_kernel_build.log`
 - `repro/stage45_active_state_refactor/ffnt_kernel_run.log`
 - `repro/stage45_active_state_refactor/spqlios_avx512_windows_build.log`
+- `docs/stage46_wsl_active_state_target_smoke_log.md`
+- `repro/stage46_wsl_active_state_target_smoke/summary.csv`
+- `repro/stage46_wsl_active_state_target_smoke/build.log`
+- `repro/stage46_wsl_active_state_target_smoke/run.log`

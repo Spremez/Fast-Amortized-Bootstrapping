@@ -1,0 +1,2 @@
+check,status,backend,command,build_log,run_log,detail
+wsl_spqlios_avx512_target_gate,PASS,spqlios_avx512,"make FFT_LIB=spqlios_avx512 MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true SAB_PVW_ACTIVE_BUFFER_FUSION=true SAB_PVW_TARGET_TEST=true KEY=BINARY PARAM=SET_2_3_2048 -j16 && ./main",repro/stage46_wsl_active_state_target_smoke/build.log,repro/stage46_wsl_active_state_target_smoke/run.log,target full bootstrap lane-equivalence gate passed after active-state refactor

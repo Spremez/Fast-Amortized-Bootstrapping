@@ -1242,3 +1242,40 @@ The current Windows/MSYS `spqlios_avx512` build remains blocked by assembler
 drawn from that platform. The Stage42 closure audit now checks the Stage45
 summary and keeps the final decision scoped-ready with stronger claims blocked.
 ```
+
+## Stage 46: WSL Active-State Target Smoke
+
+Goal:
+
+```text
+Refresh target-shape PVW/MAT-SAB correctness on the selected WSL/Linux
+performance platform after the Stage 45 active-state refactor.
+```
+
+Tasks:
+
+- run the explicit PVW target full bootstrap gate on WSL/Linux with
+  `spqlios_avx512`;
+- keep the promoted explicit path flags enabled:
+  `MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true` and
+  `SAB_PVW_ACTIVE_BUFFER_FUSION=true`;
+- record raw build/run logs and a machine-readable summary;
+- keep the result scoped to correctness/build health, not latency or
+  hardware-counter attribution.
+
+Gate:
+
+- `SAB_PVW target full bootstrap gate: Pass` must appear in the WSL run log;
+- the Stage46 summary row must be `PASS`;
+- Stage42 closure/verifier must include the Stage46 artifact before relying on
+  current-head post-refactor target correctness.
+
+Status:
+
+```text
+Stage 46 WSL/Linux target smoke passed under `spqlios_avx512`, specialized
+MAT-AVX512, and active-buffer fusion. The run confirmed target full bootstrap
+lane equivalence for r=2, h=39, r_prec=7 on `BINARY SET_2_3_2048`. This
+refreshes current-head correctness evidence after the active-state refactor
+but does not add a new performance claim.
+```
