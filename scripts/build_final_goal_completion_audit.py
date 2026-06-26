@@ -20,6 +20,7 @@ STAGE28 = ROOT / "repro" / "stage28_native_perf_counter_gate" / "summary.csv"
 EXTERNAL = ROOT / "repro" / "external_evidence_intake" / "summary.csv"
 STAGE33 = ROOT / "repro" / "stage33_current_smoke" / "summary.csv"
 STAGE36_TARGET_PERF = ROOT / "repro" / "stage36_target_perf_summary.csv"
+STAGE36_TARGET_NOISE = ROOT / "repro" / "stage36_target_noise_seeds50" / "aggregate.csv"
 STAGE36_STAGE_NOISE = ROOT / "repro" / "stage36_stage_noise_seeds10" / "aggregate.csv"
 STAGE36_RESOURCE = ROOT / "repro" / "stage36_resource_summary.csv"
 STAGE36_ADDED_PERF = ROOT / "repro" / "stage36_added_params_runs10_seeds20" / "performance_stats.csv"
@@ -216,6 +217,44 @@ def audit() -> list[AuditRow]:
             "Expand or rerun final-output noise until both target r values pass 50 seeds.",
         )
     )
+
+    stage36_target_noise = read_csv_if_exists(STAGE36_TARGET_NOISE)
+    if stage36_target_noise:
+        stage36_target_noise_passed = {
+            row.get("r")
+            for row in stage36_target_noise
+            if row.get("r") in {"2", "4"}
+            and row.get("status") == "PASS"
+            and as_int(row, "seeds") >= 50
+            and as_int(row, "pvw_failures") == 0
+            and as_int(row, "scalar_failures") == 0
+            and as_int(row, "pair_failures") == 0
+        }
+        out.append(
+            AuditRow(
+                "A3c",
+                "target_noise_high_stat",
+                "Stage 36 target r=2/r=4 final-output noise rerun has 50-seed zero-failure support",
+                "PASS_TARGET_NOISE_50SEED"
+                if {"2", "4"}.issubset(stage36_target_noise_passed)
+                else "FAIL_STAGE36_TARGET_NOISE",
+                rel(STAGE36_TARGET_NOISE),
+                "optional stronger target final-output noise evidence",
+                "Fix or rerun Stage 36 target_noise before using refreshed target-noise statistical wording.",
+            )
+        )
+    else:
+        out.append(
+            AuditRow(
+                "A3c",
+                "target_noise_high_stat",
+                "Stage 36 target r=2/r=4 final-output noise rerun has 50-seed zero-failure support",
+                "NOT_RUN_OPTIONAL",
+                "",
+                "optional; not required for current scoped engineering claim",
+                "Run STAGE36_MODE=target_noise STAGE36_EXECUTE=1 before using refreshed target-noise statistical wording.",
+            )
+        )
 
     stage36_stage_noise = read_csv_if_exists(STAGE36_STAGE_NOISE)
     if stage36_stage_noise:
@@ -522,6 +561,8 @@ def audit() -> list[AuditRow]:
     scoped_ready_ids = {"A1", "A2", "A3", "A4", "A5", "A5b", "A6", "A7"}
     if STAGE36_TARGET_PERF.exists():
         scoped_ready_ids.add("A2b")
+    if STAGE36_TARGET_NOISE.exists():
+        scoped_ready_ids.add("A3c")
     if STAGE36_STAGE_NOISE.exists():
         scoped_ready_ids.add("A3b")
     if STAGE36_RESOURCE.exists():

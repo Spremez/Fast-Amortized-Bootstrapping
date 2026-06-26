@@ -828,6 +828,12 @@ The stage_noise campaign was also executed for r=2/r=4 with 10 deterministic
 seeds. All reported stages passed with zero pair failures:
 blind_rotate_coeff0, extract, materialize_tlwe, packing_ks, and hw_ks.
 
+The target_noise campaign was then executed for the target promoted path with
+50 deterministic seeds for r=2 and r=4. Both target r values passed with zero
+PVW, scalar, and pair final-output failures. r=2 covered 204800 points with
+PVW-minus-scalar log2 gap range [-0.446, 0.619], and r=4 covered 409600 points
+with gap range [-0.555, 0.682].
+
 The resource campaign was executed three times for scalar and PVW r=1/2/4
 after switching benchmark timing to CLOCK_MONOTONIC to avoid wall-clock
 underflow in resource logs. All six scalar/PVW r/mode groups have three
@@ -845,10 +851,10 @@ artifacts, so `SET_2_3_4096` r=4 was completed by a targeted top-up. Two
 extra r=4 top-up samples are recorded as supplemental and excluded from the
 primary 10-run statistic.
 
-This strengthens target-performance, stage-level noise, resource statistics,
-and added-binary parameter wording beyond the Stage 26 5-run/5-seed matrix. It
-does not upgrade novelty, theorem-level citation, non-binary, all-parameter, or
-hardware-counter claims.
+This strengthens target-performance, refreshed target final-output noise,
+stage-level noise, resource statistics, and added-binary parameter wording
+beyond the Stage 26 5-run/5-seed matrix. It does not upgrade novelty,
+theorem-level citation, non-binary, all-parameter, or hardware-counter claims.
 ```
 
 ## Stage 37: Native Perf-Counter Evidence

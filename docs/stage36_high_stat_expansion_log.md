@@ -58,6 +58,13 @@ Supplemental samples not included in the primary 10-run statistic:
 | target_r4_runs2_topup_run_0 | 4 | 1.374 | SUPPLEMENTAL_NOT_IN_PRIMARY_10RUN |
 | target_r4_runs2_topup_run_1 | 4 | 1.317 | SUPPLEMENTAL_NOT_IN_PRIMARY_10RUN |
 
+## Target-Noise Result
+
+| r | seeds | points | pvw failures | scalar failures | pair failures | min pvw-scalar log2 | max pvw-scalar log2 | avg pvw-scalar log2 | status |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| 2 | 50 | 204800 | 0 | 0 | 0 | -0.446 | 0.619 | -0.007400 | PASS |
+| 4 | 50 | 409600 | 0 | 0 | 0 | -0.555 | 0.682 | -0.029200 | PASS |
+
 ## Stage-Noise Result
 
 | r | stage | seeds | pair failures | avg sigma | worst max abs | status |
@@ -109,11 +116,13 @@ samples are preserved as supplemental and are excluded from the primary
 ## Current Decision
 
 The target performance campaign has 10 primary same-backend samples for r=2 and
-r=4, the stage-noise campaign has 10 deterministic seeds for r=2 and r=4 with
-zero pair failures at all reported stages, the resource campaign has 3 repeated
-snapshots for scalar/PVW r=1/2/4, and the added-binary parameter campaign has
-10 complete-SAB samples plus 20 final-output noise seeds for `SET_4_5_2048` and
-`SET_2_3_4096`, r=2/r=4. This strengthens target performance, stage-level
-noise, resource statistics, and added-binary parameter evidence, but it does
-not upgrade novelty, theorem-level citation, non-binary, all-parameter, or
-hardware-counter claims.
+r=4, the target-noise rerun has 50 deterministic final-output seeds for r=2 and
+r=4 with zero PVW/scalar/pair failures, the stage-noise campaign has 10
+deterministic seeds for r=2 and r=4 with zero pair failures at all reported
+stages, the resource campaign has 3 repeated snapshots for scalar/PVW r=1/2/4,
+and the added-binary parameter campaign has 10 complete-SAB samples plus 20
+final-output noise seeds for `SET_4_5_2048` and `SET_2_3_4096`, r=2/r=4. This
+strengthens target performance, refreshed target final-output noise,
+stage-level noise, resource statistics, and added-binary parameter evidence,
+but it does not upgrade novelty, theorem-level citation, non-binary,
+all-parameter, or hardware-counter claims.

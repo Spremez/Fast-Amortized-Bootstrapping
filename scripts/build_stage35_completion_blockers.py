@@ -104,6 +104,11 @@ def classify(row: Dict[str, str], ext_status: str) -> Dict[str, str]:
         requires_user = "no"
         next_action = "use this evidence only for stage-by-stage noise wording"
         impact = "strengthens staged noise evidence; does not affect external blockers"
+    if item_id == "A3c" and status == "PASS_TARGET_NOISE_50SEED":
+        lane = "statistical_expansion"
+        requires_user = "no"
+        next_action = "use this evidence only for refreshed target final-output noise wording"
+        impact = "strengthens target noise evidence; does not affect external blockers"
     if item_id == "A4" and status == "PASS_SMOKE_RESOURCE":
         lane = "optional_expansion"
         requires_user = "no"

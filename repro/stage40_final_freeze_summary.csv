@@ -1,5 +1,5 @@
 item,status,evidence,detail
-freeze_input_commit,eeb21dd,git rev-parse --short HEAD,Commit state observed before writing Stage 40 artifacts. The artifact commit is the git commit that contains these generated files.
+freeze_input_commit,fdd6ff7,git rev-parse --short HEAD,Commit state observed before writing Stage 40 artifacts. The artifact commit is the git commit that contains these generated files.
 final_audit_A9,SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED,repro/final_goal_completion_audit.csv,complete scoped engineering acceleration evidence exists; novelty/theory/all-parameter claims are not complete
 stage39_overall,NO_NEW_VARIANT_PROMOTED_CURRENTLY,repro/stage39_variant_triage.csv,The promoted active-buffer MAT-SAB path already has scoped engineering evidence; remaining stronger claims are external or optional rather than an immediate new-code requirement.
 external_blockers,PRESERVED,repro/stage35_completion_blockers.csv,A8=BLOCKED_EXTERNAL; A8b=MISSING_OPTIONAL_EXTERNAL_EVIDENCE

@@ -31,6 +31,8 @@ REQUIRED_ARTIFACTS = [
     "repro/final_goal_completion_audit.csv",
     "repro/stage35_completion_blockers.csv",
     "repro/stage36_target_perf_summary.csv",
+    "repro/stage36_target_noise_seeds50/summary.csv",
+    "repro/stage36_target_noise_seeds50/aggregate.csv",
     "repro/stage36_stage_noise_seeds10/aggregate.csv",
     "repro/stage36_resource_summary.csv",
     "repro/stage37_native_perf_counter_audit/summary.csv",
