@@ -1562,3 +1562,38 @@ Stage 53 passed. The isolated final recheck regenerated Stage50, Stage51, and
 Stage52 artifacts, rebuilt Stage42 closure, and preserved
 SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED.
 ```
+
+## Stage 54: Default Final-Recheck Coverage
+
+Goal:
+
+```text
+Verify that the default final recheck path now regenerates Stage50, Stage51,
+Stage52, and Stage42 closure without requiring explicit Stage50-52 switches.
+```
+
+Tasks:
+
+- run `scripts/run_final_goal_recheck.sh` with only
+  `FINAL_RECHECK_OUT_DIR=repro/stage54_default_final_recheck`;
+- record default summary and raw logs;
+- verify Stage50, Stage51, Stage52, and Stage42 closure pass under default
+  final recheck behavior;
+- keep final decision scoped-ready with stronger claims blocked.
+
+Gate:
+
+- default final recheck must pass Stage50, Stage51, Stage52, and Stage42
+  closure steps;
+- final decision must remain
+  `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`;
+- Stage42 closure/verifier must include Stage54 before relying on default
+  final recheck coverage.
+
+Status:
+
+```text
+Stage 54 passed. The default final recheck ran Stage50, Stage51, Stage52, and
+Stage42 closure, and preserved
+SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED.
+```

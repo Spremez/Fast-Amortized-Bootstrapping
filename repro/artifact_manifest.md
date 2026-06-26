@@ -785,3 +785,15 @@ Repro artifacts:
 - `repro/stage53_final_recheck_stage50_52/stage51_goal_frontier.log`
 - `repro/stage53_final_recheck_stage50_52/stage52_external_unlock_readiness.log`
 - `repro/stage53_final_recheck_stage50_52/stage42_evidence_closure.log`
+- `docs/stage54_default_final_recheck_log.md`
+- `repro/stage54_default_final_recheck/summary.csv`
+- `repro/stage54_default_final_recheck/stage28_perf_gate.log`
+- `repro/stage54_default_final_recheck/stage27_final_package.log`
+- `repro/stage54_default_final_recheck/external_evidence_intake.log`
+- `repro/stage54_default_final_recheck/conditional_backlog_audit.log`
+- `repro/stage54_default_final_recheck/final_goal_audit.log`
+- `repro/stage54_default_final_recheck/remaining_blocker_dashboard.log`
+- `repro/stage54_default_final_recheck/stage50_performance_matrix.log`
+- `repro/stage54_default_final_recheck/stage51_goal_frontier.log`
+- `repro/stage54_default_final_recheck/stage52_external_unlock_readiness.log`
+- `repro/stage54_default_final_recheck/stage42_evidence_closure.log`
