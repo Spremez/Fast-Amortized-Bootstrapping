@@ -1,0 +1,6 @@
+artifact,purpose,producer
+repro/stage93_external_lane_attempt/summary.csv,Stage93 gate summary,scripts/build_stage93_external_lane_attempt.py
+repro/stage93_external_lane_attempt/native_perf_gate/summary.csv,Current native/perf lane attempt,scripts/run_stage28_native_perf_counter_gate.sh
+repro/stage93_external_lane_attempt/native_perf_gate.log,Native/perf runner log,scripts/run_stage93_external_lane_attempt.sh
+repro/stage93_external_lane_attempt/local_fulltext_search.csv,Local full-text filename search results,scripts/run_stage93_external_lane_attempt.sh
+docs/stage93_external_lane_attempt_log.md,Human-readable Stage93 log,scripts/build_stage93_external_lane_attempt.py

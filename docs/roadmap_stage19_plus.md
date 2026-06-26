@@ -3047,3 +3047,40 @@ Stage38, external evidence registration, novelty review, and final refresh.
 It does not execute native perf, fetch or review full text, or upgrade any
 novelty/theory/paper-level claim.
 ```
+
+## Stage 93: External Lane Attempt
+
+Goal:
+
+```text
+Execute the Stage92 lanes that can be checked in the current environment:
+native-perf availability and local 2025/686 full-text artifact search.
+```
+
+Tasks:
+
+- run the Stage28 native perf gate into a Stage93-specific output directory
+  so historical Stage28 artifacts are not overwritten;
+- search configured local roots for a recognized 2025/686 full-text filename
+  candidate;
+- read external evidence intake and confirm whether any supplied artifact can
+  move CB5/CB7/CB6 beyond blocked;
+- preserve Stage91/92 claim guards unless the acceptance gates actually pass.
+
+Gate:
+
+- Stage92 must be passed before Stage93 is interpreted;
+- native perf attempt must be recorded, even if blocked;
+- local full-text search must be recorded, even if no candidate exists;
+- external intake status and claim guard must remain visible.
+
+Status:
+
+```text
+Completed as a current-environment external lane attempt. Stage93 records
+PASS_STAGE93_EXTERNAL_LANE_ATTEMPT_RECORDED_STRONGER_CLAIMS_BLOCKED. Current
+WSL2 still lacks `perf` in PATH, so native hardware-counter attribution remains
+blocked. No recognized local 2025/686 full-text candidate is found in the
+configured search roots, and external evidence intake still reports missing
+full text and missing native perf summary. Stronger claims remain blocked.
+```

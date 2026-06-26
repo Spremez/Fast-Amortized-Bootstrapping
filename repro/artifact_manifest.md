@@ -1400,3 +1400,18 @@ Repro artifacts:
 - `repro/stage92_external_unlock_execution/commands.csv`
 - `repro/stage92_external_unlock_execution/acceptance_matrix.csv`
 - `repro/stage92_external_unlock_execution/artifact_index.csv`
+
+## Stage 93 External Lane Attempt
+
+- `docs/stage93_external_lane_attempt_log.md`
+- `experiments/stage93_external_lane_attempt_plan.md`
+- `scripts/run_stage93_external_lane_attempt.sh`
+- `scripts/build_stage93_external_lane_attempt.py`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage93_external_lane_attempt/summary.csv`
+- `repro/stage93_external_lane_attempt/artifact_index.csv`
+- `repro/stage93_external_lane_attempt/native_perf_gate/summary.csv`
+- `repro/stage93_external_lane_attempt/native_perf_gate/environment.log`
+- `repro/stage93_external_lane_attempt/native_perf_gate/perf_smoke.log`
+- `repro/stage93_external_lane_attempt/native_perf_gate.log`
+- `repro/stage93_external_lane_attempt/local_fulltext_search.csv`

@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-92`. This label tracks the
+Current control-plane closure label: `Stage 19-93`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -102,6 +102,7 @@ evidence.
 | Stage 90 external claim unlock | WSL2/network probe | n/a | external probe completed, stronger claims blocked | fresh full-text route probe records ePrint/ACM/ResearchGate blocked, no reviewed `FAB686_FULLTEXT_PATH` is registered, current WSL2 lacks `perf`, and novelty/source review remains blocked; decision `PASS_STAGE90_EXTERNAL_CLAIM_UNLOCK_PROBE_RECORDED_STRONGER_CLAIMS_BLOCKED` |
 | Stage 91 final SAB package | aggregation/claim freeze | n/a | scoped final package ready, stronger claims blocked | final package decision `PASS_STAGE91_FINAL_SCOPED_PACKAGE_STRONGER_CLAIMS_BLOCKED`; records Stage36 r=2/r=4 high-stat performance, Stage88/89 preferred explicit r=6 path, Stage36/88 noise/resource, reproduction commands, and blocked claim boundaries |
 | Stage 92 external unlock execution packet | external handoff | n/a | unlock commands recorded, stronger claims blocked | final external-unlock packet decision `PASS_STAGE92_EXTERNAL_UNLOCK_PACKET_RECORDED_STRONGER_CLAIMS_BLOCKED`; records exact native-perf, 2025/686 full-text, novelty-review, external-registration, and final-refresh commands plus acceptance/failure criteria |
+| Stage 93 external lane attempt | current environment probe | n/a | local attempts recorded, stronger claims blocked | current WSL2 attempt records `perf` missing and `hardware_counter_gate=BLOCKED`; local full-text filename search finds no 2025/686 candidate; external intake remains missing; decision `PASS_STAGE93_EXTERNAL_LANE_ATTEMPT_RECORDED_STRONGER_CLAIMS_BLOCKED` |
 
 Current conclusion:
 
@@ -440,4 +441,5 @@ Stage 89: H14 promotion policy integration. [completed; H14 backend is preferred
 Stage 90: external claim unlock. [completed as probe; stronger claims remain blocked on native perf, full text, and manual novelty review]
 Stage 91: final SAB optimization package. [completed; scoped final package ready, stronger claims remain blocked]
 Stage 92: external unlock execution packet. [completed; executable external lanes recorded, stronger claims remain blocked]
+Stage 93: external lane attempt. [completed; current local environment still lacks native perf and 2025/686 full text]
 ```

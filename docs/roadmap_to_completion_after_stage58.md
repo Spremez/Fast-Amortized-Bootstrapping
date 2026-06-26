@@ -43,6 +43,7 @@ evidence is supplied.
 | Stage 90 | external claim unlock | Resolve native perf, 2025/686 full-text, and novelty-review blockers for stronger paper/theory claims. | native counters, reviewed full text, and related-work source anchors exist. | probe completed; stronger claims remain externally blocked |
 | Stage 91 | final SAB optimization package | Freeze the final allowed engineering/paper package after promoted variants and external claim decisions are settled. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | passed as scoped final package; stronger claims blocked |
 | Stage 92 | external unlock execution packet | Convert the remaining stronger-claim blockers into executable external lanes after the scoped final package is frozen. | lane matrix, command matrix, acceptance matrix, claim guard, closure audit, and verifier all pass. | passed; external execution packet recorded, stronger claims blocked |
+| Stage 93 | external lane attempt | Execute current-environment checks for the Stage92 native-perf and local full-text lanes without overwriting historical artifacts. | native perf attempt, local full-text search, external intake state, claim guard, closure audit, and verifier all pass. | passed; current environment still blocked |
 
 Execution policy:
 
@@ -146,3 +147,7 @@ Execution policy:
   relevant lane command, register the resulting artifact hashes, and rerun
   Stage90, Stage91, Stage42 closure, and verifier before changing claim
   wording.
+- After Stage93, do not expect the current WSL2/local workspace to unlock
+  stronger claims: `perf` is still missing and no recognized 2025/686 full-text
+  artifact was found. The next real unlock requires native/perf-enabled Linux
+  or a supplied `FAB686_FULLTEXT_PATH`.

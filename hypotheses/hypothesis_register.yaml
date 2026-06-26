@@ -620,3 +620,30 @@ hypotheses:
       - claim boundary C3/C4/C5 is upgraded without Stage92 acceptance evidence
       - closure/verifier, run log, artifact manifest, or reproduction checklist
         omit Stage92 artifacts
+  - id: H18_current_external_lane_attempt
+    statement: >
+      After Stage92 makes external unlock lanes executable, the current local
+      environment should be tested directly before declaring that only user- or
+      platform-supplied evidence remains.
+    mechanism: >
+      Stage93 runs the Stage28 native perf gate into an isolated Stage93 output
+      directory, searches configured local roots for likely 2025/686 full-text
+      artifacts, reads the external evidence intake, and checks that Stage91
+      claim guards remain blocked unless actual acceptance evidence is found.
+    status: stage93_current_external_lane_attempt_recorded_stronger_claims_blocked
+    evidence: docs/stage93_external_lane_attempt_log.md; experiments/stage93_external_lane_attempt_plan.md; scripts/run_stage93_external_lane_attempt.sh; scripts/build_stage93_external_lane_attempt.py; repro/stage93_external_lane_attempt/summary.csv; repro/stage93_external_lane_attempt/native_perf_gate/summary.csv; repro/stage93_external_lane_attempt/local_fulltext_search.csv; repro/stage93_external_lane_attempt/artifact_index.csv
+    current_decision: >
+      Stage93 records
+      PASS_STAGE93_EXTERNAL_LANE_ATTEMPT_RECORDED_STRONGER_CLAIMS_BLOCKED.
+      Current WSL2 still lacks `perf` in PATH, so native hardware-counter
+      attribution remains blocked. No recognized local 2025/686 full-text
+      candidate is found in the configured search roots, and external evidence
+      intake still reports missing full text and missing native perf summary.
+      C3/C4/C5 claim guards remain blocked.
+    failure_criteria:
+      - Stage93 overwrites historical Stage28 artifacts instead of writing an
+        isolated attempt directory
+      - a filename search result is treated as reviewed full text
+      - missing local full text or missing perf is hidden from the final packet
+      - claim wording changes without registered external artifacts and manual
+        review
