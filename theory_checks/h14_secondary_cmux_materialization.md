@@ -116,9 +116,11 @@ H14-C1 can only support a claim after:
 - noise/resource gates if complete SAB is positive;
 - Stage42/51/57/59/68 closure refresh.
 
-Stage87 now satisfies the first complete-SAB smoke gate, but not the repeated
-or noise/resource gates. H14 remains `[implementation-only constant-factor
-hypothesis]` and `[not promoted]`.
+Stage88 now satisfies the repeated complete-SAB, final-output noise, and
+resource gates for H14-C1. H14 remains `[implementation-only constant-factor
+hypothesis]` until Stage89 promotion-policy integration decides how the
+explicit flag is exposed; it is still not a default-path or paper-level
+novelty/theory claim.
 
 ## Stage87 Preflight Result
 
@@ -147,3 +149,27 @@ One-run r=6 full-SAB smoke:
 The backend-vs-wrapper latency ratio is `1.049925x`. This is positive smoke
 evidence only. It opens Stage88 repeated/noise/resource gates; it does not
 promote the flag or upgrade the final bootstrapping claim.
+
+## Stage88 Repeated/Noise/Resource Result
+
+Stage88 repeats H14-C1 with r=6 under `spqlios_avx512`:
+
+| gate | result |
+|---|---|
+| repeated backend-vs-wrapper | `1.035516x` mean, `1.024476x` min over 3 paired runs |
+| backend-vs-repeated-scalar | `1.437x` mean, `1.435x` min over 3 backend runs |
+| wrapper-vs-repeated-scalar | `1.384x` mean, `1.354x` min over 3 wrapper runs |
+| final-output noise | 3 seeds, 36864 points, zero PVW/scalar/pair failures |
+| resource | key ratio `1.122537x`, keygen ratio `1.301382x`, RSS ratio `1.030722x` |
+
+Decision:
+
+```text
+PASS_STAGE88_H14_BACKEND_REPEATED_GATES_RECORDED_PROMOTION_CANDIDATE
+```
+
+Interpretation: backend materialization provides a repeated complete-SAB
+engineering improvement over the wrapper fused `FromDFT+add` reference, with
+no observed final-output noise failure and acceptable recorded RSS overhead.
+This supports promotion-policy review, not direct default promotion or
+paper-level novelty/theory claims.

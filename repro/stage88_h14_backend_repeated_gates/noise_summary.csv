@@ -1,0 +1,2 @@
+r,seeds,points,pvw_failures,scalar_failures,pair_failures,min_pvw_minus_scalar_log2,max_pvw_minus_scalar_log2,avg_pvw_minus_scalar_log2,status,source
+6,3,36864,0,0,0,-0.299,-0.170,-0.221667,PASS,repro/stage88_h14_backend_repeated_gates/final_noise/aggregate.csv

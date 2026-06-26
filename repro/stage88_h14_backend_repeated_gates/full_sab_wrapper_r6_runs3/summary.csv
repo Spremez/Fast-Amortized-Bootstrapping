@@ -1,0 +1,4 @@
+variant,run,status,pvw_avg_us,pvw_stddev_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_stddev_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,speedup_stddev,source_log
+wrapper,0,Pass,39594338.000,0.000,6599056.333,55749053.000,0.000,9291508.833,1.408,0.000,repro/stage88_h14_backend_repeated_gates/full_sab_wrapper_r6_runs3/run_0.log
+wrapper,1,Pass,39826646.000,0.000,6637774.333,53941750.000,0.000,8990291.667,1.354,0.000,repro/stage88_h14_backend_repeated_gates/full_sab_wrapper_r6_runs3/run_1.log
+wrapper,2,Pass,39758219.000,0.000,6626369.833,55279681.000,0.000,9213280.167,1.390,0.000,repro/stage88_h14_backend_repeated_gates/full_sab_wrapper_r6_runs3/run_2.log

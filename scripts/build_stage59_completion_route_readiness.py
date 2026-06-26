@@ -174,11 +174,12 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage83_mat_body_design_check/decision.csv; "
                 "repro/stage84_h13_r6_tile_sweep_preflight/summary.csv; "
                 "repro/stage86_secondary_cmux_materialization/decision.csv; "
-                "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv"
+                "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv; "
+                "repro/stage88_h14_backend_repeated_gates/summary.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage87 implemented H14-C1 backend FromDFT+add materialization behind an explicit flag and recorded a positive one-run r=6 full-SAB smoke. Next route is Stage88 repeated complete-SAB A/B plus noise/resource gates before any promotion.",
-            "Does not upgrade r=6 claims or defaults; Stage87 remains a promotion candidate until repeated/noise/resource gates pass.",
+            "Stage88 records H14-C1 backend FromDFT+add as a repeated/noise/resource promotion candidate. Next route is Stage89 promotion-policy integration before any default change or claim wording upgrade.",
+            "Does not upgrade r=6 claims or defaults; Stage88 remains a promotion candidate until Stage89 explicitly decides promote/keep/reject.",
         ),
         route_row(
             "S59-R7-FINAL-PAPER-PACKAGE",

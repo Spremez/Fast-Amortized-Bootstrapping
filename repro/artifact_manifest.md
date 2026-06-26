@@ -1301,3 +1301,39 @@ Repro artifacts:
 - `repro/stage87_h14_backend_from_dft_add_preflight/full_sab_backend_r6/run_0.log`
 - `repro/stage87_h14_backend_from_dft_add_preflight/full_sab_smoke.csv`
 - `repro/stage87_h14_backend_from_dft_add_preflight/summary.csv`
+
+## Stage 88 H14 Backend Repeated Gates
+
+- `docs/stage88_h14_backend_repeated_gates_log.md`
+- `experiments/stage88_h14_backend_repeated_gates_plan.md`
+- `scripts/run_stage88_h14_backend_repeated_gates.sh`
+- `scripts/build_stage88_h14_backend_repeated_gates.py`
+- `theory_checks/h14_secondary_cmux_materialization.md`
+- `algorithm_variants/pvw_sab_h14_secondary_cmux_materialization.md`
+- `repro/stage88_h14_backend_repeated_gates/stage88_run.log`
+- `repro/stage88_h14_backend_repeated_gates/full_sab_wrapper_r6_runs3/build.log`
+- `repro/stage88_h14_backend_repeated_gates/full_sab_wrapper_r6_runs3/run_0.log`
+- `repro/stage88_h14_backend_repeated_gates/full_sab_wrapper_r6_runs3/run_1.log`
+- `repro/stage88_h14_backend_repeated_gates/full_sab_wrapper_r6_runs3/run_2.log`
+- `repro/stage88_h14_backend_repeated_gates/full_sab_wrapper_r6_runs3/summary.csv`
+- `repro/stage88_h14_backend_repeated_gates/full_sab_backend_r6_runs3/build.log`
+- `repro/stage88_h14_backend_repeated_gates/full_sab_backend_r6_runs3/run_0.log`
+- `repro/stage88_h14_backend_repeated_gates/full_sab_backend_r6_runs3/run_1.log`
+- `repro/stage88_h14_backend_repeated_gates/full_sab_backend_r6_runs3/run_2.log`
+- `repro/stage88_h14_backend_repeated_gates/full_sab_backend_r6_runs3/summary.csv`
+- `repro/stage88_h14_backend_repeated_gates/full_sab_repeated.csv`
+- `repro/stage88_h14_backend_repeated_gates/backend_vs_wrapper.csv`
+- `repro/stage88_h14_backend_repeated_gates/final_noise/summary.csv`
+- `repro/stage88_h14_backend_repeated_gates/final_noise/aggregate.csv`
+- `repro/stage88_h14_backend_repeated_gates/final_noise/r6/seed_6868025.log`
+- `repro/stage88_h14_backend_repeated_gates/final_noise/r6/seed_6868026.log`
+- `repro/stage88_h14_backend_repeated_gates/final_noise/r6/seed_6868027.log`
+- `repro/stage88_h14_backend_repeated_gates/noise_summary.csv`
+- `repro/stage88_h14_backend_repeated_gates/resource_run_0/summary.csv`
+- `repro/stage88_h14_backend_repeated_gates/resource_run_0/r6/pvw.log`
+- `repro/stage88_h14_backend_repeated_gates/resource_run_0/r6/pvw.time.log`
+- `repro/stage88_h14_backend_repeated_gates/resource_run_0/r6/scalar.log`
+- `repro/stage88_h14_backend_repeated_gates/resource_run_0/r6/scalar.time.log`
+- `repro/stage88_h14_backend_repeated_gates/resource_samples.csv`
+- `repro/stage88_h14_backend_repeated_gates/resource_summary.csv`
+- `repro/stage88_h14_backend_repeated_gates/summary.csv`

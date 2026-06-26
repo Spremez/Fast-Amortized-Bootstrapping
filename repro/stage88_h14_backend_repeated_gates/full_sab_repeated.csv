@@ -1,0 +1,3 @@
+variant,r,samples,statuses,pvw_mean_us,pvw_min_us,pvw_max_us,scalar_repeated_mean_us,mean_speedup_vs_scalar,min_speedup_vs_scalar,max_speedup_vs_scalar,stddev_speedup_vs_scalar,status,source
+wrapper,6,3,Pass,39726401.000,39594338.000,39826646.000,54990161.333,1.384,1.354,1.408,0.027495,PASS,repro/stage88_h14_backend_repeated_gates/full_sab_wrapper_r6_runs3/summary.csv
+backend,6,3,Pass,38368030.000,37783267.000,38875131.000,55137541.000,1.437,1.435,1.439,0.002082,PASS,repro/stage88_h14_backend_repeated_gates/full_sab_backend_r6_runs3/summary.csv

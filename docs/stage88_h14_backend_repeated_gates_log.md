@@ -1,0 +1,48 @@
+# Stage88 H14 Backend Repeated Gates Log
+
+Date: 2026-06-26
+
+## Purpose
+
+Stage88 repeats the Stage87 H14-C1 backend FromDFT-add preflight
+under complete-SAB conditions. It compares backend materialization
+against the wrapper fused FromDFT-add reference, then checks final
+noise and resource costs. It does not change scalar SAB or defaults.
+
+## Gates
+
+| gate | status | metric | value | evidence | detail |
+|---|---|---|---|---|---|
+| stage88_stage87_precondition | PASS | stage87_decision | PASS_STAGE87_H14_BACKEND_FROM_DFT_ADD_PREFLIGHT_PROMOTION_CANDIDATE | repro/stage87_h14_backend_from_dft_add_preflight/summary.csv | Stage88 is valid only after Stage87 records H14-C1 as a promotion candidate. |
+| stage88_repeated_full_sab | PASS_BACKEND_FASTER | paired_runs;backend_vs_wrapper_mean;min;backend_speedup_mean | 3;1.035516;1.024476;1.437 | repro/stage88_h14_backend_repeated_gates/backend_vs_wrapper.csv | Repeated complete-SAB gate compares backend FromDFT-add against wrapper fused FromDFT-add. |
+| stage88_backend_vs_scalar | PASS | samples;mean_speedup;min_speedup | 3;1.437;1.435 | repro/stage88_h14_backend_repeated_gates/full_sab_backend_r6_runs3/summary.csv | Backend complete-SAB must remain faster than repeated scalar SAB. |
+| stage88_wrapper_reference | PASS | samples;mean_speedup;min_speedup | 3;1.384;1.354 | repro/stage88_h14_backend_repeated_gates/full_sab_wrapper_r6_runs3/summary.csv | Wrapper fused FromDFT-add is the same-backend reference for H14-C1. |
+| stage88_final_noise | PASS | seeds;points;failures;avg_gap_log2 | 3;36864;0;-0.221667 | repro/stage88_h14_backend_repeated_gates/final_noise/aggregate.csv | Backend final-output correctness/noise gate must have zero PVW/scalar/pair failures. |
+| stage88_resource | PASS | runs;key_ratio_mean;keygen_ratio_mean;rss_ratio_mean;rss_ratio_max | 1;1.122537;1.301382;1.030722;1.030722 | repro/stage88_h14_backend_repeated_gates/resource_summary.csv | Resource gate records backend key size, keygen time, and RSS against repeated scalar. |
+| stage88_decision | PASS_STAGE88_H14_BACKEND_REPEATED_GATES_RECORDED_PROMOTION_CANDIDATE | promotion_policy |  | repro/stage88_h14_backend_repeated_gates/summary.csv | H14-C1 backend FromDFT-add passes repeated complete-SAB, final noise, and resource gates; proceed to promotion-policy integration rather than changing defaults immediately. |
+
+## Complete-SAB Repeated
+
+| variant | r | samples | status | PVW mean us | scalar repeated mean us | mean speedup | min speedup | max speedup | source |
+|---|---:|---:|---|---:|---:|---:|---:|---:|---|
+| wrapper | 6 | 3 | PASS | 39726401.000 | 54990161.333 | 1.384 | 1.354 | 1.408 | repro/stage88_h14_backend_repeated_gates/full_sab_wrapper_r6_runs3/summary.csv |
+| backend | 6 | 3 | PASS | 38368030.000 | 55137541.000 | 1.437 | 1.435 | 1.439 | repro/stage88_h14_backend_repeated_gates/full_sab_backend_r6_runs3/summary.csv |
+
+## Backend vs Wrapper
+
+| r | paired runs | mean | min | max | status |
+|---:|---:|---:|---:|---:|---|
+| 6 | 3 | 1.035516 | 1.024476 | 1.047933 | PASS_BACKEND_FASTER |
+
+## Noise And Resource
+
+| gate | status | values | source |
+|---|---|---|---|
+| noise | PASS | seeds=3; failures=0; avg_gap=-0.221667 | repro/stage88_h14_backend_repeated_gates/final_noise/aggregate.csv |
+| resource | PASS | runs=1; key_ratio=1.122537; keygen_ratio=1.301382; rss_ratio=1.030722 | repro/stage88_h14_backend_repeated_gates/resource_run_0/summary.csv |
+
+## Decision
+
+`PASS_STAGE88_H14_BACKEND_REPEATED_GATES_RECORDED_PROMOTION_CANDIDATE`
+
+H14-C1 backend FromDFT-add passes repeated complete-SAB, final noise, and resource gates; proceed to promotion-policy integration rather than changing defaults immediately.

@@ -2831,11 +2831,11 @@ WSL `spqlios_avx512` staged CMUX/NCMUX/RGSW/MAT and target full-output gates
 pass. In r=6 one-run complete-SAB smoke, wrapper fused FromDFT-add PVW latency
 is `40196035.000 us` and backend FromDFT-add is `38284667.000 us`, giving a
 backend-vs-wrapper latency ratio of `1.049925x`. This is a promotion candidate
-only; Stage88 repeated/noise/resource gates are required before enabling or
-claiming it.
+only. Stage88 later repeated the candidate and now Stage89 promotion-policy
+integration is required before enabling or claiming it.
 ```
 
-## Planned Stage 88: H14 Repeated/Noise/Resource Gate
+## Stage 88: H14 Repeated/Noise/Resource Gate
 
 Goal:
 
@@ -2861,11 +2861,53 @@ Gate:
 Status:
 
 ```text
-Waiting for the Stage87 promotion-candidate preflight to enter repeated,
-noise, and resource gates.
+Completed as a repeated gate. Stage88 keeps `SAB_PVW_BACKEND_FROM_DFT_ADD`
+explicit and leaves scalar/default paths unchanged. Under WSL
+`spqlios_avx512`, r=6 backend-vs-wrapper complete-SAB latency ratio is
+`1.035516x` over three paired runs, with per-run minimum `1.024476x`.
+Backend-vs-repeated-scalar speedup averages `1.437x` with minimum `1.435x`.
+Final-output noise passes three seeds with zero PVW/scalar/pair failures.
+Resource accounting records key ratio `1.122537x`, keygen ratio
+`1.301382x`, and RSS ratio `1.030722x`. This records H14-C1 as a promotion
+candidate only; promotion-policy integration is required before defaults or
+claim wording change.
 ```
 
-## Planned Stage 89: External Claim Unlock
+## Planned Stage 89: H14 Promotion Policy Integration
+
+Goal:
+
+```text
+Decide how the Stage88 H14-C1 backend FromDFT-add promotion candidate should
+be exposed: promoted for the explicit r=6 experimental path, kept behind an
+opt-in flag, or rejected despite positive Stage88 evidence.
+```
+
+Tasks:
+
+- run current-head smoke for scalar binary, scalar ternary build, and explicit
+  backend PVW target gate;
+- verify `SAB_PVW_BACKEND_FROM_DFT_ADD` remains explicit and does not change
+  scalar/default SAB behavior;
+- compare Stage88 evidence against Stage79/80 policy precedent and Stage36
+  r=4 reference evidence;
+- update hypothesis status and claim wording to separate backend engineering
+  improvement from final default bootstrapping acceleration.
+
+Gate:
+
+- current-head smoke passes;
+- no default path or scalar behavior changes;
+- policy decision is promote/keep/reject with reproducible evidence and no
+  overclaim.
+
+Status:
+
+```text
+Waiting for Stage88 promotion-candidate policy integration.
+```
+
+## Planned Stage 90: External Claim Unlock
 
 Goal:
 
@@ -2895,7 +2937,7 @@ Blocked on external platform/full-text/manual-review inputs. This remains the
 stronger-claim lane after local Stage83+ optimization work.
 ```
 
-## Planned Stage 90: Final SAB Optimization Package
+## Planned Stage 91: Final SAB Optimization Package
 
 Goal:
 

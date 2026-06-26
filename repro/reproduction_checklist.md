@@ -206,7 +206,8 @@
 - [x] Add and run Stage84 H13 r=6 MAT tile-sweep preflight behind `MAT_TRGSW_AVX512_R6_FULLTILE`; correctness and MAT microbench are positive, but complete-SAB smoke is not, so it is not promoted.
 - [x] Run Stage86 secondary CMUX/materialization candidate routing; H14-C1 backend `FromDFT+add` callback preflight is selected, with no code promotion.
 - [x] Implement and run Stage87 H14-C1 backend `FromDFT+add` materialization preflight behind `SAB_PVW_BACKEND_FROM_DFT_ADD`; correctness passes and one-run r=6 full-SAB smoke is positive, but the flag is not promoted.
-- [ ] Run Stage88 repeated complete-SAB/noise/resource gates for the Stage87 H14-C1 promotion candidate before any promotion or bootstrapping-speedup claim.
+- [x] Run Stage88 repeated complete-SAB/noise/resource gates for the Stage87 H14-C1 promotion candidate; backend-vs-wrapper repeated mean/min is `1.035516x`/`1.024476x`, backend-vs-scalar mean/min is `1.437x`/`1.435x`, final-output noise has zero 3-seed failures, and resource key/RSS/keygen ratios are recorded.
+- [ ] Run Stage89 H14 promotion-policy integration before changing defaults or bootstrapping-speedup claim wording.
 - [ ] Run Stage85 repeated complete-SAB/noise/resource promotion gates only if a future preflight is full-SAB positive.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

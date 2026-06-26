@@ -6,13 +6,14 @@
 - Focused module: CMUX materialization after MAT external product.
 - Optimization target: complete SAB throughput through reduced materialization
   memory traffic.
-- Status labels: `[Stage87 preflight positive]`, `[implementation-only
-  constant-factor hypothesis]`, `[not promoted]`.
+- Status labels: `[Stage88 repeated positive]`, `[implementation-only
+  constant-factor hypothesis]`, `[promotion-policy pending]`.
 - Main hypothesis: moving the add-back inside the inverse DFT materialization
   backend reduces torus-domain load/store traffic relative to the current
   wrapper-level `pvmtmlwe_from_DFT_add` path. Stage87 records a positive
-  one-run r=6 complete-SAB smoke, but repeated/noise/resource gates remain
-  required.
+  one-run r=6 complete-SAB smoke; Stage88 records positive repeated
+  complete-SAB, final-output noise, and resource gates. The path still remains
+  explicit until promotion-policy integration decides promote/keep/reject.
 
 ## Mathematical Definition
 
@@ -71,7 +72,8 @@ Output: out = in1 + FromDFT(tmp_dft)
 - Proof steps affected: none if the backend callback is bit-exact with
   `FromDFT(dft) + addend`.
 - New lemmas needed: implementation equivalence lemma for backend callback.
-- Current status: flagged Stage87 preflight passes and opens Stage88 only.
+- Current status: flagged Stage88 repeated gates pass and open promotion-policy
+  integration only.
 
 ## Potential Failure Reasons
 
@@ -95,6 +97,10 @@ Output: out = in1 + FromDFT(tmp_dft)
 - Stage87 smoke result: wrapper r=6 PVW latency `40196035.000 us`, backend r=6
   PVW latency `38284667.000 us`, backend-vs-wrapper latency ratio
   `1.049925x`.
+- Stage88 repeated result: backend-vs-wrapper latency ratio `1.035516x` mean
+  and `1.024476x` min over 3 paired runs; backend-vs-repeated-scalar speedup
+  `1.437x` mean and `1.435x` min; final-output noise passes 3 seeds with zero
+  failures; key/RSS/keygen ratios are `1.122537x`/`1.030722x`/`1.301382x`.
 - Robustness runs: repeated full-SAB A/B and deterministic target gate.
 - Statistical checks: repeated process-level samples, mean/min/max, and no
   single-run promotion.
@@ -108,10 +114,12 @@ Output: out = in1 + FromDFT(tmp_dft)
 Conservative current wording:
 
 ```text
-[preflight positive] We implement a backend-level FromDFT-add materialization
-callback behind an explicit flag and observe a positive r=6 complete-SAB
-one-run smoke against the wrapper-level fused baseline.
+[repeated engineering positive] We implement a backend-level FromDFT-add
+materialization callback behind an explicit flag and observe a repeated r=6
+complete-SAB throughput improvement over the wrapper-level fused baseline,
+with final-output noise and resource gates recorded.
 ```
 
-Do not write as a bootstrapping acceleration claim until complete SAB A/B
-passes.
+Do not write as a default-path bootstrapping acceleration or novelty claim
+until Stage89 policy integration and the external claim gates decide the
+allowed wording.
