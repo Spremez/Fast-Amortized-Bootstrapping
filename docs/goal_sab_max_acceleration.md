@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-80`. This label tracks the
+Current control-plane closure label: `Stage 19-81`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -91,6 +91,7 @@ evidence.
 | Stage 78 r>4 fused repeated gates | `spqlios_avx512` | 6/8 | r=6 promotion candidate, defaults unchanged | r=6 complete-SAB repeated A/B has 3 passing samples with mean `1.408x`, min `1.361x`; r=8 stress is `1.350x`; r=6/r=8 three-seed final-output noise has zero failures; resource key ratios are `1.122537`/`1.181090` and RSS ratios `1.030750`/`1.071251` |
 | Stage 79 r>4 fused high-stat confirmation | `spqlios_avx512` | 6 | high-stat review required, defaults unchanged | 10-run complete-SAB mean `1.367x`, CI `[1.341302,1.392098]`, min `1.314x`; 20-seed final-output noise zero failures; 3-run key ratio `1.122537`, RSS ratio mean `1.030715`; performance lands in r=4 reference region but below Stage36 r=4 mean `1.377x`, so no automatic promotion |
 | Stage 80 promotion policy audit | `spqlios_avx512` | 6 | keep experimental, not promoted | Stage80 reads Stage79, passes current-head scalar/PVW smoke and static default-path guards, and records `PASS_RGT4_FUSED_KEEP_EXPERIMENTAL_NOT_PROMOTED`; `MAT_TRGSW_AVX512_RGT4_FUSED` remains explicit only, scalar/default paths unchanged |
+| Stage 81 next-variant triage | audit synthesis | n/a | profile first, no code promotion | no immediate new hot-path code variant is justified; H3 remains security/key-format blocked, r>4/r=8 tiling is not selected, post-processing remains below threshold, and the next local step is post-H11 fused r=6 profile attribution |
 
 Current conclusion:
 
@@ -289,7 +290,10 @@ does not exceed the Stage36 r=4 mean 1.377x. H11 is therefore recorded as
 review-required rather than automatically promoted. Stage80 then makes the
 policy decision: keep H11 available only as an explicit experimental flag,
 do not promote it, and do not alter scalar/default paths. Stage81 is the next
-local variant-triage entry.
+local variant-triage entry. Stage81 then records that no immediate new
+hot-path implementation is justified from the current evidence. The next local
+engineering action, before any new code variant, is profile-only post-H11
+fused r=6 attribution to identify the actual remaining bottleneck.
 ```
 
 ## Invariants
@@ -402,7 +406,7 @@ Stage 77: r>4 fused MAT kernel. [positive smoke candidate; fused r=6/r=8 beats g
 Stage 78: r>4 fused repeated gates. [passed as r=6 promotion candidate; high-stat confirmation required before defaults or claims change]
 Stage 79: r>4 fused high-stat confirmation. [completed; review required, not automatically promoted]
 Stage 80: promotion integration or rejection audit. [completed; H11 r=6 fused kept experimental, not promoted]
-Stage 81: next variant triage. [next]
+Stage 81: next variant triage. [completed; profile-first, no code promotion]
 Stage 82: external claim unlock. [blocked on native perf, full text, and manual novelty review]
-Stage 83: final SAB optimization package. [waiting]
+Stage 83: final SAB optimization package. [waiting for Stage82 and future profile-backed variants]
 ```

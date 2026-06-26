@@ -9,7 +9,7 @@ Stage 59 turns the post-Stage58 state into an explicit route to completion. It d
 | S59-R3-NATIVE-PERF | external unlock | MAT-AVX512 hardware-counter attribution | EXTERNAL_BLOCKED | STAGE28_RUN_BENCH=1 bash scripts/run_stage28_native_perf_counter_gate.sh |
 | S59-R4-FULLTEXT-686 | external unlock | 2025/686 theorem/protocol source review | EXTERNAL_FULLTEXT_BLOCKED | FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh |
 | S59-R5-NOVELTY-REVIEW | manual review | novelty and related-work distinction | EXTERNAL_REVIEW_BLOCKED | FINAL_RECHECK_RELATED_WORK=1 bash scripts/run_final_goal_recheck.sh |
-| S59-R6-OPTIONAL-VARIANTS | optional local expansion | future algorithmic variants | READY_OPTIONAL_LOCAL_TRIAGE | Stage80 keeps H11 r=6 fused MAT as an explicit experimental flag only: complete-SAB/noise/resource pass, but the high-stat performance boundary does not justify promotion over the r=4 reference. Next local work is Stage81 variant triage; no default/path promotion or claim upgrade for r=6 fused MAT. |
+| S59-R6-OPTIONAL-VARIANTS | optional local expansion | future algorithmic variants | READY_OPTIONAL_LOCAL_TRIAGE | Stage81 records that no immediate new hot-path code variant is justified after Stage80. The next local action is post-H11 fused r=6 profile attribution before opening another implementation hypothesis. |
 | S59-R7-FINAL-PAPER-PACKAGE | final freeze | paper/release claim package | WAIT_STRONGER_UNLOCKS | Run final recheck and Stage40-style freeze after external unlocks and manual claim review. |
 
 Decision: `PASS_COMPLETION_ROUTE_READY__STRONGER_CLAIMS_BLOCKED`

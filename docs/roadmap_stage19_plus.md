@@ -2576,7 +2576,7 @@ r=2/r=4 scoped promoted path. Stage81 is now the next local variant triage
 entry.
 ```
 
-## Planned Stage 81: Next Variant Triage
+## Stage 81: Next Variant Triage
 
 Goal:
 
@@ -2604,9 +2604,12 @@ Gate:
 Status:
 
 ```text
-Next. Stage80 kept H11 r=6 fused MAT as explicit experimental evidence only,
-so Stage81 must select a fresh falsifiable optimization hypothesis instead of
-upgrading the r=6 fused path by policy.
+Completed. Stage81 does not select a new hot-path implementation. It records
+that H3 sparse/structured MAT shortcuts remain blocked by key-format/security
+design, direct r>4/r=8 tiling is not justified after Stage74-80, and
+post-processing remains below the Stage24 threshold. The selected next local
+engineering action is profile-only post-H11 fused r=6 attribution before any
+new SAB/MAT optimization hypothesis is opened.
 ```
 
 ## Planned Stage 82: External Claim Unlock
@@ -2635,7 +2638,9 @@ Gate:
 Status:
 
 ```text
-Blocked on external platform/full-text/manual-review inputs.
+Blocked on external platform/full-text/manual-review inputs. This remains the
+next stronger-claim lane after Stage81; local code work should not resume
+without post-H11 fused r=6 profile attribution and a new hypothesis.
 ```
 
 ## Planned Stage 83: Final SAB Optimization Package
@@ -2668,5 +2673,6 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage81-82 decisions.
+Waiting for Stage82 decisions and any future post-H11 profile-backed local
+variant.
 ```

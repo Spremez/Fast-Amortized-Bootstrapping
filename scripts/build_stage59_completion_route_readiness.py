@@ -168,11 +168,12 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage77_rgt4_fused_mat_kernel/summary.csv; "
                 "repro/stage78_rgt4_fused_repeated_gates/summary.csv; "
                 "repro/stage79_rgt4_fused_high_stat/summary.csv; "
-                "repro/stage80_promotion_policy_audit/summary.csv"
+                "repro/stage80_promotion_policy_audit/summary.csv; "
+                "repro/stage81_next_variant_triage.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage80 keeps H11 r=6 fused MAT as an explicit experimental flag only: complete-SAB/noise/resource pass, but the high-stat performance boundary does not justify promotion over the r=4 reference. Next local work is Stage81 variant triage; no default/path promotion or claim upgrade for r=6 fused MAT.",
-            "Does not upgrade r=6 claims or defaults; future variants require a new hypothesis, full current-head gates, and a separate promote/neutral/reject decision.",
+            "Stage81 records that no immediate new hot-path code variant is justified after Stage80. The next local action is post-H11 fused r=6 profile attribution before opening another implementation hypothesis.",
+            "Does not upgrade r=6 claims or defaults; future variants require profile attribution, a new hypothesis, full current-head gates, and a separate promote/neutral/reject decision.",
         ),
         route_row(
             "S59-R7-FINAL-PAPER-PACKAGE",

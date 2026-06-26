@@ -380,3 +380,35 @@ hypotheses:
         under the same backend
       - register spills, memory traffic, key-layout complexity, or resource
         growth outweigh any microbench gain
+  - id: H12_post_h11_profile_attribution
+    statement: >
+      After H11 r=6 fused MAT is kept experimental but not promoted, the next
+      local step should profile the explicit fused r=6 path before writing new
+      hot-path code, so the next implementation target is tied to the actual
+      remaining complete-SAB bottleneck.
+    mechanism: >
+      Stage75 showed direct r>4 is not schedule-count limited and has roughly
+      55% MAT EP share of full body time, while Stage80 keeps the H11 fused
+      r=6 path experimental. A post-H11 fused r=6 profile can determine
+      whether the remaining cost is MAT multiply/layout, from_DFT/add/sub
+      materialization, CMUX/RGSW wrapper work, sub_a/rotation, allocation, or
+      post-processing tail before any new variant is designed.
+    status: stage81_selected_profile_first_no_code_promotion
+    evidence: docs/stage81_next_variant_triage_log.md; repro/stage81_next_variant_triage.csv
+    current_decision: >
+      Stage81 reads Stage24, Stage69, Stage74, Stage75, Stage76, Stage79, and
+      Stage80. It records that sparse/structured MAT shortcuts remain blocked
+      by key-format/security design, direct r>4/r=8 tiling is not selected
+      under current evidence, post-processing remains below threshold, and
+      H11 r=6 fused MAT remains explicit experimental evidence only. Therefore
+      no immediate hot-path code variant is promoted or selected. The next
+      local engineering action is profile-only post-H11 fused r=6 attribution.
+    failure_criteria:
+      - profile attribution cannot reproduce Stage75/Stage80 correctness and
+        schedule gates
+      - profile overhead invalidates timing attribution without a separate
+        non-instrumented A/B check
+      - the profile does not identify a bottleneck large enough to justify a
+        new full-SAB implementation gate
+      - a proposed follow-up skips hypothesis, theory, correctness,
+        full-SAB A/B, noise/resource, or claim-policy gates

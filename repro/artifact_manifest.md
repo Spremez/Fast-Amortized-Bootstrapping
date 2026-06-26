@@ -1216,3 +1216,10 @@ Repro artifacts:
 - `repro/stage80_promotion_policy_audit/current_smoke/pvw_target_SET_2_3_2048/build.log`
 - `repro/stage80_promotion_policy_audit/current_smoke/pvw_target_SET_2_3_2048/run.log`
 - `repro/stage80_promotion_policy_audit/current_smoke/scalar_ternary_SET_2_3_2048/build.log`
+
+## Stage 81 Next Variant Triage
+
+- `docs/stage81_next_variant_triage_log.md`
+- `experiments/stage81_next_variant_triage_plan.md`
+- `scripts/build_stage81_next_variant_triage.py`
+- `repro/stage81_next_variant_triage.csv`
