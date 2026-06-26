@@ -623,6 +623,7 @@ Repro artifacts:
 - `repro/final_goal_recheck/final_goal_audit.log`
 - `repro/final_goal_recheck/remaining_blocker_dashboard.log`
 - `repro/final_goal_recheck/stage40_postfreeze_verify.log`
+- `repro/final_goal_recheck/stage70_external_unlock_preflight.log`
 - `repro/final_goal_recheck/stage42_evidence_closure.log`
 - `repro/final_goal_recheck_postfreeze/summary.csv`
 - `repro/final_goal_recheck_postfreeze/stage40_postfreeze_verify.log`
@@ -989,3 +990,21 @@ Repro artifacts:
 - `experiments/stage70_external_unlock_preflight_plan.md`
 - `scripts/build_stage70_external_unlock_preflight.py`
 - `repro/stage70_external_unlock_preflight.csv`
+
+## Stage 71 Final-Recheck Stage70 Integration
+
+- `docs/stage71_final_recheck_stage70_log.md`
+- `experiments/stage71_final_recheck_stage70_plan.md`
+- `scripts/build_stage71_final_recheck_stage70_log.py`
+- `repro/stage71_final_recheck_stage70/summary.csv`
+- `repro/stage71_final_recheck_stage70/decision.csv`
+- `repro/stage71_final_recheck_stage70/final_goal_audit.log`
+- `repro/stage71_final_recheck_stage70/remaining_blocker_dashboard.log`
+- `repro/stage71_final_recheck_stage70/stage51_goal_frontier.log`
+- `repro/stage71_final_recheck_stage70/stage52_external_unlock_readiness.log`
+- `repro/stage71_final_recheck_stage70/stage57_scope_label_audit.log`
+- `repro/stage71_final_recheck_stage70/stage59_completion_route.log`
+- `repro/stage71_final_recheck_stage70/stage70_external_unlock_preflight.log`
+- `repro/stage71_final_recheck_stage70/stage42_evidence_closure.log`
+- `repro/stage71_final_recheck_stage70_failed_attempt1/decision.csv`
+- `repro/stage71_final_recheck_stage70_failed_attempt1/stage71_log_failed.md`

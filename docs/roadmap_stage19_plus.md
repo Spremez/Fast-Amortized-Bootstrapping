@@ -2156,3 +2156,38 @@ local-variant prerequisites needed for stronger claims after Stage69. It is an
 audit and handoff step only; it cannot upgrade speedup, novelty, theorem-level,
 non-binary, all-parameter, or hardware-counter claims.
 ```
+
+## Stage 71: Final-Recheck Stage70 Integration
+
+Goal:
+
+```text
+Make Stage70 external-unlock preflight refreshable through the unified final
+recheck before Stage42 closure is rebuilt.
+```
+
+Tasks:
+
+- add `FINAL_RECHECK_STAGE70_UNLOCK_PREFLIGHT` to
+  `scripts/run_final_goal_recheck.sh`;
+- run an isolated final recheck that refreshes Stage51, Stage52, Stage57,
+  Stage59, Stage70, and Stage42 closure while skipping heavy gates;
+- build a Stage71 decision log from the final recheck summary and canonical
+  Stage70 preflight;
+- register Stage71 in the repro pack and Stage42 closure/verifier.
+
+Gate:
+
+- Stage70 must pass inside the final recheck summary;
+- Stage42 closure must pass after Stage70 is refreshed;
+- final decision must remain
+  `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`;
+- no SAB benchmark, scalar/PVW code path, speedup, novelty, theorem-level,
+  non-binary, all-parameter, or hardware-counter claim is upgraded.
+
+Status:
+
+```text
+Stage71 passed. The unified final recheck can refresh Stage70 external-unlock
+preflight before rebuilding Stage42 closure. It is control-plane evidence only.
+```

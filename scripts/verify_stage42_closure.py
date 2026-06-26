@@ -55,6 +55,10 @@ STAGE69_LOCAL_VARIANT_FEASIBILITY = (
 STAGE70_EXTERNAL_UNLOCK_PREFLIGHT = (
     ROOT / "repro" / "stage70_external_unlock_preflight.csv"
 )
+STAGE71_FINAL_RECHECK_STAGE70 = ROOT / "repro" / "stage71_final_recheck_stage70" / "summary.csv"
+STAGE71_FINAL_RECHECK_STAGE70_DECISION = (
+    ROOT / "repro" / "stage71_final_recheck_stage70" / "decision.csv"
+)
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -167,6 +171,10 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage68 = {row.get("gate"): row for row in read_csv(STAGE68_FRONTIER_CLOSURE_CONSISTENCY)}
     stage69 = {row.get("gate"): row for row in read_csv(STAGE69_LOCAL_VARIANT_FEASIBILITY)}
     stage70 = {row.get("gate"): row for row in read_csv(STAGE70_EXTERNAL_UNLOCK_PREFLIGHT)}
+    stage71 = {row.get("step"): row for row in read_csv(STAGE71_FINAL_RECHECK_STAGE70)}
+    stage71_decision = {
+        row.get("gate"): row for row in read_csv(STAGE71_FINAL_RECHECK_STAGE70_DECISION)
+    }
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
     closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
@@ -674,6 +682,52 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         stage42.get("S42-STAGE70-EXTERNAL-UNLOCK-PREFLIGHT", {}).get("status")
         == "PASS"
     )
+    stage71_mismatches = []
+    for step in [
+        "final_goal_audit",
+        "remaining_blocker_dashboard",
+        "stage51_goal_frontier",
+        "stage52_external_unlock_readiness",
+        "stage57_scope_label_audit",
+        "stage59_completion_route",
+        "stage70_external_unlock_preflight",
+        "stage42_evidence_closure",
+    ]:
+        got = stage71.get(step, {}).get("status", "MISSING")
+        if got != "PASS":
+            stage71_mismatches.append(f"{step}:status={got}")
+    for step in [
+        "stage27_citation_probe",
+        "stage27_related_work_access_probe",
+        "stage28_perf_gate",
+        "stage27_final_package",
+        "external_evidence_intake",
+        "stage33_current_smoke",
+        "conditional_backlog_audit",
+        "stage44_external_reprobe",
+        "stage55_external_paper_probe",
+        "stage50_performance_matrix",
+        "stage66_post_variant_final_recheck",
+    ]:
+        got = stage71.get(step, {}).get("status", "MISSING")
+        if got != "SKIPPED":
+            stage71_mismatches.append(f"{step}:status={got}")
+    stage71_final_decision = stage71.get("final_decision", {}).get("status", "MISSING")
+    if stage71_final_decision != "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED":
+        stage71_mismatches.append(f"final_decision:status={stage71_final_decision}")
+    expected_stage71_decision = {
+        "stage71_final_recheck_stage70": "PASS",
+        "stage71_stage70_summary": "PASS",
+        "stage71_decision": "PASS_FINAL_RECHECK_STAGE70_INTEGRATION",
+    }
+    for gate, expected in expected_stage71_decision.items():
+        got = stage71_decision.get(gate, {}).get("status", "MISSING")
+        if got != expected:
+            stage71_mismatches.append(f"{gate}:status={got}")
+    stage42_stage71_ok = (
+        stage42.get("S42-STAGE71-FINAL-RECHECK-STAGE70", {}).get("status")
+        == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -733,11 +787,13 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage68-frontier-closure-consistency-001",
         "stage69-local-variant-feasibility-001",
         "stage70-external-unlock-preflight-001",
+        "stage71-final-recheck-stage70-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
         "scripts/verify_stage42_closure.py",
         "repro/stage42_evidence_closure_manifest.csv",
+        "repro/final_goal_recheck/stage70_external_unlock_preflight.log",
         "scripts/run_stage44_external_unlock_reprobe.sh",
         "scripts/build_stage44_external_unlock_reprobe.py",
         "repro/stage44_external_unlock_reprobe/summary.csv",
@@ -884,6 +940,21 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "experiments/stage70_external_unlock_preflight_plan.md",
         "scripts/build_stage70_external_unlock_preflight.py",
         "repro/stage70_external_unlock_preflight.csv",
+        "docs/stage71_final_recheck_stage70_log.md",
+        "experiments/stage71_final_recheck_stage70_plan.md",
+        "scripts/build_stage71_final_recheck_stage70_log.py",
+        "repro/stage71_final_recheck_stage70/summary.csv",
+        "repro/stage71_final_recheck_stage70/decision.csv",
+        "repro/stage71_final_recheck_stage70/final_goal_audit.log",
+        "repro/stage71_final_recheck_stage70/remaining_blocker_dashboard.log",
+        "repro/stage71_final_recheck_stage70/stage51_goal_frontier.log",
+        "repro/stage71_final_recheck_stage70/stage52_external_unlock_readiness.log",
+        "repro/stage71_final_recheck_stage70/stage57_scope_label_audit.log",
+        "repro/stage71_final_recheck_stage70/stage59_completion_route.log",
+        "repro/stage71_final_recheck_stage70/stage70_external_unlock_preflight.log",
+        "repro/stage71_final_recheck_stage70/stage42_evidence_closure.log",
+        "repro/stage71_final_recheck_stage70_failed_attempt1/decision.csv",
+        "repro/stage71_final_recheck_stage70_failed_attempt1/stage71_log_failed.md",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -1194,6 +1265,18 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             ),
         },
         {
+            "check": "stage71_final_recheck_stage70",
+            "status": "PASS" if not stage71_mismatches and stage42_stage71_ok else "FAIL",
+            "evidence": "repro/stage71_final_recheck_stage70/summary.csv; repro/stage71_final_recheck_stage70/decision.csv",
+            "detail": "Stage71 final recheck refreshes Stage70 before Stage42 closure"
+            if not stage71_mismatches and stage42_stage71_ok
+            else "; ".join(stage71_mismatches)
+            or (
+                "S42-STAGE71-FINAL-RECHECK-STAGE70:"
+                f"{stage42.get('S42-STAGE71-FINAL-RECHECK-STAGE70', {}).get('status', 'MISSING')}!=PASS"
+            ),
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -1221,7 +1304,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -1229,7 +1312,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, and Stage70 external unlock preflight are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, and Stage71 final-recheck Stage70 integration are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

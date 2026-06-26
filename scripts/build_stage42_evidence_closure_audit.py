@@ -67,6 +67,10 @@ STAGE69_LOCAL_VARIANT_FEASIBILITY = (
 STAGE70_EXTERNAL_UNLOCK_PREFLIGHT = (
     ROOT / "repro" / "stage70_external_unlock_preflight.csv"
 )
+STAGE71_FINAL_RECHECK_STAGE70 = ROOT / "repro" / "stage71_final_recheck_stage70" / "summary.csv"
+STAGE71_FINAL_RECHECK_STAGE70_DECISION = (
+    ROOT / "repro" / "stage71_final_recheck_stage70" / "decision.csv"
+)
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -257,6 +261,21 @@ REQUIRED_FILES = [
     "experiments/stage70_external_unlock_preflight_plan.md",
     "scripts/build_stage70_external_unlock_preflight.py",
     "repro/stage70_external_unlock_preflight.csv",
+    "docs/stage71_final_recheck_stage70_log.md",
+    "experiments/stage71_final_recheck_stage70_plan.md",
+    "scripts/build_stage71_final_recheck_stage70_log.py",
+    "repro/stage71_final_recheck_stage70/summary.csv",
+    "repro/stage71_final_recheck_stage70/decision.csv",
+    "repro/stage71_final_recheck_stage70/final_goal_audit.log",
+    "repro/stage71_final_recheck_stage70/remaining_blocker_dashboard.log",
+    "repro/stage71_final_recheck_stage70/stage51_goal_frontier.log",
+    "repro/stage71_final_recheck_stage70/stage52_external_unlock_readiness.log",
+    "repro/stage71_final_recheck_stage70/stage57_scope_label_audit.log",
+    "repro/stage71_final_recheck_stage70/stage59_completion_route.log",
+    "repro/stage71_final_recheck_stage70/stage70_external_unlock_preflight.log",
+    "repro/stage71_final_recheck_stage70/stage42_evidence_closure.log",
+    "repro/stage71_final_recheck_stage70_failed_attempt1/decision.csv",
+    "repro/stage71_final_recheck_stage70_failed_attempt1/stage71_log_failed.md",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -493,6 +512,21 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "experiments/stage70_external_unlock_preflight_plan.md",
     "scripts/build_stage70_external_unlock_preflight.py",
     "repro/stage70_external_unlock_preflight.csv",
+    "docs/stage71_final_recheck_stage70_log.md",
+    "experiments/stage71_final_recheck_stage70_plan.md",
+    "scripts/build_stage71_final_recheck_stage70_log.py",
+    "repro/stage71_final_recheck_stage70/summary.csv",
+    "repro/stage71_final_recheck_stage70/decision.csv",
+    "repro/stage71_final_recheck_stage70/final_goal_audit.log",
+    "repro/stage71_final_recheck_stage70/remaining_blocker_dashboard.log",
+    "repro/stage71_final_recheck_stage70/stage51_goal_frontier.log",
+    "repro/stage71_final_recheck_stage70/stage52_external_unlock_readiness.log",
+    "repro/stage71_final_recheck_stage70/stage57_scope_label_audit.log",
+    "repro/stage71_final_recheck_stage70/stage59_completion_route.log",
+    "repro/stage71_final_recheck_stage70/stage70_external_unlock_preflight.log",
+    "repro/stage71_final_recheck_stage70/stage42_evidence_closure.log",
+    "repro/stage71_final_recheck_stage70_failed_attempt1/decision.csv",
+    "repro/stage71_final_recheck_stage70_failed_attempt1/stage71_log_failed.md",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -1570,6 +1604,59 @@ def check_stage70_external_unlock_preflight() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage71_final_recheck_stage70() -> List[Dict[str, str]]:
+    summary = {r.get("step"): r for r in read_csv(STAGE71_FINAL_RECHECK_STAGE70)}
+    decision_rows = {
+        r.get("gate"): r for r in read_csv(STAGE71_FINAL_RECHECK_STAGE70_DECISION)
+    }
+    problems = []
+    required_pass = [
+        "final_goal_audit",
+        "remaining_blocker_dashboard",
+        "stage51_goal_frontier",
+        "stage52_external_unlock_readiness",
+        "stage57_scope_label_audit",
+        "stage59_completion_route",
+        "stage70_external_unlock_preflight",
+        "stage42_evidence_closure",
+    ]
+    for step in required_pass:
+        status = summary.get(step, {}).get("status", "MISSING")
+        if status != "PASS":
+            problems.append(f"{step}:status={status}")
+    final_decision = summary.get("final_decision", {}).get("status", "MISSING")
+    if final_decision != "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED":
+        problems.append(f"final_decision:status={final_decision}")
+    expected_decision = {
+        "stage71_final_recheck_stage70": "PASS",
+        "stage71_stage70_summary": "PASS",
+        "stage71_decision": "PASS_FINAL_RECHECK_STAGE70_INTEGRATION",
+    }
+    for gate, status in expected_decision.items():
+        actual = decision_rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+
+    detail = (
+        "Stage71 final recheck refreshes Stage70 and Stage42 closure while preserving stronger-claim blockers"
+        if not problems and summary and decision_rows
+        else "; ".join(problems) or "Stage71 summary or decision missing"
+    )
+    return [
+        row(
+            "S42-STAGE71-FINAL-RECHECK-STAGE70",
+            "final_recheck",
+            pass_fail(not problems and bool(summary) and bool(decision_rows)),
+            (
+                f"{STAGE71_FINAL_RECHECK_STAGE70.relative_to(ROOT).as_posix()}; "
+                f"{STAGE71_FINAL_RECHECK_STAGE70_DECISION.relative_to(ROOT).as_posix()}"
+            ),
+            detail,
+            "Rerun Stage71 before relying on unified final-recheck coverage for Stage70.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -1742,6 +1829,10 @@ def check_run_log() -> List[Dict[str, str]]:
     for r in rows:
         if r.get("run_id") == "stage70-external-unlock-preflight-001":
             stage70_status = r.get("status", "MISSING")
+    stage71_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage71-final-recheck-stage70-001":
+            stage71_status = r.get("status", "MISSING")
     ok = (
         ok
         and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
@@ -1749,11 +1840,12 @@ def check_run_log() -> List[Dict[str, str]]:
         and stage68_status == "PASS_FRONTIER_CLOSURE_CONSISTENCY"
         and stage69_status == "PASS_LOCAL_VARIANT_FEASIBILITY_AUDIT_STRONGER_CLAIMS_BLOCKED"
         and stage70_status == "PASS_EXTERNAL_UNLOCK_PREFLIGHT_STRONGER_CLAIMS_BLOCKED"
+        and stage71_status == "PASS_FINAL_RECHECK_STAGE70_INTEGRATION"
     )
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}"
     )
     return [
         row(
@@ -1775,8 +1867,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, or Stage70 control-plane artifacts.",
+            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, or Stage71 control-plane artifacts.",
         )
     ]
 
@@ -1795,6 +1887,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/final_goal_recheck_stage42_closure/summary.csv",
         "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
         "repro/final_goal_recheck/stage42_evidence_closure.log",
+        "repro/final_goal_recheck/stage70_external_unlock_preflight.log",
         "repro/stage42_evidence_closure_manifest.csv",
         "scripts/build_conditional_backlog_audit.py",
         "docs/conditional_backlog_audit.md",
@@ -1950,6 +2043,21 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "experiments/stage70_external_unlock_preflight_plan.md",
         "scripts/build_stage70_external_unlock_preflight.py",
         "repro/stage70_external_unlock_preflight.csv",
+        "docs/stage71_final_recheck_stage70_log.md",
+        "experiments/stage71_final_recheck_stage70_plan.md",
+        "scripts/build_stage71_final_recheck_stage70_log.py",
+        "repro/stage71_final_recheck_stage70/summary.csv",
+        "repro/stage71_final_recheck_stage70/decision.csv",
+        "repro/stage71_final_recheck_stage70/final_goal_audit.log",
+        "repro/stage71_final_recheck_stage70/remaining_blocker_dashboard.log",
+        "repro/stage71_final_recheck_stage70/stage51_goal_frontier.log",
+        "repro/stage71_final_recheck_stage70/stage52_external_unlock_readiness.log",
+        "repro/stage71_final_recheck_stage70/stage57_scope_label_audit.log",
+        "repro/stage71_final_recheck_stage70/stage59_completion_route.log",
+        "repro/stage71_final_recheck_stage70/stage70_external_unlock_preflight.log",
+        "repro/stage71_final_recheck_stage70/stage42_evidence_closure.log",
+        "repro/stage71_final_recheck_stage70_failed_attempt1/decision.csv",
+        "repro/stage71_final_recheck_stage70_failed_attempt1/stage71_log_failed.md",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -1958,7 +2066,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, and Stage70 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, and Stage71 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -2027,6 +2135,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage68_frontier_closure_consistency,
         check_stage69_local_variant_feasibility,
         check_stage70_external_unlock_preflight,
+        check_stage71_final_recheck_stage70,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -2046,10 +2155,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, and Stage70 external unlock preflight; stronger claims remain blocked"
+            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, and Stage71 final-recheck Stage70 integration; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71 evidence closure.",
         )
     )
     return checks

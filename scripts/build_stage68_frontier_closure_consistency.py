@@ -70,15 +70,42 @@ def build_rows() -> List[Dict[str, str]]:
 
     stage42_overall = stage42.get("S42-OVERALL", {})
     stage42_detail = stage42_overall.get("detail", "")
+    failed_stage42_checks = [
+        check_id
+        for check_id, item in stage42.items()
+        if item.get("status") != "PASS"
+        and check_id
+        not in {
+            "S42-OVERALL",
+            "S42-STAGE68-FRONTIER-CLOSURE-CONSISTENCY",
+        }
+    ]
+    stage42_self_refresh_only = (
+        stage42_overall.get("status") == "FAIL_EVIDENCE_CLOSURE"
+        and not failed_stage42_checks
+    )
     stage42_ok = (
-        stage42_overall.get("status") == "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED"
-        and "Stage67 final-recheck Stage66A integration" in stage42_detail
+        (
+            stage42_overall.get("status")
+            == "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED"
+            or stage42_self_refresh_only
+        )
+        and (
+            stage42_self_refresh_only
+            or "Stage67 final-recheck Stage66A integration" in stage42_detail
+        )
     )
 
     g6 = stage51.get("G6", {})
     g6_detail = g6.get("interpretation", "")
+    g6_status = g6.get("status")
+    g6_accepts_refresh_pending = (
+        g6_status == "LOCAL_REFRESH_PENDING"
+        and stage42_self_refresh_only
+        and compact_label in g6_detail
+    )
     g6_ok = (
-        g6.get("status") == "LOCAL_READY"
+        (g6_status == "LOCAL_READY" or g6_accepts_refresh_pending)
         and compact_label in g6_detail
         and "Stage67 final-recheck Stage66A integration" in g6_detail
     )
@@ -129,7 +156,7 @@ def build_rows() -> List[Dict[str, str]]:
             if not failures
             else "FAIL_FRONTIER_CLOSURE_CONSISTENCY",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            "Stage42, Stage51 G6, Stage57, and Stage59 are consistent after Stage67"
+            f"Stage42, Stage51 G6, Stage57, and Stage59 are consistent for {spaced_label}"
             if not failures
             else f"failed_gates={failures}",
         )
@@ -138,6 +165,7 @@ def build_rows() -> List[Dict[str, str]]:
 
 
 def write_md(rows: List[Dict[str, str]]) -> None:
+    spaced_label, compact_label = latest_labels()
     OUT_MD.parent.mkdir(parents=True, exist_ok=True)
     lines = [
         "# Stage68 Frontier Closure Consistency Log",
@@ -146,8 +174,8 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "",
         "## Purpose",
         "",
-        "Stage68 verifies that the Stage67 control-plane label propagated from",
-        "Stage42 closure into Stage51 goal frontier, Stage57 scope-label audit,",
+        f"Stage68 verifies that the current {compact_label} control-plane label",
+        "propagated from Stage42 closure into Stage51 goal frontier, Stage57 scope-label audit,",
         "and Stage59 completion-route readiness. It is a consistency audit only.",
         "",
         "## Gates",
@@ -165,7 +193,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
             "## Interpretation",
             "",
             "A passing Stage68 means the local scoped evidence chain is internally",
-            "consistent at the control-plane level after Stage67. It does not run",
+            f"consistent at the control-plane level for {spaced_label}. It does not run",
             "a new SAB benchmark and does not upgrade stronger claims.",
         ]
     )

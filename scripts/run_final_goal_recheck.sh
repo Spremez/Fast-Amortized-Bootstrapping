@@ -39,6 +39,7 @@ run_stage51_frontier="${FINAL_RECHECK_STAGE51_FRONTIER:-$light_recheck_default}"
 run_stage52_unlock_readiness="${FINAL_RECHECK_STAGE52_UNLOCK_READINESS:-$light_recheck_default}"
 run_stage57_scope_label_audit="${FINAL_RECHECK_STAGE57_SCOPE_LABEL_AUDIT:-$light_recheck_default}"
 run_stage59_completion_route="${FINAL_RECHECK_STAGE59_COMPLETION_ROUTE:-$light_recheck_default}"
+run_stage70_unlock_preflight="${FINAL_RECHECK_STAGE70_UNLOCK_PREFLIGHT:-$light_recheck_default}"
 
 if [[ -n "${FINAL_RECHECK_STAGE42_CLOSURE+x}" ]]; then
   run_stage42_closure="$FINAL_RECHECK_STAGE42_CLOSURE"
@@ -59,7 +60,8 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_stage51_frontier" == "0" \
   && "$run_stage52_unlock_readiness" == "0" ]]; then
   if [[ "$run_stage57_scope_label_audit" != "0" \
-    || "$run_stage59_completion_route" != "0" ]]; then
+    || "$run_stage59_completion_route" != "0" \
+    || "$run_stage70_unlock_preflight" != "0" ]]; then
     run_stage42_closure="1"
   else
     run_stage42_closure="0"
@@ -88,6 +90,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_stage52_unlock_readiness" == "0" \
   && "$run_stage57_scope_label_audit" == "0" \
   && "$run_stage59_completion_route" == "0" \
+  && "$run_stage70_unlock_preflight" == "0" \
   && "$run_stage42_closure" == "0" ]]; then
   out_dir="repro/final_goal_recheck_postfreeze"
 else
@@ -321,6 +324,16 @@ else
     "$python_bin scripts/build_stage59_completion_route_readiness.py" \
     "" \
     "Set FINAL_RECHECK_STAGE59_COMPLETION_ROUTE=1 to regenerate the Stage 59 completion-route readiness table."
+fi
+
+if [[ "$run_stage70_unlock_preflight" == "1" ]]; then
+  run_logged "stage70_external_unlock_preflight" \
+    "$python_bin scripts/build_stage70_external_unlock_preflight.py"
+else
+  csv_row "stage70_external_unlock_preflight" "SKIPPED" \
+    "$python_bin scripts/build_stage70_external_unlock_preflight.py" \
+    "" \
+    "Set FINAL_RECHECK_STAGE70_UNLOCK_PREFLIGHT=1 to regenerate the Stage 70 external-unlock preflight."
 fi
 
 if [[ "$run_stage66_post_variant" == "1" ]]; then

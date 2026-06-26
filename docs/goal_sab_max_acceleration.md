@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-70`. This label tracks the
+Current control-plane closure label: `Stage 19-71`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -81,6 +81,7 @@ evidence.
 | Stage 68 frontier/closure consistency | n/a | n/a | control-plane consistency | Stage42, Stage51 G6, Stage57, and Stage59 agree on the latest control-plane closure label |
 | Stage 69 local variant feasibility | n/a | n/a | routing/theory control | remaining H2/H3/H4/H7/H8 local candidates are deferred, rejected, neutral, or externally blocked under current evidence |
 | Stage 70 external unlock preflight | n/a | n/a | external prerequisite routing | native-perf, full-text, novelty, and local-variant unlock actions are machine-checkable |
+| Stage 71 final-recheck Stage70 integration | n/a | n/a | final-recheck integration | unified final recheck can refresh Stage70 before Stage42 closure |
 
 Current conclusion:
 
@@ -235,6 +236,8 @@ boundary, leaving further code work gated on native perf, full-text review, or
 a new falsifiable hypothesis.
 Stage70 then consolidates the remaining native-perf, full-text, novelty, and
 local-variant unlock requirements into a machine-checkable preflight artifact.
+Stage71 then integrates that Stage70 preflight into the unified final recheck
+runner so Stage42 closure cannot depend on a stale external-unlock preflight.
 ```
 
 ## Invariants
@@ -336,6 +339,7 @@ Stage 66A: post-variant final-recheck integration. [passed]
 Stage 67: final-recheck Stage66A integration. [passed]
 Stage 68: frontier/closure consistency. [passed]
 Stage 69: local variant feasibility. [passed]
-Stage 70: external unlock preflight. [passed; waiting for external unlocks or new hypothesis]
+Stage 70: external unlock preflight. [passed]
+Stage 71: final-recheck Stage70 integration. [passed; waiting for external unlocks or new hypothesis]
 Stage 66: release/paper package. [waiting for external unlocks or narrowed scope]
 ```
