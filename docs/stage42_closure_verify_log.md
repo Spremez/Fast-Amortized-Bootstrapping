@@ -11,7 +11,7 @@ regenerating the Stage 42 audit or manifest.
 
 | check | status | evidence | detail |
 |---|---|---|---|
-| verification_input_commit | 9a032ea | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
+| verification_input_commit | fc3d904 | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
 | worktree_clean_before_outputs | PASS | git status --short --untracked-files=all | tracked and untracked worktree was clean before verifier outputs. |
 | final_audit_A9 | PASS | repro/final_goal_completion_audit.csv | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED |
 | stage41_readiness | PASS | repro/stage41_external_unlock_packet.csv | all readiness rows remain waiting for external evidence |
@@ -27,11 +27,12 @@ regenerating the Stage 42 audit or manifest.
 | stage50_performance_matrix | PASS | repro/stage50_performance_evidence_matrix.csv | Stage50 performance evidence matrix preserves high-stat/current-head/smoke claim boundaries and closure audit records it |
 | stage51_goal_frontier | PASS | repro/stage51_goal_completion_frontier.csv | Stage51 goal frontier separates local scoped-ready evidence from stronger external blockers and closure audit records it |
 | stage52_external_unlock_readiness | PASS | repro/stage52_external_unlock_readiness.csv | Stage52 external unlock readiness packet records external inputs, commands, artifacts, gates, and failure policies |
+| stage53_final_recheck_integration | PASS | repro/stage53_final_recheck_stage50_52/summary.csv | Stage53 final recheck integrates Stage50, Stage51, Stage52, and Stage42 closure |
 | stage44_recheck_integration | PASS | repro/final_goal_recheck_stage44_reprobe/summary.csv | final recheck can refresh Stage44, final audit, and Stage42 closure |
 | default_recheck_closure | PASS | repro/final_goal_recheck/summary.csv | default final recheck includes stage42_evidence_closure=PASS |
 | closure_only_recheck | PASS | repro/final_goal_recheck_stage42_closure/summary.csv | closure-only final recheck includes stage42_evidence_closure=PASS |
-| stage42_run_log_rows | PASS | repro/run_log.csv | all Stage42/43/44/45/46/47/48/49/50/51/52 closure run rows are present |
-| artifact_manifest_mentions | PASS | repro/artifact_manifest.md | Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, and Stage52 external unlock readiness are registered |
+| stage42_run_log_rows | PASS | repro/run_log.csv | all Stage42/43/44/45/46/47/48/49/50/51/52/53 closure run rows are present |
+| artifact_manifest_mentions | PASS | repro/artifact_manifest.md | Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, and Stage53 final recheck integration are registered |
 | stage42_verify_decision | PASS_STAGE42_VERIFY_STRONGER_CLAIMS_BLOCKED | repro/stage42_closure_verify/summary.csv | Stage42 closure package is internally consistent; stronger claims remain blocked. |
 
 ## Decision
