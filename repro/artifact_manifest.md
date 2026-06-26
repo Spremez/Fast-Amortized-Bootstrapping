@@ -956,3 +956,13 @@ Repro artifacts:
 - `repro/stage66_post_variant_final_recheck/final_recheck/stage52_external_unlock_readiness.log`
 - `repro/stage66_post_variant_final_recheck/final_recheck/stage57_scope_label_audit.log`
 - `repro/stage66_post_variant_final_recheck/final_recheck/stage59_completion_route.log`
+
+## Stage 67 Final-Recheck Stage66A Integration
+
+- `docs/stage67_final_recheck_stage66_log.md`
+- `experiments/stage67_final_recheck_stage66_plan.md`
+- `scripts/build_stage67_final_recheck_stage66_log.py`
+- `scripts/run_final_goal_recheck.sh`
+- `repro/stage67_final_recheck_stage66/summary.csv`
+- `repro/stage67_final_recheck_stage66/decision.csv`
+- `repro/stage67_final_recheck_stage66/stage66_post_variant_final_recheck.log`

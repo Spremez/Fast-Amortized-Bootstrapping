@@ -2,6 +2,10 @@
 
 Date: 2026-06-25
 
+Current control-plane closure label: `Stage 19-67`. This label is used by the
+scope-label audit to prevent stale reports; it does not upgrade speedup,
+novelty, theorem-level, or hardware-counter claims.
+
 ## Purpose
 
 Stage 29 introduced a generated final goal completion audit. This log records
@@ -35,6 +39,18 @@ scalar/PVW current-commit smoke before the final audit. Use
 `FINAL_RECHECK_STAGE44_REPROBE=1` when intentionally refreshing the combined
 full-text/native-perf unlock state before the final audit and Stage 42 closure
 audit.
+
+Stage67 added an explicit post-variant control-plane switch:
+
+```bash
+FINAL_RECHECK_STAGE66_POST_VARIANT=1 bash scripts/run_final_goal_recheck.sh
+```
+
+Use this only when the caller wants the unified final recheck to refresh the
+canonical Stage66A summary. For self-consistent closure-manifest hashes, the
+Stage67 flow runs Stage66A with `FINAL_RECHECK_STAGE42_CLOSURE=0`, builds the
+Stage67 decision log, then rebuilds Stage42 closure after the final recheck
+summary is finalized.
 
 ## Initial Run
 

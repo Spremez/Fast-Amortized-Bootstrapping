@@ -2,6 +2,10 @@
 
 Date: 2026-06-25
 
+Current control-plane closure label: `Stage 19-67`. This label tracks the
+latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
+the scoped engineering claim.
+
 ## Codex Goal
 
 Starting from commit `b007c0c`, continue the PVW/MAT-SAB optimization path for
@@ -72,7 +76,8 @@ evidence.
 | Stage 44 external unlock re-probe | network/native gate | n/a | waiting external unlocks | citation/full-text probe and native perf probe rerun; direct full text and hardware-counter evidence remain unavailable; final-recheck integration passes without upgrading claims |
 | Stage 64A post-variant refresh | `spqlios_avx512` | 2/4 | current-head continuity | after Stage65A, scalar/PVW smoke passed; r=2/r=4 repeated full-SAB mean `1.269x`/`1.445x`; final-output noise smoke zero failures |
 | Stage 65A r4 row-unrolled AVX512 | `spqlios_avx512` | 4 | negative ablation | correctness passed, but MAT/full-SAB ratios versus specialized baseline are `0.930815x`/`0.986900x`/`0.803554x`; not promoted |
-| Stage 66A post-variant final recheck | n/a | n/a | control-plane continuity | lightweight final recheck after Stage65A/64A; intended to preserve scoped-ready/stronger-blocked claim boundary |
+| Stage 66A post-variant final recheck | n/a | n/a | control-plane continuity | lightweight final recheck after Stage65A/64A passes and preserves scoped-ready/stronger-blocked claim boundary |
+| Stage 67 final-recheck Stage66A integration | n/a | n/a | final-recheck integration | explicit unified final-recheck switch runs Stage66A; Stage42 closure is rebuilt after the Stage67 summary is finalized |
 
 Current conclusion:
 
@@ -216,6 +221,9 @@ Stage65A variant.
 Stage66A then checks that the post-variant evidence state can still be
 refreshed by the lightweight final-recheck control plane and registered by
 Stage42 closure/verifier. It is reproducibility evidence only.
+Stage67 then integrates that Stage66A refresh into the unified final recheck
+runner through an explicit switch, then rebuilds Stage42 closure after the
+Stage67 summary is finalized.
 ```
 
 ## Invariants
@@ -313,6 +321,7 @@ Stage 62: 2025/686 full-text unlock probe. [blocked by direct-route 403/Cloudfla
 Stage 63: novelty review. [externally blocked until source-anchor review]
 Stage 64: implementation-refresh campaign. [completed after Stage65A; current-head continuity passed]
 Stage 65: optional variant loop. [started; Stage65A r4 row-unrolled AVX512 negative/not promoted]
-Stage 66A: post-variant final-recheck integration. [current control-plane step]
+Stage 66A: post-variant final-recheck integration. [passed]
+Stage 67: final-recheck Stage66A integration. [passed]
 Stage 66: release/paper package. [waiting for external unlocks or narrowed scope]
 ```

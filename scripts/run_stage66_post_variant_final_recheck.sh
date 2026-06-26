@@ -3,6 +3,7 @@ set -euo pipefail
 
 out_dir="${STAGE66_OUT_DIR:-repro/stage66_post_variant_final_recheck}"
 python_bin="${PYTHON_BIN:-python3}"
+rebuild_stage42_closure="${STAGE66_REBUILD_STAGE42_CLOSURE:-1}"
 
 mkdir -p "$out_dir"
 
@@ -29,7 +30,10 @@ FINAL_RECHECK_STAGE52_UNLOCK_READINESS=1 \
 FINAL_RECHECK_STAGE57_SCOPE_LABEL_AUDIT=1 \
 FINAL_RECHECK_STAGE59_COMPLETION_ROUTE=1 \
 FINAL_RECHECK_STAGE42_CLOSURE=0 \
+FINAL_RECHECK_STAGE66_POST_VARIANT=0 \
   bash scripts/run_final_goal_recheck.sh
 
 STAGE66_OUT_DIR="$out_dir" "$python_bin" scripts/build_stage66_post_variant_final_recheck_log.py
-"$python_bin" scripts/build_stage42_evidence_closure_audit.py
+if [[ "$rebuild_stage42_closure" == "1" ]]; then
+  "$python_bin" scripts/build_stage42_evidence_closure_audit.py
+fi

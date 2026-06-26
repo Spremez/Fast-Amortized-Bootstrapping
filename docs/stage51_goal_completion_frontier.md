@@ -11,7 +11,7 @@ a goal-complete declaration.
 
 ## Frontier
 
-- current closure range: `Stage19-62`
+- current closure range: `Stage19-67`
 
 | frontier_id | lane | status | completion_effect | next_action |
 | --- | --- | --- | --- | --- |
@@ -20,7 +20,7 @@ a goal-complete declaration.
 | G3 | correctness_noise | LOCAL_READY | Supports scoped target correctness/noise wording. | Rerun noise gates after parameter, arithmetic, or key-format changes. |
 | G4 | resources | LOCAL_READY | Supports scoped resource reporting, not universal deployment claims. | Rerun resource matrix after implementation or key-layout changes. |
 | G5 | added_binary_generalization | LOCAL_SCOPED_READY | Supports added-binary wording only. | Add separate branch coverage before claiming non-binary or all-parameter generality. |
-| G6 | reproducibility | LOCAL_READY | Supports reproducibility of the scoped engineering chain. | Extend closure/verifier whenever new stages or artifacts are added. |
+| G6 | reproducibility | LOCAL_REFRESH_PENDING | Supports reproducibility of the scoped engineering chain. | Extend closure/verifier whenever new stages or artifacts are added. |
 | B1 | external_perf_theory | EXTERNAL_BLOCKED | Blocks theoretical MAT-AVX512 optimality or load/store-superiority claims. | STAGE28_RUN_BENCH=1 bash scripts/run_stage28_native_perf_counter_gate.sh |
 | B2 | external_novelty | EXTERNAL_REVIEW_BLOCKED | Blocks novelty wording beyond scoped engineering/systems contribution. | FINAL_RECHECK_RELATED_WORK=1 bash scripts/run_final_goal_recheck.sh |
 | B3 | external_2025_686_fulltext | EXTERNAL_FULLTEXT_BLOCKED | Blocks theorem, algorithm, table, figure, or experiment-number claims from 2025/686. | FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh |

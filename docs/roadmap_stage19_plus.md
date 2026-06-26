@@ -1998,7 +1998,48 @@ Gate:
 Status:
 
 ```text
-Stage66A is the current local control-plane step. It does not modify scalar
-SAB, sab_pvw_*, MAT kernels, parameters, or benchmarks. It can only strengthen
-reproducibility and claim-boundary evidence.
+Stage66A passed. It refreshes the lightweight post-variant final-recheck
+control plane while preserving Stage64A continuity and the Stage65A negative
+variant decision. It does not modify scalar SAB, sab_pvw_*, MAT kernels,
+parameters, or benchmarks.
+```
+
+## Stage 67: Final-Recheck Stage66A Integration
+
+Goal:
+
+```text
+Make scripts/run_final_goal_recheck.sh able to run Stage66A through an
+explicit FINAL_RECHECK_STAGE66_POST_VARIANT=1 switch, then rebuild Stage42
+closure after the Stage67 summary is finalized.
+```
+
+Tasks:
+
+- add a non-recursive Stage66A switch to the unified final recheck runner;
+- run an isolated final recheck with Stage66A enabled and Stage42 closure
+  intentionally skipped inside that run;
+- build a Stage67 decision log from the final recheck summary and canonical
+  Stage66A summary;
+- register Stage67 in Stage42 closure, the read-only verifier, run log,
+  artifact manifest, and reproduction checklist.
+
+Gate:
+
+- `stage66_post_variant_final_recheck` must pass inside the Stage67 final
+  recheck;
+- `stage42_evidence_closure` must be skipped inside the Stage67 final recheck
+  and pass in the post-summary rebuild;
+- `final_decision` must remain
+  `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`;
+- canonical Stage66A must remain `PASS_POST_VARIANT_FINAL_RECHECK`.
+
+Status:
+
+```text
+Stage67 passed. The unified final recheck can now refresh Stage66A through an
+explicit non-recursive switch, then Stage42 closure can be rebuilt after the
+Stage67 summary is finalized. This does not run a new SAB benchmark and cannot
+upgrade speedup, novelty, theorem-level, non-binary, all-parameter, or native
+hardware-counter claims.
 ```

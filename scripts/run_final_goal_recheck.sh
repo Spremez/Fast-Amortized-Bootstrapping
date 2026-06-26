@@ -14,6 +14,7 @@ run_postfreeze_verify="${FINAL_RECHECK_POSTFREEZE_VERIFY:-0}"
 run_stage44_reprobe="${FINAL_RECHECK_STAGE44_REPROBE:-0}"
 stage44_run_native_bench="${FINAL_RECHECK_STAGE44_RUN_NATIVE_BENCH:-1}"
 run_stage55_paper_probe="${FINAL_RECHECK_STAGE55_PAPER_PROBE:-0}"
+run_stage66_post_variant="${FINAL_RECHECK_STAGE66_POST_VARIANT:-0}"
 python_bin="${PYTHON_BIN:-python3}"
 
 light_recheck_default="1"
@@ -28,7 +29,8 @@ if [[ "$run_postfreeze_verify" == "1" \
   && "$run_goal_audit" == "0" \
   && "$run_remaining_blockers" == "0" \
   && "$run_stage44_reprobe" == "0" \
-  && "$run_stage55_paper_probe" == "0" ]]; then
+  && "$run_stage55_paper_probe" == "0" \
+  && "$run_stage66_post_variant" == "0" ]]; then
   light_recheck_default="0"
 fi
 
@@ -52,6 +54,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_remaining_blockers" == "0" \
   && "$run_stage44_reprobe" == "0" \
   && "$run_stage55_paper_probe" == "0" \
+  && "$run_stage66_post_variant" == "0" \
   && "$run_stage50_matrix" == "0" \
   && "$run_stage51_frontier" == "0" \
   && "$run_stage52_unlock_readiness" == "0" ]]; then
@@ -79,6 +82,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_remaining_blockers" == "0" \
   && "$run_stage44_reprobe" == "0" \
   && "$run_stage55_paper_probe" == "0" \
+  && "$run_stage66_post_variant" == "0" \
   && "$run_stage50_matrix" == "0" \
   && "$run_stage51_frontier" == "0" \
   && "$run_stage52_unlock_readiness" == "0" \
@@ -317,6 +321,16 @@ else
     "$python_bin scripts/build_stage59_completion_route_readiness.py" \
     "" \
     "Set FINAL_RECHECK_STAGE59_COMPLETION_ROUTE=1 to regenerate the Stage 59 completion-route readiness table."
+fi
+
+if [[ "$run_stage66_post_variant" == "1" ]]; then
+  run_logged "stage66_post_variant_final_recheck" \
+    "STAGE66_OUT_DIR=repro/stage66_post_variant_final_recheck STAGE66_REBUILD_STAGE42_CLOSURE=0 FINAL_RECHECK_STAGE66_POST_VARIANT=0 bash scripts/run_stage66_post_variant_final_recheck.sh"
+else
+  csv_row "stage66_post_variant_final_recheck" "SKIPPED" \
+    "bash scripts/run_stage66_post_variant_final_recheck.sh" \
+    "" \
+    "Set FINAL_RECHECK_STAGE66_POST_VARIANT=1 to refresh Stage66A before Stage42 closure."
 fi
 
 if [[ "$run_stage42_closure" == "1" ]]; then

@@ -16,7 +16,8 @@ evidence is supplied.
 | Stage 63 | novelty review | Re-run related-work access and manually map novelty/distinction wording to source anchors. | Novelty gate must no longer be `BLOCK_NOVELTY_CLAIM_PENDING_MANUAL_REVIEW`. | externally blocked |
 | Stage 64 | implementation-refresh campaign | After any new code variant, rerun current-head scalar/PVW smoke, repeated full-SAB A/B, and final-output noise gates. | Stage33/47/48/49 and Stage50 must pass; scalar baseline output remains unchanged. | passed after Stage65A code change |
 | Stage 65 | optional variant loop | Evaluate a concrete new algorithmic or AVX/layout variant from the hypothesis register. | promote/neutral/reject with full correctness, full SAB A/B, noise, resource, and claim-policy rows. | started locally; Stage65A r4 row-unrolled AVX512 is negative/not promoted |
-| Stage 66A | post-variant final recheck | Refresh the lightweight final-recheck control plane after Stage65A and Stage64A, then rebuild Stage42 closure with Stage66A registered. | Stage66A summary, Stage42 closure, and verifier must pass while stronger blockers remain preserved. | in progress |
+| Stage 66A | post-variant final recheck | Refresh the lightweight final-recheck control plane after Stage65A and Stage64A, then rebuild Stage42 closure with Stage66A registered. | Stage66A summary, Stage42 closure, and verifier must pass while stronger blockers remain preserved. | passed |
+| Stage 67 | final-recheck Stage66A integration | Add an explicit final-recheck switch that runs Stage66A without recursion, then rebuild Stage42 closure after the Stage67 summary is finalized. | Stage67 final recheck, post-summary Stage42 closure, and verifier must pass while stronger blockers remain preserved. | passed |
 | Stage 66 | release/paper package | Freeze the final allowed claim package after external blockers are resolved or the scope is explicitly narrowed. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
 Execution policy:
@@ -29,6 +30,7 @@ Execution policy:
 - Do not claim novelty without manual source-anchor review.
 - Treat optional local variants as hypotheses until full SAB A/B and
   correctness/noise/resource gates pass.
-- After any optional local variant, run Stage64A for current-head continuity
-  and Stage66A for final-recheck/control-plane continuity before relying on
-  updated scoped evidence.
+- After any optional local variant, run Stage64A for current-head continuity,
+  Stage66A for final-recheck/control-plane continuity, and Stage67 to verify
+  the unified final recheck can refresh that state before relying on updated
+  scoped evidence.

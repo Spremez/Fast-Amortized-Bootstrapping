@@ -1,0 +1,4 @@
+gate,status,evidence,detail
+stage67_final_recheck_stage66,PASS,repro/stage67_final_recheck_stage66/summary.csv,final recheck ran Stage66A and intentionally left Stage42 closure for the post-summary rebuild
+stage67_stage66_summary,PASS,repro/stage66_post_variant_final_recheck/summary.csv,canonical Stage66A summary remains passed after final-recheck integration
+stage67_decision,PASS_FINAL_RECHECK_STAGE66_INTEGRATION,repro/stage67_final_recheck_stage66/decision.csv,Stage67 integrates Stage66A into the explicit final-recheck path without upgrading stronger claims
