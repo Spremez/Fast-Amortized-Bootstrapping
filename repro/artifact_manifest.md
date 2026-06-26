@@ -755,3 +755,15 @@ Repro artifacts:
 - `repro/stage48_wsl_active_state_noise_smoke/aggregate.csv`
 - `repro/stage48_wsl_active_state_noise_smoke/r2/seed_6862025.log`
 - `repro/stage48_wsl_active_state_noise_smoke/r4/seed_6862025.log`
+- `docs/stage49_wsl_repeated_full_sab_log.md`
+- `repro/stage49_wsl_repeated_full_sab/summary.csv`
+- `repro/stage49_wsl_repeated_full_sab/r2/summary.csv`
+- `repro/stage49_wsl_repeated_full_sab/r2/driver.log`
+- `repro/stage49_wsl_repeated_full_sab/r2/run_0.log`
+- `repro/stage49_wsl_repeated_full_sab/r2/run_1.log`
+- `repro/stage49_wsl_repeated_full_sab/r2/run_2.log`
+- `repro/stage49_wsl_repeated_full_sab/r4/summary.csv`
+- `repro/stage49_wsl_repeated_full_sab/r4/driver.log`
+- `repro/stage49_wsl_repeated_full_sab/r4/run_0.log`
+- `repro/stage49_wsl_repeated_full_sab/r4/run_1.log`
+- `repro/stage49_wsl_repeated_full_sab/r4/run_2.log`

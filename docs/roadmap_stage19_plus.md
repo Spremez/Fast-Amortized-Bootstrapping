@@ -1356,3 +1356,44 @@ pvw_minus_scalar_log2=-0.555. This preserves current-head noise continuity
 after the active-state refactor; Stage 36 remains the high-stat noise evidence
 for claims.
 ```
+
+## Stage 49: WSL Repeated Full-SAB Current-Head Stability
+
+Goal:
+
+```text
+Strengthen the post-refactor current-head complete-SAB A/B evidence from
+single-run smoke to a repeated stability check, while keeping Stage 36 as the
+high-stat performance claim source.
+```
+
+Tasks:
+
+- run `scripts/run_stage20_active_buffer_bench.sh` at current head for r=2 and
+  r=4;
+- use 3 process runs and 1 paired timing rep per process;
+- keep `spqlios_avx512`, specialized MAT-AVX512, and active-buffer fusion
+  enabled;
+- record per-run raw logs, per-r summaries, and an aggregate summary;
+- label the result as current-head repeated stability evidence, not as a
+  replacement for Stage 36 high-stat performance.
+
+Gate:
+
+- all six process runs must print
+  `SAB_PVW_BENCH correctness target_full ... Pass`;
+- r=2 and r=4 aggregate rows must be `PASS`;
+- each r must have `runs=3`;
+- `speedup_min` must remain above 1.0 for both r values;
+- Stage42 closure/verifier must include Stage49 before relying on this
+  current-head repeated full-SAB stability check.
+
+Status:
+
+```text
+Stage 49 WSL/Linux repeated complete-SAB current-head check passed. r=2 had
+mean speedup 1.265x over 3 runs, with range 1.174x-1.338x. r=4 had mean
+speedup 1.376x over 3 runs, with range 1.356x-1.396x. This strengthens
+post-refactor current-head continuity for the promoted explicit path; Stage 36
+remains the high-stat performance evidence for claims.
+```

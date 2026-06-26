@@ -1,0 +1,3 @@
+r,runs,reps,status,pvw_avg_us,scalar_repeated_avg_us,speedup_mean,speedup_min,speedup_max,speedup_sample_stddev,source_summary,decision
+2,3,1,PASS,13757392.667,17395742.000,1.265,1.174,1.338,0.084,repro/stage49_wsl_repeated_full_sab/r2/summary.csv,current_head_repeated_positive_not_high_stat_claim
+4,3,1,PASS,24628013.000,33876383.333,1.376,1.356,1.396,0.020,repro/stage49_wsl_repeated_full_sab/r4/summary.csv,current_head_repeated_positive_not_high_stat_claim
