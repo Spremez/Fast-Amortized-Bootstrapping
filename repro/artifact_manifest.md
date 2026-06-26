@@ -735,3 +735,8 @@ Repro artifacts:
 - `repro/stage33_current_smoke/pvw_target_SET_2_3_2048/build.log`
 - `repro/stage33_current_smoke/pvw_target_SET_2_3_2048/run.log`
 - `repro/stage33_current_smoke/scalar_ternary_SET_2_3_2048/build.log`
+- `docs/stage45_active_state_refactor_log.md`
+- `repro/stage45_active_state_refactor/summary.csv`
+- `repro/stage45_active_state_refactor/ffnt_kernel_build.log`
+- `repro/stage45_active_state_refactor/ffnt_kernel_run.log`
+- `repro/stage45_active_state_refactor/spqlios_avx512_windows_build.log`

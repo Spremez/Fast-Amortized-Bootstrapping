@@ -157,6 +157,50 @@ static void sab_pvw_die(const char * msg){
   exit(1);
 }
 
+typedef struct {
+  PVW_TMLWE * buffers[2];
+  uint64_t active;
+  uint64_t in_N;
+  uint64_t lanes;
+  uint64_t r_prec;
+} SAB_PVW_Accumulator_State;
+
+static inline void sab_pvw_accumulator_check(
+    const SAB_PVW_Accumulator_State * state, SAB_PVW_Key sab){
+  if(state->in_N != sab->in_N || state->lanes != sab->lanes ||
+      state->r_prec != sab->r_prec){
+    sab_pvw_die("accumulator state metadata mismatch");
+  }
+}
+
+static inline SAB_PVW_Accumulator_State sab_pvw_accumulator_state(
+    PVW_TMLWE * primary, SAB_PVW_Key sab){
+  SAB_PVW_Accumulator_State state = {
+    {primary, sab->tmp->tmlwe_poly2},
+    0,
+    sab->in_N,
+    sab->lanes,
+    sab->r_prec,
+  };
+  sab_pvw_accumulator_check(&state, sab);
+  return state;
+}
+
+static inline PVW_TMLWE * sab_pvw_accumulator_active(
+    const SAB_PVW_Accumulator_State * state){
+  return state->buffers[state->active];
+}
+
+static inline PVW_TMLWE * sab_pvw_accumulator_inactive(
+    const SAB_PVW_Accumulator_State * state){
+  return state->buffers[state->active ^ 1];
+}
+
+static inline void sab_pvw_accumulator_flip(
+    SAB_PVW_Accumulator_State * state){
+  state->active ^= 1;
+}
+
 static void sab_pvw_encrypt_bits(MAT_TRGSW_DFT * out, MAT_TRGSW tmp,
     MAT_TRGSW_Key key, uint64_t in, uint64_t prec){
   for (size_t bit = 0; bit < prec; bit++){
@@ -551,13 +595,22 @@ static void sab_pvw_copy_accumulator_array(PVW_TMLWE * out, PVW_TMLWE * in,
 #endif
 }
 
+static inline void sab_pvw_accumulator_normalize(
+    SAB_PVW_Accumulator_State * state, SAB_PVW_Key sab){
+  sab_pvw_accumulator_check(state, sab);
+  if(state->active != 0){
+    sab_pvw_copy_accumulator_array(state->buffers[0],
+        sab_pvw_accumulator_active(state), sab);
+    state->active = 0;
+  }
+}
+
 void sab_pvw_RGSW_monomial_mul(PVW_TMLWE * p0, MAT_TRGSW_DFT * e,
     SAB_PVW_Key sab){
-  PVW_TMLWE * p[2] = {p0, sab->tmp->tmlwe_poly2};
-  const uint64_t active = sab_pvw_RGSW_monomial_mul_state(p, 0, e, sab);
-  if(p[active] != p0){
-    sab_pvw_copy_accumulator_array(p0, p[active], sab);
-  }
+  SAB_PVW_Accumulator_State state = sab_pvw_accumulator_state(p0, sab);
+  state.active = sab_pvw_RGSW_monomial_mul_state(state.buffers,
+      state.active, e, sab);
+  sab_pvw_accumulator_normalize(&state, sab);
 }
 
 void sab_pvw_sub_a_binary(PVW_TMLWE * p, const uint64_t * a, SAB_PVW_Key sab){
@@ -598,23 +651,23 @@ void sab_pvw_sparse_mul_binary(PVW_TMLWE * p, const uint64_t * a,
 #endif
   if(a_idx >= sab->in_k) sab_pvw_die("sparse_mul a_idx out of range");
 #ifdef SAB_PVW_ACTIVE_BUFFER_FUSION
-  PVW_TMLWE * state[2] = {p, sab->tmp->tmlwe_poly2};
-  uint64_t active = 0;
+  SAB_PVW_Accumulator_State state = sab_pvw_accumulator_state(p, sab);
   for (size_t step = 0; step < sab->h; step++){
-    active = sab_pvw_RGSW_monomial_mul_state(state, active,
+    state.active = sab_pvw_RGSW_monomial_mul_state(state.buffers,
+        state.active,
         sab->s[a_idx][step], sab);
 #ifdef SAB_PVW_SUBA_OUTPUT_FUSION
-    sab_pvw_sub_a_binary_to(state[active ^ 1], state[active], a, sab);
-    active ^= 1;
+    sab_pvw_sub_a_binary_to(sab_pvw_accumulator_inactive(&state),
+        sab_pvw_accumulator_active(&state), a, sab);
+    sab_pvw_accumulator_flip(&state);
 #else
-    sab_pvw_sub_a_binary(state[active], a, sab);
+    sab_pvw_sub_a_binary(sab_pvw_accumulator_active(&state), a, sab);
 #endif
   }
-  active = sab_pvw_RGSW_monomial_mul_state(state, active,
+  state.active = sab_pvw_RGSW_monomial_mul_state(state.buffers,
+      state.active,
       sab->s[a_idx][sab->h], sab);
-  if(active != 0){
-    sab_pvw_copy_accumulator_array(state[0], state[active], sab);
-  }
+  sab_pvw_accumulator_normalize(&state, sab);
 #else
   for (size_t step = 0; step < sab->h; step++){
     sab_pvw_RGSW_monomial_mul(p, sab->s[a_idx][step], sab);

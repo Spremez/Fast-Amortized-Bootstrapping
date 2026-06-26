@@ -1,0 +1,101 @@
+mkdir -p ./build
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/keyswitch.c -o build/keyswitch.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/bootstrap.c -o build/bootstrap.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/bootstrap_ga.c -o build/bootstrap_ga.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/tlwe.c -o build/tlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/trlwe.c -o build/trlwe.o
+make : src/mosfhet/src/trlwe.c: In function 'print_trlwe_msg':
+At line:17 char:1
++ make FFT_LIB=spqlios_avx512 MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (src/mosfhet/src...int_trlwe_msg'::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+src/mosfhet/src/trlwe.c:320:15: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has 
+type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+     printf("%lu, ", torus2int(tmp->coeffs[i], prec));
+             ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             %I64u
+src/mosfhet/src/trlwe.c:320:15: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has 
+type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+     printf("%lu, ", torus2int(tmp->coeffs[i], prec));
+             ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             %I64u
+src/mosfhet/src/trlwe.c:322:13: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has 
+type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%lu\n", torus2int(tmp->coeffs[N-1], prec));
+           ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           %I64u
+src/mosfhet/src/trlwe.c:322:13: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has 
+type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%lu\n", torus2int(tmp->coeffs[N-1], prec));
+           ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           %I64u
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/trgsw.c -o build/trgsw.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/misc.c -o build/misc.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/polynomial.c -o build/polynomial.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/register.c -o build/register.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/pvwtlwe.c -o build/pvwtlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/sha3/fips202.c -o build/fips202.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/fft/karatsuba.c -o build/karatsuba.o
+src/mosfhet/src/fft/karatsuba.c: In function '_debug_print128':
+src/mosfhet/src/fft/karatsuba.c:18:22: warning: format '%lx' expects argument of type 'long unsigned int', but argument
+ 3 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: 0x%016lx%016lx\n", msg, x64[1], x64[0]);
+                 ~~~~~^                ~~~~~~
+                 %016I64x
+src/mosfhet/src/fft/karatsuba.c:18:28: warning: format '%lx' expects argument of type 'long unsigned int', but argument
+ 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: 0x%016lx%016lx\n", msg, x64[1], x64[0]);
+                       ~~~~~^                  ~~~~~~
+                       %016I64x
+src/mosfhet/src/fft/karatsuba.c:18:22: warning: format '%lx' expects argument of type 'long unsigned int', but argument
+ 3 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: 0x%016lx%016lx\n", msg, x64[1], x64[0]);
+                 ~~~~~^                ~~~~~~
+                 %016I64x
+src/mosfhet/src/fft/karatsuba.c:18:28: warning: format '%lx' expects argument of type 'long unsigned int', but argument
+ 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: 0x%016lx%016lx\n", msg, x64[1], x64[0]);
+                       ~~~~~^                  ~~~~~~
+                       %016I64x
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/pvwtmlwe.c -o build/pvwtmlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/mattrgsw.c -o build/mattrgsw.o
+src/mosfhet/src/pvwtmlwe.c: In function 'print_pvmtmlwe_msg':
+src/mosfhet/src/pvwtmlwe.c:410:22: warning: unknown conversion type character 'z' in format [-Wformat=]
+     printf("Message %zu: ", i);
+                      ^
+src/mosfhet/src/pvwtmlwe.c:410:12: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Message %zu: ", i);
+            ^~~~~~~~~~~~~~~
+src/mosfhet/src/pvwtmlwe.c:410:22: warning: unknown conversion type character 'z' in format [-Wformat=]
+     printf("Message %zu: ", i);
+                      ^
+src/mosfhet/src/pvwtmlwe.c:410:12: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Message %zu: ", i);
+            ^~~~~~~~~~~~~~~
+src/mosfhet/src/pvwtmlwe.c:412:17: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 h
+as type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("%lu, ", torus2int(tmp[i]->coeffs[j], prec));
+               ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               %I64u
+src/mosfhet/src/pvwtmlwe.c:412:17: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 h
+as type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("%lu, ", torus2int(tmp[i]->coeffs[j], prec));
+               ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               %I64u
+src/mosfhet/src/pvwtmlwe.c:414:15: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 h
+as type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+     printf("%lu\n", torus2int(tmp[i]->coeffs[N-1], prec));
+             ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             %I64u
+src/mosfhet/src/pvwtmlwe.c:414:15: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 h
+as type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+     printf("%lu\n", torus2int(tmp[i]->coeffs[N-1], prec));
+             ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             %I64u
+C:\Users\spremez\AppData\Local\Temp\ccfJTK9R.s: Assembler messages:
+C:\Users\spremez\AppData\Local\Temp\ccfJTK9R.s:3668: Error: invalid register for .seh_savexmm
+C:\Users\spremez\AppData\Local\Temp\ccfJTK9R.s:3670: Error: invalid register for .seh_savexmm
+make: *** [Makefile:72: build/mattrgsw.o] Error 1
+make: *** Waiting for unfinished jobs....

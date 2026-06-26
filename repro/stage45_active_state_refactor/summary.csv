@@ -1,0 +1,3 @@
+check,status,backend,command,log,detail
+ffnt_active_state_kernel_gate,PASS,ffnt,make FFT_LIB=ffnt ARCH_FLAGS= SAB_PVW_KERNEL_TEST=true SAB_PVW_ACTIVE_BUFFER_FUSION=true KEY=BINARY PARAM=SET_2_3 -j2 && ./main,repro\stage45_active_state_refactor/ffnt_kernel_run.log,staged r=1/2/4 lane-equivalence gate
+spqlios_avx512_windows_build,BLOCKED_WINDOWS_ASSEMBLER,spqlios_avx512,make FFT_LIB=spqlios_avx512 MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true SAB_PVW_ACTIVE_BUFFER_FUSION=true SAB_PVW_TARGET_TEST=true KEY=BINARY PARAM=SET_2_3_2048 -j2,repro\stage45_active_state_refactor/spqlios_avx512_windows_build.log,invalid register for .seh_savexmm
