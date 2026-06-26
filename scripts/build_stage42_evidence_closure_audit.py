@@ -2,7 +2,7 @@
 """Build the Stage 42 evidence-closure audit.
 
 This script checks whether the current scoped PVW/MAT-SAB evidence chain and
-Stage75 control-plane/profile extensions are internally consistent. It does not run
+Stage76 control-plane/kernel extensions are internally consistent. It does not run
 benchmarks or upgrade claims; it verifies that the committed artifacts still
 support the recorded scope.
 """
@@ -85,6 +85,9 @@ STAGE74_R_SCALING_BOUNDARY = (
 )
 STAGE75_RGT4_PROFILE_BOUNDARY = (
     ROOT / "repro" / "stage75_rgt4_profile_boundary" / "decision.csv"
+)
+STAGE76_RGT4_KERNEL_FEASIBILITY = (
+    ROOT / "repro" / "stage76_rgt4_kernel_feasibility" / "summary.csv"
 )
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
@@ -334,6 +337,15 @@ REQUIRED_FILES = [
     "repro/stage75_rgt4_profile_boundary/body_profile_r6/r6/run_0.log",
     "repro/stage75_rgt4_profile_boundary/body_profile_r8/summary.csv",
     "repro/stage75_rgt4_profile_boundary/body_profile_r8/r8/run_0.log",
+    "docs/stage76_rgt4_kernel_feasibility_log.md",
+    "experiments/stage76_rgt4_kernel_feasibility_plan.md",
+    "scripts/build_stage76_rgt4_kernel_feasibility.py",
+    "theory_checks/h11_rgt4_fused_mat_kernel.md",
+    "algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md",
+    "repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log",
+    "repro/stage76_rgt4_kernel_feasibility/kernel_microbench.csv",
+    "repro/stage76_rgt4_kernel_feasibility/ep_breakdown.csv",
+    "repro/stage76_rgt4_kernel_feasibility/summary.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -626,6 +638,15 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage75_rgt4_profile_boundary/body_profile_r6/r6/run_0.log",
     "repro/stage75_rgt4_profile_boundary/body_profile_r8/summary.csv",
     "repro/stage75_rgt4_profile_boundary/body_profile_r8/r8/run_0.log",
+    "docs/stage76_rgt4_kernel_feasibility_log.md",
+    "experiments/stage76_rgt4_kernel_feasibility_plan.md",
+    "scripts/build_stage76_rgt4_kernel_feasibility.py",
+    "theory_checks/h11_rgt4_fused_mat_kernel.md",
+    "algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md",
+    "repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log",
+    "repro/stage76_rgt4_kernel_feasibility/kernel_microbench.csv",
+    "repro/stage76_rgt4_kernel_feasibility/ep_breakdown.csv",
+    "repro/stage76_rgt4_kernel_feasibility/summary.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -1920,6 +1941,39 @@ def check_stage75_rgt4_profile_boundary() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage76_rgt4_kernel_feasibility() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE76_RGT4_KERNEL_FEASIBILITY)}
+    expected = {
+        "stage76_rgt4_kernel_correctness": "PASS",
+        "stage76_r6_dft_output_kernel": "NEGATIVE_DFT_OUTPUT_NOT_PROMOTED",
+        "stage76_r6_full_output_kernel": "SMOKE_POSITIVE_FULL_OUTPUT",
+        "stage76_r8_dft_output_kernel": "NEGATIVE_DFT_OUTPUT_NOT_PROMOTED",
+        "stage76_r8_full_output_kernel": "SMOKE_POSITIVE_LOW_MARGIN_FULL_OUTPUT",
+        "stage76_mul_share_boundary": "PASS",
+        "stage76_decision": "PASS_RGT4_KERNEL_FEASIBILITY_RECORDED_NO_PROMOTION",
+    }
+    problems = []
+    for gate, status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+    detail = (
+        "Stage76 records correct r=6/r=8 generic MAT kernel behavior but rejects direct r>4 promotion; future work is H11 fused MAT multiply/layout"
+        if not problems and rows
+        else "; ".join(problems) or "Stage76 decision missing"
+    )
+    return [
+        row(
+            "S42-STAGE76-RGT4-KERNEL-FEASIBILITY",
+            "variant_boundary",
+            pass_fail(not problems and bool(rows)),
+            STAGE76_RGT4_KERNEL_FEASIBILITY.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage76 before relying on the r>4 kernel feasibility boundary.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -2112,6 +2166,10 @@ def check_run_log() -> List[Dict[str, str]]:
     for r in rows:
         if r.get("run_id") == "stage75-rgt4-profile-boundary-001":
             stage75_status = r.get("status", "MISSING")
+    stage76_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage76-rgt4-kernel-feasibility-001":
+            stage76_status = r.get("status", "MISSING")
     ok = (
         ok
         and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
@@ -2124,11 +2182,12 @@ def check_run_log() -> List[Dict[str, str]]:
         and stage73_status == "PASS_FINAL_RECHECK_STAGE72_INTEGRATION"
         and stage74_status == "PASS_R_GT4_BOUNDARY_RECORDED_NOT_PROMOTED"
         and stage75_status == "PASS_RGT4_PROFILE_BOUNDARY_RECORDED_NOT_PROMOTED"
+        and stage76_status == "PASS_RGT4_KERNEL_FEASIBILITY_RECORDED_NO_PROMOTION"
     )
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}"
     )
     return [
         row(
@@ -2150,8 +2209,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, or Stage75 control-plane artifacts.",
+            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, or Stage76 control-plane artifacts.",
         )
     ]
 
@@ -2382,6 +2441,15 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/stage75_rgt4_profile_boundary/body_profile_r6/r6/run_0.log",
         "repro/stage75_rgt4_profile_boundary/body_profile_r8/summary.csv",
         "repro/stage75_rgt4_profile_boundary/body_profile_r8/r8/run_0.log",
+        "docs/stage76_rgt4_kernel_feasibility_log.md",
+        "experiments/stage76_rgt4_kernel_feasibility_plan.md",
+        "scripts/build_stage76_rgt4_kernel_feasibility.py",
+        "theory_checks/h11_rgt4_fused_mat_kernel.md",
+        "algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md",
+        "repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log",
+        "repro/stage76_rgt4_kernel_feasibility/kernel_microbench.csv",
+        "repro/stage76_rgt4_kernel_feasibility/ep_breakdown.csv",
+        "repro/stage76_rgt4_kernel_feasibility/summary.csv",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -2390,7 +2458,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, and Stage75 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, and Stage76 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -2464,6 +2532,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage73_final_recheck_stage72,
         check_stage74_r_scaling_boundary,
         check_stage75_rgt4_profile_boundary,
+        check_stage76_rgt4_kernel_feasibility,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -2483,10 +2552,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, and Stage75 r>4 profile boundary; stronger claims remain blocked"
+            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, and Stage76 r>4 kernel feasibility; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76 evidence closure.",
         )
     )
     return checks

@@ -2354,3 +2354,49 @@ per-update MAT/body cost under invariant schedule counts. Direct r>4 remains
 not promoted; future large-r work requires a new r>4-specific layout, tiling,
 register/cache-blocking, or sparse/structured-MAT hypothesis.
 ```
+
+## Stage 76: R>4 Kernel Feasibility
+
+Goal:
+
+```text
+Check whether the current generic r=6/r=8 MAT external-product kernel is
+itself a viable promotion candidate, or whether the next large-r step must
+start from a new fused MAT multiply/layout hypothesis.
+```
+
+Tasks:
+
+- add an explicit `SAB_PVW_RGT4_KERNEL_TEST` harness that exercises r=6/r=8
+  MAT_TRGSW/PVW identity-lane checks and kernel microbenchmarks;
+- parse DFT-output and full-output MAT-vs-scalar microbenchmarks into
+  `kernel_microbench.csv`;
+- parse scalar repeated and MAT shared-mask `EP_BREAKDOWN` rows into
+  `ep_breakdown.csv`;
+- add H11 for a future fused r>4 MAT kernel and keep it explicitly
+  unimplemented/not promoted;
+- update the route-to-completion policy so future r>4 work targets dense MAT
+  multiply/layout/register pressure rather than another direct lane-count
+  increase.
+
+Gate:
+
+- r=6 and r=8 identity-lane correctness must pass;
+- current r>4 promotion requires DFT-output MAT to beat repeated scalar
+  external products, not only full-output shared-decomposition/DFT benefit;
+- if MAT shared-mask phase is multiply dominated, future work must target
+  fused MAT multiply or layout/register blocking;
+- no scalar SAB path, default `sab_pvw_*` path, key format, novelty,
+  theorem-level, all-parameter, or hardware-counter claim is upgraded.
+
+Status:
+
+```text
+Stage76 passed as a diagnostic negative/not-promoted kernel boundary. The
+generic r=6/r=8 MAT path passes identity-lane correctness, but DFT-output
+MAT is 0.984x/0.912x versus repeated scalar external products. Full-output
+MAT is only 1.168x/1.044x, and MAT shared-mask multiply share rises to
+55.72%/61.20%. Current r>4 MAT kernel scaling is not promoted; the next
+large-r implementation hypothesis is a fused MAT multiply/layout/register-
+blocking kernel with full correctness and complete-SAB gates.
+```

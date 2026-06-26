@@ -310,3 +310,39 @@ hypotheses:
       - larger-r resource/keygen overhead is unacceptable
       - any future large-r claim lacks repeated performance, noise, resource,
         and closure gates
+  - id: H11_rgt4_fused_mat_kernel
+    statement: >
+      A dedicated r>4 fused MAT external-product kernel may recover part of
+      the large-r PVW/MAT-SAB scaling lost by the current generic MAT loop if
+      it reduces repeated decomposed-row loads, output reload/store cycles,
+      helper-call overhead, and cache/register traffic without increasing
+      spills enough to offset those gains.
+    mechanism: >
+      The current r=6/r=8 path uses polynomial-level AVX512 helpers but does
+      not fuse across MAT body lanes. A coefficient-blocked or body-blocked
+      r>4 kernel could keep decomposed/DFT row data hot while updating several
+      output bodies before eviction. The arithmetic remains dense
+      O((1+r)^2 * l * N), so the hypothesis is about constant-factor and
+      layout/register effects, not asymptotic improvement.
+    status: stage76_proposed_after_kernel_boundary_not_implemented
+    evidence: docs/stage76_rgt4_kernel_feasibility_log.md; theory_checks/h11_rgt4_fused_mat_kernel.md; algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md
+    current_decision: >
+      Stage76 added an explicit r>4 kernel smoke harness and parsed the raw
+      log into kernel and phase-breakdown artifacts. The existing generic r>4
+      MAT path passes identity-lane correctness for r=6/r=8. It is not
+      promotable as-is: DFT-output MAT versus repeated scalar is 0.984x for
+      r=6 and 0.912x for r=8, while full-output MAT versus scalar-full is only
+      1.168x for r=6 and 1.044x for r=8. The MAT shared-mask phase is multiply
+      dominated at r>4, with mul_pct 55.72 for r=6 and 61.20 for r=8. Therefore
+      future large-r work should start from a fused MAT multiply/layout or
+      register/cache-blocking design, not from another direct lane-count
+      increase. H11 is a future implementation hypothesis, not a current
+      speedup claim.
+    failure_criteria:
+      - r>4 fused kernel fails identity-lane or SAB staged equivalence
+      - DFT-output microbench does not beat the current generic MAT path and
+        repeated scalar baseline
+      - complete SAB A/B does not improve over the current promoted r=4 path
+        under the same backend
+      - register spills, memory traffic, key-layout complexity, or resource
+        growth outweigh any microbench gain

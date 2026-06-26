@@ -1,0 +1,5 @@
+mode,r,reps,phase_sum_avg_us,alloc_pct,decompose_avg_us,decompose_pct,dft_avg_us,dft_pct,clear_pct,mul_avg_us,mul_pct,source_log
+scalar_repeated,6,1000,48.562,0.00,7.098,14.62,26.019,53.58,0.00,15.445,31.80,repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log
+mat_shared_mask,6,1000,44.327,0.00,4.260,9.61,15.366,34.67,0.00,24.701,55.72,repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log
+scalar_repeated,8,1000,73.015,0.00,10.886,14.91,39.251,53.76,0.00,22.878,31.33,repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log
+mat_shared_mask,8,1000,72.031,0.00,6.268,8.70,21.680,30.10,0.00,44.083,61.20,repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log

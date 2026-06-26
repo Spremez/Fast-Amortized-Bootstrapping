@@ -1,0 +1,7 @@
+bench,r,reps,scalar_repeated_avg_us,scalar_lane_avg_us,mat_avg_us,mat_lane_avg_us,speedup_vs_scalar_repeated,source_log
+mat_only,6,1000,,,42,7,,repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log
+mat_only,8,1000,,,63,7,,repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log
+dft_output,6,1000,39.955,6.659,40.595,6.766,0.984,repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log
+dft_output,8,1000,55.301,6.913,60.615,7.577,0.912,repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log
+full_output,6,1000,65.522,10.920,56.080,9.347,1.168,repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log
+full_output,8,1000,86.914,10.864,83.290,10.411,1.044,repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log

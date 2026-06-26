@@ -3,7 +3,7 @@
 #include <benchmark_util.h>
 #include <sab_profile.h>
 #include <inttypes.h>
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 #include <sab_pvw.h>
 #endif
 
@@ -551,7 +551,7 @@ void test_sab_microbench(){
   );
 }
 
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
   const int N = in->s[0][lane]->N;
   TRLWE_Key out = trlwe_alloc_key(N, in->k, in->sigma);
@@ -3467,6 +3467,23 @@ void test_mat_trgsw_kernel(){
   bench_external_product_phase_breakdown(2);
   bench_external_product_phase_breakdown(4);
 }
+
+void test_mat_trgsw_rgt4_kernel(){
+  bool pass = true;
+  pass &= check_mat_trgsw_identity_lane(6);
+  pass &= check_mat_trgsw_identity_lane(8);
+  printf("MAT_TRGSW/PVW r>4 kernel test: %s\n", pass ? "Pass" : "Fail");
+  if(!pass) exit(1);
+
+  bench_mat_trgsw_kernel_lane(6);
+  bench_mat_trgsw_kernel_lane(8);
+  bench_mat_trgsw_vs_scalar_lane(6);
+  bench_mat_trgsw_vs_scalar_lane(8);
+  bench_mat_trgsw_vs_scalar_lane_full(6);
+  bench_mat_trgsw_vs_scalar_lane_full(8);
+  bench_external_product_phase_breakdown(6);
+  bench_external_product_phase_breakdown(8);
+}
 #endif
 
 int main(int argc, char const *argv[])
@@ -3481,6 +3498,8 @@ int main(int argc, char const *argv[])
   test_sab_pvw_stage_noise();
 #elif defined(SAB_PVW_BENCH)
   test_sab_pvw_target_bench();
+#elif defined(SAB_PVW_RGT4_KERNEL_TEST)
+  test_mat_trgsw_rgt4_kernel();
 #elif defined(SAB_PVW_KERNEL_TEST)
   test_mat_trgsw_kernel();
 #elif defined(SAB_MICROBENCH)

@@ -163,10 +163,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage65_r4_unrolled_avx512/summary.csv; "
                 "repro/stage69_local_variant_feasibility.csv; "
                 "repro/stage74_r_scaling_boundary/decision.csv; "
-                "repro/stage75_rgt4_profile_boundary/decision.csv"
+                "repro/stage75_rgt4_profile_boundary/decision.csv; "
+                "repro/stage76_rgt4_kernel_feasibility/summary.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage75 confirms r>4 schedule counts are invariant and direct lane scaling is not promoted; unlock native perf/full text or introduce a dedicated r>4 kernel/layout/register-blocking/sparse-MAT hypothesis before new large-r code work.",
+            "Stage76 confirms the current generic r>4 MAT kernel is correct but not promotable: DFT-output speedup is below repeated scalar and the phase is multiply dominated. New large-r code should start from H11 fused MAT multiply/layout/register blocking, or wait for native perf/full-text unlocks.",
             "May improve engineering evidence; no claim upgrade without full SAB A/B and noise/resource gates.",
         ),
         route_row(

@@ -1065,3 +1065,18 @@ Repro artifacts:
 - `repro/stage75_rgt4_profile_boundary/body_profile_r6/r6/run_0.log`
 - `repro/stage75_rgt4_profile_boundary/body_profile_r8/summary.csv`
 - `repro/stage75_rgt4_profile_boundary/body_profile_r8/r8/run_0.log`
+
+## Stage 76 R>4 Kernel Feasibility
+
+- `docs/stage76_rgt4_kernel_feasibility_log.md`
+- `experiments/stage76_rgt4_kernel_feasibility_plan.md`
+- `scripts/build_stage76_rgt4_kernel_feasibility.py`
+- `theory_checks/h11_rgt4_fused_mat_kernel.md`
+- `algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md`
+- `hypotheses/hypothesis_register.yaml`
+- `main.c`
+- `src/mosfhet/Makefile.def`
+- `repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log`
+- `repro/stage76_rgt4_kernel_feasibility/kernel_microbench.csv`
+- `repro/stage76_rgt4_kernel_feasibility/ep_breakdown.csv`
+- `repro/stage76_rgt4_kernel_feasibility/summary.csv`

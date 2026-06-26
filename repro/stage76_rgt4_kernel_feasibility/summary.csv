@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,detail
+stage76_rgt4_kernel_correctness,PASS,identity_lane_r6_r8,Pass,repro/stage76_rgt4_kernel_feasibility/rgt4_kernel_smoke.log,r=6/r=8 MAT_TRGSW/PVW identity-lane kernel smoke passes
+stage76_r6_dft_output_kernel,NEGATIVE_DFT_OUTPUT_NOT_PROMOTED,speedup_vs_scalar_repeated,0.984,repro/stage76_rgt4_kernel_feasibility/kernel_microbench.csv,r=6 DFT-output MAT path does not beat repeated scalar external products; no direct r>4 kernel promotion
+stage76_r6_full_output_kernel,SMOKE_POSITIVE_FULL_OUTPUT,speedup_vs_scalar_repeated,1.168,repro/stage76_rgt4_kernel_feasibility/kernel_microbench.csv,r=6 full-output smoke is positive but only a kernel-level/shared-DFT signal
+stage76_r8_dft_output_kernel,NEGATIVE_DFT_OUTPUT_NOT_PROMOTED,speedup_vs_scalar_repeated,0.912,repro/stage76_rgt4_kernel_feasibility/kernel_microbench.csv,r=8 DFT-output MAT path does not beat repeated scalar external products; no direct r>4 kernel promotion
+stage76_r8_full_output_kernel,SMOKE_POSITIVE_LOW_MARGIN_FULL_OUTPUT,speedup_vs_scalar_repeated,1.044,repro/stage76_rgt4_kernel_feasibility/kernel_microbench.csv,r=8 full-output smoke is positive but only a kernel-level/shared-DFT signal
+stage76_mul_share_boundary,PASS,mat_shared_mask_mul_pct_r6_r8,55.72;61.20,repro/stage76_rgt4_kernel_feasibility/ep_breakdown.csv,r>4 MAT shared-mask path is multiply dominated; future work must target fused MAT multiply/layout/register blocking
+stage76_decision,PASS_RGT4_KERNEL_FEASIBILITY_RECORDED_NO_PROMOTION,promotion_policy,,repro/stage76_rgt4_kernel_feasibility/summary.csv,Stage76 records r>4 kernel feasibility and rejects direct promotion; next large-r candidate must be a dedicated fused MAT multiply/layout hypothesis

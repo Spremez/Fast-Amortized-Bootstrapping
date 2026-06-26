@@ -26,6 +26,7 @@ evidence is supplied.
 | Stage 73 | final-recheck Stage72 integration | Make Stage72 refreshable through the unified final recheck before blocker/frontier/closure rebuilds. | Stage73 decision must be `PASS_FINAL_RECHECK_STAGE72_INTEGRATION`. | passed |
 | Stage 74 | r-scaling boundary | Test direct r=6/r=8 lane-count expansion under the current active-buffer MAT path. | Stage74 decision must be `PASS_R_GT4_BOUNDARY_RECORDED_NOT_PROMOTED` unless a full-gate promotion candidate emerges. | passed as negative/not promoted |
 | Stage 75 | r>4 profile boundary | Attribute the Stage74 r>4 boundary with exact body-profile counts and component timing. | Stage75 decision must be `PASS_RGT4_PROFILE_BOUNDARY_RECORDED_NOT_PROMOTED` unless profile evidence opens a new promotion candidate. | passed as profile-backed negative/not promoted |
+| Stage 76 | r>4 kernel feasibility | Test whether the current generic r=6/r=8 MAT external-product kernel is promotable or whether large-r work needs a fused MAT multiply/layout hypothesis. | Stage76 decision must be `PASS_RGT4_KERNEL_FEASIBILITY_RECORDED_NO_PROMOTION` unless DFT-output and full-output evidence justify new full-SAB gates. | passed as kernel-level negative/not promoted |
 | Stage 66 | release/paper package | Freeze the final allowed claim package after external blockers are resolved or the scope is explicitly narrowed. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
 Execution policy:
@@ -60,3 +61,8 @@ Execution policy:
 - After Stage75, treat the r>4 boundary as profile-backed: schedule counts are
   invariant for r=6/r=8, so future large-r work must target MAT/body cost with
   a dedicated layout, register/cache-blocking, or sparse/structured-MAT design.
+- After Stage76, treat the current generic r>4 MAT kernel as diagnostic only:
+  it is correct, but DFT-output speedup is below repeated scalar and the path
+  is multiply dominated. Future r>4 code must start from H11 or another
+  explicit fused MAT multiply/layout/register-blocking hypothesis, then pass
+  kernel, complete-SAB, correctness, noise, resource, and closure gates.

@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-75`. This label tracks the
+Current control-plane closure label: `Stage 19-76`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -86,6 +86,7 @@ evidence.
 | Stage 73 final-recheck Stage72 integration | n/a | n/a | final-recheck integration | unified final recheck can refresh Stage72 before blocker/frontier/closure rebuilds |
 | Stage 74 r-scaling boundary | `spqlios_avx512` | 6/8 | negative boundary | r=6/r=8 complete-SAB smoke passed correctness with `1.251x`/`1.199x`, below the Stage36 r=4 CI lower bound; direct r>4 not promoted |
 | Stage 75 r>4 profile boundary | `spqlios_avx512` | 6/8 | profile-backed boundary | exact schedule counts hold for r=6/r=8: CMUX/MAT EP `573440`, NCMUX `5080`, sub_a `39`, copyback `0`; MAT EP is about `55%` of full body time, so direct r>4 remains not promoted |
+| Stage 76 r>4 kernel feasibility | `spqlios_avx512` | 6/8 | kernel boundary | identity-lane correctness passes, but DFT-output MAT is `0.984x`/`0.912x`; full-output smoke is only `1.168x`/`1.044x`; MAT shared-mask multiply share rises to `55.72%`/`61.20%`, so current r>4 kernel is not promoted |
 
 Current conclusion:
 
@@ -261,6 +262,12 @@ SAB schedule iterations: r=6 and r=8 keep CMUX/MAT EP at 573440, NCMUX at
 55% of full body time in both profile samples. Future large-r work therefore
 needs a dedicated r>4 MAT layout/kernel or sparse/structured-MAT hypothesis,
 not another direct lane-count increase.
+Stage76 then tests the current r>4 MAT external-product kernel directly. The
+generic r=6/r=8 path is functionally usable, but DFT-output MAT does not beat
+repeated scalar external products and the full-output signal is too narrow to
+promote. The r>4 phase breakdown is multiply dominated, so the next local
+large-r hypothesis is a fused MAT multiply/layout/register-blocking kernel,
+not current-kernel scaling.
 ```
 
 ## Invariants
@@ -368,5 +375,6 @@ Stage 72: external source refresh. [passed; metadata/code reachable, reviewed fu
 Stage 73: final-recheck Stage72 integration. [passed; Stage72 source refresh is now covered by unified final recheck]
 Stage 74: r-scaling boundary. [passed as negative/not promoted; direct r=6/r=8 does not beat r=4 evidence]
 Stage 75: r>4 profile boundary. [passed as profile-backed negative/not promoted; r=6/r=8 keep exact SAB counts and expose MAT/body cost as the boundary]
+Stage 76: r>4 kernel feasibility. [passed as kernel-level negative/not promoted; current generic r>4 MAT is correct but DFT-output speedup is below scalar]
 Stage 66: release/paper package. [waiting for external unlocks or narrowed scope]
 ```
