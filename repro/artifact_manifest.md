@@ -776,3 +776,12 @@ Repro artifacts:
 - `docs/stage52_external_unlock_readiness.md`
 - `scripts/build_stage52_external_unlock_readiness.py`
 - `repro/stage52_external_unlock_readiness.csv`
+- `docs/stage53_final_recheck_integration_log.md`
+- `scripts/run_final_goal_recheck.sh`
+- `repro/stage53_final_recheck_stage50_52/summary.csv`
+- `repro/stage53_final_recheck_stage50_52/final_goal_audit.log`
+- `repro/stage53_final_recheck_stage50_52/remaining_blocker_dashboard.log`
+- `repro/stage53_final_recheck_stage50_52/stage50_performance_matrix.log`
+- `repro/stage53_final_recheck_stage50_52/stage51_goal_frontier.log`
+- `repro/stage53_final_recheck_stage50_52/stage52_external_unlock_readiness.log`
+- `repro/stage53_final_recheck_stage50_52/stage42_evidence_closure.log`

@@ -15,6 +15,25 @@ run_stage44_reprobe="${FINAL_RECHECK_STAGE44_REPROBE:-0}"
 stage44_run_native_bench="${FINAL_RECHECK_STAGE44_RUN_NATIVE_BENCH:-1}"
 python_bin="${PYTHON_BIN:-python3}"
 
+light_recheck_default="1"
+if [[ "$run_postfreeze_verify" == "1" \
+  && "$run_citation" == "0" \
+  && "$run_related_work" == "0" \
+  && "$run_perf" == "0" \
+  && "$run_stage27_package" == "0" \
+  && "$run_external_intake" == "0" \
+  && "$run_current_smoke" == "0" \
+  && "$run_conditional_backlog" == "0" \
+  && "$run_goal_audit" == "0" \
+  && "$run_remaining_blockers" == "0" \
+  && "$run_stage44_reprobe" == "0" ]]; then
+  light_recheck_default="0"
+fi
+
+run_stage50_matrix="${FINAL_RECHECK_STAGE50_MATRIX:-$light_recheck_default}"
+run_stage51_frontier="${FINAL_RECHECK_STAGE51_FRONTIER:-$light_recheck_default}"
+run_stage52_unlock_readiness="${FINAL_RECHECK_STAGE52_UNLOCK_READINESS:-$light_recheck_default}"
+
 if [[ -n "${FINAL_RECHECK_STAGE42_CLOSURE+x}" ]]; then
   run_stage42_closure="$FINAL_RECHECK_STAGE42_CLOSURE"
 elif [[ "$run_postfreeze_verify" == "1" \
@@ -27,7 +46,10 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_conditional_backlog" == "0" \
   && "$run_goal_audit" == "0" \
   && "$run_remaining_blockers" == "0" \
-  && "$run_stage44_reprobe" == "0" ]]; then
+  && "$run_stage44_reprobe" == "0" \
+  && "$run_stage50_matrix" == "0" \
+  && "$run_stage51_frontier" == "0" \
+  && "$run_stage52_unlock_readiness" == "0" ]]; then
   run_stage42_closure="0"
 else
   run_stage42_closure="1"
@@ -46,6 +68,9 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_goal_audit" == "0" \
   && "$run_remaining_blockers" == "0" \
   && "$run_stage44_reprobe" == "0" \
+  && "$run_stage50_matrix" == "0" \
+  && "$run_stage51_frontier" == "0" \
+  && "$run_stage52_unlock_readiness" == "0" \
   && "$run_stage42_closure" == "0" ]]; then
   out_dir="repro/final_goal_recheck_postfreeze"
 else
@@ -219,6 +244,36 @@ else
     "$python_bin scripts/build_remaining_blocker_dashboard.py" \
     "" \
     "Set FINAL_RECHECK_REMAINING_BLOCKERS=1 to regenerate the remaining blocker dashboard."
+fi
+
+if [[ "$run_stage50_matrix" == "1" ]]; then
+  run_logged "stage50_performance_matrix" \
+    "$python_bin scripts/build_stage50_performance_evidence_matrix.py"
+else
+  csv_row "stage50_performance_matrix" "SKIPPED" \
+    "$python_bin scripts/build_stage50_performance_evidence_matrix.py" \
+    "" \
+    "Set FINAL_RECHECK_STAGE50_MATRIX=1 to regenerate the Stage 50 performance evidence matrix."
+fi
+
+if [[ "$run_stage51_frontier" == "1" ]]; then
+  run_logged "stage51_goal_frontier" \
+    "$python_bin scripts/build_stage51_goal_completion_frontier.py"
+else
+  csv_row "stage51_goal_frontier" "SKIPPED" \
+    "$python_bin scripts/build_stage51_goal_completion_frontier.py" \
+    "" \
+    "Set FINAL_RECHECK_STAGE51_FRONTIER=1 to regenerate the Stage 51 goal-completion frontier."
+fi
+
+if [[ "$run_stage52_unlock_readiness" == "1" ]]; then
+  run_logged "stage52_external_unlock_readiness" \
+    "$python_bin scripts/build_stage52_external_unlock_readiness.py"
+else
+  csv_row "stage52_external_unlock_readiness" "SKIPPED" \
+    "$python_bin scripts/build_stage52_external_unlock_readiness.py" \
+    "" \
+    "Set FINAL_RECHECK_STAGE52_UNLOCK_READINESS=1 to regenerate the Stage 52 external-unlock readiness packet."
 fi
 
 if [[ "$run_stage42_closure" == "1" ]]; then

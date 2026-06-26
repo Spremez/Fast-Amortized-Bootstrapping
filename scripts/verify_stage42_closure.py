@@ -27,6 +27,7 @@ STAGE49_WSL_REPEATED_FULL_SAB = ROOT / "repro" / "stage49_wsl_repeated_full_sab"
 STAGE50_PERF_MATRIX = ROOT / "repro" / "stage50_performance_evidence_matrix.csv"
 STAGE51_GOAL_FRONTIER = ROOT / "repro" / "stage51_goal_completion_frontier.csv"
 STAGE52_UNLOCK_READINESS = ROOT / "repro" / "stage52_external_unlock_readiness.csv"
+STAGE53_FINAL_RECHECK = ROOT / "repro" / "stage53_final_recheck_stage50_52" / "summary.csv"
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -119,6 +120,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage50 = {row.get("evidence_id"): row for row in read_csv(STAGE50_PERF_MATRIX)}
     stage51 = {row.get("frontier_id"): row for row in read_csv(STAGE51_GOAL_FRONTIER)}
     stage52 = {row.get("unlock_id"): row for row in read_csv(STAGE52_UNLOCK_READINESS)}
+    stage53 = {row.get("step"): row for row in read_csv(STAGE53_FINAL_RECHECK)}
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
     closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
@@ -295,6 +297,24 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage42_stage52_ok = (
         stage42.get("S42-STAGE52-EXTERNAL-UNLOCK-READINESS", {}).get("status") == "PASS"
     )
+    stage53_mismatches = []
+    for step in [
+        "final_goal_audit",
+        "remaining_blocker_dashboard",
+        "stage50_performance_matrix",
+        "stage51_goal_frontier",
+        "stage52_external_unlock_readiness",
+        "stage42_evidence_closure",
+    ]:
+        status = stage53.get(step, {}).get("status", "MISSING")
+        if status != "PASS":
+            stage53_mismatches.append(f"{step}:status={status}")
+    final_decision = stage53.get("final_decision", {}).get("status", "MISSING")
+    if final_decision != "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED":
+        stage53_mismatches.append(f"final_decision:status={final_decision}")
+    stage42_stage53_ok = (
+        stage42.get("S42-STAGE53-FINAL-RECHECK-INTEGRATION", {}).get("status") == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -337,6 +357,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage50-performance-evidence-matrix-001",
         "stage51-goal-completion-frontier-001",
         "stage52-external-unlock-readiness-001",
+        "stage53-final-recheck-stage50-52-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -386,6 +407,12 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "docs/stage52_external_unlock_readiness.md",
         "scripts/build_stage52_external_unlock_readiness.py",
         "repro/stage52_external_unlock_readiness.csv",
+        "docs/stage53_final_recheck_integration_log.md",
+        "repro/stage53_final_recheck_stage50_52/summary.csv",
+        "repro/stage53_final_recheck_stage50_52/stage50_performance_matrix.log",
+        "repro/stage53_final_recheck_stage50_52/stage51_goal_frontier.log",
+        "repro/stage53_final_recheck_stage50_52/stage52_external_unlock_readiness.log",
+        "repro/stage53_final_recheck_stage50_52/stage42_evidence_closure.log",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -528,6 +555,15 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             or f"S42-STAGE52-EXTERNAL-UNLOCK-READINESS:{stage42.get('S42-STAGE52-EXTERNAL-UNLOCK-READINESS', {}).get('status', 'MISSING')}!=PASS",
         },
         {
+            "check": "stage53_final_recheck_integration",
+            "status": "PASS" if not stage53_mismatches and stage42_stage53_ok else "FAIL",
+            "evidence": "repro/stage53_final_recheck_stage50_52/summary.csv",
+            "detail": "Stage53 final recheck integrates Stage50, Stage51, Stage52, and Stage42 closure"
+            if not stage53_mismatches and stage42_stage53_ok
+            else "; ".join(stage53_mismatches)
+            or f"S42-STAGE53-FINAL-RECHECK-INTEGRATION:{stage42.get('S42-STAGE53-FINAL-RECHECK-INTEGRATION', {}).get('status', 'MISSING')}!=PASS",
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -555,7 +591,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -563,7 +599,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, and Stage52 external unlock readiness are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, and Stage53 final recheck integration are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

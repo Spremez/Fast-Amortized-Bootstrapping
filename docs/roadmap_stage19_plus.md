@@ -1523,3 +1523,42 @@ Stage 52 passed with `PASS_EXTERNAL_UNLOCK_READINESS_PACKET`. The packet fixes
 the exact commands and artifacts needed to unlock stronger claims, while
 preserving the current scoped-ready/stronger-blocked decision.
 ```
+
+## Stage 53: Final-Recheck Integration for Stage 50-52
+
+Goal:
+
+```text
+Make the unified final recheck regenerate Stage50 performance evidence matrix,
+Stage51 goal frontier, and Stage52 external-unlock readiness before rebuilding
+Stage42 closure, so the latest claim-boundary artifacts cannot silently go
+stale.
+```
+
+Tasks:
+
+- extend `scripts/run_final_goal_recheck.sh` with optional
+  `FINAL_RECHECK_STAGE50_MATRIX`, `FINAL_RECHECK_STAGE51_FRONTIER`, and
+  `FINAL_RECHECK_STAGE52_UNLOCK_READINESS` switches;
+- preserve the existing postfreeze-only no-write verifier behavior;
+- run an isolated local final recheck with heavy/network/external probes
+  disabled and Stage50-52 enabled;
+- record summary and raw logs under `repro/stage53_final_recheck_stage50_52`;
+- keep the final decision scoped-ready with stronger claims blocked.
+
+Gate:
+
+- Stage50, Stage51, and Stage52 recheck steps must pass;
+- Stage42 closure must pass after those steps;
+- final decision must remain
+  `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`;
+- no heavy benchmark, network, native perf, or full-text claim upgrade is
+  implied by this integration step.
+
+Status:
+
+```text
+Stage 53 passed. The isolated final recheck regenerated Stage50, Stage51, and
+Stage52 artifacts, rebuilt Stage42 closure, and preserved
+SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED.
+```
