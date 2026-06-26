@@ -125,6 +125,7 @@ def build_rows() -> List[Dict[str, str]]:
         and "stage74_r_scaling_boundary" in r6.get("evidence", "")
         and "stage75_rgt4_profile_boundary" in r6.get("evidence", "")
         and "stage76_rgt4_kernel_feasibility" in r6.get("evidence", "")
+        and "stage77_rgt4_fused_mat_kernel" in r6.get("evidence", "")
     )
 
     rows = [

@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-76`. This label tracks the
+Current control-plane closure label: `Stage 19-77`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -87,6 +87,7 @@ evidence.
 | Stage 74 r-scaling boundary | `spqlios_avx512` | 6/8 | negative boundary | r=6/r=8 complete-SAB smoke passed correctness with `1.251x`/`1.199x`, below the Stage36 r=4 CI lower bound; direct r>4 not promoted |
 | Stage 75 r>4 profile boundary | `spqlios_avx512` | 6/8 | profile-backed boundary | exact schedule counts hold for r=6/r=8: CMUX/MAT EP `573440`, NCMUX `5080`, sub_a `39`, copyback `0`; MAT EP is about `55%` of full body time, so direct r>4 remains not promoted |
 | Stage 76 r>4 kernel feasibility | `spqlios_avx512` | 6/8 | kernel boundary | identity-lane correctness passes, but DFT-output MAT is `0.984x`/`0.912x`; full-output smoke is only `1.168x`/`1.044x`; MAT shared-mask multiply share rises to `55.72%`/`61.20%`, so current r>4 kernel is not promoted |
+| Stage 77 r>4 fused MAT kernel | `spqlios_avx512` | 6/8 | positive smoke, not promoted | `MAT_TRGSW_AVX512_RGT4_FUSED` beats generic r>4 kernel: DFT-output `1.582x`/`1.431x`, full-output `1.510x`/`1.370x`; full-SAB one-run fused/generic is `1.120x`/`1.102x`, but repeated/noise/resource gates are still required |
 
 Current conclusion:
 
@@ -268,6 +269,11 @@ repeated scalar external products and the full-output signal is too narrow to
 promote. The r>4 phase breakdown is multiply dominated, so the next local
 large-r hypothesis is a fused MAT multiply/layout/register-blocking kernel,
 not current-kernel scaling.
+Stage77 implements that H11 fused MAT kernel behind an explicit flag. The
+kernel and one-run full-SAB smoke are positive versus same-stage generic r>4,
+but the result is not a final promotion: r=8 remains weaker than the current
+r=4 reference and no repeated/noise/resource gates have been run for the new
+flag.
 ```
 
 ## Invariants
@@ -376,5 +382,6 @@ Stage 73: final-recheck Stage72 integration. [passed; Stage72 source refresh is 
 Stage 74: r-scaling boundary. [passed as negative/not promoted; direct r=6/r=8 does not beat r=4 evidence]
 Stage 75: r>4 profile boundary. [passed as profile-backed negative/not promoted; r=6/r=8 keep exact SAB counts and expose MAT/body cost as the boundary]
 Stage 76: r>4 kernel feasibility. [passed as kernel-level negative/not promoted; current generic r>4 MAT is correct but DFT-output speedup is below scalar]
+Stage 77: r>4 fused MAT kernel. [positive smoke candidate; fused r=6/r=8 beats generic r>4 kernel and one-run full-SAB, repeated gates required]
 Stage 66: release/paper package. [waiting for external unlocks or narrowed scope]
 ```

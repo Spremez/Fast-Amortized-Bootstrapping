@@ -1,0 +1,3 @@
+r,generic_status,fused_status,generic_pvw_avg_us,fused_pvw_avg_us,fused_vs_generic,generic_speedup_vs_scalar,fused_speedup_vs_scalar,generic_evidence,fused_evidence
+6,Pass,Pass,43981711.000,39254282.000,1.120,1.266,1.385,repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r6/summary.csv,repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/summary.csv
+8,Pass,Pass,59835924.000,54292313.000,1.102,1.208,1.290,repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r8/summary.csv,repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/summary.csv

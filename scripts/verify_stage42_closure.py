@@ -77,6 +77,9 @@ STAGE75_RGT4_PROFILE_BOUNDARY = (
 STAGE76_RGT4_KERNEL_FEASIBILITY = (
     ROOT / "repro" / "stage76_rgt4_kernel_feasibility" / "summary.csv"
 )
+STAGE77_RGT4_FUSED_MAT_KERNEL = (
+    ROOT / "repro" / "stage77_rgt4_fused_mat_kernel" / "summary.csv"
+)
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -201,6 +204,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage74 = {row.get("gate"): row for row in read_csv(STAGE74_R_SCALING_BOUNDARY)}
     stage75 = {row.get("gate"): row for row in read_csv(STAGE75_RGT4_PROFILE_BOUNDARY)}
     stage76 = {row.get("gate"): row for row in read_csv(STAGE76_RGT4_KERNEL_FEASIBILITY)}
+    stage77 = {row.get("gate"): row for row in read_csv(STAGE77_RGT4_FUSED_MAT_KERNEL)}
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
     closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
@@ -867,6 +871,24 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         stage42.get("S42-STAGE76-RGT4-KERNEL-FEASIBILITY", {}).get("status")
         == "PASS"
     )
+    stage77_mismatches = []
+    expected_stage77 = {
+        "stage77_generic_kernel_correctness": "PASS",
+        "stage77_fused_kernel_correctness": "PASS",
+        "stage77_kernel_fused_vs_generic": "PASS",
+        "stage77_fused_dft_vs_scalar": "PARTIAL_R6_ONLY",
+        "stage77_full_sab_smoke": "PASS",
+        "stage77_r4_boundary": "REPEATED_GATES_REQUIRED",
+        "stage77_decision": "PASS_RGT4_FUSED_SMOKE_RECORDED_REPEATED_GATES_REQUIRED",
+    }
+    for gate, expected in expected_stage77.items():
+        got = stage77.get(gate, {}).get("status", "MISSING")
+        if got != expected:
+            stage77_mismatches.append(f"{gate}:status={got}")
+    stage42_stage77_ok = (
+        stage42.get("S42-STAGE77-RGT4-FUSED-MAT-KERNEL", {}).get("status")
+        == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -932,6 +954,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage74-r-scaling-boundary-001",
         "stage75-rgt4-profile-boundary-001",
         "stage76-rgt4-kernel-feasibility-001",
+        "stage77-rgt4-fused-mat-kernel-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -1149,6 +1172,22 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "repro/stage76_rgt4_kernel_feasibility/kernel_microbench.csv",
         "repro/stage76_rgt4_kernel_feasibility/ep_breakdown.csv",
         "repro/stage76_rgt4_kernel_feasibility/summary.csv",
+        "docs/stage77_rgt4_fused_mat_kernel_log.md",
+        "experiments/stage77_rgt4_fused_mat_kernel_plan.md",
+        "scripts/build_stage77_rgt4_fused_mat_kernel.py",
+        "repro/stage77_rgt4_fused_mat_kernel/generic.log",
+        "repro/stage77_rgt4_fused_mat_kernel/fused.log",
+        "repro/stage77_rgt4_fused_mat_kernel/kernel_comparison.csv",
+        "repro/stage77_rgt4_fused_mat_kernel/full_sab_smoke.csv",
+        "repro/stage77_rgt4_fused_mat_kernel/summary.csv",
+        "repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r6/summary.csv",
+        "repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r6/run_0.log",
+        "repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r8/summary.csv",
+        "repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r8/run_0.log",
+        "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/summary.csv",
+        "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/run_0.log",
+        "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/summary.csv",
+        "repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/run_0.log",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -1531,6 +1570,18 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             ),
         },
         {
+            "check": "stage77_rgt4_fused_mat_kernel",
+            "status": "PASS" if not stage77_mismatches and stage42_stage77_ok else "FAIL",
+            "evidence": "repro/stage77_rgt4_fused_mat_kernel/summary.csv",
+            "detail": "Stage77 records H11 fused r>4 MAT as positive smoke and requires repeated gates before promotion"
+            if not stage77_mismatches and stage42_stage77_ok
+            else "; ".join(stage77_mismatches)
+            or (
+                "S42-STAGE77-RGT4-FUSED-MAT-KERNEL:"
+                f"{stage42.get('S42-STAGE77-RGT4-FUSED-MAT-KERNEL', {}).get('status', 'MISSING')}!=PASS"
+            ),
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -1558,7 +1609,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58/59/60/61/62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -1566,7 +1617,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, and Stage76 r>4 kernel feasibility are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, Stage58 final recheck integration, Stage59 completion route, Stage60 final recheck integration, Stage61 native perf unlock probe, Stage62 full-text unlock probe, Stage64A post-variant refresh, Stage65A r4 unrolled variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, and Stage77 r>4 fused MAT smoke are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

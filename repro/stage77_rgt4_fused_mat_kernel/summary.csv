@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,detail
+stage77_generic_kernel_correctness,PASS,identity_lane_r6_r8,Pass,repro/stage77_rgt4_fused_mat_kernel/generic.log,generic r=6/r=8 kernel smoke passes
+stage77_fused_kernel_correctness,PASS,identity_lane_r6_r8,Pass,repro/stage77_rgt4_fused_mat_kernel/fused.log,fused r=6/r=8 kernel smoke passes
+stage77_kernel_fused_vs_generic,PASS,dft_ratios;full_ratios,1.582;1.431|1.510;1.370,repro/stage77_rgt4_fused_mat_kernel/kernel_comparison.csv,fused tiled kernel beats current generic r>4 kernel in DFT-output and full-output microbench
+stage77_fused_dft_vs_scalar,PARTIAL_R6_ONLY,r6;r8,1.266;0.951,repro/stage77_rgt4_fused_mat_kernel/kernel_comparison.csv,"r=6 DFT-output beats repeated scalar, but r=8 remains below repeated scalar"
+stage77_full_sab_smoke,PASS,fused_vs_generic_r6_r8,1.120;1.102,repro/stage77_rgt4_fused_mat_kernel/full_sab_smoke.csv,fused r=6/r=8 full-SAB one-run smokes pass and beat same-stage generic r>4
+stage77_r4_boundary,REPEATED_GATES_REQUIRED,fused_r6;fused_r8;r4_mean;r4_ci95_low,1.385;1.290;1.377;1.314893,repro/stage77_rgt4_fused_mat_kernel/full_sab_smoke.csv; repro/stage36_target_perf_summary.csv,"r=6 one-run fused smoke reaches the r=4 reference region, but promotion requires repeated full-SAB/noise/resource gates; r=8 remains below the r=4 reference"
+stage77_decision,PASS_RGT4_FUSED_SMOKE_RECORDED_REPEATED_GATES_REQUIRED,promotion_policy,,repro/stage77_rgt4_fused_mat_kernel/summary.csv,"Stage77 promotes H11 from theory to a positive smoke candidate only; no default/full promotion until repeated full-SAB, noise, and resource gates pass"

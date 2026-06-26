@@ -70,6 +70,22 @@ memory locality while preserving the same arithmetic count.
 - Stage65A already showed that simple row-unrolling can be negative. H11 must
   test a genuinely different body/coefficient blocking strategy.
 
+## Stage77 Update
+
+Stage77 implemented the H11 tiled kernel behind
+`MAT_TRGSW_AVX512_RGT4_FUSED`. The first smoke result supports the constant-
+factor part of the hypothesis:
+
+- DFT-output fused/generic: r=6 `1.582x`, r=8 `1.431x`;
+- full-output fused/generic: r=6 `1.510x`, r=8 `1.370x`;
+- complete SAB one-run fused/generic: r=6 `1.120x`, r=8 `1.102x`.
+
+The result also shows the remaining boundary. r=8 DFT-output is still below
+repeated scalar (`0.951x`), and complete-SAB evidence is one-run only. The
+theory status therefore changes from "unimplemented" to "positive smoke
+candidate"; it is not a promoted SAB acceleration claim until repeated
+full-SAB, noise, and resource gates pass.
+
 ## Gate
 
 H11 can only move from theory to implementation if it defines:

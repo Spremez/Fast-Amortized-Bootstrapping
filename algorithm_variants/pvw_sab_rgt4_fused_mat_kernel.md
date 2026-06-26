@@ -1,6 +1,6 @@
 # Candidate Variant: PVW-SAB R>4 Fused MAT Kernel
 
-Status: proposed, not implemented, not promoted
+Status: implemented behind `MAT_TRGSW_AVX512_RGT4_FUSED`, positive smoke, not promoted
 
 Parent path: explicit `sab_pvw_*` PVW/MAT-SAB
 
@@ -48,6 +48,22 @@ Stage76 shows the current generic r>4 path is functional but not promotable:
 This evidence says the next useful large-r variant must target the multiply
 kernel itself. It does not support a claim that current r>4 MAT is already an
 optimized complete-SAB acceleration.
+
+## Stage77 Smoke Evidence
+
+Stage77 implements a tiled r=6/r=8 AVX512 kernel behind an explicit flag. The
+smoke result is positive but not enough for promotion:
+
+- DFT-output fused/generic is `1.582x` for r=6 and `1.431x` for r=8.
+- Full-output fused/generic is `1.510x` for r=6 and `1.370x` for r=8.
+- Complete SAB one-run fused/generic is `1.120x` for r=6 and `1.102x` for r=8.
+- Complete SAB fused speedup versus repeated scalar is `1.385x` for r=6 and
+  `1.290x` for r=8.
+
+r=8 DFT-output remains below repeated scalar (`0.951x`), and the complete SAB
+evidence is one-run smoke only. The next gate is repeated full-SAB plus
+noise/resource validation, with r=6 as the main candidate and r=8 as a stress
+case.
 
 ## Correctness Gate
 

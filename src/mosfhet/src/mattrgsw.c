@@ -446,6 +446,76 @@ static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_unrolled_avx512(
   }
 }
 #endif
+
+#if defined(MAT_TRGSW_AVX512_RGT4_FUSED)
+#define MAT_RGT4_MAX_OUTPUTS 9
+#define MAT_RGT4_TILE_OUTPUTS 4
+
+static inline DFT_Polynomial mat_rgt4_poly_at(PVW_TMLWE_DFT sample, int idx){
+  return idx == 0 ? sample->a[0] : sample->b[idx - 1];
+}
+
+static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512(
+    PVW_TMLWE_DFT out, MAT_TRGSW_DFT selector, DFT_Polynomial * dec_dft){
+  const int r = out->r;
+  const int outputs = r + 1;
+  const int rows = r + 1;
+  const int N = out->a[0]->N;
+  const int vec_half = N / 16;
+  __m512d * out_coeffs[MAT_RGT4_MAX_OUTPUTS];
+  const __m512d * dec_coeffs[MAT_RGT4_MAX_OUTPUTS];
+  const __m512d * sel_coeffs[MAT_RGT4_MAX_OUTPUTS][MAT_RGT4_MAX_OUTPUTS];
+
+  assert(out->k == 1);
+  assert(selector->T == 1);
+  assert(r == 6 || r == 8);
+  assert(outputs <= MAT_RGT4_MAX_OUTPUTS);
+
+  for (int idx = 0; idx < outputs; idx++){
+    out_coeffs[idx] = (__m512d *) mat_rgt4_poly_at(out, idx)->coeffs;
+  }
+  for (int row = 0; row < rows; row++){
+    dec_coeffs[row] = (const __m512d *) dec_dft[row]->coeffs;
+    for (int idx = 0; idx < outputs; idx++){
+      sel_coeffs[row][idx] =
+          (const __m512d *) mat_rgt4_poly_at(selector->samples[row], idx)->coeffs;
+    }
+  }
+
+  for (int coeff = 0; coeff < vec_half; coeff++){
+    for (int tile = 0; tile < outputs; tile += MAT_RGT4_TILE_OUTPUTS){
+      const int tile_count =
+          outputs - tile < MAT_RGT4_TILE_OUTPUTS ? outputs - tile : MAT_RGT4_TILE_OUTPUTS;
+      __m512d acc_re[MAT_RGT4_TILE_OUTPUTS];
+      __m512d acc_im[MAT_RGT4_TILE_OUTPUTS];
+
+      __m512d dec_re = dec_coeffs[0][coeff];
+      __m512d dec_im = dec_coeffs[0][coeff + vec_half];
+      for (int i = 0; i < tile_count; i++){
+        const __m512d * sel = sel_coeffs[0][tile + i];
+        mat_avx512_complex_mul(dec_re, dec_im, sel[coeff],
+            sel[coeff + vec_half], &acc_re[i], &acc_im[i]);
+      }
+
+      for (int row = 1; row < rows; row++){
+        dec_re = dec_coeffs[row][coeff];
+        dec_im = dec_coeffs[row][coeff + vec_half];
+        for (int i = 0; i < tile_count; i++){
+          const __m512d * sel = sel_coeffs[row][tile + i];
+          mat_avx512_complex_addmul(dec_re, dec_im, sel[coeff],
+              sel[coeff + vec_half], &acc_re[i], &acc_im[i]);
+        }
+      }
+
+      for (int i = 0; i < tile_count; i++){
+        __m512d * dst = out_coeffs[tile + i];
+        dst[coeff] = acc_re[i];
+        dst[coeff + vec_half] = acc_im[i];
+      }
+    }
+  }
+}
+#endif
 #endif
 
 void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT selector, MAT_TRGSW_MUL_SCRATCH scratch){
@@ -482,6 +552,13 @@ void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT s
 #endif
     return;
   }
+#if defined(MAT_TRGSW_AVX512_RGT4_FUSED)
+  if(k == 1 && l == 1 && (r == 6 || r == 8)){
+    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512(out, selector,
+        scratch->dec_dft);
+    return;
+  }
+#endif
 #endif
 
   for (size_t j = 0; j < k; j++){

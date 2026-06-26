@@ -164,10 +164,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage69_local_variant_feasibility.csv; "
                 "repro/stage74_r_scaling_boundary/decision.csv; "
                 "repro/stage75_rgt4_profile_boundary/decision.csv; "
-                "repro/stage76_rgt4_kernel_feasibility/summary.csv"
+                "repro/stage76_rgt4_kernel_feasibility/summary.csv; "
+                "repro/stage77_rgt4_fused_mat_kernel/summary.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage76 confirms the current generic r>4 MAT kernel is correct but not promotable: DFT-output speedup is below repeated scalar and the phase is multiply dominated. New large-r code should start from H11 fused MAT multiply/layout/register blocking, or wait for native perf/full-text unlocks.",
+            "Stage77 makes H11 a positive smoke candidate: fused r=6/r=8 beats same-stage generic in kernel and one-run full-SAB smoke. Next local work is Stage78 repeated full-SAB/noise/resource gating, prioritizing r=6 and keeping r=8 as a stress case.",
             "May improve engineering evidence; no claim upgrade without full SAB A/B and noise/resource gates.",
         ),
         route_row(

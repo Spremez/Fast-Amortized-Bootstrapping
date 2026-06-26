@@ -133,6 +133,10 @@ def build_rows() -> List[Dict[str, str]]:
         stage42.get("S42-STAGE76-RGT4-KERNEL-FEASIBILITY", {}).get("status")
         == "PASS"
     )
+    stage77_closed = (
+        stage42.get("S42-STAGE77-RGT4-FUSED-MAT-KERNEL", {}).get("status")
+        == "PASS"
+    )
     optional_notes = []
     if stage64a_closed:
         optional_notes.append("Stage64A post-variant refresh")
@@ -160,6 +164,8 @@ def build_rows() -> List[Dict[str, str]]:
         optional_notes.append("Stage75 r>4 profile boundary")
     if stage76_closed:
         optional_notes.append("Stage76 r>4 kernel feasibility")
+    if stage77_closed:
+        optional_notes.append("Stage77 r>4 fused MAT smoke")
     optional_stage_note = " plus " + " and ".join(optional_notes) if optional_notes else ""
     spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
     stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")

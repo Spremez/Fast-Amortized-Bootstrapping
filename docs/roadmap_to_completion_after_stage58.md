@@ -27,6 +27,8 @@ evidence is supplied.
 | Stage 74 | r-scaling boundary | Test direct r=6/r=8 lane-count expansion under the current active-buffer MAT path. | Stage74 decision must be `PASS_R_GT4_BOUNDARY_RECORDED_NOT_PROMOTED` unless a full-gate promotion candidate emerges. | passed as negative/not promoted |
 | Stage 75 | r>4 profile boundary | Attribute the Stage74 r>4 boundary with exact body-profile counts and component timing. | Stage75 decision must be `PASS_RGT4_PROFILE_BOUNDARY_RECORDED_NOT_PROMOTED` unless profile evidence opens a new promotion candidate. | passed as profile-backed negative/not promoted |
 | Stage 76 | r>4 kernel feasibility | Test whether the current generic r=6/r=8 MAT external-product kernel is promotable or whether large-r work needs a fused MAT multiply/layout hypothesis. | Stage76 decision must be `PASS_RGT4_KERNEL_FEASIBILITY_RECORDED_NO_PROMOTION` unless DFT-output and full-output evidence justify new full-SAB gates. | passed as kernel-level negative/not promoted |
+| Stage 77 | r>4 fused MAT kernel smoke | Implement H11 behind `MAT_TRGSW_AVX512_RGT4_FUSED` and check whether r=6/r=8 kernel gains propagate to complete SAB smoke. | Stage77 decision must be `PASS_RGT4_FUSED_SMOKE_RECORDED_REPEATED_GATES_REQUIRED` before any repeated promotion campaign starts. | passed as positive smoke/not promoted |
+| Stage 78 | r>4 fused repeated gates | Repeat full-SAB, correctness/noise, and resource gates for the Stage77 fused candidate. | Promote only if repeated full-SAB, noise, and resource evidence beat the relevant r=4/r>4 baselines under the same backend. | next |
 | Stage 66 | release/paper package | Freeze the final allowed claim package after external blockers are resolved or the scope is explicitly narrowed. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
 Execution policy:
@@ -66,3 +68,7 @@ Execution policy:
   is multiply dominated. Future r>4 code must start from H11 or another
   explicit fused MAT multiply/layout/register-blocking hypothesis, then pass
   kernel, complete-SAB, correctness, noise, resource, and closure gates.
+- After Stage77, treat H11 as a positive smoke candidate only. The fused
+  r=6/r=8 kernel improves same-stage generic r>4, and one-run full-SAB
+  improves for both r values, but defaults and claims must not change until
+  Stage78 repeated full-SAB/noise/resource gates pass.

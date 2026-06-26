@@ -1,0 +1,11 @@
+MAT_TRGSW/PVW r>4 kernel test: Pass
+MAT_TRGSW microbench r=6 reps=1000 avg_us=33 lane_avg_us=5
+MAT_TRGSW microbench r=8 reps=1000 avg_us=50 lane_avg_us=6
+MAT_TRGSW vs scalar r=6 reps=1000 scalar_repeated_avg_us=41.707 scalar_lane_avg_us=6.951 mat_avg_us=32.933 mat_lane_avg_us=5.489 speedup_vs_scalar_repeated=1.266x
+MAT_TRGSW vs scalar r=8 reps=1000 scalar_repeated_avg_us=52.914 scalar_lane_avg_us=6.614 mat_avg_us=55.650 mat_lane_avg_us=6.956 speedup_vs_scalar_repeated=0.951x
+MAT_TRGSW_FULL vs scalar_full r=6 reps=1000 scalar_repeated_avg_us=66.976 scalar_lane_avg_us=11.163 mat_avg_us=45.273 mat_lane_avg_us=7.546 speedup_vs_scalar_repeated=1.479x
+MAT_TRGSW_FULL vs scalar_full r=8 reps=1000 scalar_repeated_avg_us=84.298 scalar_lane_avg_us=10.537 mat_avg_us=66.307 mat_lane_avg_us=8.288 speedup_vs_scalar_repeated=1.271x
+EP_BREAKDOWN scalar_repeated r=6 reps=1000 phase_sum_avg_us=43.514 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=6.216 decompose_pct=14.29 dft_avg_us=23.516 dft_pct=54.04 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=13.782 mul_pct=31.67 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN mat_shared_mask r=6 reps=1000 phase_sum_avg_us=39.623 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=3.902 decompose_pct=9.85 dft_avg_us=13.590 dft_pct=34.30 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=22.131 mul_pct=55.85 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN scalar_repeated r=8 reps=1000 phase_sum_avg_us=59.176 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=8.551 decompose_pct=14.45 dft_avg_us=31.789 dft_pct=53.72 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=18.836 mul_pct=31.83 free_avg_us=0.000 free_pct=0.00
+EP_BREAKDOWN mat_shared_mask r=8 reps=1000 phase_sum_avg_us=58.520 alloc_avg_us=0.000 alloc_pct=0.00 decompose_avg_us=4.723 decompose_pct=8.07 dft_avg_us=17.414 dft_pct=29.76 clear_avg_us=0.000 clear_pct=0.00 mul_avg_us=36.383 mul_pct=62.17 free_avg_us=0.000 free_pct=0.00

@@ -2400,3 +2400,45 @@ MAT is only 1.168x/1.044x, and MAT shared-mask multiply share rises to
 large-r implementation hypothesis is a fused MAT multiply/layout/register-
 blocking kernel with full correctness and complete-SAB gates.
 ```
+
+## Stage 77: R>4 Fused MAT Kernel Smoke
+
+Goal:
+
+```text
+Implement the H11 fused r>4 MAT external-product kernel behind an explicit
+flag and test whether the kernel signal propagates to complete SAB smoke.
+```
+
+Tasks:
+
+- add `MAT_TRGSW_AVX512_RGT4_FUSED` as an explicit experimental flag;
+- add a tiled AVX512 kernel for `k=1`, `l=1`, `r=6` and `r=8`;
+- compare generic and fused r>4 kernel logs under the same Stage76 harness;
+- run complete-SAB one-run smokes for generic and fused r=6/r=8;
+- aggregate the kernel and full-SAB evidence into Stage77 CSV/MD artifacts;
+- update H11 and the completion route so positive smoke leads to repeated
+  gates, not immediate promotion.
+
+Gate:
+
+- generic and fused r=6/r=8 kernel correctness must pass;
+- fused must beat generic in DFT-output and full-output microbench;
+- fused complete-SAB one-run smoke must beat same-stage generic r>4;
+- r>4 may not be promoted until repeated full-SAB, noise, and resource gates
+  pass;
+- no scalar SAB path, default `sab_pvw_*` path, key format, novelty,
+  theorem-level, all-parameter, or hardware-counter claim is upgraded.
+
+Status:
+
+```text
+Stage77 passed as a positive smoke candidate, not a promoted path. The fused
+tiled kernel beats same-stage generic r>4 in DFT-output microbench
+(`1.582x` r=6, `1.431x` r=8) and full-output microbench (`1.510x` r=6,
+`1.370x` r=8). Complete-SAB one-run fused/generic is `1.120x` for r=6 and
+`1.102x` for r=8. Promotion remains blocked: r=8 DFT-output is still below
+repeated scalar, r=8 full-SAB remains below the r=4 reference, and both r
+values need repeated full-SAB/noise/resource gates. Stage78 should test r=6
+as the main candidate and r=8 as a stress case.
+```

@@ -1,0 +1,5 @@
+bench,r,generic_mat_avg_us,fused_mat_avg_us,fused_vs_generic,generic_speedup_vs_scalar,fused_speedup_vs_scalar,generic_log,fused_log
+dft_output,6,52.088,32.933,1.582,0.852,1.266,repro/stage77_rgt4_fused_mat_kernel/generic.log,repro/stage77_rgt4_fused_mat_kernel/fused.log
+dft_output,8,79.644,55.650,1.431,0.915,0.951,repro/stage77_rgt4_fused_mat_kernel/generic.log,repro/stage77_rgt4_fused_mat_kernel/fused.log
+full_output,6,68.358,45.273,1.510,1.233,1.479,repro/stage77_rgt4_fused_mat_kernel/generic.log,repro/stage77_rgt4_fused_mat_kernel/fused.log
+full_output,8,90.819,66.307,1.370,1.199,1.271,repro/stage77_rgt4_fused_mat_kernel/generic.log,repro/stage77_rgt4_fused_mat_kernel/fused.log

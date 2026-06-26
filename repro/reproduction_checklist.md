@@ -196,5 +196,6 @@
 - [x] Add and run Stage74 r-scaling boundary; r=6/r=8 complete-SAB smoke passes correctness but direct r>4 scaling is not promoted versus r=4 evidence.
 - [x] Add and run Stage75 r>4 profile boundary; r=6/r=8 keep exact SAB counts and profile evidence attributes the boundary to MAT/body cost, so direct r>4 remains not promoted.
 - [x] Add and run Stage76 r>4 kernel feasibility; current generic r=6/r=8 MAT path is correct but DFT-output speedup is below repeated scalar, so it remains diagnostic and not promoted.
+- [x] Add and run Stage77 r>4 fused MAT kernel smoke; fused r=6/r=8 beats same-stage generic in kernel and one-run full-SAB smoke, but repeated/noise/resource gates are still required.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

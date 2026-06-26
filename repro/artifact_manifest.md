@@ -1080,3 +1080,27 @@ Repro artifacts:
 - `repro/stage76_rgt4_kernel_feasibility/kernel_microbench.csv`
 - `repro/stage76_rgt4_kernel_feasibility/ep_breakdown.csv`
 - `repro/stage76_rgt4_kernel_feasibility/summary.csv`
+
+## Stage 77 R>4 Fused MAT Kernel
+
+- `docs/stage77_rgt4_fused_mat_kernel_log.md`
+- `experiments/stage77_rgt4_fused_mat_kernel_plan.md`
+- `scripts/build_stage77_rgt4_fused_mat_kernel.py`
+- `theory_checks/h11_rgt4_fused_mat_kernel.md`
+- `algorithm_variants/pvw_sab_rgt4_fused_mat_kernel.md`
+- `hypotheses/hypothesis_register.yaml`
+- `src/mosfhet/Makefile.def`
+- `src/mosfhet/src/mattrgsw.c`
+- `repro/stage77_rgt4_fused_mat_kernel/generic.log`
+- `repro/stage77_rgt4_fused_mat_kernel/fused.log`
+- `repro/stage77_rgt4_fused_mat_kernel/kernel_comparison.csv`
+- `repro/stage77_rgt4_fused_mat_kernel/full_sab_smoke.csv`
+- `repro/stage77_rgt4_fused_mat_kernel/summary.csv`
+- `repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r6/summary.csv`
+- `repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r6/run_0.log`
+- `repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r8/summary.csv`
+- `repro/stage77_rgt4_fused_mat_kernel/full_sab_generic_r8/run_0.log`
+- `repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/summary.csv`
+- `repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r6/run_0.log`
+- `repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/summary.csv`
+- `repro/stage77_rgt4_fused_mat_kernel/full_sab_fused_r8/run_0.log`
