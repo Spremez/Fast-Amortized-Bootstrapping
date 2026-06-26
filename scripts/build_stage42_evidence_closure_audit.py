@@ -33,6 +33,7 @@ STAGE43_SMOKE = ROOT / "repro" / "stage43_current_smoke_after_stage42" / "summar
 STAGE44_REPROBE = ROOT / "repro" / "stage44_external_unlock_reprobe" / "summary.csv"
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
+REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
 
 
 EXPECTED_AUDIT_STATUS = {
@@ -60,14 +61,55 @@ EXPECTED_STAGE41_READINESS = {
     "S41-FINAL-RECHECK": "WAIT_UNLOCKS",
 }
 
+EXPECTED_REMAINING_BLOCKERS = {
+    "CB5": {
+        "status_tokens": [
+            "final_A8=BLOCKED_EXTERNAL",
+            "cb5=BLOCKED_EXTERNAL",
+            "stage44_perf=BLOCKED",
+            "external_perf=MISSING",
+        ],
+        "policy_tokens": ["Do not claim theoretical MAT-AVX512"],
+    },
+    "CB6": {
+        "status_tokens": [
+            "cb6=BLOCKED_EXTERNAL_REVIEW",
+            "related=SCOPED_RELATED_WORK_REFRESHED__NOVELTY_STILL_BLOCKED",
+            "novelty_gate=BLOCK_NOVELTY_CLAIM_PENDING_MANUAL_REVIEW",
+        ],
+        "policy_tokens": ["scoped engineering/systems"],
+    },
+    "CB7": {
+        "status_tokens": [
+            "final_A8b=MISSING_OPTIONAL_EXTERNAL_EVIDENCE",
+            "cb7=BLOCKED_EXTERNAL_FULLTEXT",
+            "stage44_fulltext=BLOCKED",
+            "related_fulltext=BLOCKED_FULLTEXT",
+            "external_fulltext=MISSING",
+        ],
+        "policy_tokens": ["Do not cite theorem"],
+    },
+    "A9": {
+        "status_tokens": [
+            "final_A9=SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED",
+            "stage44_decision=WAIT_EXTERNAL_UNLOCKS",
+            "stage41_final=WAIT_UNLOCKS",
+        ],
+        "policy_tokens": ["SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED"],
+    },
+}
+
 REQUIRED_FILES = [
     "docs/goal_sab_max_acceleration.md",
     "docs/roadmap_stage19_plus.md",
     "docs/loop_engineering.md",
+    "docs/remaining_blocker_dashboard.md",
     "docs/stage41_external_unlock_packet.md",
     "experiments/stage41_external_unlock_plan.md",
+    "scripts/build_remaining_blocker_dashboard.py",
     "scripts/build_stage41_external_unlock_packet.py",
     "scripts/build_stage42_evidence_closure_audit.py",
+    "repro/remaining_blocker_dashboard.csv",
     "repro/stage41_external_unlock_packet.csv",
     "docs/stage43_postclosure_current_smoke_log.md",
     "experiments/stage43_postclosure_current_smoke_plan.md",
@@ -303,6 +345,46 @@ def check_stage44_reprobe() -> List[Dict[str, str]]:
     ]
 
 
+def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
+    rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
+    problems = []
+    required_columns = [
+        "blocking_condition",
+        "evidence",
+        "unlock_command",
+        "review_gate",
+        "claim_policy",
+    ]
+    for blocker_id, expected in EXPECTED_REMAINING_BLOCKERS.items():
+        blocker_row = rows.get(blocker_id)
+        if not blocker_row:
+            problems.append(f"{blocker_id}:missing")
+            continue
+        current_status = blocker_row.get("current_status", "")
+        claim_policy = blocker_row.get("claim_policy", "")
+        for token in expected["status_tokens"]:
+            if token not in current_status:
+                problems.append(f"{blocker_id}:status_missing:{token}")
+        for token in expected["policy_tokens"]:
+            if token not in claim_policy:
+                problems.append(f"{blocker_id}:policy_missing:{token}")
+        for column in required_columns:
+            if not blocker_row.get(column, "").strip():
+                problems.append(f"{blocker_id}:{column}=empty")
+    return [
+        row(
+            "S42-REMAINING-BLOCKERS",
+            "claim_scope",
+            pass_fail(not problems and bool(rows)),
+            REMAINING_BLOCKERS.relative_to(ROOT).as_posix(),
+            "CB5/CB6/CB7/A9 blocker dashboard preserves stronger-claim blocks"
+            if not problems and rows
+            else "; ".join(problems) or "dashboard missing or empty",
+            "Regenerate remaining blocker dashboard and final recheck before relying on stronger-claim blocker state.",
+        )
+    ]
+
+
 def check_freeze_manifest() -> List[Dict[str, str]]:
     rows = read_csv(FREEZE_MANIFEST)
     problems = []
@@ -525,6 +607,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage41,
         check_stage43_smoke,
         check_stage44_reprobe,
+        check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
         check_postfreeze,
