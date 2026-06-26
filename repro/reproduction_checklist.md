@@ -178,5 +178,6 @@
 - [x] Add and run Stage 55 external paper probe with Crossref DOI metadata and official full-text route blocking evidence.
 - [x] Add and run Stage 56 explicit final recheck path for refreshing Stage55 before blocker/frontier/unlock/closure regeneration.
 - [x] Add and run Stage 57 scope-label consistency audit so current control files track the latest Stage19+ closure range.
+- [x] Add and run Stage 58 explicit final recheck path for refreshing Stage57 before Stage42 closure regeneration.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

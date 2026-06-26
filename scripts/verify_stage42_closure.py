@@ -32,6 +32,7 @@ STAGE54_DEFAULT_FINAL_RECHECK = ROOT / "repro" / "stage54_default_final_recheck"
 STAGE55_EXTERNAL_PAPER_PROBE = ROOT / "repro" / "stage55_external_paper_probe" / "summary.csv"
 STAGE56_FINAL_RECHECK_STAGE55 = ROOT / "repro" / "stage56_final_recheck_stage55" / "summary.csv"
 STAGE57_SCOPE_LABEL_AUDIT = ROOT / "repro" / "stage57_scope_label_audit.csv"
+STAGE58_FINAL_RECHECK_STAGE57 = ROOT / "repro" / "stage58_final_recheck_stage57" / "summary.csv"
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -129,6 +130,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage55 = {row.get("gate"): row for row in read_csv(STAGE55_EXTERNAL_PAPER_PROBE)}
     stage56 = {row.get("step"): row for row in read_csv(STAGE56_FINAL_RECHECK_STAGE55)}
     stage57 = {row.get("audit_id"): row for row in read_csv(STAGE57_SCOPE_LABEL_AUDIT)}
+    stage58 = {row.get("step"): row for row in read_csv(STAGE58_FINAL_RECHECK_STAGE57)}
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
     closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
@@ -396,6 +398,24 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage42_stage57_ok = (
         stage42.get("S42-STAGE57-SCOPE-LABEL-AUDIT", {}).get("status") == "PASS"
     )
+    stage58_mismatches = []
+    for step in [
+        "final_goal_audit",
+        "remaining_blocker_dashboard",
+        "stage51_goal_frontier",
+        "stage52_external_unlock_readiness",
+        "stage57_scope_label_audit",
+        "stage42_evidence_closure",
+    ]:
+        got = stage58.get(step, {}).get("status", "MISSING")
+        if got != "PASS":
+            stage58_mismatches.append(f"{step}:status={got}")
+    final_decision = stage58.get("final_decision", {}).get("status", "MISSING")
+    if final_decision != "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED":
+        stage58_mismatches.append(f"final_decision:status={final_decision}")
+    stage42_stage58_ok = (
+        stage42.get("S42-STAGE58-FINAL-RECHECK-STAGE57", {}).get("status") == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -443,6 +463,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage55-external-paper-probe-001",
         "stage56-final-recheck-stage55-001",
         "stage57-scope-label-audit-001",
+        "stage58-final-recheck-stage57-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -521,6 +542,12 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "docs/stage57_scope_label_audit.md",
         "scripts/build_stage57_scope_label_audit.py",
         "repro/stage57_scope_label_audit.csv",
+        "docs/stage58_final_recheck_stage57_log.md",
+        "repro/stage58_final_recheck_stage57/summary.csv",
+        "repro/stage58_final_recheck_stage57/stage51_goal_frontier.log",
+        "repro/stage58_final_recheck_stage57/stage52_external_unlock_readiness.log",
+        "repro/stage58_final_recheck_stage57/stage57_scope_label_audit.log",
+        "repro/stage58_final_recheck_stage57/stage42_evidence_closure.log",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -708,6 +735,15 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             or f"S42-STAGE57-SCOPE-LABEL-AUDIT:{stage42.get('S42-STAGE57-SCOPE-LABEL-AUDIT', {}).get('status', 'MISSING')}!=PASS",
         },
         {
+            "check": "stage58_final_recheck_stage57",
+            "status": "PASS" if not stage58_mismatches and stage42_stage58_ok else "FAIL",
+            "evidence": "repro/stage58_final_recheck_stage57/summary.csv",
+            "detail": "Stage58 final recheck refreshes Stage57 before Stage42 closure"
+            if not stage58_mismatches and stage42_stage58_ok
+            else "; ".join(stage58_mismatches)
+            or f"S42-STAGE58-FINAL-RECHECK-STAGE57:{stage42.get('S42-STAGE58-FINAL-RECHECK-STAGE57', {}).get('status', 'MISSING')}!=PASS",
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -735,7 +771,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47/48/49/50/51/52/53/54/55/56/57/58 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -743,7 +779,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, and Stage57 scope-label audit are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, Stage48 noise smoke, Stage49 repeated full-SAB stability, Stage50 performance matrix, Stage51 goal frontier, Stage52 external unlock readiness, Stage53 final recheck integration, Stage54 default final recheck, Stage55 paper probe, Stage56 final recheck integration, Stage57 scope-label audit, and Stage58 final recheck integration are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

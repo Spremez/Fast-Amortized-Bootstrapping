@@ -829,3 +829,15 @@ Repro artifacts:
 - `docs/stage52_external_unlock_readiness.md`
 - `repro/stage52_external_unlock_readiness.csv`
 - `repro/stage57_scope_label_audit.csv`
+
+## Stage 58 Stage57 Final-Recheck Integration
+
+- `docs/stage58_final_recheck_stage57_log.md`
+- `scripts/run_final_goal_recheck.sh`
+- `repro/stage58_final_recheck_stage57/summary.csv`
+- `repro/stage58_final_recheck_stage57/final_goal_audit.log`
+- `repro/stage58_final_recheck_stage57/remaining_blocker_dashboard.log`
+- `repro/stage58_final_recheck_stage57/stage51_goal_frontier.log`
+- `repro/stage58_final_recheck_stage57/stage52_external_unlock_readiness.log`
+- `repro/stage58_final_recheck_stage57/stage57_scope_label_audit.log`
+- `repro/stage58_final_recheck_stage57/stage42_evidence_closure.log`

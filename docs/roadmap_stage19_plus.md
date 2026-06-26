@@ -1709,3 +1709,40 @@ Stage 57 passed. Stage51 now emits the current closure range dynamically, and
 the scope-label audit confirms that current control files refer to the latest
 Stage19+ closure range while preserving stronger-claim blockers.
 ```
+
+## Stage 58: Stage57 Final-Recheck Integration
+
+Goal:
+
+```text
+Make the Stage57 scope-label audit refresh automatically in the unified final
+recheck before Stage42 closure is rebuilt.
+```
+
+Tasks:
+
+- add `FINAL_RECHECK_STAGE57_SCOPE_LABEL_AUDIT` to
+  `scripts/run_final_goal_recheck.sh`;
+- run Stage57 after Stage51 frontier and Stage52 unlock readiness are
+  regenerated, and before Stage42 closure;
+- keep the post-freeze no-write verifier mode narrow when Stage57 is disabled;
+- record an isolated Stage58 final recheck output and raw logs;
+- add Stage58 to Stage42 closure/verifier checks.
+
+Gate:
+
+- `stage57_scope_label_audit` must be `PASS`;
+- Stage51 frontier, Stage52 unlock readiness, and Stage42 closure must be
+  `PASS`;
+- final decision must remain
+  `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`;
+- this stage must not upgrade performance, novelty, theorem-level, or
+  hardware-counter claims.
+
+Status:
+
+```text
+Stage 58 passed. The unified final recheck can now refresh Stage57 before
+Stage42 closure and preserves
+`SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`.
+```
