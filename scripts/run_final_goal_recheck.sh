@@ -36,6 +36,7 @@ run_stage50_matrix="${FINAL_RECHECK_STAGE50_MATRIX:-$light_recheck_default}"
 run_stage51_frontier="${FINAL_RECHECK_STAGE51_FRONTIER:-$light_recheck_default}"
 run_stage52_unlock_readiness="${FINAL_RECHECK_STAGE52_UNLOCK_READINESS:-$light_recheck_default}"
 run_stage57_scope_label_audit="${FINAL_RECHECK_STAGE57_SCOPE_LABEL_AUDIT:-$light_recheck_default}"
+run_stage59_completion_route="${FINAL_RECHECK_STAGE59_COMPLETION_ROUTE:-$light_recheck_default}"
 
 if [[ -n "${FINAL_RECHECK_STAGE42_CLOSURE+x}" ]]; then
   run_stage42_closure="$FINAL_RECHECK_STAGE42_CLOSURE"
@@ -54,7 +55,8 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_stage50_matrix" == "0" \
   && "$run_stage51_frontier" == "0" \
   && "$run_stage52_unlock_readiness" == "0" ]]; then
-  if [[ "$run_stage57_scope_label_audit" != "0" ]]; then
+  if [[ "$run_stage57_scope_label_audit" != "0" \
+    || "$run_stage59_completion_route" != "0" ]]; then
     run_stage42_closure="1"
   else
     run_stage42_closure="0"
@@ -81,6 +83,7 @@ elif [[ "$run_postfreeze_verify" == "1" \
   && "$run_stage51_frontier" == "0" \
   && "$run_stage52_unlock_readiness" == "0" \
   && "$run_stage57_scope_label_audit" == "0" \
+  && "$run_stage59_completion_route" == "0" \
   && "$run_stage42_closure" == "0" ]]; then
   out_dir="repro/final_goal_recheck_postfreeze"
 else
@@ -304,6 +307,16 @@ else
     "$python_bin scripts/build_stage57_scope_label_audit.py" \
     "" \
     "Set FINAL_RECHECK_STAGE57_SCOPE_LABEL_AUDIT=1 to regenerate the Stage 57 scope-label audit."
+fi
+
+if [[ "$run_stage59_completion_route" == "1" ]]; then
+  run_logged "stage59_completion_route" \
+    "$python_bin scripts/build_stage59_completion_route_readiness.py"
+else
+  csv_row "stage59_completion_route" "SKIPPED" \
+    "$python_bin scripts/build_stage59_completion_route_readiness.py" \
+    "" \
+    "Set FINAL_RECHECK_STAGE59_COMPLETION_ROUTE=1 to regenerate the Stage 59 completion-route readiness table."
 fi
 
 if [[ "$run_stage42_closure" == "1" ]]; then

@@ -1,0 +1,15 @@
+step,status,command,log,notes
+stage40_postfreeze_verify,SKIPPED,python3 scripts/verify_stage40_freeze.py --check-only,,Set FINAL_RECHECK_POSTFREEZE_VERIFY=1 to run the Stage 40 no-write verifier before recheck outputs.
+stage27_citation_probe,SKIPPED,bash scripts/run_stage27_citation_access_probe.sh,,Set FINAL_RECHECK_CITATION=1 to refresh network/full-text citation access.
+stage27_related_work_access_probe,SKIPPED,python3 scripts/run_stage27_related_work_access_probe.py,,Set FINAL_RECHECK_RELATED_WORK=1 to refresh related-work source access.
+stage28_perf_gate,SKIPPED,bash scripts/run_stage28_native_perf_counter_gate.sh,,Set FINAL_RECHECK_PERF=1 to refresh native perf-counter gate.
+stage27_final_package,SKIPPED,python3 scripts/build_stage27_final_package.py,,Set FINAL_RECHECK_STAGE27_PACKAGE=1 to rebuild final evidence package.
+external_evidence_intake,SKIPPED,python3 scripts/register_external_evidence.py,,Set FINAL_RECHECK_EXTERNAL_INTAKE=1 to refresh optional external evidence registration.
+stage33_current_smoke,SKIPPED,bash scripts/run_stage33_current_smoke.sh,,Set FINAL_RECHECK_CURRENT_SMOKE=1 to refresh current scalar/PVW smoke evidence.
+conditional_backlog_audit,SKIPPED,python3 scripts/build_conditional_backlog_audit.py,,Set FINAL_RECHECK_CONDITIONAL_BACKLOG=1 to refresh the conditional backlog audit.
+stage44_external_reprobe,SKIPPED,bash scripts/run_stage44_external_unlock_reprobe.sh,,Set FINAL_RECHECK_STAGE44_REPROBE=1 to refresh external full-text/native-perf unlock state.
+stage55_external_paper_probe,SKIPPED,python3 scripts/build_stage55_external_paper_probe.py,,Set FINAL_RECHECK_STAGE55_PAPER_PROBE=1 to refresh 2025/686 DOI metadata and full-text route status.
+final_goal_audit,PASS,python3 scripts/build_final_goal_completion_audit.py,repro/stage60_final_recheck_stage59/final_goal_audit.log,command completed
+remaining_blocker_dashboard,PASS,python3 scripts/build_remaining_blocker_dashboard.py,repro/stage60_final_recheck_stage59/remaining_blocker_dashboard.log,command completed
+stage50_performance_matrix,SKIPPED,python3 scripts/build_stage50_performance_evidence_matrix.py,,Set FINAL_RECHECK_STAGE50_MATRIX=1 to regenerate the Stage 50 performance evidence matrix.
+stage51_goal_frontier,FAIL,python3 scripts/build_stage51_goal_completion_frontier.py,repro/stage60_final_recheck_stage59/stage51_goal_frontier.log,command failed with rc=1

@@ -848,3 +848,24 @@ Repro artifacts:
 - `docs/stage59_completion_route_readiness.md`
 - `scripts/build_stage59_completion_route_readiness.py`
 - `repro/stage59_completion_route_readiness.csv`
+
+## Stage 60 Stage59 Final-Recheck Integration
+
+- `docs/stage60_final_recheck_stage59_log.md`
+- `scripts/run_final_goal_recheck.sh`
+- `repro/stage60_final_recheck_stage59/summary.csv`
+- `repro/stage60_final_recheck_stage59/final_goal_audit.log`
+- `repro/stage60_final_recheck_stage59/remaining_blocker_dashboard.log`
+- `repro/stage60_final_recheck_stage59/stage51_goal_frontier.log`
+- `repro/stage60_final_recheck_stage59/stage52_external_unlock_readiness.log`
+- `repro/stage60_final_recheck_stage59/stage57_scope_label_audit.log`
+- `repro/stage60_final_recheck_stage59/stage59_completion_route.log`
+- `repro/stage60_final_recheck_stage59/stage42_evidence_closure.log`
+- `repro/stage60_final_recheck_stage59_failed_attempt1/summary.csv`
+- `repro/stage60_final_recheck_stage59_failed_attempt1/stage42_evidence_closure.log`
+- `repro/stage60_final_recheck_stage59_failed_attempt2/summary.csv`
+- `repro/stage60_final_recheck_stage59_failed_attempt2/stage51_goal_frontier.log`
+- `repro/stage60_final_recheck_stage59_failed_attempt3/summary.csv`
+- `repro/stage60_final_recheck_stage59_failed_attempt3/stage42_evidence_closure.log`
+- `repro/stage60_final_recheck_stage59_failed_attempt4/summary.csv`
+- `repro/stage60_final_recheck_stage59_failed_attempt4/stage42_evidence_closure.log`

@@ -201,7 +201,7 @@ stage42_evidence_closure = PASS
 final_decision = SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 ```
 
-This mode proves that the unified recheck wrapper can refresh the Stage 19-59
+This mode proves that the unified recheck wrapper can refresh the Stage 19-60
 evidence-closure audit without rerunning citation probes, perf gates, final
 package generation, external intake, current smoke, or final audit generation.
 

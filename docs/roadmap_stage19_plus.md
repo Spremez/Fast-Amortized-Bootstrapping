@@ -1782,7 +1782,44 @@ Gate:
 Status:
 
 ```text
-Stage 59 is the current execution stage. It codifies the route from the scoped
-engineering closure to eventual stronger-claim completion while preserving the
-current blocker boundary.
+Stage 59 passed. It codifies the route from the scoped engineering closure to
+eventual stronger-claim completion while preserving the current blocker
+boundary.
+```
+
+## Stage 60: Stage59 Final-Recheck Integration
+
+Goal:
+
+```text
+Make the Stage59 completion-route readiness table refresh automatically in the
+unified final recheck before Stage42 closure is rebuilt.
+```
+
+Tasks:
+
+- add `FINAL_RECHECK_STAGE59_COMPLETION_ROUTE` to
+  `scripts/run_final_goal_recheck.sh`;
+- run Stage59 after Stage51 frontier, Stage52 unlock readiness, and Stage57
+  scope-label audit are refreshed, and before Stage42 closure;
+- keep the post-freeze no-write verifier mode narrow when Stage59 is disabled;
+- record an isolated Stage60 final recheck output and raw logs;
+- add Stage60 to Stage42 closure/verifier checks.
+
+Gate:
+
+- `stage59_completion_route` must be `PASS`;
+- Stage51 frontier, Stage52 unlock readiness, Stage57 scope-label audit, and
+  Stage42 closure must be `PASS`;
+- final decision must remain
+  `SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`;
+- this stage must not upgrade performance, novelty, theorem-level, or
+  hardware-counter claims.
+
+Status:
+
+```text
+Stage 60 passed. The unified final recheck can now refresh Stage59 route
+readiness before Stage42 closure and preserves
+`SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED`.
 ```
