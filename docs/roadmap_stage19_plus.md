@@ -2917,7 +2917,7 @@ preferred explicit r=6 local engineering path, but scalar/default paths and
 paper-level novelty/theory claims remain unchanged.
 ```
 
-## Planned Stage 90: External Claim Unlock
+## Stage 90: External Claim Unlock
 
 Goal:
 
@@ -2943,8 +2943,20 @@ Gate:
 Status:
 
 ```text
-Blocked on external platform/full-text/manual-review inputs. This remains the
-stronger-claim lane after local Stage83+ optimization work.
+Completed as an external-claim probe. Stage90 reruns a fresh 2025/686
+citation/full-text route probe, native perf-counter gate, and external
+evidence intake after Stage89 promoted H14-C1 as the preferred explicit r=6
+local engineering path. The probe records
+PASS_STAGE90_EXTERNAL_CLAIM_UNLOCK_PROBE_RECORDED_STRONGER_CLAIMS_BLOCKED:
+direct ePrint/ACM/ResearchGate full-text routes remain blocked, no reviewed
+FAB686_FULLTEXT_PATH artifact is registered, `perf` is missing in the current
+WSL2 PATH, and novelty/source review still lacks source anchors.
+
+Stage90 therefore does not upgrade any theorem-level 2025/686 citation,
+novelty, or MAT-AVX512 hardware-counter optimality claim. It only closes the
+current external-claim probe and makes Stage91 responsible for freezing a
+scoped final package unless the user supplies external evidence for another
+unlock pass.
 ```
 
 ## Planned Stage 91: Final SAB Optimization Package
@@ -2977,5 +2989,8 @@ Gate:
 Status:
 
 ```text
-Waiting for Stage86-88 decisions.
+Waiting for a scoped final-package pass after Stage90. Under the current
+evidence, Stage91 must preserve the scoped engineering claim, keep native
+perf/full-text/novelty claims blocked, and record the exact promoted explicit
+paths and remaining external unlock commands.
 ```

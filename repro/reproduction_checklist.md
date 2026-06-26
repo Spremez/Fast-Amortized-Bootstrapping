@@ -208,6 +208,7 @@
 - [x] Implement and run Stage87 H14-C1 backend `FromDFT+add` materialization preflight behind `SAB_PVW_BACKEND_FROM_DFT_ADD`; correctness passes and one-run r=6 full-SAB smoke is positive, but the flag is not promoted.
 - [x] Run Stage88 repeated complete-SAB/noise/resource gates for the Stage87 H14-C1 promotion candidate; backend-vs-wrapper repeated mean/min is `1.035516x`/`1.024476x`, backend-vs-scalar mean/min is `1.437x`/`1.435x`, final-output noise has zero 3-seed failures, and resource key/RSS/keygen ratios are recorded.
 - [x] Run Stage89 H14 promotion-policy integration; H14-C1 backend is promoted as the preferred explicit r=6 local engineering path, while scalar/default paths and paper-level claims remain unchanged.
+- [x] Run Stage90 external claim unlock probe; native perf, reviewed 2025/686 full text, and novelty/source review remain blocked, so stronger claims stay out of scope.
 - [ ] Run Stage85 repeated complete-SAB/noise/resource promotion gates only if a future preflight is full-SAB positive.
 - [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
 - [ ] Obtain and inspect full 2025/686 paper before theorem-level manuscript citations; tracked by conditional backlog audit CB7.

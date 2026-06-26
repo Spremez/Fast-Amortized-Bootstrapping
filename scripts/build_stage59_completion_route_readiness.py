@@ -176,10 +176,11 @@ def build_rows() -> List[Dict[str, str]]:
                 "repro/stage86_secondary_cmux_materialization/decision.csv; "
                 "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv; "
                 "repro/stage88_h14_backend_repeated_gates/summary.csv; "
-                "repro/stage89_h14_promotion_policy_integration/summary.csv"
+                "repro/stage89_h14_promotion_policy_integration/summary.csv; "
+                "repro/stage90_external_claim_unlock/summary.csv"
             ),
             "Each variant must enter the loop as promote/neutral/reject with full correctness gates.",
-            "Stage89 promotes H14-C1 backend FromDFT+add as the preferred explicit r=6 local engineering path while keeping scalar/default behavior and paper-level claims unchanged. Next route is Stage90 external claim unlock or a new falsifiable local hypothesis.",
+            "Stage89 promotes H14-C1 backend FromDFT+add as the preferred explicit r=6 local engineering path while keeping scalar/default behavior and paper-level claims unchanged. Stage90 then records the external claim unlock probe and keeps stronger claims blocked.",
             "Upgrades the explicit local engineering route only; does not change defaults or unlock paper-level claims.",
         ),
         route_row(
@@ -189,7 +190,7 @@ def build_rows() -> List[Dict[str, str]]:
             "WAIT_STRONGER_UNLOCKS" if final_waiting else "REVIEW_REQUIRED",
             "repro/stage52_external_unlock_readiness.csv; repro/remaining_blocker_dashboard.csv",
             "A9 may move only after CB5/CB6/CB7 are resolved or the scope is explicitly narrowed.",
-            "Run final recheck and Stage40-style freeze after external unlocks and manual claim review.",
+            "Run Stage91 scoped final package now only if stronger claims remain explicitly blocked, or rerun Stage90 after external evidence is supplied.",
             "Keeps the active goal open under current evidence.",
         ),
     ]

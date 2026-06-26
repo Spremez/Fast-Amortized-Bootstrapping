@@ -2,7 +2,7 @@
 """Build the Stage 42 evidence-closure audit.
 
 This script checks whether the current scoped PVW/MAT-SAB evidence chain and
-Stage89 control-plane/implementation extensions are internally consistent. It does not run
+Stage90 control-plane/claim-guard extensions are internally consistent. It does not run
 benchmarks or upgrade claims; it verifies that the committed artifacts still
 support the recorded scope.
 """
@@ -120,6 +120,9 @@ STAGE88_H14_BACKEND_REPEATED_GATES = (
 )
 STAGE89_H14_PROMOTION_POLICY = (
     ROOT / "repro" / "stage89_h14_promotion_policy_integration" / "summary.csv"
+)
+STAGE90_EXTERNAL_CLAIM_UNLOCK = (
+    ROOT / "repro" / "stage90_external_claim_unlock" / "summary.csv"
 )
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
@@ -247,6 +250,24 @@ STAGE89_ARTIFACTS = [
     "repro/stage89_h14_promotion_policy_integration/current_smoke/backend_pvw_target_SET_2_3_2048/run.log",
     "repro/stage89_h14_promotion_policy_integration/current_smoke/scalar_ternary_SET_2_3_2048/build.log",
     "repro/stage89_h14_promotion_policy_integration/summary.csv",
+]
+
+STAGE90_ARTIFACTS = [
+    "docs/stage90_external_claim_unlock_log.md",
+    "experiments/stage90_external_claim_unlock_plan.md",
+    "scripts/run_stage90_external_claim_unlock.sh",
+    "scripts/build_stage90_external_claim_unlock.py",
+    "hypotheses/hypothesis_register.yaml",
+    "repro/stage90_external_claim_unlock/summary.csv",
+    "repro/stage90_external_claim_unlock/citation_probe/summary.csv",
+    "repro/stage90_external_claim_unlock/citation_probe/access_probe.csv",
+    "repro/stage90_external_claim_unlock/native_perf_gate/summary.csv",
+    "repro/stage90_external_claim_unlock/native_perf_gate/environment.log",
+    "repro/stage90_external_claim_unlock/native_perf_gate/perf_smoke.log",
+    "repro/stage90_external_claim_unlock/citation_probe.log",
+    "repro/stage90_external_claim_unlock/native_perf_gate.log",
+    "repro/stage90_external_claim_unlock/external_evidence_intake.log",
+    "repro/stage90_external_claim_unlock/stage90_builder.log",
 ]
 
 REQUIRED_FILES = [
@@ -594,6 +615,7 @@ REQUIRED_FILES = [
     "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv",
     *STAGE88_ARTIFACTS,
     *STAGE89_ARTIFACTS,
+    *STAGE90_ARTIFACTS,
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -1056,6 +1078,7 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv",
     *STAGE88_ARTIFACTS,
     *STAGE89_ARTIFACTS,
+    *STAGE90_ARTIFACTS,
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -2769,6 +2792,40 @@ def check_stage89_h14_promotion_policy() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage90_external_claim_unlock() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE90_EXTERNAL_CLAIM_UNLOCK)}
+    expected = {
+        "stage90_stage89_precondition": "PASS",
+        "stage90_citation_fulltext_probe": "PASS_PROBE_RECORDED_WAIT_FULLTEXT",
+        "stage90_native_perf_unlock": "WAIT_NATIVE_PERF",
+        "stage90_source_refresh_context": "PASS_METADATA_CODE_CONTEXT",
+        "stage90_fulltext_unlock": "WAIT_FULLTEXT_ARTIFACT",
+        "stage90_novelty_review_unlock": "WAIT_FULLTEXT_OR_MANUAL_REVIEW",
+        "stage90_blocker_dashboard_guard": "PASS_BLOCKERS_REGISTERED",
+        "stage90_decision": "PASS_STAGE90_EXTERNAL_CLAIM_UNLOCK_PROBE_RECORDED_STRONGER_CLAIMS_BLOCKED",
+    }
+    problems = []
+    for gate, status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+    detail = (
+        "Stage90 external claim probe is recorded and keeps native-perf, full-text, and novelty claims blocked"
+        if not problems and rows
+        else "; ".join(problems) or "Stage90 external claim unlock summary missing"
+    )
+    return [
+        row(
+            "S42-STAGE90-EXTERNAL-CLAIM-UNLOCK",
+            "claim_scope",
+            pass_fail(not problems and bool(rows)),
+            STAGE90_EXTERNAL_CLAIM_UNLOCK.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage90 before Stage91 final package if external evidence or claim scope changes.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -3013,6 +3070,10 @@ def check_run_log() -> List[Dict[str, str]]:
     for r in rows:
         if r.get("run_id") == "stage89-h14-promotion-policy-integration-001":
             stage89_status = r.get("status", "MISSING")
+    stage90_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage90-external-claim-unlock-001":
+            stage90_status = r.get("status", "MISSING")
     ok = (
         ok
         and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
@@ -3038,11 +3099,12 @@ def check_run_log() -> List[Dict[str, str]]:
         and stage87_status == "PASS_STAGE87_H14_BACKEND_FROM_DFT_ADD_PREFLIGHT_PROMOTION_CANDIDATE"
         and stage88_status == "PASS_STAGE88_H14_BACKEND_REPEATED_GATES_RECORDED_PROMOTION_CANDIDATE"
         and stage89_status == "PASS_STAGE89_H14_BACKEND_PROMOTE_EXPLICIT_PATH_NOT_DEFAULT"
+        and stage90_status == "PASS_STAGE90_EXTERNAL_CLAIM_UNLOCK_PROBE_RECORDED_STRONGER_CLAIMS_BLOCKED"
     )
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}; stage87 status={stage87_status}; stage88 status={stage88_status}; stage89 status={stage89_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}; stage87 status={stage87_status}; stage88 status={stage88_status}; stage89 status={stage89_status}; stage90 status={stage90_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}; stage87 status={stage87_status}; stage88 status={stage88_status}; stage89 status={stage89_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}; stage87 status={stage87_status}; stage88 status={stage88_status}; stage89 status={stage89_status}; stage90 status={stage90_status}"
     )
     return [
         row(
@@ -3064,8 +3126,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87/Stage88/Stage89 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, Stage82, Stage83, Stage84, Stage86, Stage87, Stage88, or Stage89 control-plane artifacts.",
+            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87/Stage88/Stage89/Stage90 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, Stage82, Stage83, Stage84, Stage86, Stage87, Stage88, Stage89, or Stage90 control-plane artifacts.",
         )
     ]
 
@@ -3437,6 +3499,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
     "repro/stage87_h14_backend_from_dft_add_preflight/summary.csv",
     *STAGE88_ARTIFACTS,
     *STAGE89_ARTIFACTS,
+    *STAGE90_ARTIFACTS,
 ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -3445,7 +3508,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, Stage82, Stage83, Stage84, Stage86, Stage87, Stage88, and Stage89 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, Stage82, Stage83, Stage84, Stage86, Stage87, Stage88, Stage89, and Stage90 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -3532,6 +3595,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage87_h14_backend_from_dft_add_preflight,
         check_stage88_h14_backend_repeated_gates,
         check_stage89_h14_promotion_policy,
+        check_stage90_external_claim_unlock,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -3551,10 +3615,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, Stage86 secondary CMUX materialization design gate, Stage87 H14 backend FromDFT-add preflight, Stage88 H14 backend repeated gates, and Stage89 H14 promotion policy integration; stronger claims remain blocked"
+            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, Stage86 secondary CMUX materialization design gate, Stage87 H14 backend FromDFT-add preflight, Stage88 H14 backend repeated gates, Stage89 H14 promotion policy integration, and Stage90 external claim unlock probe; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87/Stage88/Stage89 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87/Stage88/Stage89/Stage90 evidence closure.",
         )
     )
     return checks
@@ -3581,7 +3645,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "Stage 42 machine-checks whether the Stage 19-62 PVW/MAT-SAB evidence",
         "chain plus Stage64A post-variant refresh, the Stage65A optional",
         "negative variant, Stage66A post-variant final recheck, Stage67",
-        "final-recheck Stage66A integration, and Stage68-89 control-plane",
+        "final-recheck Stage66A integration, and Stage68-90 control-plane",
         "closure extensions remain internally",
         "consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",

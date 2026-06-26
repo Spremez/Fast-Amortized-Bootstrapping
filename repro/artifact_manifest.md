@@ -1355,3 +1355,21 @@ Repro artifacts:
 - `repro/stage89_h14_promotion_policy_integration/current_smoke/backend_pvw_target_SET_2_3_2048/run.log`
 - `repro/stage89_h14_promotion_policy_integration/current_smoke/scalar_ternary_SET_2_3_2048/build.log`
 - `repro/stage89_h14_promotion_policy_integration/summary.csv`
+
+## Stage 90 External Claim Unlock
+
+- `docs/stage90_external_claim_unlock_log.md`
+- `experiments/stage90_external_claim_unlock_plan.md`
+- `scripts/run_stage90_external_claim_unlock.sh`
+- `scripts/build_stage90_external_claim_unlock.py`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage90_external_claim_unlock/summary.csv`
+- `repro/stage90_external_claim_unlock/citation_probe/summary.csv`
+- `repro/stage90_external_claim_unlock/citation_probe/access_probe.csv`
+- `repro/stage90_external_claim_unlock/native_perf_gate/summary.csv`
+- `repro/stage90_external_claim_unlock/native_perf_gate/environment.log`
+- `repro/stage90_external_claim_unlock/native_perf_gate/perf_smoke.log`
+- `repro/stage90_external_claim_unlock/citation_probe.log`
+- `repro/stage90_external_claim_unlock/native_perf_gate.log`
+- `repro/stage90_external_claim_unlock/external_evidence_intake.log`
+- `repro/stage90_external_claim_unlock/stage90_builder.log`

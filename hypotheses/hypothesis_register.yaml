@@ -517,3 +517,36 @@ hypotheses:
         knowledge, or secret-dependent metadata without a security proof
       - correctness, noise, resource, or closure gates are skipped before
         promotion
+  - id: H15_external_claim_unlock
+    statement: >
+      After Stage89 promotes H14-C1 as the preferred explicit r=6 local
+      engineering path, stronger paper/theory claims should remain blocked
+      unless native perf-counter evidence, reviewed 2025/686 full text, and
+      manual novelty/source-anchor review are available.
+    mechanism: >
+      The current local evidence supports scoped complete-SAB engineering
+      acceleration, but not MAT-AVX512 theoretical optimality, theorem-level
+      2025/686 citations, or novelty wording. Stage90 reruns the external
+      source/full-text probe, native perf gate, and external evidence intake
+      so the final package cannot rely on stale blocker state.
+    status: stage90_probe_completed_stronger_claims_blocked
+    evidence: docs/stage90_external_claim_unlock_log.md; experiments/stage90_external_claim_unlock_plan.md; scripts/run_stage90_external_claim_unlock.sh; scripts/build_stage90_external_claim_unlock.py; repro/stage90_external_claim_unlock/summary.csv; repro/stage90_external_claim_unlock/citation_probe/summary.csv; repro/stage90_external_claim_unlock/citation_probe/access_probe.csv; repro/stage90_external_claim_unlock/native_perf_gate/summary.csv; repro/external_evidence_intake/summary.csv; repro/remaining_blocker_dashboard.csv
+    current_decision: >
+      Stage90 passes as an external-claim probe and records
+      PASS_STAGE90_EXTERNAL_CLAIM_UNLOCK_PROBE_RECORDED_STRONGER_CLAIMS_BLOCKED.
+      Direct ePrint, ACM, and ResearchGate full-text routes remain blocked in
+      the current environment; no reviewed FAB686_FULLTEXT_PATH artifact is
+      registered; the current WSL2 PATH lacks perf; and novelty/source review
+      remains blocked pending full-text anchors. Therefore Stage91 may freeze a
+      scoped final package, but it must not upgrade theorem-level, novelty, or
+      hardware-counter optimality claims unless a future unlock pass supplies
+      the missing external evidence.
+    failure_criteria:
+      - Stage90 upgrades a claim without registered full text, native perf
+        counter evidence, or source-anchor review
+      - metadata-only or code-only source access is treated as theorem-level
+        full-text evidence
+      - WSL proxy timing or objdump evidence is treated as native perf-counter
+        proof
+      - final-package wording omits CB5/CB6/CB7 or hides the remaining unlock
+        commands
