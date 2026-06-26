@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-73`. This label tracks the
+Current control-plane closure label: `Stage 19-74`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -84,6 +84,7 @@ evidence.
 | Stage 71 final-recheck Stage70 integration | n/a | n/a | final-recheck integration | unified final recheck can refresh Stage70 before Stage42 closure |
 | Stage 72 external source refresh | n/a | n/a | external-source evidence | author metadata, DOI metadata, and code route are reachable; reviewed full text remains blocked |
 | Stage 73 final-recheck Stage72 integration | n/a | n/a | final-recheck integration | unified final recheck can refresh Stage72 before blocker/frontier/closure rebuilds |
+| Stage 74 r-scaling boundary | `spqlios_avx512` | 6/8 | negative boundary | r=6/r=8 complete-SAB smoke passed correctness with `1.251x`/`1.199x`, below the Stage36 r=4 CI lower bound; direct r>4 not promoted |
 
 Current conclusion:
 
@@ -248,6 +249,11 @@ recheck, so blocker dashboards, frontier labels, and Stage42 closure can be
 rebuilt after current source availability is refreshed. This is control-plane
 evidence only and does not upgrade speedup, novelty, theorem-level, or
 hardware-counter claims.
+Stage74 then tests direct `r>4` lane-count expansion as a local falsifiable
+hypothesis. The r=6 and r=8 complete-SAB smoke runs pass correctness and remain
+faster than repeated scalar SAB, but they are below the current r=4 promoted
+evidence. Direct larger-r scaling is therefore a recorded negative boundary,
+not a promoted optimization.
 ```
 
 ## Invariants
@@ -353,5 +359,6 @@ Stage 70: external unlock preflight. [passed]
 Stage 71: final-recheck Stage70 integration. [passed; waiting for external unlocks or new hypothesis]
 Stage 72: external source refresh. [passed; metadata/code reachable, reviewed full text still blocked]
 Stage 73: final-recheck Stage72 integration. [passed; Stage72 source refresh is now covered by unified final recheck]
+Stage 74: r-scaling boundary. [passed as negative/not promoted; direct r=6/r=8 does not beat r=4 evidence]
 Stage 66: release/paper package. [waiting for external unlocks or narrowed scope]
 ```

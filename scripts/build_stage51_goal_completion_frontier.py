@@ -121,6 +121,10 @@ def build_rows() -> List[Dict[str, str]]:
         stage42.get("S42-STAGE73-FINAL-RECHECK-STAGE72", {}).get("status")
         == "PASS"
     )
+    stage74_closed = (
+        stage42.get("S42-STAGE74-R-SCALING-BOUNDARY", {}).get("status")
+        == "PASS"
+    )
     optional_notes = []
     if stage64a_closed:
         optional_notes.append("Stage64A post-variant refresh")
@@ -142,6 +146,8 @@ def build_rows() -> List[Dict[str, str]]:
         optional_notes.append("Stage72 external source refresh")
     if stage73_closed:
         optional_notes.append("Stage73 final-recheck Stage72 integration")
+    if stage74_closed:
+        optional_notes.append("Stage74 r-scaling boundary")
     optional_stage_note = " plus " + " and ".join(optional_notes) if optional_notes else ""
     spaced_stage_range = current_stage_range.replace("Stage", "Stage ")
     stage42_overall_detail = stage42.get("S42-OVERALL", {}).get("detail", "")

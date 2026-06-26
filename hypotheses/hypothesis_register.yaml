@@ -276,3 +276,31 @@ hypotheses:
       - full SAB benchmark evidence is missing or only smoke-level
       - theory/noise/security discussion does not support changed boundaries
       - claim scope exceeds tested parameters or branches
+  - id: H10_r_gt4_lane_scaling
+    statement: >
+      Directly increasing the number of independent PVW/MAT-SAB lanes beyond
+      r=4 should improve complete SAB throughput if shared schedule
+      amortization continues to dominate dense MAT external-product cost.
+    mechanism: >
+      Larger r keeps one shared sparse selector schedule and shared mask while
+      adding more body lanes. The expected benefit is lower per-lane
+      bootstrapping cost; the expected failure mode is that dense MAT output
+      accumulation, generic large-r loops, cache traffic, and register pressure
+      dominate the saved schedule work.
+    status: stage74_direct_r_gt4_negative_not_promoted
+    evidence: docs/stage74_r_scaling_boundary_log.md; theory_checks/h10_r_gt4_lane_scaling.md; algorithm_variants/pvw_sab_r_gt4_lane_scaling.md
+    current_decision: >
+      Stage74 tested the existing active-buffer `sab_pvw_*` path at r=6 and
+      r=8 under spqlios_avx512 with MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true.
+      Both complete-SAB smoke runs passed correctness and remained faster than
+      repeated scalar SAB: r=6 reached 1.251x and r=8 reached 1.199x. Both are
+      below the Stage36 r=4 10-run reference mean 1.377x and below the r=4
+      CI lower bound 1.314893. Direct r>4 lane-count expansion is therefore
+      recorded as a negative boundary and is not promoted. Reopen large-r work
+      only with a new r>4-specific layout, tiling, or sparse-MAT hypothesis.
+    failure_criteria:
+      - r>4 full-SAB correctness fails
+      - r>4 speedup does not exceed current r=4 promoted evidence
+      - larger-r resource/keygen overhead is unacceptable
+      - any future large-r claim lacks repeated performance, noise, resource,
+        and closure gates

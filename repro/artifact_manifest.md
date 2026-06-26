@@ -1037,3 +1037,17 @@ Repro artifacts:
 - `repro/stage73_final_recheck_stage72/stage59_completion_route.log`
 - `repro/stage73_final_recheck_stage72/stage70_external_unlock_preflight.log`
 - `repro/stage73_final_recheck_stage72/stage42_evidence_closure.log`
+
+## Stage 74 R-Scaling Boundary
+
+- `docs/stage74_r_scaling_boundary_log.md`
+- `experiments/stage74_r_scaling_boundary_plan.md`
+- `scripts/build_stage74_r_scaling_boundary.py`
+- `theory_checks/h10_r_gt4_lane_scaling.md`
+- `algorithm_variants/pvw_sab_r_gt4_lane_scaling.md`
+- `hypotheses/hypothesis_register.yaml`
+- `repro/stage74_r_scaling_boundary/decision.csv`
+- `repro/stage74_r_scaling_boundary/r6_reps1_runs1/summary.csv`
+- `repro/stage74_r_scaling_boundary/r6_reps1_runs1/run_0.log`
+- `repro/stage74_r_scaling_boundary/r8_reps1_runs1/summary.csv`
+- `repro/stage74_r_scaling_boundary/r8_reps1_runs1/run_0.log`

@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail
+stage74_r6_full_sab_smoke,PASS,speedup_vs_scalar_repeated,1.251,repro/stage74_r_scaling_boundary/r6_reps1_runs1/summary.csv,r=6 full-SAB correctness passed; pvw_avg_us=42573547.000; scalar_repeated_avg_us=53252686.000
+stage74_r8_full_sab_smoke,PASS,speedup_vs_scalar_repeated,1.199,repro/stage74_r_scaling_boundary/r8_reps1_runs1/summary.csv,r=8 full-SAB correctness passed; pvw_avg_us=60641730.000; scalar_repeated_avg_us=72736964.000
+stage74_rgt4_boundary,NOT_PROMOTED_R_GT4_BELOW_R4_SCREEN,r6_speedup;r8_speedup;r4_mean;r4_ci95_low,1.251;1.199;1.377;1.314893,repro/stage74_r_scaling_boundary/r6_reps1_runs1/summary.csv; repro/stage74_r_scaling_boundary/r8_reps1_runs1/summary.csv; repro/stage36_target_perf_summary.csv,r=6 and r=8 one-run smoke speedups are below the Stage36 r=4 10-run CI lower bound; direct r>4 lane-count expansion is not promoted without a new r>4 kernel/layout hypothesis
+stage74_decision,PASS_R_GT4_BOUNDARY_RECORDED_NOT_PROMOTED,promotion_policy,,repro/stage74_r_scaling_boundary/decision.csv,Stage74 records r=6/r=8 complete-SAB smoke evidence and does not promote direct r>4 scaling

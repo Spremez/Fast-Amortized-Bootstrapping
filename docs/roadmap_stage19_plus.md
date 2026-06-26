@@ -2271,3 +2271,42 @@ Stage73 passed. The unified final recheck can refresh Stage72 external-source
 availability before rebuilding blocker/frontier/closure evidence. It is
 control-plane evidence only.
 ```
+
+## Stage 74: R-Scaling Boundary
+
+Goal:
+
+```text
+Test whether directly increasing PVW/MAT-SAB lane count beyond r=4 improves
+complete SAB throughput under the current active-buffer MAT path.
+```
+
+Tasks:
+
+- add H10 for direct `r>4` lane scaling;
+- run complete-SAB smoke for `r=6` and `r=8` under `spqlios_avx512`,
+  `MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true`, and
+  `SAB_PVW_ACTIVE_BUFFER_FUSION=true`;
+- compare the smoke results against the Stage36 r=4 10-run reference;
+- record a candidate variant card, theory check, experiment plan, decision
+  CSV, and log.
+
+Gate:
+
+- r=6 and r=8 complete-SAB correctness must pass;
+- r=6 and r=8 must remain faster than repeated scalar SAB to be useful as
+  scaling-boundary evidence;
+- direct r>4 promotion requires beating the current r=4 promoted evidence
+  before repeated/noise/resource gates are justified;
+- no scalar SAB path, default `sab_pvw_*` path, key format, novelty,
+  theorem-level, all-parameter, or hardware-counter claim is upgraded.
+
+Status:
+
+```text
+Stage74 passed as a negative boundary. r=6 and r=8 complete-SAB smoke runs
+passed correctness and remained faster than repeated scalar SAB, but their
+one-run speedups, 1.251x and 1.199x, were below the Stage36 r=4 10-run CI
+lower bound 1.314893. Direct r>4 lane-count expansion is not promoted without
+a new r>4-specific kernel/layout/sparse-MAT hypothesis.
+```

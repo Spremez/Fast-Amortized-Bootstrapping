@@ -80,6 +80,9 @@ STAGE73_FINAL_RECHECK_STAGE72 = (
 STAGE73_FINAL_RECHECK_STAGE72_DECISION = (
     ROOT / "repro" / "stage73_final_recheck_stage72" / "decision.csv"
 )
+STAGE74_R_SCALING_BOUNDARY = (
+    ROOT / "repro" / "stage74_r_scaling_boundary" / "decision.csv"
+)
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -309,6 +312,16 @@ REQUIRED_FILES = [
     "repro/stage73_final_recheck_stage72/stage59_completion_route.log",
     "repro/stage73_final_recheck_stage72/stage70_external_unlock_preflight.log",
     "repro/stage73_final_recheck_stage72/stage42_evidence_closure.log",
+    "docs/stage74_r_scaling_boundary_log.md",
+    "experiments/stage74_r_scaling_boundary_plan.md",
+    "scripts/build_stage74_r_scaling_boundary.py",
+    "theory_checks/h10_r_gt4_lane_scaling.md",
+    "algorithm_variants/pvw_sab_r_gt4_lane_scaling.md",
+    "repro/stage74_r_scaling_boundary/decision.csv",
+    "repro/stage74_r_scaling_boundary/r6_reps1_runs1/summary.csv",
+    "repro/stage74_r_scaling_boundary/r6_reps1_runs1/run_0.log",
+    "repro/stage74_r_scaling_boundary/r8_reps1_runs1/summary.csv",
+    "repro/stage74_r_scaling_boundary/r8_reps1_runs1/run_0.log",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -582,6 +595,16 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage73_final_recheck_stage72/stage59_completion_route.log",
     "repro/stage73_final_recheck_stage72/stage70_external_unlock_preflight.log",
     "repro/stage73_final_recheck_stage72/stage42_evidence_closure.log",
+    "docs/stage74_r_scaling_boundary_log.md",
+    "experiments/stage74_r_scaling_boundary_plan.md",
+    "scripts/build_stage74_r_scaling_boundary.py",
+    "theory_checks/h10_r_gt4_lane_scaling.md",
+    "algorithm_variants/pvw_sab_r_gt4_lane_scaling.md",
+    "repro/stage74_r_scaling_boundary/decision.csv",
+    "repro/stage74_r_scaling_boundary/r6_reps1_runs1/summary.csv",
+    "repro/stage74_r_scaling_boundary/r6_reps1_runs1/run_0.log",
+    "repro/stage74_r_scaling_boundary/r8_reps1_runs1/summary.csv",
+    "repro/stage74_r_scaling_boundary/r8_reps1_runs1/run_0.log",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -1815,6 +1838,36 @@ def check_stage73_final_recheck_stage72() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage74_r_scaling_boundary() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE74_R_SCALING_BOUNDARY)}
+    expected = {
+        "stage74_r6_full_sab_smoke": "PASS",
+        "stage74_r8_full_sab_smoke": "PASS",
+        "stage74_rgt4_boundary": "NOT_PROMOTED_R_GT4_BELOW_R4_SCREEN",
+        "stage74_decision": "PASS_R_GT4_BOUNDARY_RECORDED_NOT_PROMOTED",
+    }
+    problems = []
+    for gate, status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != status:
+            problems.append(f"{gate}:status={actual}")
+    detail = (
+        "Stage74 records r=6/r=8 complete-SAB smoke and rejects direct r>4 promotion under current evidence"
+        if not problems and rows
+        else "; ".join(problems) or "Stage74 decision missing"
+    )
+    return [
+        row(
+            "S42-STAGE74-R-SCALING-BOUNDARY",
+            "variant_boundary",
+            pass_fail(not problems and bool(rows)),
+            STAGE74_R_SCALING_BOUNDARY.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage74 before relying on the direct r>4 scaling boundary.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -1999,6 +2052,10 @@ def check_run_log() -> List[Dict[str, str]]:
     for r in rows:
         if r.get("run_id") == "stage73-final-recheck-stage72-001":
             stage73_status = r.get("status", "MISSING")
+    stage74_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage74-r-scaling-boundary-001":
+            stage74_status = r.get("status", "MISSING")
     ok = (
         ok
         and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
@@ -2009,11 +2066,12 @@ def check_run_log() -> List[Dict[str, str]]:
         and stage71_status == "PASS_FINAL_RECHECK_STAGE70_INTEGRATION"
         and stage72_status == "PASS_EXTERNAL_SOURCE_REFRESH_STRONGER_CLAIMS_BLOCKED"
         and stage73_status == "PASS_FINAL_RECHECK_STAGE72_INTEGRATION"
+        and stage74_status == "PASS_R_GT4_BOUNDARY_RECORDED_NOT_PROMOTED"
     )
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}"
     )
     return [
         row(
@@ -2035,8 +2093,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, or Stage73 control-plane artifacts.",
+            "all required Stage 41-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, or Stage74 control-plane artifacts.",
         )
     ]
 
@@ -2248,6 +2306,16 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/stage73_final_recheck_stage72/stage59_completion_route.log",
         "repro/stage73_final_recheck_stage72/stage70_external_unlock_preflight.log",
         "repro/stage73_final_recheck_stage72/stage42_evidence_closure.log",
+        "docs/stage74_r_scaling_boundary_log.md",
+        "experiments/stage74_r_scaling_boundary_plan.md",
+        "scripts/build_stage74_r_scaling_boundary.py",
+        "theory_checks/h10_r_gt4_lane_scaling.md",
+        "algorithm_variants/pvw_sab_r_gt4_lane_scaling.md",
+        "repro/stage74_r_scaling_boundary/decision.csv",
+        "repro/stage74_r_scaling_boundary/r6_reps1_runs1/summary.csv",
+        "repro/stage74_r_scaling_boundary/r6_reps1_runs1/run_0.log",
+        "repro/stage74_r_scaling_boundary/r8_reps1_runs1/summary.csv",
+        "repro/stage74_r_scaling_boundary/r8_reps1_runs1/run_0.log",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -2256,7 +2324,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, and Stage73 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, and Stage74 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -2328,6 +2396,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage71_final_recheck_stage70,
         check_stage72_external_source_refresh,
         check_stage73_final_recheck_stage72,
+        check_stage74_r_scaling_boundary,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -2347,10 +2416,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, and Stage73 final-recheck Stage72 integration; stronger claims remain blocked"
+            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, and Stage74 r-scaling boundary; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74 evidence closure.",
         )
     )
     return checks
@@ -2377,7 +2446,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "Stage 42 machine-checks whether the Stage 19-62 PVW/MAT-SAB evidence",
         "chain plus Stage64A post-variant refresh, the Stage65A optional",
         "negative variant, Stage66A post-variant final recheck, Stage67",
-        "final-recheck Stage66A integration, and Stage68-73 control-plane",
+        "final-recheck Stage66A integration, and Stage68-74 control-plane",
         "closure extensions remain internally",
         "consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",

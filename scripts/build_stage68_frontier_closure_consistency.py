@@ -116,10 +116,13 @@ def build_rows() -> List[Dict[str, str]]:
 
     r1 = stage59.get("S59-R1-SCOPED-ENGINEERING", {})
     r2 = stage59.get("S59-R2-CURRENT-HEAD-REFRESH", {})
+    r6 = stage59.get("S59-R6-OPTIONAL-VARIANTS", {})
     stage59_ok = (
         r1.get("status") == "LOCAL_READY"
         and r2.get("status") == "READY_LOCAL_REFRESH"
         and "stage67_final_recheck_stage66" in r2.get("evidence", "")
+        and r6.get("status") == "READY_OPTIONAL_LOCAL_TRIAGE"
+        and "stage74_r_scaling_boundary" in r6.get("evidence", "")
     )
 
     rows = [
@@ -145,7 +148,7 @@ def build_rows() -> List[Dict[str, str]]:
             "stage68_stage59_route",
             "PASS" if stage59_ok else "FAIL",
             STAGE59.relative_to(ROOT).as_posix(),
-            f"R1={r1.get('status', 'MISSING')}; R2={r2.get('status', 'MISSING')}; R2_evidence={r2.get('evidence', '')}",
+            f"R1={r1.get('status', 'MISSING')}; R2={r2.get('status', 'MISSING')}; R2_evidence={r2.get('evidence', '')}; R6={r6.get('status', 'MISSING')}; R6_evidence={r6.get('evidence', '')}",
         ),
     ]
     failures = [item["gate"] for item in rows if item["status"] != "PASS"]

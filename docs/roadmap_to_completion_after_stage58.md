@@ -24,6 +24,7 @@ evidence is supplied.
 | Stage 71 | final-recheck Stage70 integration | Make Stage70 refreshable through the unified final recheck before Stage42 closure. | Stage71 decision must be `PASS_FINAL_RECHECK_STAGE70_INTEGRATION`. | passed |
 | Stage 72 | external source refresh | Refresh current author/DOI/code/full-text routes for 2025/686 after Stage71. | Stage72 decision must be `PASS_EXTERNAL_SOURCE_REFRESH_STRONGER_CLAIMS_BLOCKED`. | passed |
 | Stage 73 | final-recheck Stage72 integration | Make Stage72 refreshable through the unified final recheck before blocker/frontier/closure rebuilds. | Stage73 decision must be `PASS_FINAL_RECHECK_STAGE72_INTEGRATION`. | passed |
+| Stage 74 | r-scaling boundary | Test direct r=6/r=8 lane-count expansion under the current active-buffer MAT path. | Stage74 decision must be `PASS_R_GT4_BOUNDARY_RECORDED_NOT_PROMOTED` unless a full-gate promotion candidate emerges. | passed as negative/not promoted |
 | Stage 66 | release/paper package | Freeze the final allowed claim package after external blockers are resolved or the scope is explicitly narrowed. | final recheck, closure audit, verifier, artifact manifest, and reproduction checklist all pass. | waiting |
 
 Execution policy:
@@ -53,3 +54,5 @@ Execution policy:
   novelty claims without reviewed full text.
 - After Stage72, run Stage73 so the unified final recheck refreshes current
   source-route state before relying on blocker, frontier, or closure evidence.
+- After Stage74, do not reopen direct r>4 lane-count expansion without a new
+  r>4 kernel/layout/sparse-MAT hypothesis and full staged/full-SAB gates.
