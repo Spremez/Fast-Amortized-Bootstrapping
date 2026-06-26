@@ -1279,3 +1279,40 @@ lane equivalence for r=2, h=39, r_prec=7 on `BINARY SET_2_3_2048`. This
 refreshes current-head correctness evidence after the active-state refactor
 but does not add a new performance claim.
 ```
+
+## Stage 47: WSL Full-SAB Current-Head Smoke
+
+Goal:
+
+```text
+Refresh complete SAB A/B smoke evidence on WSL/Linux after the active-state
+refactor, while keeping Stage 36 as the statistical performance evidence.
+```
+
+Tasks:
+
+- run `scripts/run_stage20_active_buffer_bench.sh` at current head for r=2 and
+  r=4;
+- keep `spqlios_avx512`, specialized MAT-AVX512, and active-buffer fusion
+  enabled;
+- record one-run complete-SAB A/B summaries and raw run logs;
+- report the result as smoke-only, not as a new high-stat performance claim.
+
+Gate:
+
+- each run must print `SAB_PVW_BENCH correctness target_full ... Pass`;
+- r=2 and r=4 summary rows must be `PASS`;
+- speedup must remain positive for the smoke to support current-head
+  continuity;
+- Stage42 closure/verifier must include Stage47 before relying on this
+  current-head full-SAB smoke.
+
+Status:
+
+```text
+Stage 47 WSL/Linux complete-SAB smoke passed. r=2 reached 1.212x in one
+process run and r=4 reached 1.353x in one process run under `spqlios_avx512`,
+specialized MAT-AVX512, and active-buffer fusion. This preserves current-head
+continuity after the active-state refactor; Stage 36 remains the high-stat
+performance evidence for claims.
+```

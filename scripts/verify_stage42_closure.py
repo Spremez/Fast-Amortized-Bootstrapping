@@ -21,6 +21,7 @@ STAGE43_SMOKE = ROOT / "repro" / "stage43_current_smoke_after_stage42" / "summar
 STAGE44_REPROBE = ROOT / "repro" / "stage44_external_unlock_reprobe" / "summary.csv"
 STAGE45_ACTIVE_STATE = ROOT / "repro" / "stage45_active_state_refactor" / "summary.csv"
 STAGE46_WSL_TARGET = ROOT / "repro" / "stage46_wsl_active_state_target_smoke" / "summary.csv"
+STAGE47_WSL_FULL_SAB = ROOT / "repro" / "stage47_wsl_active_state_full_sab_smoke" / "summary.csv"
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -107,6 +108,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     stage44 = {row.get("item"): row for row in read_csv(STAGE44_REPROBE)}
     stage45 = {row.get("check"): row for row in read_csv(STAGE45_ACTIVE_STATE)}
     stage46 = {row.get("check"): row for row in read_csv(STAGE46_WSL_TARGET)}
+    stage47 = {row.get("r"): row for row in read_csv(STAGE47_WSL_FULL_SAB)}
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
     closure_recheck = {row.get("step"): row for row in read_csv(CLOSURE_RECHECK)}
@@ -162,6 +164,25 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "status", "MISSING"
     )
     stage42_stage46_ok = stage42.get("S42-STAGE46-WSL-TARGET", {}).get("status") == "PASS"
+    stage47_mismatches = []
+    for r_value in ["2", "4"]:
+        row_data = stage47.get(r_value)
+        if not row_data:
+            stage47_mismatches.append(f"r={r_value}:missing")
+            continue
+        if row_data.get("status") != "PASS":
+            stage47_mismatches.append(f"r={r_value}:status={row_data.get('status')}")
+        try:
+            speedup = float(row_data.get("speedup_vs_scalar_repeated", "0"))
+        except ValueError:
+            speedup = 0.0
+        if speedup <= 1.0:
+            stage47_mismatches.append(
+                f"r={r_value}:speedup={row_data.get('speedup_vs_scalar_repeated')}"
+            )
+    stage42_stage47_ok = (
+        stage42.get("S42-STAGE47-WSL-FULL-SAB", {}).get("status") == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -198,6 +219,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage44-final-recheck-reprobe-001",
         "stage45-active-state-refactor-001",
         "stage46-wsl-active-state-target-smoke-001",
+        "stage47-wsl-full-sab-smoke-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -215,6 +237,12 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "repro/stage46_wsl_active_state_target_smoke/summary.csv",
         "repro/stage46_wsl_active_state_target_smoke/build.log",
         "repro/stage46_wsl_active_state_target_smoke/run.log",
+        "docs/stage47_wsl_full_sab_smoke_log.md",
+        "repro/stage47_wsl_active_state_full_sab_smoke/summary.csv",
+        "repro/stage47_wsl_active_state_full_sab_smoke/r2/summary.csv",
+        "repro/stage47_wsl_active_state_full_sab_smoke/r2/run_0.log",
+        "repro/stage47_wsl_active_state_full_sab_smoke/r4/summary.csv",
+        "repro/stage47_wsl_active_state_full_sab_smoke/r4/run_0.log",
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -303,6 +331,15 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             else f"stage46_status={stage46_status}; S42-STAGE46-WSL-TARGET={stage42.get('S42-STAGE46-WSL-TARGET', {}).get('status', 'MISSING')}",
         },
         {
+            "check": "stage47_wsl_full_sab",
+            "status": "PASS" if not stage47_mismatches and stage42_stage47_ok else "FAIL",
+            "evidence": "repro/stage47_wsl_active_state_full_sab_smoke/summary.csv",
+            "detail": "Stage47 WSL r=2/r=4 full-SAB smoke passes with positive A/B speedup and closure audit records it"
+            if not stage47_mismatches and stage42_stage47_ok
+            else "; ".join(stage47_mismatches)
+            or f"S42-STAGE47-WSL-FULL-SAB:{stage42.get('S42-STAGE47-WSL-FULL-SAB', {}).get('status', 'MISSING')}!=PASS",
+        },
+        {
             "check": "stage44_recheck_integration",
             "status": "PASS" if not stage44_recheck_mismatches else "FAIL",
             "evidence": "repro/final_goal_recheck_stage44_reprobe/summary.csv",
@@ -330,7 +367,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "stage42_run_log_rows",
             "status": "PASS" if not missing_run_ids else "FAIL",
             "evidence": "repro/run_log.csv",
-            "detail": "all Stage42/43/44/45/46 closure run rows are present"
+            "detail": "all Stage42/43/44/45/46/47 closure run rows are present"
             if not missing_run_ids
             else "; ".join(missing_run_ids),
         },
@@ -338,7 +375,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "artifact_manifest_mentions",
             "status": "PASS" if not missing_manifest_mentions else "FAIL",
             "evidence": "repro/artifact_manifest.md",
-            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, and Stage46 WSL target smoke are registered"
+            "detail": "Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, and Stage47 full-SAB smoke are registered"
             if not missing_manifest_mentions
             else "; ".join(missing_manifest_mentions),
         },

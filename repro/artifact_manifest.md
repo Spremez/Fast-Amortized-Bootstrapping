@@ -744,3 +744,9 @@ Repro artifacts:
 - `repro/stage46_wsl_active_state_target_smoke/summary.csv`
 - `repro/stage46_wsl_active_state_target_smoke/build.log`
 - `repro/stage46_wsl_active_state_target_smoke/run.log`
+- `docs/stage47_wsl_full_sab_smoke_log.md`
+- `repro/stage47_wsl_active_state_full_sab_smoke/summary.csv`
+- `repro/stage47_wsl_active_state_full_sab_smoke/r2/summary.csv`
+- `repro/stage47_wsl_active_state_full_sab_smoke/r2/run_0.log`
+- `repro/stage47_wsl_active_state_full_sab_smoke/r4/summary.csv`
+- `repro/stage47_wsl_active_state_full_sab_smoke/r4/run_0.log`

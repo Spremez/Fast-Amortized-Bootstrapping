@@ -33,6 +33,7 @@ STAGE43_SMOKE = ROOT / "repro" / "stage43_current_smoke_after_stage42" / "summar
 STAGE44_REPROBE = ROOT / "repro" / "stage44_external_unlock_reprobe" / "summary.csv"
 STAGE45_ACTIVE_STATE = ROOT / "repro" / "stage45_active_state_refactor" / "summary.csv"
 STAGE46_WSL_TARGET = ROOT / "repro" / "stage46_wsl_active_state_target_smoke" / "summary.csv"
+STAGE47_WSL_FULL_SAB = ROOT / "repro" / "stage47_wsl_active_state_full_sab_smoke" / "summary.csv"
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -125,6 +126,8 @@ REQUIRED_FILES = [
     "repro/stage45_active_state_refactor/summary.csv",
     "docs/stage46_wsl_active_state_target_smoke_log.md",
     "repro/stage46_wsl_active_state_target_smoke/summary.csv",
+    "docs/stage47_wsl_full_sab_smoke_log.md",
+    "repro/stage47_wsl_active_state_full_sab_smoke/summary.csv",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -177,6 +180,12 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     "repro/stage46_wsl_active_state_target_smoke/summary.csv",
     "repro/stage46_wsl_active_state_target_smoke/build.log",
     "repro/stage46_wsl_active_state_target_smoke/run.log",
+    "docs/stage47_wsl_full_sab_smoke_log.md",
+    "repro/stage47_wsl_active_state_full_sab_smoke/summary.csv",
+    "repro/stage47_wsl_active_state_full_sab_smoke/r2/summary.csv",
+    "repro/stage47_wsl_active_state_full_sab_smoke/r2/run_0.log",
+    "repro/stage47_wsl_active_state_full_sab_smoke/r4/summary.csv",
+    "repro/stage47_wsl_active_state_full_sab_smoke/r4/run_0.log",
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -252,7 +261,7 @@ def write_closure_manifest() -> None:
 def check_roadmap() -> List[Dict[str, str]]:
     text = ROADMAP.read_text(encoding="utf-8") if ROADMAP.exists() else ""
     stages = sorted({int(m.group(1)) for m in re.finditer(r"^## Stage (\d+):", text, re.M)})
-    expected = list(range(19, 47))
+    expected = list(range(19, 48))
     return [
         row(
             "S42-ROADMAP-STAGES",
@@ -260,7 +269,7 @@ def check_roadmap() -> List[Dict[str, str]]:
             pass_fail(stages == expected),
             ROADMAP.relative_to(ROOT).as_posix(),
             f"observed={stages}; expected={expected}",
-            "Restore one Stage 19-46 section per stage before using the roadmap as the active plan.",
+            "Restore one Stage 19-47 section per stage before using the roadmap as the active plan.",
         )
     ]
 
@@ -398,6 +407,36 @@ def check_stage46_wsl_target() -> List[Dict[str, str]]:
             if status == "PASS"
             else f"wsl_spqlios_avx512_target_gate:{status}!=PASS",
             "Rerun or repair Stage 46 WSL target smoke before relying on current-head target correctness.",
+        )
+    ]
+
+
+def check_stage47_wsl_full_sab() -> List[Dict[str, str]]:
+    rows = {r.get("r"): r for r in read_csv(STAGE47_WSL_FULL_SAB)}
+    problems = []
+    for r_value in ["2", "4"]:
+        row_data = rows.get(r_value)
+        if not row_data:
+            problems.append(f"r={r_value}:missing")
+            continue
+        if row_data.get("status") != "PASS":
+            problems.append(f"r={r_value}:status={row_data.get('status')}")
+        try:
+            speedup = float(row_data.get("speedup_vs_scalar_repeated", "0"))
+        except ValueError:
+            speedup = 0.0
+        if speedup <= 1.0:
+            problems.append(f"r={r_value}:speedup={row_data.get('speedup_vs_scalar_repeated')}")
+    return [
+        row(
+            "S42-STAGE47-WSL-FULL-SAB",
+            "current_smoke",
+            pass_fail(not problems and bool(rows)),
+            STAGE47_WSL_FULL_SAB.relative_to(ROOT).as_posix(),
+            "WSL spqlios_avx512 r=2/r=4 full-SAB current-head smoke passes with positive A/B speedup"
+            if not problems and rows
+            else "; ".join(problems) or "summary missing or empty",
+            "Rerun or repair Stage 47 WSL full-SAB smoke before relying on current-head A/B continuity.",
         )
     ]
 
@@ -548,14 +587,14 @@ def check_run_log() -> List[Dict[str, str]]:
                 n = int(stage.split()[1])
             except (IndexError, ValueError):
                 continue
-            if 19 <= n <= 46:
+            if 19 <= n <= 47:
                 stages[n] = stages.get(n, 0) + 1
         if r.get("run_id") == "stage41-external-unlock-packet-001":
             stage41_status = r.get("status", "MISSING")
-    missing = [n for n in range(19, 47) if n not in stages]
+    missing = [n for n in range(19, 48) if n not in stages]
     ok = not missing and stage41_status == "WAIT_EXTERNAL_EVIDENCE"
     detail = (
-        f"stages 19-46 registered; stage41 status={stage41_status}"
+        f"stages 19-47 registered; stage41 status={stage41_status}"
         if ok
         else f"missing_stages={missing}; stage41 status={stage41_status}"
     )
@@ -579,8 +618,8 @@ def check_required_files() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             "; ".join(REQUIRED_FILES),
-            "all required Stage 41-46 files exist" if not missing else f"missing={missing}",
-            "Restore missing Stage 41-46 control-plane artifacts.",
+            "all required Stage 41-47 files exist" if not missing else f"missing={missing}",
+            "Restore missing Stage 41-47 control-plane artifacts.",
         )
     ]
 
@@ -620,6 +659,12 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         "repro/stage46_wsl_active_state_target_smoke/summary.csv",
         "repro/stage46_wsl_active_state_target_smoke/build.log",
         "repro/stage46_wsl_active_state_target_smoke/run.log",
+        "docs/stage47_wsl_full_sab_smoke_log.md",
+        "repro/stage47_wsl_active_state_full_sab_smoke/summary.csv",
+        "repro/stage47_wsl_active_state_full_sab_smoke/r2/summary.csv",
+        "repro/stage47_wsl_active_state_full_sab_smoke/r2/run_0.log",
+        "repro/stage47_wsl_active_state_full_sab_smoke/r4/summary.csv",
+        "repro/stage47_wsl_active_state_full_sab_smoke/r4/run_0.log",
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -674,6 +719,7 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage44_reprobe,
         check_stage45_active_state,
         check_stage46_wsl_target,
+        check_stage47_wsl_full_sab,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -692,10 +738,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            "Stage 19-46 scoped evidence chain is internally closed; stronger claims remain blocked"
+            "Stage 19-47 scoped evidence chain is internally closed; stronger claims remain blocked"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-46 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-47 evidence closure.",
         )
     )
     return checks
@@ -719,7 +765,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "",
         "## Purpose",
         "",
-        "Stage 42 machine-checks whether the Stage 19-46 PVW/MAT-SAB evidence",
+        "Stage 42 machine-checks whether the Stage 19-47 PVW/MAT-SAB evidence",
         "chain remains internally consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",
         "",

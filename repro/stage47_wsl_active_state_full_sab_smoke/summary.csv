@@ -1,0 +1,3 @@
+r,runs,reps,status,pvw_avg_us,scalar_repeated_avg_us,speedup_vs_scalar_repeated,source_summary,source_log,decision
+2,1,1,PASS,13507287.000,16374054.000,1.212,repro/stage47_wsl_active_state_full_sab_smoke/r2/summary.csv,repro/stage47_wsl_active_state_full_sab_smoke/r2/run_0.log,current_head_smoke_positive_not_statistical_claim
+4,1,1,PASS,24903657.000,33685084.000,1.353,repro/stage47_wsl_active_state_full_sab_smoke/r4/summary.csv,repro/stage47_wsl_active_state_full_sab_smoke/r4/run_0.log,current_head_smoke_positive_not_statistical_claim
