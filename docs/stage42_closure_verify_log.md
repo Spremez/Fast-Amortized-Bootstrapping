@@ -11,7 +11,7 @@ regenerating the Stage 42 audit or manifest.
 
 | check | status | evidence | detail |
 |---|---|---|---|
-| verification_input_commit | d351b79 | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
+| verification_input_commit | cc1b4b9 | git rev-parse --short HEAD | Commit checked before writing verifier output artifacts. |
 | worktree_clean_before_outputs | PASS | git status --short --untracked-files=all | tracked and untracked worktree was clean before verifier outputs. |
 | final_audit_A9 | PASS | repro/final_goal_completion_audit.csv | SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED |
 | stage41_readiness | PASS | repro/stage41_external_unlock_packet.csv | all readiness rows remain waiting for external evidence |
