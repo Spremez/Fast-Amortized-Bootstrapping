@@ -1,5 +1,5 @@
 check,status,evidence,detail
-verification_input_commit,3cb6935,git rev-parse --short HEAD,Commit checked before writing verifier output artifacts.
+verification_input_commit,5e2f103,git rev-parse --short HEAD,Commit checked before writing verifier output artifacts.
 worktree_clean_before_outputs,PASS,git status --short --untracked-files=all,tracked and untracked worktree was clean before verifier outputs.
 final_audit_A9,PASS,repro/final_goal_completion_audit.csv,SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED
 stage41_readiness,PASS,repro/stage41_external_unlock_packet.csv,all readiness rows remain waiting for external evidence
@@ -10,9 +10,10 @@ stage44_external_reprobe,PASS,repro/stage44_external_unlock_reprobe/summary.csv,
 stage45_active_state,PASS,repro/stage45_active_state_refactor/summary.csv,Stage45 active-state correctness passes and closure audit records it
 stage46_wsl_target,PASS,repro/stage46_wsl_active_state_target_smoke/summary.csv,Stage46 WSL spqlios_avx512 target gate passes and closure audit records it
 stage47_wsl_full_sab,PASS,repro/stage47_wsl_active_state_full_sab_smoke/summary.csv,Stage47 WSL r=2/r=4 full-SAB smoke passes with positive A/B speedup and closure audit records it
+stage48_wsl_noise,PASS,repro/stage48_wsl_active_state_noise_smoke/aggregate.csv,Stage48 WSL r=2/r=4 final-output noise smoke passes with zero failures and closure audit records it
 stage44_recheck_integration,PASS,repro/final_goal_recheck_stage44_reprobe/summary.csv,"final recheck can refresh Stage44, final audit, and Stage42 closure"
 default_recheck_closure,PASS,repro/final_goal_recheck/summary.csv,default final recheck includes stage42_evidence_closure=PASS
 closure_only_recheck,PASS,repro/final_goal_recheck_stage42_closure/summary.csv,closure-only final recheck includes stage42_evidence_closure=PASS
-stage42_run_log_rows,PASS,repro/run_log.csv,all Stage42/43/44/45/46/47 closure run rows are present
-artifact_manifest_mentions,PASS,repro/artifact_manifest.md,"Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, and Stage47 full-SAB smoke are registered"
+stage42_run_log_rows,PASS,repro/run_log.csv,all Stage42/43/44/45/46/47/48 closure run rows are present
+artifact_manifest_mentions,PASS,repro/artifact_manifest.md,"Stage42 verifier, closure manifest, Stage44 re-probe, Stage45 refactor, Stage46 target smoke, Stage47 full-SAB smoke, and Stage48 noise smoke are registered"
 stage42_verify_decision,PASS_STAGE42_VERIFY_STRONGER_CLAIMS_BLOCKED,repro/stage42_closure_verify/summary.csv,Stage42 closure package is internally consistent; stronger claims remain blocked.
