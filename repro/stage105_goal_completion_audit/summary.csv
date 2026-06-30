@@ -1,0 +1,4 @@
+gate,status,evidence,detail,next_action
+stage105_requirement_coverage,PASS,repro/stage105_goal_completion_audit/requirement_matrix.csv,all scoped goal requirements have direct evidence,Fill missing evidence before treating the scoped goal as complete.
+stage105_claim_limit_guard,PASS,repro/stage105_goal_completion_audit/claim_limit_matrix.csv,stronger claims remain explicitly bounded,Restore claim limits before reporting Stage105 completion.
+stage105_decision,PASS_STAGE105_SCOPED_GOAL_COMPLETE_STRONGER_CLAIMS_BLOCKED,repro/stage105_goal_completion_audit/summary.csv,Scoped PVW/MAT-SAB evidence chain is complete; stronger claims remain blocked.,Use Stage105 as the completion audit until source/backend/claim scope changes.

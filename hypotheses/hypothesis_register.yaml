@@ -970,3 +970,29 @@ hypotheses:
       - source-anchor or novelty claims exceed Stage102/Stage103 claim limits
       - Stage104 artifacts are omitted from run log, artifact manifest,
         reproduction checklist, or closure audit
+  - id: H30_scoped_goal_completion_audit
+    statement: >
+      The active PVW/MAT-SAB objective should be marked complete only after a
+      requirement-by-requirement audit maps every scoped requirement to direct
+      current evidence and preserves stronger claim limits.
+    mechanism: >
+      Stage105 reads Stage20, Stage36, Stage97, Stage101, Stage102, Stage103,
+      Stage104, Stage42 verifier, final audit, run log, artifact manifest, and
+      reproduction checklist evidence. It writes requirement and claim-limit
+      matrices and decides whether the scoped systems/engineering evidence
+      chain is complete.
+    status: stage105_scoped_goal_complete_stronger_claims_blocked
+    evidence: docs/stage105_goal_completion_audit.md; experiments/stage105_goal_completion_audit_plan.md; scripts/build_stage105_goal_completion_audit.py; repro/stage105_goal_completion_audit/summary.csv; repro/stage105_goal_completion_audit/requirement_matrix.csv; repro/stage105_goal_completion_audit/claim_limit_matrix.csv; repro/stage105_goal_completion_audit/artifact_index.csv
+    current_decision: >
+      Stage105 records
+      PASS_STAGE105_SCOPED_GOAL_COMPLETE_STRONGER_CLAIMS_BLOCKED. Every scoped
+      requirement is `PROVEN_SCOPED_COMPLETE`; broad novelty, all-parameter,
+      non-binary, default-path, and theoretical-optimality claims remain
+      blocked unless new evidence is added.
+    failure_criteria:
+      - any scoped requirement lacks direct current-state evidence
+      - Stage105 treats blocked stronger claims as completed
+      - Stage105 omits Stage20 active-buffer, Stage36 target performance/noise,
+        Stage97 scalar/default guard, Stage101 counters, Stage102 anchors,
+        Stage103 novelty boundary, Stage104 final package, or Stage42 verifier
+      - Stage105 artifacts are omitted from the repro pack or closure audit

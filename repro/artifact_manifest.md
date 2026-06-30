@@ -1567,3 +1567,13 @@ Repro artifacts:
 - `repro/stage104_post_external_final_package/evidence_bridge.csv`
 - `repro/stage104_post_external_final_package/reproduction_commands.csv`
 - `repro/stage104_post_external_final_package/artifact_index.csv`
+
+## Stage 105 Goal Completion Audit
+
+- `docs/stage105_goal_completion_audit.md`
+- `experiments/stage105_goal_completion_audit_plan.md`
+- `scripts/build_stage105_goal_completion_audit.py`
+- `repro/stage105_goal_completion_audit/summary.csv`
+- `repro/stage105_goal_completion_audit/requirement_matrix.csv`
+- `repro/stage105_goal_completion_audit/claim_limit_matrix.csv`
+- `repro/stage105_goal_completion_audit/artifact_index.csv`

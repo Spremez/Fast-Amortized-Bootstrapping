@@ -3542,3 +3542,38 @@ post-external final package for scoped systems/engineering wording. It does not
 replace Stage36/Stage88 performance statistics with the one-run Stage101 native
 counter sample.
 ```
+
+## Stage 105: Goal Completion Audit
+
+Goal:
+
+```text
+Audit the active PVW/MAT-SAB objective requirement by requirement and decide
+whether the scoped systems/engineering SAB acceleration evidence chain is
+complete.
+```
+
+Tasks:
+
+- map scalar/default isolation, Stage20 active-buffer fusion, complete-SAB
+  performance, correctness/noise, resource, native counters, source anchors,
+  novelty boundary, final package, and repro pack requirements to direct
+  evidence;
+- separate proven scoped evidence from stronger blocked claims;
+- write the completion matrix under `repro/stage105_goal_completion_audit/`.
+
+Gate:
+
+- every scoped requirement must be `PROVEN_SCOPED_COMPLETE`;
+- Stage104 and Stage42 verifier evidence must pass;
+- broad novelty, theoretical optimality, all-parameter, non-binary, and
+  default-path claims must remain blocked unless separate evidence exists.
+
+Status:
+
+```text
+Completed. Stage105 records
+PASS_STAGE105_SCOPED_GOAL_COMPLETE_STRONGER_CLAIMS_BLOCKED. The scoped
+PVW/MAT-SAB systems/engineering evidence chain is complete and auditable under
+its stated claim limits.
+```
