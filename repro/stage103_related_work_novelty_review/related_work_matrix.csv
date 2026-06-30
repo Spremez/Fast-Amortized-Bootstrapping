@@ -1,0 +1,6 @@
+axis,source_ids,what_it_covers,impact_on_claim
+target_sab,FAB686_2025,"Sparse amortized bootstrapping with scalar external products, MPmul, extraction, and packing key switching.",Our PVW/MAT path must be described as a local optimization over this scalar SAB schedule.
+amortized_bootstrapping_prior_art,MS18; GPVL23; DKMS24; LW23C,"Amortized bootstrapping, ring packing, automorphism-based acceleration, and amortized functional bootstrapping.",Blocks broad claims that amortization or multi-message bootstrapping is new.
+batch_simd_bootstrapping,LW23A; LW23B; BATCHBOOT26,SIMD/batch bootstrapping frameworks and batched TFHE bootstrapping systems directions.,Blocks broad claims that batching lanes or SIMD bootstrapping is new.
+tfhe_bootstrapping_implementation,CLOT21; SHAREMASK25,Programmable TFHE bootstrapping and packed/common-mask bootstrapping ideas.,"Forces a narrow claim: PVW/MAT-SAB integration and measured complete-SAB throughput, not general shared-mask novelty."
+backend_transform_acceleration,INCNTT25,Transform/backend acceleration for amortized bootstrapping.,Backend/FFT/NTT gains must be separated from algorithmic lane-batching gains.

@@ -138,3 +138,20 @@ The AVX512 backend result is an algorithmic speedup over another backend.
 The result is a new cryptographic contribution without a literature audit.
 The result generalizes to untested parameters or branches.
 ```
+
+## External Evidence Unlock Loop
+
+Stage101-103 close the former external blockers, but only within scoped claim
+boundaries:
+
+- Stage101 native perf counters may be used for attribution; they are not a
+  standalone proof of theoretical MAT-AVX512 optimality.
+- Stage102 2025/686 anchors may be used for protocol, complexity,
+  correctness/noise, and parameter citations within the reviewed page/section
+  scope; PVW/MAT statements still require local implementation evidence.
+- Stage103 novelty review allows scoped systems/engineering wording and rejects
+  broad shared-mask, batch/SIMD, new-asymptotic, all-parameter, and non-binary
+  novelty wording.
+
+Any future paper-writing loop must cite the exact stage artifact that supports
+each claim and label unsupported stronger wording as blocked, not pending.

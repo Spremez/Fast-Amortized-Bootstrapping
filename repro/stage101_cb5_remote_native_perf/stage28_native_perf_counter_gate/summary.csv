@@ -1,0 +1,7 @@
+probe,status,evidence,detail
+environment,RECORDED,repro/stage101_cb5_remote_native_perf/stage28_native_perf_counter_gate/environment.log,Platform metadata captured.
+perf_command,AVAILABLE,/usr/bin/perf,perf command found.
+perf_smoke,PASS,repro/stage101_cb5_remote_native_perf/stage28_native_perf_counter_gate/perf_smoke.log,Basic hardware counters are usable.
+bench_perf,PASS,repro/stage101_cb5_remote_native_perf/stage28_native_perf_counter_gate/bench_perf.log,SAB benchmark completed under perf counters.
+bench_correctness,PASS,repro/stage101_cb5_remote_native_perf/stage28_native_perf_counter_gate/bench_run.log,target_full correctness line found.
+hardware_counter_gate,PASS,repro/stage101_cb5_remote_native_perf/stage28_native_perf_counter_gate/summary.csv,Hardware-counter attribution evidence is available for MAT-AVX512 audit.

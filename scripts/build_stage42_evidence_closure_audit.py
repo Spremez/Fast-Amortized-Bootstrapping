@@ -152,6 +152,15 @@ STAGE99_EXTERNAL_BLOCKER_REPROBE = (
 STAGE100_FULLTEXT_ANCHOR_PREFILL = (
     ROOT / "repro" / "stage100_fulltext_anchor_prefill" / "summary.csv"
 )
+STAGE101_CB5_REMOTE_NATIVE_PERF = (
+    ROOT / "repro" / "stage101_cb5_remote_native_perf" / "summary.csv"
+)
+STAGE102_686_SOURCE_ANCHOR_REVIEW = (
+    ROOT / "repro" / "stage102_686_source_anchor_review" / "summary.csv"
+)
+STAGE103_RELATED_WORK_NOVELTY_REVIEW = (
+    ROOT / "repro" / "stage103_related_work_novelty_review" / "summary.csv"
+)
 ARTIFACT_MANIFEST = ROOT / "repro" / "artifact_manifest.md"
 REPRO_CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 REMAINING_BLOCKERS = ROOT / "repro" / "remaining_blocker_dashboard.csv"
@@ -168,11 +177,11 @@ EXPECTED_AUDIT_STATUS = {
     "A4b": "PASS_RESOURCE_3RUN",
     "A5": "PASS_SCOPED",
     "A5b": "PASS_CURRENT_SMOKE",
-    "A6": "PASS_BLOCKED_BOUNDARY",
+    "A6": "PASS_SCOPED_BOUNDARY_REVIEWED",
     "A7": "PASS_ADDED_PARAM_10RUN_20SEED",
-    "A8": "BLOCKED_EXTERNAL",
-    "A8b": "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED",
-    "A9": "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED",
+    "A8": "PASS_COUNTER_ATTRIBUTION_EXTERNAL",
+    "A8b": "PASS_EXTERNAL_EVIDENCE_REVIEWED",
+    "A9": "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED",
 }
 
 EXPECTED_STAGE41_READINESS = {
@@ -185,43 +194,39 @@ EXPECTED_STAGE41_READINESS = {
 EXPECTED_REMAINING_BLOCKERS = {
     "CB5": {
         "status_tokens": [
-            "final_A8=BLOCKED_EXTERNAL",
-            "cb5=BLOCKED_EXTERNAL",
-            "stage44_perf=BLOCKED",
-            "external_perf=MISSING",
+            "final_A8=PASS_COUNTER_ATTRIBUTION_EXTERNAL",
+            "cb5=RESOLVED_NATIVE_PERF_COUNTER_EVIDENCE",
+            "stage101=PASS_STAGE101_CB5_NATIVE_PERF_COUNTERS_RECORDED",
+            "external_perf=PASS_COUNTER_ATTRIBUTION_AVAILABLE",
         ],
         "policy_tokens": ["Do not claim theoretical MAT-AVX512"],
     },
     "CB6": {
         "status_tokens": [
-            "cb6=BLOCKED_EXTERNAL_REVIEW",
+            "cb6=RESOLVED_REVIEWED_SCOPED_NOVELTY",
+            "stage103=PASS_STAGE103_RELATED_WORK_NOVELTY_REVIEW_SCOPED",
             "related=SCOPED_RELATED_WORK_REFRESHED__NOVELTY_STILL_BLOCKED",
             "novelty_gate=BLOCK_NOVELTY_CLAIM_PENDING_MANUAL_REVIEW",
         ],
-        "policy_tokens": ["scoped engineering/systems"],
+        "policy_tokens": ["scoped engineering/systems", "broad novelty claims remain blocked"],
     },
     "CB7": {
         "status_tokens": [
-            "final_A8b=EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED",
-            "cb7=EXTERNAL_FULLTEXT_REVIEW_REQUIRED",
-            "stage44_fulltext=BLOCKED",
-            "stage55_fulltext=BLOCKED",
+            "final_A8b=PASS_EXTERNAL_EVIDENCE_REVIEWED",
+            "cb7=RESOLVED_FULLTEXT_SOURCE_ANCHORS_VERIFIED",
+            "stage102=PASS_STAGE102_686_SOURCE_ANCHORS_REVIEWED",
             "stage55_metadata=PASS",
-            "stage55_decision=WAIT_FULLTEXT_ARTIFACT_MANUAL_REVIEW",
-            "stage72_fulltext=WAIT_FULLTEXT_ARTIFACT",
-            "stage72_decision=PASS_EXTERNAL_SOURCE_REFRESH_STRONGER_CLAIMS_BLOCKED",
-            "related_fulltext=BLOCKED_FULLTEXT",
             "external_fulltext=AVAILABLE_UNREVIEWED",
         ],
-        "policy_tokens": ["Do not cite theorem"],
+        "policy_tokens": ["reviewed Stage102 anchors", "local implementation evidence"],
     },
     "A9": {
         "status_tokens": [
-            "final_A9=SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED",
+            "final_A9=SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED",
             "stage44_decision=WAIT_EXTERNAL_UNLOCKS",
             "stage41_final=READY_AFTER_UNLOCKS",
         ],
-        "policy_tokens": ["scoped/review-required"],
+        "policy_tokens": ["scoped-reviewed", "claims beyond scoped engineering remain blocked"],
     },
 }
 
@@ -444,6 +449,43 @@ STAGE100_ARTIFACTS = [
     "repro/stage100_fulltext_anchor_prefill/stage100_run.log",
     "repro/stage100_fulltext_anchor_prefill/stage100_build.log",
     "repro/stage38_fulltext_review_gate/review_checklist.csv",
+]
+
+STAGE101_ARTIFACTS = [
+    "docs/stage101_cb5_remote_native_perf_log.md",
+    "experiments/stage101_cb5_remote_native_perf_plan.md",
+    "scripts/build_stage101_cb5_remote_native_perf.py",
+    "repro/stage101_cb5_remote_native_perf/summary.csv",
+    "repro/stage101_cb5_remote_native_perf/counter_metrics.csv",
+    "repro/stage101_cb5_remote_native_perf/artifact_index.csv",
+    "repro/stage101_cb5_remote_native_perf/stage101_remote_env.log",
+    "repro/stage101_cb5_remote_native_perf/stage28_native_perf_counter_gate/summary.csv",
+    "repro/stage101_cb5_remote_native_perf/stage28_native_perf_counter_gate/bench_perf.log",
+    "repro/stage101_cb5_remote_native_perf/stage28_native_perf_counter_gate/bench_run.log",
+    "repro/stage101_cb5_remote_native_perf/attribution_probe/event_support.csv",
+    "repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_perf.log",
+    "repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_run.log",
+]
+
+STAGE102_ARTIFACTS = [
+    "docs/stage102_686_source_anchor_review_log.md",
+    "experiments/stage102_686_source_anchor_review_plan.md",
+    "scripts/build_stage102_686_source_anchor_review.py",
+    "repro/stage102_686_source_anchor_review/summary.csv",
+    "repro/stage102_686_source_anchor_review/review_matrix.csv",
+    "repro/stage102_686_source_anchor_review/artifact_index.csv",
+    "repro/stage38_fulltext_review_gate/review_checklist.csv",
+]
+
+STAGE103_ARTIFACTS = [
+    "docs/stage103_related_work_novelty_review_log.md",
+    "experiments/stage103_related_work_novelty_review_plan.md",
+    "scripts/build_stage103_related_work_novelty_review.py",
+    "repro/stage103_related_work_novelty_review/summary.csv",
+    "repro/stage103_related_work_novelty_review/related_work_matrix.csv",
+    "repro/stage103_related_work_novelty_review/novelty_claim_matrix.csv",
+    "repro/stage103_related_work_novelty_review/source_verification.csv",
+    "repro/stage103_related_work_novelty_review/artifact_index.csv",
 ]
 
 REQUIRED_FILES = [
@@ -802,6 +844,9 @@ REQUIRED_FILES = [
         *STAGE98_ARTIFACTS,
         *STAGE99_ARTIFACTS,
         *STAGE100_ARTIFACTS,
+        *STAGE101_ARTIFACTS,
+        *STAGE102_ARTIFACTS,
+        *STAGE103_ARTIFACTS,
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/stage42_evidence_closure_manifest.csv",
 ]
@@ -1275,6 +1320,9 @@ POSTFREEZE_MANIFEST_ARTIFACTS = [
     *STAGE98_ARTIFACTS,
     *STAGE99_ARTIFACTS,
     *STAGE100_ARTIFACTS,
+    *STAGE101_ARTIFACTS,
+    *STAGE102_ARTIFACTS,
+    *STAGE103_ARTIFACTS,
     "repro/final_goal_recheck_stage42_closure/summary.csv",
     "repro/final_goal_recheck_stage42_closure/stage42_evidence_closure.log",
 ]
@@ -3356,6 +3404,100 @@ def check_stage100_fulltext_anchor_prefill() -> List[Dict[str, str]]:
     ]
 
 
+def check_stage101_cb5_remote_native_perf() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE101_CB5_REMOTE_NATIVE_PERF)}
+    expected = {
+        "stage101_raw_artifacts": "PASS",
+        "stage101_stage28_hardware_counter_gate": "PASS",
+        "stage101_complete_sab_correctness": "PASS",
+        "stage101_attribution_events": "PASS",
+        "stage101_speed_sample": "PASS",
+        "stage101_cb5_decision": "PASS_STAGE101_CB5_NATIVE_PERF_COUNTERS_RECORDED",
+    }
+    problems = []
+    for gate, expected_status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != expected_status:
+            problems.append(f"{gate}:status={actual}")
+    detail = (
+        "Stage101 records native perf/counter evidence and resolves CB5 as a platform blocker"
+        if not problems and rows
+        else "; ".join(problems) or "Stage101 summary missing"
+    )
+    return [
+        row(
+            "S42-STAGE101-CB5-REMOTE-NATIVE-PERF",
+            "external_review",
+            pass_fail(not problems and bool(rows)),
+            STAGE101_CB5_REMOTE_NATIVE_PERF.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage101 parser or recopy remote perf logs before relying on native counter evidence.",
+        )
+    ]
+
+
+def check_stage102_686_source_anchor_review() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE102_686_SOURCE_ANCHOR_REVIEW)}
+    expected = {
+        "stage102_fulltext_precondition": "PASS",
+        "stage102_candidate_precondition": "PASS",
+        "stage102_review_matrix": "PASS",
+        "stage102_stage38_update": "PASS",
+        "stage102_decision": "PASS_STAGE102_686_SOURCE_ANCHORS_REVIEWED",
+    }
+    problems = []
+    for gate, expected_status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != expected_status:
+            problems.append(f"{gate}:status={actual}")
+    detail = (
+        "Stage102 verifies 2025/686 source anchors and resolves CB7 for scoped citations"
+        if not problems and rows
+        else "; ".join(problems) or "Stage102 summary missing"
+    )
+    return [
+        row(
+            "S42-STAGE102-686-SOURCE-ANCHOR-REVIEW",
+            "external_review",
+            pass_fail(not problems and bool(rows)),
+            STAGE102_686_SOURCE_ANCHOR_REVIEW.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage102 before relying on 2025/686 reviewed anchors.",
+        )
+    ]
+
+
+def check_stage103_related_work_novelty_review() -> List[Dict[str, str]]:
+    rows = {r.get("gate"): r for r in read_csv(STAGE103_RELATED_WORK_NOVELTY_REVIEW)}
+    expected = {
+        "stage103_stage102_precondition": "PASS",
+        "stage103_source_verification": "PASS",
+        "stage103_related_work_matrix": "PASS",
+        "stage103_novelty_boundary": "PASS_SCOPED_BOUNDARY",
+        "stage103_decision": "PASS_STAGE103_RELATED_WORK_NOVELTY_REVIEW_SCOPED",
+    }
+    problems = []
+    for gate, expected_status in expected.items():
+        actual = rows.get(gate, {}).get("status", "MISSING")
+        if actual != expected_status:
+            problems.append(f"{gate}:status={actual}")
+    detail = (
+        "Stage103 resolves CB6 by scoped related-work and novelty-boundary review"
+        if not problems and rows
+        else "; ".join(problems) or "Stage103 summary missing"
+    )
+    return [
+        row(
+            "S42-STAGE103-RELATED-WORK-NOVELTY-REVIEW",
+            "external_review",
+            pass_fail(not problems and bool(rows)),
+            STAGE103_RELATED_WORK_NOVELTY_REVIEW.relative_to(ROOT).as_posix(),
+            detail,
+            "Rerun Stage103 before relying on scoped novelty wording.",
+        )
+    ]
+
+
 def check_remaining_blocker_dashboard() -> List[Dict[str, str]]:
     rows = {r.get("blocker_id"): r for r in read_csv(REMAINING_BLOCKERS)}
     problems = []
@@ -3644,6 +3786,18 @@ def check_run_log() -> List[Dict[str, str]]:
     for r in rows:
         if r.get("run_id") == "stage100-fulltext-anchor-prefill-001":
             stage100_status = r.get("status", "MISSING")
+    stage101_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage101-cb5-remote-native-perf-001":
+            stage101_status = r.get("status", "MISSING")
+    stage102_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage102-686-source-anchor-review-001":
+            stage102_status = r.get("status", "MISSING")
+    stage103_status = "MISSING"
+    for r in rows:
+        if r.get("run_id") == "stage103-related-work-novelty-review-001":
+            stage103_status = r.get("status", "MISSING")
     ok = (
         ok
         and stage66_status == "PASS_POST_VARIANT_FINAL_RECHECK"
@@ -3680,11 +3834,14 @@ def check_run_log() -> List[Dict[str, str]]:
         and stage98_status == "PASS_STAGE98_CURRENT_HEAD_SMOKE_REFRESH"
         and stage99_status == "PASS_STAGE99_EXTERNAL_BLOCKERS_REPROBED_REVIEW_REQUIRED"
         and stage100_status == "PASS_STAGE100_FULLTEXT_ANCHOR_PREFILL_REVIEW_REQUIRED"
+        and stage101_status == "PASS_STAGE101_CB5_NATIVE_PERF_COUNTERS_RECORDED"
+        and stage102_status == "PASS_STAGE102_686_SOURCE_ANCHORS_REVIEWED"
+        and stage103_status == "PASS_STAGE103_RELATED_WORK_NOVELTY_REVIEW_SCOPED"
     )
     detail = (
-        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}; stage87 status={stage87_status}; stage88 status={stage88_status}; stage89 status={stage89_status}; stage90 status={stage90_status}; stage91 status={stage91_status}; stage92 status={stage92_status}; stage93 status={stage93_status}; stage94 status={stage94_status}; stage95 status={stage95_status}; stage96 status={stage96_status}; stage97 status={stage97_status}; stage98 status={stage98_status}; stage99 status={stage99_status}; stage100 status={stage100_status}"
+        f"stages 19-62 registered; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}; stage87 status={stage87_status}; stage88 status={stage88_status}; stage89 status={stage89_status}; stage90 status={stage90_status}; stage91 status={stage91_status}; stage92 status={stage92_status}; stage93 status={stage93_status}; stage94 status={stage94_status}; stage95 status={stage95_status}; stage96 status={stage96_status}; stage97 status={stage97_status}; stage98 status={stage98_status}; stage99 status={stage99_status}; stage100 status={stage100_status}; stage101 status={stage101_status}; stage102 status={stage102_status}; stage103 status={stage103_status}"
         if ok
-        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}; stage87 status={stage87_status}; stage88 status={stage88_status}; stage89 status={stage89_status}; stage90 status={stage90_status}; stage91 status={stage91_status}; stage92 status={stage92_status}; stage93 status={stage93_status}; stage94 status={stage94_status}; stage95 status={stage95_status}; stage96 status={stage96_status}; stage97 status={stage97_status}; stage98 status={stage98_status}; stage99 status={stage99_status}; stage100 status={stage100_status}"
+        else f"missing_stages={missing}; stage41 status={stage41_status}; stage66 status={stage66_status}; stage67 status={stage67_status}; stage68 status={stage68_status}; stage69 status={stage69_status}; stage70 status={stage70_status}; stage71 status={stage71_status}; stage72 status={stage72_status}; stage73 status={stage73_status}; stage74 status={stage74_status}; stage75 status={stage75_status}; stage76 status={stage76_status}; stage77 status={stage77_status}; stage78 status={stage78_status}; stage79 status={stage79_status}; stage80 status={stage80_status}; stage81 status={stage81_status}; stage82 status={stage82_status}; stage83 status={stage83_status}; stage84 status={stage84_status}; stage86 status={stage86_status}; stage87 status={stage87_status}; stage88 status={stage88_status}; stage89 status={stage89_status}; stage90 status={stage90_status}; stage91 status={stage91_status}; stage92 status={stage92_status}; stage93 status={stage93_status}; stage94 status={stage94_status}; stage95 status={stage95_status}; stage96 status={stage96_status}; stage97 status={stage97_status}; stage98 status={stage98_status}; stage99 status={stage99_status}; stage100 status={stage100_status}; stage101 status={stage101_status}; stage102 status={stage102_status}; stage103 status={stage103_status}"
     )
     return [
         row(
@@ -4090,6 +4247,9 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
         *STAGE98_ARTIFACTS,
         *STAGE99_ARTIFACTS,
         *STAGE100_ARTIFACTS,
+        *STAGE101_ARTIFACTS,
+        *STAGE102_ARTIFACTS,
+        *STAGE103_ARTIFACTS,
     ]
     missing = [m for m in required_mentions if m not in text]
     return [
@@ -4098,7 +4258,7 @@ def check_manifest_mentions() -> List[Dict[str, str]]:
             "reproducibility",
             pass_fail(not missing),
             ARTIFACT_MANIFEST.relative_to(ROOT).as_posix(),
-            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, Stage82, Stage83, Stage84, Stage86, Stage87, Stage88, Stage89, Stage90, Stage91, Stage92, Stage93, Stage94, Stage95, Stage96, Stage97, Stage98, Stage99, and Stage100 artifacts are registered"
+            "Stage 23 flag plus conditional backlog and Stage 41, Stage 43, Stage 44, Stage 48, Stage 49, Stage 50, Stage 51, Stage 52, Stage 53, Stage 54, Stage 55, Stage 56, Stage 57, Stage 58, Stage 59, Stage 60, Stage 61, Stage 62, Stage64A, Stage65A, Stage66A, Stage67, Stage68, Stage69, Stage70, Stage71, Stage72, Stage73, Stage74, Stage75, Stage76, Stage77, Stage78, Stage79, Stage80, Stage81, Stage82, Stage83, Stage84, Stage86, Stage87, Stage88, Stage89, Stage90, Stage91, Stage92, Stage93, Stage94, Stage95, Stage96, Stage97, Stage98, Stage99, Stage100, Stage101, Stage102, and Stage103 artifacts are registered"
             if not missing
             else f"missing_mentions={missing}",
             "Update the artifact manifest so the reproducibility pack names all current control artifacts.",
@@ -4114,6 +4274,7 @@ def check_claim_guardrails() -> List[Dict[str, str]]:
     }
     required_tokens = [
         "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED",
+        "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED",
         "WAIT_EXTERNAL_FULLTEXT",
         "WAIT_NATIVE_PERF",
         "scalar SAB remains unchanged",
@@ -4196,6 +4357,9 @@ def build_rows() -> List[Dict[str, str]]:
         check_stage98_current_smoke_refresh,
         check_stage99_external_blocker_reprobe,
         check_stage100_fulltext_anchor_prefill,
+        check_stage101_cb5_remote_native_perf,
+        check_stage102_686_source_anchor_review,
+        check_stage103_related_work_novelty_review,
         check_remaining_blocker_dashboard,
         check_freeze_manifest,
         check_closure_manifest,
@@ -4215,10 +4379,10 @@ def build_rows() -> List[Dict[str, str]]:
             "overall",
             "PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED" if not failures else "FAIL_EVIDENCE_CLOSURE",
             OUT_CSV.relative_to(ROOT).as_posix(),
-            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, Stage86 secondary CMUX materialization design gate, Stage87 H14 backend FromDFT-add preflight, Stage88 H14 backend repeated gates, Stage89 H14 promotion policy integration, Stage90 external claim unlock probe, Stage91 final scoped SAB package, Stage92 external unlock execution packet, Stage93 external lane attempt, Stage94 local frontier audit, Stage95 public source reprobe, Stage96 upstream delta audit, Stage97 source delta guard, Stage98 current-head smoke refresh, Stage99 external blocker reprobe, and Stage100 full-text anchor prefill; stronger claims remain blocked or review-required"
+            f"{latest_label} control-plane closure is internally closed: core Stage 19-62 scoped evidence chain plus Stage64A post-variant refresh, Stage65A optional negative variant, Stage66A post-variant final recheck, Stage67 final-recheck Stage66A integration, Stage68 frontier/closure consistency, Stage69 local variant feasibility, Stage70 external unlock preflight, Stage71 final-recheck Stage70 integration, Stage72 external source refresh, Stage73 final-recheck Stage72 integration, Stage74 r-scaling boundary, Stage75 r>4 profile boundary, Stage76 r>4 kernel feasibility, Stage77 r>4 fused MAT smoke, Stage78 r>4 fused repeated gates, Stage79 r>4 fused high-stat review gate, Stage80 promotion policy audit, Stage81 next-variant triage, Stage82 post-H11 profile, Stage83 MAT body design check, Stage84 H13 r=6 tile-sweep preflight, Stage86 secondary CMUX materialization design gate, Stage87 H14 backend FromDFT-add preflight, Stage88 H14 backend repeated gates, Stage89 H14 promotion policy integration, Stage90 external claim unlock probe, Stage91 final scoped SAB package, Stage92 external unlock execution packet, Stage93 external lane attempt, Stage94 local frontier audit, Stage95 public source reprobe, Stage96 upstream delta audit, Stage97 source delta guard, Stage98 current-head smoke refresh, Stage99 external blocker reprobe, Stage100 full-text anchor prefill, Stage101 native perf evidence, Stage102 source-anchor review, and Stage103 scoped novelty review; stronger claims remain scoped or blocked by evidence boundaries"
             if not failures
             else f"failed_checks={failures}",
-            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87/Stage88/Stage89/Stage90/Stage91/Stage92/Stage93/Stage94/Stage95/Stage96/Stage97/Stage98/Stage99/Stage100 evidence closure.",
+            "Fix all failed checks before relying on the Stage 19-62 plus Stage64A/Stage65A/Stage66A/Stage67/Stage68/Stage69/Stage70/Stage71/Stage72/Stage73/Stage74/Stage75/Stage76/Stage77/Stage78/Stage79/Stage80/Stage81/Stage82/Stage83/Stage84/Stage86/Stage87/Stage88/Stage89/Stage90/Stage91/Stage92/Stage93/Stage94/Stage95/Stage96/Stage97/Stage98/Stage99/Stage100/Stage101/Stage102/Stage103 evidence closure.",
         )
     )
     return checks
@@ -4245,7 +4409,7 @@ def write_md(rows: List[Dict[str, str]]) -> None:
         "Stage 42 machine-checks whether the Stage 19-62 PVW/MAT-SAB evidence",
         "chain plus Stage64A post-variant refresh, the Stage65A optional",
         "negative variant, Stage66A post-variant final recheck, Stage67",
-        "final-recheck Stage66A integration, and Stage68-100 control-plane",
+        "final-recheck Stage66A integration, and Stage68-103 control-plane",
         "closure extensions remain internally",
         "consistent. It is a reproducibility and claim",
         "guardrail audit, not a new SAB optimization or benchmark.",

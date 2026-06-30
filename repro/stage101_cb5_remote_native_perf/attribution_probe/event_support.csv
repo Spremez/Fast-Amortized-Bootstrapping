@@ -1,0 +1,11 @@
+cycles,PASS
+instructions,PASS
+cache-references,PASS
+cache-misses,PASS
+branches,PASS
+branch-misses,PASS
+mem_inst_retired.all_loads,PASS
+mem_inst_retired.all_stores,PASS
+fp_arith_inst_retired.512b_packed_double,PASS
+fp_arith_inst_retired.256b_packed_double,PASS
+fp_arith_inst_retired.scalar_double,PASS

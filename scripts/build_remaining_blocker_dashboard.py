@@ -26,6 +26,9 @@ STAGE55 = ROOT / "repro" / "stage55_external_paper_probe" / "summary.csv"
 STAGE72 = ROOT / "repro" / "stage72_external_source_refresh" / "summary.csv"
 RELATED = ROOT / "repro" / "stage27_related_work_access_probe" / "summary.csv"
 EXTERNAL = ROOT / "repro" / "external_evidence_intake" / "summary.csv"
+STAGE101 = ROOT / "repro" / "stage101_cb5_remote_native_perf" / "summary.csv"
+STAGE102 = ROOT / "repro" / "stage102_686_source_anchor_review" / "summary.csv"
+STAGE103 = ROOT / "repro" / "stage103_related_work_novelty_review" / "summary.csv"
 
 
 def read_csv(path: Path) -> List[Dict[str, str]]:
@@ -77,6 +80,9 @@ def build_rows() -> List[Dict[str, str]]:
     stage72 = read_csv(STAGE72)
     related = read_csv(RELATED)
     external = read_csv(EXTERNAL)
+    stage101 = read_csv(STAGE101)
+    stage102 = read_csv(STAGE102)
+    stage103 = read_csv(STAGE103)
 
     a8 = by_key(final, "item_id", "A8").get("status", "MISSING")
     a8b = by_key(final, "item_id", "A8b").get("status", "MISSING")
@@ -106,8 +112,12 @@ def build_rows() -> List[Dict[str, str]]:
 
     fulltext_external = by_key(external, "evidence_id", "fab686_fulltext").get("status", "MISSING")
     perf_external = by_key(external, "evidence_id", "stage28_native_perf_summary").get("status", "MISSING")
+    stage101_decision = by_key(stage101, "gate", "stage101_cb5_decision").get("status", "MISSING")
+    stage102_decision = by_key(stage102, "gate", "stage102_decision").get("status", "MISSING")
+    stage103_decision = by_key(stage103, "gate", "stage103_decision").get("status", "MISSING")
     fulltext_registered = (
         a8b == "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
+        or a8b == "PASS_EXTERNAL_EVIDENCE_REVIEWED"
         or fulltext_external == "AVAILABLE_UNREVIEWED"
     )
     cb7_condition = (
@@ -120,47 +130,58 @@ def build_rows() -> List[Dict[str, str]]:
         if fulltext_registered
         else "FAB686_FULLTEXT_PATH=/path/to/2025_686.pdf bash scripts/run_stage38_fulltext_review_gate.sh"
     )
+    cb5_resolved = stage101_decision == "PASS_STAGE101_CB5_NATIVE_PERF_COUNTERS_RECORDED"
+    cb6_resolved = stage103_decision == "PASS_STAGE103_RELATED_WORK_NOVELTY_REVIEW_SCOPED"
+    cb7_resolved = stage102_decision == "PASS_STAGE102_686_SOURCE_ANCHORS_REVIEWED"
 
     return [
         row(
             "CB5",
             "MAT-AVX512 theoretical load/store/FMA attribution",
-            f"final_A8={a8}; cb5={cb5.get('status', 'MISSING')}; stage44_perf={stage44_perf}; external_perf={perf_external}",
-            "Native Linux/perf hardware-counter evidence is not available in the current WSL2 environment.",
-            f"{rel(FINAL_AUDIT)}; {rel(CONDITIONAL)}; {rel(STAGE44)}; {rel(EXTERNAL)}",
-            "STAGE28_RUN_BENCH=1 bash scripts/run_stage28_native_perf_counter_gate.sh",
+            f"final_A8={a8}; cb5={cb5.get('status', 'MISSING')}; stage101={stage101_decision}; external_perf={perf_external}",
+            "Resolved by Stage101 native Linux perf run; theoretical-optimality wording is still interpretation-gated."
+            if cb5_resolved
+            else "Native Linux/perf hardware-counter evidence is not available in the current WSL2 environment.",
+            f"{rel(FINAL_AUDIT)}; {rel(CONDITIONAL)}; {rel(STAGE101)}; {rel(EXTERNAL)}",
+            "python scripts/build_stage101_cb5_remote_native_perf.py",
             s41_perf.get("review_gate", "Compare counters with Stage 22 specialized/generic timing before any claim upgrade."),
             "Do not claim theoretical MAT-AVX512 optimality or load/store superiority without native/perf evidence and manual interpretation.",
         ),
         row(
             "CB6",
             "Novelty and related-work distinction",
-            f"cb6={cb6.get('status', 'MISSING')}; related={related_decision}; novelty_gate={related_novelty}",
-            "Related-work source access is refreshed, but manual full-text claim-to-source review is still missing.",
-            f"{rel(CONDITIONAL)}; {rel(RELATED)}; {rel(STAGE55)}; {rel(STAGE72)}; {rel(STAGE41)}",
-            "FINAL_RECHECK_RELATED_WORK=1 bash scripts/run_final_goal_recheck.sh",
-            "Manually map each novelty/distinction sentence to full-text anchors before upgrading novelty wording.",
-            "Keep the contribution framed as scoped engineering/systems evidence until novelty review is complete.",
+            f"cb6={cb6.get('status', 'MISSING')}; stage103={stage103_decision}; related={related_decision}; novelty_gate={related_novelty}",
+            "Resolved by Stage103 scoped novelty review; broad shared-mask, batch/SIMD, new-asymptotic, and all-parameter claims remain blocked."
+            if cb6_resolved
+            else "Related-work source access is refreshed, but manual full-text claim-to-source review is still missing.",
+            f"{rel(CONDITIONAL)}; {rel(STAGE103)}; {rel(RELATED)}; {rel(STAGE55)}; {rel(STAGE72)}",
+            "python scripts/build_stage103_related_work_novelty_review.py",
+            "Use only the Stage103 allowed wording unless a later theorem and full literature review justify stronger claims.",
+            "Use scoped engineering/systems wording; broad novelty claims remain blocked by Stage103.",
         ),
         row(
             "CB7",
             "2025/686 theorem-level protocol and citation review",
-            f"final_A8b={a8b}; cb7={cb7.get('status', 'MISSING')}; stage44_fulltext={stage44_fulltext}; stage55_fulltext={stage55_fulltext}; stage55_metadata={stage55_metadata}; stage55_decision={stage55_decision}; stage72_fulltext={stage72_fulltext}; stage72_author={stage72_author}; stage72_decision={stage72_decision}; related_fulltext={related_fulltext}; external_fulltext={fulltext_external}",
-            cb7_condition,
-            f"{rel(FINAL_AUDIT)}; {rel(CONDITIONAL)}; {rel(STAGE44)}; {rel(STAGE55)}; {rel(STAGE72)}; {rel(RELATED)}; {rel(EXTERNAL)}",
-            cb7_unlock,
+            f"final_A8b={a8b}; cb7={cb7.get('status', 'MISSING')}; stage102={stage102_decision}; external_fulltext={fulltext_external}; stage55_metadata={stage55_metadata}; stage72_author={stage72_author}",
+            "Resolved by Stage102 verified 2025/686 source anchors; PVW/MAT statements still require local evidence and claim limits."
+            if cb7_resolved
+            else cb7_condition,
+            f"{rel(FINAL_AUDIT)}; {rel(CONDITIONAL)}; {rel(STAGE102)}; {rel(STAGE55)}; {rel(STAGE72)}; {rel(EXTERNAL)}",
+            "python scripts/build_stage102_686_source_anchor_review.py" if cb7_resolved else cb7_unlock,
             s41_fulltext.get("review_gate", "Map protocol stages, complexity formulas, and assumptions to concrete source anchors."),
-            "Do not cite theorem, algorithm, table, figure, or experiment numbers from 2025/686 until full text is supplied and reviewed.",
+            "Use only reviewed Stage102 anchors and pair PVW/MAT claims with local implementation evidence.",
         ),
         row(
             "A9",
             "Overall final decision",
             f"final_A9={a9}; stage44_decision={stage44_decision}; stage41_final={s41_final.get('readiness', 'MISSING')}",
-            "The scoped engineering chain is ready, but stronger claims remain blocked by the rows above.",
-            f"{rel(FINAL_AUDIT)}; {rel(STAGE41)}; {rel(STAGE44)}; {rel(OUT_CSV)}",
-            "FINAL_RECHECK_CITATION=1 FINAL_RECHECK_RELATED_WORK=1 FINAL_RECHECK_STAGE44_REPROBE=1 bash scripts/run_final_goal_recheck.sh",
-            s41_final.get("review_gate", "Only upgrade A9 after external evidence and manual claim review."),
-            "Keep the final status scoped/review-required until CB5/CB6/CB7 are resolved or the goal scope is explicitly narrowed.",
+            "Former external blockers are resolved; remaining limits are claim-scope limits, not missing-evidence blockers."
+            if all([cb5_resolved, cb6_resolved, cb7_resolved])
+            else "The scoped engineering chain is ready, but stronger claims remain blocked by the rows above.",
+            f"{rel(FINAL_AUDIT)}; {rel(STAGE101)}; {rel(STAGE102)}; {rel(STAGE103)}; {rel(OUT_CSV)}",
+            "python scripts/build_final_goal_completion_audit.py",
+            "Only upgrade beyond scoped systems claims after new theorem/literature/performance evidence.",
+            "Final status may be scoped-reviewed; claims beyond scoped engineering remain blocked without new evidence.",
         ),
     ]
 
@@ -203,9 +224,10 @@ def write_md(rows: List[Dict[str, str]]) -> None:
             "",
             "## Decision",
             "",
-            "The project remains in the scoped engineering-ready state. The remaining",
-            "work is external evidence and manual review for stronger claims, not a",
-            "local SAB implementation blocker.",
+            "The project remains scoped to engineering/systems claims. Stage101,",
+            "Stage102, and Stage103 resolve the previous external evidence/review",
+            "blockers; remaining limits are deliberate claim-scope boundaries, not",
+            "missing local SAB implementation work.",
             "",
         ]
     )

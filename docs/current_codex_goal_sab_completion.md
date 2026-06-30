@@ -1,34 +1,31 @@
 # Current Codex Goal: PVW/MAT-SAB Completion Route
 
-Date: 2026-06-26
+Date: 2026-06-30
 
 ## Current Answer
 
-The project already has a complete Stage19+ route for the scoped
-PVW/MAT-SAB engineering goal. The local SAB optimization chain is currently
-closed through Stage100: scalar/default SAB remains isolated, the explicit
-`sab_pvw_*` paths remain gated, current-head smoke gates pass, the scoped
-complete-SAB performance/noise/resource evidence is registered, and the
-registered 2025/686 full-text artifact now has candidate source-anchor pages
-for manual review.
+The project has a complete Stage19+ route for the scoped PVW/MAT-SAB
+engineering goal. The local SAB optimization chain is currently closed through
+Stage103: scalar/default SAB remains isolated, the explicit `sab_pvw_*` paths
+remain gated, current-head smoke gates pass, the scoped complete-SAB
+performance/noise/resource evidence is registered, and the former CB5/CB6/CB7
+external blockers have been resolved.
 
-The route is not a paper-level completion yet. Three stronger-claim blockers
-remain:
+The route is still scoped, not an unrestricted paper-level novelty claim:
 
-- CB5: native Linux/perf hardware-counter evidence for MAT-AVX512
-  load/store/FMA attribution.
-- CB6: manual novelty and related-work claim-to-source review.
-- CB7: 2025/686 full text is now registered as a local hashed artifact, but
-  theorem-level protocol and citation claims still require source-anchor
-  review.
+- CB5 is resolved by Stage101 native Linux perf-counter evidence, including
+  complete-SAB correctness, retired load/store counters, and AVX512 FP events.
+- CB6 is resolved by Stage103 related-work review by scoping the contribution
+  to systems/engineering evidence and rejecting broad novelty wording.
+- CB7 is resolved by Stage102 reviewed 2025/686 source anchors and explicit
+  claim limits.
 
 ## Active Goal
 
-Continue from the Stage98 state without changing scalar/default SAB behavior.
-Maintain the current scoped PVW/MAT-SAB engineering package, reprobe external
-unlock conditions when useful, and only upgrade final claims when the relevant
-native-perf, full-text, novelty, correctness, noise, resource, and full-SAB
-benchmark gates are satisfied.
+Continue from the Stage103 state without changing scalar/default SAB behavior.
+Maintain the scoped PVW/MAT-SAB engineering package and only upgrade beyond
+scoped systems/engineering wording when new theorem, literature, correctness,
+noise, resource, parameter, or full-SAB benchmark evidence supports it.
 
 ## Execution Route
 
@@ -39,26 +36,21 @@ benchmark gates are satisfied.
    explicit stage runs new scalar regression gates.
 3. Treat H14-C1 as the preferred explicit local r=6 engineering path, not a
    default path and not a paper-level claim.
-4. Use Stage99 to reprobe the post-Stage98 external blocker state.
-5. Use Stage100 candidate anchors only as a manual-review accelerator; they
-   are not verified source anchors and do not upgrade theorem-level or novelty
-   claims.
-6. If native perf becomes available, rerun Stage28 with
-   `STAGE28_RUN_BENCH=1` and perform manual counter interpretation before
-   claiming MAT-AVX512 theoretical memory-traffic superiority.
-7. Use the registered 2025/686 artifact from Stage38 only after filling the
-   Stage38 review checklist with concrete source anchors for protocol,
-   complexity, correctness/noise, parameter/security, PVW-SAB delta, and
-   novelty-boundary rows.
-8. If both source review and related-work review are completed, refresh the
-   final package and claim boundary. Until then, keep the final status scoped:
-   `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED`.
+4. Use Stage101 counters for attribution, not as a standalone proof of
+   theoretical MAT-AVX512 optimality.
+5. Use Stage102 source anchors for scoped 2025/686 protocol/citation claims
+   and pair PVW/MAT statements with local equivalence/performance evidence.
+6. Use Stage103 allowed wording for novelty positioning: scoped
+   systems/engineering optimization only.
+7. Preserve the current final-audit status:
+   `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard
 
-The SAB optimization goal is fully complete only when the scoped engineering
-evidence remains passing and all desired final claims have matching evidence:
+The scoped SAB optimization goal is complete when the scoped engineering
+evidence remains passing and every stated claim has matching evidence:
 same-backend full-SAB A/B timing, multi-seed correctness/noise, resource/key
 overhead, scalar/default isolation, native-perf attribution where claimed,
-reviewed 2025/686 source anchors, related-work/novelty review, and a
+reviewed 2025/686 source anchors, scoped related-work/novelty review, and a
 reproducibility pack with commands, commits, logs, summaries, and decisions.
+Claims beyond that scope remain blocked until new evidence is added.

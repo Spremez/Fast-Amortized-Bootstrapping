@@ -1,0 +1,6 @@
+gate,status,evidence,detail,next_action
+stage102_fulltext_precondition,PASS,repro/external_evidence_intake/summary.csv,fab686_fulltext=AVAILABLE_UNREVIEWED,Register a valid 2025/686 full text before source-anchor review.
+stage102_candidate_precondition,PASS,repro/stage100_fulltext_anchor_prefill/summary.csv,stage100_decision=PASS_STAGE100_FULLTEXT_ANCHOR_PREFILL_REVIEW_REQUIRED,Run Stage100 candidate anchor prefill before Stage102.
+stage102_review_matrix,PASS,repro/stage102_686_source_anchor_review/review_matrix.csv,reviewed_rows=6,Fill any missing reviewed anchors before citing paper-specific details.
+stage102_stage38_update,PASS,repro/stage38_fulltext_review_gate/review_checklist.csv,Stage38 checklist rows now carry verified source anchors.,Do not upgrade CB7 if any checklist row remains candidate-only.
+stage102_decision,PASS_STAGE102_686_SOURCE_ANCHORS_REVIEWED,repro/stage102_686_source_anchor_review/summary.csv,CB7 source-anchor review is complete for scoped 2025/686 citations.,Use Stage103 for novelty boundaries before manuscript-level contribution claims.

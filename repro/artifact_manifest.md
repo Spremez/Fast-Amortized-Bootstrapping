@@ -1518,3 +1518,40 @@ Repro artifacts:
 - `repro/stage100_fulltext_anchor_prefill/stage100_run.log`
 - `repro/stage100_fulltext_anchor_prefill/stage100_build.log`
 - `repro/stage38_fulltext_review_gate/review_checklist.csv`
+
+## Stage 101 CB5 Remote Native Perf
+
+- `docs/stage101_cb5_remote_native_perf_log.md`
+- `experiments/stage101_cb5_remote_native_perf_plan.md`
+- `scripts/build_stage101_cb5_remote_native_perf.py`
+- `repro/stage101_cb5_remote_native_perf/summary.csv`
+- `repro/stage101_cb5_remote_native_perf/counter_metrics.csv`
+- `repro/stage101_cb5_remote_native_perf/artifact_index.csv`
+- `repro/stage101_cb5_remote_native_perf/stage101_remote_env.log`
+- `repro/stage101_cb5_remote_native_perf/stage28_native_perf_counter_gate/summary.csv`
+- `repro/stage101_cb5_remote_native_perf/stage28_native_perf_counter_gate/bench_perf.log`
+- `repro/stage101_cb5_remote_native_perf/stage28_native_perf_counter_gate/bench_run.log`
+- `repro/stage101_cb5_remote_native_perf/attribution_probe/event_support.csv`
+- `repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_perf.log`
+- `repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_run.log`
+
+## Stage 102 2025/686 Source-Anchor Review
+
+- `docs/stage102_686_source_anchor_review_log.md`
+- `experiments/stage102_686_source_anchor_review_plan.md`
+- `scripts/build_stage102_686_source_anchor_review.py`
+- `repro/stage102_686_source_anchor_review/summary.csv`
+- `repro/stage102_686_source_anchor_review/review_matrix.csv`
+- `repro/stage102_686_source_anchor_review/artifact_index.csv`
+- `repro/stage38_fulltext_review_gate/review_checklist.csv`
+
+## Stage 103 Related-Work And Novelty Review
+
+- `docs/stage103_related_work_novelty_review_log.md`
+- `experiments/stage103_related_work_novelty_review_plan.md`
+- `scripts/build_stage103_related_work_novelty_review.py`
+- `repro/stage103_related_work_novelty_review/summary.csv`
+- `repro/stage103_related_work_novelty_review/related_work_matrix.csv`
+- `repro/stage103_related_work_novelty_review/novelty_claim_matrix.csv`
+- `repro/stage103_related_work_novelty_review/source_verification.csv`
+- `repro/stage103_related_work_novelty_review/artifact_index.csv`

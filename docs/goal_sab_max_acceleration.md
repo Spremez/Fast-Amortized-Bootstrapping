@@ -449,16 +449,19 @@ Stage 92: external unlock execution packet. [completed; executable external lane
 Stage 93: external lane attempt. [completed; current local environment still lacks native perf and 2025/686 full text]
 Stage 99: external blocker reprobe. [completed; local 2025/686 PDF registered, manual review required]
 Stage 100: full-text anchor prefill. [completed; candidate anchors generated, manual review required]
+Stage 101: CB5 remote native perf evidence. [completed; native Linux Stage28 hardware-counter gate, complete-SAB correctness, load/store, and AVX512 FP counters recorded]
+Stage 102: 2025/686 source-anchor review. [completed; all Stage38 checklist rows reviewed with concrete page/section anchors and claim limits]
+Stage 103: related-work and novelty boundary review. [completed; real-source related-work matrix generated, broad novelty rejected, scoped systems claim allowed]
 ```
 
 ## Current Closure Label
 
-Current control-plane closure range: `Stage 19-100`.
+Current control-plane closure range: `Stage 19-103`.
 
-Stage99 adds an external blocker reprobe after the Stage98 smoke refresh. It
-records that native perf is still blocked in the current WSL2 environment,
-while a local 2025/686 PDF has been registered by Stage38. Stage100 then
-generates candidate-only page anchors for the Stage38 checklist. The candidate
-anchors are not reviewed source anchors; theorem-level, novelty, and native
-perf claims still require manual review or external evidence before they can
-move.
+Stage101-103 resolve the previous external blockers: CB5 has native Linux
+hardware-counter evidence, CB7 has reviewed 2025/686 source anchors, and CB6
+has a real-source related-work/novelty boundary. The current final-audit state
+is `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
+This allows scoped systems/engineering wording for the PVW/MAT-SAB
+optimization, while broad novelty, all-parameter, non-binary, and theoretical
+MAT-AVX512 optimality claims remain blocked without new evidence.

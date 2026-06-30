@@ -18,6 +18,9 @@ CLAIMS = ROOT / "repro" / "stage27_final_evidence_package" / "claim_scope.csv"
 MANIFEST = ROOT / "repro" / "stage27_final_evidence_package" / "manifest.csv"
 STAGE28 = ROOT / "repro" / "stage28_native_perf_counter_gate" / "summary.csv"
 EXTERNAL = ROOT / "repro" / "external_evidence_intake" / "summary.csv"
+STAGE101_CB5 = ROOT / "repro" / "stage101_cb5_remote_native_perf" / "summary.csv"
+STAGE102_686_REVIEW = ROOT / "repro" / "stage102_686_source_anchor_review" / "summary.csv"
+STAGE103_NOVELTY_REVIEW = ROOT / "repro" / "stage103_related_work_novelty_review" / "summary.csv"
 STAGE33 = ROOT / "repro" / "stage33_current_smoke" / "summary.csv"
 STAGE36_TARGET_PERF = ROOT / "repro" / "stage36_target_perf_summary.csv"
 STAGE36_TARGET_NOISE = ROOT / "repro" / "stage36_target_noise_seeds50" / "aggregate.csv"
@@ -114,6 +117,9 @@ def audit() -> list[AuditRow]:
     manifest = read_csv(MANIFEST)
     stage28 = read_csv(STAGE28)
     external = read_csv_if_exists(EXTERNAL)
+    stage101 = read_csv_if_exists(STAGE101_CB5)
+    stage102 = read_csv_if_exists(STAGE102_686_REVIEW)
+    stage103 = read_csv_if_exists(STAGE103_NOVELTY_REVIEW)
     stage33 = read_csv_if_exists(STAGE33)
     run_log = read_csv(RUN_LOG)
 
@@ -417,15 +423,32 @@ def audit() -> list[AuditRow]:
         claim_ids.get(claim_id, {}).get("status_label", "").startswith("BLOCKED")
         for claim_id in blocked_claims
     )
+    stage103_decision = row_by(stage103, "gate", "stage103_decision")
+    stage103_done = (
+        stage103_decision or {}
+    ).get("status") == "PASS_STAGE103_RELATED_WORK_NOVELTY_REVIEW_SCOPED"
+    if blocked_ok and stage103_done:
+        a6_status = "PASS_SCOPED_BOUNDARY_REVIEWED"
+        a6_evidence = f"{rel(CLAIMS)}; {rel(STAGE103_NOVELTY_REVIEW)}"
+        a6_scope = (
+            "broad novelty/non-binary/theorem claims remain blocked; related-work review "
+            "supports only scoped systems wording"
+        )
+        a6_action = "Keep rejected broad novelty wording out of paper claims unless new theorem-level evidence is added."
+    else:
+        a6_status = "PASS_BLOCKED_BOUNDARY" if blocked_ok else "FAIL_OVERCLAIM_RISK"
+        a6_evidence = rel(CLAIMS)
+        a6_scope = "blocked claims are preserved as part of the evidence chain"
+        a6_action = "Restore blocked labels before drafting stronger manuscript claims."
     out.append(
         AuditRow(
             "A6",
             "claim_boundary",
             "Novelty, non-binary support, and theorem-level 2025/686 citation claims remain explicitly blocked",
-            "PASS_BLOCKED_BOUNDARY" if blocked_ok else "FAIL_OVERCLAIM_RISK",
-            rel(CLAIMS),
-            "blocked claims are preserved as part of the evidence chain",
-            "Restore blocked labels before drafting stronger manuscript claims.",
+            a6_status,
+            a6_evidence,
+            a6_scope,
+            a6_action,
         )
     )
 
@@ -494,14 +517,25 @@ def audit() -> list[AuditRow]:
     external_statuses = {row.get("evidence_id"): row for row in external}
     fulltext_status = external_statuses.get("fab686_fulltext", {}).get("status", "MISSING")
     native_perf_status = external_statuses.get("stage28_native_perf_summary", {}).get("status", "MISSING")
+    stage101_done = (
+        row_by(stage101, "gate", "stage101_cb5_decision") or {}
+    ).get("status") == "PASS_STAGE101_CB5_NATIVE_PERF_COUNTERS_RECORDED"
+    stage102_done = (
+        row_by(stage102, "gate", "stage102_decision") or {}
+    ).get("status") == "PASS_STAGE102_686_SOURCE_ANCHORS_REVIEWED"
 
     gate = row_by(stage28, "probe", "hardware_counter_gate")
     stage28_status = gate.get("status", "") if gate else "MISSING"
-    if native_perf_status == "PASS_COUNTER_ATTRIBUTION_AVAILABLE":
+    if native_perf_status == "PASS_COUNTER_ATTRIBUTION_AVAILABLE" and stage101_done:
+        stage28_audit_status = "PASS_COUNTER_ATTRIBUTION_EXTERNAL"
+        stage28_evidence = f"{rel(EXTERNAL)}; {rel(STAGE101_CB5)}" if EXTERNAL.exists() else rel(STAGE101_CB5)
+        stage28_scope = "native/perf-enabled Stage 28 summary and Stage101 counter metrics are registered"
+        stage28_action = "Interpret hardware counters against Stage 22 timing and objdump evidence before claiming theoretical optimality."
+    elif native_perf_status == "PASS_COUNTER_ATTRIBUTION_AVAILABLE":
         stage28_audit_status = "PASS_COUNTER_ATTRIBUTION_EXTERNAL"
         stage28_evidence = rel(EXTERNAL) if EXTERNAL.exists() else rel(STAGE28)
         stage28_scope = "native/perf-enabled Stage 28 summary registered through external evidence intake"
-        stage28_action = "Interpret hardware counters against Stage 22 timing and objdump evidence before claiming theoretical optimality."
+        stage28_action = "Run Stage101 parser before relying on detailed counter attribution metrics."
     elif stage28_status == "PASS":
         stage28_audit_status = "PASS_COUNTER_ATTRIBUTION"
         stage28_evidence = rel(STAGE28)
@@ -534,18 +568,36 @@ def audit() -> list[AuditRow]:
         )
     )
 
-    if fulltext_status == "AVAILABLE_UNREVIEWED" or native_perf_status == "PASS_COUNTER_ATTRIBUTION_AVAILABLE":
+    if (
+        fulltext_status == "AVAILABLE_UNREVIEWED"
+        and native_perf_status == "PASS_COUNTER_ATTRIBUTION_AVAILABLE"
+        and stage101_done
+        and stage102_done
+        and stage103_done
+    ):
+        external_audit_status = "PASS_EXTERNAL_EVIDENCE_REVIEWED"
+        external_scope = (
+            "2025/686 full-text anchors reviewed, related-work novelty boundary scoped, "
+            "and native perf/counter evidence registered; broad novelty/theory claims remain bounded"
+        )
+        external_action = (
+            "No missing external-evidence gate remains for CB5/CB6/CB7; keep scoped claim guardrails unless new evidence is added."
+        )
+    elif fulltext_status == "AVAILABLE_UNREVIEWED" or native_perf_status == "PASS_COUNTER_ATTRIBUTION_AVAILABLE":
         external_audit_status = "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
         external_scope = (
             "external artifact registered; manual citation/perf interpretation gates "
             "still required before claim upgrade"
         )
+        external_action = "Register external artifacts with scripts/register_external_evidence.py, then rerun final recheck."
     elif fulltext_status == "MISSING" and native_perf_status == "MISSING":
         external_audit_status = "MISSING_OPTIONAL_EXTERNAL_EVIDENCE"
         external_scope = "no full-text or native perf external evidence registered"
+        external_action = "Register external artifacts with scripts/register_external_evidence.py, then rerun final recheck."
     else:
         external_audit_status = "EXTERNAL_EVIDENCE_INTAKE_RECORDED"
         external_scope = f"fab686_fulltext={fulltext_status}; native_perf={native_perf_status}"
+        external_action = "Register external artifacts with scripts/register_external_evidence.py, then rerun final recheck."
     out.append(
         AuditRow(
             "A8b",
@@ -554,7 +606,7 @@ def audit() -> list[AuditRow]:
             external_audit_status,
             rel(EXTERNAL) if EXTERNAL.exists() else "",
             external_scope,
-            "Register external artifacts with scripts/register_external_evidence.py, then rerun final recheck.",
+            external_action,
         )
     )
 
@@ -582,10 +634,33 @@ def audit() -> list[AuditRow]:
             overall_status = "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED"
         else:
             overall_status = "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED"
+    elif (
+        scoped_ready
+        and theory_status in {"PASS_COUNTER_ATTRIBUTION", "PASS_COUNTER_ATTRIBUTION_EXTERNAL"}
+        and external_status == "PASS_EXTERNAL_EVIDENCE_REVIEWED"
+    ):
+        overall_status = "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED"
     elif scoped_ready and theory_status in {"PASS_COUNTER_ATTRIBUTION", "PASS_COUNTER_ATTRIBUTION_EXTERNAL"}:
         overall_status = "SCOPED_ENGINEERING_CHAIN_READY__COUNTER_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
     else:
         overall_status = "NOT_READY"
+
+    if overall_status == "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED":
+        overall_scope = (
+            "scoped engineering acceleration evidence is complete and the former CB5/CB6/CB7 external blockers "
+            "are resolved by native counter evidence, source-anchor review, and scoped novelty boundaries"
+        )
+        overall_action = (
+            "Use scoped systems/engineering wording; do not upgrade to broad novelty, all-parameter, non-binary, "
+            "or theoretical-optimality claims without new evidence."
+        )
+    else:
+        overall_scope = (
+            "complete scoped engineering acceleration evidence exists; novelty/theory/all-parameter claims are not complete"
+        )
+        overall_action = (
+            "Keep the active goal open until external full-text/perf/native evidence is supplied or the scope is explicitly narrowed."
+        )
 
     out.append(
         AuditRow(
@@ -594,8 +669,8 @@ def audit() -> list[AuditRow]:
             "Original optimization goal status under current evidence",
             overall_status,
             f"{rel(OUT_CSV)}; {rel(OUT_MD)}",
-            "complete scoped engineering acceleration evidence exists; novelty/theory/all-parameter claims are not complete",
-            "Keep the active goal open until external full-text/perf/native evidence is supplied or the scope is explicitly narrowed.",
+            overall_scope,
+            overall_action,
         )
     )
 

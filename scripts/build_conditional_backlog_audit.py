@@ -20,6 +20,9 @@ OUT_CSV = ROOT / "repro" / "conditional_backlog_audit.csv"
 OUT_MD = ROOT / "docs" / "conditional_backlog_audit.md"
 FINAL_AUDIT = ROOT / "repro" / "final_goal_completion_audit.csv"
 STAGE38 = ROOT / "repro" / "stage38_fulltext_review_gate" / "summary.csv"
+STAGE101 = ROOT / "repro" / "stage101_cb5_remote_native_perf" / "summary.csv"
+STAGE102 = ROOT / "repro" / "stage102_686_source_anchor_review" / "summary.csv"
+STAGE103 = ROOT / "repro" / "stage103_related_work_novelty_review" / "summary.csv"
 
 
 ROWS: List[Dict[str, str]] = [
@@ -125,10 +128,65 @@ def current_rows() -> List[Dict[str, str]]:
     rows = [dict(row) for row in ROWS]
     stage38_decision = status(STAGE38, "item", "stage38_decision")
     audit_a8b = status(FINAL_AUDIT, "item_id", "A8b")
+    stage101_decision = status(STAGE101, "gate", "stage101_cb5_decision")
+    stage102_decision = status(STAGE102, "gate", "stage102_decision")
+    stage103_decision = status(STAGE103, "gate", "stage103_decision")
     for row in rows:
-        if row.get("item_id") != "CB7":
-            continue
-        if (
+        if row.get("item_id") == "CB5" and stage101_decision == "PASS_STAGE101_CB5_NATIVE_PERF_COUNTERS_RECORDED":
+            row["status"] = "RESOLVED_NATIVE_PERF_COUNTER_EVIDENCE"
+            row["evidence"] = (
+                "docs/stage101_cb5_remote_native_perf_log.md; "
+                "repro/stage101_cb5_remote_native_perf/summary.csv; "
+                "repro/stage101_cb5_remote_native_perf/counter_metrics.csv; "
+                "repro/external_evidence_intake/summary.csv"
+            )
+            row["rationale"] = (
+                "Stage101 records native Linux Stage28 PASS evidence plus retired "
+                "load/store and AVX512 floating-point counter metrics on the "
+                "authorized Xeon platform. This resolves the external platform "
+                "blocker, while theoretical-optimality wording remains separately "
+                "claim-gated."
+            )
+            row["next_gate"] = (
+                "Use Stage101 counters for attribution. Do not claim theoretical "
+                "MAT-AVX512 optimality without model/assembly interpretation."
+            )
+        elif row.get("item_id") == "CB6" and stage103_decision == "PASS_STAGE103_RELATED_WORK_NOVELTY_REVIEW_SCOPED":
+            row["status"] = "RESOLVED_REVIEWED_SCOPED_NOVELTY"
+            row["evidence"] = (
+                "docs/stage103_related_work_novelty_review_log.md; "
+                "repro/stage103_related_work_novelty_review/related_work_matrix.csv; "
+                "repro/stage103_related_work_novelty_review/novelty_claim_matrix.csv; "
+                "repro/stage103_related_work_novelty_review/source_verification.csv"
+            )
+            row["rationale"] = (
+                "Stage103 reviews real related work and resolves CB6 by scoping "
+                "the contribution to systems/engineering evidence. Broad "
+                "shared-mask, batch/SIMD, new-asymptotic, all-parameter, and "
+                "non-binary novelty claims remain blocked."
+            )
+            row["next_gate"] = (
+                "Use only scoped systems wording unless a later theorem and full "
+                "literature review justify stronger novelty claims."
+            )
+        elif row.get("item_id") == "CB7" and stage102_decision == "PASS_STAGE102_686_SOURCE_ANCHORS_REVIEWED":
+            row["status"] = "RESOLVED_FULLTEXT_SOURCE_ANCHORS_VERIFIED"
+            row["evidence"] = (
+                "docs/stage102_686_source_anchor_review_log.md; "
+                "repro/stage102_686_source_anchor_review/review_matrix.csv; "
+                "repro/stage38_fulltext_review_gate/review_checklist.csv"
+            )
+            row["rationale"] = (
+                "Stage102 replaces candidate-only Stage100 page hints with "
+                "verified page/section anchors for protocol, complexity, "
+                "noise/correctness, parameters/security, PVW-SAB delta, and "
+                "novelty boundary rows."
+            )
+            row["next_gate"] = (
+                "Cite 2025/686 only within the reviewed anchors and local claim "
+                "limits; pair PVW/MAT statements with local equivalence/performance evidence."
+            )
+        elif row.get("item_id") == "CB7" and (
             stage38_decision == "FULLTEXT_AVAILABLE_REVIEW_REQUIRED"
             or audit_a8b == "EXTERNAL_EVIDENCE_AVAILABLE_REVIEW_REQUIRED"
         ):
@@ -144,7 +202,6 @@ def current_rows() -> List[Dict[str, str]]:
                 "complexity, noise/security, PVW-SAB delta, and novelty before "
                 "any theorem-level claim upgrade."
             )
-        break
     return rows
 
 
@@ -185,9 +242,10 @@ def write_md(rows: List[Dict[str, str]]) -> None:
     lines.append(
         "Local conditional engineering follow-ups CB1-CB4 are closed as "
         "`CONDITION_NOT_ACTIVE` under the current promoted active-buffer "
-        "PVW/MAT-SAB path. CB5-CB7 remain external-review or external-platform "
-        "blockers and do not become local implementation tasks without the "
-        "listed evidence."
+        "PVW/MAT-SAB path. CB5-CB7 are now resolved by Stage101 native perf "
+        "evidence, Stage102 2025/686 source anchors, and Stage103 scoped "
+        "related-work review; stronger claims remain bounded by the listed "
+        "claim policies."
     )
 
     OUT_MD.parent.mkdir(parents=True, exist_ok=True)

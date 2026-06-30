@@ -3396,3 +3396,111 @@ candidate-only anchors. The claim state remains
 SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED because manual
 source-anchor review and native-perf evidence are still incomplete.
 ```
+
+## Stage 101: CB5 Remote Native Perf Counter Evidence
+
+Goal:
+
+```text
+Resolve the native/perf hardware-counter blocker using the authorized remote
+Linux platform, while keeping theoretical-optimality wording gated.
+```
+
+Tasks:
+
+- preserve the remote Stage28 raw logs under
+  `repro/stage101_cb5_remote_native_perf/`;
+- parse standard perf counters and the attribution run with retired
+  load/store plus AVX512 packed floating-point counters;
+- register the native Stage28 summary through
+  `repro/external_evidence_intake/summary.csv`;
+- keep the result as attribution evidence, not as a proof of theoretical
+  optimality.
+
+Gate:
+
+- remote Stage28 `hardware_counter_gate` must be `PASS`;
+- complete SAB target-full correctness must be `Pass`;
+- retired load/store and AVX512 FP event counts must be recorded;
+- one-run native timing remains attribution/smoke evidence only.
+
+Status:
+
+```text
+Completed. Stage101 records
+PASS_STAGE101_CB5_NATIVE_PERF_COUNTERS_RECORDED. On native Linux with
+spqlios_avx512, BINARY SET_2_3_2048, r=4, the complete SAB correctness gate
+passed and the recorded speedup versus repeated scalar was 1.309x in both the
+standard Stage28 run and the wider attribution counter run. CB5 is resolved as
+an external-platform blocker; theoretical MAT-AVX512 optimality remains
+claim-gated.
+```
+
+## Stage 102: 2025/686 Source-Anchor Review
+
+Goal:
+
+```text
+Resolve the 2025/686 full-text review blocker by replacing Stage100
+candidate-only pages with verified source anchors and explicit claim limits.
+```
+
+Tasks:
+
+- verify protocol, complexity, correctness/noise, parameter/security,
+  PVW-SAB delta, and novelty-boundary anchors;
+- update `repro/stage38_fulltext_review_gate/review_checklist.csv` from
+  candidate-only to reviewed source anchors;
+- avoid storing full paper text in the repository.
+
+Gate:
+
+- the registered 2025/686 full-text artifact must remain available;
+- all six Stage38 checklist rows must be
+  `REVIEWED_SOURCE_ANCHORS_VERIFIED`;
+- PVW/MAT statements must remain tied to local evidence, not presented as
+  claims from the original 2025/686 paper.
+
+Status:
+
+```text
+Completed. Stage102 records PASS_STAGE102_686_SOURCE_ANCHORS_REVIEWED.
+CB7 is resolved for scoped theorem/protocol/citation grounding. Broad novelty
+and PVW/MAT theorem claims are not upgraded by this stage.
+```
+
+## Stage 103: Related-Work And Novelty Boundary Review
+
+Goal:
+
+```text
+Resolve the novelty-review blocker by mapping real related work to supported
+and blocked contribution wording.
+```
+
+Tasks:
+
+- record real source metadata for amortized, batch/SIMD, common-mask,
+  post-686 transform, and target SAB work;
+- separate supported scoped systems claims from broad claims rejected by prior
+  art;
+- update final audit/blocker dashboards so CB6 is resolved by scoping rather
+  than by overclaiming novelty.
+
+Gate:
+
+- every source in `source_verification.csv` must be real and externally
+  identifiable;
+- broad shared-mask, batch/SIMD, new-asymptotic, all-parameter, and
+  non-binary novelty claims must remain blocked unless new evidence is added;
+- allowed wording must stay within the complete-SAB implementation evidence.
+
+Status:
+
+```text
+Completed. Stage103 records
+PASS_STAGE103_RELATED_WORK_NOVELTY_REVIEW_SCOPED. CB6 is resolved by a
+scoped systems/engineering contribution boundary: the project may claim a
+measured PVW/MAT-SAB implementation optimization for the 2025/686 SAB hot path,
+but not broad first/shared-mask/batch/asymptotic novelty.
+```

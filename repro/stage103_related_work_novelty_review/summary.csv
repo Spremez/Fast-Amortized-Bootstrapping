@@ -1,0 +1,6 @@
+gate,status,evidence,detail,next_action
+stage103_stage102_precondition,PASS,repro/stage102_686_source_anchor_review/summary.csv,stage102_decision=PASS_STAGE102_686_SOURCE_ANCHORS_REVIEWED,Complete Stage102 before novelty/source-boundary review.
+stage103_source_verification,PASS,repro/stage103_related_work_novelty_review/source_verification.csv,verified_sources=11/11,Remove or verify any source before using it in a manuscript.
+stage103_related_work_matrix,PASS,repro/stage103_related_work_novelty_review/related_work_matrix.csv,axes=5,Expand only if a new claim axis is introduced.
+stage103_novelty_boundary,PASS_SCOPED_BOUNDARY,repro/stage103_related_work_novelty_review/novelty_claim_matrix.csv,scoped_or_supported=3; broad_rejections=2,Keep rejected wording out of paper claims.
+stage103_decision,PASS_STAGE103_RELATED_WORK_NOVELTY_REVIEW_SCOPED,repro/stage103_related_work_novelty_review/summary.csv,CB6 resolved by scoped contribution boundary; broad novelty claims remain blocked.,Use scoped systems wording unless a later theorem and full literature review justify stronger claims.

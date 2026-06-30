@@ -60,10 +60,14 @@ def evidence_row(evidence_id: str, input_path: str | None, kind: str) -> dict[st
     if not input_path:
         existing = existing_evidence_row(evidence_id)
         if existing:
-            existing["detail"] = (
-                existing.get("detail", "")
-                + " Preserved because no replacement path was provided."
-            ).strip()
+            preserve_note = "Preserved because no replacement path was provided."
+            detail = existing.get("detail", "").strip()
+            duplicate = f"{preserve_note} {preserve_note}"
+            while duplicate in detail:
+                detail = detail.replace(duplicate, preserve_note)
+            if preserve_note not in detail:
+                detail = f"{detail} {preserve_note}".strip()
+            existing["detail"] = detail
             return existing
         return {
             "evidence_id": evidence_id,

@@ -2074,7 +2074,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             "check": "worktree_clean_before_outputs",
             "status": "PASS" if not status_before_outputs.strip() else "FAIL_DIRTY",
             "evidence": "git status --short --untracked-files=all",
-            "detail": status_before_outputs.replace("\n", "; ")
+            "detail": "; ".join(line.strip() for line in status_before_outputs.splitlines() if line.strip())
             if status_before_outputs.strip()
             else "tracked and untracked worktree was clean before verifier outputs.",
         },
@@ -2085,6 +2085,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             in {
                 "SCOPED_ENGINEERING_CHAIN_READY__STRONGER_CLAIMS_BLOCKED",
                 "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEW_REQUIRED",
+                "SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED",
             }
             else "FAIL",
             "evidence": "repro/final_goal_completion_audit.csv",

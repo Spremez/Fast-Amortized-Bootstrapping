@@ -873,3 +873,72 @@ hypotheses:
         before manual review
       - Stage100 artifacts are omitted from the run log, artifact manifest, or
         closure audits
+  - id: H26_cb5_remote_native_perf_unlock
+    statement: >
+      The native/perf blocker can be resolved by preserving an authorized
+      remote Linux Stage28 run plus attribution counters, without claiming
+      theoretical MAT-AVX512 optimality.
+    mechanism: >
+      Stage101 parses the remote Stage28 native perf-counter summary, complete
+      SAB run logs, attribution perf logs, retired load/store events, and
+      AVX512 packed floating-point events. It registers the native Stage28
+      summary through external evidence intake and records all derived metrics
+      under `repro/stage101_cb5_remote_native_perf/`.
+    status: stage101_cb5_native_perf_counters_recorded
+    evidence: docs/stage101_cb5_remote_native_perf_log.md; experiments/stage101_cb5_remote_native_perf_plan.md; scripts/build_stage101_cb5_remote_native_perf.py; repro/stage101_cb5_remote_native_perf/summary.csv; repro/stage101_cb5_remote_native_perf/counter_metrics.csv; repro/stage101_cb5_remote_native_perf/artifact_index.csv; repro/external_evidence_intake/summary.csv
+    current_decision: >
+      Stage101 records PASS_STAGE101_CB5_NATIVE_PERF_COUNTERS_RECORDED. The
+      complete SAB target-full correctness gate passed, load/store and AVX512
+      FP counters are available, and the r=4 one-run speedup sample is 1.309x.
+      CB5 is resolved as a platform/counter-evidence blocker, but theoretical
+      optimality wording remains blocked without model/assembly interpretation.
+    failure_criteria:
+      - native Stage28 hardware_counter_gate is not PASS
+      - target_full correctness is missing or failing
+      - retired load/store or AVX512 FP counters are unavailable
+      - one-run native timing is promoted as a statistical performance claim
+      - Stage101 is cited as theoretical optimality proof
+  - id: H27_686_source_anchor_review
+    statement: >
+      Candidate-only 2025/686 page hints can be upgraded to reviewed
+      source-anchor evidence for scoped protocol/citation claims.
+    mechanism: >
+      Stage102 records verified page/section anchors for protocol stages,
+      complexity, correctness/noise, parameters/security, PVW-SAB delta, and
+      novelty boundaries, then updates the Stage38 checklist rows to
+      `REVIEWED_SOURCE_ANCHORS_VERIFIED`.
+    status: stage102_686_source_anchors_reviewed
+    evidence: docs/stage102_686_source_anchor_review_log.md; experiments/stage102_686_source_anchor_review_plan.md; scripts/build_stage102_686_source_anchor_review.py; repro/stage102_686_source_anchor_review/summary.csv; repro/stage102_686_source_anchor_review/review_matrix.csv; repro/stage38_fulltext_review_gate/review_checklist.csv
+    current_decision: >
+      Stage102 records PASS_STAGE102_686_SOURCE_ANCHORS_REVIEWED. CB7 is
+      resolved for scoped 2025/686 protocol and citation grounding. PVW/MAT
+      claims remain local implementation claims and must be paired with local
+      equivalence/performance evidence.
+    failure_criteria:
+      - any Stage38 checklist row remains candidate-only
+      - 2025/686 anchors are used for local PVW/MAT claims without local
+        evidence
+      - unreviewed theorem, table, or figure numbers are cited
+  - id: H28_related_work_novelty_scope_review
+    statement: >
+      The novelty blocker should be resolved by scoping the contribution to a
+      systems/engineering claim, not by asserting broad shared-mask or batch
+      bootstrapping novelty.
+    mechanism: >
+      Stage103 records real related-work sources, groups them by claim axis,
+      and writes a novelty matrix that allows scoped PVW/MAT-SAB systems
+      wording while rejecting broad shared-mask, batch/SIMD, new-asymptotic,
+      all-parameter, and non-binary novelty claims.
+    status: stage103_related_work_novelty_review_scoped
+    evidence: docs/stage103_related_work_novelty_review_log.md; experiments/stage103_related_work_novelty_review_plan.md; scripts/build_stage103_related_work_novelty_review.py; repro/stage103_related_work_novelty_review/summary.csv; repro/stage103_related_work_novelty_review/related_work_matrix.csv; repro/stage103_related_work_novelty_review/novelty_claim_matrix.csv; repro/stage103_related_work_novelty_review/source_verification.csv
+    current_decision: >
+      Stage103 records PASS_STAGE103_RELATED_WORK_NOVELTY_REVIEW_SCOPED.
+      CB6 is resolved by a reviewed claim boundary: the safe contribution is a
+      scoped implementation and empirical study of PVW/MAT external-product
+      batching for the 2025/686 SAB hot path. Broad novelty remains blocked.
+    failure_criteria:
+      - any related-work source is fabricated or not externally identifiable
+      - broad shared-mask, batch/SIMD, or asymptotic novelty wording is used
+        despite Stage103 rejection
+      - all-parameter, non-binary, or theoretical claims are upgraded without
+        separate evidence

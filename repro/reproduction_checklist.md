@@ -219,6 +219,9 @@
 - [x] Run Stage98 current-head smoke refresh; scalar binary full run, explicit active-buffer PVW target gate, explicit H14 backend PVW target gate, and scalar ternary build all pass on the current head.
 - [x] Run Stage99 external blocker reprobe; native perf remains unavailable in WSL2, public 2025/686 PDF routes remain blocked/metadata-only, a local 2025/686 PDF artifact is found and registered by Stage38, and final status moves to scoped-ready with external review required.
 - [x] Run Stage100 full-text anchor prefill; candidate-only page anchors are generated for all six Stage38 review rows without storing full paper text or upgrading claims.
+- [x] Run Stage101 CB5 remote native perf evidence; native Linux Stage28 hardware-counter gate, complete-SAB correctness, retired load/store counters, AVX512 FP counters, and r=4 one-run speedup evidence are recorded.
+- [x] Run Stage102 2025/686 source-anchor review; all Stage38 checklist rows are upgraded from candidate-only anchors to reviewed source anchors with claim limits.
+- [x] Run Stage103 related-work and novelty boundary review; real sources are recorded, broad novelty claims are rejected, and scoped systems/engineering wording is allowed.
 - [ ] Run Stage85 repeated complete-SAB/noise/resource promotion gates only if a future preflight is full-SAB positive.
-- [ ] Review full related-work papers before promoting any novelty claim; tracked by conditional backlog audit CB6.
-- [ ] Fill Stage38 source-anchor review checklist before theorem-level 2025/686 manuscript citations; tracked by conditional backlog audit CB7.
+- [x] Review full related-work papers before promoting any novelty claim; resolved by Stage103 as scoped novelty wording, with broad claims still blocked.
+- [x] Fill Stage38 source-anchor review checklist before theorem-level 2025/686 manuscript citations; resolved by Stage102 for scoped citations.
