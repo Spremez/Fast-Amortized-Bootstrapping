@@ -1,0 +1,8 @@
+gate,status,evidence,detail,next_action
+stage104_final_audit_precondition,PASS,repro/final_goal_completion_audit.csv,A9=SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED,Refresh final audit after Stage101-103 before Stage104.
+stage104_stage101_counter_gate,PASS,repro/stage101_cb5_remote_native_perf/summary.csv,stage101=PASS_STAGE101_CB5_NATIVE_PERF_COUNTERS_RECORDED; native_sample_speedup=1.309x,Rerun Stage101 parser if native counter evidence is missing.
+stage104_stage102_source_anchor_gate,PASS,repro/stage102_686_source_anchor_review/summary.csv,stage102=PASS_STAGE102_686_SOURCE_ANCHORS_REVIEWED,Rerun Stage102 if reviewed source anchors are missing.
+stage104_stage103_novelty_gate,PASS,repro/stage103_related_work_novelty_review/summary.csv,stage103=PASS_STAGE103_RELATED_WORK_NOVELTY_REVIEW_SCOPED,Rerun Stage103 if scoped novelty boundary is missing.
+stage104_stage91_perf_noise_inheritance,PASS,repro/stage91_final_package/summary.csv; repro/stage91_final_package/performance_claims.csv; repro/stage91_final_package/noise_resource_claims.csv,performance=PASS_SCOPED_COMPLETE_SAB_PERFORMANCE; noise_resource=PASS_SCOPED_NOISE_RESOURCE,Rerun heavy performance/noise/resource gates if source or backend changes.
+stage104_closure_precondition,PASS,repro/stage42_evidence_closure_audit.csv,stage42=PASS_SCOPED_EVIDENCE_CLOSURE_STRONGER_CLAIMS_BLOCKED,Regenerate closure audit after Stage104 files are added.
+stage104_decision,PASS_STAGE104_POST_EXTERNAL_FINAL_PACKAGE_REFRESHED_SCOPED,repro/stage104_post_external_final_package/summary.csv,Post-external final package refreshed with scoped claim boundaries.,Use Stage104 as the current final package until source/backend/claim scope changes.

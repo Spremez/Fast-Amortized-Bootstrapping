@@ -6,10 +6,11 @@ Date: 2026-06-30
 
 The project has a complete Stage19+ route for the scoped PVW/MAT-SAB
 engineering goal. The local SAB optimization chain is currently closed through
-Stage103: scalar/default SAB remains isolated, the explicit `sab_pvw_*` paths
+Stage104: scalar/default SAB remains isolated, the explicit `sab_pvw_*` paths
 remain gated, current-head smoke gates pass, the scoped complete-SAB
 performance/noise/resource evidence is registered, and the former CB5/CB6/CB7
-external blockers have been resolved.
+external blockers have been resolved and repackaged into the post-external
+final scoped bundle.
 
 The route is still scoped, not an unrestricted paper-level novelty claim:
 
@@ -22,7 +23,7 @@ The route is still scoped, not an unrestricted paper-level novelty claim:
 
 ## Active Goal
 
-Continue from the Stage103 state without changing scalar/default SAB behavior.
+Continue from the Stage104 state without changing scalar/default SAB behavior.
 Maintain the scoped PVW/MAT-SAB engineering package and only upgrade beyond
 scoped systems/engineering wording when new theorem, literature, correctness,
 noise, resource, parameter, or full-SAB benchmark evidence supports it.
@@ -42,7 +43,8 @@ noise, resource, parameter, or full-SAB benchmark evidence supports it.
    and pair PVW/MAT statements with local equivalence/performance evidence.
 6. Use Stage103 allowed wording for novelty positioning: scoped
    systems/engineering optimization only.
-7. Preserve the current final-audit status:
+7. Treat Stage104 as the current final package refresh.
+8. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

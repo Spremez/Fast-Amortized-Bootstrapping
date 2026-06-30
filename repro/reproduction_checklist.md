@@ -222,6 +222,7 @@
 - [x] Run Stage101 CB5 remote native perf evidence; native Linux Stage28 hardware-counter gate, complete-SAB correctness, retired load/store counters, AVX512 FP counters, and r=4 one-run speedup evidence are recorded.
 - [x] Run Stage102 2025/686 source-anchor review; all Stage38 checklist rows are upgraded from candidate-only anchors to reviewed source anchors with claim limits.
 - [x] Run Stage103 related-work and novelty boundary review; real sources are recorded, broad novelty claims are rejected, and scoped systems/engineering wording is allowed.
+- [x] Run Stage104 post-external final package refresh; Stage91 performance/noise/resource evidence is repackaged with Stage101-103 external-review evidence and scoped claim boundaries.
 - [ ] Run Stage85 repeated complete-SAB/noise/resource promotion gates only if a future preflight is full-SAB positive.
 - [x] Review full related-work papers before promoting any novelty claim; resolved by Stage103 as scoped novelty wording, with broad claims still blocked.
 - [x] Fill Stage38 source-anchor review checklist before theorem-level 2025/686 manuscript citations; resolved by Stage102 for scoped citations.

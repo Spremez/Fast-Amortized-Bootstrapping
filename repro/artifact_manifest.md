@@ -1555,3 +1555,15 @@ Repro artifacts:
 - `repro/stage103_related_work_novelty_review/novelty_claim_matrix.csv`
 - `repro/stage103_related_work_novelty_review/source_verification.csv`
 - `repro/stage103_related_work_novelty_review/artifact_index.csv`
+
+## Stage 104 Post-External Final Package
+
+- `docs/stage104_post_external_final_package.md`
+- `experiments/stage104_post_external_final_package_plan.md`
+- `scripts/build_stage104_post_external_final_package.py`
+- `repro/stage104_post_external_final_package/summary.csv`
+- `repro/stage104_post_external_final_package/performance_claims.csv`
+- `repro/stage104_post_external_final_package/claim_boundary.csv`
+- `repro/stage104_post_external_final_package/evidence_bridge.csv`
+- `repro/stage104_post_external_final_package/reproduction_commands.csv`
+- `repro/stage104_post_external_final_package/artifact_index.csv`

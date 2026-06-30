@@ -1,0 +1,6 @@
+step,command,purpose
+stage101_parse_remote_native_perf,python scripts/build_stage101_cb5_remote_native_perf.py,Rebuild CB5 native perf summary from preserved raw logs.
+stage102_review_686_anchors,python scripts/build_stage102_686_source_anchor_review.py,Rebuild reviewed 2025/686 source-anchor matrix.
+stage103_related_work_boundary,python scripts/build_stage103_related_work_novelty_review.py,Rebuild scoped related-work/novelty matrix.
+stage104_refresh_final_package,python scripts/build_stage104_post_external_final_package.py,Rebuild post-external final package refresh.
+closure_audit,python scripts/build_stage42_evidence_closure_audit.py && python scripts/verify_stage42_closure.py,Regenerate and verify the closure package from a clean input state.

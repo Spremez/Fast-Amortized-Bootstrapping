@@ -3504,3 +3504,41 @@ scoped systems/engineering contribution boundary: the project may claim a
 measured PVW/MAT-SAB implementation optimization for the 2025/686 SAB hot path,
 but not broad first/shared-mask/batch/asymptotic novelty.
 ```
+
+## Stage 104: Post-External Final Package Refresh
+
+Goal:
+
+```text
+Refresh the final scoped SAB optimization package after CB5/CB6/CB7 are
+resolved, without rerunning heavy benchmarks or changing scalar/default SAB.
+```
+
+Tasks:
+
+- inherit Stage91 complete-SAB performance, correctness/noise, and resource
+  evidence;
+- add Stage101 native perf-counter attribution as a sample-only counter lane;
+- add Stage102 reviewed 2025/686 anchors and Stage103 scoped novelty boundary;
+- write a post-external final claim matrix under
+  `repro/stage104_post_external_final_package/`;
+- keep theoretical MAT-AVX512 optimality, broad novelty, all-parameter,
+  non-binary, and default-path promotion blocked.
+
+Gate:
+
+- final audit A9 must be
+  `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`;
+- Stage101, Stage102, and Stage103 decision gates must pass;
+- Stage91 performance/noise/resource gates must remain passing;
+- Stage42 closure must be regenerated after Stage104 artifacts are added.
+
+Status:
+
+```text
+Completed. Stage104 records
+PASS_STAGE104_POST_EXTERNAL_FINAL_PACKAGE_REFRESHED_SCOPED. It is the current
+post-external final package for scoped systems/engineering wording. It does not
+replace Stage36/Stage88 performance statistics with the one-run Stage101 native
+counter sample.
+```

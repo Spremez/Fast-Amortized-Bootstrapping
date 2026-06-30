@@ -942,3 +942,31 @@ hypotheses:
         despite Stage103 rejection
       - all-parameter, non-binary, or theoretical claims are upgraded without
         separate evidence
+  - id: H29_post_external_final_package_refresh
+    statement: >
+      After CB5/CB6/CB7 are resolved, the final scoped SAB package should be
+      refreshed as a new post-external package rather than rewriting Stage91
+      history.
+    mechanism: >
+      Stage104 inherits Stage91 performance/noise/resource evidence, adds the
+      Stage101 native counter sample as attribution-only evidence, adds Stage102
+      reviewed 2025/686 anchors, adds Stage103 scoped novelty boundaries, and
+      writes refreshed performance, claim-boundary, evidence-bridge,
+      reproduction-command, and artifact-index tables.
+    status: stage104_post_external_final_package_refreshed_scoped
+    evidence: docs/stage104_post_external_final_package.md; experiments/stage104_post_external_final_package_plan.md; scripts/build_stage104_post_external_final_package.py; repro/stage104_post_external_final_package/summary.csv; repro/stage104_post_external_final_package/performance_claims.csv; repro/stage104_post_external_final_package/claim_boundary.csv; repro/stage104_post_external_final_package/evidence_bridge.csv; repro/stage104_post_external_final_package/reproduction_commands.csv; repro/stage104_post_external_final_package/artifact_index.csv
+    current_decision: >
+      Stage104 records
+      PASS_STAGE104_POST_EXTERNAL_FINAL_PACKAGE_REFRESHED_SCOPED. The current
+      final package is post-external-reviewed and scoped: complete-SAB
+      speedup claims still come from Stage36/Stage88 statistical evidence,
+      Stage101 remains counter-attribution evidence, Stage102 supports scoped
+      2025/686 citations, and Stage103 blocks broad novelty wording.
+    failure_criteria:
+      - Stage104 overwrites Stage91 historical evidence instead of creating a
+        post-external refresh
+      - Stage101 one-run native counter sample is treated as statistical
+        performance evidence
+      - source-anchor or novelty claims exceed Stage102/Stage103 claim limits
+      - Stage104 artifacts are omitted from run log, artifact manifest,
+        reproduction checklist, or closure audit

@@ -140,6 +140,9 @@ STAGE99_EXTERNAL_BLOCKER_REPROBE = (
 STAGE100_FULLTEXT_ANCHOR_PREFILL = (
     ROOT / "repro" / "stage100_fulltext_anchor_prefill" / "summary.csv"
 )
+STAGE104_POST_EXTERNAL_FINAL_PACKAGE = (
+    ROOT / "repro" / "stage104_post_external_final_package" / "summary.csv"
+)
 STAGE44_RECHECK = ROOT / "repro" / "final_goal_recheck_stage44_reprobe" / "summary.csv"
 DEFAULT_RECHECK = ROOT / "repro" / "final_goal_recheck" / "summary.csv"
 CLOSURE_RECHECK = ROOT / "repro" / "final_goal_recheck_stage42_closure" / "summary.csv"
@@ -367,6 +370,18 @@ STAGE100_ARTIFACTS = [
     "repro/stage38_fulltext_review_gate/review_checklist.csv",
 ]
 
+STAGE104_ARTIFACTS = [
+    "docs/stage104_post_external_final_package.md",
+    "experiments/stage104_post_external_final_package_plan.md",
+    "scripts/build_stage104_post_external_final_package.py",
+    "repro/stage104_post_external_final_package/summary.csv",
+    "repro/stage104_post_external_final_package/performance_claims.csv",
+    "repro/stage104_post_external_final_package/claim_boundary.csv",
+    "repro/stage104_post_external_final_package/evidence_bridge.csv",
+    "repro/stage104_post_external_final_package/reproduction_commands.csv",
+    "repro/stage104_post_external_final_package/artifact_index.csv",
+]
+
 
 def read_csv(path: Path) -> List[Dict[str, str]]:
     if not path.exists():
@@ -535,6 +550,9 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
     }
     stage100 = {
         row.get("gate"): row for row in read_csv(STAGE100_FULLTEXT_ANCHOR_PREFILL)
+    }
+    stage104 = {
+        row.get("gate"): row for row in read_csv(STAGE104_POST_EXTERNAL_FINAL_PACKAGE)
     }
     stage44_recheck = {row.get("step"): row for row in read_csv(STAGE44_RECHECK)}
     default_recheck = {row.get("step"): row for row in read_csv(DEFAULT_RECHECK)}
@@ -1610,6 +1628,23 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         stage42.get("S42-STAGE100-FULLTEXT-ANCHOR-PREFILL", {}).get("status")
         == "PASS"
     )
+    stage104_mismatches = []
+    expected_stage104 = {
+        "stage104_final_audit_precondition": "PASS",
+        "stage104_stage101_counter_gate": "PASS",
+        "stage104_stage102_source_anchor_gate": "PASS",
+        "stage104_stage103_novelty_gate": "PASS",
+        "stage104_stage91_perf_noise_inheritance": "PASS",
+        "stage104_decision": "PASS_STAGE104_POST_EXTERNAL_FINAL_PACKAGE_REFRESHED_SCOPED",
+    }
+    for gate, expected in expected_stage104.items():
+        got = stage104.get(gate, {}).get("status", "MISSING")
+        if got != expected:
+            stage104_mismatches.append(f"{gate}:status={got}")
+    stage42_stage104_ok = (
+        stage42.get("S42-STAGE104-POST-EXTERNAL-FINAL-PACKAGE", {}).get("status")
+        == "PASS"
+    )
 
     stage44_recheck_mismatches = []
     expected_stage44_recheck = {
@@ -1698,6 +1733,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         "stage98-current-smoke-refresh-001",
         "stage99-external-blocker-reprobe-001",
         "stage100-fulltext-anchor-prefill-001",
+        "stage104-post-external-final-package-001",
     ]
     missing_run_ids = [run_id for run_id in required_run_ids if run_id not in run_ids]
     required_manifest_mentions = [
@@ -2058,6 +2094,7 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
         *STAGE98_ARTIFACTS,
         *STAGE99_ARTIFACTS,
         *STAGE100_ARTIFACTS,
+        *STAGE104_ARTIFACTS,
     ]
     missing_manifest_mentions = [
         token for token in required_manifest_mentions if token not in artifact_manifest
@@ -2717,6 +2754,18 @@ def build_checks(status_before_outputs: str, decision_evidence: str) -> List[Dic
             or (
                 "S42-STAGE100-FULLTEXT-ANCHOR-PREFILL:"
                 f"{stage42.get('S42-STAGE100-FULLTEXT-ANCHOR-PREFILL', {}).get('status', 'MISSING')}!=PASS"
+            ),
+        },
+        {
+            "check": "stage104_post_external_final_package",
+            "status": "PASS" if not stage104_mismatches and stage42_stage104_ok else "FAIL",
+            "evidence": "repro/stage104_post_external_final_package/summary.csv",
+            "detail": "Stage104 refreshes the post-external final scoped package"
+            if not stage104_mismatches and stage42_stage104_ok
+            else "; ".join(stage104_mismatches)
+            or (
+                "S42-STAGE104-POST-EXTERNAL-FINAL-PACKAGE:"
+                f"{stage42.get('S42-STAGE104-POST-EXTERNAL-FINAL-PACKAGE', {}).get('status', 'MISSING')}!=PASS"
             ),
         },
         {
