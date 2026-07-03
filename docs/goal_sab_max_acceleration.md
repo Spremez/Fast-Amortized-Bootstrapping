@@ -458,6 +458,7 @@ Stage 106: MAT-RLWE SAB research-loop reset. [completed as process reset; primar
 Stage 107: MAT kernel structure audit. [completed; current MAT kernels remain dense row-output `(r+1)^2`, Stage108 starts with V106-D layout/locality while V106-B body-linear remains proof-gated]
 Stage 108: V106-D body-major layout gate. [completed; r=6 body-major kernel correctness passed but performance was negative/neutral versus existing tile4/fulltile layouts, not promoted]
 Stage 109: V106-B body-linear invariant gate. [completed; loop-only body-linear skipping is blocked by current MAT_TRGSW_DFT selector/key format, new format gate required]
+Stage 110: r=6 fulltile complete-SAB gate. [completed as one-run smoke; fulltile beat tile4 by 1.026x total/per-lane but is not promoted without repeated/noise/resource gates]
 ```
 
 ## Current Closure Label
@@ -509,3 +510,9 @@ would break the encrypted-zero relation unless a new selector/key format proves
 otherwise. Therefore theoretical MAT-RLWE SAB optimality remains open and now
 has a concrete next gate: design and verify a new body-linear selector/key
 format before AVX512 kernel work.
+
+Stage110 returns to an executable performance gate to avoid theory-only
+iteration. It tests whether the existing r=6 fulltile kernel signal transfers
+to complete SAB. The one-run result is positive but small: 1.026x total and
+per-lane improvement over tile4. This is useful routing evidence for a future
+3+ run confirmation, not a promotion or paper-level claim.

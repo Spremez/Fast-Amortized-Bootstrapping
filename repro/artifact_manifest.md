@@ -1632,3 +1632,17 @@ Repro artifacts:
 - `src/mosfhet/include/mosfhet.h`
 - `src/mosfhet/src/mattrgsw.c`
 - `src/mosfhet/src/pvwtmlwe.c`
+
+## Stage 110 r=6 Fulltile Complete-SAB Gate
+
+- `docs/stage110_r6_fulltile_fullsab_gate.md`
+- `experiments/stage110_r6_fulltile_fullsab_gate_plan.md`
+- `scripts/run_stage110_r6_fulltile_fullsab_gate.sh`
+- `scripts/build_stage110_r6_fulltile_fullsab_gate.py`
+- `repro/stage110_r6_fulltile_fullsab_gate/summary.csv`
+- `repro/stage110_r6_fulltile_fullsab_gate/comparison.csv`
+- `repro/stage110_r6_fulltile_fullsab_gate/artifact_index.csv`
+- `repro/stage110_r6_fulltile_fullsab_gate/tile4/summary.csv`
+- `repro/stage110_r6_fulltile_fullsab_gate/tile4/run_0.log`
+- `repro/stage110_r6_fulltile_fullsab_gate/fulltile/summary.csv`
+- `repro/stage110_r6_fulltile_fullsab_gate/fulltile/run_0.log`

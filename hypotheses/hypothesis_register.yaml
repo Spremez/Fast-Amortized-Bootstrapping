@@ -1108,3 +1108,25 @@ hypotheses:
         row-output selectors
       - the next stage continues theory discussion without defining a finite
         r=2 selector/key-format equivalence gate
+  - id: H35_r6_fulltile_complete_sab_transfer
+    statement: >
+      The r=6 fulltile MAT kernel may transfer its kernel-level advantage to
+      complete SAB `T_total/r` under the active-buffer PVW/MAT-SAB path.
+    mechanism: >
+      Stage108 showed fulltile was stronger than tile4/body-major in the r=6
+      full-output MAT kernel comparison. Stage110 tests the same choice at the
+      complete-SAB layer because only complete-SAB latency per lane can support
+      an acceleration claim.
+    status: stage110_onerun_candidate_not_promoted
+    evidence: docs/stage110_r6_fulltile_fullsab_gate.md; experiments/stage110_r6_fulltile_fullsab_gate_plan.md; scripts/run_stage110_r6_fulltile_fullsab_gate.sh; scripts/build_stage110_r6_fulltile_fullsab_gate.py; repro/stage110_r6_fulltile_fullsab_gate/summary.csv; repro/stage110_r6_fulltile_fullsab_gate/comparison.csv; repro/stage110_r6_fulltile_fullsab_gate/artifact_index.csv
+    current_decision: >
+      Stage110 records PASS_STAGE110_R6_FULLTILE_ONERUN_CANDIDATE_NOT_PROMOTED.
+      Both tile4 and fulltile passed complete-SAB correctness for r=6. tile4
+      averaged 42,492,394 us total and 7,082,065.667 us/lane; fulltile
+      averaged 41,410,757 us total and 6,901,792.833 us/lane. The complete-SAB
+      total/per-lane ratio is 1.026x in favor of fulltile. This justifies a
+      future 3+ run confirmation but is not promoted.
+    failure_criteria:
+      - repeated runs erase the one-run fulltile advantage
+      - noise/resource gates fail
+      - fulltile is promoted based on one-run evidence

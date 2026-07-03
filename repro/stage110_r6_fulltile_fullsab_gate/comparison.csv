@@ -1,0 +1,4 @@
+variant,runs,all_correct,pvw_avg_us_mean,pvw_lane_avg_us_mean,speedup_vs_scalar_mean,summary
+tile4,1,True,42492394.000,7082065.667,1.388,repro/stage110_r6_fulltile_fullsab_gate/tile4/summary.csv
+fulltile,1,True,41410757.000,6901792.833,1.397,repro/stage110_r6_fulltile_fullsab_gate/fulltile/summary.csv
+ratio_fulltile_vs_tile4,1,True,1.026,1.026,1.006,repro/stage110_r6_fulltile_fullsab_gate/tile4/summary.csv; repro/stage110_r6_fulltile_fullsab_gate/fulltile/summary.csv

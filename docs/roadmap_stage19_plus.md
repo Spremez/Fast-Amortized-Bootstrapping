@@ -3744,3 +3744,43 @@ skipped. The operation model confirms dense products 4/9/25/49/81 for
 r=1/2/4/6/8. V106-B remains the right theoretical route, but it requires a
 new selector/key-format design gate before implementation.
 ```
+
+## Stage 110: r=6 Fulltile Complete-SAB Gate
+
+Goal:
+
+```text
+Check whether the r=6 fulltile kernel advantage observed in Stage108 transfers
+to complete SAB `T_total/r` under active-buffer PVW/MAT-SAB.
+```
+
+Theory basis:
+
+Stage108 showed fulltile is the best r=6 kernel among tile4/fulltile/body-major
+for the measured full-output external product. A kernel win is not enough for
+SAB acceleration, so Stage110 runs complete-SAB A/B before any promotion.
+
+Tasks:
+
+- run r=6 tile4 and fulltile complete-SAB smoke under the same backend and
+  active-buffer path;
+- require full-output correctness for both variants;
+- compare total PVW latency and per-lane latency;
+- treat a one-run win only as a candidate.
+
+Gate:
+
+- correctness must pass for both variants;
+- promotion requires at least 3 repeated runs plus noise/resource review;
+- a one-run positive result is only a routing signal.
+
+Status:
+
+```text
+Completed as a one-run complete-SAB smoke. Stage110 records
+PASS_STAGE110_R6_FULLTILE_ONERUN_CANDIDATE_NOT_PROMOTED. Both variants passed
+correctness. tile4 took 42,492,394 us total and 7,082,065.667 us/lane; fulltile
+took 41,410,757 us total and 6,901,792.833 us/lane. The fulltile/tile4 ratio
+is 1.026x for total and per-lane latency. This justifies a future 3+ run gate
+but does not promote fulltile by itself.
+```

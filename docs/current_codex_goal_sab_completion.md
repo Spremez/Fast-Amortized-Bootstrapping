@@ -39,7 +39,10 @@ that V106-D gate: the explicit r=6 body-major path is correct but not
 performance-positive against both existing r=6 layouts, so it is recorded as a
 negative ablation and is not promoted. Stage109 then checks V106-B and records
 that body-linear MAT external-product skipping is blocked as a loop-only
-change by the current `MAT_TRGSW_DFT` selector/key format.
+change by the current `MAT_TRGSW_DFT` selector/key format. Stage110 then runs
+a one-run complete-SAB r=6 tile4/fulltile gate and records fulltile as a
+candidate only: 1.026x faster than tile4 in this smoke, with repeated/noise/
+resource gates still required.
 
 ## Execution Route
 
@@ -72,7 +75,10 @@ change by the current `MAT_TRGSW_DFT` selector/key format.
     current selector rows are full PVW encryptions with diagonal gadget
     injection, so body-linear skipping requires a new selector/key-format
     design gate before implementation.
-13. Preserve the current final-audit status:
+13. Treat Stage110 as routing evidence only:
+    r=6 fulltile has a one-run complete-SAB positive signal over tile4, but it
+    is not promoted without 3+ repeated runs and noise/resource checks.
+14. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

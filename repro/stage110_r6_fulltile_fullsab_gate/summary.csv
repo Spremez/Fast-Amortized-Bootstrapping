@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage110_inputs_available,PASS,tile4_summary;fulltile_summary,True;True,repro/stage110_r6_fulltile_fullsab_gate/tile4/summary.csv; repro/stage110_r6_fulltile_fullsab_gate/fulltile/summary.csv,Both complete-SAB summaries are available.,Run scripts/run_stage110_r6_fulltile_fullsab_gate.sh if missing.
+stage110_correctness,PASS,all_correct,True,repro/stage110_r6_fulltile_fullsab_gate/comparison.csv,Both variants passed complete-SAB correctness.,Do not interpret timing unless correctness passes.
+stage110_fullsab_timing,PASS_POSITIVE,tile4_pvw_mean/fulltile_pvw_mean,1.026,repro/stage110_r6_fulltile_fullsab_gate/comparison.csv,Ratio above 1 means fulltile is faster than tile4.,Promotion requires repeated runs plus noise/resource gates.
+stage110_decision,PASS_STAGE110_R6_FULLTILE_ONERUN_CANDIDATE_NOT_PROMOTED,promotion_policy,,repro/stage110_r6_fulltile_fullsab_gate/summary.csv,"fulltile beats tile4 in this complete-SAB smoke, but run count is below promotion threshold.","Use this as empirical routing evidence, not a paper-level claim."
