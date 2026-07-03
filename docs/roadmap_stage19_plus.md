@@ -6439,3 +6439,18 @@ Completed. Stage225 records PASS_STAGE225_EXACT_REFRESH_FRESH_NOISE_RESOURCE. It
 package without changing scalar/default behavior or the compact complete-SAB
 denial.
 ```
+## Stage 226: Exact MAT/PVW Counter Attribution
+
+Goal:
+
+```text
+Attribute the Stage224 exact-route backend-vs-wrapper delta using native
+cycles/load/store/FMA counters where available.
+```
+
+Status:
+
+```text
+Completed at `8e28f16` with `PASS_STAGE226_COUNTERS_RECORDED_TIMING_NEUTRAL`. The result is an attribution gate:
+it does not claim theoretical optimality or reopen the compact SAB route.
+```

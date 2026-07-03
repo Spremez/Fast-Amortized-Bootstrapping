@@ -3201,3 +3201,12 @@ H10_stage225_exact_refresh_noise_resource:
     Stage225 records PASS_STAGE225_EXACT_REFRESH_FRESH_NOISE_RESOURCE. Fresh correctness/noise/resource evidence
     supports the Stage224 exact PVW/MAT full-SAB performance refresh; compact
     complete-SAB integration remains denied.
+H10_stage226_exact_counter_attribution:
+  status: counter_attribution_recorded
+  evidence:
+    - repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv
+    - repro/stage226_exact_mat_avx_counter_attribution/counter_summary.csv
+    - docs/stage226_exact_mat_avx_counter_attribution.md
+  conclusion: >
+    Stage226 records PASS_STAGE226_COUNTERS_RECORDED_TIMING_NEUTRAL. Counter evidence is scoped to the exact
+    dense MAT/PVW route and does not prove theoretical optimality.

@@ -1079,3 +1079,6 @@ and complete-SAB speedup evidence.
   complete-SAB claim.
 - Stage225 exact refresh noise/resource: `PASS_STAGE225_EXACT_REFRESH_FRESH_NOISE_RESOURCE`. Fresh side conditions now
   accompany the Stage224 exact PVW/MAT `T_bootstrap/r` performance refresh.
+## Stage226 exact counter attribution
+
+At commit `8e28f16`, Stage226 records `PASS_STAGE226_COUNTERS_RECORDED_TIMING_NEUTRAL` for native exact-route counters. Complete-SAB `T_bootstrap/r` remains the primary metric.

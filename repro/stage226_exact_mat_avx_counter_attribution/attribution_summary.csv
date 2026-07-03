@@ -1,0 +1,9 @@
+metric,value,interpretation,evidence
+stage224_backend_vs_wrapper_mean_speedup,1.024015000,Fresh Stage224 complete-SAB per-lane timing; primary performance evidence.,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv
+stage226_perf_run_backend_vs_wrapper_lane_speedup,1.033292122,"Single native perf-stat run; mechanism evidence only, not a replacement for Stage224 repeated timing.",repro/stage226_exact_mat_avx_counter_attribution/run_metrics.csv
+stage226_cycles_wrapper_over_backend,1.017861569,Values above 1 mean backend used fewer recorded cycles than wrapper.,repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv
+stage226_elapsed_wrapper_over_backend,0.000000000,Perf CSV may omit elapsed on this host; use lane timing and cycles for the Stage226 mechanism gate.,repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv
+stage226_loads_wrapper_over_backend,1.011560486,Values above 1 mean backend reduced retired loads.,repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv
+stage226_stores_wrapper_over_backend,1.009880546,Values above 1 mean backend reduced retired stores.,repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv
+stage226_load_store_per_cycle_wrapper_over_backend,0.993217448,Memory-op density comparison; not a standalone optimality proof.,repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv
+attribution_label,COUNTER_SUPPORTS_STAGE224_DIRECTION,Mechanism label is bounded to this exact-route native counter run.,repro/stage226_exact_mat_avx_counter_attribution/proof_gate.csv

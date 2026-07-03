@@ -1,0 +1,6 @@
+input,status,evidence,role,bytes
+repro/stage224_exact_pvw_mat_avx_resource_refresh/proof_gate.csv,present,repro/stage224_exact_pvw_mat_avx_resource_refresh/proof_gate.csv,Stage224 exact path performance gate,1532
+repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv,present,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv,Stage224 wrapper/backend timing comparison,479
+repro/stage225_exact_refresh_noise_resource_rerun/proof_gate.csv,present,repro/stage225_exact_refresh_noise_resource_rerun/proof_gate.csv,Stage225 fresh side-condition gate,1560
+repro/stage225_exact_refresh_noise_resource_rerun/next_stage_queue.csv,present,repro/stage225_exact_refresh_noise_resource_rerun/next_stage_queue.csv,Stage225 selected Stage226 route,946
+stage225_next_selects_stage226,present,repro/stage225_exact_refresh_noise_resource_rerun/next_stage_queue.csv,Prevents off-road profiling work.,

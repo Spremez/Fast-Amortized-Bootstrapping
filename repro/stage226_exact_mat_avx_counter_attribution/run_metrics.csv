@@ -1,0 +1,3 @@
+variant,status,r,h,r_prec,reps,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,source_log
+backend_from_dft_add,Pass,6,39,7,1,66520001.000,11086666.833,71314365.000,11885727.500,1.072,repro/stage226_exact_mat_avx_counter_attribution/native_perf_raw/run_backend_from_dft_add.log
+wrapper_fused_from_dft_add,Pass,6,39,7,1,68734593.000,11455765.500,71557125.000,11926187.500,1.041,repro/stage226_exact_mat_avx_counter_attribution/native_perf_raw/run_wrapper_fused_from_dft_add.log

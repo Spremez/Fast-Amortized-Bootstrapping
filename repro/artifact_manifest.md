@@ -2651,3 +2651,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage225_noise_resource.md`
   - `scripts/build_stage225_exact_refresh_noise_resource_rerun.py`
   - `repro/stage225_exact_refresh_noise_resource_rerun/`
+- stage226_exact_mat_avx_counter_attribution:
+  - `docs/stage226_exact_mat_avx_counter_attribution.md`
+  - `experiments/stage226_exact_mat_avx_counter_attribution_plan.md`
+  - `theory_checks/stage226_counter_attribution_scope.md`
+  - `algorithm_variants/mat_rlwe_sab_stage226_counter_attribution.md`
+  - `scripts/build_stage226_exact_mat_avx_counter_attribution.py`
+  - `repro/stage226_exact_mat_avx_counter_attribution/`

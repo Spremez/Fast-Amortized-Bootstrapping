@@ -657,3 +657,6 @@ or security claims.
   fresh noise/resource rerun only if this refresh is promoted beyond Stage148.
 - Stage225 exact refresh noise/resource completed with `PASS_STAGE225_EXACT_REFRESH_FRESH_NOISE_RESOURCE`. The next
   selected route is counter attribution for the exact MAT/PVW backend gain.
+### Stage226 exact counter attribution
+
+`PASS_STAGE226_COUNTERS_RECORDED_TIMING_NEUTRAL` updates the mechanism evidence for the exact dense MAT/PVW route.

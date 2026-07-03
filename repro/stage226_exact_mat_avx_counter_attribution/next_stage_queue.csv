@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage227_exact_route_claim_boundary_update,"Stage224 performance, Stage225 side conditions, and Stage226 counters are recorded.",Separate exact MAT/PVW engineering acceleration from compact route and optimality claims.,selected,Keep exact route as measured engineering result only.,repro/stage226_exact_mat_avx_counter_attribution/proof_gate.csv
+P1,stage228_targeted_counter_driven_kernel_followup,Stage226 identifies a clear cycles/load/store regression source.,New micro-hypothesis with full-SAB promotion gate.,candidate,Do not reopen hot path without a counter-backed implementation target.,repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv
+P2,neighbor_capable_compact_state_proof,Only if a new closed compact algebra is proposed.,Proof before hot-path implementation.,proof_only_deferred,Do not touch SAB hot path.,repro/stage224_exact_pvw_mat_avx_resource_refresh/proof_gate.csv

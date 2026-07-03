@@ -325,3 +325,4 @@
 - [x] Stage223 route selection recorded.
 - [x] Stage224 exact PVW/MAT AVX refresh recorded.
 - [x] Stage225 exact refresh noise/resource recorded.
+- [x] Stage226 exact counter attribution records decision `PASS_STAGE226_COUNTERS_RECORDED_TIMING_NEUTRAL`.

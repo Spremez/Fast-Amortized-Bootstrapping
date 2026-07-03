@@ -1,0 +1,17 @@
+key,value,evidence
+remote_probe,0,repro/stage226_exact_mat_avx_counter_attribution/remote_probe.log
+remote_unpack,0,repro/stage226_exact_mat_avx_counter_attribution/remote_unpack.log
+remote_install_runner,0,repro/stage226_exact_mat_avx_counter_attribution/remote_install_runner.log
+remote_run,0,repro/stage226_exact_mat_avx_counter_attribution/remote_run_stage226_runner.log
+remote_pull,0,repro/stage226_exact_mat_avx_counter_attribution/remote_pull_native_perf_raw.log
+remote_user_host,delld@192.168.107.220,repro/stage226_exact_mat_avx_counter_attribution/remote_probe.log
+remote_dir,/home/delld/spz/Fast-Amortized-Bootstrapping-stage226-8e28f16,repro/stage226_exact_mat_avx_counter_attribution/remote_unpack.log
+stage226_events,"cycles,instructions,cache-references,cache-misses,branches,branch-misses,mem_inst_retired.all_loads,mem_inst_retired.all_stores,fp_arith_inst_retired.512b_packed_double,fp_arith_inst_retired.256b_packed_double",repro/stage226_exact_mat_avx_counter_attribution/run_native_stage226_counters.sh
+hostname,dell,repro/stage226_exact_mat_avx_counter_attribution/native_perf_raw/remote_environment.log
+whoami,delld,repro/stage226_exact_mat_avx_counter_attribution/native_perf_raw/remote_environment.log
+uname,Linux dell 6.8.0-111-generic #111~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue Apr 14 17:13:45 UTC  x86_64 x86_64 x86_64 GNU/Linux,repro/stage226_exact_mat_avx_counter_attribution/native_perf_raw/remote_environment.log
+perf,/usr/bin/perf,repro/stage226_exact_mat_avx_counter_attribution/native_perf_raw/remote_environment.log
+perf_event_paranoid,1,repro/stage226_exact_mat_avx_counter_attribution/native_perf_raw/remote_environment.log
+remote_pwd,/home/delld/spz/Fast-Amortized-Bootstrapping-stage226-8e28f16,repro/stage226_exact_mat_avx_counter_attribution/native_perf_raw/remote_environment.log
+cpu_model,Intel(R) Xeon(R) Gold 6230R CPU @ 2.10GHz,repro/stage226_exact_mat_avx_counter_attribution/native_perf_raw/remote_environment.log
+has_avx512f,yes,repro/stage226_exact_mat_avx_counter_attribution/native_perf_raw/remote_environment.log

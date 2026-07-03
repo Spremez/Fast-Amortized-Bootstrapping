@@ -1,0 +1,7 @@
+command: AUTH_ENV=*** auth_tool -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/tmp/codex_stage226_known_hosts -o ConnectTimeout=12 delld@192.168.107.220 'cd /home/delld/spz/Fast-Amortized-Bootstrapping-stage226-8e28f16 && ./run_native_stage226_counters.sh'
+returncode: 0
+--- stdout ---
+Stage226 native counter logs written to repro/stage226_exact_mat_avx_counter_attribution/native_perf_raw
+--- stderr ---
+wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
+N/e?c localhost ?N?t?0
