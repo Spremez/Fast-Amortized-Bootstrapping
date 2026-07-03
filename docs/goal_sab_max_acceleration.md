@@ -626,3 +626,16 @@ rejected as a negative control. This removes the production FFT smoke blocker
 for MOSFHET-adjacent type/API design only; it is still not gadget
 decomposition, AVX512 optimality, SAB schedule integration, or complete
 `T_bootstrap/r` evidence.
+
+Stage124 compile-checks that MOSFHET-adjacent type/API boundary. The generated
+skeleton defines lane-local mask/body ciphertexts, an r-lane vector-shared
+accumulator, and compact selector DFT accessors `shared[t,q]` and `body[t,q]`,
+then links against MOSFHET built with `FFT_LIB=spqlios`. For k=1, T=7,
+r=2/4/6, and N=1024/2048, component ownership, metadata, lane coverage, and
+DFT roundtrip mismatch counts are all zero; maximum roundtrip gap is 1 under
+the fixed 1024 torus-unit tolerance. For r=4, accumulator polynomials increase
+from 5 to 8, but selector DFT polynomials decrease from 175 to 112 and total
+accumulator+selector count decreases from 180 to 120. This opens only compact
+selector gadget-decomposition and diagonal-injection prototyping; it remains
+outside SAB hot paths and does not prove selector encryption, noise, AVX512
+performance, or complete `T_bootstrap/r`.

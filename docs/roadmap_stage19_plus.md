@@ -4416,3 +4416,63 @@ valid stage is a MOSFHET-adjacent vector-shared type/API sketch; this is still
 not gadget decomposition, AVX512 optimality, SAB schedule integration, or
 complete `T_bootstrap/r` evidence.
 ```
+
+## Stage 124: MOSFHET Type/API Skeleton Gate
+
+Goal:
+
+```text
+Turn the Stage123 production FFT smoke result into a compile-checked
+MOSFHET-adjacent vector-shared accumulator and compact selector type/API
+skeleton, still outside `sab_pvw_*`.
+```
+
+Theory basis:
+
+Stage119 rejects scalar-shared storage and selects vector-shared lane-local
+objects. Stage122/123 show that structured EP arithmetic can be represented in
+coefficient and production DFT domains. Stage124 checks the next implementation
+boundary: the type shape must be expressible using MOSFHET-style allocation,
+ownership, DFT lifecycle, and explicit lane-indexed selector accessors without
+falling back to dense `MAT_TRGSW_DFT` rows.
+
+Tasks:
+
+- build MOSFHET `libmosfhet.a` with `FFT_LIB=spqlios`;
+- generate and compile a standalone C skeleton linked against MOSFHET;
+- define lane-local torus and DFT ciphertext structs with mask/body fields;
+- define an r-lane vector-shared accumulator and compact selector DFT arrays
+  `shared[t,q]` and `body[t,q]`;
+- verify non-null, non-aliased component ownership;
+- verify k/r/N/T metadata and lane-local shared/body coverage;
+- verify accumulator torus->DFT->torus lifecycle under the production
+  conversion tolerance;
+- record current dense versus vector-shared accumulator, selector, and total
+  polynomial counts.
+
+Gate:
+
+- build, compile, and run must pass;
+- component ownership, metadata, and lane coverage failures must be zero;
+- accumulator DFT roundtrip mismatches must be zero under the declared
+  tolerance;
+- compact selector and total accumulator+selector counts must beat current
+  dense counts for the tested r/N rows;
+- passing only opens compact selector gadget-decomposition prototyping outside
+  the SAB hot path.
+
+Status:
+
+```text
+Completed. Stage124 records
+PASS_STAGE124_MOSFHET_TYPE_API_SKELETON_READY_GADGET_DECOMPOSITION_GATE_REQUIRED.
+The generated MOSFHET-adjacent skeleton compiles and runs against
+FFT_LIB=spqlios for k=1, T=7, r=2/4/6, and N=1024/2048. Component ownership,
+metadata, selector lane coverage, and roundtrip mismatch counts are all zero;
+the maximum production DFT roundtrip gap is 1 under the fixed 1024 torus-unit
+tolerance. For r=4, the compact selector count is 112 versus current dense
+175, and total accumulator+selector count is 120 versus 180. The next valid
+stage is compact selector gadget decomposition and diagonal injection; this is
+still not selector encryption, noise proof, AVX512 performance, SAB schedule
+integration, or complete `T_bootstrap/r` evidence.
+```

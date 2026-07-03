@@ -74,9 +74,12 @@ against a dense clean reference, and Stage123 moves that structured EP smoke
 through the actual MOSFHET torus/SPQLIOS DFT API. Stage123 passes with zero
 coefficient mismatches and zero DFT/noisy DFT mismatches under a fixed 1024
 torus-unit tolerance, with maximum observed DFT gap 619. This opens only a
-MOSFHET-adjacent vector-shared type/API sketch; it is not complete-SAB
-`T_total/r`, AVX512 optimality, gadget decomposition, or SAB hot-path
-integration evidence.
+MOSFHET-adjacent vector-shared type/API sketch. Stage124 then compile-checks
+that skeleton against MOSFHET allocation and production DFT conversion:
+component ownership, metadata, lane coverage, and DFT roundtrip all pass for
+k=1, T=7, r=2/4/6, and N=1024/2048. This is still not complete-SAB
+`T_total/r`, AVX512 optimality, gadget decomposition, selector encryption, or
+SAB hot-path integration evidence.
 
 ## Execution Route
 
@@ -167,7 +170,13 @@ integration evidence.
     structured EP, negative control, and term-ratio layout gates all pass.
     The next valid step is MOSFHET-adjacent vector-shared type/API sketching
     outside `sab_pvw_*`, not hot-path integration or a speedup claim.
-27. Preserve the current final-audit status:
+27. Treat Stage124 as the current MOSFHET type/API skeleton gate:
+    the vector-shared accumulator and compact selector DFT skeleton compile and
+    run against MOSFHET, all ownership/metadata/coverage/roundtrip checks pass,
+    and r=4 records selector count 112 versus current dense 175 plus total
+    count 120 versus 180. The next valid step is compact selector gadget
+    decomposition and diagonal injection outside `sab_pvw_*`.
+28. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

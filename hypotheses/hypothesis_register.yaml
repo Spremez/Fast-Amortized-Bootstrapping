@@ -1446,3 +1446,36 @@ hypotheses:
       - real MOSFHET type/API design reintroduces dense row-output work
       - AVX512 or complete-SAB speedup is claimed from this smoke gate alone
       - scalar/default SAB behavior changes before a guarded integration stage
+  - id: H48_mosfhet_vector_shared_type_api_skeleton
+    statement: >
+      The vector-shared lane-local route can be represented as a MOSFHET-style
+      type/API skeleton with explicit lane-local accumulator ownership,
+      compact shared/body selector rows, and production DFT lifecycle, while
+      preserving the selector-count advantage needed for later
+      `T_bootstrap/r` work.
+    mechanism: >
+      Stage124 generates a standalone C skeleton linked against MOSFHET built
+      with FFT_LIB=spqlios. It defines lane-local torus/DFT ciphertext structs,
+      an r-lane vector-shared accumulator, and compact selector DFT accessors
+      `shared[t,q]` and `body[t,q]`. The probe verifies non-null and
+      non-aliased ownership, k/r/N/T metadata, lane coverage, accumulator
+      torus->DFT->torus roundtrip, and dense-versus-compact count ratios.
+    status: stage124_mosfhet_type_api_skeleton_ready_gadget_decomposition_gate_required
+    evidence: docs/stage124_mosfhet_type_api_skeleton.md; experiments/stage124_mosfhet_type_api_skeleton_plan.md; theory_checks/stage124_mosfhet_type_api_model.md; algorithm_variants/mat_rlwe_sab_vector_shared_type_api_skeleton.md; scripts/build_stage124_mosfhet_type_api_skeleton.py; repro/stage124_mosfhet_type_api_skeleton/summary.csv; repro/stage124_mosfhet_type_api_skeleton/api_results.csv; repro/stage124_mosfhet_type_api_skeleton/layout_results.csv; repro/stage124_mosfhet_type_api_skeleton/mosfhet_static_build.log; repro/stage124_mosfhet_type_api_skeleton/compile_probe.log; repro/stage124_mosfhet_type_api_skeleton/run_probe.log; repro/stage124_mosfhet_type_api_skeleton/mosfhet_type_api_skeleton.c; repro/stage124_mosfhet_type_api_skeleton/artifact_index.csv
+    current_decision: >
+      Stage124 records
+      PASS_STAGE124_MOSFHET_TYPE_API_SKELETON_READY_GADGET_DECOMPOSITION_GATE_REQUIRED.
+      For k=1, T=7, r=2/4/6, and N=1024/2048, component ownership, metadata,
+      selector lane coverage, and roundtrip mismatch counts are zero; maximum
+      DFT roundtrip gap is 1 under the fixed 1024 torus-unit tolerance. For
+      r=4, compact selector DFT polynomials are 112 versus current dense 175,
+      and total accumulator+selector count is 120 versus 180. This opens only
+      a compact selector gadget-decomposition and diagonal-injection gate
+      outside `sab_pvw_*`.
+    failure_criteria:
+      - compact selector gadget decomposition cannot inject the required
+        diagonal gadget terms without reconstructing dense `MAT_TRGSW_DFT`
+      - selector encryption or noise modeling contradicts the skeleton layout
+      - type/API skeleton evidence is used as complete-SAB acceleration or
+        AVX512 optimality evidence
+      - scalar/default SAB behavior changes before a guarded integration stage

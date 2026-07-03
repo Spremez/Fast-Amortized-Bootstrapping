@@ -1,0 +1,7 @@
+backend,r,N,T,k,component_failures,metadata_failures,selector_coverage_failures,roundtrip_mismatches,max_roundtrip_gap,tolerance,status
+spqlios,2,1024,7,1,0,0,0,0,1,1024,PASS_TYPE_API_SKELETON
+spqlios,4,1024,7,1,0,0,0,0,1,1024,PASS_TYPE_API_SKELETON
+spqlios,6,1024,7,1,0,0,0,0,1,1024,PASS_TYPE_API_SKELETON
+spqlios,2,2048,7,1,0,0,0,0,1,1024,PASS_TYPE_API_SKELETON
+spqlios,4,2048,7,1,0,0,0,0,1,1024,PASS_TYPE_API_SKELETON
+spqlios,6,2048,7,1,0,0,0,0,1,1024,PASS_TYPE_API_SKELETON

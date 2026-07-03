@@ -1824,3 +1824,19 @@ Repro artifacts:
 - `repro/stage123_production_fft_smoke_gate/run_probe.log`
 - `repro/stage123_production_fft_smoke_gate/production_fft_smoke_gate.c`
 - `repro/stage123_production_fft_smoke_gate/artifact_index.csv`
+
+## Stage 124 MOSFHET Type/API Skeleton
+
+- `docs/stage124_mosfhet_type_api_skeleton.md`
+- `experiments/stage124_mosfhet_type_api_skeleton_plan.md`
+- `theory_checks/stage124_mosfhet_type_api_model.md`
+- `algorithm_variants/mat_rlwe_sab_vector_shared_type_api_skeleton.md`
+- `scripts/build_stage124_mosfhet_type_api_skeleton.py`
+- `repro/stage124_mosfhet_type_api_skeleton/summary.csv`
+- `repro/stage124_mosfhet_type_api_skeleton/api_results.csv`
+- `repro/stage124_mosfhet_type_api_skeleton/layout_results.csv`
+- `repro/stage124_mosfhet_type_api_skeleton/mosfhet_static_build.log`
+- `repro/stage124_mosfhet_type_api_skeleton/compile_probe.log`
+- `repro/stage124_mosfhet_type_api_skeleton/run_probe.log`
+- `repro/stage124_mosfhet_type_api_skeleton/mosfhet_type_api_skeleton.c`
+- `repro/stage124_mosfhet_type_api_skeleton/artifact_index.csv`
