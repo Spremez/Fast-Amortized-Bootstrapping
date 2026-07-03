@@ -265,3 +265,10 @@ The new research goal is complete only after a later stage records:
     shared-output-mask collapse fails as required. The next valid step is a
     compact lane-state accumulator design for RGSW monomial and sparse
     schedule integration, not complete `T_bootstrap/r` claims.
+
+37. Treat Stage133 as the current lane-state closure audit:
+    `PASS_STAGE133_CLOSURE_AUDIT_DIRECT_SHARED_SOURCE_ITERATION_BLOCKED`. Lane-pair compact output is valid as internal accumulator
+    state, but direct iteration of the Stage131 shared-source compact EP is
+    blocked because the next source would have per-lane masks rather than one
+    shared mask. The next valid implementation stage is generalized lane-pair
+    input compact EP, followed only later by RGSW/sparse schedule integration.

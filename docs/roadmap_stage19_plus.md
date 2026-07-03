@@ -4905,3 +4905,32 @@ mismatch counts are zero. Collapsing lane-pair masks into one shared output
 mask fails as required. The next valid step is a compact lane-state
 accumulator object for RGSW monomial and sparse schedule integration.
 ```
+
+## Stage 133: Lane-State Closure Audit
+
+Goal:
+
+```text
+Determine whether the Stage131 shared-source compact EP can be directly
+iterated after Stage132 CMUX consumption, or whether a different state/input
+kernel is required.
+```
+
+Theory basis:
+
+Stage131 consumes one shared source mask and r bodies. Stage132 validates an
+output with one mask/body pair per lane and rejects collapse to one shared
+output mask. Therefore a repeated SAB schedule cannot feed the post-CMUX
+lane-pair accumulator back into the Stage131 shared-source kernel without a new
+invariant or conversion.
+
+Status:
+
+```text
+Completed. Stage133 records
+PASS_STAGE133_CLOSURE_AUDIT_DIRECT_SHARED_SOURCE_ITERATION_BLOCKED. Lane-pair
+state is valid as an internal accumulator representation, but direct
+Stage131 shared-source compact EP iteration is blocked by state shape. The
+primary next route is a generalized lane-pair input compact EP correctness and
+microbench gate.
+```

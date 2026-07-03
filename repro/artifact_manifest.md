@@ -1970,3 +1970,15 @@ Repro artifacts:
 - `repro/stage132_lane_pair_cmux_consumption_gate/run_probe.log`
 - `repro/stage132_lane_pair_cmux_consumption_gate/lane_pair_cmux_consumption_gate.c`
 - `repro/stage132_lane_pair_cmux_consumption_gate/artifact_index.csv`
+
+## Stage 133 Lane-State Closure Audit
+
+- `docs/stage133_lane_state_closure_audit.md`
+- `experiments/stage133_lane_state_closure_audit_plan.md`
+- `theory_checks/stage133_lane_state_closure_model.md`
+- `algorithm_variants/mat_rlwe_sab_lane_state_closure.md`
+- `scripts/build_stage133_lane_state_closure_audit.py`
+- `repro/stage133_lane_state_closure_audit/summary.csv`
+- `repro/stage133_lane_state_closure_audit/closure_matrix.csv`
+- `repro/stage133_lane_state_closure_audit/route_matrix.csv`
+- `repro/stage133_lane_state_closure_audit/artifact_index.csv`

@@ -721,3 +721,9 @@ proves only that lane-pair output can be added to per-lane accumulator state
 with correct phase/noise, and that collapsing it into a standard shared-output
 PVW ciphertext is invalid. The next promoted target is a lane-state RGSW/sparse
 schedule gate.
+
+Stage133 fixes the next research boundary: Stage132 is not enough for full SAB
+because the lane-pair output is not closed under the Stage131 shared-source
+input type. Direct repeated shared-source iteration is blocked. The next
+productive implementation target is a generalized lane-pair input compact EP
+gate, with re-share/key-switch and selector-proof routes deferred.

@@ -1,0 +1,5 @@
+route,next_stage,status,correctness_gate,performance_gate,risk
+generalized_lane_pair_input_compact_ep,Stage134,PRIMARY_NEXT,"component/phase/noise equivalence for lane-pair input and output, r=2/4/6",same-backend microbench versus dense MAT and Stage131 shared-source first-step proxy,more decomposition/DFT streams may erase compact addmul gains for r=4
+lane_pair_rgsw_monomial_state,Stage135_after_Stage134,CONDITIONAL,one RGSW monomial step preserves lane-pair phase against scalar lane references,RGSW step timing and copyback profile under r=4/r=6,state conversion or buffer normalization may dominate
+direct_stage131_shared_source_iteration,none,REJECTED_UNTIL_NEW_PROOF,"requires true shared-output-mask invariant, absent here",not applicable,would silently compare wrong phases after the first CMUX
+reshare_to_shared_mask,deferred,DEFERRED_HIGH_COST,phase/noise equivalence plus key-switch or re-encryption security accounting,full-SAB T_bootstrap/r including re-share overhead,likely adds too much latency/noise/key material

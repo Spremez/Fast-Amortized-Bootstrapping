@@ -1729,3 +1729,27 @@ hypotheses:
       - deterministic consumer evidence is claimed as full SAB correctness,
         multi-seed noise, or complete `T_bootstrap/r` acceleration
       - scalar/default SAB behavior changes before a guarded integration stage
+  - id: H57_lane_state_closure
+    statement: >
+      Stage132 lane-pair compact CMUX output is a valid internal accumulator
+      state but is not closed under direct reuse by the Stage131 shared-source
+      compact external-product input API.
+    mechanism: >
+      Stage133 audits Stage132 evidence: per-lane consumer correctness passes,
+      while shared-output-mask collapse fails for r>1. Because the Stage131
+      kernel consumes one shared source mask and r bodies, a post-CMUX
+      lane-pair accumulator with per-lane masks cannot be fed back directly.
+    status: stage133_closure_audit_direct_shared_source_iteration_blocked
+    evidence: docs/stage133_lane_state_closure_audit.md; experiments/stage133_lane_state_closure_audit_plan.md; theory_checks/stage133_lane_state_closure_model.md; algorithm_variants/mat_rlwe_sab_lane_state_closure.md; scripts/build_stage133_lane_state_closure_audit.py; repro/stage133_lane_state_closure_audit/summary.csv; repro/stage133_lane_state_closure_audit/closure_matrix.csv; repro/stage133_lane_state_closure_audit/route_matrix.csv; repro/stage133_lane_state_closure_audit/artifact_index.csv
+    current_decision: >
+      Stage133 records PASS_STAGE133_CLOSURE_AUDIT_DIRECT_SHARED_SOURCE_ITERATION_BLOCKED. It promotes lane-pair accumulator state only
+      as an internal representation, rejects direct shared-output PVW collapse,
+      and selects generalized lane-pair input compact EP as the next finite
+      implementation gate.
+    failure_criteria:
+      - later stages feed lane-pair accumulator state into the Stage131
+        shared-source kernel without conversion or generalized input support
+      - direct shared-source iteration is used for full SAB timing claims
+      - generalized-input overhead is ignored in `T_bootstrap/r`
+      - re-share/key-switch or selector-proof routes are claimed without their
+        own correctness, noise, and performance gates
