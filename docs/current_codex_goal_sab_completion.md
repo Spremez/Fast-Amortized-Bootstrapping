@@ -227,7 +227,14 @@ break-even once decomposition terms are included.
     1.478479/1.369582 for r=6 at N=512/1024; r=2 remains near break-even or
     negative. The next valid step is production API/header design for this
     shared-source EP shape, not SAB integration.
-34. Preserve the current final-audit status:
+34. Treat Stage131 as the current shared-source production API gate:
+    MOSFHET public types and functions for shared-source compact EP build,
+    link, and pass component/phase/noise/negative-control checks for r=2/4/6
+    and N=512/1024. The output type is lane-pair
+    `MAT_TRGSW_COMPACT_OUTPUT_DFT`, not a true shared-output-mask
+    `PVW_TMLWE_DFT`. The next valid step is isolated SAB CMUX/RGSW integration
+    design around this output type.
+35. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

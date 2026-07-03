@@ -1672,3 +1672,32 @@ hypotheses:
       - r=2 is claimed as a speedup despite negative/near break-even evidence
       - complete bootstrapping acceleration is claimed before full
         `T_bootstrap/r` correctness, noise, resource, and A/B gates pass
+  - id: H55_shared_source_production_api
+    statement: >
+      The Stage130 shared-source compact external-product shape can be moved
+      into MOSFHET public headers and `mattrgsw.c` while preserving component,
+      phase, noise-model, guard, and negative-control invariants.
+    mechanism: >
+      Stage131 adds `MAT_TRGSW_COMPACT_DFT`,
+      `MAT_TRGSW_COMPACT_OUTPUT_DFT`, `MAT_TRGSW_COMPACT_MUL_SCRATCH`, and
+      public alloc/free/set-row/kernel functions. An external probe then links
+      against `mosfhet.h` and `libmosfhet.a` and repeats the Stage130 semantic
+      checks. The output type stores one mask/body DFT pair per lane; it does
+      not claim a single shared output mask.
+    status: stage131_shared_source_production_api_ready_sab_integration_design
+    evidence: docs/stage131_shared_source_production_api_gate.md; experiments/stage131_shared_source_production_api_gate_plan.md; theory_checks/stage131_shared_source_production_api_model.md; algorithm_variants/mat_rlwe_sab_shared_source_production_api.md; scripts/build_stage131_shared_source_production_api_gate.py; src/mosfhet/include/mosfhet.h; src/mosfhet/src/mattrgsw.c; repro/stage131_shared_source_production_api_gate/summary.csv; repro/stage131_shared_source_production_api_gate/api_results.csv; repro/stage131_shared_source_production_api_gate/mosfhet_static_build.log; repro/stage131_shared_source_production_api_gate/compile_probe.log; repro/stage131_shared_source_production_api_gate/run_probe.log; repro/stage131_shared_source_production_api_gate/shared_source_production_api_gate.c; repro/stage131_shared_source_production_api_gate/artifact_index.csv
+    current_decision: >
+      Stage131 records
+      PASS_STAGE131_SHARED_SOURCE_PRODUCTION_API_READY_SAB_INTEGRATION_DESIGN.
+      The public API probe passes for k=1, T=7, Bg_bit=7, r=2/4/6, and
+      N=512/1024. Guard, component, phase, and exact noise-model mismatch
+      counts are zero for all 6 rows. Body-only negative controls are rejected.
+      The maximum component/phase gaps are 13481/13475 under tolerance 131072.
+      This opens isolated SAB CMUX/RGSW integration design only.
+    failure_criteria:
+      - SAB integration assumes this output is already a true `PVW_TMLWE_DFT`
+        shared-output-mask ciphertext
+      - later CMUX/RGSW stages cannot consume lane-pair output without dense
+        reconstruction or losing the Stage130 timing mechanism
+      - production API evidence is claimed as complete SAB acceleration
+      - scalar/default SAB behavior changes before a guarded integration stage

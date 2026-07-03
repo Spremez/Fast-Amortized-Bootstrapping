@@ -4818,3 +4818,52 @@ N=512/1024. r=2 remains negative/near break-even at 0.990025/0.967843. The
 next valid stage is a production API/header design gate for shared-source
 compact EP, still outside SAB integration.
 ```
+
+## Stage 131: Shared-Source Production API Gate
+
+Goal:
+
+```text
+Move the Stage130 shared-source compact EP shape from generated probe code into
+MOSFHET public headers and `mattrgsw.c`, without changing scalar SAB or the
+existing dense MAT path.
+```
+
+Theory basis:
+
+Stage130 proves isolated component/phase/noise semantics and positive r=4/r=6
+microbench for the shared-source shape. Stage131 checks the next software
+boundary: the API must compile through `mosfhet.h`, link through
+`libmosfhet.a`, and preserve the same semantic invariant. The output remains
+one mask/body pair per lane (`MAT_TRGSW_COMPACT_OUTPUT_DFT`); it is not yet a
+true `PVW_TMLWE_DFT` with a single shared output mask.
+
+Tasks:
+
+- add `MAT_TRGSW_COMPACT_DFT`, `MAT_TRGSW_COMPACT_OUTPUT_DFT`, and
+  `MAT_TRGSW_COMPACT_MUL_SCRATCH` to `mosfhet.h`;
+- add alloc/free/set-row/kernel functions in `mattrgsw.c`;
+- build MOSFHET static library with `ENABLE_PVW_TMLWE=true`;
+- compile an external probe against the public header and static library;
+- verify component, phase, exact noise-model, invalid-row guards, and
+  body-only negative controls for r=2/4/6 and N=512/1024.
+
+Gate:
+
+- build, public-header compile/link, and run must pass;
+- guard, component, phase, and noise-model mismatch counts must be zero;
+- body-only negative controls must fail;
+- passing only opens SAB integration design around this output type.
+
+Status:
+
+```text
+Completed. Stage131 records
+PASS_STAGE131_SHARED_SOURCE_PRODUCTION_API_READY_SAB_INTEGRATION_DESIGN. The
+public API probe passes for k=1, T=7, Bg_bit=7, r=2/4/6, and N=512/1024.
+Guard, component, phase, and exact noise-model mismatch counts are zero for all
+6 rows. Body-only negative controls are rejected. The maximum component/phase
+gaps are 13481/13475 under tolerance 131072. The next valid stage is isolated
+SAB CMUX/RGSW integration design using `MAT_TRGSW_COMPACT_OUTPUT_DFT`; complete
+`T_bootstrap/r` claims remain blocked.
+```

@@ -1938,3 +1938,20 @@ Repro artifacts:
 - `repro/stage130_shared_source_compact_ep_gate/run_probe.log`
 - `repro/stage130_shared_source_compact_ep_gate/shared_source_compact_ep_gate.c`
 - `repro/stage130_shared_source_compact_ep_gate/artifact_index.csv`
+
+## Stage 131 Shared-Source Production API Gate
+
+- `docs/stage131_shared_source_production_api_gate.md`
+- `experiments/stage131_shared_source_production_api_gate_plan.md`
+- `theory_checks/stage131_shared_source_production_api_model.md`
+- `algorithm_variants/mat_rlwe_sab_shared_source_production_api.md`
+- `scripts/build_stage131_shared_source_production_api_gate.py`
+- `src/mosfhet/include/mosfhet.h`
+- `src/mosfhet/src/mattrgsw.c`
+- `repro/stage131_shared_source_production_api_gate/summary.csv`
+- `repro/stage131_shared_source_production_api_gate/api_results.csv`
+- `repro/stage131_shared_source_production_api_gate/mosfhet_static_build.log`
+- `repro/stage131_shared_source_production_api_gate/compile_probe.log`
+- `repro/stage131_shared_source_production_api_gate/run_probe.log`
+- `repro/stage131_shared_source_production_api_gate/shared_source_production_api_gate.c`
+- `repro/stage131_shared_source_production_api_gate/artifact_index.csv`

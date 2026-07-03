@@ -197,6 +197,23 @@ typedef struct _MAT_TRGSW_MUL_SCRATCH{
   int rows;
 } * MAT_TRGSW_MUL_SCRATCH;
 
+typedef struct _MAT_TRGSW_COMPACT_DFT{
+  DFT_Polynomial * shared_a, * shared_b;
+  DFT_Polynomial * body_a, * body_b;
+  int T,Q,k,r,N;
+} * MAT_TRGSW_COMPACT_DFT;
+
+typedef struct _MAT_TRGSW_COMPACT_OUTPUT_DFT{
+  DFT_Polynomial * a, * b;
+  int r,N;
+} * MAT_TRGSW_COMPACT_OUTPUT_DFT;
+
+typedef struct _MAT_TRGSW_COMPACT_MUL_SCRATCH{
+  TorusPolynomial dec_shared, dec_body;
+  DFT_Polynomial dec_shared_dft, dec_body_dft;
+  int N;
+} * MAT_TRGSW_COMPACT_MUL_SCRATCH;
+
 /* Registers */
 
 typedef struct _TRGSW_REG{
@@ -679,6 +696,17 @@ void mat_trgsw_monomial_DFT_sample(MAT_TRGSW_DFT out, int64_t m, int e, MAT_TRGS
 MAT_TRGSW_MUL_SCRATCH mat_trgsw_alloc_mul_scratch(int rows, int N);
 void free_mat_trgsw_mul_scratch(MAT_TRGSW_MUL_SCRATCH scratch);
 void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT selector, MAT_TRGSW_MUL_SCRATCH scratch);
+MAT_TRGSW_COMPACT_DFT mat_trgsw_compact_alloc_new_DFT_sample(int l, int Bg_bit, int k, int r, int N);
+void free_mat_trgsw_compact_DFT(void * p_v);
+MAT_TRGSW_COMPACT_OUTPUT_DFT mat_trgsw_compact_alloc_new_output_DFT(int r, int N);
+void free_mat_trgsw_compact_output_DFT(void * p_v);
+int mat_trgsw_compact_set_row_from_torus(MAT_TRGSW_COMPACT_DFT out, int t, int lane,
+    TorusPolynomial shared_a, TorusPolynomial shared_b,
+    TorusPolynomial body_a, TorusPolynomial body_b);
+MAT_TRGSW_COMPACT_MUL_SCRATCH mat_trgsw_compact_alloc_mul_scratch(int N);
+void free_mat_trgsw_compact_mul_scratch(MAT_TRGSW_COMPACT_MUL_SCRATCH scratch);
+void mat_trgsw_compact_mul_pvmtmlwe_DFT(MAT_TRGSW_COMPACT_OUTPUT_DFT out, PVW_TMLWE in,
+    MAT_TRGSW_COMPACT_DFT selector, MAT_TRGSW_COMPACT_MUL_SCRATCH scratch);
 
 #ifdef __cplusplus
 }

@@ -704,3 +704,13 @@ Stage129 timing blocker: r=4 full speedup is 1.281272 at N=512 and 1.153336 at
 N=1024; r=6 is 1.478479 and 1.369582. r=2 remains negative/near break-even.
 This opens production API/header design for shared-source compact EP only; SAB
 integration and complete `T_bootstrap/r` claims remain later gates.
+
+Stage131 moves that shared-source compact EP boundary into MOSFHET public API.
+It adds compact selector/output/scratch types and functions in `mosfhet.h` and
+`mattrgsw.c`, then validates them with an external probe linked against
+`libmosfhet.a`. Guard, component, phase, and exact noise-model mismatch counts
+are zero for r=2/4/6 and N=512/1024, with max component/phase gaps
+13481/13475 under tolerance 131072. The output is deliberately
+`MAT_TRGSW_COMPACT_OUTPUT_DFT`, one mask/body pair per lane; compressing it to
+a true `PVW_TMLWE_DFT` shared output mask is not yet proven. The next stage must
+design isolated SAB CMUX/RGSW integration around this explicit output boundary.

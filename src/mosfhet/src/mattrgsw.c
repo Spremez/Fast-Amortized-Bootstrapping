@@ -730,3 +730,142 @@ void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT s
     }
   }
 }
+
+static int mat_trgsw_compact_rows(MAT_TRGSW_COMPACT_DFT in){
+  return in->T * in->r;
+}
+
+static int mat_trgsw_compact_row_index(MAT_TRGSW_COMPACT_DFT in, int t, int lane){
+  return t * in->r + lane;
+}
+
+static void mat_trgsw_compact_zero_output_DFT(MAT_TRGSW_COMPACT_OUTPUT_DFT out){
+  const int N = out->N;
+  for (size_t i = 0; i < out->r; i++){
+    memset(out->a[i]->coeffs, 0, sizeof(double) * N);
+    memset(out->b[i]->coeffs, 0, sizeof(double) * N);
+  }
+}
+
+MAT_TRGSW_COMPACT_DFT mat_trgsw_compact_alloc_new_DFT_sample(int l, int Bg_bit, int k, int r, int N){
+  MAT_TRGSW_COMPACT_DFT res =
+      (MAT_TRGSW_COMPACT_DFT) safe_malloc(sizeof(*res));
+  const int rows = l * r;
+  res->shared_a = polynomial_new_array_of_polynomials_DFT(N, rows);
+  res->shared_b = polynomial_new_array_of_polynomials_DFT(N, rows);
+  res->body_a = polynomial_new_array_of_polynomials_DFT(N, rows);
+  res->body_b = polynomial_new_array_of_polynomials_DFT(N, rows);
+  res->T = l;
+  res->Q = Bg_bit;
+  res->k = k;
+  res->r = r;
+  res->N = N;
+  return res;
+}
+
+void free_mat_trgsw_compact_DFT(void * p_v){
+  MAT_TRGSW_COMPACT_DFT p = (MAT_TRGSW_COMPACT_DFT) p_v;
+  const int rows = mat_trgsw_compact_rows(p);
+  for (size_t i = 0; i < rows; i++){
+    free_DFT_polynomial(p->shared_a[i]);
+    free_DFT_polynomial(p->shared_b[i]);
+    free_DFT_polynomial(p->body_a[i]);
+    free_DFT_polynomial(p->body_b[i]);
+  }
+  free(p->shared_a);
+  free(p->shared_b);
+  free(p->body_a);
+  free(p->body_b);
+  free(p);
+}
+
+MAT_TRGSW_COMPACT_OUTPUT_DFT mat_trgsw_compact_alloc_new_output_DFT(int r, int N){
+  MAT_TRGSW_COMPACT_OUTPUT_DFT res =
+      (MAT_TRGSW_COMPACT_OUTPUT_DFT) safe_malloc(sizeof(*res));
+  res->a = polynomial_new_array_of_polynomials_DFT(N, r);
+  res->b = polynomial_new_array_of_polynomials_DFT(N, r);
+  res->r = r;
+  res->N = N;
+  return res;
+}
+
+void free_mat_trgsw_compact_output_DFT(void * p_v){
+  MAT_TRGSW_COMPACT_OUTPUT_DFT p = (MAT_TRGSW_COMPACT_OUTPUT_DFT) p_v;
+  for (size_t i = 0; i < p->r; i++){
+    free_DFT_polynomial(p->a[i]);
+    free_DFT_polynomial(p->b[i]);
+  }
+  free(p->a);
+  free(p->b);
+  free(p);
+}
+
+int mat_trgsw_compact_set_row_from_torus(MAT_TRGSW_COMPACT_DFT out, int t, int lane,
+    TorusPolynomial shared_a, TorusPolynomial shared_b,
+    TorusPolynomial body_a, TorusPolynomial body_b){
+  if(out == NULL || t < 0 || lane < 0 || t >= out->T || lane >= out->r) return -1;
+  if(shared_a == NULL || shared_b == NULL || body_a == NULL || body_b == NULL) return -2;
+  if(shared_a->N != out->N || shared_b->N != out->N ||
+      body_a->N != out->N || body_b->N != out->N) return -3;
+  const int idx = mat_trgsw_compact_row_index(out, t, lane);
+  polynomial_torus_to_DFT(out->shared_a[idx], shared_a);
+  polynomial_torus_to_DFT(out->shared_b[idx], shared_b);
+  polynomial_torus_to_DFT(out->body_a[idx], body_a);
+  polynomial_torus_to_DFT(out->body_b[idx], body_b);
+  return 0;
+}
+
+MAT_TRGSW_COMPACT_MUL_SCRATCH mat_trgsw_compact_alloc_mul_scratch(int N){
+  MAT_TRGSW_COMPACT_MUL_SCRATCH res =
+      (MAT_TRGSW_COMPACT_MUL_SCRATCH) safe_malloc(sizeof(*res));
+  res->dec_shared = polynomial_new_torus_polynomial(N);
+  res->dec_body = polynomial_new_torus_polynomial(N);
+  res->dec_shared_dft = polynomial_new_DFT_polynomial(N);
+  res->dec_body_dft = polynomial_new_DFT_polynomial(N);
+  res->N = N;
+  return res;
+}
+
+void free_mat_trgsw_compact_mul_scratch(MAT_TRGSW_COMPACT_MUL_SCRATCH scratch){
+  free_polynomial(scratch->dec_shared);
+  free_polynomial(scratch->dec_body);
+  free_DFT_polynomial(scratch->dec_shared_dft);
+  free_DFT_polynomial(scratch->dec_body_dft);
+  free(scratch);
+}
+
+void mat_trgsw_compact_mul_pvmtmlwe_DFT(MAT_TRGSW_COMPACT_OUTPUT_DFT out, PVW_TMLWE in,
+    MAT_TRGSW_COMPACT_DFT selector, MAT_TRGSW_COMPACT_MUL_SCRATCH scratch){
+  assert(out != NULL);
+  assert(in != NULL);
+  assert(selector != NULL);
+  assert(scratch != NULL);
+  assert(in->k == 1);
+  assert(out->r == in->r);
+  assert(selector->k == 1);
+  assert(selector->r == in->r);
+  assert(selector->N == in->a[0]->N);
+  assert(selector->N == out->N);
+  assert(scratch->N == selector->N);
+
+  mat_trgsw_compact_zero_output_DFT(out);
+  for (size_t t = 0; t < selector->T; t++){
+    polynomial_decompose_i(scratch->dec_shared, in->a[0],
+        selector->Q, selector->T, t);
+    polynomial_torus_to_DFT(scratch->dec_shared_dft, scratch->dec_shared);
+    for (size_t lane = 0; lane < selector->r; lane++){
+      const int idx = mat_trgsw_compact_row_index(selector, t, lane);
+      polynomial_decompose_i(scratch->dec_body, in->b[lane],
+          selector->Q, selector->T, t);
+      polynomial_torus_to_DFT(scratch->dec_body_dft, scratch->dec_body);
+      polynomial_mul_addto_DFT(out->a[lane], scratch->dec_shared_dft,
+          selector->shared_a[idx]);
+      polynomial_mul_addto_DFT(out->b[lane], scratch->dec_shared_dft,
+          selector->shared_b[idx]);
+      polynomial_mul_addto_DFT(out->a[lane], scratch->dec_body_dft,
+          selector->body_a[idx]);
+      polynomial_mul_addto_DFT(out->b[lane], scratch->dec_body_dft,
+          selector->body_b[idx]);
+    }
+  }
+}
