@@ -1,0 +1,4 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,172,frontier closeout after Stage169/170/171,"Stage171 keeps structured compact as proof route, not implementation-ready code.","Refresh allowed claims, next engineering route, and proof-route decision boundary.",No final theoretical-optimality or compact-SAB claim without proof and full benchmark.
+P1,173,structured compact formal phase/noise toy,Only if the project chooses to pursue a new keygen/security route.,Write exact equations and finite/noise toy sampler for the structured compact distribution.,"If equations do not close, reject compact route before implementation."
+P2,174,from_DFT locality experiment,Stage170 shows from_DFT has high cache-miss and load/store pressure.,Bounded microbench with layout/scratch changes and full-SAB A/B only if microbench wins.,Do not promote a backend-only improvement without complete-SAB endpoint.

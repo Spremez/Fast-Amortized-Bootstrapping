@@ -1,0 +1,5 @@
+r,dense_terms,structured_terms,term_reduction_factor,stage170_mat_ep_us,stage170_from_dft_us,ideal_structured_mat_us,component_baseline_us,ideal_component_us,upper_component_speedup,scope
+2,9,7,1.285714286,,,,,,,"upper-bound model only; excludes proof, keygen, from_DFT count, extract/KS, memory layout, and full SAB effects"
+4,25,13,1.923076923,,,,,,,"upper-bound model only; excludes proof, keygen, from_DFT count, extract/KS, memory layout, and full SAB effects"
+6,49,19,2.578947368,66.127151855,35.211114746,25.641140515,101.338266601,60.852255261,1.665316530,"upper-bound model only; excludes proof, keygen, from_DFT count, extract/KS, memory layout, and full SAB effects"
+8,81,25,3.240000000,,,,,,,"upper-bound model only; excludes proof, keygen, from_DFT count, extract/KS, memory layout, and full SAB effects"

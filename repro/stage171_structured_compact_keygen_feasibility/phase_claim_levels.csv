@@ -1,0 +1,5 @@
+level,claim,status,reason,allowed_next
+ciphertext_exact_dense_MAT,Compact lane-local data equals the existing dense MAT ciphertext map.,BLOCKED_BY_STAGE166,Generic dense encrypted selector includes body-to-body cross terms.,Do not replace dense MAT with compact storage under this claim.
+logical_selector_exact,A new structured keygen enforces zero logical body cross terms.,FINITE_FIELD_FEASIBLE,Stage171 finite checks show compact projection is exact under explicit structural constraints.,"Write formal keygen, phase, and noise equations before implementation."
+phase_correct_under_decryption,Omitting encryptions of logical zero cross terms preserves decrypted message and changes only noise/distribution.,PROOF_REQUIRED,Dropping encrypted zero samples changes bootstrapping-key distribution and noise accounting.,Run finite/noise toy checks only after equations specify the distribution.
+complete_SAB_speedup,Structured compact keygen accelerates full SAB.,BLOCKED_IMPLEMENTATION,"No structured keygen, SAB integration, correctness/noise, or full A/B benchmark exists.",Keep complete-SAB speedup claims tied to Stage169 until this route is implemented and measured.

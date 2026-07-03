@@ -1,0 +1,5 @@
+r,state_polys,dense_terms,structured_terms,omitted_body_cross_terms,term_reduction_factor,required_constraint,status
+2,3,9,7,2,1.285714286,"M[q,j]=0 for q!=j and q,j>0 at the logical selector level",STRUCTURED_ONLY_NOT_GENERIC
+4,5,25,13,12,1.923076923,"M[q,j]=0 for q!=j and q,j>0 at the logical selector level",STRUCTURED_ONLY_NOT_GENERIC
+6,7,49,19,30,2.578947368,"M[q,j]=0 for q!=j and q,j>0 at the logical selector level",STRUCTURED_ONLY_NOT_GENERIC
+8,9,81,25,56,3.240000000,"M[q,j]=0 for q!=j and q,j>0 at the logical selector level",STRUCTURED_ONLY_NOT_GENERIC

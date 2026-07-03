@@ -878,3 +878,7 @@ Stage170 records native split component counters for the current exact r=6
 PVW/MAT-SAB path. Decision: `PASS_STAGE170_NATIVE_SPLIT_COUNTERS_RECORDED`. The result may guide later
 optimization routing, but it is not by itself a complete bootstrapping
 speedup claim.
+Stage171 records structured compact keygen feasibility after Stage170.
+Decision: `PASS_STAGE171_STRUCTURED_COMPACT_PROOF_ROUTE_NOT_IMPLEMENTATION_READY`. It keeps compact MAT-SAB as a proof-driven possible
+algorithmic improvement and blocks implementation/claim escalation until
+keygen, phase, noise, security, and closed-state API obligations are resolved.

@@ -5542,3 +5542,19 @@ Completed. Stage170 records PASS_STAGE170_NATIVE_SPLIT_COUNTERS_RECORDED. The ev
 native counter attribution and remains separate from complete-SAB throughput
 and theoretical optimality.
 ```
+## Stage 171: Structured Compact Keygen Feasibility
+
+Goal:
+
+```text
+Decide whether shared-output/compact MAT-SAB is an implementation-ready route
+or a bounded proof route requiring new keygen, phase, noise, and security work.
+```
+
+Status:
+
+```text
+Completed. Stage171 records PASS_STAGE171_STRUCTURED_COMPACT_PROOF_ROUTE_NOT_IMPLEMENTATION_READY. Structured compact is finite-field
+feasible under zero-cross logical constraints but remains blocked for
+production SAB until proof obligations close.
+```

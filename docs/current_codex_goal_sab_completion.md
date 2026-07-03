@@ -419,3 +419,6 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE170_NATIVE_SPLIT_COUNTERS_RECORDED`. It separates MAT EP/subdecomp from from_DFT materialization
     using native CB5 counters, while keeping Stage169 as the complete-SAB
     throughput endpoint.
+75. Treat Stage171 as structured compact proof-route gate:
+    `PASS_STAGE171_STRUCTURED_COMPACT_PROOF_ROUTE_NOT_IMPLEMENTATION_READY`. It provides a bounded algebraic and Stage170-informed
+    projection, not an implementation or final speedup claim.

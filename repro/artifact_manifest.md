@@ -2295,3 +2295,9 @@ Repro artifacts:
   - `theory_checks/stage170_split_counter_scope.md`
   - `algorithm_variants/mat_rlwe_sab_native_split_counter_microbench.md`
   - `repro/stage170_native_split_counter_microbench/`
+- stage171_structured_compact_keygen_feasibility: `PASS_STAGE171_STRUCTURED_COMPACT_PROOF_ROUTE_NOT_IMPLEMENTATION_READY`
+  - `docs/stage171_structured_compact_keygen_feasibility.md`
+  - `experiments/stage171_structured_compact_keygen_feasibility_plan.md`
+  - `theory_checks/stage171_structured_compact_keygen_model.md`
+  - `algorithm_variants/mat_rlwe_sab_structured_compact_keygen_feasibility.md`
+  - `repro/stage171_structured_compact_keygen_feasibility/`

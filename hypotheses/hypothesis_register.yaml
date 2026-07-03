@@ -2400,3 +2400,22 @@ hypotheses:
       - required counters are missing for either component
       - component counters are reported as complete-SAB acceleration or
         theoretical optimality
+  - id: H95_structured_compact_keygen_feasibility
+    statement: >
+      A compact shared-output MAT-SAB route can only be exact under explicit
+      structured logical selector constraints, and therefore remains a new
+      keygen/security/noise proof route rather than a drop-in implementation
+      optimization.
+    mechanism: >
+      The compact map keeps the shared output row plus each body's shared-input
+      and diagonal terms, omitting body-to-body cross terms. Finite-field tests
+      show exactness under zero-cross constraints and failure for generic dense
+      selectors; Stage170 timings give only an upper-bound component projection.
+    status: stage171_structured_compact_keygen_feasibility
+    evidence: docs/stage171_structured_compact_keygen_feasibility.md; experiments/stage171_structured_compact_keygen_feasibility_plan.md; theory_checks/stage171_structured_compact_keygen_model.md; repro/stage171_structured_compact_keygen_feasibility/summary.csv
+    current_decision: >
+      PASS_STAGE171_STRUCTURED_COMPACT_PROOF_ROUTE_NOT_IMPLEMENTATION_READY
+    failure_criteria:
+      - structured finite-field matrices do not project exactly
+      - compact route is implemented before keygen/phase/noise/security proof
+      - Stage171 projection is reported as complete-SAB benchmark speedup
