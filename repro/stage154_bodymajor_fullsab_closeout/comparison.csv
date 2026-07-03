@@ -1,0 +1,4 @@
+metric,tile4,bodymajor,bodymajor_over_tile4,status,detail
+full_sab_pvw_us,40748543.000,41669763.000,0.977892,REJECT,Complete SAB wall-clock smoke; repeated gate required for any promotion.
+amortized_T_bootstrap_per_lane_us,6791423.833,6944960.500,0.977892,REJECT,Primary MAT-RLWE SAB endpoint.
+speedup_vs_scalar_repeated,1.440,1.419,,INFO,Reported only as context; the gate is bodymajor versus same-backend tile4.

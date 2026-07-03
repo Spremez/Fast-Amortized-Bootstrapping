@@ -816,3 +816,5 @@ for k=1,r=6,N=2048. Decision: `PASS_STAGE152_DUAL_SUB_LOCAL_POSITIVE_INTEGRATION
 Stage153 integrates the Stage152 dual-sub kernel behind `SAB_PVW_DUAL_SUB_CMUX`
 and tests complete SAB `T_bootstrap/r`. Decision: `NEUTRAL_STAGE153_DUAL_SUB_FULLSAB_PAIR_FRACTION_LIMITED`. The route is
 bounded by the pairable fraction, not by the isolated dual-sub kernel speed.
+Stage154 closes the skipped Stage108 complete-SAB bodymajor gate. Decision:
+`REJECT_STAGE154_BODYMAJOR_FULLSAB_SLOWER`. The comparison is same-backend r=6 `T_bootstrap/r`.

@@ -2120,3 +2120,18 @@ hypotheses:
       - complete SAB correctness fails
       - dynamic pair count differs from `(h+1)*(2^r_prec-1)`
       - full SAB `T_bootstrap/r` does not improve beyond the neutral band
+  - id: H78_bodymajor_fullsab_closeout
+    statement: >
+      The r=6 body-major MAT external-product layout should only remain a
+      candidate if it improves complete SAB `T_bootstrap/r` over the current
+      H14 r=6 tile4 backend.
+    mechanism: >
+      Body-major changes MAT accumulation order and locality without changing
+      SAB schedule count or selector/key semantics.
+    status: stage154_fullsab_closeout
+    evidence: docs/stage154_bodymajor_fullsab_closeout.md; experiments/stage154_bodymajor_fullsab_closeout_plan.md; theory_checks/stage154_bodymajor_fullsab_model.md; algorithm_variants/mat_rlwe_sab_bodymajor_fullsab_closeout.md; repro/stage154_bodymajor_fullsab_closeout/summary.csv
+    current_decision: >
+      REJECT_STAGE154_BODYMAJOR_FULLSAB_SLOWER
+    failure_criteria:
+      - complete SAB correctness fails
+      - T_bootstrap_per_lane does not beat same-backend tile4 beyond the neutral band

@@ -362,3 +362,6 @@ The new research goal is complete only after a later stage records:
     confirms the pairable fraction `(h+1)*(2^r_prec-1)`, but this fraction is
     too small for a strong full-SAB claim unless a broader pairing schedule is
     found.
+58. Treat Stage154 as the bodymajor full-SAB closeout:
+    `REJECT_STAGE154_BODYMAJOR_FULLSAB_SLOWER`. It closes the Stage108 missing complete-SAB evidence for
+    `MAT_TRGSW_AVX512_R6_BODYMAJOR` under the H14 r=6 backend path.

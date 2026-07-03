@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage154_precondition,PASS,stage108;stage153,PASS_STAGE108_BODYMAJOR_NEGATIVE_NOT_PROMOTED;NEUTRAL_STAGE153_DUAL_SUB_FULLSAB_PAIR_FRACTION_LIMITED,repro/stage154_bodymajor_fullsab_closeout/prior_evidence.csv,Stage154 follows a skipped Stage108 complete-SAB gate and Stage153's dual-sub neutral result.,
+stage154_correctness,PASS,tile4;bodymajor,Pass;Pass,repro/stage154_bodymajor_fullsab_closeout/variant_results.csv,Both complete-SAB variants must pass target_full correctness.,Do not interpret timings if correctness fails.
+stage154_fullsab_smoke,REJECT,bodymajor_over_tile4_T_bootstrap_per_lane,0.977892,repro/stage154_bodymajor_fullsab_closeout/comparison.csv,"Same backend, same r=6, same primary endpoint.",
+stage154_decision,REJECT_STAGE154_BODYMAJOR_FULLSAB_SLOWER,candidate_route,r6_bodymajor_fullsab_closeout,repro/stage154_bodymajor_fullsab_closeout/summary.csv,Close or promote the bodymajor layout branch at complete-SAB level.,"If neutral/rejected, route away from blind r=6 layout tuning."

@@ -2216,3 +2216,9 @@ Repro artifacts:
 - status: `NEUTRAL_STAGE153_DUAL_SUB_FULLSAB_PAIR_FRACTION_LIMITED`
 - root: `repro/stage153_dual_sub_fullsab_gate`
 - index: `repro/stage153_dual_sub_fullsab_gate/artifact_index.csv`
+## stage154_bodymajor_fullsab_closeout
+
+- stage: Stage 154
+- status: `REJECT_STAGE154_BODYMAJOR_FULLSAB_SLOWER`
+- root: `repro/stage154_bodymajor_fullsab_closeout`
+- index: `repro/stage154_bodymajor_fullsab_closeout/artifact_index.csv`

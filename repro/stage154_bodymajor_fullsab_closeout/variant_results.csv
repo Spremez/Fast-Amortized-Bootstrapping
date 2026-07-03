@@ -1,0 +1,3 @@
+variant,status,r,reps,correctness,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,source_build_log,source_run_log
+tile4_h14_r6_backend,PASS,6,1,Pass,40748543.000,6791423.833,58689790.000,9781631.667,1.440,repro/stage154_bodymajor_fullsab_closeout/tile4_h14_r6_backend/build.log,repro/stage154_bodymajor_fullsab_closeout/tile4_h14_r6_backend/run.log
+bodymajor_h14_r6_backend,PASS,6,1,Pass,41669763.000,6944960.500,59114815.000,9852469.167,1.419,repro/stage154_bodymajor_fullsab_closeout/bodymajor_h14_r6_backend/build.log,repro/stage154_bodymajor_fullsab_closeout/bodymajor_h14_r6_backend/run.log

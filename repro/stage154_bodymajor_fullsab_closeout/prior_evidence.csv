@@ -1,0 +1,4 @@
+source,gate,status,metric,value,evidence,detail
+Stage108,stage108_decision,PASS_STAGE108_BODYMAJOR_NEGATIVE_NOT_PROMOTED,bodymajor_kernel_gate,NEGATIVE_OR_NEUTRAL_KERNEL,repro/stage108_bodymajor_layout_gate/summary.csv,Stage108 tested bodymajor at kernel level but skipped complete-SAB timing.
+Stage108,stage108_kernel_full_output_r6,PROFILE_ONLY,bodymajor_vs_tile4;bodymajor_vs_fulltile,1.223;0.922,repro/stage108_bodymajor_layout_gate/kernel_comparison.csv,Kernel evidence alone cannot decide complete SAB.
+Stage153,stage153_decision,NEUTRAL_STAGE153_DUAL_SUB_FULLSAB_PAIR_FRACTION_LIMITED,next_route,avoid_pair_fraction_limited_dual_sub,repro/stage153_dual_sub_fullsab_gate/summary.csv,"After H14-C3 neutral, close broader MAT layout evidence before selecting another route."

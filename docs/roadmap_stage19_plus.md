@@ -5279,3 +5279,18 @@ speedup on `T_bootstrap/r` is 1.002283. Dynamic pair calls are
 5080/5080, and the corrected body-level
 bound is 1.000352. The key conclusion is that H14-C3 is pair-fraction limited.
 ```
+## Stage 154: Bodymajor Full-SAB Closeout
+
+Goal:
+
+```text
+Close the skipped Stage108 complete-SAB gate for r=6 bodymajor layout under
+the current H14 backend FromDFT-add path.
+```
+
+Status:
+
+```text
+Completed. Stage154 records REJECT_STAGE154_BODYMAJOR_FULLSAB_SLOWER. Bodymajor/tile4 on the primary
+`T_bootstrap/r` endpoint is 0.977892.
+```
