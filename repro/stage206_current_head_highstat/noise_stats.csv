@@ -1,0 +1,3 @@
+r,status,seeds,points,pvw_failures,scalar_failures,pair_failures,min_pvw_minus_scalar_log2,max_pvw_minus_scalar_log2,avg_pvw_minus_scalar_log2,evidence,raw_summary
+2,PASS_20SEED,20,81920,0,0,0,-0.514,0.532,-0.089650,repro/stage206_current_head_highstat/final_noise_seeds20/aggregate.csv,repro/stage206_current_head_highstat/final_noise_seeds20/summary.csv
+4,PASS_20SEED,20,163840,0,0,0,-0.433,0.174,-0.106500,repro/stage206_current_head_highstat/final_noise_seeds20/aggregate.csv,repro/stage206_current_head_highstat/final_noise_seeds20/summary.csv

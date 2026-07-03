@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage206_performance,PASS_HIGHSTAT_CURRENT_HEAD,r_values,"2,4",repro/stage206_current_head_highstat/performance_stats.csv,r=2/r=4 10-run complete-SAB A/B passes under T_bootstrap/r.,Use as current-head engineering evidence only.
+stage206_noise,PASS_20SEED,noise_rows,2,repro/stage206_current_head_highstat/noise_stats.csv,r=2/r=4 final-output noise has 20 seeds each with zero failures.,Keep latency and noise evidence separated.
+stage206_claim_boundary,PASS_BOUNDARY_RECORDED,blocked_claims,4,repro/stage206_current_head_highstat/proof_gate.csv,"No hardware-counter, full-text theorem, resource-refresh, or broad-parameter claim is made here.",Proceed to resource/profile refresh or external unblockers.
+stage206_decision,PASS_STAGE206_CURRENT_HEAD_HIGHSTAT_AB_NOISE,goal_status,active,repro/stage206_current_head_highstat/summary.csv,Stage206 strengthens complete-SAB evidence for current-head active-buffer PVW/MAT-SAB.,Continue with resource/profile/full-text gates; keep full research goal active.

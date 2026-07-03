@@ -992,3 +992,8 @@ Stage205 records current platform probe. Decision: `PASS_STAGE205_CURRENT_PLATFO
 It refreshes current-head WSL/spqlios_avx512 smoke and sequential r=2/r=4
 complete-SAB A/B with `T_bootstrap/r` as the primary endpoint; it also records
 that hardware-counter attribution is blocked by missing `perf`.
+
+Stage206 records current-head high-stat evidence. Decision: `PASS_STAGE206_CURRENT_HEAD_HIGHSTAT_AB_NOISE`.
+It upgrades the current active-buffer PVW/MAT-SAB path from Stage205
+small-sample support to r=2/r=4 10-run complete-SAB A/B plus 20-seed
+final-output noise evidence under `T_bootstrap/r`.

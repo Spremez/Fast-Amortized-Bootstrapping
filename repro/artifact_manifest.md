@@ -2509,3 +2509,11 @@ Repro artifacts:
 - `theory_checks/stage205_amortized_metric_and_platform_boundary.md`
 - `algorithm_variants/mat_rlwe_sab_current_head_benchmark_policy.md`
 - `repro/stage205_current_platform_probe/`
+
+### Stage206 Current-Head High-Stat Evidence
+
+- `docs/stage206_current_head_highstat.md`
+- `experiments/stage206_current_head_highstat_plan.md`
+- `theory_checks/stage206_statistical_claim_boundary.md`
+- `algorithm_variants/mat_rlwe_sab_highstat_current_head_evidence.md`
+- `repro/stage206_current_head_highstat/`

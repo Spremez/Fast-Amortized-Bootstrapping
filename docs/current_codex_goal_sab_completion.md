@@ -564,3 +564,10 @@ The new research goal is complete only after a later stage records:
     explicit PVW paths pass WSL/spqlios_avx512 smoke; sequential r=2/r=4
     complete-SAB A/B is positive under `T_bootstrap/r`, but remains small-sample
     evidence and perf-counter attribution is blocked.
+
+110. Treat Stage206 as current-head high-stat evidence:
+    `PASS_STAGE206_CURRENT_HEAD_HIGHSTAT_AB_NOISE`. r=2/r=4 complete-SAB A/B
+    has 10 correctness-passing samples under `T_bootstrap/r`, and r=2/r=4
+    final-output noise has 20 seeds with zero PVW/scalar/pair failures. This
+    remains current-head engineering evidence, not full theorem or novelty
+    closure.

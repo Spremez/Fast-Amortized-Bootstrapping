@@ -1,0 +1,5 @@
+priority,route,entry_condition,gate,current_status,evidence
+P0,resource_refresh,Use current HEAD and same backend after Stage206 high-stat pass.,"Record key size, RSS/memory, and keygen cost for r=2/r=4 under current promoted explicit path.",ready,repro/stage206_current_head_highstat/proof_gate.csv
+P1,profile_attribution_refresh,Run profile-only instrumentation separately from latency runs.,"Attribute remaining time to MAT EP, CMUX/NCMUX, sub_a, extract/KS without mixing profile timing into speed claims.",ready,repro/stage206_current_head_highstat/performance_stats.csv
+P2,perf_counter_attribution,Linux perf is installed or native Linux is available.,Hardware-counter load/store/FMA attribution for MAT-aware AVX512.,blocked_perf_missing,repro/stage205_current_platform_probe/platform_gate.csv
+P3,full_text_anchor_table,Reviewed 2025/686 full text is available.,"Map exact SAB equations, theorem claims, and reported experiments to paper anchors.",waiting_full_text,repro/stage204_source_anchor_intake/proof_gate.csv

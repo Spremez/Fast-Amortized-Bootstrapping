@@ -2993,3 +2993,23 @@ hypotheses:
       - parallel make/build races are used as performance evidence
       - small-sample A/B is upgraded to paper-grade statistical evidence
       - hardware-counter conclusions are made while perf is unavailable
+
+  - id: H130_current_head_highstat_ab_noise
+    statement: >
+      The current explicit active-buffer PVW/MAT-SAB path should retain
+      positive complete-SAB amortized throughput for r=2 and r=4 under
+      same-backend repeated scalar comparison, while preserving final-output
+      correctness/noise over multiple seeds.
+    mechanism: >
+      Stage206 runs 10 complete-SAB A/B samples for r=2/r=4 under
+      T_bootstrap/r and 20 final-output noise seeds for r=2/r=4, using
+      current HEAD and WSL/spqlios_avx512.
+    status: stage206_current_head_highstat
+    evidence: docs/stage206_current_head_highstat.md; experiments/stage206_current_head_highstat_plan.md; theory_checks/stage206_statistical_claim_boundary.md; repro/stage206_current_head_highstat/summary.csv
+    current_decision: >
+      PASS_STAGE206_CURRENT_HEAD_HIGHSTAT_AB_NOISE
+    failure_criteria:
+      - any performance sample fails correctness
+      - min speedup for either r is not above 1.0
+      - any 20-seed final-output noise gate has PVW, scalar, or pair failures
+      - current-head engineering evidence is treated as theorem, novelty, or hardware-counter evidence

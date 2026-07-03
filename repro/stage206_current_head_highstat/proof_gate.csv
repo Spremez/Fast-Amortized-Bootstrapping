@@ -1,0 +1,5 @@
+gate,status,evidence,detail,remaining_gap
+G1_raw_run_complete,PASS,repro/stage206_current_head_highstat/full_sab_ab_r2_runs10/summary.csv; repro/stage206_current_head_highstat/full_sab_ab_r4_runs10/summary.csv; repro/stage206_current_head_highstat/final_noise_seeds20/aggregate.csv,r=2/r=4 performance and final-output noise raw outputs exist.,None for Stage206 raw execution.
+G2_performance_10run,PASS_HIGHSTAT_CURRENT_HEAD,repro/stage206_current_head_highstat/performance_stats.csv,Both r=2 and r=4 have 10 correctness-passing complete-SAB A/B samples with min speedup > 1.,"Still WSL/current-head engineering evidence, not hardware-counter or paper-level proof."
+G3_noise_20seed,PASS_20SEED,repro/stage206_current_head_highstat/noise_stats.csv,Both r=2 and r=4 have 20 seeds with zero PVW/scalar/pair failures.,Noise-instrumented runs are not latency evidence.
+G4_claim_boundary,PASS_BOUNDARY_RECORDED,theory_checks/stage206_statistical_claim_boundary.md,Stage206 supports current-head complete-SAB throughput and noise only.,"perf counters, full-text theorem anchors, resource refresh, and broader parameter/branch claims remain separate gates."

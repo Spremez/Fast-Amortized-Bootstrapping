@@ -6103,3 +6103,22 @@ WSL/spqlios_avx512 smoke passes and sequential r=2/r=4 complete-SAB A/B is
 positive, but hardware-counter attribution is blocked because perf is missing
 and the A/B evidence is small-sample only.
 ```
+
+## Stage 206: Current-Head High-Stat Evidence
+
+Goal:
+
+```text
+Upgrade Stage205 small-sample evidence to current-head high-stat engineering
+evidence: r=2/r=4 complete-SAB A/B with 10 runs and final-output noise with
+20 seeds, all measured under T_bootstrap/r.
+```
+
+Status:
+
+```text
+Completed. Stage206 records PASS_STAGE206_CURRENT_HEAD_HIGHSTAT_AB_NOISE.
+r=2/r=4 high-stat complete-SAB A/B and 20-seed noise gates pass, while
+hardware counters, full-text theorem anchors, resource refresh, and broader
+parameter/branch claims remain separate gates.
+```
