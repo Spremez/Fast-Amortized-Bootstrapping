@@ -263,3 +263,4 @@
 - [x] Stage172 frontier closeout pack recorded.
 - [x] Stage174 from_DFT direct-scale gate pack recorded.
 - [x] Stage175 post-Stage174 frontier refresh pack recorded.
+- [x] Stage173 structured compact phase/noise toy pack recorded.

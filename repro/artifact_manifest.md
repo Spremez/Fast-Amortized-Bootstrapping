@@ -2319,3 +2319,9 @@ Repro artifacts:
   - `theory_checks/stage175_route_boundary.md`
   - `algorithm_variants/mat_rlwe_sab_post_stage174_frontier.md`
   - `repro/stage175_post_stage174_frontier_refresh/`
+- stage173_structured_compact_phase_noise_toy: `PASS_STAGE173_PHASE_NOISE_TOY_PROOF_STILL_OPEN`
+  - `docs/stage173_structured_compact_phase_noise_toy.md`
+  - `experiments/stage173_structured_compact_phase_noise_toy_plan.md`
+  - `theory_checks/stage173_structured_compact_phase_noise_model.md`
+  - `algorithm_variants/mat_rlwe_sab_structured_compact_phase_noise_toy.md`
+  - `repro/stage173_structured_compact_phase_noise_toy/`

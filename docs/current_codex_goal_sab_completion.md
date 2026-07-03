@@ -432,3 +432,6 @@ The new research goal is complete only after a later stage records:
 78. Treat Stage175 as the post-direct-scale route refresh:
     `PASS_STAGE175_ROUTE_TO_STRUCTURED_COMPACT_TOY_GATE`. Complete-SAB claims remain unchanged; next bounded work is
     Stage173 structured compact finite phase/noise toy.
+79. Treat Stage173 as finite phase/noise toy evidence:
+    `PASS_STAGE173_PHASE_NOISE_TOY_PROOF_STILL_OPEN`. It improves the proof-route evidence for structured compact
+    MAT-SAB while keeping security/API/full-SAB claims blocked.

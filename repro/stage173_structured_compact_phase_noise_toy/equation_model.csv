@@ -1,0 +1,6 @@
+object,equation,meaning
+state,"x = (x_0, x_1, ..., x_r)",PVW/MAT-RLWE phase vector: shared component plus r body lanes.
+structured_selector,"M[0,*] arbitrary; M[q,0], M[q,q] arbitrary; M[q,j]=0 for q!=j and q,j>0",Compact keygen constraint required by Stage171.
+CMUX_phase,out = addend + M * (rhs - addend),Finite-field phase model for one SAB CMUX/NCMUX update.
+compact_apply,"out_0=sum_j M[0,j]d_j; out_q=M[q,0]d_0+M[q,q]d_q",Compact external product formula for d=rhs-addend.
+noise_toy,dense_zero_padded body variance = signal + (1+r)sigma_key^2; compact body variance = signal + 2sigma_key^2,Toy comparison when omitted cross terms are logical zero encryptions.

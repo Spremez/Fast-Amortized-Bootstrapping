@@ -892,3 +892,6 @@ backend/SIMD-only and remains behind `SPQLIOS_AVX512_DIRECT_SCALE`.
 Stage175 records the post-Stage174 route refresh. Decision: `PASS_STAGE175_ROUTE_TO_STRUCTURED_COMPACT_TOY_GATE`.
 Direct-scale backend tuning is closed for now; the next bounded route is a
 finite phase/noise toy gate for structured compact MAT-SAB.
+Stage173 records structured compact phase/noise toy evidence. Decision:
+`PASS_STAGE173_PHASE_NOISE_TOY_PROOF_STILL_OPEN`. This keeps the compact route alive as a bounded algorithmic path,
+but does not permit implementation or paper claims.

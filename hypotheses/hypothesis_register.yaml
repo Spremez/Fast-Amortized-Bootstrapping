@@ -2472,3 +2472,22 @@ hypotheses:
       - direct-scale is retuned without a new mechanism
       - structured compact proceeds to implementation before finite phase/noise gates
       - complete-SAB claim is changed without full-SAB A/B
+  - id: H99_structured_compact_phase_noise_toy
+    statement: >
+      Under explicit zero body-cross constraints, structured compact MAT-SAB
+      should preserve finite-field CMUX/NCMUX phase propagation and should not
+      increase toy variance relative to dense zero-padded selectors.
+    mechanism: >
+      Compact application keeps the shared output row and each body's
+      shared-input plus diagonal term; omitted body-cross terms are logical
+      zeros. A finite schedule checks phase equivalence and a variance toy
+      checks whether omitting zero encryptions can be noise-neutral or better.
+    status: stage173_structured_compact_phase_noise_toy
+    evidence: docs/stage173_structured_compact_phase_noise_toy.md; experiments/stage173_structured_compact_phase_noise_toy_plan.md; theory_checks/stage173_structured_compact_phase_noise_model.md; repro/stage173_structured_compact_phase_noise_toy/summary.csv
+    current_decision: >
+      PASS_STAGE173_PHASE_NOISE_TOY_PROOF_STILL_OPEN
+    failure_criteria:
+      - finite-field structured compact phase differs from structured dense
+      - body-cross negative control does not mismatch
+      - compact omitted-zero toy variance exceeds dense zero-padded variance
+      - toy evidence is used as implementation permission or paper novelty

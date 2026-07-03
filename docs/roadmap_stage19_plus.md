@@ -5604,3 +5604,19 @@ Status:
 Completed. Stage175 records PASS_STAGE175_ROUTE_TO_STRUCTURED_COMPACT_TOY_GATE. Direct-scale is not promoted; the next
 bounded route is Stage173 structured compact finite phase/noise toy.
 ```
+## Stage 173: Structured Compact Phase/Noise Toy
+
+Goal:
+
+```text
+Run finite-field phase propagation and noise toy gates for the structured
+compact MAT-SAB route.
+```
+
+Status:
+
+```text
+Completed. Stage173 records PASS_STAGE173_PHASE_NOISE_TOY_PROOF_STILL_OPEN. The route passes finite/toy checks but
+does not yet have implementation permission because security and API proof
+obligations remain open.
+```

@@ -1,0 +1,6 @@
+obligation,stage173_status,remaining_gap,implementation_permission
+keygen_distribution,PARTIAL_TOY_EQUATIONS_DEFINED,Need formal distribution/hybrid argument for omitted zero encryptions.,NO
+phase_invariant,TOY_PASS,Finite-field schedule toy is not a formal polynomial/RLWE proof.,NO
+noise_accounting,TOY_PASS,"Toy variance ignores correlations, modulus effects, and real bootstrapping-key noise.",NO
+security_reduction,OPEN,Need real reduction or explicit structured assumption before novelty claim.,NO
+closed_state_API,TOY_PHASE_CLOSED_PVW_VECTOR,Need API design proving compact key material can feed SAB without dense re-expansion.,NO
