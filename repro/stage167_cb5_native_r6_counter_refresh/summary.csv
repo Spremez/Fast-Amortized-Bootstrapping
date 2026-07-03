@@ -1,0 +1,9 @@
+gate,status,metric,value,evidence,detail,next_action
+stage167_remote_secret,PASS,STAGE167_SSHPASS,present,environment variable only; not written to artifacts,Remote password is consumed from environment and scrubbed from logs.,Provide STAGE167_SSHPASS only at runtime.
+stage167_sync,PASS,sync_rc,0,repro/stage167_cb5_native_r6_counter_refresh/sync.log,git archive HEAD synchronized to CB5 remote spz directory.,Fix SSH/sync before interpreting remote evidence.
+stage167_remote_env,PASS,env_probe_rc,0,repro/stage167_cb5_native_r6_counter_refresh/remote_environment.csv,"Remote CPU, perf path, and perf_event_paranoid recorded.",Use native Linux AVX512 host for counter claims.
+stage167_build,PASS,build_rc,0,repro/stage167_cb5_native_r6_counter_refresh/build.log,Build current r=6 post-fusion path on CB5.,Fix build before using counters.
+stage167_perf,PASS,perf_rc,0,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,Run perf stat with temporary perf_event_paranoid lowering.,"If perf fails, keep optimality claims blocked."
+stage167_restore_verification,PASS,perf_event_paranoid_after,4,repro/stage167_cb5_native_r6_counter_refresh/post_restore_verification.csv,Verify remote perf_event_paranoid after the counter run.,Restore to the pre-run value before closing the stage.
+stage167_counters,PASS,cycles;loads;stores;fp512,974318109068;367894314605;207104567619;360989564734,repro/stage167_cb5_native_r6_counter_refresh/counter_metrics.csv,Native counter values recorded for current r=6 path.,"Use counters for attribution, not as proof of theoretical optimality by themselves."
+stage167_decision,PASS_STAGE167_CB5_NATIVE_R6_COUNTERS_RECORDED,speedup_vs_scalar_repeated,1.127,repro/stage167_cb5_native_r6_counter_refresh/summary.csv,Stage167 refreshes native counter evidence for the current exact r=6 path.,Interpret counters against Stage160/161/165 before any optimality wording.

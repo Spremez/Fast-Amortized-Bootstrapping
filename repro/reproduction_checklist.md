@@ -255,3 +255,4 @@
 - [x] Stage164 representation closure route pack recorded.
 - [x] Stage165 closed full-MAT streaming microbench pack recorded.
 - [x] Stage166 shared-output compact algebra gate pack recorded.
+- [x] Stage167 CB5 native r=6 counter refresh pack recorded.

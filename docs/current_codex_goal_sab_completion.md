@@ -406,3 +406,6 @@ The new research goal is complete only after a later stage records:
 70. Treat Stage166 as the shared-output compact algebra gate:
     `PASS_STAGE166_GENERIC_COMPACT_EXACTNESS_BLOCKED_KEYGEN_PROOF_REQUIRED`. Generic compact shared-output is not a drop-in optimization;
     it needs structured keygen/security/noise proof before SAB integration.
+71. Treat Stage167 as the CB5 native r=6 counter refresh:
+    `PASS_STAGE167_CB5_NATIVE_R6_COUNTERS_RECORDED`. Use it to interpret the current exact path's hardware
+    behavior; do not treat counters alone as theoretical optimality proof.

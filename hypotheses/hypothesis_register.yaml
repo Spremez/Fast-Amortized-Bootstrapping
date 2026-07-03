@@ -2330,3 +2330,20 @@ hypotheses:
       - random dense finite-field selectors are representable with zero mismatches
       - compact SAB is integrated without a structured keygen/security/noise proof
       - generic dense exactness is claimed from lane-local compact evidence
+  - id: H91_cb5_native_r6_counters
+    statement: >
+      Native CB5 counters should refresh attribution for the current exact r=6
+      post-fusion PVW/MAT-SAB path after backend batching, streaming, and
+      generic compact routes are closed or blocked.
+    mechanism: >
+      Running the current explicit path under perf records cycles,
+      instructions, load/store, cache, and AVX512 FP counters on a native
+      AVX512 Xeon host.
+    status: stage167_cb5_native_r6_counter_refresh
+    evidence: docs/stage167_cb5_native_r6_counter_refresh.md; experiments/stage167_cb5_native_r6_counter_refresh_plan.md; theory_checks/stage167_native_counter_scope.md; repro/stage167_cb5_native_r6_counter_refresh/summary.csv
+    current_decision: >
+      PASS_STAGE167_CB5_NATIVE_R6_COUNTERS_RECORDED
+    failure_criteria:
+      - remote sync/build/perf fails
+      - target_full correctness fails
+      - counters are reported as theoretical optimality without lower-bound analysis

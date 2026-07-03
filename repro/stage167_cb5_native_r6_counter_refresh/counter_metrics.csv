@@ -1,0 +1,14 @@
+metric,value,unit,evidence,detail
+cycles,974318109068,count,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,"974,318,109,068      cycles                                                                  (40.00%)"
+instructions,1626553402233,count,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,"1,626,553,402,233      instructions                     #    1.67  insn per cycle              (50.00%)"
+cache-references,38765086697,count,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,"38,765,086,697      cache-references                                                        (50.00%)"
+cache-misses,14260548615,count,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,"14,260,548,615      cache-misses                     #   36.79% of all cache refs           (50.00%)"
+branches,107490487108,count,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,"107,490,487,108      branches                                                                (50.00%)"
+branch-misses,517610979,count,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,"517,610,979      branch-misses                    #    0.48% of all branches             (50.00%)"
+mem_inst_retired.all_loads,367894314605,count,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,"367,894,314,605      mem_inst_retired.all_loads                                              (40.00%)"
+mem_inst_retired.all_stores,207104567619,count,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,"207,104,567,619      mem_inst_retired.all_stores                                             (40.00%)"
+fp_arith_inst_retired.512b_packed_double,360989564734,count,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,"360,989,564,734      fp_arith_inst_retired.512b_packed_double                                        (40.00%)"
+fp_arith_inst_retired.256b_packed_double,67925434553,count,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,"67,925,434,553      fp_arith_inst_retired.256b_packed_double                                        (40.00%)"
+elapsed_seconds,277.807063052,seconds,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,277.807063052 seconds time elapsed
+user_seconds,275.951638000,seconds,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,275.951638000 seconds user
+sys_seconds,1.798199000,seconds,repro/stage167_cb5_native_r6_counter_refresh/run_perf.log,1.798199000 seconds sys

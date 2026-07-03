@@ -2271,3 +2271,9 @@ Repro artifacts:
   - `theory_checks/stage166_shared_output_compact_algebra_model.md`
   - `algorithm_variants/mat_rlwe_sab_shared_output_compact_algebra.md`
   - `repro/stage166_shared_output_compact_algebra_gate/`
+- stage167_cb5_native_r6_counter_refresh: `PASS_STAGE167_CB5_NATIVE_R6_COUNTERS_RECORDED`
+  - `docs/stage167_cb5_native_r6_counter_refresh.md`
+  - `experiments/stage167_cb5_native_r6_counter_refresh_plan.md`
+  - `theory_checks/stage167_native_counter_scope.md`
+  - `algorithm_variants/mat_rlwe_sab_native_counter_current_r6.md`
+  - `repro/stage167_cb5_native_r6_counter_refresh/`

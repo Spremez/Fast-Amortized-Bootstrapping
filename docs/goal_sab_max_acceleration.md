@@ -865,3 +865,6 @@ Stage166 blocks generic compact exactness after Stage165. Decision:
 `PASS_STAGE166_GENERIC_COMPACT_EXACTNESS_BLOCKED_KEYGEN_PROOF_REQUIRED`. It preserves compact SAB only as a structured-keygen research
 route and directs immediate engineering evidence toward native counters for
 the current exact tiled-AVX path.
+Stage167 refreshes CB5 native r=6 counters after Stage166. Decision:
+`PASS_STAGE167_CB5_NATIVE_R6_COUNTERS_RECORDED`. This provides native implementation attribution for the current
+exact path, not a new algorithmic speedup claim.

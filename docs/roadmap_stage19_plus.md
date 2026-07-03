@@ -5479,3 +5479,18 @@ Completed. Stage166 records PASS_STAGE166_GENERIC_COMPACT_EXACTNESS_BLOCKED_KEYG
 by missing body-to-body cross terms; compact SAB remains proof-driven, not an
 implementation-ready optimization.
 ```
+## Stage 167: CB5 Native r=6 Counter Refresh
+
+Goal:
+
+```text
+Refresh native Linux perf-counter attribution for the current exact r=6
+post-fusion PVW/MAT-SAB path.
+```
+
+Status:
+
+```text
+Completed. Stage167 records PASS_STAGE167_CB5_NATIVE_R6_COUNTERS_RECORDED. Counter evidence is attribution-only
+and remains separate from theoretical optimality claims.
+```

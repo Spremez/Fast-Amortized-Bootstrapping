@@ -1,0 +1,2 @@
+key,value,evidence,detail
+perf_event_paranoid_after,4,repro/stage167_cb5_native_r6_counter_refresh/post_restore_verification.log,Remote value after manual post-run restore verification.
