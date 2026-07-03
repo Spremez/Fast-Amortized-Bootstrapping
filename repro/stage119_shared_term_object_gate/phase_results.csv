@@ -1,0 +1,13 @@
+r,N,variant,mismatches_noiseless,negative_control_failures,max_abs_error_noiseless,max_abs_noise,noise_bound,noise_bound_violations,status
+2,64,scalar_shared,59,59,144,0,0,0,PASS_REJECTED_SCALAR_SHARED
+2,64,vector_shared,0,0,0,17,18,0,PASS_VECTOR_OBJECT
+2,256,scalar_shared,240,240,144,0,0,0,PASS_REJECTED_SCALAR_SHARED
+2,256,vector_shared,0,0,0,18,18,0,PASS_VECTOR_OBJECT
+4,64,scalar_shared,178,178,144,0,0,0,PASS_REJECTED_SCALAR_SHARED
+4,64,vector_shared,0,0,0,17,18,0,PASS_VECTOR_OBJECT
+4,256,scalar_shared,727,727,144,0,0,0,PASS_REJECTED_SCALAR_SHARED
+4,256,vector_shared,0,0,0,18,18,0,PASS_VECTOR_OBJECT
+6,64,scalar_shared,301,301,153,0,0,0,PASS_REJECTED_SCALAR_SHARED
+6,64,vector_shared,0,0,0,17,18,0,PASS_VECTOR_OBJECT
+6,256,scalar_shared,1205,1205,153,0,0,0,PASS_REJECTED_SCALAR_SHARED
+6,256,vector_shared,0,0,0,18,18,0,PASS_VECTOR_OBJECT

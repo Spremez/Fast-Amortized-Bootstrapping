@@ -1306,3 +1306,29 @@ hypotheses:
       - measured allocation or RSS contradicts the type-shape byte model
       - noise simulation exceeds baseline without a parameter explanation
       - Stage118 is used as proof of complete-SAB acceleration
+  - id: H43_vector_shared_lane_local_object
+    statement: >
+      Independent LUT/SAB lanes require vector-shared lane-local shared-row
+      storage; scalar-shared storage is invalid even though it looked
+      attractive in the earlier skeleton model.
+    mechanism: >
+      Stage119 generates a C object-semantics probe with two branches. The
+      scalar-shared branch stores one shared-row message for all lanes and is
+      required to fail as a negative control. The vector-shared branch stores
+      lane-indexed shared-row and body-row encryptions, then checks noiseless
+      phase equality and a bounded toy-noise model.
+    status: stage119_vector_shared_object_ready_real_struct_prototype_required
+    evidence: docs/stage119_shared_term_object_gate.md; experiments/stage119_shared_term_object_gate_plan.md; theory_checks/stage119_shared_term_semantics.md; algorithm_variants/mat_rlwe_sab_vector_shared_lane_local_object.md; scripts/build_stage119_shared_term_object_gate.py; repro/stage119_shared_term_object_gate/summary.csv; repro/stage119_shared_term_object_gate/phase_results.csv; repro/stage119_shared_term_object_gate/object_layout.csv; repro/stage119_shared_term_object_gate/compile.log; repro/stage119_shared_term_object_gate/artifact_index.csv
+    current_decision: >
+      Stage119 records PASS_STAGE119_VECTOR_SHARED_OBJECT_READY_REAL_STRUCT_PROTOTYPE_REQUIRED.
+      Scalar-shared negative-control failures are
+      59/240/178/727/301/1205 across r=2/4/6 and N=64/256. Vector-shared
+      mismatches are zero across the same rows, and toy-noise bound violations
+      are zero. The valid object route uses `2r` phase terms and `4r` selector
+      polynomials for k=1; for r=4, vector/dense byte ratio is 0.800000 and
+      vector product ratio is 3.125000.
+    failure_criteria:
+      - real C struct implementation cannot preserve vector-shared semantics
+      - real polynomial phase/noise tests contradict the toy object gate
+      - any future stage reuses scalar-shared `1+2r` as the implementation
+        route for independent LUT lanes

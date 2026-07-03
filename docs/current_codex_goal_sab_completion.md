@@ -62,7 +62,9 @@ skeleton, not SAB integration. Stage117 validates that skeleton as a finite C
 term map for r=2/4/6/8 and routes next to real MOSFHET-adjacent type/noise/key
 design, still outside the SAB hot path. Stage118 executes that type/noise/key
 design gate and routes next to a real-object allocation/phase/noise prototype;
-noise remains recorded but unproven.
+noise remains recorded but unproven. Stage119 then checks the shared-term
+semantics and rejects scalar-shared storage for independent LUT lanes; the
+active object route is now vector-shared lane-local storage.
 
 ## Execution Route
 
@@ -128,7 +130,11 @@ noise remains recorded but unproven.
     r=4,N=2048 has combined accumulator+selector DFT byte ratio 0.866667 and
     key-secret ratio 1.000000, but noise is only recorded-not-proven; next is a
     real-object allocation/phase/noise prototype outside SAB.
-22. Preserve the current final-audit status:
+22. Treat Stage119 as the current shared-term semantics correction:
+    scalar-shared is rejected by negative control; vector-shared has zero phase
+    mismatches and zero toy-noise bound violations for r=2/4/6, so Stage120
+    must build vector-shared real C structs outside `sab_pvw_*`.
+23. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

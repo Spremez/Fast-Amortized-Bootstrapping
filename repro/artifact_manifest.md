@@ -1752,3 +1752,17 @@ Repro artifacts:
 - `repro/stage118_real_type_design_gate/compile.log`
 - `repro/stage118_real_type_design_gate/real_type_design_gate.c`
 - `repro/stage118_real_type_design_gate/artifact_index.csv`
+
+## Stage 119 Shared-Term Object Gate
+
+- `docs/stage119_shared_term_object_gate.md`
+- `experiments/stage119_shared_term_object_gate_plan.md`
+- `theory_checks/stage119_shared_term_semantics.md`
+- `algorithm_variants/mat_rlwe_sab_vector_shared_lane_local_object.md`
+- `scripts/build_stage119_shared_term_object_gate.py`
+- `repro/stage119_shared_term_object_gate/summary.csv`
+- `repro/stage119_shared_term_object_gate/phase_results.csv`
+- `repro/stage119_shared_term_object_gate/object_layout.csv`
+- `repro/stage119_shared_term_object_gate/compile.log`
+- `repro/stage119_shared_term_object_gate/shared_term_object_gate.c`
+- `repro/stage119_shared_term_object_gate/artifact_index.csv`

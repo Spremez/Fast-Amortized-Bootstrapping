@@ -1,0 +1,7 @@
+r,N,dense_terms,scalar_shared_terms,vector_shared_terms,dense_selector_polys,stage118_selector_polys,vector_selector_polys,dense_total_polys,stage118_total_polys,vector_total_polys,vector_over_dense_byte_ratio,vector_product_ratio,status
+2,64,9,5,4,9,10,8,12,14,12,1.000000,2.250000,PASS_LAYOUT_REFINED
+2,256,9,5,4,9,10,8,12,14,12,1.000000,2.250000,PASS_LAYOUT_REFINED
+4,64,25,9,8,25,18,16,30,26,24,0.800000,3.125000,PASS_LAYOUT_REFINED
+4,256,25,9,8,25,18,16,30,26,24,0.800000,3.125000,PASS_LAYOUT_REFINED
+6,64,49,13,12,49,26,24,56,38,36,0.642857,4.083333,PASS_LAYOUT_REFINED
+6,256,49,13,12,49,26,24,56,38,36,0.642857,4.083333,PASS_LAYOUT_REFINED

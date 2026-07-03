@@ -4146,3 +4146,51 @@ key-secret ratio is 1.000000. Noise rows are recorded as
 NOISE_MODEL_RECORDED_NOT_PROVEN, so Stage119 must build a real-object
 allocation/phase/noise prototype before any SAB integration.
 ```
+
+## Stage 119: Shared-Term Object Semantics Gate
+
+Goal:
+
+```text
+Check whether the Stage117/118 shared term can represent independent LUT
+lanes, and refine the object route before real structs are written.
+```
+
+Theory basis:
+
+Independent LUT/SAB lanes may have lane-dependent shared-row messages. A
+single scalar shared term cannot represent those messages for all lanes. The
+correct real-object route must therefore be tested against a scalar-shared
+negative control and a vector-shared lane-local object candidate.
+
+Tasks:
+
+- generate and compile a C object-semantics probe;
+- test scalar-shared negative control and vector-shared candidate for
+  r=2/4/6 and N=64/256;
+- require scalar-shared failures for independent lanes;
+- require vector-shared noiseless phase equivalence;
+- check toy noise against a digit-sum bound;
+- record refined layout terms and byte ratios.
+
+Gate:
+
+- scalar-shared must fail as a negative control;
+- vector-shared must have zero phase mismatches;
+- toy noise must stay within the configured bound;
+- vector-shared layout must not exceed the Stage118 conservative model;
+- passing only opens real C struct prototype work outside `sab_pvw_*`.
+
+Status:
+
+```text
+Completed. Stage119 records
+PASS_STAGE119_VECTOR_SHARED_OBJECT_READY_REAL_STRUCT_PROTOTYPE_REQUIRED.
+Scalar-shared is rejected: negative-control failures are
+59/240/178/727/301/1205 across r=2/4/6 and N=64/256. Vector-shared has zero
+phase mismatches and zero toy-noise bound violations on the same rows. The
+valid object route is refined to vector-shared lane-local storage with `2r`
+phase terms and `4r` selector polynomials for k=1. For r=4, vector/dense byte
+ratio is 0.800000 and vector product ratio is 3.125000. Stage120 should build
+real C structs and allocation/phase tests outside the SAB hot path.
+```

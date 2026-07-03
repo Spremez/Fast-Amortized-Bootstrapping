@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-118`. This label tracks the
+Current control-plane closure label: `Stage 19-119`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -467,6 +467,7 @@ Stage 115: lane-local toy C representation gate. [completed; generated C layout 
 Stage 116: toy arithmetic equivalence gate. [completed; dense-vs-lane mismatches zero for r=2/4/6, current-format drop-offlane negative control fails, selector/key skeleton required]
 Stage 117: selector skeleton invariant gate. [completed; `1+2r` term-map skeleton passes for r=2/4/6/8 with zero off-lane and missing terms, real type/noise/key design required]
 Stage 118: real-type design gate. [completed; lane-local type shape passes for r=2/4/6/8 and N=2048/4096, r=4/N=2048 DFT byte ratio 0.866667, noise remains recorded-not-proven]
+Stage 119: shared-term object semantics gate. [completed; scalar-shared rejected, vector-shared selected with zero phase mismatches and r=4 vector/dense byte ratio 0.800000]
 ```
 
 ## Current Closure Label
@@ -577,3 +578,10 @@ the current dense design, while the key-secret polynomial ratio remains
 1.000000. The noise/key model is explicitly `RECORDED_NOT_PROVEN`, so the next
 valid work is a real-object allocation/phase/noise prototype, not SAB
 integration.
+
+Stage119 refines the object semantics before writing real structs. It rejects
+the scalar-shared interpretation because a single shared term cannot encode
+independent lane shared-row messages. The vector-shared lane-local object has
+zero phase mismatches and zero toy-noise bound violations for r=2/4/6 and
+N=64/256. The valid route now uses `2r` phase terms and `4r` selector
+polynomials for k=1; for r=4, the vector/dense byte ratio is 0.800000.
