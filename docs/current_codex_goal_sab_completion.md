@@ -323,3 +323,8 @@ The new research goal is complete only after a later stage records:
     fix: `SMOKE_STAGE143_FULL_SAB_R4_UNROLLED_POSITIVE_REPEATED_REQUIRED`. Primary metric is `T_bootstrap/r`. r4-unrolled active
     PVW lane time is 7125020.500 us versus generic active
     7586131.750 us; repeated Stage144 is still required.
+48. Treat Stage144 as the repeated complete-SAB gate for the r=4 r4-unrolled
+    candidate: `WEAK_STAGE144_R4_UNROLLED_POSITIVE_STATS_REVIEW_REQUIRED`. Primary endpoint `T_bootstrap/r` gives mean paired
+    r4/generic speedup 1.000249 with CI95
+    [0.835834, 1.164664].
+    Noise/resource are recorded in the Stage144 repro pack.

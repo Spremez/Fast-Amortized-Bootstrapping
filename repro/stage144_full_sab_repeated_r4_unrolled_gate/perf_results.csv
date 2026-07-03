@@ -1,0 +1,7 @@
+variant,run,status,r,h,r_prec,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,source_log
+generic_active,0,PASS,4,39,7,29696462.000,7424115.500,38774277.000,9693569.250,1.306,repro/stage144_full_sab_repeated_r4_unrolled_gate/perf_generic_active_run_0.log
+generic_active,1,PASS,4,39,7,29953340.000,7488335.000,38994864.000,9748716.000,1.302,repro/stage144_full_sab_repeated_r4_unrolled_gate/perf_generic_active_run_1.log
+generic_active,2,PASS,4,39,7,29626319.000,7406579.750,38623268.000,9655817.000,1.304,repro/stage144_full_sab_repeated_r4_unrolled_gate/perf_generic_active_run_2.log
+r4_unrolled_active,0,PASS,4,39,7,28758190.000,7189547.500,38372985.000,9593246.250,1.334,repro/stage144_full_sab_repeated_r4_unrolled_gate/perf_r4_unrolled_active_run_0.log
+r4_unrolled_active,1,PASS,4,39,7,32413070.000,8103267.500,39252836.000,9813209.000,1.211,repro/stage144_full_sab_repeated_r4_unrolled_gate/perf_r4_unrolled_active_run_1.log
+r4_unrolled_active,2,PASS,4,39,7,28377513.000,7094378.250,39502701.000,9875675.250,1.392,repro/stage144_full_sab_repeated_r4_unrolled_gate/perf_r4_unrolled_active_run_2.log

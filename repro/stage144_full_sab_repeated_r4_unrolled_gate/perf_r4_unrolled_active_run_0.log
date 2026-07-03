@@ -1,0 +1,11 @@
+command: ./main
+returncode: 0
+--- stdout ---
+SAB_PVW_BENCH correctness target_full r=4 h=39 r_prec=7: Pass
+SAB_PVW_BENCH sample target_full r=4 rep=0 pvw_us=28758190 scalar_repeated_us=38372985 speedup=1.334x
+SAB_PVW_BENCH summary target_full r=4 reps=1 pvw_avg_us=28758190.000 pvw_stddev_us=0.000 pvw_lane_avg_us=7189547.500 scalar_repeated_avg_us=38372985.000 scalar_stddev_us=0.000 scalar_lane_avg_us=9593246.250 speedup_vs_scalar_repeated=1.334x speedup_stddev=0.000
+--- stderr ---
+wsl: �hKm0R localhost �NtM�n
+�FO*g\��P0R WSL0NAT !j_
+N�v WSL
+N/ec localhost �Nt0

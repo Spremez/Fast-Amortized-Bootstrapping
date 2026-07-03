@@ -1952,3 +1952,23 @@ hypotheses:
       - complete SAB correctness fails
       - repeated Stage144 does not preserve the per-lane speedup
       - one-run smoke is claimed as final throughput evidence
+  - id: H68_r4_unrolled_repeated_full_sab_gate
+    statement: >
+      The Stage142 r4-unrolled closed full-MAT AVX512 kernel should provide a
+      stable complete-SAB amortized speedup for r=4 over generic active PVW
+      when measured as T_bootstrap/r.
+    mechanism: >
+      The r4-unrolled kernel reduces the closed full-MAT external-product cost
+      without changing the PVW_TMLWE state invariant; Stage144 tests whether
+      this kernel-level gain survives full SAB schedule overhead.
+    status: stage144_full_sab_repeated_r4_unrolled_gate
+    evidence: docs/stage144_full_sab_repeated_r4_unrolled_gate.md; experiments/stage144_full_sab_repeated_r4_unrolled_gate_plan.md; theory_checks/stage144_repeated_full_sab_stat_model.md; algorithm_variants/mat_rlwe_sab_r4_unrolled_repeated_gate.md; scripts/build_stage144_full_sab_repeated_r4_unrolled_gate.py; repro/stage144_full_sab_repeated_r4_unrolled_gate/summary.csv; repro/stage144_full_sab_repeated_r4_unrolled_gate/perf_comparison.csv; repro/stage144_full_sab_repeated_r4_unrolled_gate/noise_aggregate.csv; repro/stage144_full_sab_repeated_r4_unrolled_gate/resource_comparison.csv; repro/stage144_full_sab_repeated_r4_unrolled_gate/artifact_index.csv
+    current_decision: >
+      Stage144 records WEAK_STAGE144_R4_UNROLLED_POSITIVE_STATS_REVIEW_REQUIRED. Mean paired r4/generic complete-SAB
+      per-lane speedup is 1.000249 with CI95
+      [0.835834, 1.164664].
+    failure_criteria:
+      - complete SAB correctness fails in any run
+      - paired speedup is not stable
+      - final-output noise has nonzero failures
+      - resource overhead is not reported with speed

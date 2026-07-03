@@ -228,7 +228,7 @@
 - [x] Run Stage107 MAT kernel structure audit; current MAT AVX512 kernels are specialized/tiled but still dense `(r+1)^2` row-output paths, so Stage108 starts with V106-D layout/locality and keeps V106-B body-linear external product behind invariant proof.
 - [x] Run Stage142 AVX512 FMA-order fix gate; Stage141 small-r/r4-unrolled exact-equivalence failures are repaired and r4-unrolled closed full-MAT kernel is promoted only to full-SAB rerun.
 - [x] Run Stage143 complete-SAB r=4 r4-unrolled smoke with primary endpoint `T_bootstrap/r`; one-run correctness passes and the signal is positive, but final throughput evidence remains pending repeated Stage144.
-- [ ] Run Stage144 repeated complete-SAB A/B for r=4 generic-active versus r4-unrolled-active with confidence intervals, noise/resource checks, and final promote/neutral/reject decision.
+- [x] Run Stage144 repeated complete-SAB A/B for r=4 generic-active versus r4-unrolled-active with confidence intervals, noise/resource checks, and decision `WEAK_STAGE144_R4_UNROLLED_POSITIVE_STATS_REVIEW_REQUIRED`.
 - [ ] Run Stage85 repeated complete-SAB/noise/resource promotion gates only if a future preflight is full-SAB positive.
 - [x] Review full related-work papers before promoting any novelty claim; resolved by Stage103 as scoped novelty wording, with broad claims still blocked.
 - [x] Fill Stage38 source-anchor review checklist before theorem-level 2025/686 manuscript citations; resolved by Stage102 for scoped citations.

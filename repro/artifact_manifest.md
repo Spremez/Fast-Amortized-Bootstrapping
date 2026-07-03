@@ -2147,3 +2147,19 @@ Repro artifacts:
 - `repro/stage143_full_sab_r4_unrolled_smoke/comparison.csv`
 - `repro/stage143_full_sab_r4_unrolled_smoke/*_run_*.log`
 - `repro/stage143_full_sab_r4_unrolled_smoke/artifact_index.csv`
+## Stage 144 Full SAB Repeated r4-Unrolled Gate
+
+- `docs/stage144_full_sab_repeated_r4_unrolled_gate.md`
+- `experiments/stage144_full_sab_repeated_r4_unrolled_gate_plan.md`
+- `theory_checks/stage144_repeated_full_sab_stat_model.md`
+- `algorithm_variants/mat_rlwe_sab_r4_unrolled_repeated_gate.md`
+- `scripts/build_stage144_full_sab_repeated_r4_unrolled_gate.py`
+- `repro/stage144_full_sab_repeated_r4_unrolled_gate/summary.csv`
+- `repro/stage144_full_sab_repeated_r4_unrolled_gate/perf_results.csv`
+- `repro/stage144_full_sab_repeated_r4_unrolled_gate/perf_comparison.csv`
+- `repro/stage144_full_sab_repeated_r4_unrolled_gate/noise_results.csv`
+- `repro/stage144_full_sab_repeated_r4_unrolled_gate/noise_aggregate.csv`
+- `repro/stage144_full_sab_repeated_r4_unrolled_gate/resource_results.csv`
+- `repro/stage144_full_sab_repeated_r4_unrolled_gate/resource_comparison.csv`
+- `repro/stage144_full_sab_repeated_r4_unrolled_gate/*.log`
+- `repro/stage144_full_sab_repeated_r4_unrolled_gate/artifact_index.csv`

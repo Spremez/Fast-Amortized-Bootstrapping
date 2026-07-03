@@ -1,0 +1,2 @@
+metric,runs,generic_mean_pvw_lane_us,r4_mean_pvw_lane_us,r4_vs_generic_mean_speedup,r4_vs_generic_min_speedup,r4_vs_generic_ci95_low,r4_vs_generic_ci95_high,generic_mean_speedup_vs_scalar,r4_mean_speedup_vs_scalar,r4_incremental_speedup_vs_generic_scalar_speedup,decision
+T_bootstrap_per_lane,3,7439676.750,7462397.750,1.000249,0.924113,0.835834,1.164664,1.304000,1.312333,1.006391,WEAK_STAGE144_PERF_POSITIVE_BUT_CI_CROSSES_ONE

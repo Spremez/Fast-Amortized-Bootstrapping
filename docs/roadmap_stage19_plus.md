@@ -5112,3 +5112,23 @@ has per-lane PVW time 7125020.500 us versus generic active
 r4-unrolled smoke speedup is 1.355000x. Repeated
 Stage144 is required before a final bootstrapping claim.
 ```
+## Stage 144: Full SAB Repeated r4-Unrolled Gate
+
+Goal:
+
+```text
+Promote Stage143 from one-run smoke to repeated complete-SAB A/B with
+correctness, final-output noise, and resource evidence for the explicit
+r4-unrolled AVX512 candidate.
+```
+
+Status:
+
+```text
+Completed. Stage144 records WEAK_STAGE144_R4_UNROLLED_POSITIVE_STATS_REVIEW_REQUIRED. The primary endpoint is
+T_bootstrap/r. r4-unrolled versus generic active PVW has mean paired speedup
+1.000249, min 0.924113,
+and CI95 [0.835834, 1.164664].
+Noise status is PASS across 3 seeds. Resource
+key/RSS ratios are 1.065349 and 0.997049.
+```
