@@ -309,3 +309,9 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE140_CLOSED_FULLMAT_DFT_COUNT_LOWER_BOUND_READY_STAGE141`. Production closed full-MAT uses `(r+1)T` input DFT conversions,
     which is the Torus-input lower bound for a one-mask/r-body state. Stage141
     must target either lazy state or addmul/AVX, then validate at CMUX/SAB level.
+
+45. Treat Stage141 as the AVX512 closed full-MAT target gate:
+    `FAIL_STAGE141_AVX512_CLOSED_FULLMAT_GATE`. r4-unrolled versus generic speedup is 1.093355-1.373156
+    for r=4,T=1,N=1024/2048, but specialized-kernel correctness is blocked.
+    No full SAB rerun may use these flags until Stage142 fixes or rejects the
+    AVX512 small-r/r4-unrolled correctness issue.

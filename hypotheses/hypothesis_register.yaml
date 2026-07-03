@@ -1893,3 +1893,21 @@ hypotheses:
       - split full-MAT output differs from production output
       - fewer than `(r+1)T` input DFTs are claimed without lazy state
       - microbench attribution is claimed as full SAB bootstrapping speedup
+  - id: H65_avx512_closed_fullmat_target
+    statement: >
+      Under a fixed `spqlios_avx512` backend, existing r=4 MAT small-r/unrolled
+      specialization should improve the valid closed full-MAT target kernel
+      over generic AVX512.
+    mechanism: >
+      Stage140 shows target r=4,T=1 has mixed DFT and addmul cost; AVX512
+      specialization reduces matrix addmul overhead without changing the
+      closed PVW_TMLWE state invariant.
+    status: stage141_avx512_closed_fullmat_gate
+    evidence: docs/stage141_avx512_closed_fullmat_gate.md; experiments/stage141_avx512_closed_fullmat_gate_plan.md; theory_checks/stage141_avx512_closed_fullmat_model.md; algorithm_variants/mat_rlwe_sab_avx512_closed_fullmat.md; scripts/build_stage141_avx512_closed_fullmat_gate.py; repro/stage141_avx512_closed_fullmat_gate/summary.csv; repro/stage141_avx512_closed_fullmat_gate/correctness.csv; repro/stage141_avx512_closed_fullmat_gate/comparison.csv; repro/stage141_avx512_closed_fullmat_gate/artifact_index.csv
+    current_decision: >
+      Stage141 records FAIL_STAGE141_AVX512_CLOSED_FULLMAT_GATE. Minimum r4-unrolled versus generic speedup is
+      1.093355. Specialized AVX512 correctness is blocked; speed rows are not promotable.
+    failure_criteria:
+      - AVX512 variants use different FFT backends
+      - correctness differs across specialized builds
+      - kernel speedup is claimed as full SAB speedup

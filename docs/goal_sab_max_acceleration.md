@@ -766,3 +766,8 @@ Stage140 establishes the valid post-Stage139 route: production closed full-MAT
 already reaches the Torus-input DFT count lower bound `(r+1)T`, so the remaining
 algorithmic choices are lazy/decomposed state representation or dense addmul
 layout/AVX specialization. This keeps the comparison aligned with `T_bootstrap/r`.
+
+Stage141 separates backend/SIMD gain from algorithmic gain by holding
+`spqlios_avx512` fixed and changing only MAT full-MAT specialization flags. It
+tests the valid closed r-body target shape after Stage139/140 corrected the
+diagonal compact route.

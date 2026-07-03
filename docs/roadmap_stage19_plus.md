@@ -5056,3 +5056,22 @@ at `(r+1)T`; for target-shape r=4,T=1 the minimum addmul fraction is
 0.546981 and minimum decomp/DFT fraction is 0.445453. Stage141
 must optimize the dominant closed component, not the invalid diagonal output.
 ```
+
+## Stage 141: AVX512 Closed Full-MAT Target Gate
+
+Goal:
+
+```text
+Compare generic, small-r, and r4-unrolled AVX512 closed full-MAT kernels under
+the same `spqlios_avx512` backend for target shape r=4,T=1.
+```
+
+Status:
+
+```text
+Completed. Stage141 records FAIL_STAGE141_AVX512_CLOSED_FULLMAT_GATE. r4-unrolled versus generic speedup is
+1.093355-1.373156 across N=1024/2048, but the specialized kernels fail
+Torus-level equivalence for r=4. This is a correctness blocker; Stage142 must
+debug or reject the AVX512 small-r/r4-unrolled kernels before any complete SAB
+A/B run can use these flags.
+```

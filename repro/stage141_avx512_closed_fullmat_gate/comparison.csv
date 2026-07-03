@@ -1,0 +1,3 @@
+r,N,T,Bg_bit,variant,generic_us,smallr_us,r4_unrolled_us,smallr_vs_generic,r4_unrolled_vs_generic,r4_unrolled_vs_smallr,decision
+4,1024,1,23,current_full_mat,12.571560,8.031480,9.155230,1.565286,1.373156,0.877256,CORRECTNESS_BLOCKED_SPEED_ONLY
+4,2048,1,23,current_full_mat,24.798600,22.025830,22.681200,1.125887,1.093355,0.971105,CORRECTNESS_BLOCKED_SPEED_ONLY

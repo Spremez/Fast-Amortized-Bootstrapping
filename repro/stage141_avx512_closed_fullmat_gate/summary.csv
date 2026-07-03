@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,detail,next_action
+stage141_avx512_support,PASS,lscpu_avx512f,true,lscpu,Host exposes AVX512F to WSL.,Use native AVX512 host if false.
+stage141_builds,PASS,configs_built,3,repro/stage141_avx512_closed_fullmat_gate/build_*.log,"generic, small-r, and r4-unrolled AVX512 static builds.",
+stage141_compiles,PASS,configs_compiled,3,repro/stage141_avx512_closed_fullmat_gate/compile_*.log,Same target probe compiled for every config.,
+stage141_runs,PASS,configs_run,3,repro/stage141_avx512_closed_fullmat_gate/run_*.log,Same target probe executed for every config.,
+stage141_correctness,FAIL,correctness_rows,18,repro/stage141_avx512_closed_fullmat_gate/correctness.csv,Checks closed split equivalence for every AVX512 config.,Do not promote speed rows if this fails.
+stage141_comparison,PASS,bench_rows;compare_rows,270;2,repro/stage141_avx512_closed_fullmat_gate/benchmark_samples.csv; repro/stage141_avx512_closed_fullmat_gate/comparison.csv,"r=4,T=1,N=1024/2048 same-backend comparison.",
+stage141_decision,FAIL_STAGE141_AVX512_CLOSED_FULLMAT_GATE,promotion_policy,,repro/stage141_avx512_closed_fullmat_gate/summary.csv; repro/stage141_avx512_closed_fullmat_gate/comparison.csv,Stage141 decides whether existing AVX512 closed full-MAT specialization should be promoted to SAB rerun.,"If correctness fails, debug specialized kernel before any full SAB rerun."

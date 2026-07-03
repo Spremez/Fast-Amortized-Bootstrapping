@@ -2100,3 +2100,21 @@ Repro artifacts:
 - `repro/stage140_closed_fullmat_attribution_gate/run_probe.log`
 - `repro/stage140_closed_fullmat_attribution_gate/closed_fullmat_attribution_gate.c`
 - `repro/stage140_closed_fullmat_attribution_gate/artifact_index.csv`
+
+## Stage 141 AVX512 Closed Full-MAT Gate
+
+- `docs/stage141_avx512_closed_fullmat_gate.md`
+- `experiments/stage141_avx512_closed_fullmat_gate_plan.md`
+- `theory_checks/stage141_avx512_closed_fullmat_model.md`
+- `algorithm_variants/mat_rlwe_sab_avx512_closed_fullmat.md`
+- `scripts/build_stage141_avx512_closed_fullmat_gate.py`
+- `repro/stage141_avx512_closed_fullmat_gate/summary.csv`
+- `repro/stage141_avx512_closed_fullmat_gate/correctness.csv`
+- `repro/stage141_avx512_closed_fullmat_gate/benchmark_samples.csv`
+- `repro/stage141_avx512_closed_fullmat_gate/benchmark_aggregate.csv`
+- `repro/stage141_avx512_closed_fullmat_gate/comparison.csv`
+- `repro/stage141_avx512_closed_fullmat_gate/avx512_closed_fullmat_gate.c`
+- `repro/stage141_avx512_closed_fullmat_gate/build_*.log`
+- `repro/stage141_avx512_closed_fullmat_gate/compile_*.log`
+- `repro/stage141_avx512_closed_fullmat_gate/run_*.log`
+- `repro/stage141_avx512_closed_fullmat_gate/artifact_index.csv`
