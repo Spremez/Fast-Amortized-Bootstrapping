@@ -1,0 +1,5 @@
+r,dense_terms,skeleton_terms,selector_polys,accumulator_polys,product_ratio,shared_terms,lane_mask_terms,lane_body_terms,offlane_body_terms,missing_lane_terms,status
+2,9,5,10,4,1.800000,1,2,2,0,0,PASS_SKELETON
+4,25,9,18,8,2.777778,1,4,4,0,0,PASS_SKELETON
+6,49,13,26,12,3.769231,1,6,6,0,0,PASS_SKELETON
+8,81,17,34,16,4.764706,1,8,8,0,0,PASS_SKELETON

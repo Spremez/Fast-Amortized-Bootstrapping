@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,detail,next_action
+stage117_compile,PASS,gcc_compile,true,repro/stage117_selector_skeleton_gate/compile.log,Generated selector skeleton C probe compiled under WSL gcc.,Use only as skeleton invariant evidence.
+stage117_mapping_invariants,PASS,rows,4,repro/stage117_selector_skeleton_gate/selector_skeleton.csv,Every r row has one shared term and exactly one mask/body pair per lane.,"If this fails, revise the selector skeleton before code."
+stage117_no_offlane,PASS,offlane_body_terms,0;0;0;0,repro/stage117_selector_skeleton_gate/selector_skeleton.csv,Skeleton has no off-lane body terms.,Preserve this invariant in any real type.
+stage117_product_model,PASS,min_dense_over_skeleton_terms,1.800000,repro/stage117_selector_skeleton_gate/selector_skeleton.csv,Skeleton term counts match the Stage114-116 product model.,Real type design must preserve the same term accounting.
+stage117_decision,PASS_STAGE117_SELECTOR_SKELETON_READY_REAL_TYPE_DESIGN_REQUIRED,next_gate_policy,,repro/stage117_selector_skeleton_gate/summary.csv,Selector skeleton is ready only for real-type design outside the SAB hot path.,Stage118 should design real MOSFHET-adjacent structs and noise/key gates.

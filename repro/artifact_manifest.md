@@ -1725,3 +1725,16 @@ Repro artifacts:
 - `repro/stage116_toy_arithmetic_equivalence/compile.log`
 - `repro/stage116_toy_arithmetic_equivalence/toy_arithmetic_equivalence.c`
 - `repro/stage116_toy_arithmetic_equivalence/artifact_index.csv`
+
+## Stage 117 Selector Skeleton Gate
+
+- `docs/stage117_selector_skeleton_gate.md`
+- `experiments/stage117_selector_skeleton_gate_plan.md`
+- `theory_checks/stage117_selector_skeleton_invariants.md`
+- `algorithm_variants/mat_rlwe_sab_lane_local_selector_skeleton.md`
+- `scripts/build_stage117_selector_skeleton_gate.py`
+- `repro/stage117_selector_skeleton_gate/summary.csv`
+- `repro/stage117_selector_skeleton_gate/selector_skeleton.csv`
+- `repro/stage117_selector_skeleton_gate/compile.log`
+- `repro/stage117_selector_skeleton_gate/selector_skeleton_gate.c`
+- `repro/stage117_selector_skeleton_gate/artifact_index.csv`

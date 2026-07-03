@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-116`. This label tracks the
+Current control-plane closure label: `Stage 19-117`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -465,6 +465,7 @@ Stage 113: r=2 selector simulator. [completed; lane-local multimask is phase-equ
 Stage 114: lane-local resource model. [completed; symbolic resource screen not fatal, min coarse product-over-accumulator ratio 1.350, toy representation required]
 Stage 115: lane-local toy C representation gate. [completed; generated C layout probe passed, r=4/N=2048 requested-byte ratio 1.100, next gate is toy arithmetic equivalence only]
 Stage 116: toy arithmetic equivalence gate. [completed; dense-vs-lane mismatches zero for r=2/4/6, current-format drop-offlane negative control fails, selector/key skeleton required]
+Stage 117: selector skeleton invariant gate. [completed; `1+2r` term-map skeleton passes for r=2/4/6/8 with zero off-lane and missing terms, real type/noise/key design required]
 ```
 
 ## Current Closure Label
@@ -562,3 +563,9 @@ r=2/4/6 and N=64/256 coefficients, while the current-format drop-offlane
 negative control fails in every row. This validates only the finite arithmetic
 invariant and opens a selector/key skeleton gate; it still does not prove
 encryption, noise, DFT layout, AVX512 performance, or complete-SAB speedup.
+
+Stage117 validates that selector/key skeleton as a finite C term map. For
+r=2/4/6/8, skeleton terms are 5/9/13/17, selector polynomials are
+10/18/26/34, accumulator polynomials are 4/8/12/16, and off-lane/missing terms
+are all zero. This opens only real MOSFHET-adjacent type, noise, and key-design
+gates outside the SAB hot path.

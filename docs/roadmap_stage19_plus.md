@@ -4053,3 +4053,48 @@ and 384/1529 for r=6. The minimum dense-over-lane product ratio is 1.800.
 This opens only a MOSFHET-adjacent selector/key skeleton gate; it still does
 not authorize hot-path integration or complete-SAB speedup claims.
 ```
+
+## Stage 117: Selector Skeleton Invariant Gate
+
+Goal:
+
+```text
+Validate a finite `1+2r` lane-local selector/key term-map skeleton before
+designing real MOSFHET-adjacent ciphertext/key structs.
+```
+
+Theory basis:
+
+Stage116 proves the toy arithmetic invariant, but an implementation needs a
+term map that is complete for every lane and contains no off-lane body terms.
+This skeleton is still outside MOSFHET encryption, DFT storage, key generation,
+noise analysis, and SAB integration.
+
+Tasks:
+
+- generate and compile a standalone C selector skeleton probe;
+- instantiate r=2/4/6/8 term maps;
+- check one shared term plus exactly one lane-local mask and body term per
+  lane;
+- check zero off-lane body terms and zero missing lane terms;
+- record dense terms, skeleton terms, selector polys, accumulator polys, and
+  product ratios.
+
+Gate:
+
+- every r row must pass skeleton invariants;
+- off-lane body terms must be zero;
+- missing lane terms must be zero;
+- product ratios must stay above 1.0;
+- passing only opens real-type design, not SAB hot-path integration.
+
+Status:
+
+```text
+Completed. Stage117 records
+PASS_STAGE117_SELECTOR_SKELETON_READY_REAL_TYPE_DESIGN_REQUIRED. The generated
+C skeleton probe compiled and passed for r=2/4/6/8. Skeleton terms are
+5/9/13/17, selector polys are 10/18/26/34, accumulator polys are 4/8/12/16,
+and off-lane/missing terms are all zero. The next valid stage is real
+MOSFHET-adjacent type/noise/key design outside the SAB hot path.
+```

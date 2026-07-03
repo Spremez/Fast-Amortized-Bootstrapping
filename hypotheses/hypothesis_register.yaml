@@ -1258,3 +1258,26 @@ hypotheses:
       - encryption or phase tests fail once real polynomial ciphertext objects
         replace the toy arithmetic arrays
       - toy arithmetic evidence is used as a performance claim
+  - id: H41_lane_local_selector_skeleton
+    statement: >
+      A finite `1+2r` lane-local selector/key term map can represent the
+      Stage116 arithmetic invariant with complete per-lane coverage and no
+      off-lane body terms.
+    mechanism: >
+      Stage117 generates a C skeleton with one shared term and, per lane, one
+      lane-local mask term and one lane-local body term. It checks r=2/4/6/8
+      term counts, selector polynomial counts, accumulator polynomial counts,
+      off-lane body terms, and missing lane terms.
+    status: stage117_selector_skeleton_ready_real_type_design_required
+    evidence: docs/stage117_selector_skeleton_gate.md; experiments/stage117_selector_skeleton_gate_plan.md; theory_checks/stage117_selector_skeleton_invariants.md; algorithm_variants/mat_rlwe_sab_lane_local_selector_skeleton.md; scripts/build_stage117_selector_skeleton_gate.py; repro/stage117_selector_skeleton_gate/summary.csv; repro/stage117_selector_skeleton_gate/selector_skeleton.csv; repro/stage117_selector_skeleton_gate/compile.log; repro/stage117_selector_skeleton_gate/artifact_index.csv
+    current_decision: >
+      Stage117 records PASS_STAGE117_SELECTOR_SKELETON_READY_REAL_TYPE_DESIGN_REQUIRED.
+      The generated skeleton passes for r=2/4/6/8. Skeleton terms are
+      5/9/13/17, selector polynomials are 10/18/26/34, accumulator
+      polynomials are 4/8/12/16, and off-lane/missing terms are all zero.
+      This opens only real MOSFHET-adjacent type/noise/key design outside the
+      SAB hot path.
+    failure_criteria:
+      - real type design cannot preserve the skeleton term map
+      - noise/key-size estimates erase the term-count advantage
+      - skeleton evidence is used as a complete-SAB or AVX512 claim
