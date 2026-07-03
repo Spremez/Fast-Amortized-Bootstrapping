@@ -1,0 +1,4 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,165,closed full-MAT decompose/DFT streaming microbench,Stage164 selects valid current-state executable route.,Compare current all-row dec_dft plus MAT-aware AVX addmul against row-streamed dec_dft/addmul without losing exact DFT output.,"If streaming loses to current tiled AVX, close this route and keep current full-MAT kernel."
+P1,166,shared-output compact algebra/keygen proof gate,Only if pursuing count/key-size reduction beyond full-MAT constant factors.,Prove a compact selector can produce one shared mask and r bodies with acceptable noise/security.,"If generic dense exactness or noise proof fails, do not integrate compact SAB."
+P2,167,native current r=6 counter refresh,Native Linux perf host available.,Measure current post-fusion r=6 retired loads/stores/FMA/cycles for MAT EP and from_DFT attribution.,"If only WSL proxy is available, keep optimality claims blocked."

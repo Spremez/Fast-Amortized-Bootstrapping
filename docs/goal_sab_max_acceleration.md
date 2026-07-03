@@ -854,3 +854,7 @@ closed representation/API with equivalence and noise gates.
 Stage163 tests `from_DFT` backend batching after Stage162. Decision:
 `NEUTRAL_STAGE163_BACKEND_ADD_ALREADY_DOMINANT_BATCHING_NOT_PROMOTED`. The result is explicitly scoped to backend wall-time; it does
 not change the algorithmic materialization count or scalar/default behavior.
+Stage164 records representation closure routing after Stage163. Decision:
+`PASS_STAGE164_REPRESENTATION_ROUTE_TO_CLOSED_FULL_MAT_STREAMING_GATE`. It prevents a theory loop by closing already rejected routes and
+selecting Stage165 closed full-MAT decompose/DFT streaming as the next
+executable gate.

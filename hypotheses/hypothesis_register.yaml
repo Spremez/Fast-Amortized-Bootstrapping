@@ -2279,3 +2279,22 @@ hypotheses:
       - backend-add or batched outputs differ from separate materialization plus add
       - component-major batching does not beat current backend-add order beyond the promotion threshold
       - backend batching is reported as algorithmic materialization-count reduction
+  - id: H88_representation_closure_route
+    statement: >
+      After same-format count reduction and backend batching are closed or
+      neutral, the next executable PVW/MAT-SAB optimization should preserve the
+      closed full-MAT state and test decompose/DFT/addmul constant factors
+      before any compact-state SAB integration.
+    mechanism: >
+      Generic exact compact selector reduction conflicts with the full
+      `(1+r)^2` dense selector map unless a new structured keygen/security/noise
+      proof is supplied; current compact diagonal outputs are not PVW_TMLWE
+      closed.
+    status: stage164_representation_closure_route
+    evidence: docs/stage164_representation_closure_route.md; experiments/stage164_representation_closure_route_plan.md; theory_checks/stage164_representation_closure_model.md; repro/stage164_representation_closure_route/summary.csv
+    current_decision: >
+      PASS_STAGE164_REPRESENTATION_ROUTE_TO_CLOSED_FULL_MAT_STREAMING_GATE
+    failure_criteria:
+      - prior closure evidence is missing
+      - a rejected compact or lazy-DFT route is reopened without a new invariant proof
+      - Stage165 is skipped and production SAB code is changed without exact-output microbench evidence

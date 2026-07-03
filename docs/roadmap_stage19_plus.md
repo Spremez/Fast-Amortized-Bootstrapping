@@ -5432,3 +5432,19 @@ Completed. Stage163 records NEUTRAL_STAGE163_BACKEND_ADD_ALREADY_DOMINANT_BATCHI
 only; it does not reduce the 573440 materialization count and cannot be used
 as a complete-SAB acceleration claim without a later T_bootstrap/r gate.
 ```
+## Stage 164: Representation Closure Route
+
+Goal:
+
+```text
+Combine the compact-closure, lazy-DFT, materialization-count, and backend
+batching evidence to select the next non-speculative representation route.
+```
+
+Status:
+
+```text
+Completed. Stage164 records PASS_STAGE164_REPRESENTATION_ROUTE_TO_CLOSED_FULL_MAT_STREAMING_GATE. It routes next to a closed full-MAT
+decompose/DFT streaming microbench and keeps structured compact keygen work
+behind algebra/security/noise proof gates.
+```

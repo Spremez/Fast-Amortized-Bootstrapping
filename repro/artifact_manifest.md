@@ -2253,3 +2253,9 @@ Repro artifacts:
   - `theory_checks/stage163_from_dft_batching_model.md`
   - `algorithm_variants/mat_rlwe_sab_from_dft_batching_microbench.md`
   - `repro/stage163_from_dft_batching_microbench/`
+- stage164_representation_closure_route: `PASS_STAGE164_REPRESENTATION_ROUTE_TO_CLOSED_FULL_MAT_STREAMING_GATE`
+  - `docs/stage164_representation_closure_route.md`
+  - `experiments/stage164_representation_closure_route_plan.md`
+  - `theory_checks/stage164_representation_closure_model.md`
+  - `algorithm_variants/mat_rlwe_sab_representation_closure_route.md`
+  - `repro/stage164_representation_closure_route/`

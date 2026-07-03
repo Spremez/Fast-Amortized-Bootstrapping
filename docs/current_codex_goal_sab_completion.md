@@ -396,3 +396,7 @@ The new research goal is complete only after a later stage records:
     `NEUTRAL_STAGE163_BACKEND_ADD_ALREADY_DOMINANT_BATCHING_NOT_PROMOTED`. This stage decides whether component-major batching of
     `polynomial_DFT_to_torus_add` deserves a later complete-SAB gate. It must
     not be used as an algorithmic count-reduction or final bootstrapping claim.
+68. Treat Stage164 as the representation closure route:
+    `PASS_STAGE164_REPRESENTATION_ROUTE_TO_CLOSED_FULL_MAT_STREAMING_GATE`. It does not claim a new SAB algorithm; it selects Stage165 as
+    the next exact-output microbench and keeps structured compact keygen behind
+    proof gates.

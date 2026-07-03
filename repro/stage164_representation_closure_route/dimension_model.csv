@@ -1,0 +1,5 @@
+r,pvw_state_polys,generic_dense_selector_terms_per_level,diagonal_compact_masks,generic_exact_term_lower_bound,interpretation
+2,3,9,2,9,A generic encrypted MAT selector is a full linear map from 1+r decomposed input rows to 1+r output polynomials.
+4,5,25,4,25,A generic encrypted MAT selector is a full linear map from 1+r decomposed input rows to 1+r output polynomials.
+6,7,49,6,49,A generic encrypted MAT selector is a full linear map from 1+r decomposed input rows to 1+r output polynomials.
+8,9,81,8,81,A generic encrypted MAT selector is a full linear map from 1+r decomposed input rows to 1+r output polynomials.
