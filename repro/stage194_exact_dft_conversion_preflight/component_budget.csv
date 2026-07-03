@@ -1,0 +1,4 @@
+component,full_sab_share,required_component_speedup_for_3pct_full_sab,per_call_us,loads,stores,fp512,cache_miss_rate,evidence,interpretation
+torus_to_dft_rows,0.169104610,1.208076492,17.483339844,68118974,53511995,59186396,0.139774,repro/stage180_mat_ep_split_probe/derived_projection.csv; repro/stage180_mat_ep_split_probe/counter_metrics.csv,Large enough to matter only if a new mechanism beats about 1.208x component speedup.
+sub_decompose,0.103963271,1.389195069,10.748525391,31961718,26882399,5909004,,repro/stage180_mat_ep_split_probe/derived_projection.csv,Sub-decompose alone requires a much larger speedup and Stage181 already rejected the AVX512 variant.
+addmul_from_dec_dft,0.221723249,1.151228774,22.923460937,64970716,32210397,70084809,,repro/stage193_exact_addmul_dataflow_preflight/summary.csv,Closed by Stage193 unless a new nonlocal mechanism appears.

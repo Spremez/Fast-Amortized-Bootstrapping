@@ -2793,3 +2793,19 @@ hypotheses:
       - addmul code is written without a projected >=3% complete-SAB gain
       - a prior rejected layout family is reopened under a new name
       - static projection is reported as measured performance
+  - id: H118_exact_dft_conversion_preflight
+    statement: >
+      Exact DFT/conversion should not receive local code unless a mechanism
+      exceeds the Stage180 complete-SAB projection threshold and preserves
+      exact-state closure.
+    mechanism: >
+      Stage194 combines source facts, prior DFT/backend gates, Stage180 budget
+      requirements, and representation-closure blockers.
+    status: stage194_exact_dft_preflight_no_code
+    evidence: docs/stage194_exact_dft_conversion_preflight.md; experiments/stage194_exact_dft_conversion_preflight_plan.md; theory_checks/stage194_exact_dft_conversion_model.md; repro/stage194_exact_dft_conversion_preflight/summary.csv
+    current_decision: >
+      PASS_STAGE194_EXACT_DFT_PREFLIGHT_NO_CODE_ROUTE_SCOPED_REFRESH
+    failure_criteria:
+      - local DFT/conversion code is written despite no promoted mechanism
+      - Stage163/174 neutral candidates are reopened without new mechanism
+      - backend timing is reported as algorithmic count reduction

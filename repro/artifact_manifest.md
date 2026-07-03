@@ -2433,3 +2433,9 @@ Repro artifacts:
   - `theory_checks/stage193_exact_addmul_dataflow_model.md`
   - `algorithm_variants/mat_rlwe_sab_exact_addmul_dataflow_preflight.md`
   - `repro/stage193_exact_addmul_dataflow_preflight/`
+- stage194_exact_dft_conversion_preflight: `PASS_STAGE194_EXACT_DFT_PREFLIGHT_NO_CODE_ROUTE_SCOPED_REFRESH`
+  - `docs/stage194_exact_dft_conversion_preflight.md`
+  - `experiments/stage194_exact_dft_conversion_preflight_plan.md`
+  - `theory_checks/stage194_exact_dft_conversion_model.md`
+  - `algorithm_variants/mat_rlwe_sab_exact_dft_conversion_preflight.md`
+  - `repro/stage194_exact_dft_conversion_preflight/`

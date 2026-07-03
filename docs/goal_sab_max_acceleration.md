@@ -952,3 +952,6 @@ active research loop to exact full-MAT addmul dataflow preflight.
 Stage193 records exact addmul dataflow preflight. Decision: `PASS_STAGE193_EXACT_ADDMUL_PREFLIGHT_NO_CODE_ROUTE_DFT_MECHANISM`.
 No exact addmul implementation is authorized; the research loop routes next to
 a DFT/conversion mechanism preflight.
+Stage194 records exact DFT/conversion preflight. Decision: `PASS_STAGE194_EXACT_DFT_PREFLIGHT_NO_CODE_ROUTE_SCOPED_REFRESH`.
+No local DFT/conversion implementation is authorized; the loop routes to
+scoped paper/repro refresh unless an external backend primitive is supplied.

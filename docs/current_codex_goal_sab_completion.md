@@ -512,3 +512,8 @@ The new research goal is complete only after a later stage records:
     mechanism has an optimistic r=6 bound below the 3% complete-SAB gate, and
     prior fulltile/bodymajor/streaming families remain rejected. Next route:
     Stage194 DFT/conversion mechanism preflight.
+98. Treat Stage194 as exact DFT/conversion preflight:
+    `PASS_STAGE194_EXACT_DFT_PREFLIGHT_NO_CODE_ROUTE_SCOPED_REFRESH`. DFT/conversion code remains denied: same-format count
+    reduction is closed, backend batching/direct-scale candidates were neutral,
+    and representation routes need closure/noise proof. Next route: Stage195
+    scoped paper/repro refresh.

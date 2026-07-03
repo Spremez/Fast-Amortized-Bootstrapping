@@ -1,0 +1,6 @@
+fact,status,line,evidence,implication
+dft_to_torus_uses_backend_direct,yes,352,src/mosfhet/src/polynomial.c,Same-format materialization is delegated to backend FFT; local arithmetic changes must beat the backend primitive.
+dft_to_torus_add_uses_backend_fused_add,yes,368,src/mosfhet/src/polynomial.c,The current add path already uses fused backend materialize+add for TORUS64.
+pvw_from_dft_add_has_backend_flag,yes,765,src/mosfhet/src/pvwtmlwe.c,Stage174 tested this explicit backend/SIMD candidate and did not promote it.
+mat_sub_dft_converts_every_decomposed_row,yes,741,src/mosfhet/src/mattrgsw.c,Exact torus-input MAT EP still needs one torus_to_DFT per decomposed row before addmul.
+fft_processor_cached_per_thread_and_N,yes,335,src/mosfhet/src/polynomial.c,"Processor construction is already cached; optimization must target conversion work, not init overhead."

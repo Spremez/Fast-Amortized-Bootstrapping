@@ -1,0 +1,7 @@
+gate,route,status,quantitative_result,evidence,consequence
+Stage162,same_format_materialization_count_reduction,CLOSED,reducible_calls_without_representation_change=0,repro/stage162_materialization_count_feasibility/summary.csv,Do not claim fewer from_DFT calls under current torus-input API.
+Stage163,component_major_from_DFT_batching,NEUTRAL_NOT_PROMOTED,component_major_over_backend_current_mean=0.972807930,repro/stage163_from_dft_batching_microbench/summary.csv,Do not repeat backend batching without a new mechanism.
+Stage174,direct_scale_backend_from_DFT_add,NEUTRAL_OR_REJECT,baseline/direct_scale=0.990754925;0.949781500,repro/stage174_from_dft_direct_scale_gate/summary.csv,Do not implement direct-scale/fused-add variants as full-SAB candidates.
+Stage136,batched_decompose_to_DFT,NEUTRAL_OR_NEGATIVE,r4 speedup_current_over_batched=0.739827,repro/stage136_batched_decomp_dft_gate/summary.csv,Do not reopen this batched decomp/DFT variant.
+Stage156,naive_lazy_DFT_accumulator,REJECTED_NONCLOSED,decomposition nonlinearity counterexamples found,repro/stage156_lazy_dft_closure_gate/summary.csv,Do not keep only DFT accumulator state without a new exact decomposition API.
+Stage164,representation_change,PROOF_OR_NEW_API_REQUIRED,same-format closed; representation route must prove closure/noise,repro/stage164_representation_closure_route/summary.csv,Representation changes are not local DFT tuning.

@@ -5911,3 +5911,17 @@ Completed. Stage193 records PASS_STAGE193_EXACT_ADDMUL_PREFLIGHT_NO_CODE_ROUTE_D
 dec-register caching is below the complete-SAB projection gate, and prior
 fulltile/bodymajor/streaming families remain rejected.
 ```
+## Stage 194: Exact DFT/Conversion Preflight
+
+Goal:
+
+```text
+Screen exact DFT/conversion mechanisms before implementation.
+```
+
+Status:
+
+```text
+Completed. Stage194 records PASS_STAGE194_EXACT_DFT_PREFLIGHT_NO_CODE_ROUTE_SCOPED_REFRESH. No local DFT/conversion code candidate
+is promoted; route next to Stage195 scoped paper/repro refresh.
+```
