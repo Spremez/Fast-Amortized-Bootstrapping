@@ -240,3 +240,4 @@
 - [x] Stage150 final-package refresh pack recorded.
 - [x] Stage151 H14 r=6 fulltile backend smoke pack recorded.
 - [x] Stage152 dual-sub kernel gate pack recorded.
+- [x] Stage153 dual-sub full-SAB gate pack recorded.

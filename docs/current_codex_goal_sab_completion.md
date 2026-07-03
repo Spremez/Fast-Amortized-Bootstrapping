@@ -357,3 +357,8 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE152_DUAL_SUB_LOCAL_POSITIVE_INTEGRATION_CANDIDATE`. It is necessary evidence for H14-C3 but cannot be used as a
     complete SAB speedup claim. Full integration requires a later `T_bootstrap/r`
     gate if this local result is strong enough.
+57. Treat Stage153 as the dual-sub full-SAB gate:
+    `NEUTRAL_STAGE153_DUAL_SUB_FULLSAB_PAIR_FRACTION_LIMITED`. The explicit flag path preserves scalar/default SAB and
+    confirms the pairable fraction `(h+1)*(2^r_prec-1)`, but this fraction is
+    too small for a strong full-SAB claim unless a broader pairing schedule is
+    found.

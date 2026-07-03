@@ -1,0 +1,4 @@
+metric,control,dual,dual_over_control,status,detail
+full_sab_pvw_us,40937628.000,40844399.000,1.002283,NEUTRAL,"Complete SAB wall-clock smoke, not repeated statistics."
+amortized_T_bootstrap_per_lane_us,6822938.000,6807399.833,1.002283,NEUTRAL,Primary MAT-RLWE endpoint for the integration smoke.
+corrected_theory_bound,1.000000,1.000352,1.000352,LIMITED,Pairable-fraction corrected bound predicts only a very small body-level opportunity.

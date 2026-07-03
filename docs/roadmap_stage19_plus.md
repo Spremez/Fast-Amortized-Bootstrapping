@@ -5262,3 +5262,20 @@ Completed. Stage152 records PASS_STAGE152_DUAL_SUB_LOCAL_POSITIVE_INTEGRATION_CA
 1.150215 mean / 1.122825 min and predicted r=6 body speedup is
 1.020287. This is not a complete SAB claim.
 ```
+## Stage 153: Dual-Sub Full-SAB Gate
+
+Goal:
+
+```text
+Integrate the Stage152 shared-input dual-sub kernel behind an explicit flag and
+test complete SAB `T_bootstrap/r` against the same H14 r=6 backend control.
+```
+
+Status:
+
+```text
+Completed. Stage153 records NEUTRAL_STAGE153_DUAL_SUB_FULLSAB_PAIR_FRACTION_LIMITED. The full-SAB smoke dual/control
+speedup on `T_bootstrap/r` is 1.002283. Dynamic pair calls are
+5080/5080, and the corrected body-level
+bound is 1.000352. The key conclusion is that H14-C3 is pair-fraction limited.
+```

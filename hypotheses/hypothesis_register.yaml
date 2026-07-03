@@ -2104,3 +2104,19 @@ hypotheses:
       - fused dual-sub output differs from two scalar subtractions
       - local speedup is too small to move complete SAB T_bootstrap/r
       - isolated kernel result is written as a full SAB claim
+  - id: H77_dual_sub_fullsab_pair_fraction
+    statement: >
+      The H14-C3 shared-input dual-subtraction optimization should improve
+      complete SAB only if enough butterfly positions can be paired.
+    mechanism: >
+      The integrated path computes the NCMUX subtraction and the adjacent
+      direct-CMUX subtraction in one pass over `p[in][j]`, but only
+      `sum_bit 2^bit` positions per RGSW monomial have this exact pairing.
+    status: stage153_pair_fraction_limited
+    evidence: docs/stage153_dual_sub_fullsab_gate.md; experiments/stage153_dual_sub_fullsab_gate_plan.md; theory_checks/stage153_dual_sub_pair_fraction_model.md; algorithm_variants/mat_rlwe_sab_dual_sub_fullsab.md; repro/stage153_dual_sub_fullsab_gate/summary.csv
+    current_decision: >
+      NEUTRAL_STAGE153_DUAL_SUB_FULLSAB_PAIR_FRACTION_LIMITED
+    failure_criteria:
+      - complete SAB correctness fails
+      - dynamic pair count differs from `(h+1)*(2^r_prec-1)`
+      - full SAB `T_bootstrap/r` does not improve beyond the neutral band

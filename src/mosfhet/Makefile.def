@@ -126,6 +126,12 @@ ifeq ($(SAB_PVW_SCHEDULE_FUSED_CMUX),true)
 	FLAGS += -DSAB_PVW_SCHEDULE_FUSED_CMUX
 	ENABLE_PVW_TMLWE := true
 endif
+SAB_PVW_DUAL_SUB_CMUX ?= false
+ifeq ($(SAB_PVW_DUAL_SUB_CMUX),true)
+	FLAGS += -DSAB_PVW_DUAL_SUB_CMUX
+	FLAGS += -DSAB_PVW_SCHEDULE_FUSED_CMUX
+	ENABLE_PVW_TMLWE := true
+endif
 ifeq ($(ENABLE_PVW_TMLWE),true)
 	__SRC += pvwtmlwe.c mattrgsw.c
 endif

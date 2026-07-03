@@ -1,0 +1,4 @@
+variant,status,r,reps,correctness,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,source_build_log,source_run_log
+control_h14_r6_backend,PASS,6,1,Pass,40937628.000,6822938.000,58398188.000,9733031.333,1.427,repro/stage153_dual_sub_fullsab_gate/control_h14_r6_backend/build.log,repro/stage153_dual_sub_fullsab_gate/control_h14_r6_backend/run.log
+dual_sub_h14_r6_backend,PASS,6,1,Pass,40844399.000,6807399.833,58937686.000,9822947.667,1.443,repro/stage153_dual_sub_fullsab_gate/dual_sub_h14_r6_backend/build.log,repro/stage153_dual_sub_fullsab_gate/dual_sub_h14_r6_backend/run.log
+dual_sub_h14_r6_profile,PASS,6,1,Pass,42012709.000,7002118.167,58862366.000,9810394.333,1.401,repro/stage153_dual_sub_fullsab_gate/dual_sub_h14_r6_profile/build.log,repro/stage153_dual_sub_fullsab_gate/dual_sub_h14_r6_profile/run.log

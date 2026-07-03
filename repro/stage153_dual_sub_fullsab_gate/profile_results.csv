@@ -1,0 +1,2 @@
+variant,status,lanes,in_N,h,r_prec,full_us,cmux_calls,cmux_sub_calls,dual_sub_pair_calls,expected_pair_calls,pair_call_fraction,pair_subop_fraction,dual_sub_pair_us,cmux_sub_us,ncmux_calls,mat_ep_calls,source_run_log
+dual_sub_h14_r6_profile,PASS,6,2048,39,7,41514445,573440,573440,5080,5080,0.008859,0.017718,87096,6362060,5080,573440,repro/stage153_dual_sub_fullsab_gate/dual_sub_h14_r6_profile/run.log

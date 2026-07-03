@@ -1,0 +1,3 @@
+source,item,status,metric,value,evidence,detail
+Stage152,dual_sub_local_kernel,PASS_STAGE152_DUAL_SUB_LOCAL_POSITIVE_INTEGRATION_CANDIDATE,speedup_mean,1.150215,repro/stage152_dual_sub_kernel_gate/raw_results.csv,Local dual-sub kernel result before full-SAB pair-fraction correction.
+Stage151,current_r6_sub_share,PROFILE_ONLY,cmux_sub_us/body_full_us,0.152252,repro/stage151_h14_r6_fulltile_backend_smoke/variant_results.csv,Subtraction share must be multiplied by the Stage153 pairable fraction.

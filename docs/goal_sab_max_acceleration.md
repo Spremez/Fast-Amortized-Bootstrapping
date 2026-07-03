@@ -813,3 +813,6 @@ Stage152 tests dual-subtraction as an isolated H14-C3 gate after Stage151's
 fulltile composition remains weak. It measures a shared-input AVX512
 dual-subtraction kernel against two current `pvmtmlwe_sub`-equivalent loops
 for k=1,r=6,N=2048. Decision: `PASS_STAGE152_DUAL_SUB_LOCAL_POSITIVE_INTEGRATION_CANDIDATE`.
+Stage153 integrates the Stage152 dual-sub kernel behind `SAB_PVW_DUAL_SUB_CMUX`
+and tests complete SAB `T_bootstrap/r`. Decision: `NEUTRAL_STAGE153_DUAL_SUB_FULLSAB_PAIR_FRACTION_LIMITED`. The route is
+bounded by the pairable fraction, not by the isolated dual-sub kernel speed.

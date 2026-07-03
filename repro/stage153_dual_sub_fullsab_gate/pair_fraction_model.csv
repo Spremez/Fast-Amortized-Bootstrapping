@@ -1,0 +1,4 @@
+metric,value,formula,detail
+pair_calls_per_full_sab,5080,(h+1)*(2^r_prec-1),"Expected 5080 for h=39, r_prec=7."
+pair_subop_fraction,0.017718,2*(2^r_prec-1)/(r_prec*N),Only this fraction of CMUX/NCMUX subtraction outputs can use the dual-sub shared input.
+stage152_corrected_body_speedup_bound,1.000352,1/(1-sub_share*pair_subop_fraction*(1-1/local_speedup)),This corrects Stage152's local Amdahl projection by the actual pairable fraction.

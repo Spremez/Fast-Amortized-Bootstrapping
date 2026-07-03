@@ -2210,3 +2210,9 @@ Repro artifacts:
   - `theory_checks/stage152_dual_sub_kernel_model.md`
   - `algorithm_variants/mat_rlwe_sab_dual_sub_kernel.md`
   - `repro/stage152_dual_sub_kernel_gate/`
+## stage153_dual_sub_fullsab_gate
+
+- stage: Stage 153
+- status: `NEUTRAL_STAGE153_DUAL_SUB_FULLSAB_PAIR_FRACTION_LIMITED`
+- root: `repro/stage153_dual_sub_fullsab_gate`
+- index: `repro/stage153_dual_sub_fullsab_gate/artifact_index.csv`
