@@ -1,0 +1,55 @@
+file,phrase,hits,status
+repro/stage197_metadata_safe_citation_bank/metadata_safe_support_report.md,theoretically optimal,0,PASS
+repro/stage197_metadata_safe_citation_bank/metadata_safe_support_report.md,optimal avx512,0,PASS
+repro/stage197_metadata_safe_citation_bank/metadata_safe_support_report.md,implemented compact,0,PASS
+repro/stage197_metadata_safe_citation_bank/metadata_safe_support_report.md,compact sab speedup,0,PASS
+repro/stage197_metadata_safe_citation_bank/metadata_safe_support_report.md,prove novelty,0,PASS
+repro/stage197_metadata_safe_citation_bank/metadata_safe_support_report.md,mathematically optimal,0,PASS
+docs/stage197_metadata_safe_citation_bank.md,theoretically optimal,0,PASS
+docs/stage197_metadata_safe_citation_bank.md,optimal avx512,0,PASS
+docs/stage197_metadata_safe_citation_bank.md,implemented compact,0,PASS
+docs/stage197_metadata_safe_citation_bank.md,compact sab speedup,0,PASS
+docs/stage197_metadata_safe_citation_bank.md,prove novelty,0,PASS
+docs/stage197_metadata_safe_citation_bank.md,mathematically optimal,0,PASS
+experiments/stage197_metadata_safe_citation_bank_plan.md,theoretically optimal,0,PASS
+experiments/stage197_metadata_safe_citation_bank_plan.md,optimal avx512,0,PASS
+experiments/stage197_metadata_safe_citation_bank_plan.md,implemented compact,0,PASS
+experiments/stage197_metadata_safe_citation_bank_plan.md,compact sab speedup,0,PASS
+experiments/stage197_metadata_safe_citation_bank_plan.md,prove novelty,0,PASS
+experiments/stage197_metadata_safe_citation_bank_plan.md,mathematically optimal,0,PASS
+theory_checks/stage197_citation_support_model.md,theoretically optimal,0,PASS
+theory_checks/stage197_citation_support_model.md,optimal avx512,0,PASS
+theory_checks/stage197_citation_support_model.md,implemented compact,0,PASS
+theory_checks/stage197_citation_support_model.md,compact sab speedup,0,PASS
+theory_checks/stage197_citation_support_model.md,prove novelty,0,PASS
+theory_checks/stage197_citation_support_model.md,mathematically optimal,0,PASS
+algorithm_variants/mat_rlwe_sab_metadata_safe_writing_boundary.md,theoretically optimal,0,PASS
+algorithm_variants/mat_rlwe_sab_metadata_safe_writing_boundary.md,optimal avx512,0,PASS
+algorithm_variants/mat_rlwe_sab_metadata_safe_writing_boundary.md,implemented compact,0,PASS
+algorithm_variants/mat_rlwe_sab_metadata_safe_writing_boundary.md,compact sab speedup,0,PASS
+algorithm_variants/mat_rlwe_sab_metadata_safe_writing_boundary.md,prove novelty,0,PASS
+algorithm_variants/mat_rlwe_sab_metadata_safe_writing_boundary.md,mathematically optimal,0,PASS
+repro/stage197_metadata_safe_citation_bank/sentence_support_bank.csv,theoretically optimal,0,PASS
+repro/stage197_metadata_safe_citation_bank/sentence_support_bank.csv,optimal avx512,0,PASS
+repro/stage197_metadata_safe_citation_bank/sentence_support_bank.csv,implemented compact,0,PASS
+repro/stage197_metadata_safe_citation_bank/sentence_support_bank.csv,compact sab speedup,0,PASS
+repro/stage197_metadata_safe_citation_bank/sentence_support_bank.csv,prove novelty,0,PASS
+repro/stage197_metadata_safe_citation_bank/sentence_support_bank.csv,mathematically optimal,0,PASS
+repro/stage197_metadata_safe_citation_bank/paragraph_support_map.csv,theoretically optimal,0,PASS
+repro/stage197_metadata_safe_citation_bank/paragraph_support_map.csv,optimal avx512,0,PASS
+repro/stage197_metadata_safe_citation_bank/paragraph_support_map.csv,implemented compact,0,PASS
+repro/stage197_metadata_safe_citation_bank/paragraph_support_map.csv,compact sab speedup,0,PASS
+repro/stage197_metadata_safe_citation_bank/paragraph_support_map.csv,prove novelty,0,PASS
+repro/stage197_metadata_safe_citation_bank/paragraph_support_map.csv,mathematically optimal,0,PASS
+repro/stage197_metadata_safe_citation_bank/next_stage_queue.csv,theoretically optimal,0,PASS
+repro/stage197_metadata_safe_citation_bank/next_stage_queue.csv,optimal avx512,0,PASS
+repro/stage197_metadata_safe_citation_bank/next_stage_queue.csv,implemented compact,0,PASS
+repro/stage197_metadata_safe_citation_bank/next_stage_queue.csv,compact sab speedup,0,PASS
+repro/stage197_metadata_safe_citation_bank/next_stage_queue.csv,prove novelty,0,PASS
+repro/stage197_metadata_safe_citation_bank/next_stage_queue.csv,mathematically optimal,0,PASS
+repro/stage197_metadata_safe_citation_bank/reproduction_commands.md,theoretically optimal,0,PASS
+repro/stage197_metadata_safe_citation_bank/reproduction_commands.md,optimal avx512,0,PASS
+repro/stage197_metadata_safe_citation_bank/reproduction_commands.md,implemented compact,0,PASS
+repro/stage197_metadata_safe_citation_bank/reproduction_commands.md,compact sab speedup,0,PASS
+repro/stage197_metadata_safe_citation_bank/reproduction_commands.md,prove novelty,0,PASS
+repro/stage197_metadata_safe_citation_bank/reproduction_commands.md,mathematically optimal,0,PASS

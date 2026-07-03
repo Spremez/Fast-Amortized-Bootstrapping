@@ -5956,3 +5956,19 @@ Completed. Stage196 records PASS_STAGE196_PUBLIC_SOURCE_REFRESH_METADATA_VISIBLE
 visible, but reviewed full-text citation work for 2025/686 remains blocked in
 the current environment.
 ```
+## Stage 197: Metadata-Safe Citation Bank
+
+Goal:
+
+```text
+Convert Stage195/196 claim boundaries into sentence-level writing support so
+future manuscript work cannot silently upgrade metadata or local kernel evidence.
+```
+
+Status:
+
+```text
+Completed. Stage197 records PASS_STAGE197_METADATA_SAFE_CITATION_BANK_READY_GOAL_ACTIVE. Scoped writing now has a sentence
+support bank, paragraph map, guard scan, and next-stage queue; the broader
+research goal remains active.
+```

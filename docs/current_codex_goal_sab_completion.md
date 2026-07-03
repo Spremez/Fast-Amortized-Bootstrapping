@@ -525,3 +525,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE196_PUBLIC_SOURCE_REFRESH_METADATA_VISIBLE_FULLTEXT_REVIEW_BLOCKED`. Public metadata/code routes are visible, but theorem-level
     2025/686 citation review remains blocked by unavailable reviewed full text.
     No implementation branch opens from metadata alone.
+101. Treat Stage197 as metadata-safe citation bank:
+    `PASS_STAGE197_METADATA_SAFE_CITATION_BANK_READY_GOAL_ACTIVE`. Sentence-level writing support is now available, but
+    theorem-level citation review, stronger novelty, compact implementation,
+    and final optimality remain blocked.

@@ -2842,3 +2842,20 @@ hypotheses:
       - metadata-only source probes are used for theorem, equation, proof, or experiment citations
       - related-work metadata is used as novelty proof
       - citation refresh opens a code branch without correctness/performance gates
+  - id: H121_metadata_safe_citation_bank
+    statement: >
+      The current scoped PVW/MAT-SAB result can be written safely only if every
+      reusable sentence is bound to local repro evidence or public metadata and
+      carries the correct qualification.
+    mechanism: >
+      Stage197 maps allowed sentences to evidence, paragraphs, blocked
+      escalations, and guard scans, preventing metadata-only and kernel-only
+      evidence from being used as stronger paper claims.
+    status: stage197_metadata_safe_citation_bank
+    evidence: docs/stage197_metadata_safe_citation_bank.md; experiments/stage197_metadata_safe_citation_bank_plan.md; theory_checks/stage197_citation_support_model.md; repro/stage197_metadata_safe_citation_bank/summary.csv
+    current_decision: >
+      PASS_STAGE197_METADATA_SAFE_CITATION_BANK_READY_GOAL_ACTIVE
+    failure_criteria:
+      - a reusable sentence lacks evidence or qualification
+      - public metadata is used for theorem or experiment details
+      - writing artifacts open a code branch without experimental gates
