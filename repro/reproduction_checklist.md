@@ -281,3 +281,4 @@
 - [x] Stage190 selector distribution distinguisher recorded.
 - [x] Stage191 secret-correction noise/resource gate recorded.
 - [x] Stage192 compact admission and route selection recorded.
+- [x] Stage193 exact addmul dataflow preflight recorded.

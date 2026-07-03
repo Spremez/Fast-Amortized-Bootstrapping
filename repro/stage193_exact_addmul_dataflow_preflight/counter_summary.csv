@@ -1,0 +1,2 @@
+variant,per_call_us,loads,stores,fp512,cache_miss_rate,ipc,evidence,interpretation
+addmul_from_dec_dft,22.923460937,64970716,32210397,70084809,0.047610,1.335007,repro/stage180_mat_ep_split_probe/counter_metrics.csv,Low cache-miss rate and heavy FP512 mean prefetch-only is weak; only real load/store reduction or fewer FMA-equivalent ops can matter.

@@ -949,3 +949,6 @@ denied.
 Stage192 records compact admission and route selection. Decision:
 `PASS_STAGE192_COMPACT_IMPLEMENTATION_DENIED_ROUTE_EXACT_ADDMUL_PREFLIGHT`. It keeps compact/shared-output MAT-SAB proof-only and routes the
 active research loop to exact full-MAT addmul dataflow preflight.
+Stage193 records exact addmul dataflow preflight. Decision: `PASS_STAGE193_EXACT_ADDMUL_PREFLIGHT_NO_CODE_ROUTE_DFT_MECHANISM`.
+No exact addmul implementation is authorized; the research loop routes next to
+a DFT/conversion mechanism preflight.

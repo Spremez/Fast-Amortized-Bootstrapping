@@ -1,0 +1,6 @@
+fact,status,line,evidence,implication
+complex_addmul_uses_avx512_fma,yes,146,src/mosfhet/src/mattrgsw.c,"The exact addmul hot loop is already vectorized; Stage193 must find dataflow savings, not basic AVX512 enablement."
+rgt4_tiled_kernel_reuses_dec_per_output_tile,yes,458,src/mosfhet/src/mattrgsw.c,"For r=6, dec rows are loaded once per output tile; this is the only local duplicate-load opportunity."
+r6_fulltile_exists,yes,520,src/mosfhet/src/mattrgsw.c,All-output register-resident accumulation was already implemented and rejected by prior gates.
+r6_bodymajor_exists,yes,606,src/mosfhet/src/mattrgsw.c,Output-major dataflow was already implemented and rejected by prior gates.
+sub_decomp_avx512_exists_default_off,yes,15,src/mosfhet/Makefile.def,"Sub-decompose vectorization remains an explicit negative ablation, not a promoted path."

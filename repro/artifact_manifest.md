@@ -2427,3 +2427,9 @@ Repro artifacts:
   - `theory_checks/stage192_compact_admission_model.md`
   - `algorithm_variants/mat_rlwe_sab_compact_admission_route_selection.md`
   - `repro/stage192_compact_admission_route_selection/`
+- stage193_exact_addmul_dataflow_preflight: `PASS_STAGE193_EXACT_ADDMUL_PREFLIGHT_NO_CODE_ROUTE_DFT_MECHANISM`
+  - `docs/stage193_exact_addmul_dataflow_preflight.md`
+  - `experiments/stage193_exact_addmul_dataflow_preflight_plan.md`
+  - `theory_checks/stage193_exact_addmul_dataflow_model.md`
+  - `algorithm_variants/mat_rlwe_sab_exact_addmul_dataflow_preflight.md`
+  - `repro/stage193_exact_addmul_dataflow_preflight/`

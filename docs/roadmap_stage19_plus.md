@@ -5896,3 +5896,18 @@ Completed. Stage192 records PASS_STAGE192_COMPACT_IMPLEMENTATION_DENIED_ROUTE_EX
 code remains denied. The next executable route is Stage193 exact full-MAT
 addmul dataflow preflight.
 ```
+## Stage 193: Exact Addmul Dataflow Preflight
+
+Goal:
+
+```text
+Screen exact full-MAT addmul dataflow candidates before implementation.
+```
+
+Status:
+
+```text
+Completed. Stage193 records PASS_STAGE193_EXACT_ADDMUL_PREFLIGHT_NO_CODE_ROUTE_DFT_MECHANISM. No addmul code candidate is promoted:
+dec-register caching is below the complete-SAB projection gate, and prior
+fulltile/bodymajor/streaming families remain rejected.
+```

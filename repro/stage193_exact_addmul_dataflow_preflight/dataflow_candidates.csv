@@ -1,0 +1,7 @@
+candidate,new_mechanism,prior_status,static_or_counter_result,risk,code_permission
+dec_register_cache_across_tiles,yes,not directly tested; adjacent fulltile exists,r6 upper component speedup 1.111111 below required 1.151228774,requires keeping 14 dec registers plus tile accumulators; may spill and lose the static upper bound,DENY_BELOW_FULL_SAB_GATE
+all_outputs_fulltile,no,rejected,Stage111/151 did not promote fulltile under complete-SAB gates,register pressure and variance already observed,DENY_PRIOR_REJECTED
+bodymajor_output_major,no,rejected,Stage154 bodymajor/tile4 complete-SAB result was slower,worse complete-SAB T_bootstrap/r,DENY_PRIOR_REJECTED
+row_streaming_decompose_dft_addmul,no,rejected,Stage165 streaming lost to current tiled AVX,decomposition/DFT locality did not translate to speed,DENY_PRIOR_REJECTED
+selector_transposed_key_layout,yes,blocked,could improve selector locality but changes key format,"requires keygen/resource/noise gates, not a local addmul edit",DENY_KEY_FORMAT_GATE_REQUIRED
+prefetch_only_selector_rows,weak,not promoted,Stage180 addmul cache miss rate is low; no arithmetic/load-count reduction,implementation-only tweak unlikely to reach complete-SAB threshold,DENY_NO_PROJECTED_3PCT

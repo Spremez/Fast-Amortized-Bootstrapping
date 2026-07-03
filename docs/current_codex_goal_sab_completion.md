@@ -507,3 +507,8 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE192_COMPACT_IMPLEMENTATION_DENIED_ROUTE_EXACT_ADDMUL_PREFLIGHT`. Compact/shared-output SAB implementation is denied after
     T1/T2/T4 gates. The next non-theory executable route is Stage193 exact
     full-MAT addmul dataflow preflight.
+97. Treat Stage193 as exact addmul dataflow preflight:
+    `PASS_STAGE193_EXACT_ADDMUL_PREFLIGHT_NO_CODE_ROUTE_DFT_MECHANISM`. Addmul code remains denied: the only new local dec-cache
+    mechanism has an optimistic r=6 bound below the 3% complete-SAB gate, and
+    prior fulltile/bodymajor/streaming families remain rejected. Next route:
+    Stage194 DFT/conversion mechanism preflight.

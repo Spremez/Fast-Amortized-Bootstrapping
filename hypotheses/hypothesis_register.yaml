@@ -2778,3 +2778,18 @@ hypotheses:
       - compact production SAB code is written despite denied admission gates
       - exact addmul preflight reopens rejected layout-only retuning
       - kernel-only compact timing is reported as complete-SAB speedup
+  - id: H117_exact_addmul_dataflow_preflight
+    statement: >
+      Exact full-MAT addmul should not receive new code unless a dataflow
+      mechanism projects at least a 3% complete-SAB T_bootstrap/r gain.
+    mechanism: >
+      Stage193 combines source facts, Stage180 counters, prior mechanism
+      rejections, and a static memory-op model for dec-register caching.
+    status: stage193_exact_addmul_preflight_no_code
+    evidence: docs/stage193_exact_addmul_dataflow_preflight.md; experiments/stage193_exact_addmul_dataflow_preflight_plan.md; theory_checks/stage193_exact_addmul_dataflow_model.md; repro/stage193_exact_addmul_dataflow_preflight/summary.csv
+    current_decision: >
+      PASS_STAGE193_EXACT_ADDMUL_PREFLIGHT_NO_CODE_ROUTE_DFT_MECHANISM
+    failure_criteria:
+      - addmul code is written without a projected >=3% complete-SAB gain
+      - a prior rejected layout family is reopened under a new name
+      - static projection is reported as measured performance

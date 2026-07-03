@@ -1,0 +1,3 @@
+candidate,r,tile_outputs,selector_loads_per_coeff,dec_loads_current_per_coeff,dec_loads_cached_per_coeff,duplicate_dec_load_fraction,upper_component_speedup,required_component_speedup_for_3pct_full_sab,full_sab_speedup_bound,decision
+dec_register_cache_across_tiles,6,4,98,28,14,0.100000,1.111111,1.151228774,1.022675,REJECT_TARGET_R6_BELOW_3PCT_GATE
+dec_register_cache_across_tiles,8,4,162,54,18,0.153846,1.181818,1.151228774,1.035316,NON_TARGET_R8_REQUIRES_FULL_SAB_CONTEXT
