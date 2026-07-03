@@ -964,3 +964,6 @@ theorem-level 2025/686 citations until reviewed full text is supplied.
 Stage197 records metadata-safe citation bank. Decision: `PASS_STAGE197_METADATA_SAFE_CITATION_BANK_READY_GOAL_ACTIVE`. It binds
 scoped performance, baseline metadata, related-work obligations, and blocked
 frontiers to explicit evidence and qualifications.
+Stage198 records metadata-safe manuscript refresh. Decision: `PASS_STAGE198_METADATA_SAFE_MANUSCRIPT_REFRESH_READY_GOAL_ACTIVE`. It
+generates a scoped draft from the support bank and keeps full-text citation,
+stronger related-work, and implementation gates separate.

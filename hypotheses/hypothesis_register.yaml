@@ -2859,3 +2859,20 @@ hypotheses:
       - a reusable sentence lacks evidence or qualification
       - public metadata is used for theorem or experiment details
       - writing artifacts open a code branch without experimental gates
+  - id: H122_metadata_safe_manuscript_refresh
+    statement: >
+      A scoped manuscript refresh can be generated safely from the Stage197
+      support bank if every paragraph records allowed sentence ids and passes
+      overclaim guards.
+    mechanism: >
+      Stage198 constructs the draft from approved sentence ids, checks paragraph
+      compliance against the support map, and scans generated artifacts for
+      selected overclaim patterns.
+    status: stage198_metadata_safe_manuscript_refresh
+    evidence: docs/stage198_metadata_safe_manuscript_refresh.md; experiments/stage198_metadata_safe_manuscript_refresh_plan.md; theory_checks/stage198_manuscript_compliance_model.md; repro/stage198_metadata_safe_manuscript_refresh/summary.csv
+    current_decision: >
+      PASS_STAGE198_METADATA_SAFE_MANUSCRIPT_REFRESH_READY_GOAL_ACTIVE
+    failure_criteria:
+      - a paragraph uses a sentence id outside the Stage197 map
+      - a used sentence lacks ALLOW-family support
+      - the draft opens theorem-level, broad related-work, or implementation claims

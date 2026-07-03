@@ -286,3 +286,4 @@
 - [x] Stage195 scoped paper/repro refresh recorded.
 - [x] Stage196 public source refresh recorded.
 - [x] Stage197 metadata-safe citation bank recorded.
+- [x] Stage198 metadata-safe manuscript refresh recorded.

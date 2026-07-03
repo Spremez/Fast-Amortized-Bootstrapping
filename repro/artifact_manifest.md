@@ -2457,3 +2457,9 @@ Repro artifacts:
   - `theory_checks/stage197_citation_support_model.md`
   - `algorithm_variants/mat_rlwe_sab_metadata_safe_writing_boundary.md`
   - `repro/stage197_metadata_safe_citation_bank/`
+- stage198_metadata_safe_manuscript_refresh: `PASS_STAGE198_METADATA_SAFE_MANUSCRIPT_REFRESH_READY_GOAL_ACTIVE`
+  - `docs/stage198_metadata_safe_manuscript_refresh.md`
+  - `experiments/stage198_metadata_safe_manuscript_refresh_plan.md`
+  - `theory_checks/stage198_manuscript_compliance_model.md`
+  - `algorithm_variants/mat_rlwe_sab_metadata_safe_manuscript_refresh.md`
+  - `repro/stage198_metadata_safe_manuscript_refresh/`

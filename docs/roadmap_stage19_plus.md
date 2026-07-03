@@ -5972,3 +5972,18 @@ Completed. Stage197 records PASS_STAGE197_METADATA_SAFE_CITATION_BANK_READY_GOAL
 support bank, paragraph map, guard scan, and next-stage queue; the broader
 research goal remains active.
 ```
+## Stage 198: Metadata-Safe Manuscript Refresh
+
+Goal:
+
+```text
+Generate a scoped manuscript refresh using only the Stage197 sentence support
+bank and verify paragraph-level compliance.
+```
+
+Status:
+
+```text
+Completed. Stage198 records PASS_STAGE198_METADATA_SAFE_MANUSCRIPT_REFRESH_READY_GOAL_ACTIVE. The refreshed draft is metadata-safe
+and compliance-checked, but not a final paper or a new implementation claim.
+```

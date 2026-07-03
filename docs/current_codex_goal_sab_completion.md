@@ -529,3 +529,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE197_METADATA_SAFE_CITATION_BANK_READY_GOAL_ACTIVE`. Sentence-level writing support is now available, but
     theorem-level citation review, stronger novelty, compact implementation,
     and final optimality remain blocked.
+102. Treat Stage198 as metadata-safe manuscript refresh:
+    `PASS_STAGE198_METADATA_SAFE_MANUSCRIPT_REFRESH_READY_GOAL_ACTIVE`. A guarded scoped manuscript draft exists, with paragraph
+    compliance and claim-guard tables. It is not a final paper and opens no
+    new code branch.
