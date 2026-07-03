@@ -1,0 +1,12 @@
+command: gcc -O2 -DSTAGE140_BACKEND=\"smallr_avx512\" -I src/mosfhet/include -o repro/stage142_avx512_fma_order_fix_gate/avx512_closed_fullmat_gate_smallr_avx512 repro/stage142_avx512_fma_order_fix_gate/avx512_closed_fullmat_gate.c src/mosfhet/lib/libmosfhet.a -lm
+returncode: 0
+--- stdout ---
+
+--- stderr ---
+wsl: �hKm0R localhost �NtM�n
+�FO*g\��P0R WSL0NAT !j_
+N�v WSL
+N/ec localhost �Nt0
+
+/usr/bin/ld: warning: spqlios-ifft-avx512.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker

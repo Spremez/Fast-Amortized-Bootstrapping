@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage143_runs,PASS,executed_configs,2,repro/stage143_full_sab_r4_unrolled_smoke/*_run_*.log,Build and run generic active-buffer and r4-unrolled active-buffer full SAB benches.,
+stage143_correctness,PASS,result_rows,2,repro/stage143_full_sab_r4_unrolled_smoke/results.csv,Each full SAB bench must print target_full correctness Pass.,Do not interpret speed if this fails.
+stage143_metric,PASS,primary_endpoint,T_bootstrap/r,repro/stage143_full_sab_r4_unrolled_smoke/comparison.csv,The comparison uses per-lane PVW time and scalar repeated per-lane time.,
+stage143_decision,SMOKE_STAGE143_FULL_SAB_R4_UNROLLED_POSITIVE_REPEATED_REQUIRED,r4_vs_generic_pvw_lane_speedup,1.064717,repro/stage143_full_sab_r4_unrolled_smoke/results.csv; repro/stage143_full_sab_r4_unrolled_smoke/comparison.csv,Single-run smoke only; repeated/high-stat gate is still required.,Stage144: repeated full SAB A/B with confidence intervals.

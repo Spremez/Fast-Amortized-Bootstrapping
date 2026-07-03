@@ -1911,3 +1911,44 @@ hypotheses:
       - AVX512 variants use different FFT backends
       - correctness differs across specialized builds
       - kernel speedup is claimed as full SAB speedup
+  - id: H66_avx512_fma_order_fix
+    statement: >
+      If MAT-aware AVX512 complex addmul uses the same FMA grouping as the
+      generic AVX512 DFT addmul reference, then the small-r and r4-unrolled
+      closed full-MAT kernels should regain exact DFT equivalence while keeping
+      useful r=4 kernel speed.
+    mechanism: >
+      Stage141 mismatches came from a different floating-point rounding path,
+      not from a different MAT-RLWE operation. Aligning the FMA order makes the
+      specialized path bit-equivalent to the generic closed full-MAT split.
+    status: stage142_avx512_fma_order_fix_gate
+    evidence: docs/stage142_avx512_fma_order_fix_gate.md; experiments/stage142_avx512_fma_order_fix_gate_plan.md; theory_checks/stage142_avx512_fma_order_model.md; algorithm_variants/mat_rlwe_sab_avx512_fma_order_fix.md; scripts/build_stage142_avx512_fma_order_fix_gate.py; repro/stage142_avx512_fma_order_fix_gate/summary.csv; repro/stage142_avx512_fma_order_fix_gate/correctness.csv; repro/stage142_avx512_fma_order_fix_gate/comparison.csv; repro/stage142_avx512_fma_order_fix_gate/artifact_index.csv
+    current_decision: >
+      Stage142 records PASS_STAGE142_AVX512_FMA_ORDER_FIX_PROMOTE_R4_UNROLLED_KERNEL_READY_FULL_SAB_RERUN. r4-unrolled closed full-MAT mean kernel
+      speedup over generic AVX512 is 1.176373-1.267909. This is ready for complete
+      SAB A/B, not a final bootstrapping speedup claim.
+    failure_criteria:
+      - DFT equivalence fails for any specialized row
+      - kernel speedup is reported as complete SAB speedup
+      - full SAB A/B does not improve amortized T_bootstrap/r
+  - id: H67_r4_unrolled_full_sab_smoke
+    statement: >
+      The Stage142 r4-unrolled closed full-MAT AVX512 repair should improve
+      complete PVW/MAT-SAB amortized bootstrapping time for r=4 when combined
+      with the existing active-buffer SAB path.
+    mechanism: >
+      Stage142 improves the closed external-product kernel used inside each
+      SAB CMUX/RGSW step. If that kernel cost remains visible after schedule
+      overhead, full SAB T_bootstrap/r should improve over the generic active
+      PVW path.
+    status: stage143_full_sab_r4_unrolled_smoke
+    evidence: docs/stage143_full_sab_r4_unrolled_smoke.md; experiments/stage143_full_sab_r4_unrolled_smoke_plan.md; theory_checks/stage143_full_sab_metric_model.md; algorithm_variants/mat_rlwe_sab_r4_unrolled_full_sab_smoke.md; scripts/build_stage143_full_sab_r4_unrolled_smoke.py; repro/stage143_full_sab_r4_unrolled_smoke/results.csv; repro/stage143_full_sab_r4_unrolled_smoke/comparison.csv; repro/stage143_full_sab_r4_unrolled_smoke/artifact_index.csv
+    current_decision: >
+      Stage143 records SMOKE_STAGE143_FULL_SAB_R4_UNROLLED_POSITIVE_REPEATED_REQUIRED. r4-unrolled full SAB smoke speedup over
+      repeated scalar SAB is 1.355000x, and its
+      incremental per-lane speedup over generic active PVW is
+      1.064717. This is smoke evidence only.
+    failure_criteria:
+      - complete SAB correctness fails
+      - repeated Stage144 does not preserve the per-lane speedup
+      - one-run smoke is claimed as final throughput evidence

@@ -145,10 +145,10 @@ static inline void mat_avx512_complex_mul(__m512d dec_re, __m512d dec_im,
 
 static inline void mat_avx512_complex_addmul(__m512d dec_re, __m512d dec_im,
     __m512d sel_re, __m512d sel_im, __m512d * acc_re, __m512d * acc_im){
-  *acc_re = _mm512_fmadd_pd(dec_re, sel_re, *acc_re);
-  *acc_re = _mm512_fnmadd_pd(dec_im, sel_im, *acc_re);
-  *acc_im = _mm512_fmadd_pd(dec_im, sel_re, *acc_im);
-  *acc_im = _mm512_fmadd_pd(dec_re, sel_im, *acc_im);
+  const __m512d re_tmp = _mm512_fmsub_pd(dec_im, sel_im, *acc_re);
+  *acc_re = _mm512_fmsub_pd(dec_re, sel_re, re_tmp);
+  const __m512d im_tmp = _mm512_fmadd_pd(dec_im, sel_re, *acc_im);
+  *acc_im = _mm512_fmadd_pd(dec_re, sel_im, im_tmp);
 }
 
 static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r2_avx512(

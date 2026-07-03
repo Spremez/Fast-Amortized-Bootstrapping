@@ -1,0 +1,11 @@
+command: cd src/mosfhet && make clean >/dev/null 2>&1 || true && make static FFT_LIB=spqlios_avx512 A_PRNG=none ENABLE_VAES=false ENABLE_PVW_TMLWE=true MAT_TRGSW_AVX512_R4_UNROLLED_ROWS=true -j8
+returncode: 0
+--- stdout ---
+gcc -g -c src/keyswitch.c src/bootstrap.c src/bootstrap_ga.c src/tlwe.c src/trlwe.c src/trgsw.c src/misc.c src/polynomial.c src/register.c src/pvwtlwe.c src/sha3/fips202.c src/fft/karatsuba.c src/pvwtmlwe.c src/mattrgsw.c src/./rnd/aes_rng.c src/./fft/spqlios/spqlios-fft-avx512.s src/./fft/spqlios/spqlios-ifft-avx512.s src/./fft/spqlios/spqlios-fft-impl-avx512.c src/./fft/spqlios/fft_processor_spqlios.c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DMAT_TRGSW_AVX512_R4_UNROLLED_ROWS -DUSE_SPQLIOS -DAVX512_OPT -I.//include
+ar rcs lib/libmosfhet.a *.o && rm *.o
+
+--- stderr ---
+wsl: �hKm0R localhost �NtM�n
+�FO*g\��P0R WSL0NAT !j_
+N�v WSL
+N/ec localhost �Nt0

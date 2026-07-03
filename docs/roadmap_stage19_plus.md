@@ -5075,3 +5075,40 @@ Torus-level equivalence for r=4. This is a correctness blocker; Stage142 must
 debug or reject the AVX512 small-r/r4-unrolled kernels before any complete SAB
 A/B run can use these flags.
 ```
+## Stage 142: AVX512 FMA-Order Fix Gate
+
+Goal:
+
+```text
+Repair the Stage141 specialized-kernel correctness blocker by matching the
+generic AVX512 FMA order in MAT-aware complex addmul, then rerun the closed
+full-MAT r=4 target kernel gate.
+```
+
+Status:
+
+```text
+Completed. Stage142 records PASS_STAGE142_AVX512_FMA_ORDER_FIX_PROMOTE_R4_UNROLLED_KERNEL_READY_FULL_SAB_RERUN. The r4-unrolled closed full-MAT mean
+kernel speedup over generic AVX512 is 1.176373-1.267909 for r=4,T=1,N=1024/2048.
+This is a kernel-only result; Stage143 must run complete SAB A/B with
+T_bootstrap/r as the primary endpoint.
+```
+## Stage 143: Full SAB r4-Unrolled Smoke
+
+Goal:
+
+```text
+Move from Stage142 kernel-only promotion to a complete SAB smoke using the
+amortized endpoint T_bootstrap/r.
+```
+
+Status:
+
+```text
+Completed. Stage143 records SMOKE_STAGE143_FULL_SAB_R4_UNROLLED_POSITIVE_REPEATED_REQUIRED. r4-unrolled active-buffer full SAB
+has per-lane PVW time 7125020.500 us versus generic active
+7586131.750 us, incremental smoke speedup
+1.064717. Against repeated scalar SAB, the
+r4-unrolled smoke speedup is 1.355000x. Repeated
+Stage144 is required before a final bootstrapping claim.
+```

@@ -1,0 +1,3 @@
+r,N,T,Bg_bit,variant,generic_mean_us,smallr_mean_us,r4_unrolled_mean_us,smallr_vs_generic_mean,r4_unrolled_vs_generic_mean,generic_median_us,smallr_median_us,r4_unrolled_median_us,smallr_vs_generic_median,r4_unrolled_vs_generic_median,decision
+4,1024,1,23,current_full_mat,11.670320,10.723120,9.204380,1.088333,1.267909,11.573750,9.919600,9.129150,1.166756,1.267780,PROMOTE_R4_UNROLLED_KERNEL_READY_FULL_SAB_RERUN
+4,2048,1,23,current_full_mat,27.787410,27.191870,23.621260,1.021901,1.176373,26.121850,27.436350,23.265550,0.952089,1.122770,PROMOTE_R4_UNROLLED_KERNEL_READY_FULL_SAB_RERUN

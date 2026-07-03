@@ -771,3 +771,10 @@ Stage141 separates backend/SIMD gain from algorithmic gain by holding
 `spqlios_avx512` fixed and changing only MAT full-MAT specialization flags. It
 tests the valid closed r-body target shape after Stage139/140 corrected the
 diagonal compact route.
+Stage142 repairs the AVX512 small-r closed full-MAT kernel by aligning its FMA
+order with the generic AVX512 DFT addmul path. This moves the AVX512 MAT route
+from correctness-blocked to full-SAB-rerun-ready, but it remains a kernel-level
+promotion candidate until complete SAB A/B passes.
+Stage143 is the first post-Stage142 complete bootstrapping smoke with the
+correct amortized metric `T_bootstrap/r`. It reports positive full-SAB signal
+for r4-unrolled active-buffer PVW/MAT-SAB, but keeps the claim at smoke level.

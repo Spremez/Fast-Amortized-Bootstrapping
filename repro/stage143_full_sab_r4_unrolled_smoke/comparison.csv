@@ -1,0 +1,2 @@
+metric,runs,generic_mean_pvw_lane_us,r4_mean_pvw_lane_us,r4_vs_generic_pvw_lane_speedup,generic_mean_speedup_vs_scalar,r4_mean_speedup_vs_scalar,incremental_speedup_over_generic,decision
+T_bootstrap_per_lane,1,7586131.750,7125020.500,1.064717,1.307000,1.355000,1.036725,SMOKE_STAGE143_FULL_SAB_R4_UNROLLED_POSITIVE_REPEATED_REQUIRED

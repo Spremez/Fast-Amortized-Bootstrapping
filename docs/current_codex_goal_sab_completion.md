@@ -315,3 +315,11 @@ The new research goal is complete only after a later stage records:
     for r=4,T=1,N=1024/2048, but specialized-kernel correctness is blocked.
     No full SAB rerun may use these flags until Stage142 fixes or rejects the
     AVX512 small-r/r4-unrolled correctness issue.
+46. Treat Stage142 as the AVX512 FMA-order correctness repair:
+    `PASS_STAGE142_AVX512_FMA_ORDER_FIX_PROMOTE_R4_UNROLLED_KERNEL_READY_FULL_SAB_RERUN`. The r4-unrolled closed full-MAT mean kernel speedup is
+    1.176373-1.267909. Next required gate: complete SAB A/B using amortized
+    `T_bootstrap/r`, not raw kernel time.
+47. Treat Stage143 as the first complete SAB smoke after the AVX512 FMA-order
+    fix: `SMOKE_STAGE143_FULL_SAB_R4_UNROLLED_POSITIVE_REPEATED_REQUIRED`. Primary metric is `T_bootstrap/r`. r4-unrolled active
+    PVW lane time is 7125020.500 us versus generic active
+    7586131.750 us; repeated Stage144 is still required.

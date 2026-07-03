@@ -2118,3 +2118,32 @@ Repro artifacts:
 - `repro/stage141_avx512_closed_fullmat_gate/compile_*.log`
 - `repro/stage141_avx512_closed_fullmat_gate/run_*.log`
 - `repro/stage141_avx512_closed_fullmat_gate/artifact_index.csv`
+## Stage 142 AVX512 FMA-Order Fix Gate
+
+- `docs/stage142_avx512_fma_order_fix_gate.md`
+- `experiments/stage142_avx512_fma_order_fix_gate_plan.md`
+- `theory_checks/stage142_avx512_fma_order_model.md`
+- `algorithm_variants/mat_rlwe_sab_avx512_fma_order_fix.md`
+- `scripts/build_stage142_avx512_fma_order_fix_gate.py`
+- `repro/stage142_avx512_fma_order_fix_gate/summary.csv`
+- `repro/stage142_avx512_fma_order_fix_gate/correctness.csv`
+- `repro/stage142_avx512_fma_order_fix_gate/benchmark_samples.csv`
+- `repro/stage142_avx512_fma_order_fix_gate/benchmark_aggregate.csv`
+- `repro/stage142_avx512_fma_order_fix_gate/comparison.csv`
+- `repro/stage142_avx512_fma_order_fix_gate/avx512_closed_fullmat_gate.c`
+- `repro/stage142_avx512_fma_order_fix_gate/build_*.log`
+- `repro/stage142_avx512_fma_order_fix_gate/compile_*.log`
+- `repro/stage142_avx512_fma_order_fix_gate/run_*.log`
+- `repro/stage142_avx512_fma_order_fix_gate/artifact_index.csv`
+## Stage 143 Full SAB r4-Unrolled Smoke
+
+- `docs/stage143_full_sab_r4_unrolled_smoke.md`
+- `experiments/stage143_full_sab_r4_unrolled_smoke_plan.md`
+- `theory_checks/stage143_full_sab_metric_model.md`
+- `algorithm_variants/mat_rlwe_sab_r4_unrolled_full_sab_smoke.md`
+- `scripts/build_stage143_full_sab_r4_unrolled_smoke.py`
+- `repro/stage143_full_sab_r4_unrolled_smoke/summary.csv`
+- `repro/stage143_full_sab_r4_unrolled_smoke/results.csv`
+- `repro/stage143_full_sab_r4_unrolled_smoke/comparison.csv`
+- `repro/stage143_full_sab_r4_unrolled_smoke/*_run_*.log`
+- `repro/stage143_full_sab_r4_unrolled_smoke/artifact_index.csv`
