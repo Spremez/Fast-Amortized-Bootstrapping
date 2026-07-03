@@ -942,3 +942,7 @@ output cannot be publicly collapsed to one shared PVW_TMLWE mask for r>1.
 Stage190 records the selector distribution distinguisher. Decision:
 `PASS_STAGE190_T1_SELECTOR_DISTRIBUTION_DISTINGUISHERS_RECORDED_IMPLEMENTATION_STILL_DENIED`. It rejects standard-distribution shortcut claims for compact
 selectors and keeps production compact SAB code denied.
+Stage191 records the secret-correction noise/resource gate. Decision:
+`PASS_STAGE191_T4_SECRET_CORRECTION_LOWER_BOUND_RECORDED_IMPLEMENTATION_DENIED`. It quantifies the latency, resource, and normalized noise
+barriers for key-switch/re-share closure and keeps compact SAB implementation
+denied.

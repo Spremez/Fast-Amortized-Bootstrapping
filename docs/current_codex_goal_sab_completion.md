@@ -499,3 +499,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE190_T1_SELECTOR_DISTRIBUTION_DISTINGUISHERS_RECORDED_IMPLEMENTATION_STILL_DENIED`. Compact selector row deletion, deterministic zero rows, and
     forced equal/shared masks are public distribution changes. T1 remains
     unproven; production compact SAB implementation remains denied.
+95. Treat Stage191 as the secret-correction noise/resource gate:
+    `PASS_STAGE191_T4_SECRET_CORRECTION_LOWER_BOUND_RECORDED_IMPLEMENTATION_DENIED`. Secret-correction or key-switch closure remains proof-only:
+    it needs explicit key-format, latency, resource, and noise recurrence
+    evidence before any `sab_pvw_*` production implementation.

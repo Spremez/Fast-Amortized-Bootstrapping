@@ -1,0 +1,4 @@
+r,N,T,dense_selector_rows,compact_selector_rows,max_extra_rows_before_losing_count_gain,minimal_one_gadget_correction_rows,ks_like_T_gadget_correction_rows,dense_over_compact_plus_minimal,dense_over_compact_plus_ks_like,minimal_status,ks_like_status
+2,2048,7,63,56,7,7,49,1.000000,0.600000,COUNT_POSITIVE,COUNT_NEGATIVE
+4,2048,7,175,112,63,21,147,1.315789,0.675676,COUNT_POSITIVE,COUNT_NEGATIVE
+6,2048,7,343,168,175,35,245,1.689655,0.830508,COUNT_POSITIVE,COUNT_NEGATIVE

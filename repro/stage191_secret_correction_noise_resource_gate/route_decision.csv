@@ -1,0 +1,6 @@
+route,t4_status,latency_status,noise_status,implementation_permission,next_action
+public_projection_to_shared_mask,NOT_APPLICABLE_REJECTED_BY_T2,no correction benchmark because algebra gate failed,not evaluated,NO,closed by Stage189 unless a new algebraic invariant appears
+secret_correction_each_cmux,OPEN_BLOCKED_BY_NO_NOISE_PROOF,budget is tight and fails if correction requires decompose/DFT plus addmul in proxy rows,any nonzero correction noise increases per-step variance; no multi-seed bound exists,NO,"only an isolated noise/key-size proof probe, not sab_pvw hot-path code"
+keyswitch_or_reshare_each_cmux,OPEN_HIGH_RISK,must fit within per-correction saved-us budget and include key/materialization overhead,requires KS noise recurrence over all CMUX steps,NO,derive explicit KS parameters and compare against budget before code
+dense_full_mat_reexpansion,CURRENT_REFERENCE,implemented exact path; no compact claim,covered by current exact PVW/MAT-SAB gates,YES_FOR_EXACT_FULL_MAT_ONLY,keep as baseline/reference
+new_structured_selector_distribution,PROOF_ONLY_AFTER_T1,unmeasured,must prove selector and repeated SAB noise recurrence,NO,first supply a T1 structured-key assumption/reduction

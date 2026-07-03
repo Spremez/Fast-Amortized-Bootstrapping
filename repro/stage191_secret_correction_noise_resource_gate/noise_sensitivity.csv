@@ -1,0 +1,16 @@
+r,cmux_steps_binary_set_2_3_2048,min_corrections_per_cmux,rho_sigma_correction_over_baseline_step,per_step_sigma_multiplier,variance_multiplier,status,interpretation
+2,573440,1,0.00,1.000000,1.000000,ZERO_EXTRA_NOISE_ONLY,Normalized sensitivity; not a measured noise proof.
+2,573440,1,0.10,1.004988,1.010000,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.
+2,573440,1,0.25,1.030776,1.062500,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.
+2,573440,1,0.50,1.118034,1.250000,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.
+2,573440,1,1.00,1.414214,2.000000,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.
+4,573440,3,0.00,1.000000,1.000000,ZERO_EXTRA_NOISE_ONLY,Normalized sensitivity; not a measured noise proof.
+4,573440,3,0.10,1.014889,1.030000,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.
+4,573440,3,0.25,1.089725,1.187500,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.
+4,573440,3,0.50,1.322876,1.750000,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.
+4,573440,3,1.00,2.000000,4.000000,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.
+6,573440,5,0.00,1.000000,1.000000,ZERO_EXTRA_NOISE_ONLY,Normalized sensitivity; not a measured noise proof.
+6,573440,5,0.10,1.024695,1.050000,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.
+6,573440,5,0.25,1.145644,1.312500,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.
+6,573440,5,0.50,1.500000,2.250000,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.
+6,573440,5,1.00,2.449490,6.000000,T4_NEEDS_REAL_NOISE_BOUND,Normalized sensitivity; not a measured noise proof.

@@ -2744,3 +2744,21 @@ hypotheses:
       - production compact SAB code is written without a structured-key proof
       - this probe is treated as a complete security proof rather than a
         shortcut rejection
+  - id: H115_secret_correction_noise_resource_gate
+    statement: >
+      Secret-correction/key-switch closure for compact MAT-SAB cannot enter
+      production SAB code until it fits the compact-kernel latency budget and
+      proves key/resource and repeated-noise bounds.
+    mechanism: >
+      Stage191 converts Stage189/190 blockers into latency, resource, and
+      normalized noise lower-bound tables.
+    status: stage191_t4_secret_correction_gate
+    evidence: docs/stage191_secret_correction_noise_resource_gate.md; experiments/stage191_secret_correction_noise_resource_gate_plan.md; theory_checks/stage191_secret_correction_noise_model.md; repro/stage191_secret_correction_noise_resource_gate/summary.csv
+    current_decision: >
+      PASS_STAGE191_T4_SECRET_CORRECTION_LOWER_BOUND_RECORDED_IMPLEMENTATION_DENIED
+    failure_criteria:
+      - correction path is implemented in sab_pvw before latency/resource/noise
+        gates pass
+      - normalized sensitivity is reported as a measured noise proof
+      - compact kernel savings are reported as complete-SAB speedup after adding
+        unmeasured correction overhead

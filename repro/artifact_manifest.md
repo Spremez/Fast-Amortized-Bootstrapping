@@ -2415,3 +2415,9 @@ Repro artifacts:
   - `theory_checks/stage190_selector_distribution_model.md`
   - `algorithm_variants/mat_rlwe_sab_selector_distribution_distinguisher.md`
   - `repro/stage190_selector_distribution_distinguisher/`
+- stage191_secret_correction_noise_resource_gate: `PASS_STAGE191_T4_SECRET_CORRECTION_LOWER_BOUND_RECORDED_IMPLEMENTATION_DENIED`
+  - `docs/stage191_secret_correction_noise_resource_gate.md`
+  - `experiments/stage191_secret_correction_noise_resource_gate_plan.md`
+  - `theory_checks/stage191_secret_correction_noise_model.md`
+  - `algorithm_variants/mat_rlwe_sab_secret_correction_closure.md`
+  - `repro/stage191_secret_correction_noise_resource_gate/`

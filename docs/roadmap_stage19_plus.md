@@ -5863,3 +5863,20 @@ and forced equal/shared masks are publicly distinguishable from the current
 dense MAT_TRGSW distribution. Compact/shared-output SAB implementation remains
 denied unless a new structured-key proof route is supplied.
 ```
+## Stage 191: Secret-Correction Noise/Resource Gate
+
+Goal:
+
+```text
+Evaluate the remaining T4 route: secret correction/key-switch closure after
+lane-local compact output.
+```
+
+Status:
+
+```text
+Completed. Stage191 records PASS_STAGE191_T4_SECRET_CORRECTION_LOWER_BOUND_RECORDED_IMPLEMENTATION_DENIED. The route remains proof-only:
+correction must fit a tight saved-time budget, preserve key/materialization
+gains, and prove a repeated SAB noise recurrence. Production compact SAB code
+remains denied.
+```
