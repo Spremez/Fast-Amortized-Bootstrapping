@@ -2331,3 +2331,9 @@ Repro artifacts:
   - `theory_checks/stage176_structured_compact_security_api_model.md`
   - `algorithm_variants/mat_rlwe_sab_structured_compact_security_api.md`
   - `repro/stage176_structured_compact_security_api_gate/`
+- stage177_verified_literature_novelty_gate: `PASS_STAGE177_VERIFIED_LITERATURE_BOUNDARY_NO_STRONG_NOVELTY_CLAIM`
+  - `docs/stage177_verified_literature_novelty_gate.md`
+  - `experiments/stage177_verified_literature_novelty_gate_plan.md`
+  - `theory_checks/stage177_literature_novelty_model.md`
+  - `algorithm_variants/mat_rlwe_sab_literature_claim_boundary.md`
+  - `repro/stage177_verified_literature_novelty_gate/`

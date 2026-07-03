@@ -1,0 +1,11 @@
+axis,query,purpose
+target-paper,eprint 2025/686 sparse amortized bootstrapping,Verify the baseline target and implementation repository.
+post-686,Faster amortized bootstrapping using the incomplete NTT for free 2025/696,Find direct follow-up/neighbor after 2025/686.
+amortized-history,Amortized Bootstrapping Revisited 2023/014,Verify the 686 lineage and earlier implementation evidence.
+ring-automorphism,Faster Amortized FHEW bootstrapping using Ring Automorphisms 2023/112,Map adjacent NTT/automorphism amortized bootstrapping.
+functional-batch,Amortized Functional Bootstrapping less than 7ms 2023/910,Map batch functional bootstrapping and amortized per-ciphertext claims.
+batch-framework,Batch Bootstrapping I II SIMD Bootstrapping polynomial modulus EUROCRYPT 2023,Map batch/SIMD bootstrapping alternatives.
+pvw-packing,Packed Ciphertexts in LWE-Based Homomorphic Encryption PVW 2012/565,Verify PVW packing ancestry.
+tfhe-external-product,TFHE Fast Fully Homomorphic Encryption over the Torus external product 2018/421,Verify TFHE/GSW external-product baseline.
+fhew-origin,FHEW bootstrapping homomorphic encryption in less than a second 2014/816,Verify FHEW predecessor.
+ring-packing,Ring Packing and Amortized FHEW Bootstrapping ICALP 2018,Verify the original amortized FHEW line.

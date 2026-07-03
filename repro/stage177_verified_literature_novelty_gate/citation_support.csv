@@ -1,0 +1,6 @@
+local_claim,supporting_sources,support_strength,needs_cite_verify
+686 is the baseline target and implementation source,GP2025_686,STRONG_FOR_BASELINE,YES_BEFORE_PAPER
+2025/696 is direct adjacent/follow-up work after 686,PDMHSY2025_696,STRONG_FOR_RELATED_WORK,YES_BEFORE_PAPER
+Amortized bootstrapping has a substantial prior lineage,MS2018_ICALP; GPL2023_014; DKMS2023_112; LW2023_910; LW2023_BatchI_II,STRONG,YES_BEFORE_PAPER
+PVW packing is prior art and cannot be claimed as new,BGH2012_565,STRONG,YES_BEFORE_PAPER
+TFHE/FHEW external product is background prior art,CGGI2018_421; DM2014_816,STRONG,YES_BEFORE_PAPER

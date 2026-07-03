@@ -1,0 +1,5 @@
+scope,allowed,forbidden
+paper_abstract,We explore an implementation-level PVW/MAT r-body acceleration path for 2025/686-style SAB.,We introduce a new compact MAT-SAB algorithm.
+performance_claim,"Report complete-SAB T_bootstrap/r speedups with backend, commit, seed, and CI.",Report kernel-only speedups as bootstrapping acceleration.
+compact_claim,Structured compact is a blocked proof route with finite/toy evidence.,Omitted zero encryptions are secure under standard RLWE without proof.
+novelty_claim,"Claim only after proof, full benchmarks, and explicit comparison to 2025/696 and batch/amortized work.",Use 'novel' based only on local code search or bounded web search.

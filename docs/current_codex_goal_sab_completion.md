@@ -439,3 +439,7 @@ The new research goal is complete only after a later stage records:
     `BLOCK_STAGE176_STRUCTURED_COMPACT_SECURITY_API_NOT_CLOSED_REDIRECT_FULL_MAT`. Stage173 phase/noise toy evidence does not overcome missing
     standard security distribution and shared-mask API closure. Do not implement
     compact SAB directly; continue exact full-MAT `T_bootstrap/r` work.
+81. Treat Stage177 as the verified literature boundary:
+    `PASS_STAGE177_VERIFIED_LITERATURE_BOUNDARY_NO_STRONG_NOVELTY_CLAIM`. Real adjacent work includes 2025/696 and prior amortized,
+    batch, PVW packing, FHEW/TFHE sources. Strong novelty claims remain
+    blocked; proceed to exact full-MAT `T_bootstrap/r` frontier work.

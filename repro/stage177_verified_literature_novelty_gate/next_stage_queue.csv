@@ -1,0 +1,4 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,178,full-MAT exact path per-bit throughput frontier,Stage176 denies compact implementation; Stage177 denies strong novelty claim.,Re-normalize all current complete-SAB evidence as T_bootstrap/r and choose the next exact-path implementation candidate from measured component shares.,No new implementation branch unless the candidate can affect complete-SAB T_bootstrap/r.
+P1,179,complete-SAB exact-path experiment loop,Stage178 selects a candidate with plausible complete-SAB impact.,"Run correctness, microbench, full-SAB repeated A/B, attribution, noise/resource.",Neutral/reject candidates are recorded and not retuned without a new mechanism.
+P2,180,paper-citation verification,A manuscript or paper-style claims are drafted.,Every cited sentence must be checked against source text or official metadata.,Unsupported statements are removed or downgraded.

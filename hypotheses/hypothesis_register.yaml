@@ -2510,3 +2510,21 @@ hypotheses:
       - omitted encrypted zero rows are assumed secure without reduction or
         explicit assumption
       - Stage173 toy evidence is reported as implemented compact SAB speedup
+  - id: H101_verified_literature_novelty_boundary
+    statement: >
+      Before paper-level claims, PVW/MAT-SAB must be positioned against real
+      2025/686, 2025/696, amortized/batch bootstrapping, PVW packing, and
+      FHEW/TFHE external-product prior work; bounded search alone cannot prove
+      novelty.
+    mechanism: >
+      A targeted related-work matrix separates baseline, direct adjacent,
+      lineage, background, and implementation-only claims, then assigns claim
+      permissions.
+    status: stage177_verified_literature_novelty_gate
+    evidence: docs/stage177_verified_literature_novelty_gate.md; experiments/stage177_verified_literature_novelty_gate_plan.md; theory_checks/stage177_literature_novelty_model.md; repro/stage177_verified_literature_novelty_gate/summary.csv
+    current_decision: >
+      PASS_STAGE177_VERIFIED_LITERATURE_BOUNDARY_NO_STRONG_NOVELTY_CLAIM
+    failure_criteria:
+      - broad novelty is claimed from bounded search
+      - citations are invented or unsupported
+      - 2025/696 and batch/amortized prior work are omitted from paper framing
