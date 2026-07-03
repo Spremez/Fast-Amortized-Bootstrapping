@@ -453,9 +453,15 @@ The new research goal is complete only after a later stage records:
     sub_decompose, torus_to_DFT, and tiled addmul before any new exact-path
     implementation branch opens.
 84. Treat Stage180 as the MAT EP split probe:
-    `BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED`. Production code remains unchanged. Any Stage181
-    implementation requires split data, correctness, and projected complete-SAB
-    `T_bootstrap/r` impact.
+    `PASS_STAGE180_SPLIT_PROBE_RECORDED`. It measures sub-decompose,
+    torus-to-DFT rows, addmul, and combined-current timing for the
+    exact r=6 MAT EP block. Code promotion still requires projected
+    complete-SAB `T_bootstrap/r` impact.
 85. Treat Stage181 as the AVX512 sub-decompose gate:
-    `BLOCK_STAGE181_REMOTE_PIPELINE_FAILED`. The new implementation is default-off. Complete-SAB
-    acceleration remains unproven until a promoted full-SAB gate passes.
+    `REJECT_STAGE181_SUB_DECOMP_AVX512_NOT_FASTER`. The new
+    implementation is default-off and recorded as a negative ablation;
+    no full-SAB acceleration claim is allowed from it.
+86. Treat Stage182 as the exact-path negative frontier:
+    `PASS_STAGE182_EXACT_PATH_NEGATIVE_FRONTIER_RECORDED`. Stage181 rejects sub-decompose AVX512. Future exact-path
+    code requires a new dataflow mechanism with projected complete-SAB impact;
+    compact SAB remains proof/literature gated.

@@ -1,0 +1,6 @@
+component,observed_us,share_or_speedup,projection_requirement,evidence,interpretation
+complete_sab_endpoint,10465305.389000000,1.131666667,primary endpoint,repro/stage178_fullmat_perbit_frontier/per_bit_throughput.csv,Accepted comparison dimension is complete SAB time per processed lane.
+sub_decompose,10.748525391,0.103963271,1.389195069,repro/stage180_mat_ep_split_probe/run_metrics.csv; repro/stage181_sub_decomp_avx512_gate/comparison.csv,"Stage181 AVX512 candidate was correct but slower, so this exact route is rejected."
+torus_to_dft_rows,17.483339844,0.169104610,1.208076492,repro/stage180_mat_ep_split_probe/run_metrics.csv; repro/stage174_from_dft_direct_scale_gate/summary.csv,"Share is meaningful, but the tested direct-scale style from_DFT route was neutral."
+addmul_from_dec_dft,22.923460937,0.221723249,1.151228774,repro/stage180_mat_ep_split_probe/run_metrics.csv; repro/stage165_closed_fullmat_streaming_microbench/summary.csv,"Best remaining exact component, but prior layout/streaming retuning is exhausted without a new dataflow mechanism."
+combined_current,62.435788086,0.819326988,split coverage sanity,repro/stage180_mat_ep_split_probe/derived_projection.csv,"Split probes cover the current hot block well enough for routing, not for final timing claims."

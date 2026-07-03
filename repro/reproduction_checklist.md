@@ -270,3 +270,4 @@
 - [x] Stage179 MAT EP microarchitecture audit pack recorded.
 - [x] Stage180 MAT EP split probe pack recorded.
 - [x] Stage181 AVX512 sub-decompose gate pack recorded.
+- [x] Stage182 exact path negative frontier pack recorded.

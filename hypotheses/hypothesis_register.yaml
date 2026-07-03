@@ -2573,7 +2573,7 @@ hypotheses:
     status: stage180_mat_ep_split_probe
     evidence: docs/stage180_mat_ep_split_probe.md; experiments/stage180_mat_ep_split_probe_plan.md; theory_checks/stage180_mat_ep_split_probe_model.md; repro/stage180_mat_ep_split_probe/summary.csv
     current_decision: >
-      BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED
+      PASS_STAGE180_SPLIT_PROBE_RECORDED
     failure_criteria:
       - timings are interpreted without correctness PASS
       - code is written before split data exists
@@ -2590,8 +2590,25 @@ hypotheses:
     status: stage181_sub_decomp_avx512_gate
     evidence: docs/stage181_sub_decomp_avx512_gate.md; experiments/stage181_sub_decomp_avx512_gate_plan.md; theory_checks/stage181_sub_decomp_avx512_model.md; repro/stage181_sub_decomp_avx512_gate/summary.csv
     current_decision: >
-      BLOCK_STAGE181_REMOTE_PIPELINE_FAILED
+      REJECT_STAGE181_SUB_DECOMP_AVX512_NOT_FASTER
     failure_criteria:
       - baseline and AVX512 sinks differ
       - microbench does not project to complete-SAB gain
       - local speedup is reported as bootstrapping acceleration
+  - id: H106_exact_path_negative_frontier
+    statement: >
+      After Stage181, the exact full-MAT PVW/MAT-SAB path should not continue
+      with blind AVX512 or layout retuning; only new dataflow mechanisms with
+      projected complete-SAB T_bootstrap/r impact should open code work.
+    mechanism: >
+      Stage178 fixes the complete-SAB per-lane endpoint, Stage180 splits the
+      MAT EP/subdecomp block, and Stage181 rejects the direct AVX512
+      sub-decompose candidate despite deterministic equivalence.
+    status: stage182_exact_path_negative_frontier
+    evidence: docs/stage182_exact_path_negative_frontier.md; experiments/stage182_exact_path_negative_frontier_plan.md; theory_checks/stage182_exact_path_negative_frontier_model.md; repro/stage182_exact_path_negative_frontier/summary.csv
+    current_decision: >
+      PASS_STAGE182_EXACT_PATH_NEGATIVE_FRONTIER_RECORDED
+    failure_criteria:
+      - a full-SAB claim is made from kernel-only or negative evidence
+      - old layout/direct-scale routes are reopened without a new mechanism
+      - compact SAB is implemented before proof/literature gates close

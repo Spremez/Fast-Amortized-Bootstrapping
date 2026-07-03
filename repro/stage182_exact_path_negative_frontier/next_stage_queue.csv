@@ -1,0 +1,4 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,183,addmul dataflow mechanism screen,Stage182 keeps only R3 as a possible exact-route candidate.,A concrete dataflow must project >=3% complete-SAB T_bootstrap/r improvement before code.,"If only layout retuning is proposed, reject without implementation."
+P1,184,torus_to_DFT new-mechanism gate,A conversion/DFT mechanism beyond direct-scale exists.,Microbench and full-SAB gates must both pass.,Do not reopen Stage174 direct-scale.
+P2,185,structured compact proof/literature lane,Security/API closure and real related-work review are supplied.,"No production SAB code before proof, noise, key distribution, and novelty checks.",Keep compact work out of SAB hot path.

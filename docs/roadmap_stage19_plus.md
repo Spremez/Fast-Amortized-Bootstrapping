@@ -5698,8 +5698,7 @@ MAT EP/subdecomp block before opening any new code branch.
 Status:
 
 ```text
-Completed for this run. Stage180 records BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED. Code implementation remains
-blocked unless split data supports a complete-SAB T_bootstrap/r gain path.
+Completed. Stage180 records PASS_STAGE180_SPLIT_PROBE_RECORDED. Split data supports only bounded candidate selection; Stage181 tested the sub-decompose candidate and Stage182 records the frontier.
 ```
 ## Stage 181: AVX512 Sub-Decompose Gate
 
@@ -5713,6 +5712,22 @@ decide whether it deserves a complete-SAB gate.
 Status:
 
 ```text
-Completed. Stage181 records BLOCK_STAGE181_REMOTE_PIPELINE_FAILED. The variant remains explicit and must
-not be claimed as SAB acceleration unless a later full-SAB gate passes.
+Completed. Stage181 records REJECT_STAGE181_SUB_DECOMP_AVX512_NOT_FASTER. The default-off variant remains a negative ablation and must not be claimed as SAB acceleration.
+```
+## Stage 182: Exact Path Negative Frontier
+
+Goal:
+
+```text
+Close the current exact full-MAT AVX512/subcomponent loop after Stage181 and
+define which routes may proceed without blind retuning.
+```
+
+Status:
+
+```text
+Completed. Stage182 records PASS_STAGE182_EXACT_PATH_NEGATIVE_FRONTIER_RECORDED. The default-off AVX512
+sub-decompose candidate is rejected; exact same-format blind tuning is closed.
+Only a new addmul/DFT dataflow mechanism or the separately proof-gated compact
+route may proceed.
 ```

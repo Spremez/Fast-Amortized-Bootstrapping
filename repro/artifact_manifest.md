@@ -2361,3 +2361,9 @@ Repro artifacts:
   - `theory_checks/stage181_sub_decomp_avx512_model.md`
   - `algorithm_variants/mat_rlwe_sab_sub_decomp_avx512.md`
   - `repro/stage181_sub_decomp_avx512_gate/`
+- stage182_exact_path_negative_frontier: `PASS_STAGE182_EXACT_PATH_NEGATIVE_FRONTIER_RECORDED`
+  - `docs/stage182_exact_path_negative_frontier.md`
+  - `experiments/stage182_exact_path_negative_frontier_plan.md`
+  - `theory_checks/stage182_exact_path_negative_frontier_model.md`
+  - `algorithm_variants/mat_rlwe_sab_exact_path_negative_frontier.md`
+  - `repro/stage182_exact_path_negative_frontier/`

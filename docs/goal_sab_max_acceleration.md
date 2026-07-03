@@ -908,8 +908,9 @@ MAT EP/subdecomp microarchitecture audit.
 Stage179 records MAT EP microarchitecture audit evidence. Decision:
 `PASS_STAGE179_AUDIT_SELECT_MAT_EP_SPLIT_PROBE_NO_CODE`. The project already has MAT-aware AVX512 external product; the
 next valid step is a split probe, not blind AVX512 retuning.
-Stage180 records MAT EP split probe evidence. Decision: `BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED`. This
-stage does not change production SAB; it only decides whether code permission
-can proceed after split measurements.
-Stage181 records the AVX512 sub-decompose gate. Decision: `BLOCK_STAGE181_REMOTE_PIPELINE_FAILED`.
+Stage180 records MAT EP split probe evidence. Decision: `PASS_STAGE180_SPLIT_PROBE_RECORDED`. The split shows sub-decompose, torus-to-DFT rows, and addmul are measurable but still need full-SAB projection before code promotion.
 Stage181 records the AVX512 sub-decompose gate. Decision: `REJECT_STAGE181_SUB_DECOMP_AVX512_NOT_FASTER`.
+Stage182 records the exact-path negative frontier. Decision: `PASS_STAGE182_EXACT_PATH_NEGATIVE_FRONTIER_RECORDED`.
+Current scoped complete-SAB `T_bootstrap/r` evidence remains valid, but
+sub-decompose AVX512 is a negative ablation and exact full-MAT blind retuning
+is closed until a new dataflow/proof mechanism appears.

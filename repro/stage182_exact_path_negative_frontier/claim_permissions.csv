@@ -1,0 +1,5 @@
+claim,permission,allowed_wording,blocked_wording,evidence
+complete_sab_speedup,ALLOW_SCOPED,Current exact PVW/MAT-SAB path has recorded complete-SAB T_bootstrap/r speedup under the measured backend/platform.,Do not claim theoretical optimality or all-parameter speedup.,repro/stage178_fullmat_perbit_frontier/per_bit_throughput.csv
+avx512_sub_decompose_improvement,DENY,Default-off AVX512 sub-decompose is a negative ablation.,Do not describe it as an optimization or bootstrapping speedup.,repro/stage181_sub_decomp_avx512_gate/comparison.csv
+mat_external_product_avx512_optimal,DENY,MAT-aware AVX512 exists and has bounded positive/negative evidence.,Do not claim the AVX512 implementation has reached theoretical optimum.,repro/stage182_exact_path_negative_frontier/frontier_decisions.csv
+new_compact_mat_sab_algorithm,DENY_FOR_IMPLEMENTED_CLAIM,Structured compact remains a proof/literature branch.,Do not call compact SAB implemented or novel from current evidence.,repro/stage176_structured_compact_security_api_gate/summary.csv; repro/stage177_verified_literature_novelty_gate/summary.csv
