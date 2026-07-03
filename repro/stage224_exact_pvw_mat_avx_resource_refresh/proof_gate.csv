@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_required_inputs,PASS,missing_inputs,,repro/stage224_exact_pvw_mat_avx_resource_refresh/input_status.csv,Stage224 consumes Stage223 route selection and Stage148 side-condition evidence.
+G2_stage223_admission,PASS,stage224_selected,true,repro/stage223_route_selection/next_stage_queue.csv,Exact PVW/MAT refresh is only valid after compact complete-SAB route is denied.
+G3_full_sab_perf_refresh,PASS_STAGE224_PERF_REFRESH_POSITIVE,backend_vs_wrapper;backend_vs_scalar,1.024015;1.407333,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_results.csv; repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv,Fresh complete-SAB A/B under T_bootstrap/r.
+G4_noise_resource_side_conditions,PASS_INHERITED_SIDE_CONDITIONS,noise_pass;resource_pass,true;true,repro/stage224_exact_pvw_mat_avx_resource_refresh/side_conditions.csv,Stage224 records inherited noise/resource; rerun before final promotion if source or path changes.
+G5_claim_boundary,PASS_ENGINEERING_REFRESH_ONLY,claim_boundary,no_compact_complete_sab_claim;no_theoretical_optimality,docs/stage224_exact_pvw_mat_avx_resource_refresh.md,"Stage224 is exact PVW/MAT evidence, not compact complete-SAB or optimality proof."
+G6_stage224_decision,PASS_STAGE224_EXACT_PVW_MAT_AVX_REFRESH_POSITIVE,decision,PASS_STAGE224_EXACT_PVW_MAT_AVX_REFRESH_POSITIVE,repro/stage224_exact_pvw_mat_avx_resource_refresh/proof_gate.csv,Positive refresh can update the evidence package; neutral refresh keeps Stage148 as current best.

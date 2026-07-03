@@ -3181,3 +3181,13 @@ H10_stage223_route_selection:
     Stage223 records PASS_STAGE223_ROUTE_EXACT_PVW_MAT_REFRESH_SELECTED_COMPACT_COMPLETE_DENIED. Current compact complete-SAB integration remains
     denied; exact closed dense MAT/PVW is the executable mainline for further
     T_bootstrap/r optimization.
+H10_stage224_exact_pvw_mat_avx_refresh:
+  status: exact_pvw_mat_full_sab_refresh_recorded
+  evidence:
+    - repro/stage224_exact_pvw_mat_avx_resource_refresh/proof_gate.csv
+    - repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv
+    - docs/stage224_exact_pvw_mat_avx_resource_refresh.md
+  conclusion: >
+    Stage224 records PASS_STAGE224_EXACT_PVW_MAT_AVX_REFRESH_POSITIVE. The valid exact closed dense MAT/PVW route is
+    refreshed under T_bootstrap/r; compact complete-SAB integration remains
+    denied.

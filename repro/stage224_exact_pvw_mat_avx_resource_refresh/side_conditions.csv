@@ -1,0 +1,4 @@
+source,status,metric,value,evidence,interpretation
+Stage148 noise,PASS,seeds;failures;avg_pvw_minus_scalar_log2,3;0/0/0;0.176333,repro/stage148_h14_r6_repeated_refresh/noise_aggregate.csv,Inherited side condition; Stage224 refreshes performance and records source-head boundary.
+Stage148 resource,PASS,key_bytes_ratio;vmhwm_ratio;time_max_rss_ratio,1.122537;1.030966;1.030743,repro/stage148_h14_r6_repeated_refresh/resource_comparison.csv,Inherited side condition; rerun resource if Stage224 performance materially changes or before final claim.
+source-head,RECORDED,latest_src_touching_commit,d8d56ee,git log -1 --format=%h -- src src/mosfhet Makefile,Bounds reuse of Stage148 side conditions; Stage224 does not alter production source.

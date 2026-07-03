@@ -1074,3 +1074,6 @@ and complete-SAB speedup evidence.
 - Stage223 route selection: `PASS_STAGE223_ROUTE_EXACT_PVW_MAT_REFRESH_SELECTED_COMPACT_COMPLETE_DENIED`. Mainline execution returns to exact
   closed dense MAT/PVW; compact complete-SAB remains blocked without a new
   closed neighbor-capable state proof.
+- Stage224 exact PVW/MAT AVX refresh: `PASS_STAGE224_EXACT_PVW_MAT_AVX_REFRESH_POSITIVE`. This is a complete-SAB
+  `T_bootstrap/r` performance refresh for the valid exact route, not a compact
+  complete-SAB claim.

@@ -2637,3 +2637,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage223_route_selection.md`
   - `scripts/build_stage223_route_selection.py`
   - `repro/stage223_route_selection/`
+- stage224_exact_pvw_mat_avx_resource_refresh:
+  - `docs/stage224_exact_pvw_mat_avx_resource_refresh.md`
+  - `experiments/stage224_exact_pvw_mat_avx_resource_refresh_plan.md`
+  - `theory_checks/stage224_exact_pvw_mat_avx_resource_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage224_exact_refresh.md`
+  - `scripts/build_stage224_exact_pvw_mat_avx_resource_refresh.py`
+  - `repro/stage224_exact_pvw_mat_avx_resource_refresh/`

@@ -6408,3 +6408,18 @@ Completed. Stage223 records PASS_STAGE223_ROUTE_EXACT_PVW_MAT_REFRESH_SELECTED_C
 selected for Stage224 AVX/resource refresh under T_bootstrap/r; compact
 complete-SAB integration remains denied.
 ```
+## Stage 224: Exact PVW/MAT AVX Resource Refresh
+
+Goal:
+
+```text
+Rerun complete-SAB T_bootstrap/r performance for the exact closed dense MAT/PVW
+mainline selected after compact complete-SAB denial.
+```
+
+Status:
+
+```text
+Completed. Stage224 records PASS_STAGE224_EXACT_PVW_MAT_AVX_REFRESH_POSITIVE. It refreshes exact PVW/MAT full-SAB
+performance and preserves the compact complete-SAB denial boundary.
+```

@@ -1,0 +1,7 @@
+variant,run,status,r,h,r_prec,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,source_log
+wrapper_fused_from_dft_add,0,PASS,6,39,7,42797020.000,7132836.667,59587483.000,9931247.167,1.392,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_wrapper_fused_from_dft_add_run_0.log
+wrapper_fused_from_dft_add,1,PASS,6,39,7,43297241.000,7216206.833,59054741.000,9842456.833,1.364,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_wrapper_fused_from_dft_add_run_1.log
+wrapper_fused_from_dft_add,2,PASS,6,39,7,43429555.000,7238259.167,59592443.000,9932073.833,1.372,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_wrapper_fused_from_dft_add_run_2.log
+backend_from_dft_add,0,PASS,6,39,7,42420083.000,7070013.833,59027398.000,9837899.667,1.391,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_backend_from_dft_add_run_0.log
+backend_from_dft_add,1,PASS,6,39,7,41905398.000,6984233.000,59957236.000,9992872.667,1.431,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_backend_from_dft_add_run_1.log
+backend_from_dft_add,2,PASS,6,39,7,42166908.000,7027818.000,59016282.000,9836047.000,1.400,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_backend_from_dft_add_run_2.log

@@ -1,0 +1,7 @@
+input,status,evidence,role,bytes
+stage223_proof_gate,present,repro/stage223_route_selection/proof_gate.csv,permission for exact PVW/MAT refresh,1244
+stage223_next_queue,present,repro/stage223_route_selection/next_stage_queue.csv,selected Stage224 route,949
+stage148_perf_comparison,present,repro/stage148_h14_r6_repeated_refresh/perf_comparison.csv,previous best exact PVW/MAT full-SAB evidence,462
+stage148_noise_aggregate,present,repro/stage148_h14_r6_repeated_refresh/noise_aggregate.csv,previous noise side condition,186
+stage148_resource_comparison,present,repro/stage148_h14_r6_repeated_refresh/resource_comparison.csv,previous resource side condition,363
+stage150_claim_scope,present,theory_checks/stage150_claim_scope_model.md,T_bootstrap/r metric boundary,1363

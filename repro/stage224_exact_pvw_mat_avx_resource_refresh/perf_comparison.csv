@@ -1,0 +1,2 @@
+metric,runs,wrapper_mean_pvw_lane_us,backend_mean_pvw_lane_us,backend_vs_wrapper_mean_speedup,backend_vs_wrapper_min_speedup,backend_vs_wrapper_ci95_low,backend_vs_wrapper_ci95_high,wrapper_mean_speedup_vs_scalar,backend_mean_speedup_vs_scalar,stage148_backend_speedup_vs_scalar,refresh_vs_stage148_backend_speedup,decision
+T_bootstrap_per_lane,3,7195767.556,7027354.944,1.024015,1.008886,1.009073,1.038956,1.376000,1.407333,1.432667,0.982317,PASS_STAGE224_PERF_REFRESH_POSITIVE

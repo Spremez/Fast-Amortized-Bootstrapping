@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage225_exact_refresh_resource_noise_rerun,Stage224 perf refresh is positive and final claim needs fresh side conditions.,Rerun noise/resource on the same executable path if promoting Stage224 over Stage148.,selected,Keep Stage148 side conditions and mark Stage224 performance-only refresh.,repro/stage224_exact_pvw_mat_avx_resource_refresh/proof_gate.csv
+P1,stage225_exact_mat_avx_counter_attribution,Native perf counters are available.,Attribute backend-vs-wrapper gain to load/store/FMA/cycles rather than backend noise.,future,Use timing-only claim boundary.,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv
+P2,paper_claim_boundary_update,After Stage224/225 evidence is stable.,Separate exact MAT/PVW engineering acceleration from blocked compact route.,future,No novelty/optimality claim.,theory_checks/stage150_claim_scope_model.md

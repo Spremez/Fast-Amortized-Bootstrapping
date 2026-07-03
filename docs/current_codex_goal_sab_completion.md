@@ -653,3 +653,5 @@ or security claims.
   neighbor-capable compact state design versus exact PVW/MAT optimization.
 - Stage223 route selection completed with `PASS_STAGE223_ROUTE_EXACT_PVW_MAT_REFRESH_SELECTED_COMPACT_COMPLETE_DENIED`. Next selected stage:
   Stage224 exact PVW/MAT AVX/resource refresh measured by `T_bootstrap/r`.
+- Stage224 exact PVW/MAT AVX refresh completed with `PASS_STAGE224_EXACT_PVW_MAT_AVX_REFRESH_POSITIVE`. Continue with
+  fresh noise/resource rerun only if this refresh is promoted beyond Stage148.
