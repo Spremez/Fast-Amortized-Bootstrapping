@@ -1,0 +1,6 @@
+gate,status,evidence,claim_allowed,claim_blocked
+target_686_metadata,PASS,repro/stage196_public_source_refresh/source_probe.csv,Bibliographic/source-existence metadata only.,"Theorem-level statements, exact algorithm-step citations, and proof claims until reviewed full text is available."
+target_686_fulltext_review,BLOCKED,repro/stage196_public_source_refresh/source_probe.csv,No full-text-derived claim from the live PDF route in this environment.,"Do not cite specific 2025/686 theorem, equation, or experiment text from metadata alone."
+target_686_code_route,PASS,repro/stage196_public_source_refresh/source_probe.csv,Code-route visibility and implementation provenance checks.,Do not treat repository visibility as proof of paper claims.
+post_686_adjacent_metadata,PASS,repro/stage196_public_source_refresh/source_probe.csv,Related-work existence and novelty-risk reminder.,Do not claim dominance or detailed comparison without reviewed text and reproduced benchmarks.
+shared_mask_related_metadata,PASS,repro/stage196_public_source_refresh/source_probe.csv,Related-work risk exists for shared/common-mask multiple-body ideas.,Do not use this metadata alone to assert exact overlap or novelty defeat.

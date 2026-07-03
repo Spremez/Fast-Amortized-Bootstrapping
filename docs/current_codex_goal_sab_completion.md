@@ -521,3 +521,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE195_SCOPED_PAPER_REPRO_REFRESH_READY_GOAL_ACTIVE`. The current exact full-MAT `T_bootstrap/r` evidence is ready
     for scoped reporting, but the broader research goal remains active and
     stronger claims remain blocked.
+100. Treat Stage196 as public source refresh:
+    `PASS_STAGE196_PUBLIC_SOURCE_REFRESH_METADATA_VISIBLE_FULLTEXT_REVIEW_BLOCKED`. Public metadata/code routes are visible, but theorem-level
+    2025/686 citation review remains blocked by unavailable reviewed full text.
+    No implementation branch opens from metadata alone.

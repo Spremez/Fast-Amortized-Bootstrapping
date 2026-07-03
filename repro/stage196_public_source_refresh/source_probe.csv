@@ -1,0 +1,8 @@
+id,role,url,http_status,reachable,content_type,bytes_read,prefix_sha256,title_or_marker,error
+GP2025_686_HTML,target_baseline_metadata,https://eprint.iacr.org/2025/686,200,1,text/html; charset=utf-8,4096,9645ead35673339dc2f26f468edfe440fd6be98c2c0f46736d2e8a0ef0513adc,Fast amortized bootstrapping with small keys and polynomial noise overhead,
+GP2025_686_PDF,target_baseline_fulltext_candidate,https://eprint.iacr.org/2025/686.pdf,403,0,text/html; charset=UTF-8,4096,d888091fa7343782f1d0e4b5742926482d89dfdbe05627ea8f4bb43cadeaf7de,,HTTPError:403
+GP2025_686_CODE,target_baseline_code_route,https://github.com/antoniocgj/Fast-Amortized-Bootstrapping,206,1,text/html; charset=utf-8,4096,51a6c0b42047a3501b72b019df0ee4762dd6998e6cda58cbf778de70a05be7a8,,
+PDMHSY2025_696_HTML,direct_adjacent_metadata,https://eprint.iacr.org/2025/696,200,1,text/html; charset=utf-8,4096,a272faa1c52a39fcdf8a5a917e7a9b7091c9b9ecdda941bf3b39b87a9293c04a,Faster amortized bootstrapping using the incomplete NTT for free,
+PDMHSY2025_696_PDF,direct_adjacent_fulltext_candidate,https://eprint.iacr.org/2025/696.pdf,403,0,text/html; charset=UTF-8,4096,ff4e66abaeb73bee924316ef065ad8223782d759e344846b10422c6c412e8e11,,HTTPError:403
+COMMONMASK2025_2112_HTML,shared_mask_related_metadata,https://eprint.iacr.org/2025/2112,200,1,text/html; charset=utf-8,4096,3ae25f0869df7572dff87202eb70a2b8ea477d22425d58b5e7d583152ac8fd86,Sharing the Mask: TFHE bootstrapping on Packed Messages,
+COMMONMASK2025_2112_PDF,shared_mask_related_fulltext_candidate,https://eprint.iacr.org/2025/2112.pdf,,0,,0,,,URLError:[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)

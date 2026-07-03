@@ -2825,3 +2825,20 @@ hypotheses:
       - report claims compact/shared-output implementation or complete-SAB speedup
       - report claims optimality or broad novelty
       - speedup wording uses kernel-only evidence instead of complete-SAB T_bootstrap/r
+  - id: H120_public_source_refresh
+    statement: >
+      Public metadata can support source-existence and related-work-risk
+      statements, but cannot support theorem-level 2025/686 claims or new
+      implementation branches.
+    mechanism: >
+      Stage196 probes target baseline, adjacent, shared-mask, and code routes
+      with bounded byte reads, then maps each source status to allowed and
+      blocked claim scopes.
+    status: stage196_public_source_refresh
+    evidence: docs/stage196_public_source_refresh.md; experiments/stage196_public_source_refresh_plan.md; theory_checks/stage196_citation_claim_model.md; repro/stage196_public_source_refresh/summary.csv
+    current_decision: >
+      PASS_STAGE196_PUBLIC_SOURCE_REFRESH_METADATA_VISIBLE_FULLTEXT_REVIEW_BLOCKED
+    failure_criteria:
+      - metadata-only source probes are used for theorem, equation, proof, or experiment citations
+      - related-work metadata is used as novelty proof
+      - citation refresh opens a code branch without correctness/performance gates

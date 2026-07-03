@@ -284,3 +284,4 @@
 - [x] Stage193 exact addmul dataflow preflight recorded.
 - [x] Stage194 exact DFT/conversion preflight recorded.
 - [x] Stage195 scoped paper/repro refresh recorded.
+- [x] Stage196 public source refresh recorded.

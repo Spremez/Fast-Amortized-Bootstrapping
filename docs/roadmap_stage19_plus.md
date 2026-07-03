@@ -5940,3 +5940,19 @@ Status:
 Completed. Stage195 records PASS_STAGE195_SCOPED_PAPER_REPRO_REFRESH_READY_GOAL_ACTIVE. The package is ready for scoped
 reporting, while the broader research goal remains active.
 ```
+## Stage 196: Public Source Refresh
+
+Goal:
+
+```text
+Refresh public source and citation status after the scoped Stage195 paper/repro
+package, without upgrading metadata into theorem-level claims.
+```
+
+Status:
+
+```text
+Completed. Stage196 records PASS_STAGE196_PUBLIC_SOURCE_REFRESH_METADATA_VISIBLE_FULLTEXT_REVIEW_BLOCKED. Public metadata/code routes are
+visible, but reviewed full-text citation work for 2025/686 remains blocked in
+the current environment.
+```

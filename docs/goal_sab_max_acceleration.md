@@ -958,3 +958,6 @@ scoped paper/repro refresh unless an external backend primitive is supplied.
 Stage195 records scoped paper/repro refresh. Decision: `PASS_STAGE195_SCOPED_PAPER_REPRO_REFRESH_READY_GOAL_ACTIVE`. It
 packages the current exact full-MAT result and blocked frontiers without
 claiming compact implementation, optimality, or broad novelty.
+Stage196 records public source refresh. Decision: `PASS_STAGE196_PUBLIC_SOURCE_REFRESH_METADATA_VISIBLE_FULLTEXT_REVIEW_BLOCKED`. It preserves
+the current scoped `T_bootstrap/r` implementation claim while blocking
+theorem-level 2025/686 citations until reviewed full text is supplied.

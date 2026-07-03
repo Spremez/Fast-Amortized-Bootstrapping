@@ -2445,3 +2445,9 @@ Repro artifacts:
   - `theory_checks/stage195_scoped_claim_model.md`
   - `algorithm_variants/mat_rlwe_sab_scoped_paper_repro_refresh.md`
   - `repro/stage195_scoped_paper_repro_refresh/`
+- stage196_public_source_refresh: `PASS_STAGE196_PUBLIC_SOURCE_REFRESH_METADATA_VISIBLE_FULLTEXT_REVIEW_BLOCKED`
+  - `docs/stage196_public_source_refresh.md`
+  - `experiments/stage196_public_source_refresh_plan.md`
+  - `theory_checks/stage196_citation_claim_model.md`
+  - `algorithm_variants/mat_rlwe_sab_public_source_boundary.md`
+  - `repro/stage196_public_source_refresh/`
