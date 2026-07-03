@@ -1510,3 +1510,36 @@ hypotheses:
       - r=2 is claimed as a count-level speedup despite break-even evidence
       - gadget smoke evidence is used as complete-SAB or AVX512 performance
         evidence
+  - id: H50_compact_selector_encryption_noise
+    statement: >
+      Compact vector-shared selector rows can be represented as encrypted
+      lane-local mask/body rows whose external-product phase equals the clean
+      gadget reference plus modeled selector noise, while preserving per-lane
+      noise-term and selector-storage advantages over the current dense route.
+    mechanism: >
+      Stage126 constructs deterministic ciphertext-like rows using MOSFHET
+      polynomial operations: `body = mask * secret + gadget + noise`. It then
+      applies decomposed shared/body digits in coefficient domain and through
+      production SPQLIOS DFT, compares decrypted phases with the exact modeled
+      noisy reference, checks a conservative noise bound, and rejects
+      body-only encrypted selector rows as a negative control.
+    status: stage126_compact_selector_encryption_noise_ready_isolated_ep_kernel_required
+    evidence: docs/stage126_compact_selector_encryption_noise_gate.md; experiments/stage126_compact_selector_encryption_noise_gate_plan.md; theory_checks/stage126_compact_selector_encryption_noise_model.md; algorithm_variants/mat_rlwe_sab_compact_selector_encryption_noise.md; scripts/build_stage126_compact_selector_encryption_noise_gate.py; repro/stage126_compact_selector_encryption_noise_gate/summary.csv; repro/stage126_compact_selector_encryption_noise_gate/noise_results.csv; repro/stage126_compact_selector_encryption_noise_gate/layout_results.csv; repro/stage126_compact_selector_encryption_noise_gate/mosfhet_static_build.log; repro/stage126_compact_selector_encryption_noise_gate/compile_probe.log; repro/stage126_compact_selector_encryption_noise_gate/run_probe.log; repro/stage126_compact_selector_encryption_noise_gate/compact_selector_encryption_noise_gate.c; repro/stage126_compact_selector_encryption_noise_gate/artifact_index.csv
+    current_decision: >
+      Stage126 records
+      PASS_STAGE126_COMPACT_SELECTOR_ENCRYPTION_NOISE_READY_ISOLATED_EP_KERNEL_REQUIRED.
+      For k=1, T=7, Bg_bit=7, r=2/4/6, N=512/1024, and seed subset 0..1,
+      coefficient phase mismatches, production DFT mismatches, exact
+      noise-model mismatches, and noise-bound violations are all zero. The
+      maximum DFT gap is 14449 under tolerance 131072, maximum modeled noise is
+      13022 under bound 917504, and body-only encrypted selector rows are
+      rejected. This opens only an isolated compact external-product kernel
+      gate outside `sab_pvw_*`.
+    failure_criteria:
+      - isolated compact external-product kernel cannot reproduce this
+        phase/noise invariant
+      - randomized multi-seed selector noise later exceeds baseline failure
+        behavior without a parameter remedy
+      - complete-SAB or AVX512 performance is claimed from deterministic
+        encryption/noise simulator evidence alone
+      - scalar/default SAB behavior changes before a guarded integration stage

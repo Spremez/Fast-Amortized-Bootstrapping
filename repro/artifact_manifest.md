@@ -1856,3 +1856,19 @@ Repro artifacts:
 - `repro/stage125_compact_selector_gadget_gate/run_probe.log`
 - `repro/stage125_compact_selector_gadget_gate/compact_selector_gadget_gate.c`
 - `repro/stage125_compact_selector_gadget_gate/artifact_index.csv`
+
+## Stage 126 Compact Selector Encryption/Noise Gate
+
+- `docs/stage126_compact_selector_encryption_noise_gate.md`
+- `experiments/stage126_compact_selector_encryption_noise_gate_plan.md`
+- `theory_checks/stage126_compact_selector_encryption_noise_model.md`
+- `algorithm_variants/mat_rlwe_sab_compact_selector_encryption_noise.md`
+- `scripts/build_stage126_compact_selector_encryption_noise_gate.py`
+- `repro/stage126_compact_selector_encryption_noise_gate/summary.csv`
+- `repro/stage126_compact_selector_encryption_noise_gate/noise_results.csv`
+- `repro/stage126_compact_selector_encryption_noise_gate/layout_results.csv`
+- `repro/stage126_compact_selector_encryption_noise_gate/mosfhet_static_build.log`
+- `repro/stage126_compact_selector_encryption_noise_gate/compile_probe.log`
+- `repro/stage126_compact_selector_encryption_noise_gate/run_probe.log`
+- `repro/stage126_compact_selector_encryption_noise_gate/compact_selector_encryption_noise_gate.c`
+- `repro/stage126_compact_selector_encryption_noise_gate/artifact_index.csv`

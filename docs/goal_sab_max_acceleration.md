@@ -651,3 +651,15 @@ control fails as required. Selector count ratios remain
 1.125x/1.5625x/2.041667x for r=2/4/6, but after adding decomposition streams
 r=2 is only 1.0x break-even while r=4/r=6 remain positive at
 1.25x/1.555556x. This opens compact selector encryption/noise modeling only.
+
+Stage126 adds that encryption/noise model as a deterministic, reproducible
+gate. Compact selector rows are constructed as lane-local ciphertext-like
+objects `body = mask * secret + gadget + noise`; decomposed shared/body digits
+are applied in coefficient domain and through production SPQLIOS DFT. For
+k=1, T=7, Bg_bit=7, r=2/4/6, N=512/1024, and seed subset 0..1, coefficient
+phase mismatches, production DFT mismatches, exact noise-model mismatches, and
+noise-bound violations are all zero. The maximum DFT gap is 14449 under
+tolerance 131072, and the maximum modeled noise is 13022 under bound 917504.
+Body-only encrypted selector rows remain rejected. This is deterministic
+semantic/noise-model evidence, not randomized failure-rate evidence; it opens
+only an isolated compact external-product kernel gate.

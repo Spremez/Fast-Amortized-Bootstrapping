@@ -4534,3 +4534,67 @@ stage is compact selector encryption/noise modeling; this is still not noise
 proof, AVX512 performance, SAB schedule integration, or complete
 `T_bootstrap/r` evidence.
 ```
+
+## Stage 126: Compact Selector Encryption/Noise Gate
+
+Goal:
+
+```text
+Verify that compact selector rows can be represented as encrypted lane-local
+mask/body ciphertexts whose external-product phase equals the clean gadget
+reference plus modeled selector noise, still outside `sab_pvw_*`.
+```
+
+Theory basis:
+
+Stage125 proves compact gadget injection with plaintext-like rows. Stage126
+adds the next required invariant: compact selector rows must behave like
+encrypted lane-local rows. The probe constructs deterministic ciphertext-like
+rows `body = mask * secret + gadget + noise` using MOSFHET polynomial
+operations, applies decomposed lane-local digits, and checks both coefficient
+and production DFT external-product phases against the exact modeled noisy
+reference.
+
+Tasks:
+
+- build MOSFHET `libmosfhet.a` with `FFT_LIB=spqlios`;
+- generate and compile a deterministic compact selector encryption/noise
+  probe;
+- build lane-local secrets, compact selector masks, messages, and bounded
+  deterministic noise;
+- verify coefficient-domain phase equals clean reference plus modeled noise;
+- verify production DFT external-product phase against the modeled noisy
+  reference under tolerance;
+- verify modeled noise stays within a declared conservative bound;
+- keep body-only encrypted selector rows as a required failing negative
+  control;
+- record per-lane selector-noise term ratios and selector storage ratios.
+
+Gate:
+
+- build, compile, and run must pass;
+- coefficient phase and noise model mismatch counts must be zero;
+- production DFT mismatch counts must be zero under tolerance;
+- modeled noise must remain within the declared bound;
+- body-only encrypted selector rows must fail;
+- compact per-lane noise term count and selector storage must remain below
+  current dense counts;
+- passing only opens isolated compact external-product kernel work outside the
+  SAB hot path.
+
+Status:
+
+```text
+Completed. Stage126 records
+PASS_STAGE126_COMPACT_SELECTOR_ENCRYPTION_NOISE_READY_ISOLATED_EP_KERNEL_REQUIRED.
+The deterministic encryption/noise simulator passes for k=1, T=7, Bg_bit=7,
+r=2/4/6, N=512/1024, and seed subset 0..1. Coefficient phase mismatches,
+production DFT mismatches, noise-model mismatches, and noise-bound violations
+are all zero. The maximum production DFT gap is 14449 under tolerance 131072,
+and the maximum modeled noise is 13022 under bound 917504. Body-only encrypted
+selector rows remain rejected. Per-lane selector-noise term ratios are
+1.5x/2.5x/3.5x for r=2/4/6, and selector-storage ratios remain
+1.125x/1.5625x/2.041667x. The next valid stage is an isolated compact
+external-product kernel, still outside SAB integration and complete
+`T_bootstrap/r` claims.
+```

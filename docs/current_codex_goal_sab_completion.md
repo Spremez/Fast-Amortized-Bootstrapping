@@ -85,6 +85,11 @@ with zero coefficient-vs-DFT mismatches under a fixed 16384 torus-unit
 tolerance and rejects body-only selector rows. The result opens compact
 selector encryption/noise modeling only; r=2 is count break-even once
 decomposition streams are included, while r=4/r=6 remain count-positive.
+Stage126 then verifies deterministic compact selector encryption/noise
+semantics: coefficient phase, production DFT phase, exact modeled noise, and
+conservative noise bound gates all pass, while body-only encrypted selector
+rows remain rejected. This opens only isolated compact external-product kernel
+work outside `sab_pvw_*`.
 
 ## Execution Route
 
@@ -187,7 +192,13 @@ decomposition streams are included, while r=4/r=6 remain count-positive.
     torus-unit tolerance, body-only selector rows are rejected, and layout
     count evidence shows r=2 break-even but r=4/r=6 positive. The next valid
     step is compact selector encryption/noise modeling outside `sab_pvw_*`.
-29. Preserve the current final-audit status:
+29. Treat Stage126 as the current compact selector encryption/noise gate:
+    deterministic encrypted selector rows pass coefficient phase, production
+    DFT, modeled-noise, noise-bound, and negative-control gates for r=2/4/6.
+    The maximum DFT gap is 14449 under tolerance 131072, and the maximum
+    modeled noise is 13022 under bound 917504. The next valid step is an
+    isolated compact external-product kernel outside `sab_pvw_*`.
+30. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard
