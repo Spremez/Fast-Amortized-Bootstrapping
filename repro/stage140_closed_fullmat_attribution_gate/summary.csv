@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,detail,next_action
+stage140_mosfhet_static_build,PASS,make_static_spqlios_pvw,true,repro/stage140_closed_fullmat_attribution_gate/mosfhet_static_build.log,MOSFHET static build with PVW/MAT objects.,Fix build first.
+stage140_probe_compile,PASS,gcc_probe_compile,true,repro/stage140_closed_fullmat_attribution_gate/compile_probe.log,Standalone closed full-MAT attribution probe compiled.,
+stage140_probe_run,PASS,probe_returncode,0,repro/stage140_closed_fullmat_attribution_gate/run_probe.log,Closed full-MAT attribution probe executed.,
+stage140_correctness,PASS,correctness_rows,12,repro/stage140_closed_fullmat_attribution_gate/correctness.csv,Split decomp/DFT plus addmul equals production full-MAT DFT output.,Do not interpret attribution if this fails.
+stage140_attribution_rows,PASS,bench_rows;attr_rows,180;12,repro/stage140_closed_fullmat_attribution_gate/benchmark_samples.csv; repro/stage140_closed_fullmat_attribution_gate/attribution.csv,"Current, closed decomp/DFT, and closed addmul timings recorded.",
+stage140_closed_dft_lower_bound,PASS,closed_input_dft_conversions,all_at_(r+1)T,repro/stage140_closed_fullmat_attribution_gate/attribution.csv,Production closed full-MAT path already reaches the input DFT count lower bound for Torus input state.,"Optimize DFT backend/lazy state or addmul, not duplicate shared-mask count."
+stage140_decision,PASS_STAGE140_CLOSED_FULLMAT_DFT_COUNT_LOWER_BOUND_READY_STAGE141,route_policy,,repro/stage140_closed_fullmat_attribution_gate/summary.csv; repro/stage140_closed_fullmat_attribution_gate/attribution.csv,Stage140 decides the next closed full-MAT optimization route.,"Stage141 should specialize the dominant component for target T=1 and r=2/4, then rerun SAB CMUX/full A/B."

@@ -1874,3 +1874,22 @@ hypotheses:
       - direct compact output is inserted into SAB without shared-mask closure
       - Stage138 kernel speedup is claimed as r-body SAB speedup
       - shared-output/full-MAT route is skipped
+  - id: H64_closed_fullmat_attribution
+    statement: >
+      After diagonal compact output is rejected by shared-mask closure, the
+      valid PVW/MAT-SAB optimization target is the production closed full-MAT
+      external product, whose Torus-input DFT count is already at `(r+1)T`.
+    mechanism: >
+      A closed PVW_TMLWE state has one shared mask and r body polynomials, so
+      the decomposed input vector has r+1 components per gadget level. Further
+      DFT-count reduction requires a lazy/decomposed state representation, not
+      a diagonal compact output.
+    status: stage140_closed_fullmat_attribution_gate
+    evidence: docs/stage140_closed_fullmat_attribution_gate.md; experiments/stage140_closed_fullmat_attribution_gate_plan.md; theory_checks/stage140_closed_fullmat_attribution_model.md; algorithm_variants/mat_rlwe_sab_closed_fullmat_attribution.md; scripts/build_stage140_closed_fullmat_attribution_gate.py; repro/stage140_closed_fullmat_attribution_gate/summary.csv; repro/stage140_closed_fullmat_attribution_gate/correctness.csv; repro/stage140_closed_fullmat_attribution_gate/attribution.csv; repro/stage140_closed_fullmat_attribution_gate/artifact_index.csv
+    current_decision: >
+      Stage140 records PASS_STAGE140_CLOSED_FULLMAT_DFT_COUNT_LOWER_BOUND_READY_STAGE141. Target-shape r=4,T=1 next-route rows:
+      N=1024:JOINT_DFT_AND_ADDMUL; N=512:JOINT_DFT_AND_ADDMUL.
+    failure_criteria:
+      - split full-MAT output differs from production output
+      - fewer than `(r+1)T` input DFTs are claimed without lazy state
+      - microbench attribution is claimed as full SAB bootstrapping speedup

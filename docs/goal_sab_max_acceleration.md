@@ -761,3 +761,8 @@ is useful for repeated independent lane-pair EP, but it is not directly closed
 as a PVW_TMLWE r-body ciphertext because lane output masks differ. The next
 algorithmic route is shared-output compact/full-MAT optimization, not direct
 diagonal compact insertion into SAB.
+
+Stage140 establishes the valid post-Stage139 route: production closed full-MAT
+already reaches the Torus-input DFT count lower bound `(r+1)T`, so the remaining
+algorithmic choices are lazy/decomposed state representation or dense addmul
+layout/AVX specialization. This keeps the comparison aligned with `T_bootstrap/r`.

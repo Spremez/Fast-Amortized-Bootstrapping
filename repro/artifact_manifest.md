@@ -2082,3 +2082,21 @@ Repro artifacts:
 - `repro/stage139_compact_closure_audit/run_probe.log`
 - `repro/stage139_compact_closure_audit/compact_closure_audit.c`
 - `repro/stage139_compact_closure_audit/artifact_index.csv`
+
+## Stage 140 Closed Full-MAT Attribution Gate
+
+- `docs/stage140_closed_fullmat_attribution_gate.md`
+- `experiments/stage140_closed_fullmat_attribution_gate_plan.md`
+- `theory_checks/stage140_closed_fullmat_attribution_model.md`
+- `algorithm_variants/mat_rlwe_sab_closed_fullmat_attribution.md`
+- `scripts/build_stage140_closed_fullmat_attribution_gate.py`
+- `repro/stage140_closed_fullmat_attribution_gate/summary.csv`
+- `repro/stage140_closed_fullmat_attribution_gate/correctness.csv`
+- `repro/stage140_closed_fullmat_attribution_gate/benchmark_samples.csv`
+- `repro/stage140_closed_fullmat_attribution_gate/benchmark_aggregate.csv`
+- `repro/stage140_closed_fullmat_attribution_gate/attribution.csv`
+- `repro/stage140_closed_fullmat_attribution_gate/mosfhet_static_build.log`
+- `repro/stage140_closed_fullmat_attribution_gate/compile_probe.log`
+- `repro/stage140_closed_fullmat_attribution_gate/run_probe.log`
+- `repro/stage140_closed_fullmat_attribution_gate/closed_fullmat_attribution_gate.c`
+- `repro/stage140_closed_fullmat_attribution_gate/artifact_index.csv`

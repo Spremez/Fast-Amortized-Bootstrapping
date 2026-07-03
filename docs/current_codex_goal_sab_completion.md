@@ -304,3 +304,8 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE139_COMPACT_DIAGONAL_NOT_PVW_CLOSED_REDIRECT_FULL_MAT_ROUTE`. Minimum mask mismatch count is 512.000000. Direct diagonal
     compact output is not a valid PVW_TMLWE SAB accumulator; Stage140 must
     target full MAT/shared-output compact closure.
+
+44. Treat Stage140 as the closed full-MAT attribution gate:
+    `PASS_STAGE140_CLOSED_FULLMAT_DFT_COUNT_LOWER_BOUND_READY_STAGE141`. Production closed full-MAT uses `(r+1)T` input DFT conversions,
+    which is the Torus-input lower bound for a one-mask/r-body state. Stage141
+    must target either lazy state or addmul/AVX, then validate at CMUX/SAB level.

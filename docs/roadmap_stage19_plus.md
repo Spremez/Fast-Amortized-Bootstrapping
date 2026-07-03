@@ -5038,3 +5038,21 @@ Completed. Stage139 records PASS_STAGE139_COMPACT_DIAGONAL_NOT_PVW_CLOSED_REDIRE
 512.000000; direct diagonal compact SAB integration is blocked. Stage140
 must use full MAT PVW_TMLWE output or design a shared-output compact kernel.
 ```
+
+## Stage 140: Closed Full-MAT Attribution Gate
+
+Goal:
+
+```text
+Attribute the production closed full-MAT external product after Stage139 blocks
+direct diagonal compact SAB integration.
+```
+
+Status:
+
+```text
+Completed. Stage140 records PASS_STAGE140_CLOSED_FULLMAT_DFT_COUNT_LOWER_BOUND_READY_STAGE141. The closed input DFT count is already
+at `(r+1)T`; for target-shape r=4,T=1 the minimum addmul fraction is
+0.546981 and minimum decomp/DFT fraction is 0.445453. Stage141
+must optimize the dominant closed component, not the invalid diagonal output.
+```
