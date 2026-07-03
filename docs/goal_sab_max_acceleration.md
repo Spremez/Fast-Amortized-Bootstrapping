@@ -663,3 +663,15 @@ tolerance 131072, and the maximum modeled noise is 13022 under bound 917504.
 Body-only encrypted selector rows remain rejected. This is deterministic
 semantic/noise-model evidence, not randomized failure-rate evidence; it opens
 only an isolated compact external-product kernel gate.
+
+Stage127 implements that isolated generated kernel boundary. The probe defines
+`compact_ep_kernel_dft(...)` with explicit decomposition/DFT scratch, applies
+compact `shared[t,q]` and `body[t,q]` selector rows, and compares the output
+with a coefficient reference and modeled noisy phase. For k=1, T=7, Bg_bit=7,
+r=2/4/6, N=512/1024, and seed subset 0..1, component, phase, and exact
+noise-model mismatch counts are all zero. The maximum component gap is 14645
+and maximum phase gap is 14653 under tolerance 131072. DFT-term ratios are
+1.125x/1.5625x/2.041667x for r=2/4/6, while total ratios including
+decomposition are 1.0x/1.25x/1.555556x. This is still a generated isolated
+kernel, not a production MOSFHET API, AVX512 kernel, SAB integration, or
+complete `T_bootstrap/r` benchmark.

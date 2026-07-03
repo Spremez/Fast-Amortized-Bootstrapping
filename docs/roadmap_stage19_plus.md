@@ -4598,3 +4598,61 @@ selector rows remain rejected. Per-lane selector-noise term ratios are
 external-product kernel, still outside SAB integration and complete
 `T_bootstrap/r` claims.
 ```
+
+## Stage 127: Isolated Compact External-Product Kernel Gate
+
+Goal:
+
+```text
+Factor the Stage126 compact selector external product into a reusable
+isolated DFT kernel with explicit scratch, while keeping production MOSFHET
+headers and `sab_pvw_*` unchanged.
+```
+
+Theory basis:
+
+Stage126 validates compact selector encryption/noise semantics, but its
+external product is still inline in the generated probe. Stage127 checks the
+next implementation boundary: the same operation must be expressible as a
+kernel-shaped function that decomposes lane-local shared/body source
+polynomials, converts digits to DFT, applies `shared[t,q]` and `body[t,q]`
+selector rows, and returns lane-local DFT mask/body output.
+
+Tasks:
+
+- build MOSFHET `libmosfhet.a` with `FFT_LIB=spqlios`;
+- generate and compile a standalone isolated compact EP kernel probe;
+- define `compact_ep_kernel_dft(...)` and explicit scratch buffers;
+- compare kernel DFT output components with a coefficient-domain reference;
+- compare kernel phase against the modeled noisy reference;
+- keep a body-only kernel as a required failing negative control;
+- record dense versus compact DFT-term and decomposition-included total-term
+  ratios.
+
+Gate:
+
+- build, compile, and run must pass;
+- kernel output component mismatch counts must be zero under tolerance;
+- kernel phase mismatch and noise-model mismatch counts must be zero under
+  tolerance;
+- body-only kernel must fail;
+- compact DFT-term ratio must be above 1.0 and total-term ratio must be at
+  least 1.0;
+- passing only opens a MOSFHET-adjacent compact EP API boundary stage outside
+  the SAB hot path.
+
+Status:
+
+```text
+Completed. Stage127 records
+PASS_STAGE127_ISOLATED_COMPACT_EP_KERNEL_READY_API_BOUNDARY_REQUIRED. The
+generated `compact_ep_kernel_dft` probe passes for k=1, T=7, Bg_bit=7,
+r=2/4/6, N=512/1024, and seed subset 0..1. Component, phase, and exact
+noise-model mismatch counts are zero for all 9 rows. The maximum component gap
+is 14645 and the maximum phase gap is 14653 under tolerance 131072. Body-only
+kernel rows remain rejected. DFT-term ratios are
+1.125x/1.5625x/2.041667x for r=2/4/6; total-term ratios including
+decomposition are 1.0x/1.25x/1.555556x. The next valid stage is a
+MOSFHET-adjacent compact EP API boundary, still outside SAB integration and
+complete `T_bootstrap/r` claims.
+```

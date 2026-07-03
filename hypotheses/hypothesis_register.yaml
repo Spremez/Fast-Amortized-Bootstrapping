@@ -1543,3 +1543,37 @@ hypotheses:
       - complete-SAB or AVX512 performance is claimed from deterministic
         encryption/noise simulator evidence alone
       - scalar/default SAB behavior changes before a guarded integration stage
+  - id: H51_isolated_compact_ep_kernel
+    statement: >
+      The compact selector external product can be factored into a reusable
+      isolated production-DFT kernel with explicit scratch while preserving
+      component equivalence, modeled phase/noise equivalence, negative-control
+      rejection, and the compact count model.
+    mechanism: >
+      Stage127 generates a standalone C probe defining
+      `compact_ep_kernel_dft(...)`. The kernel decomposes lane-local
+      shared/body source polynomials, converts digits to DFT, applies compact
+      encrypted selector rows, and outputs lane-local DFT mask/body components.
+      The probe compares those components with a coefficient reference, checks
+      decrypted phase against the modeled noisy reference, rejects a body-only
+      kernel, and records dense-versus-compact DFT and total term ratios.
+    status: stage127_isolated_compact_ep_kernel_ready_api_boundary_required
+    evidence: docs/stage127_isolated_compact_ep_kernel_gate.md; experiments/stage127_isolated_compact_ep_kernel_gate_plan.md; theory_checks/stage127_isolated_compact_ep_kernel_model.md; algorithm_variants/mat_rlwe_sab_isolated_compact_ep_kernel.md; scripts/build_stage127_isolated_compact_ep_kernel_gate.py; repro/stage127_isolated_compact_ep_kernel_gate/summary.csv; repro/stage127_isolated_compact_ep_kernel_gate/kernel_results.csv; repro/stage127_isolated_compact_ep_kernel_gate/mosfhet_static_build.log; repro/stage127_isolated_compact_ep_kernel_gate/compile_probe.log; repro/stage127_isolated_compact_ep_kernel_gate/run_probe.log; repro/stage127_isolated_compact_ep_kernel_gate/isolated_compact_ep_kernel_gate.c; repro/stage127_isolated_compact_ep_kernel_gate/artifact_index.csv
+    current_decision: >
+      Stage127 records
+      PASS_STAGE127_ISOLATED_COMPACT_EP_KERNEL_READY_API_BOUNDARY_REQUIRED.
+      For k=1, T=7, Bg_bit=7, r=2/4/6, N=512/1024, and seed subset 0..1,
+      component, phase, and exact noise-model mismatch counts are zero. The
+      maximum component gap is 14645 and maximum phase gap is 14653 under
+      tolerance 131072. Body-only kernel rows are rejected. DFT-term ratios are
+      1.125x/1.5625x/2.041667x and decomposition-included total ratios are
+      1.0x/1.25x/1.555556x for r=2/4/6. This opens only a MOSFHET-adjacent
+      compact EP API boundary stage outside `sab_pvw_*`.
+    failure_criteria:
+      - MOSFHET-adjacent API ownership or scratch lifecycle cannot preserve
+        the isolated kernel invariant
+      - isolated microbench shows the compact kernel loses the expected count
+        advantage for r=4/r=6
+      - AVX512 or complete-SAB acceleration is claimed from isolated kernel
+        semantics alone
+      - scalar/default SAB behavior changes before a guarded integration stage

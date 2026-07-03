@@ -1872,3 +1872,18 @@ Repro artifacts:
 - `repro/stage126_compact_selector_encryption_noise_gate/run_probe.log`
 - `repro/stage126_compact_selector_encryption_noise_gate/compact_selector_encryption_noise_gate.c`
 - `repro/stage126_compact_selector_encryption_noise_gate/artifact_index.csv`
+
+## Stage 127 Isolated Compact EP Kernel Gate
+
+- `docs/stage127_isolated_compact_ep_kernel_gate.md`
+- `experiments/stage127_isolated_compact_ep_kernel_gate_plan.md`
+- `theory_checks/stage127_isolated_compact_ep_kernel_model.md`
+- `algorithm_variants/mat_rlwe_sab_isolated_compact_ep_kernel.md`
+- `scripts/build_stage127_isolated_compact_ep_kernel_gate.py`
+- `repro/stage127_isolated_compact_ep_kernel_gate/summary.csv`
+- `repro/stage127_isolated_compact_ep_kernel_gate/kernel_results.csv`
+- `repro/stage127_isolated_compact_ep_kernel_gate/mosfhet_static_build.log`
+- `repro/stage127_isolated_compact_ep_kernel_gate/compile_probe.log`
+- `repro/stage127_isolated_compact_ep_kernel_gate/run_probe.log`
+- `repro/stage127_isolated_compact_ep_kernel_gate/isolated_compact_ep_kernel_gate.c`
+- `repro/stage127_isolated_compact_ep_kernel_gate/artifact_index.csv`

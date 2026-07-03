@@ -89,7 +89,11 @@ Stage126 then verifies deterministic compact selector encryption/noise
 semantics: coefficient phase, production DFT phase, exact modeled noise, and
 conservative noise bound gates all pass, while body-only encrypted selector
 rows remain rejected. This opens only isolated compact external-product kernel
-work outside `sab_pvw_*`.
+work outside `sab_pvw_*`. Stage127 then factors that external product into a
+generated reusable `compact_ep_kernel_dft` with explicit scratch. Component,
+phase, and noise-model mismatch counts are zero, body-only kernel rows remain
+rejected, and the count model remains positive for r=4/r=6 while r=2 is
+break-even once decomposition terms are included.
 
 ## Execution Route
 
@@ -198,7 +202,12 @@ work outside `sab_pvw_*`.
     The maximum DFT gap is 14449 under tolerance 131072, and the maximum
     modeled noise is 13022 under bound 917504. The next valid step is an
     isolated compact external-product kernel outside `sab_pvw_*`.
-30. Preserve the current final-audit status:
+30. Treat Stage127 as the current isolated compact EP kernel gate:
+    `compact_ep_kernel_dft` passes component, phase, noise-model, negative
+    control, and complexity gates for r=2/4/6. Max component/phase gaps are
+    14645/14653 under tolerance 131072. The next valid step is a
+    MOSFHET-adjacent compact EP API boundary outside `sab_pvw_*`.
+31. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard
