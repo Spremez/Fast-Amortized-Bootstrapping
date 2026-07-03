@@ -1,0 +1,10 @@
+command: gcc -O2 -DSTAGE220_BACKEND=\"spqlios\" -I src/mosfhet/include -o repro/stage220_encrypted_compact_keygen_prototype/stage220_encrypted_compact_keygen_prototype repro/stage220_encrypted_compact_keygen_prototype/stage220_encrypted_compact_keygen_prototype.c src/mosfhet/lib/libmosfhet.a -lm
+returncode: 0
+--- stdout ---
+
+--- stderr ---
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL
+N/ec localhost �Nt0
+
+/usr/bin/ld: warning: spqlios-ifft-fma.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker

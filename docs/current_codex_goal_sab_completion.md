@@ -640,3 +640,8 @@ or production security/noise claims.
 `PASS_STAGE219_MOSFHET_COMPACT_KEY_API_SKELETON_READY_ENCRYPTED_KEYGEN` advances the compact route only to an encrypted-keygen prototype
 candidate. It does not authorize `sab_pvw_*` integration, complete-SAB claims,
 or production security/noise claims.
+### Stage220 encrypted compact keygen prototype
+
+`PASS_STAGE220_ENCRYPTED_COMPACT_KEYGEN_READY_NOISE_RECURRENCE` advances the compact route only to a production-noise recurrence
+candidate. It does not authorize `sab_pvw_*` integration, complete-SAB claims,
+or security claims.

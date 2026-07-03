@@ -1061,3 +1061,7 @@ Stage219 records MOSFHET compact key API skeleton. Decision: `PASS_STAGE219_MOSF
 route now has a compile-checked MOSFHET-adjacent key object boundary, but not
 encrypted keygen, production noise, complete-SAB integration, or speedup
 evidence.
+Stage220 records encrypted compact keygen prototype. Decision: `PASS_STAGE220_ENCRYPTED_COMPACT_KEYGEN_READY_NOISE_RECURRENCE`.
+The compact route now has an isolated encrypted-row prototype, but still lacks
+security reduction, production SAB noise recurrence, compact EP integration,
+and complete-SAB speedup evidence.

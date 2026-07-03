@@ -1,0 +1,5 @@
+input,status,evidence,role,bytes
+stage203_equation_map,present,repro/stage203_production_selector_equation_probe/equation_map.csv,row-role source for generated encrypted keygen probe,3693
+stage219_proof_gate,present,repro/stage219_mosfhet_compact_key_api_skeleton/proof_gate.csv,permission for encrypted compact keygen prototype only,1842
+stage219_api_results,present,repro/stage219_mosfhet_compact_key_api_skeleton/api_results.csv,compiled API skeleton evidence,572
+mosfhet_header,present,src/mosfhet/include/mosfhet.h,production MOSFHET public types/functions,32723

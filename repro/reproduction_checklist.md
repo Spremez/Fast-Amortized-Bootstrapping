@@ -319,3 +319,4 @@
 - [x] Stage217 compact keygen/security preflight recorded.
 - [x] Stage218 compact key-object/noise prototype recorded.
 - [x] Stage219 MOSFHET compact key API skeleton recorded.
+- [x] Stage220 encrypted compact keygen prototype recorded.

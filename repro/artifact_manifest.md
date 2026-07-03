@@ -2609,3 +2609,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage219_compact_key_api_skeleton.md`
   - `scripts/build_stage219_mosfhet_compact_key_api_skeleton.py`
   - `repro/stage219_mosfhet_compact_key_api_skeleton/`
+- stage220_encrypted_compact_keygen_prototype:
+  - `docs/stage220_encrypted_compact_keygen_prototype.md`
+  - `experiments/stage220_encrypted_compact_keygen_prototype_plan.md`
+  - `theory_checks/stage220_encrypted_compact_keygen_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage220_encrypted_compact_keygen_prototype.md`
+  - `scripts/build_stage220_encrypted_compact_keygen_prototype.py`
+  - `repro/stage220_encrypted_compact_keygen_prototype/`
