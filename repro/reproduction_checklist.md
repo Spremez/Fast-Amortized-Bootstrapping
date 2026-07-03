@@ -275,3 +275,4 @@
 - [x] Stage184 exact-route closeout claim refresh pack recorded.
 - [x] Stage185 research/repro package refresh recorded.
 - [x] Stage186 compact proof unlock audit recorded.
+- [x] Stage187 compact proof obligation draft recorded.

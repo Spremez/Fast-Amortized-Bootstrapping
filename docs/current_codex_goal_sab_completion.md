@@ -482,3 +482,7 @@ The new research goal is complete only after a later stage records:
     `BLOCK_STAGE186_COMPACT_PROOF_UNLOCK_NOT_READY`. Compact/shared-output MAT-SAB is not unlocked for
     implementation. Stage138 remains kernel-level motivation only; Stage139,
     Stage176, and Stage177 continue to block full SAB code and strong claims.
+91. Treat Stage187 as the compact proof obligation draft:
+    `PASS_STAGE187_COMPACT_PROOF_DRAFT_IMPLEMENTATION_STILL_DENIED`. Compact/shared-output MAT-SAB now has explicit theorem
+    obligations and falsification gates. Only isolated proof probes are allowed;
+    production SAB code remains denied.

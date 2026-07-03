@@ -5798,3 +5798,19 @@ Completed. Stage186 records BLOCK_STAGE186_COMPACT_PROOF_UNLOCK_NOT_READY. Stage
 signal, but Stage139/176/177 still block implementation and strong claims.
 Compact/shared-output MAT-SAB remains a proof route only.
 ```
+## Stage 187: Compact Proof Obligation Draft
+
+Goal:
+
+```text
+Convert compact/shared-output MAT-SAB blockers into theorem obligations,
+falsification gates, and implementation entry rules.
+```
+
+Status:
+
+```text
+Completed. Stage187 records PASS_STAGE187_COMPACT_PROOF_DRAFT_IMPLEMENTATION_STILL_DENIED. It allows isolated proof probes but
+keeps production compact SAB code denied until key distribution, closed-state,
+phase, and noise obligations pass.
+```

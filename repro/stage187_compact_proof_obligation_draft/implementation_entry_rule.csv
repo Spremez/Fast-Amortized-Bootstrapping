@@ -1,0 +1,5 @@
+entry,permission,required_before_allow,current_reason
+production_sab_code,DENY,"G1,G2,G3,G4 pass",Stage186 shows key distribution and closed shared-mask state are blocked.
+isolated_proof_probe,ALLOW,No sab_pvw_* hot-path changes; must target one theorem gate.,Finite/proof probes can reduce proof uncertainty without claiming implementation.
+complete_sab_benchmark,DENY_UNTIL_IMPLEMENTED,Production implementation after G1-G4 pass.,No compact complete-SAB path exists.
+paper_novelty_claim,DENY,G1-G6 pass and citation-level support.,Stage177 denies strong novelty and Stage186 denies implementation.

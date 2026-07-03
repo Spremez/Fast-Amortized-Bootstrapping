@@ -2679,3 +2679,19 @@ hypotheses:
       - compact SAB is implemented without closing proof obligations
       - Stage138 kernel-only timing is reported as complete-SAB acceleration
       - broad novelty is claimed before citation-level review
+  - id: H111_compact_proof_obligation_draft
+    statement: >
+      Compact/shared-output MAT-SAB can only proceed through explicit theorem
+      obligations and falsification gates; proof-draft evidence alone must not
+      authorize production SAB code.
+    mechanism: >
+      Stage187 converts Stage186 blockers into theorem, assumption, dependency,
+      and implementation-entry matrices.
+    status: stage187_compact_proof_obligation_draft
+    evidence: docs/stage187_compact_proof_obligation_draft.md; experiments/stage187_compact_proof_obligation_draft_plan.md; theory_checks/stage187_compact_proof_obligations.md; repro/stage187_compact_proof_obligation_draft/summary.csv
+    current_decision: >
+      PASS_STAGE187_COMPACT_PROOF_DRAFT_IMPLEMENTATION_STILL_DENIED
+    failure_criteria:
+      - production compact SAB code is written before T1-T4 pass
+      - kernel-only compact timing is reported as complete-SAB speedup
+      - novelty is claimed before T1-T6 and citation-level review pass

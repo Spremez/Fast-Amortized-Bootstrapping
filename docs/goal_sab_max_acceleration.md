@@ -929,3 +929,6 @@ The compact/shared-output route remains blocked for implementation despite
 kernel-level signal, because security distribution, closed shared-mask state,
 production noise/phase proof, complete-SAB benchmark, and novelty gates are
 not all satisfied.
+Stage187 records the compact proof obligation draft. Decision: `PASS_STAGE187_COMPACT_PROOF_DRAFT_IMPLEMENTATION_STILL_DENIED`.
+It turns the compact/shared-output route into a bounded theorem/gate program
+and keeps implementation denied.

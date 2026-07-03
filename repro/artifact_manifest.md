@@ -2391,3 +2391,9 @@ Repro artifacts:
   - `theory_checks/stage186_compact_proof_unlock_model.md`
   - `algorithm_variants/mat_rlwe_sab_compact_unlock_audit.md`
   - `repro/stage186_compact_proof_unlock_audit/`
+- stage187_compact_proof_obligation_draft: `PASS_STAGE187_COMPACT_PROOF_DRAFT_IMPLEMENTATION_STILL_DENIED`
+  - `docs/stage187_compact_proof_obligation_draft.md`
+  - `experiments/stage187_compact_proof_obligation_draft_plan.md`
+  - `theory_checks/stage187_compact_proof_obligations.md`
+  - `algorithm_variants/mat_rlwe_sab_compact_proof_obligation_draft.md`
+  - `repro/stage187_compact_proof_obligation_draft/`

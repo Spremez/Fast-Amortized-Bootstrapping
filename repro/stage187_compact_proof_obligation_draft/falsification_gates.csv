@@ -1,0 +1,7 @@
+gate,target,method,pass_condition,fail_action
+G1_distribution_hybrid,T1_key_distribution,written proof plus finite simulator showing public rows do not encode secret-dependent omissions,reviewed proof or explicit assumption recorded; no hidden secret-dependent public metadata,compact implementation remains denied
+G2_closed_state_api,T2_closed_state,define compact accumulator type and one-step CMUX/NCMUX reference checker,all output masks are one shared mask or proven convertible without dense re-expansion,do not wire compact output into sab_pvw_*
+G3_phase_equivalence,T3_phase_equivalence,coefficient and DFT equivalence against dense structured reference for r=2/4/6 and target N,"zero mismatches at CMUX, RGSW monomial, sparse_mul, and extract boundaries",repair equations before performance work
+G4_noise_bound,T4_noise_bound,symbolic recurrence plus multi-seed stage/final-output noise campaign,failure/noise not worse than baseline or parameter change justified,no final SAB claim
+G5_complete_sab_performance,T5_performance_survival,same-backend repeated complete-SAB A/B using T_bootstrap/r,stable positive throughput after key/memory/keygen/resource reporting,record compact as negative/neutral
+G6_citation_novelty,T6_novelty_scope,"citation-level related-work verification against 2025/686, 2025/696, amortized/batch, PVW, TFHE/FHEW",claim is source-supported and narrowly distinguished,downgrade to engineering/future-work wording

@@ -1,0 +1,6 @@
+id,type,description,status,risk
+A0_current_exact_full_mat,implemented_baseline,Current exact full-MAT PVW/MAT-SAB uses dense encrypted selector rows and closed PVW_TMLWE state.,AVAILABLE,Dense cost limits speedup but security/API are current baseline.
+A1_zero_cross_logical_structure,algorithmic_structure,Structured compact assumes body-cross terms are logical zeros in the intended selector map.,TOY_SUPPORTED,Logical zeros are not free encrypted rows under public-key distribution.
+A2_delete_or_constrain_zero_rows,security_assumption,Omitting/constraining body-cross zero encryptions does not leak or distinguish keys.,UNPROVEN,Main blocker for implementation and novelty.
+A3_closed_compact_accumulator,api_invariant,Compact output can be represented as one shared mask plus r bodies after every SAB update.,CONTRADICTED_BY_CURRENT_OUTPUT,Stage139 shows current compact diagonal output has lane-local masks.
+A4_kernel_gain_survives_full_sab,performance_assumption,Stage138 kernel speedup survives CMUX/RGSW/sparse schedule and resource overhead.,UNTESTED,No complete-SAB compact path exists.
