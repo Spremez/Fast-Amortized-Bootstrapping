@@ -1,0 +1,7 @@
+variant,run,status,r,h,r_prec,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,source_log
+control_h14_r6_backend,0,PASS,6,39,7,40801599.000,6800266.500,58635553.000,9772592.167,1.437,repro/stage159_sub_decomp_fusion_repeated_gate/control_h14_r6_backend/run_0.log
+control_h14_r6_backend,1,PASS,6,39,7,40743573.000,6790595.500,58485370.000,9747561.667,1.435,repro/stage159_sub_decomp_fusion_repeated_gate/control_h14_r6_backend/run_1.log
+control_h14_r6_backend,2,PASS,6,39,7,41506791.000,6917798.500,58674598.000,9779099.667,1.414,repro/stage159_sub_decomp_fusion_repeated_gate/control_h14_r6_backend/run_2.log
+sub_decomp_fusion_h14_r6_backend,0,PASS,6,39,7,39340783.000,6556797.167,58479738.000,9746623.000,1.486,repro/stage159_sub_decomp_fusion_repeated_gate/sub_decomp_fusion_h14_r6_backend/run_0.log
+sub_decomp_fusion_h14_r6_backend,1,PASS,6,39,7,39894572.000,6649095.333,58408257.000,9734709.500,1.464,repro/stage159_sub_decomp_fusion_repeated_gate/sub_decomp_fusion_h14_r6_backend/run_1.log
+sub_decomp_fusion_h14_r6_backend,2,PASS,6,39,7,39501507.000,6583584.500,58674752.000,9779125.333,1.485,repro/stage159_sub_decomp_fusion_repeated_gate/sub_decomp_fusion_h14_r6_backend/run_2.log

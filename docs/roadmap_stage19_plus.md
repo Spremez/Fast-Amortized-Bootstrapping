@@ -5356,3 +5356,17 @@ Status:
 ```text
 Completed. Stage158 records SMOKE_STAGE158_SUB_DECOMP_FUSION_FULLSAB_POSITIVE_REPEATED_REQUIRED. Defaults remain unchanged.
 ```
+## Stage 159: Sub-Decompose Fusion Repeated Gate
+
+Goal:
+
+```text
+Upgrade Stage158 sub-decompose fusion from one-run full-SAB smoke to repeated
+T_bootstrap/r, final-output noise, and resource gates.
+```
+
+Status:
+
+```text
+Completed. Stage159 records PASS_STAGE159_SUB_DECOMP_FUSION_REPEATED_PROMOTION_CANDIDATE. Scalar/default paths remain unchanged.
+```

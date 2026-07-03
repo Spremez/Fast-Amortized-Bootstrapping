@@ -2226,3 +2226,9 @@ Repro artifacts:
 - `repro/stage156_lazy_dft_closure_gate/`: Stage156 lazy-DFT closure gate outputs.
 - `repro/stage157_sub_decompose_fusion_preflight/`: Stage157 sub-decompose fusion preflight outputs.
 - `repro/stage158_sub_decomp_fusion_fullsab_gate/`: Stage158 sub-decompose fusion full-SAB gate outputs.
+- stage159_sub_decomp_fusion_repeated_gate: `PASS_STAGE159_SUB_DECOMP_FUSION_REPEATED_PROMOTION_CANDIDATE`
+  - `docs/stage159_sub_decomp_fusion_repeated_gate.md`
+  - `experiments/stage159_sub_decomp_fusion_repeated_gate_plan.md`
+  - `theory_checks/stage159_sub_decomp_fusion_stat_model.md`
+  - `algorithm_variants/mat_rlwe_sab_sub_decomp_fusion_repeated.md`
+  - `repro/stage159_sub_decomp_fusion_repeated_gate/`

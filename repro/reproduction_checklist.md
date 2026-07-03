@@ -246,3 +246,4 @@
 - [x] Stage156 lazy-DFT closure gate generated from source API scan and finite decomposition tests.
 - [x] Stage157 sub-decompose fusion standalone C microbench generated and recorded.
 - [x] Stage158 sub-decompose fusion full-SAB WSL gate generated and recorded.
+- [x] Stage159 sub-decompose fusion repeated/noise/resource gate pack recorded.

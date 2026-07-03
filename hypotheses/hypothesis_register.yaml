@@ -2196,3 +2196,20 @@ hypotheses:
     failure_criteria:
       - full SAB correctness fails
       - candidate does not improve T_bootstrap_per_lane over same-backend control
+  - id: H83_sub_decomp_fusion_repeated_gate
+    statement: >
+      The Stage158 sub-decompose fusion candidate should retain stable
+      complete-SAB T_bootstrap/r improvement over the same H14 backend control
+      and pass final-output noise/resource gates.
+    mechanism: >
+      Directly decomposing the in2-in1 CMUX difference removes an intermediate
+      PVW_TMLWE write/read without changing key format or the sparse SAB
+      schedule.
+    status: stage159_sub_decomp_fusion_repeated_gate
+    evidence: docs/stage159_sub_decomp_fusion_repeated_gate.md; experiments/stage159_sub_decomp_fusion_repeated_gate_plan.md; theory_checks/stage159_sub_decomp_fusion_stat_model.md; algorithm_variants/mat_rlwe_sab_sub_decomp_fusion_repeated.md; scripts/build_stage159_sub_decomp_fusion_repeated_gate.py; repro/stage159_sub_decomp_fusion_repeated_gate/summary.csv
+    current_decision: >
+      PASS_STAGE159_SUB_DECOMP_FUSION_REPEATED_PROMOTION_CANDIDATE
+    failure_criteria:
+      - paired repeated T_bootstrap/r does not improve over same-backend control
+      - final-output noise has nonzero failures
+      - resource/key overhead is not reported

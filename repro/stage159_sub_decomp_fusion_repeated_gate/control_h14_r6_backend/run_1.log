@@ -1,0 +1,8 @@
+command: stdbuf -o0 ./main
+returncode: 0
+--- output ---
+wsl: hKm0R localhost N?tMn??FO*g\P0R WSL?0NAT !j?_?Nv WSL
+N/e?c localhost N?t?0
+SAB_PVW_BENCH correctness target_full r=6 h=39 r_prec=7: Pass
+SAB_PVW_BENCH sample target_full r=6 rep=0 pvw_us=40743573 scalar_repeated_us=58485370 speedup=1.435x
+SAB_PVW_BENCH summary target_full r=6 reps=1 pvw_avg_us=40743573.000 pvw_stddev_us=0.000 pvw_lane_avg_us=6790595.500 scalar_repeated_avg_us=58485370.000 scalar_stddev_us=0.000 scalar_lane_avg_us=9747561.667 speedup_vs_scalar_repeated=1.435x speedup_stddev=0.000

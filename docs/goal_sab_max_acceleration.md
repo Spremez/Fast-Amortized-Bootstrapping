@@ -836,3 +836,7 @@ complete-SAB acceleration without later integration.
 Stage158 tests sub-decompose fusion in complete SAB after Stage157. Decision:
 `SMOKE_STAGE158_SUB_DECOMP_FUSION_FULLSAB_POSITIVE_REPEATED_REQUIRED`. It keeps `SAB_PVW_SUB_DECOMP_FUSION` explicit/default false and
 does not upgrade claims unless repeated/noise/resource gates pass.
+Stage159 upgrades sub-decompose fusion from Stage158 smoke to repeated
+complete-SAB performance plus final-output noise/resource evidence. It uses
+`T_bootstrap/r` as the endpoint and keeps `SAB_PVW_SUB_DECOMP_FUSION` explicit.
+Decision: `PASS_STAGE159_SUB_DECOMP_FUSION_REPEATED_PROMOTION_CANDIDATE`.

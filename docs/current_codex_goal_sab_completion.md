@@ -379,3 +379,7 @@ The new research goal is complete only after a later stage records:
 62. Treat Stage158 as the sub-decompose fusion full-SAB gate:
     `SMOKE_STAGE158_SUB_DECOMP_FUSION_FULLSAB_POSITIVE_REPEATED_REQUIRED`. It is the first complete-SAB check for the Stage157
     implementation candidate; promotion still requires repeated gates.
+63. Treat Stage159 as the sub-decompose fusion repeated gate:
+    `PASS_STAGE159_SUB_DECOMP_FUSION_REPEATED_PROMOTION_CANDIDATE`. This stage decides whether the Stage158 candidate is a
+    promotion candidate, weak/neutral ablation, or failed path under strict
+    complete-SAB research gates.

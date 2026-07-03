@@ -1,0 +1,4 @@
+r,seed,status,points,pvw_failures,scalar_failures,pair_failures,pvw_log2_sigma_torus,scalar_log2_sigma_torus,pair_log2_sigma_torus,pvw_minus_scalar_log2,max_allowed_log2_gap,source_log
+6,6869590,Pass,12288,0,0,0,-8.153,-8.159,-7.867,0.006,4.000,repro/stage159_sub_decomp_fusion_repeated_gate/noise/seed_6869590.log
+6,6869591,Pass,12288,0,0,0,-8.228,-8.342,-7.730,0.115,4.000,repro/stage159_sub_decomp_fusion_repeated_gate/noise/seed_6869591.log
+6,6869592,Pass,12288,0,0,0,-8.318,-8.064,-7.768,-0.254,4.000,repro/stage159_sub_decomp_fusion_repeated_gate/noise/seed_6869592.log
