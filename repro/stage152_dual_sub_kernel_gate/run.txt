@@ -1,7 +1,7 @@
 run: 0
 returncode: 0
 --- stdout ---
-STAGE152_DUAL_SUB r=6 N=2048 reps=20000 current_us=185531 fused_us=156490 speedup=1.185577 correctness=PASS checksum_current=7926754499936684809 checksum_fused=7926754499936684809
+STAGE152_DUAL_SUB r=6 N=2048 reps=20000 current_us=182797 fused_us=161323 speedup=1.133112 correctness=PASS checksum_current=7926754499936684809 checksum_fused=7926754499936684809
 --- stderr ---
 wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
 N/e?c localhost ?N?t?0
@@ -9,7 +9,7 @@ N/e?c localhost ?N?t?0
 run: 1
 returncode: 0
 --- stdout ---
-STAGE152_DUAL_SUB r=6 N=2048 reps=20000 current_us=158802 fused_us=141563 speedup=1.121776 correctness=PASS checksum_current=7926754499936684809 checksum_fused=7926754499936684809
+STAGE152_DUAL_SUB r=6 N=2048 reps=20000 current_us=160600 fused_us=132405 speedup=1.212945 correctness=PASS checksum_current=7926754499936684809 checksum_fused=7926754499936684809
 --- stderr ---
 wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
 N/e?c localhost ?N?t?0
@@ -17,7 +17,7 @@ N/e?c localhost ?N?t?0
 run: 2
 returncode: 0
 --- stdout ---
-STAGE152_DUAL_SUB r=6 N=2048 reps=20000 current_us=150361 fused_us=131640 speedup=1.142214 correctness=PASS checksum_current=7926754499936684809 checksum_fused=7926754499936684809
+STAGE152_DUAL_SUB r=6 N=2048 reps=20000 current_us=150097 fused_us=133678 speedup=1.122825 correctness=PASS checksum_current=7926754499936684809 checksum_fused=7926754499936684809
 --- stderr ---
 wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
 N/e?c localhost ?N?t?0
@@ -25,7 +25,7 @@ N/e?c localhost ?N?t?0
 run: 3
 returncode: 0
 --- stdout ---
-STAGE152_DUAL_SUB r=6 N=2048 reps=20000 current_us=147868 fused_us=136157 speedup=1.086011 correctness=PASS checksum_current=7926754499936684809 checksum_fused=7926754499936684809
+STAGE152_DUAL_SUB r=6 N=2048 reps=20000 current_us=148025 fused_us=130387 speedup=1.135274 correctness=PASS checksum_current=7926754499936684809 checksum_fused=7926754499936684809
 --- stderr ---
 wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
 N/e?c localhost ?N?t?0
@@ -33,7 +33,7 @@ N/e?c localhost ?N?t?0
 run: 4
 returncode: 0
 --- stdout ---
-STAGE152_DUAL_SUB r=6 N=2048 reps=20000 current_us=176048 fused_us=135740 speedup=1.296950 correctness=PASS checksum_current=7926754499936684809 checksum_fused=7926754499936684809
+STAGE152_DUAL_SUB r=6 N=2048 reps=20000 current_us=167754 fused_us=146265 speedup=1.146918 correctness=PASS checksum_current=7926754499936684809 checksum_fused=7926754499936684809
 --- stderr ---
 wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
 N/e?c localhost ?N?t?0

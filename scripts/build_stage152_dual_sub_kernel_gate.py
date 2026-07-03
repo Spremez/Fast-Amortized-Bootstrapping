@@ -7,6 +7,7 @@ import csv
 import hashlib
 import math
 import os
+import re
 import subprocess
 from pathlib import Path
 from typing import Dict, Iterable, List
@@ -128,6 +129,21 @@ def append_once(path: Path, heading: str, block: str) -> None:
     if text and not text.endswith("\n"):
         text += "\n"
     write_text_lf(path, text + block.strip("\n") + "\n")
+
+
+def upsert_stage_section(path: Path, heading: str, block: str) -> None:
+    text = path.read_text(encoding="utf-8") if path.exists() else ""
+    replacement = block.strip("\n") + "\n"
+    pattern = re.compile(
+        rf"^{re.escape(heading)}\n.*?(?=^## Stage [0-9]+:|\Z)",
+        re.MULTILINE | re.DOTALL,
+    )
+    if pattern.search(text):
+        write_text_lf(path, pattern.sub(replacement, text, count=1))
+        return
+    if text and not text.endswith("\n"):
+        text += "\n"
+    write_text_lf(path, text + replacement)
 
 
 def fnum(value: str, default: float = 0.0) -> float:
@@ -703,7 +719,7 @@ Completed. Stage152 records {decision}. Isolated local speedup is
 {raw.get('predicted_body_speedup', '')}. This is not a complete SAB claim.
 ```
 """
-    append_once(ROADMAP_MD, "## Stage 152: Dual-Sub Kernel Gate", block)
+    upsert_stage_section(ROADMAP_MD, "## Stage 152: Dual-Sub Kernel Gate", block)
     append_once(GOAL_MD, "Stage152 tests dual-subtraction as an isolated H14-C3 gate", f"""
 Stage152 tests dual-subtraction as an isolated H14-C3 gate after Stage151's
 fulltile composition remains weak. It measures a shared-input AVX512

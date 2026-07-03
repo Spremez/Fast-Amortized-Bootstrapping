@@ -5259,6 +5259,6 @@ Status:
 
 ```text
 Completed. Stage152 records PASS_STAGE152_DUAL_SUB_LOCAL_POSITIVE_INTEGRATION_CANDIDATE. Isolated local speedup is
-1.421413 and predicted r=6 body speedup is
-1.047273. This is not a complete SAB claim.
+1.150215 mean / 1.122825 min and predicted r=6 body speedup is
+1.020287. This is not a complete SAB claim.
 ```
