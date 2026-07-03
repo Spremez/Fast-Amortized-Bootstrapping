@@ -2403,3 +2403,9 @@ Repro artifacts:
   - `theory_checks/stage188_manuscript_claim_model.md`
   - `algorithm_variants/mat_rlwe_sab_scoped_manuscript_skeleton.md`
   - `repro/stage188_scoped_manuscript_skeleton/`
+- stage189_closed_state_linear_probe: `PASS_STAGE189_T2_PUBLIC_CLOSURE_PROBE_DIRECT_SHARED_MASK_REJECTED`
+  - `docs/stage189_closed_state_linear_probe.md`
+  - `experiments/stage189_closed_state_linear_probe_plan.md`
+  - `theory_checks/stage189_closed_state_linear_model.md`
+  - `algorithm_variants/mat_rlwe_sab_closed_state_linear_probe.md`
+  - `repro/stage189_closed_state_linear_probe/`

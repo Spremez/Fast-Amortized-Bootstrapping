@@ -277,3 +277,4 @@
 - [x] Stage186 compact proof unlock audit recorded.
 - [x] Stage187 compact proof obligation draft recorded.
 - [x] Stage188 scoped manuscript skeleton recorded.
+- [x] Stage189 closed-state linear probe recorded.

@@ -490,3 +490,8 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE188_SCOPED_MANUSCRIPT_SKELETON_READY`. It is a writing artifact constrained by Stage185/187 claim
     guards, not a final paper or proof. Final citation verification remains
     required before submission-level claims.
+93. Treat Stage189 as the closed-state linear probe:
+    `PASS_STAGE189_T2_PUBLIC_CLOSURE_PROBE_DIRECT_SHARED_MASK_REJECTED`. Direct public projection from lane-local compact masks to
+    one shared PVW_TMLWE mask is rejected for r>1. Compact/shared-output SAB
+    implementation remains denied; only isolated T1/T4 proof probes or a new
+    measured dataflow mechanism may proceed.

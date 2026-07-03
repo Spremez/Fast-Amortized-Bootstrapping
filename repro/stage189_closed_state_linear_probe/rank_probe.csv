@@ -1,0 +1,17 @@
+probe,field,r,N,unknowns,constraints,rank_A,rank_aug,secret_rank_min,consistent,expected,status
+public_shared_mask_projection,GF(65537),1,4,16,16,16,16,4,yes,consistent_only_for_r1,PASS_R1_CONTROL
+lane_pair_identity_state,GF(65537),1,4,16,16,16,16,4,yes,always_consistent_but_not_one_shared_mask,PASS_INTERNAL_MULTIMASK_STATE
+public_shared_mask_projection,GF(65537),1,8,64,64,64,64,8,yes,consistent_only_for_r1,PASS_R1_CONTROL
+lane_pair_identity_state,GF(65537),1,8,64,64,64,64,8,yes,always_consistent_but_not_one_shared_mask,PASS_INTERNAL_MULTIMASK_STATE
+public_shared_mask_projection,GF(65537),2,4,32,64,32,33,4,no,consistent_only_for_r1,EXPECTED_INCONSISTENT
+lane_pair_identity_state,GF(65537),2,4,64,64,64,64,4,yes,always_consistent_but_not_one_shared_mask,PASS_INTERNAL_MULTIMASK_STATE
+public_shared_mask_projection,GF(65537),2,8,128,256,128,129,8,no,consistent_only_for_r1,EXPECTED_INCONSISTENT
+lane_pair_identity_state,GF(65537),2,8,256,256,256,256,8,yes,always_consistent_but_not_one_shared_mask,PASS_INTERNAL_MULTIMASK_STATE
+public_shared_mask_projection,GF(65537),4,4,64,256,64,65,4,no,consistent_only_for_r1,EXPECTED_INCONSISTENT
+lane_pair_identity_state,GF(65537),4,4,256,256,256,256,4,yes,always_consistent_but_not_one_shared_mask,PASS_INTERNAL_MULTIMASK_STATE
+public_shared_mask_projection,GF(65537),4,8,256,1024,256,257,8,no,consistent_only_for_r1,EXPECTED_INCONSISTENT
+lane_pair_identity_state,GF(65537),4,8,1024,1024,1024,1024,8,yes,always_consistent_but_not_one_shared_mask,PASS_INTERNAL_MULTIMASK_STATE
+public_shared_mask_projection,GF(65537),6,4,96,576,96,97,4,no,consistent_only_for_r1,EXPECTED_INCONSISTENT
+lane_pair_identity_state,GF(65537),6,4,576,576,576,576,4,yes,always_consistent_but_not_one_shared_mask,PASS_INTERNAL_MULTIMASK_STATE
+public_shared_mask_projection,GF(65537),6,8,384,2304,384,385,8,no,consistent_only_for_r1,EXPECTED_INCONSISTENT
+lane_pair_identity_state,GF(65537),6,8,2304,2304,2304,2304,8,yes,always_consistent_but_not_one_shared_mask,PASS_INTERNAL_MULTIMASK_STATE

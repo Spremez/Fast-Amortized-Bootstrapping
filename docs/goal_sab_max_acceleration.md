@@ -936,3 +936,6 @@ Stage188 records the scoped manuscript skeleton. Decision: `PASS_STAGE188_SCOPED
 It packages the current implemented exact PVW/MAT-SAB result into a paper
 outline while preserving claim guards against optimality, compact
 implementation, and broad novelty claims.
+Stage189 records the closed-state linear probe. Decision: `PASS_STAGE189_T2_PUBLIC_CLOSURE_PROBE_DIRECT_SHARED_MASK_REJECTED`.
+It gives executable evidence for the T2 boundary: current lane-pair compact
+output cannot be publicly collapsed to one shared PVW_TMLWE mask for r>1.

@@ -5830,3 +5830,20 @@ Completed. Stage188 records PASS_STAGE188_SCOPED_MANUSCRIPT_SKELETON_READY. The 
 exact-route `T_bootstrap/r` evidence and treats compact/shared-output MAT-SAB
 as proof-gated future work.
 ```
+## Stage 189: Closed-State Linear Probe
+
+Goal:
+
+```text
+Run an executable T2 proof probe for whether lane-local compact output masks
+can be publicly collapsed into one shared PVW_TMLWE mask.
+```
+
+Status:
+
+```text
+Completed. Stage189 records PASS_STAGE189_T2_PUBLIC_CLOSURE_PROBE_DIRECT_SHARED_MASK_REJECTED. The direct public shared-mask
+projection route is rejected for r>1; production compact SAB code remains
+denied. Remaining routes require multimask state, secret correction/key
+switching, dense re-expansion, or a new structured selector distribution proof.
+```

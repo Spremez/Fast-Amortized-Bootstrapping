@@ -1,0 +1,5 @@
+decision,status,reason,allowed_next
+direct_public_shared_mask_closure,DENY,finite linear system is inconsistent for r>1 under full-rank monomial secret multiplication,none
+production_compact_sab_code,DENY,T2 direct closure is rejected and T1/T4 remain unproven for secret-correction or structured selector routes,isolated T1 distribution probe or T4 noise/key-switch probe
+lane_pair_multimask_route,DEFER,algebraically closed as internal state but Stage134 performance is neutral/negative for r=4/r=6 unless decompose/DFT economics change,only a new decompose/DFT reuse mechanism with projected complete-SAB impact
+paper_claim,SCOPED_ONLY,Stage189 strengthens a negative/blocked T2 boundary; it does not implement compact SAB,"state as limitation or proof obligation, not as speedup"

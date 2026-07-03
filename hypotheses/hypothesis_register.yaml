@@ -2711,3 +2711,18 @@ hypotheses:
       - skeleton claims theoretical optimality
       - skeleton claims implemented compact SAB or compact complete-SAB speedup
       - final paper uses unverified citations
+  - id: H113_closed_state_linear_probe
+    statement: >
+      Current lane-pair compact output cannot be converted to a one-shared-mask
+      PVW_TMLWE state by public linear projection for r > 1.
+    mechanism: >
+      Stage189 solves finite linear systems for S_q G = S_q E_q over GF(65537)
+      using full-rank monomial secret multiplication matrices.
+    status: stage189_t2_public_closure_probe
+    evidence: docs/stage189_closed_state_linear_probe.md; experiments/stage189_closed_state_linear_probe_plan.md; theory_checks/stage189_closed_state_linear_model.md; repro/stage189_closed_state_linear_probe/summary.csv
+    current_decision: >
+      PASS_STAGE189_T2_PUBLIC_CLOSURE_PROBE_DIRECT_SHARED_MASK_REJECTED
+    failure_criteria:
+      - an r > 1 public shared-mask projection system is consistent
+      - production compact SAB code is written without T1/T4 proof gates
+      - this T2 probe is reported as a complete compact SAB implementation
