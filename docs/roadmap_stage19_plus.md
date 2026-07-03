@@ -6019,3 +6019,19 @@ Completed. Stage200 records PASS_STAGE200_FORMAL_GAP_MODEL_WITH_PROBE_RECORDED_G
 now has a scoped gap model and finite shortcut rejections, while stronger
 claims remain behind proof/source/implementation gates.
 ```
+## Stage 201: Structured Selector Distribution Probe
+
+Goal:
+
+```text
+Run finite public-distribution probes for structured selector candidates after
+Stage200 identifies selector structure as an open proof obligation.
+```
+
+Status:
+
+```text
+Completed. Stage201 records PASS_STAGE201_STRUCTURED_SELECTOR_DISTRIBUTION_PROBE_PROOF_ONLY. Only random dummy padding survives
+simple public-pattern checks, and it remains proof-only with no production code
+permission.
+```

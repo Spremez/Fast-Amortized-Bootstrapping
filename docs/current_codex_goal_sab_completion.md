@@ -541,3 +541,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE200_FORMAL_GAP_MODEL_WITH_PROBE_RECORDED_GOAL_ACTIVE`. R3 is improved from partial to a scoped model plus executable
     finite probes, but full goal completion remains open because source anchors
     and stronger implementation claims remain incomplete.
+105. Treat Stage201 as structured selector distribution probe:
+    `PASS_STAGE201_STRUCTURED_SELECTOR_DISTRIBUTION_PROBE_PROOF_ONLY`. The compact/shared-output route remains proof-only; dummy
+    padding survives only simple public-pattern checks and still lacks semantic,
+    resource, noise, and complete-SAB evidence.

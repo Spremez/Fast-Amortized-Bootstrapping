@@ -1,0 +1,13 @@
+candidate,r,dense_rows,compact_rows,trials,row_count_hits,zero_mask_hits,mask_equality_hits,public_pattern_hits,status,interpretation
+delete_body_cross_rows,2,63,56,64,64,0,0,64,DISTINGUISHER_FOUND,"Public row count changes, matching the Stage190 rejection."
+deterministic_zero_padding,2,63,56,64,0,64,64,128,DISTINGUISHER_FOUND,"Dense row count is restored, but deterministic zero masks are public."
+forced_shared_masks,2,63,56,64,0,0,64,64,DISTINGUISHER_FOUND,Forced mask equality creates a public relation.
+dummy_random_padding,2,63,56,64,0,0,0,0,PASS_PUBLIC_PATTERN_ONLY,Simple public pattern tests pass only because dense row count and random-looking masks are retained; semantic proof remains open.
+delete_body_cross_rows,4,175,112,64,64,0,0,64,DISTINGUISHER_FOUND,"Public row count changes, matching the Stage190 rejection."
+deterministic_zero_padding,4,175,112,64,0,64,64,128,DISTINGUISHER_FOUND,"Dense row count is restored, but deterministic zero masks are public."
+forced_shared_masks,4,175,112,64,0,0,64,64,DISTINGUISHER_FOUND,Forced mask equality creates a public relation.
+dummy_random_padding,4,175,112,64,0,0,0,0,PASS_PUBLIC_PATTERN_ONLY,Simple public pattern tests pass only because dense row count and random-looking masks are retained; semantic proof remains open.
+delete_body_cross_rows,6,343,168,64,64,0,0,64,DISTINGUISHER_FOUND,"Public row count changes, matching the Stage190 rejection."
+deterministic_zero_padding,6,343,168,64,0,64,64,128,DISTINGUISHER_FOUND,"Dense row count is restored, but deterministic zero masks are public."
+forced_shared_masks,6,343,168,64,0,0,64,64,DISTINGUISHER_FOUND,Forced mask equality creates a public relation.
+dummy_random_padding,6,343,168,64,0,0,0,0,PASS_PUBLIC_PATTERN_ONLY,Simple public pattern tests pass only because dense row count and random-looking masks are retained; semantic proof remains open.

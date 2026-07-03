@@ -1,0 +1,4 @@
+assumption_id,statement,scope,evidence,falsification
+A1_public_selector_rows,The selector public key exposes row count and mask coefficients.,finite public-distribution probe,repro/stage190_selector_distribution_distinguisher/distribution_probe.csv,A production format hiding row count and mask relations would need a separate API/proof.
+A2_dense_reference,The dense exact full-MAT selector uses the dense row count as the public reference format.,current exact full-MAT route,repro/stage190_selector_distribution_distinguisher/distribution_probe.csv,Declare a new structured public key distribution rather than dense equivalence.
+A3_dummy_padding_scope,"Random dummy padding is tested only for simple public row/zero/equality distinguishers, not for semantic correctness or security.",proof-only candidate,repro/stage201_structured_selector_distribution_probe/distribution_probe.csv,A semantic proof or production keygen/noise gate may still reject it.

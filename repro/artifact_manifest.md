@@ -2475,3 +2475,9 @@ Repro artifacts:
   - `theory_checks/stage200_rbody_gap_lower_bound_model.md`
   - `algorithm_variants/mat_rlwe_sab_formal_gap_model.md`
   - `repro/stage200_formal_gap_model_with_probe/`
+- stage201_structured_selector_distribution_probe: `PASS_STAGE201_STRUCTURED_SELECTOR_DISTRIBUTION_PROBE_PROOF_ONLY`
+  - `docs/stage201_structured_selector_distribution_probe.md`
+  - `experiments/stage201_structured_selector_distribution_probe_plan.md`
+  - `theory_checks/stage201_structured_selector_distribution_model.md`
+  - `algorithm_variants/mat_rlwe_sab_structured_selector_distribution_probe.md`
+  - `repro/stage201_structured_selector_distribution_probe/`

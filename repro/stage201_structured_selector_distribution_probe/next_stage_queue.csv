@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,current_status,evidence
+P0,source_anchor_intake,Reviewed 2025/686 full text is supplied locally.,Map source-specific SAB claims to inspected paper anchors.,waiting_external_artifact,repro/stage196_public_source_refresh/citation_gate.csv
+P1,dummy_padding_semantic_probe,Continue the only public-pattern-surviving selector route.,Finite functional probe showing dummy/skipped rows are semantically zero under a declared structured keygen model.,proof_probe_only,repro/stage201_structured_selector_distribution_probe/proof_gate.csv
+P2,new_exact_mechanism_admission,A concrete exact-path backend/addmul/DFT mechanism is supplied.,"Projection, correctness, noise/resource, and complete-SAB T_bootstrap/r gates.",waiting_new_mechanism,repro/stage200_formal_gap_model_with_probe/gap_projection.csv

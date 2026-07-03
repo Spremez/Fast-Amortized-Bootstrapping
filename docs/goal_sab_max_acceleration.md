@@ -973,3 +973,6 @@ goal completion remains unproven.
 Stage200 records formal gap model with probe. Decision: `PASS_STAGE200_FORMAL_GAP_MODEL_WITH_PROBE_RECORDED_GOAL_ACTIVE`. It
 states same-format assumptions, records input DFT and dense-term count models,
 and runs finite counterexample probes for unsafe shortcuts.
+Stage201 records structured selector distribution probe. Decision:
+`PASS_STAGE201_STRUCTURED_SELECTOR_DISTRIBUTION_PROBE_PROOF_ONLY`. It rejects publicly distinguishable selector shortcuts and keeps
+random dummy padding as proof-only, not implementation-ready.

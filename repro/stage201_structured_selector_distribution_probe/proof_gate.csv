@@ -1,0 +1,5 @@
+gate,status,evidence,missing_before_code
+T1_public_distribution,PARTIAL_PATTERN_ONLY,repro/stage201_structured_selector_distribution_probe/distribution_probe.csv; repro/stage201_structured_selector_distribution_probe/candidate_matrix.csv,Hybrid/simulation proof that dummy rows are indistinguishable from the declared selector distribution.
+T2_functional_correctness,BLOCKED,repro/stage200_formal_gap_model_with_probe/counterexample_matrix.csv,"Proof that skipped/dummy rows are semantically zero for all SAB updates, not only public-pattern safe."
+T3_resource_value,WEAK,repro/stage201_structured_selector_distribution_probe/candidate_matrix.csv,Show complete-SAB T_bootstrap/r value despite retaining dense public row count.
+T4_noise_and_keygen,BLOCKED,repro/stage200_formal_gap_model_with_probe/proof_obligations.csv,"Production keygen, noise recurrence, and multi-seed correctness gates."

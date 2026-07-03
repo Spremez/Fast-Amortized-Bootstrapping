@@ -289,3 +289,4 @@
 - [x] Stage198 metadata-safe manuscript refresh recorded.
 - [x] Stage199 active goal verifier recorded.
 - [x] Stage200 formal gap model with probe recorded.
+- [x] Stage201 structured selector distribution probe recorded.

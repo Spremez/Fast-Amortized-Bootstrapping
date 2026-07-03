@@ -2910,3 +2910,19 @@ hypotheses:
       - finite probes fail to reject the tested shortcuts
       - lower-bound wording is applied outside the stated same-format assumptions
       - a component-level model is used as complete-SAB acceleration evidence
+  - id: H125_structured_selector_distribution_probe
+    statement: >
+      Structured selector shortcuts must survive public distribution probes
+      before any compact/shared-output SAB implementation route can reopen.
+    mechanism: >
+      Stage201 tests row count, deterministic zero-mask, and mask-equality
+      distinguishers for deleted rows, zero padding, forced shared masks, and
+      random dummy padding under finite public-key models.
+    status: stage201_structured_selector_distribution_probe
+    evidence: docs/stage201_structured_selector_distribution_probe.md; experiments/stage201_structured_selector_distribution_probe_plan.md; theory_checks/stage201_structured_selector_distribution_model.md; repro/stage201_structured_selector_distribution_probe/summary.csv
+    current_decision: >
+      PASS_STAGE201_STRUCTURED_SELECTOR_DISTRIBUTION_PROBE_PROOF_ONLY
+    failure_criteria:
+      - a publicly distinguishable selector shortcut is treated as dense-equivalent
+      - dummy padding is treated as a security proof or implementation permission
+      - production SAB code is opened without semantic, noise, resource, and full-SAB gates
