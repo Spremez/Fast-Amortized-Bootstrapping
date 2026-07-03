@@ -293,3 +293,4 @@
 - [x] Stage202 dummy padding semantic probe recorded.
 - [x] Stage203 production selector equation probe recorded.
 - [x] Stage204 source anchor intake records real-source metadata only and blocks theorem/equation overclaim.
+- [x] Stage205 current platform probe records WSL smoke, small-sample A/B, and invalid parallel-run rejection.

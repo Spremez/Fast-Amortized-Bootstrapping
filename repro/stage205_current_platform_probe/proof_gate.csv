@@ -1,0 +1,5 @@
+gate,status,evidence,detail,remaining_gap
+G1_platform,PASS_WITH_PERF_BLOCKED,repro/stage205_current_platform_probe/platform_gate.csv,WSL/spqlios_avx512 can run smoke and A/B; hardware counters are unavailable.,Install Linux perf or rerun on native Linux for load/store/FMA attribution.
+G2_current_head_smoke,PASS,repro/stage205_current_platform_probe/stage98_current_smoke/summary.csv,Current scalar/default and explicit PVW paths pass smoke.,Smoke is not a speed claim.
+G3_complete_sab_ab_small_sample,PASS_SMALL_SAMPLE,repro/stage205_current_platform_probe/full_sab_ab_summary.csv,Sequential r=2/r=4 complete-SAB A/B uses T_bootstrap/r under the same backend.,Increase runs/seeds and separate noise instrumentation before paper-grade claims.
+G4_invalid_parallel_run_rejected,PASS_REJECTED_INVALID,repro/stage205_current_platform_probe/invalid_run_log.csv,Concurrent make/main race output is preserved but excluded.,Run build-and-benchmark jobs sequentially or isolate worktrees.

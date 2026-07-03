@@ -987,3 +987,8 @@ Stage204 records source anchor intake. Decision: `PASS_STAGE204_SOURCE_ANCHOR_IN
 It grounds paper identity, source-reported complexity context, README backend
 policy, and parameter/noise-measurement constraints in real public sources,
 while keeping theorem/equation, novelty, and production keygen claims blocked.
+
+Stage205 records current platform probe. Decision: `PASS_STAGE205_CURRENT_PLATFORM_SMALL_SAMPLE_AB`.
+It refreshes current-head WSL/spqlios_avx512 smoke and sequential r=2/r=4
+complete-SAB A/B with `T_bootstrap/r` as the primary endpoint; it also records
+that hardware-counter attribution is blocked by missing `perf`.

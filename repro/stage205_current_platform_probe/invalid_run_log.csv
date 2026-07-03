@@ -1,0 +1,3 @@
+invalid_id,status,expected_r,observed_r_values,reason,evidence
+parallel_race_labeled_r2,REJECTED,2,4;4;4,r2 and r4 builds were launched concurrently in one workspace and raced on build/main; outputs are preserved but excluded.,repro/stage205_current_platform_probe/invalid_parallel_race_labeled_r2/summary.csv
+parallel_race_labeled_r4,REJECTED,4,4;4;4,r2 and r4 builds were launched concurrently in one workspace and raced on build/main; outputs are preserved but excluded.,repro/stage205_current_platform_probe/invalid_parallel_race_labeled_r4/summary.csv

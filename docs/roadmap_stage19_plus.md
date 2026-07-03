@@ -6084,3 +6084,22 @@ Completed. Stage204 records PASS_STAGE204_SOURCE_ANCHOR_INTAKE_METADATA_ONLY.
 Real source metadata and implementation-environment policy are recorded, while
 full-text theorem/equation anchors and production keygen gates remain open.
 ```
+
+## Stage 205: Current Platform Probe
+
+Goal:
+
+```text
+Return from source/theory gates to executable current-head evidence: WSL
+platform probe, current scalar/PVW smoke, and sequential complete-SAB A/B using
+the amortized T_bootstrap/r endpoint.
+```
+
+Status:
+
+```text
+Completed. Stage205 records PASS_STAGE205_CURRENT_PLATFORM_SMALL_SAMPLE_AB.
+WSL/spqlios_avx512 smoke passes and sequential r=2/r=4 complete-SAB A/B is
+positive, but hardware-counter attribution is blocked because perf is missing
+and the A/B evidence is small-sample only.
+```

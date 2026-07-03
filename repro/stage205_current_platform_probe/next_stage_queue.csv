@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,current_status,evidence
+P0,high_stat_current_head_ab,Use isolated sequential worktree/build directories or single-run serialization.,10+ complete-SAB runs for r=2/r=4 and 20+ noise seeds with T_bootstrap/r endpoint.,ready,repro/stage205_current_platform_probe/full_sab_ab_summary.csv
+P1,perf_counter_attribution,Linux perf is installed and hardware counters are usable.,"Record cycles, instructions, cache, load/store/FMA proxy counters for scalar vs MAT paths.",blocked_perf_missing,repro/stage205_current_platform_probe/platform_gate.csv
+P2,full_text_anchor_table,Reviewed 2025/686 full text is available.,Map SAB equations and reported complexity to paper anchors.,waiting_full_text,repro/stage204_source_anchor_intake/proof_gate.csv

@@ -2501,3 +2501,11 @@ Repro artifacts:
 - `theory_checks/stage204_source_anchor_claim_boundary.md`
 - `algorithm_variants/mat_rlwe_sab_source_anchor_policy.md`
 - `repro/stage204_source_anchor_intake/`
+
+### Stage205 Current Platform Probe
+
+- `docs/stage205_current_platform_probe.md`
+- `experiments/stage205_current_platform_probe_plan.md`
+- `theory_checks/stage205_amortized_metric_and_platform_boundary.md`
+- `algorithm_variants/mat_rlwe_sab_current_head_benchmark_policy.md`
+- `repro/stage205_current_platform_probe/`

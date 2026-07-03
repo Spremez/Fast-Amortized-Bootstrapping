@@ -2975,3 +2975,21 @@ hypotheses:
       - metadata-only evidence is used as theorem or equation support
       - source-reported external benchmarks are merged with our results without same-platform controls
       - production keygen or novelty claims proceed without full-text anchors
+
+  - id: H129_current_platform_small_sample_ab
+    statement: >
+      Current-head PVW/MAT-SAB must preserve scalar/PVW runnability and show
+      positive same-backend amortized complete-SAB evidence before high-stat
+      optimization or paper claims continue.
+    mechanism: >
+      Stage205 runs WSL/spqlios_avx512 platform gates, current-head scalar/PVW
+      smoke, sequential r=2/r=4 complete-SAB A/B under T_bootstrap/r, and
+      rejects a concurrent make/main race run.
+    status: stage205_current_platform_probe
+    evidence: docs/stage205_current_platform_probe.md; experiments/stage205_current_platform_probe_plan.md; theory_checks/stage205_amortized_metric_and_platform_boundary.md; repro/stage205_current_platform_probe/summary.csv
+    current_decision: >
+      PASS_STAGE205_CURRENT_PLATFORM_SMALL_SAMPLE_AB
+    failure_criteria:
+      - parallel make/build races are used as performance evidence
+      - small-sample A/B is upgraded to paper-grade statistical evidence
+      - hardware-counter conclusions are made while perf is unavailable

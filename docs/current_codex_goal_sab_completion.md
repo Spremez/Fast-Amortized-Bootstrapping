@@ -558,3 +558,9 @@ The new research goal is complete only after a later stage records:
     metadata and implementation-environment constraints are recorded, but
     full-text theorem/equation anchors and production keygen evidence remain
     missing.
+
+109. Treat Stage205 as current platform probe:
+    `PASS_STAGE205_CURRENT_PLATFORM_SMALL_SAMPLE_AB`. Current-head scalar and
+    explicit PVW paths pass WSL/spqlios_avx512 smoke; sequential r=2/r=4
+    complete-SAB A/B is positive under `T_bootstrap/r`, but remains small-sample
+    evidence and perf-counter attribution is blocked.
