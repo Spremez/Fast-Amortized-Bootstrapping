@@ -1,0 +1,13 @@
+metric,value,dimension,evidence,interpretation
+primary_metric,T_bootstrap_per_lane,complete SAB time divided by r MAT bodies / plaintext lanes,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv,"All speedup claims must use per-lane amortized throughput, not total one-call latency alone."
+stage224_backend_vs_scalar_repeated,1.407333,T_scalar_repeated/r over T_pvw/r,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv,Fresh current-head exact backend route speedup under Stage224 protocol.
+stage148_best_backend_vs_scalar_repeated,1.432667,T_scalar_repeated/r over T_pvw/r,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv,Best previously recorded exact-route scalar comparison kept as historical best.
+stage224_backend_vs_wrapper,1.024015,wrapper T_pvw/r over backend T_pvw/r,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv,Backend from-DFT-add refresh advantage inside exact MAT/PVW route.
+stage225_noise_failures,0/0/0,pvw/scalar/pair failures,repro/stage225_exact_refresh_noise_resource_rerun/noise_aggregate.csv,Fresh side-condition correctness result.
+stage225_avg_noise_gap_log2,-0.097333,log2 sigma difference,repro/stage225_exact_refresh_noise_resource_rerun/noise_aggregate.csv,Negative means PVW average final noise was lower in this sample.
+stage225_key_bytes_ratio,1.122537,PVW key bytes over repeated scalar key bytes,repro/stage225_exact_refresh_noise_resource_rerun/resource_comparison.csv,Resource cost that must be reported next to throughput.
+stage225_memory_ratio,1.031111,PVW VmHWM over repeated scalar VmHWM,repro/stage225_exact_refresh_noise_resource_rerun/resource_comparison.csv,Memory cost that must be reported next to throughput.
+stage226_counter_label,COUNTER_SUPPORTS_STAGE224_DIRECTION,mechanism label,repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv,Counter support is scoped to exact backend-vs-wrapper mechanism.
+stage226_cycles_wrapper_over_backend,1.017861569,counter ratio,repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv,Above 1 means backend reduced cycles in the native counter run.
+stage226_loads_wrapper_over_backend,1.011560486,counter ratio,repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv,Above 1 means backend reduced retired loads in the native counter run.
+stage226_stores_wrapper_over_backend,1.009880546,counter ratio,repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv,Above 1 means backend reduced retired stores in the native counter run.

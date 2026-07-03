@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage228_counter_driven_backend_kernel_search,Stage227 fixes exact-route claim boundary and Stage226 counters show small cycle/load/store reductions.,Generate one or two concrete code hypotheses with microbench and full-SAB promotion gates.,selected,Do not edit hot path without a falsifiable counter-backed hypothesis.,repro/stage227_exact_route_claim_boundary_update/proof_gate.csv
+P1,stage229_parameter_generalization_matrix,Exact-route claim boundary is fixed.,Run at least one smaller smoke parameter and target parameter matrix before general claims.,future,Keep claims parameter-scoped.,repro/stage227_exact_route_claim_boundary_update/claim_matrix.csv
+P2,stage230_literature_novelty_audit,Before any paper novelty wording.,Source-verified related-work matrix; no fabricated references.,future,Engineering-only report.,repro/stage227_exact_route_claim_boundary_update/claim_matrix.csv

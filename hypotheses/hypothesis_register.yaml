@@ -3210,3 +3210,12 @@ H10_stage226_exact_counter_attribution:
   conclusion: >
     Stage226 records PASS_STAGE226_COUNTERS_RECORDED_TIMING_NEUTRAL. Counter evidence is scoped to the exact
     dense MAT/PVW route and does not prove theoretical optimality.
+H10_stage227_claim_boundary:
+  status: claim_boundary_fixed
+  evidence:
+    - repro/stage227_exact_route_claim_boundary_update/claim_matrix.csv
+    - repro/stage227_exact_route_claim_boundary_update/metric_ledger.csv
+    - docs/stage227_exact_route_claim_boundary_update.md
+  conclusion: >
+    Stage227 records PASS_STAGE227_EXACT_ROUTE_CLAIM_BOUNDARY_FIXED. Complete-SAB T_bootstrap/r is the primary
+    metric; theoretical optimality and compact-route claims remain unsupported.

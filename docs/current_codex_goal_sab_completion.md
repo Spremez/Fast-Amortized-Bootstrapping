@@ -660,3 +660,6 @@ or security claims.
 ### Stage226 exact counter attribution
 
 `PASS_STAGE226_COUNTERS_RECORDED_TIMING_NEUTRAL` updates the mechanism evidence for the exact dense MAT/PVW route.
+### Stage227 exact route claim boundary
+
+`PASS_STAGE227_EXACT_ROUTE_CLAIM_BOUNDARY_FIXED` separates supported exact-route results from blocked optimality, compact-route and novelty claims.

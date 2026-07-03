@@ -1,0 +1,9 @@
+input,status,role,bytes
+repro/stage224_exact_pvw_mat_avx_resource_refresh/proof_gate.csv,present,Stage224 exact route performance admission,1532
+repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv,present,Stage224 repeated complete-SAB timing,479
+repro/stage225_exact_refresh_noise_resource_rerun/proof_gate.csv,present,Stage225 fresh side-condition gate,1560
+repro/stage225_exact_refresh_noise_resource_rerun/noise_aggregate.csv,present,Stage225 fresh noise/correctness aggregate,231
+repro/stage225_exact_refresh_noise_resource_rerun/resource_comparison.csv,present,Stage225 fresh resource comparison,427
+repro/stage226_exact_mat_avx_counter_attribution/proof_gate.csv,present,Stage226 counter gate,1697
+repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv,present,Stage226 counter attribution summary,1607
+repro/stage226_exact_mat_avx_counter_attribution/next_stage_queue.csv,present,Stage226 selected claim-boundary route,978

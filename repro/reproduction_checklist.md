@@ -326,3 +326,4 @@
 - [x] Stage224 exact PVW/MAT AVX refresh recorded.
 - [x] Stage225 exact refresh noise/resource recorded.
 - [x] Stage226 exact counter attribution records decision `PASS_STAGE226_COUNTERS_RECORDED_TIMING_NEUTRAL`.
+- [x] Stage227 exact route claim boundary records decision `PASS_STAGE227_EXACT_ROUTE_CLAIM_BOUNDARY_FIXED`.

@@ -6454,3 +6454,18 @@ Status:
 Completed at `8e28f16` with `PASS_STAGE226_COUNTERS_RECORDED_TIMING_NEUTRAL`. The result is an attribution gate:
 it does not claim theoretical optimality or reopen the compact SAB route.
 ```
+## Stage 227: Exact Route Claim Boundary Update
+
+Goal:
+
+```text
+Freeze the supported and blocked claims after Stage224/225/226 so the next
+work stays implementation- and evidence-driven.
+```
+
+Status:
+
+```text
+Completed at `df8db1f` with `PASS_STAGE227_EXACT_ROUTE_CLAIM_BOUNDARY_FIXED`. The primary metric is complete-SAB
+`T_bootstrap/r`; theoretical optimality and compact-route claims remain blocked.
+```

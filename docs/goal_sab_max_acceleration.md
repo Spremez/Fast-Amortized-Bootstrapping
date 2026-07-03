@@ -1082,3 +1082,6 @@ and complete-SAB speedup evidence.
 ## Stage226 exact counter attribution
 
 At commit `8e28f16`, Stage226 records `PASS_STAGE226_COUNTERS_RECORDED_TIMING_NEUTRAL` for native exact-route counters. Complete-SAB `T_bootstrap/r` remains the primary metric.
+## Stage227 exact route claim boundary
+
+At commit `df8db1f`, Stage227 records `PASS_STAGE227_EXACT_ROUTE_CLAIM_BOUNDARY_FIXED` and fixes complete-SAB `T_bootstrap/r` as the comparison metric.

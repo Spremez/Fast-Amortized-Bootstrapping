@@ -2658,3 +2658,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage226_counter_attribution.md`
   - `scripts/build_stage226_exact_mat_avx_counter_attribution.py`
   - `repro/stage226_exact_mat_avx_counter_attribution/`
+- stage227_exact_route_claim_boundary_update:
+  - `docs/stage227_exact_route_claim_boundary_update.md`
+  - `experiments/stage227_exact_route_claim_boundary_update_plan.md`
+  - `theory_checks/stage227_claim_boundary_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage227_claim_boundary.md`
+  - `scripts/build_stage227_exact_route_claim_boundary_update.py`
+  - `repro/stage227_exact_route_claim_boundary_update/`
