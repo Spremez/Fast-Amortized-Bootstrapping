@@ -695,3 +695,12 @@ signal is attribution: compact addmul is positive for r=4/r=6, but compact
 decomposition/DFT is slower enough to erase r=4 full-kernel gains. The next
 algorithmic work must target decompose/DFT reuse or streaming before production
 API or SAB integration.
+
+Stage130 tests the source-side form that matches the MAT-RLWE target more
+closely: one shared source/mask polynomial and r body polynomials, with
+lane-local compact selector rows. It passes component, phase, exact noise-model,
+and negative-control checks for r=2/4/6 and N=512/1024. It also fixes the
+Stage129 timing blocker: r=4 full speedup is 1.281272 at N=512 and 1.153336 at
+N=1024; r=6 is 1.478479 and 1.369582. r=2 remains negative/near break-even.
+This opens production API/header design for shared-source compact EP only; SAB
+integration and complete `T_bootstrap/r` claims remain later gates.

@@ -1920,3 +1920,21 @@ Repro artifacts:
 - `repro/stage129_compact_ep_microbench_gate/run_probe.log`
 - `repro/stage129_compact_ep_microbench_gate/compact_ep_microbench_gate.c`
 - `repro/stage129_compact_ep_microbench_gate/artifact_index.csv`
+
+## Stage 130 Shared-Source Compact EP Gate
+
+- `docs/stage130_shared_source_compact_ep_gate.md`
+- `experiments/stage130_shared_source_compact_ep_gate_plan.md`
+- `theory_checks/stage130_shared_source_compact_ep_model.md`
+- `algorithm_variants/mat_rlwe_sab_shared_source_compact_ep.md`
+- `scripts/build_stage130_shared_source_compact_ep_gate.py`
+- `repro/stage130_shared_source_compact_ep_gate/summary.csv`
+- `repro/stage130_shared_source_compact_ep_gate/api_results.csv`
+- `repro/stage130_shared_source_compact_ep_gate/benchmark_samples.csv`
+- `repro/stage130_shared_source_compact_ep_gate/benchmark_aggregate.csv`
+- `repro/stage130_shared_source_compact_ep_gate/ratio_summary.csv`
+- `repro/stage130_shared_source_compact_ep_gate/mosfhet_static_build.log`
+- `repro/stage130_shared_source_compact_ep_gate/compile_probe.log`
+- `repro/stage130_shared_source_compact_ep_gate/run_probe.log`
+- `repro/stage130_shared_source_compact_ep_gate/shared_source_compact_ep_gate.c`
+- `repro/stage130_shared_source_compact_ep_gate/artifact_index.csv`

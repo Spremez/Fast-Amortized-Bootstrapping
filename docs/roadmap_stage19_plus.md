@@ -4768,3 +4768,53 @@ decomposition/DFT is slower (0.580632-0.619392 for r=4/r=6). The next valid
 stage is a decompose/DFT reuse or streaming gate, not production API or SAB
 integration.
 ```
+
+## Stage 130: Shared-Source Compact EP Gate
+
+Goal:
+
+```text
+Test the MAT-RLWE source shape with one shared source/mask polynomial and r
+body polynomials, while keeping lane-local compact selector rows.
+```
+
+Theory basis:
+
+Stage129 shows the compact DFT addmul path is positive but the vector-shared
+`2r` decomposition/DFT streams block r=4. The original MAT-RLWE target is
+closer to one shared mask/source plus r bodies. Stage130 therefore checks the
+finite phase/noise invariant and timing for the shared-source shape before any
+production header or SAB integration.
+
+Tasks:
+
+- implement a generated shared-source compact EP probe outside production
+  MOSFHET headers;
+- verify component, phase, and exact noise-model equivalence for r=2/4/6 and
+  N=512/1024;
+- keep body-only shared-source output as a required failing negative control;
+- benchmark dense-count proxy versus shared-source compact all-lane output;
+- separately benchmark decomposition/DFT and DFT addmul attribution;
+- promote only toward production API design, not SAB integration.
+
+Gate:
+
+- build, compile, run, correctness, negative control, and benchmark rows must
+  pass;
+- r=4 and r=6 full microbench must both beat the dense-count proxy;
+- any positive result remains isolated EP evidence until production API,
+  SAB integration, correctness/noise, and full `T_bootstrap/r` gates pass.
+
+Status:
+
+```text
+Completed positive. Stage130 records
+PASS_STAGE130_SHARED_SOURCE_COMPACT_EP_POSITIVE_PRODUCTION_API_REQUIRED.
+Component, phase, and exact noise-model mismatch counts are zero for 6 tested
+rows, with max component/phase gaps 13697/13703 under tolerance 131072.
+Body-only negative controls are rejected. Full microbench speedups are
+1.281272/1.153336 for r=4 at N=512/1024 and 1.478479/1.369582 for r=6 at
+N=512/1024. r=2 remains negative/near break-even at 0.990025/0.967843. The
+next valid stage is a production API/header design gate for shared-source
+compact EP, still outside SAB integration.
+```

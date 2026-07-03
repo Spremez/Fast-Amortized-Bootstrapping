@@ -1,0 +1,9 @@
+gate,status,metric,value,evidence,detail,next_action
+stage130_mosfhet_static_build,PASS,make_static_spqlios,true,repro/stage130_shared_source_compact_ep_gate/mosfhet_static_build.log,MOSFHET static library build using FFT_LIB=spqlios.,
+stage130_probe_compile,PASS,gcc_probe_compile,true,repro/stage130_shared_source_compact_ep_gate/compile_probe.log,Standalone shared-source compact EP probe linked against libmosfhet.a.,
+stage130_probe_run,PASS,probe_returncode,0,repro/stage130_shared_source_compact_ep_gate/run_probe.log,Shared-source compact EP probe executed.,
+stage130_shared_source_correctness,PASS,api_rows,6,repro/stage130_shared_source_compact_ep_gate/api_results.csv,"Shared-source component, phase, noise, and negative-control checks.",Do not benchmark-interpret if correctness fails.
+stage130_microbench_rows,PASS,bench_rows;ratio_rows,180;6,repro/stage130_shared_source_compact_ep_gate/benchmark_samples.csv; repro/stage130_shared_source_compact_ep_gate/ratio_summary.csv,Dense-count proxy and shared-source compact samples were recorded.,
+stage130_full_microbench_signal,PASS_POSITIVE,min_full_speedup_r4_r6;max_full_speedup_all,1.153336;1.478479,repro/stage130_shared_source_compact_ep_gate/ratio_summary.csv,Mean dense_all_proxy / compact_shared_all_lanes timing ratio.,"Proceed only to production API design, not SAB integration."
+stage130_attribution_signal,RECORDED,min_decomp_speedup;min_addmul_speedup,0.974663;1.052528,repro/stage130_shared_source_compact_ep_gate/ratio_summary.csv,Separate decomposition/DFT and DFT addmul timing attribution.,
+stage130_decision,PASS_STAGE130_SHARED_SOURCE_COMPACT_EP_POSITIVE_PRODUCTION_API_REQUIRED,promotion_policy,,repro/stage130_shared_source_compact_ep_gate/summary.csv; repro/stage130_shared_source_compact_ep_gate/ratio_summary.csv,Stage130 decides only shared-source compact EP production-API readiness.,Full SAB claims remain blocked.

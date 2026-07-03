@@ -1641,3 +1641,34 @@ hypotheses:
         without matching full-kernel evidence
       - dense-count proxy timing is represented as a production SAB baseline
       - scalar/default SAB behavior changes before a guarded integration stage
+  - id: H54_shared_source_compact_ep
+    statement: >
+      A compact external product using one shared source/mask polynomial and r
+      body polynomials can preserve lane-local phase/noise correctness while
+      restoring the isolated microbench advantage for r=4 and r=6.
+    mechanism: >
+      Stage130 keeps lane-local compact selector rows but changes the
+      source-side MAT-RLWE shape from `2r` source streams to one shared source
+      plus r body streams. The generated probe verifies component, phase,
+      exact noise-model, and body-only negative-control gates, then benchmarks
+      dense-count proxy versus shared-source compact all-lane output with
+      separate decomposition/DFT and DFT-addmul attribution.
+    status: stage130_shared_source_compact_ep_positive_production_api_required
+    evidence: docs/stage130_shared_source_compact_ep_gate.md; experiments/stage130_shared_source_compact_ep_gate_plan.md; theory_checks/stage130_shared_source_compact_ep_model.md; algorithm_variants/mat_rlwe_sab_shared_source_compact_ep.md; scripts/build_stage130_shared_source_compact_ep_gate.py; repro/stage130_shared_source_compact_ep_gate/summary.csv; repro/stage130_shared_source_compact_ep_gate/api_results.csv; repro/stage130_shared_source_compact_ep_gate/benchmark_samples.csv; repro/stage130_shared_source_compact_ep_gate/benchmark_aggregate.csv; repro/stage130_shared_source_compact_ep_gate/ratio_summary.csv; repro/stage130_shared_source_compact_ep_gate/mosfhet_static_build.log; repro/stage130_shared_source_compact_ep_gate/compile_probe.log; repro/stage130_shared_source_compact_ep_gate/run_probe.log; repro/stage130_shared_source_compact_ep_gate/shared_source_compact_ep_gate.c; repro/stage130_shared_source_compact_ep_gate/artifact_index.csv
+    current_decision: >
+      Stage130 records
+      PASS_STAGE130_SHARED_SOURCE_COMPACT_EP_POSITIVE_PRODUCTION_API_REQUIRED.
+      Component, phase, and exact noise-model mismatch counts are zero across
+      r=2/4/6 and N=512/1024, with max component/phase gaps 13697/13703 under
+      tolerance 131072. Body-only negative controls are rejected. Full
+      microbench speedups are 1.281272/1.153336 for r=4 at N=512/1024 and
+      1.478479/1.369582 for r=6 at N=512/1024. r=2 is negative/near
+      break-even at 0.990025/0.967843. This opens only a production
+      API/header design gate for shared-source compact EP.
+    failure_criteria:
+      - production API/header integration cannot preserve the shared-source
+        phase/noise invariant without dense selector reconstruction
+      - full SAB integration loses the isolated r=4/r=6 advantage
+      - r=2 is claimed as a speedup despite negative/near break-even evidence
+      - complete bootstrapping acceleration is claimed before full
+        `T_bootstrap/r` correctness, noise, resource, and A/B gates pass

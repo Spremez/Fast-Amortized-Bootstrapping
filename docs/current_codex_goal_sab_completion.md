@@ -220,7 +220,14 @@ break-even once decomposition terms are included.
     addmul is positive for r=4/r=6, but compact decomposition/DFT is slower.
     The next valid step is a decompose/DFT reuse or streaming gate, not SAB
     integration.
-33. Preserve the current final-audit status:
+33. Treat Stage130 as the current shared-source compact EP gate:
+    one shared source/mask plus r body polynomials passes component, phase,
+    noise-model, negative-control, and isolated microbench gates outside
+    `sab_pvw_*`. Full speedups are 1.281272/1.153336 for r=4 at N=512/1024 and
+    1.478479/1.369582 for r=6 at N=512/1024; r=2 remains near break-even or
+    negative. The next valid step is production API/header design for this
+    shared-source EP shape, not SAB integration.
+34. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard
