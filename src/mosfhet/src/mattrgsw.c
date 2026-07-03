@@ -743,6 +743,34 @@ void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT s
   mat_trgsw_mul_pvmtmlwe_DFT_from_dec(out, selector, scratch->dec_dft);
 }
 
+#if defined(AVX512_OPT) && defined(MAT_TRGSW_AVX512_SUB_DECOMP)
+static void mat_trgsw_sub_decompose_poly_avx512(TorusPolynomial out,
+    TorusPolynomial lhs, TorusPolynomial rhs, uint64_t offset,
+    uint64_t h_bit, uint64_t h_mask, uint64_t half_Bg){
+  const int N = lhs->N;
+  const __m512i v_offset = _mm512_set1_epi64((long long) offset);
+  const __m512i v_shift = _mm512_set1_epi64((long long) h_bit);
+  const __m512i v_mask = _mm512_set1_epi64((long long) h_mask);
+  const __m512i v_half = _mm512_set1_epi64((long long) half_Bg);
+  int c = 0;
+  for (; c + 8 <= N; c += 8){
+    const __m512i v_rhs = _mm512_loadu_si512((const void *) &rhs->coeffs[c]);
+    const __m512i v_lhs = _mm512_loadu_si512((const void *) &lhs->coeffs[c]);
+    const __m512i v_diff = _mm512_sub_epi64(v_rhs, v_lhs);
+    const __m512i v_coeff_off = _mm512_add_epi64(v_diff, v_offset);
+    const __m512i v_digits = _mm512_and_si512(
+        _mm512_srlv_epi64(v_coeff_off, v_shift), v_mask);
+    const __m512i v_out = _mm512_sub_epi64(v_digits, v_half);
+    _mm512_storeu_si512((void *) &out->coeffs[c], v_out);
+  }
+  for (; c < N; c++){
+    const uint64_t diff = rhs->coeffs[c] - lhs->coeffs[c];
+    const uint64_t coeff_off = diff + offset;
+    out->coeffs[c] = ((coeff_off >> h_bit) & h_mask) - half_Bg;
+  }
+}
+#endif
+
 static void mat_trgsw_sub_decompose(PVW_TMLWE in1, PVW_TMLWE in2,
     TorusPolynomial * out, int Bg_bit, int l){
   const int k = in1->k, r = in1->r, N = in1->b[0]->N;
@@ -762,18 +790,28 @@ static void mat_trgsw_sub_decompose(PVW_TMLWE in1, PVW_TMLWE in2,
   for (size_t i = 0; i < l; i++) {
     const uint64_t h_bit = word_size - (i + 1) * Bg_bit;
     for (size_t j = 0; j < k; j++){
+#if defined(AVX512_OPT) && defined(MAT_TRGSW_AVX512_SUB_DECOMP)
+      mat_trgsw_sub_decompose_poly_avx512(out[j*l + i], in1->a[j],
+          in2->a[j], offset, h_bit, h_mask, half_Bg);
+#else
       for (size_t c = 0; c < N; c++){
         const uint64_t diff = in2->a[j]->coeffs[c] - in1->a[j]->coeffs[c];
         const uint64_t coeff_off = diff + offset;
         out[j*l + i]->coeffs[c] = ((coeff_off>>h_bit) & h_mask) - half_Bg;
       }
+#endif
     }
     for (size_t j = 0; j < r; j++){
+#if defined(AVX512_OPT) && defined(MAT_TRGSW_AVX512_SUB_DECOMP)
+      mat_trgsw_sub_decompose_poly_avx512(out[k*l + j*l + i],
+          in1->b[j], in2->b[j], offset, h_bit, h_mask, half_Bg);
+#else
       for (size_t c = 0; c < N; c++){
         const uint64_t diff = in2->b[j]->coeffs[c] - in1->b[j]->coeffs[c];
         const uint64_t coeff_off = diff + offset;
         out[k*l + j*l + i]->coeffs[c] = ((coeff_off>>h_bit) & h_mask) - half_Bg;
       }
+#endif
     }
   }
 }

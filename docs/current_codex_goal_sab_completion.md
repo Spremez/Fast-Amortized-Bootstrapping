@@ -456,3 +456,6 @@ The new research goal is complete only after a later stage records:
     `BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED`. Production code remains unchanged. Any Stage181
     implementation requires split data, correctness, and projected complete-SAB
     `T_bootstrap/r` impact.
+85. Treat Stage181 as the AVX512 sub-decompose gate:
+    `BLOCK_STAGE181_REMOTE_PIPELINE_FAILED`. The new implementation is default-off. Complete-SAB
+    acceleration remains unproven until a promoted full-SAB gate passes.

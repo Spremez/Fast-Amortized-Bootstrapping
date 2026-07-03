@@ -1,0 +1,2 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,182,negative frontier or new mechanism,Stage181 does not promote AVX512 sub-decompose to full-SAB gate.,Record exact-path headroom and avoid blind AVX512 retuning.,No full-SAB run without a promoted microbench candidate.

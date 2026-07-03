@@ -1,0 +1,3 @@
+variant,baseline_us,avx512_us,speedup,sink_equal,projected_full_sab_speedup,status
+sub_decompose,9.945133789,12.388201172,0.802790789,yes,0.975096950,NEUTRAL_OR_FAIL
+combined_current,67.346628906,69.230082031,0.972794296,yes,0.983391514,NEUTRAL_OR_FAIL

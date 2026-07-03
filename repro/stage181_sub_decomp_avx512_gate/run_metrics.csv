@@ -1,0 +1,5 @@
+build,variant,run_rc,r,N,items,reps,calls,total_ns,per_call_us,sink,status,evidence
+baseline,sub_decompose,0,6,2048,128,8,1024,10183817,9.945133789,2880759769957360633,PASS,repro/stage181_sub_decomp_avx512_gate/run_baseline_sub_decompose.log
+baseline,combined_current,0,6,2048,128,8,1024,68962948,67.346628906,12798793942134889240,PASS,repro/stage181_sub_decomp_avx512_gate/run_baseline_combined_current.log
+avx512_sub_decomp,sub_decompose,0,6,2048,128,8,1024,12685518,12.388201172,2880759769957360633,PASS,repro/stage181_sub_decomp_avx512_gate/run_avx512_sub_decomp_sub_decompose.log
+avx512_sub_decomp,combined_current,0,6,2048,128,8,1024,70891604,69.230082031,12798793942134889240,PASS,repro/stage181_sub_decomp_avx512_gate/run_avx512_sub_decomp_combined_current.log

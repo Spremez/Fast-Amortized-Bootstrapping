@@ -5701,3 +5701,18 @@ Status:
 Completed for this run. Stage180 records BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED. Code implementation remains
 blocked unless split data supports a complete-SAB T_bootstrap/r gain path.
 ```
+## Stage 181: AVX512 Sub-Decompose Gate
+
+Goal:
+
+```text
+Benchmark the default-off AVX512 sub-decompose implementation candidate and
+decide whether it deserves a complete-SAB gate.
+```
+
+Status:
+
+```text
+Completed. Stage181 records BLOCK_STAGE181_REMOTE_PIPELINE_FAILED. The variant remains explicit and must
+not be claimed as SAB acceleration unless a later full-SAB gate passes.
+```

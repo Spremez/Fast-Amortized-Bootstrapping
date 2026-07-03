@@ -2355,3 +2355,9 @@ Repro artifacts:
   - `theory_checks/stage180_mat_ep_split_probe_model.md`
   - `algorithm_variants/mat_rlwe_sab_mat_ep_split_probe.md`
   - `repro/stage180_mat_ep_split_probe/`
+- stage181_sub_decomp_avx512_gate: `BLOCK_STAGE181_REMOTE_PIPELINE_FAILED`
+  - `docs/stage181_sub_decomp_avx512_gate.md`
+  - `experiments/stage181_sub_decomp_avx512_gate_plan.md`
+  - `theory_checks/stage181_sub_decomp_avx512_model.md`
+  - `algorithm_variants/mat_rlwe_sab_sub_decomp_avx512.md`
+  - `repro/stage181_sub_decomp_avx512_gate/`

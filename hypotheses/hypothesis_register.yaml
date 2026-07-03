@@ -2578,3 +2578,20 @@ hypotheses:
       - timings are interpreted without correctness PASS
       - code is written before split data exists
       - microbench-only evidence is reported as complete-SAB acceleration
+  - id: H105_sub_decomp_avx512_gate
+    statement: >
+      A default-off AVX512 integer sub-decompose path may improve the exact
+      full-MAT hot block, but it should promote only if the combined-current
+      projection can affect complete SAB T_bootstrap/r.
+    mechanism: >
+      Replace scalar coefficient decomposition with AVX512 subtract/add/shift/
+      mask/store operations and compare deterministic sinks and timings against
+      baseline on CB5.
+    status: stage181_sub_decomp_avx512_gate
+    evidence: docs/stage181_sub_decomp_avx512_gate.md; experiments/stage181_sub_decomp_avx512_gate_plan.md; theory_checks/stage181_sub_decomp_avx512_model.md; repro/stage181_sub_decomp_avx512_gate/summary.csv
+    current_decision: >
+      BLOCK_STAGE181_REMOTE_PIPELINE_FAILED
+    failure_criteria:
+      - baseline and AVX512 sinks differ
+      - microbench does not project to complete-SAB gain
+      - local speedup is reported as bootstrapping acceleration

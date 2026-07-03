@@ -911,3 +911,5 @@ next valid step is a split probe, not blind AVX512 retuning.
 Stage180 records MAT EP split probe evidence. Decision: `BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED`. This
 stage does not change production SAB; it only decides whether code permission
 can proceed after split measurements.
+Stage181 records the AVX512 sub-decompose gate. Decision: `BLOCK_STAGE181_REMOTE_PIPELINE_FAILED`.
+Stage181 records the AVX512 sub-decompose gate. Decision: `REJECT_STAGE181_SUB_DECOMP_AVX512_NOT_FASTER`.
