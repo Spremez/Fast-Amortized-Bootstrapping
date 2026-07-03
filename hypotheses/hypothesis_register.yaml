@@ -2246,3 +2246,19 @@ hypotheses:
       - current post-fusion full-SAB correctness fails
       - objdump does not show expected AVX512/FMA-family instructions
       - proxy evidence is reported as theoretical optimality
+  - id: H86_materialization_count_feasibility
+    statement: >
+      The current exact same-format PVW/MAT-SAB path cannot reduce from_DFT
+      call count below the observed 573440 without a representation/API change.
+    mechanism: >
+      Every CMUX/NCMUX update outputs a DFT object whose result must be torus
+      materialized before the next bit or final extraction under the current
+      MAT EP API; Stage156 rejects naive persistent DFT closure.
+    status: stage162_materialization_count_feasibility
+    evidence: docs/stage162_materialization_count_feasibility.md; experiments/stage162_materialization_count_feasibility_plan.md; theory_checks/stage162_materialization_count_model.md; repro/stage162_materialization_count_feasibility/summary.csv
+    current_decision: >
+      PASS_STAGE162_COUNT_REDUCTION_SAME_FORMAT_CLOSED_REP_CHANGE_REQUIRED
+    failure_criteria:
+      - Stage160 count evidence is missing
+      - Stage156 closure rejection is ignored
+      - backend batching is claimed as algorithmic count reduction

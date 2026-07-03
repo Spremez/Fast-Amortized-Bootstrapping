@@ -1,0 +1,8 @@
+bit,rgsw_monomial_calls,ncmux_updates,direct_cmux_updates,total_updates,observed_from_dft_calls,torus_consumer,count_reduction_without_rep_change,status
+0,40,40,81880,81920,81920,bit_1_torus_input,0,LOWER_BOUND_TIGHT_UNDER_CURRENT_API
+1,40,80,81840,81920,81920,bit_2_torus_input,0,LOWER_BOUND_TIGHT_UNDER_CURRENT_API
+2,40,160,81760,81920,81920,bit_3_torus_input,0,LOWER_BOUND_TIGHT_UNDER_CURRENT_API
+3,40,320,81600,81920,81920,bit_4_torus_input,0,LOWER_BOUND_TIGHT_UNDER_CURRENT_API
+4,40,640,81280,81920,81920,bit_5_torus_input,0,LOWER_BOUND_TIGHT_UNDER_CURRENT_API
+5,40,1280,80640,81920,81920,bit_6_torus_input,0,LOWER_BOUND_TIGHT_UNDER_CURRENT_API
+6,40,2560,79360,81920,81920,final_extract,0,LOWER_BOUND_TIGHT_UNDER_CURRENT_API

@@ -5399,3 +5399,19 @@ Status:
 Completed. Stage161 records PASS_STAGE161_PROXY_ATTRIBUTION_NATIVE_COUNTER_REQUIRED; WSL perf is not treated as native
 counter evidence when unavailable.
 ```
+## Stage 162: Materialization-Count Feasibility
+
+Goal:
+
+```text
+Decide whether the current exact same-format PVW/MAT-SAB path can reduce the
+573440 from_DFT materializations without a representation/API change.
+```
+
+Status:
+
+```text
+Completed. Stage162 records PASS_STAGE162_COUNT_REDUCTION_SAME_FORMAT_CLOSED_REP_CHANGE_REQUIRED; same-format count reduction is closed,
+while backend batching and representation-changing exact states remain separate
+routes.
+```

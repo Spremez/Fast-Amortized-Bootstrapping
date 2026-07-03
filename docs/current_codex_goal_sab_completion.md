@@ -389,3 +389,6 @@ The new research goal is complete only after a later stage records:
 65. Treat Stage161 as the post-fusion attribution gate:
     `PASS_STAGE161_PROXY_ATTRIBUTION_NATIVE_COUNTER_REQUIRED`. It prevents overclaiming by separating objdump/time proxy
     evidence from native hardware-counter proof.
+66. Treat Stage162 as the materialization-count feasibility gate:
+    `PASS_STAGE162_COUNT_REDUCTION_SAME_FORMAT_CLOSED_REP_CHANGE_REQUIRED`. It prevents conflating backend IFFT batching with algorithmic
+    materialization-count reduction.

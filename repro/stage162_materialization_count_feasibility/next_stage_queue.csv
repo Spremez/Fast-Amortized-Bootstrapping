@@ -1,0 +1,4 @@
+priority,stage,name,goal,gate
+P0,163,from_DFT backend batching microbench,Measure whether batched/vectorized materialization reduces wall time while preserving the 573440-call semantics.,"Promote only if complete SAB improves; label as backend improvement, not algorithmic count reduction."
+P0,164,compact/decomposed-state closure design,Define a representation-changing exact state that can consume CMUX outputs without torus materialization.,Must pass isolated phase/noise equivalence before any SAB integration.
+P1,161N,native post-fusion counters,"Classify the MAT EP+subdecomp block as FMA-bound, memory-bound, or spill-bound on native perf platform.","Current r=6 post-fusion path, not historical r=4 evidence."

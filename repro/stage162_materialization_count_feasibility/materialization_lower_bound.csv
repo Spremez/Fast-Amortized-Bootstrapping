@@ -1,0 +1,5 @@
+metric,value,evidence,interpretation
+observed_from_dft_calls,573440,repro/stage160_post_fusion_frontier/profile_sample.csv,Current post-fusion path materializes every MAT EP output.
+current_api_lower_bound,573440,repro/stage162_materialization_count_feasibility/bit_dependency_model.csv,"Under current torus-input MAT EP API, every update output must become torus before the next bit or final extract."
+mat_ep_calls,573440,repro/stage160_post_fusion_frontier/profile_sample.csv,The lower bound equals observed MAT EP calls; same-format count reduction is not available.
+reducible_calls_without_representation_change,0,repro/stage160_post_fusion_frontier/profile_sample.csv; repro/stage162_materialization_count_feasibility/bit_dependency_model.csv,Zero under the current exact torus/decomposition API boundary.

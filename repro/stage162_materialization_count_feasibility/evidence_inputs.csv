@@ -1,0 +1,6 @@
+artifact,status,role
+repro/stage160_post_fusion_frontier/profile_sample.csv,present,post-fusion schedule counts and calls
+repro/stage160_post_fusion_frontier/component_shares.csv,present,from_DFT share and MAT EP share
+repro/stage156_lazy_dft_closure_gate/summary.csv,present,lazy DFT closure rejection
+repro/stage156_lazy_dft_closure_gate/decomposition_nonlinearity.csv,present,decomposition nonlinearity counterexamples
+repro/stage161_post_fusion_attribution/summary.csv,present,post-fusion attribution scope

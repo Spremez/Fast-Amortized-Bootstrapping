@@ -2242,3 +2242,8 @@ Repro artifacts:
   - `experiments/stage161_post_fusion_attribution_plan.md`
   - `theory_checks/stage161_post_fusion_attribution_model.md`
   - `repro/stage161_post_fusion_attribution/`
+- stage162_materialization_count_feasibility: `PASS_STAGE162_COUNT_REDUCTION_SAME_FORMAT_CLOSED_REP_CHANGE_REQUIRED`
+  - `docs/stage162_materialization_count_feasibility.md`
+  - `experiments/stage162_materialization_count_feasibility_plan.md`
+  - `theory_checks/stage162_materialization_count_model.md`
+  - `repro/stage162_materialization_count_feasibility/`

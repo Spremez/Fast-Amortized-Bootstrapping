@@ -847,3 +847,7 @@ limits or materialization-count reduction.
 Stage161 records post-fusion attribution scope for the dominant MAT EP block.
 Decision: `PASS_STAGE161_PROXY_ATTRIBUTION_NATIVE_COUNTER_REQUIRED`. Proxy objdump evidence confirms the AVX512/FMA build
 path, but native counters remain required for FMA-vs-memory optimality claims.
+Stage162 closes same-format materialization-count reduction for the current
+exact torus-input API. Decision: `PASS_STAGE162_COUNT_REDUCTION_SAME_FORMAT_CLOSED_REP_CHANGE_REQUIRED`. Backend batching remains open
+only as wall-time optimization; algorithmic count reduction requires a new
+closed representation/API with equivalence and noise gates.
