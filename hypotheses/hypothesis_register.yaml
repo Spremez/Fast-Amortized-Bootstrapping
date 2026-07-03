@@ -1838,3 +1838,22 @@ hypotheses:
       - split output differs from current decompose/DFT
       - DFT route is chosen without r=4 DFT-dominant evidence
       - attribution microbench is reported as full SAB speedup
+  - id: H62_shared_mask_compact_mat_ep
+    statement: >
+      If PVW/MAT-SAB is interpreted as one MAT-RLWE ciphertext with one shared
+      mask and r body lanes, then shared-mask compact external product should
+      improve amortized per-lane kernel time over repeated lane-pair execution.
+    mechanism: >
+      Repeated lane-pair execution performs 2*r*T input DFT conversions, while
+      true shared-mask compact MAT performs (1+r)*T conversions and preserves
+      the same lane outputs.
+    status: stage138_shared_mask_compact_gate
+    evidence: docs/stage138_shared_mask_compact_gate.md; experiments/stage138_shared_mask_compact_gate_plan.md; theory_checks/stage138_shared_mask_compact_model.md; algorithm_variants/mat_rlwe_sab_shared_mask_compact.md; scripts/build_stage138_shared_mask_compact_gate.py; repro/stage138_shared_mask_compact_gate/summary.csv; repro/stage138_shared_mask_compact_gate/correctness.csv; repro/stage138_shared_mask_compact_gate/ratio_summary.csv; repro/stage138_shared_mask_compact_gate/artifact_index.csv
+    current_decision: >
+      Stage138 records PASS_STAGE138_SHARED_MASK_COMPACT_PROMOTED_READY_SAB_INTEGRATION. The minimum r=4 per-bit kernel speedup is
+      1.293981. Stage139 must test whether this survives full CMUX/RGSW/SAB
+      integration.
+    failure_criteria:
+      - shared-mask compact output differs from repeated lane-pair output
+      - speedup is reported without amortizing by r
+      - kernel speedup is claimed as complete SAB bootstrapping speedup

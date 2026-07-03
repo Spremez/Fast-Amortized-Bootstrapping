@@ -294,3 +294,8 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE137_DFT_CONVERSION_DOMINANT_READY_DFT_ROUTE`. It measures current full decompose/DFT, decompose-only, and
     DFT-only timing. For r=4, minimum DFT fraction is 0.862257; full SAB
     claims remain blocked.
+
+42. Treat Stage138 as the shared-mask compact MAT gate:
+    `PASS_STAGE138_SHARED_MASK_COMPACT_PROMOTED_READY_SAB_INTEGRATION`. It compares repeated lane-pair EP against production compact
+    shared-mask EP using `T_kernel/r`. For r=4, per-bit speedup is
+    1.293981-1.491182; complete SAB claims remain blocked.

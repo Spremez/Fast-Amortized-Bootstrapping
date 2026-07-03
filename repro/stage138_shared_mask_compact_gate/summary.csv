@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,detail,next_action
+stage138_mosfhet_static_build,PASS,make_static_spqlios,true,repro/stage138_shared_mask_compact_gate/mosfhet_static_build.log,MOSFHET static build for shared-mask compact probe.,Fix build before interpreting results.
+stage138_probe_compile,PASS,gcc_probe_compile,true,repro/stage138_shared_mask_compact_gate/compile_probe.log,Standalone shared-mask compact probe compiled.,
+stage138_probe_run,PASS,probe_returncode,0,repro/stage138_shared_mask_compact_gate/run_probe.log,Shared-mask compact probe executed.,
+stage138_correctness,PASS,correctness_rows,6,repro/stage138_shared_mask_compact_gate/correctness.csv,Production shared-mask compact output equals repeated lane-pair output.,Do not promote without exact DFT equivalence.
+stage138_benchmark_rows,PASS,bench_rows;ratio_rows,60;6,repro/stage138_shared_mask_compact_gate/benchmark_samples.csv; repro/stage138_shared_mask_compact_gate/ratio_summary.csv,Repeated lane-pair and shared-mask compact timings recorded.,
+stage138_r4_per_bit_speedup,RECORDED,min_r4_per_bit_speedup;max_r4_per_bit_speedup,1.293981;1.491182,repro/stage138_shared_mask_compact_gate/ratio_summary.csv,Main metric is amortized per-lane/per-bit kernel time.,
+stage138_decision,PASS_STAGE138_SHARED_MASK_COMPACT_PROMOTED_READY_SAB_INTEGRATION,promotion_policy,,repro/stage138_shared_mask_compact_gate/summary.csv; repro/stage138_shared_mask_compact_gate/ratio_summary.csv,Stage138 decides whether shared-mask compact EP is a real algorithmic route.,"If promoted, Stage139 should integrate compact selectors into SAB CMUX/RGSW without breaking scalar SAB."

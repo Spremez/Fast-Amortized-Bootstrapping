@@ -5004,3 +5004,20 @@ Completed. Stage137 records PASS_STAGE137_DFT_CONVERSION_DOMINANT_READY_DFT_ROUT
 0.862257 and maximum required DFT-only speedup is 1.340453. This is an
 attribution gate only, not full EP or SAB acceleration.
 ```
+
+## Stage 138: Shared-Mask Compact MAT Gate
+
+Goal:
+
+```text
+Validate the true MAT-RLWE interpretation: one shared mask and r body lanes,
+measured as amortized external-product time per lane.
+```
+
+Status:
+
+```text
+Completed. Stage138 records PASS_STAGE138_SHARED_MASK_COMPACT_PROMOTED_READY_SAB_INTEGRATION. For r=4, per-bit kernel speedup is
+1.293981-1.491182. This remains a kernel gate; full SAB claims are still
+blocked until compact selectors are integrated into CMUX/RGSW/sparse_mul.
+```

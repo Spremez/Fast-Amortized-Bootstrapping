@@ -749,3 +749,9 @@ Stage137 provides the next empirical route choice after Stage136: r=4 DFT
 fraction is at least 0.862257, with required DFT-only speedup up to
 1.340453. This determines whether Stage138 should target DFT conversion
 count/layout or a broader mixed memory-traffic path.
+
+Stage138 refines the comparison metric to the intended MAT-RLWE dimension:
+`T_kernel / r`. It proves exact equivalence between repeated lane-pair compact
+EP and production shared-mask compact EP, then records r=4 per-bit kernel
+speedup 1.293981-1.491182. The result supports Stage139 compact-SAB integration
+but is not yet a complete bootstrapping claim.

@@ -2049,3 +2049,21 @@ Repro artifacts:
 - `repro/stage137_decomp_dft_attribution_gate/run_probe.log`
 - `repro/stage137_decomp_dft_attribution_gate/decomp_dft_attribution_gate.c`
 - `repro/stage137_decomp_dft_attribution_gate/artifact_index.csv`
+
+## Stage 138 Shared-Mask Compact Gate
+
+- `docs/stage138_shared_mask_compact_gate.md`
+- `experiments/stage138_shared_mask_compact_gate_plan.md`
+- `theory_checks/stage138_shared_mask_compact_model.md`
+- `algorithm_variants/mat_rlwe_sab_shared_mask_compact.md`
+- `scripts/build_stage138_shared_mask_compact_gate.py`
+- `repro/stage138_shared_mask_compact_gate/summary.csv`
+- `repro/stage138_shared_mask_compact_gate/correctness.csv`
+- `repro/stage138_shared_mask_compact_gate/benchmark_samples.csv`
+- `repro/stage138_shared_mask_compact_gate/benchmark_aggregate.csv`
+- `repro/stage138_shared_mask_compact_gate/ratio_summary.csv`
+- `repro/stage138_shared_mask_compact_gate/mosfhet_static_build.log`
+- `repro/stage138_shared_mask_compact_gate/compile_probe.log`
+- `repro/stage138_shared_mask_compact_gate/run_probe.log`
+- `repro/stage138_shared_mask_compact_gate/shared_mask_compact_gate.c`
+- `repro/stage138_shared_mask_compact_gate/artifact_index.csv`
