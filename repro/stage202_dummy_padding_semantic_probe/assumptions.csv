@@ -1,0 +1,4 @@
+assumption_id,statement,scope,evidence,falsification
+A1_count_matched_toy,The finite model uses a count-matched active set with 4r semantic rows inside the dense (r+1)^2 shape.,toy functional probe only,repro/stage202_dummy_padding_semantic_probe/semantic_probe.csv,A production selector proof must replace the toy active set with real keygen equations.
+A2_dummy_rows_public_shape,Dummy padding keeps the dense public row shape but assigns semantic zero to inactive rows.,Stage201 surviving public-pattern route,repro/stage201_structured_selector_distribution_probe/candidate_matrix.csv,"If dummy rows carry random semantics, the finite model must mismatch the structured reference."
+A3_no_code_permission,"Finite semantic equivalence is not a production keygen, noise, security, or complete-SAB gate.",claim policy,repro/stage202_dummy_padding_semantic_probe/proof_gate.csv,Production code requires real keygen/noise and complete-SAB evidence.

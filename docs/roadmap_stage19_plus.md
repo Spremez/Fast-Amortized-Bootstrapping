@@ -6035,3 +6035,19 @@ Completed. Stage201 records PASS_STAGE201_STRUCTURED_SELECTOR_DISTRIBUTION_PROBE
 simple public-pattern checks, and it remains proof-only with no production code
 permission.
 ```
+## Stage 202: Dummy Padding Semantic Probe
+
+Goal:
+
+```text
+Test the only Stage201 public-pattern-surviving selector route in a finite
+semantic model, with explicit negative controls.
+```
+
+Status:
+
+```text
+Completed. Stage202 records PASS_STAGE202_DUMMY_PADDING_SEMANTIC_PROBE_PROOF_ONLY. Dummy padding is semantically viable
+only in a toy zero-semantic model and remains proof-only; keygen, security,
+resource, noise, and complete-SAB gates are still missing.
+```

@@ -1,0 +1,4 @@
+r,dense_public_rows_per_T,active_semantic_rows_per_T,inactive_dummy_rows_per_T,public_row_saving_vs_dense,semantic_active_fraction,semantic_skip_potential,interpretation,evidence
+2,9,8,1,0,0.888888889,0.111111111,Dummy padding preserves dense public size; any speed value requires evaluator-side semantic skipping plus proof.,repro/stage202_dummy_padding_semantic_probe/semantic_probe.csv
+4,25,16,9,0,0.640000000,0.360000000,Dummy padding preserves dense public size; any speed value requires evaluator-side semantic skipping plus proof.,repro/stage202_dummy_padding_semantic_probe/semantic_probe.csv
+6,49,24,25,0,0.489795918,0.510204082,Dummy padding preserves dense public size; any speed value requires evaluator-side semantic skipping plus proof.,repro/stage202_dummy_padding_semantic_probe/semantic_probe.csv

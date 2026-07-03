@@ -1,0 +1,73 @@
+probe,r,N,q,seed,active_semantic_rows,inactive_dummy_rows,mismatches,status,interpretation
+dummy_zero_semantics_vs_structured,2,8,257,0,8,1,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,2,8,257,0,8,1,24,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,2,8,257,0,8,1,24,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,2,8,257,1,8,1,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,2,8,257,1,8,1,24,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,2,8,257,1,8,1,24,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,2,8,257,2,8,1,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,2,8,257,2,8,1,24,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,2,8,257,2,8,1,24,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,2,8,257,3,8,1,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,2,8,257,3,8,1,24,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,2,8,257,3,8,1,24,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,2,8,257,4,8,1,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,2,8,257,4,8,1,23,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,2,8,257,4,8,1,24,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,2,8,257,5,8,1,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,2,8,257,5,8,1,24,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,2,8,257,5,8,1,24,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,2,8,257,6,8,1,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,2,8,257,6,8,1,24,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,2,8,257,6,8,1,24,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,2,8,257,7,8,1,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,2,8,257,7,8,1,24,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,2,8,257,7,8,1,24,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,4,8,257,0,16,9,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,4,8,257,0,16,9,40,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,4,8,257,0,16,9,39,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,4,8,257,1,16,9,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,4,8,257,1,16,9,38,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,4,8,257,1,16,9,40,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,4,8,257,2,16,9,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,4,8,257,2,16,9,40,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,4,8,257,2,16,9,40,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,4,8,257,3,16,9,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,4,8,257,3,16,9,39,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,4,8,257,3,16,9,40,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,4,8,257,4,16,9,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,4,8,257,4,16,9,40,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,4,8,257,4,16,9,40,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,4,8,257,5,16,9,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,4,8,257,5,16,9,39,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,4,8,257,5,16,9,40,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,4,8,257,6,16,9,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,4,8,257,6,16,9,40,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,4,8,257,6,16,9,40,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,4,8,257,7,16,9,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,4,8,257,7,16,9,40,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,4,8,257,7,16,9,40,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,6,8,257,0,24,25,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,6,8,257,0,24,25,56,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,6,8,257,0,24,25,56,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,6,8,257,1,24,25,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,6,8,257,1,24,25,56,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,6,8,257,1,24,25,56,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,6,8,257,2,24,25,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,6,8,257,2,24,25,56,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,6,8,257,2,24,25,55,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,6,8,257,3,24,25,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,6,8,257,3,24,25,56,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,6,8,257,3,24,25,56,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,6,8,257,4,24,25,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,6,8,257,4,24,25,56,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,6,8,257,4,24,25,56,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,6,8,257,5,24,25,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,6,8,257,5,24,25,56,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,6,8,257,5,24,25,56,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,6,8,257,6,24,25,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,6,8,257,6,24,25,56,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,6,8,257,6,24,25,55,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.
+dummy_zero_semantics_vs_structured,6,8,257,7,24,25,0,PASS_EQUIVALENCE,Dummy rows with semantic zero reproduce the declared structured reference in the toy model.
+dummy_random_semantics_vs_structured,6,8,257,7,24,25,56,PASS_COUNTEREXAMPLE,Random semantic dummy rows do not preserve the structured function.
+dense_general_vs_structured,6,8,257,7,24,25,56,PASS_COUNTEREXAMPLE,General dense selectors are not semantically equivalent to the structured-zero model.

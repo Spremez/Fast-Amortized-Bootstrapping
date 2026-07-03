@@ -2481,3 +2481,9 @@ Repro artifacts:
   - `theory_checks/stage201_structured_selector_distribution_model.md`
   - `algorithm_variants/mat_rlwe_sab_structured_selector_distribution_probe.md`
   - `repro/stage201_structured_selector_distribution_probe/`
+- stage202_dummy_padding_semantic_probe: `PASS_STAGE202_DUMMY_PADDING_SEMANTIC_PROBE_PROOF_ONLY`
+  - `docs/stage202_dummy_padding_semantic_probe.md`
+  - `experiments/stage202_dummy_padding_semantic_probe_plan.md`
+  - `theory_checks/stage202_dummy_padding_semantic_model.md`
+  - `algorithm_variants/mat_rlwe_sab_dummy_padding_semantic_probe.md`
+  - `repro/stage202_dummy_padding_semantic_probe/`

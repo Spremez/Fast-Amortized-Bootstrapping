@@ -545,3 +545,6 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE201_STRUCTURED_SELECTOR_DISTRIBUTION_PROBE_PROOF_ONLY`. The compact/shared-output route remains proof-only; dummy
     padding survives only simple public-pattern checks and still lacks semantic,
     resource, noise, and complete-SAB evidence.
+106. Treat Stage202 as dummy padding semantic probe:
+    `PASS_STAGE202_DUMMY_PADDING_SEMANTIC_PROBE_PROOF_ONLY`. Dummy padding is narrowed to a toy proof-only route with no
+    key-size, security/noise, production keygen, or complete-SAB claim.

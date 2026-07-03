@@ -2926,3 +2926,19 @@ hypotheses:
       - a publicly distinguishable selector shortcut is treated as dense-equivalent
       - dummy padding is treated as a security proof or implementation permission
       - production SAB code is opened without semantic, noise, resource, and full-SAB gates
+  - id: H126_dummy_padding_semantic_probe
+    statement: >
+      Dummy padding can only continue as a compact/shared-output proof route
+      if dummy rows are semantic zero under a declared structured selector
+      model; random semantic dummy rows must fail.
+    mechanism: >
+      Stage202 tests a finite count-matched toy model against semantic-zero,
+      random-semantic, and dense-general controls for r=2/4/6.
+    status: stage202_dummy_padding_semantic_probe
+    evidence: docs/stage202_dummy_padding_semantic_probe.md; experiments/stage202_dummy_padding_semantic_probe_plan.md; theory_checks/stage202_dummy_padding_semantic_model.md; repro/stage202_dummy_padding_semantic_probe/summary.csv
+    current_decision: >
+      PASS_STAGE202_DUMMY_PADDING_SEMANTIC_PROBE_PROOF_ONLY
+    failure_criteria:
+      - semantic-zero dummy rows fail the toy equivalence check
+      - random-semantic dummy rows do not produce counterexamples
+      - the toy proof route is treated as production code permission

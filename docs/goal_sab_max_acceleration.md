@@ -976,3 +976,6 @@ and runs finite counterexample probes for unsafe shortcuts.
 Stage201 records structured selector distribution probe. Decision:
 `PASS_STAGE201_STRUCTURED_SELECTOR_DISTRIBUTION_PROBE_PROOF_ONLY`. It rejects publicly distinguishable selector shortcuts and keeps
 random dummy padding as proof-only, not implementation-ready.
+Stage202 records dummy padding semantic probe. Decision: `PASS_STAGE202_DUMMY_PADDING_SEMANTIC_PROBE_PROOF_ONLY`. It
+keeps dummy padding proof-only: semantic-zero dummy rows pass the toy model,
+but random-semantic and dense-general controls fail, and no code path opens.

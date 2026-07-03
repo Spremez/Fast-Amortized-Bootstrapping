@@ -1,0 +1,6 @@
+gate,status,evidence,detail,missing_before_code
+T2_toy_semantic_equivalence,PASS_TOY_ONLY,repro/stage202_dummy_padding_semantic_probe/semantic_probe.csv,dummy zero semantic failures=0,Replace toy active set with production selector/keygen equations.
+T2_negative_control_random_dummy,PASS_COUNTEREXAMPLE,repro/stage202_dummy_padding_semantic_probe/semantic_probe.csv,random dummy counterexample failures=0,Prove dummy public rows encrypt semantic zero and cannot carry arbitrary semantic terms.
+T2_negative_control_dense_general,PASS_COUNTEREXAMPLE,repro/stage202_dummy_padding_semantic_probe/semantic_probe.csv,dense general counterexample failures=0,Declare a new structured distribution; do not claim dense-equivalence.
+T3_resource_value,WEAK_PUBLIC_SIZE,repro/stage202_dummy_padding_semantic_probe/resource_model.csv,dummy padding has zero public-row saving versus dense,Show complete-SAB T_bootstrap/r value after semantic skipping and key materialization costs.
+T4_noise_keygen_security,BLOCKED,repro/stage201_structured_selector_distribution_probe/proof_gate.csv,production keygen/noise/security proof not supplied,"Production keygen, security reduction, noise recurrence, and multi-seed gates."
