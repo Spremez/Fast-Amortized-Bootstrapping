@@ -1,0 +1,4 @@
+make: Warning: File 'lib' has modification time 0.4 s in the future
+gcc -g -c src/keyswitch.c src/bootstrap.c src/bootstrap_ga.c src/tlwe.c src/trlwe.c src/trgsw.c src/misc.c src/polynomial.c src/register.c src/pvwtlwe.c src/sha3/fips202.c src/fft/karatsuba.c src/pvwtmlwe.c src/mattrgsw.c src/./rnd/aes_rng.c src/./fft/spqlios/spqlios-fft-fma.s src/./fft/spqlios/spqlios-ifft-fma.s src/./fft/spqlios/spqlios-fft-impl.c src/./fft/spqlios/fft_processor_spqlios.c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DUSE_SPQLIOS -I.//include
+ar rcs lib/libmosfhet.a *.o && rm *.o
+make: warning:  Clock skew detected.  Your build may be incomplete.

@@ -6375,3 +6375,20 @@ Completed. Stage221 records PASS_STAGE221_COMPACT_KEYGEN_NOISE_RECURRENCE_READY_
 `T_bootstrap/r` row normalization pass, but only isolated compact EP experiments
 are authorized; SAB hot-path integration remains denied.
 ```
+## Stage 222: Isolated Compact EP Integration
+
+Goal:
+
+```text
+Compile and run current MOSFHET compact EP as an isolated production-code probe,
+then decide whether it covers the complete Stage203/SAB selector.
+```
+
+Status:
+
+```text
+Completed. Stage222 records FAIL_STAGE222. The production compact EP lane-local
+subclass is correct, but complete selector/SAB integration remains denied
+because neighbor/cross-body active equations are outside the current state
+shape.
+```

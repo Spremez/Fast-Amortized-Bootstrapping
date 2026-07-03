@@ -648,3 +648,6 @@ or security claims.
 - Stage221 compact keygen noise recurrence completed with `PASS_STAGE221_COMPACT_KEYGEN_NOISE_RECURRENCE_READY_ISOLATED_EP`. The next
   selected route is isolated compact external-product integration; `sab_pvw_*`
   remains untouched.
+- Stage222 isolated compact EP integration completed with `FAIL_STAGE222`. The
+  compact route remains outside SAB hot paths; the next decision is closed
+  neighbor-capable compact state design versus exact PVW/MAT optimization.

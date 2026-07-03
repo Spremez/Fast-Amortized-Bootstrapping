@@ -1,0 +1,7 @@
+input,status,evidence,role,bytes
+stage221_proof_gate,present,repro/stage221_compact_keygen_noise_recurrence/proof_gate.csv,permission for isolated compact EP only,1842
+stage221_per_bit_normalization,present,repro/stage221_compact_keygen_noise_recurrence/per_bit_normalization.csv,T_bootstrap/r row-normalization boundary,1315
+stage203_equation_map,present,repro/stage203_production_selector_equation_probe/equation_map.csv,active neighbor/cross-body equation source,3693
+stage139_closure_audit,present,repro/stage139_compact_closure_audit/summary.csv,prior compact non-closure evidence,1285
+stage166_algebra_gate,present,repro/stage166_shared_output_compact_algebra_gate/summary.csv,generic dense compact-exactness boundary,1054
+mosfhet_header,present,src/mosfhet/include/mosfhet.h,production compact EP API,32723

@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,interpretation
+G1_required_inputs,PASS,missing_inputs,,repro/stage222_isolated_compact_ep_integration/input_status.csv,Stage222 consumes Stage221 permission plus Stage203/Stage139/Stage166 boundaries.
+G2_mosfhet_static_build,PASS,make_static_spqlios,true,repro/stage222_isolated_compact_ep_integration/mosfhet_static_build.log,Probe links against current MOSFHET production compact EP code.
+G3_probe_compile_run,PASS,compile_ok;run_ok,true;true,repro/stage222_isolated_compact_ep_integration/compile_probe.log; repro/stage222_isolated_compact_ep_integration/run_probe.log,Standalone isolated compact EP probe compiles and runs.
+G4_lane_local_subclass_correctness,PASS,api_rows;min_cross_body_negative_mismatches,12;1024,repro/stage222_isolated_compact_ep_integration/api_results.csv,Current compact EP matches a lane-local oracle and rejects cross-body references.
+G5_complete_selector_expressiveness,DENY_COMPLETE_SELECTOR_INTEGRATION,stage203_neighbor_rows,2;4;6,repro/stage222_isolated_compact_ep_integration/expressiveness_results.csv,Stage203/686 active neighbor equations are outside the current lane-local compact output shape.
+G6_sab_admission,DENY_SAB_HOTPATH_CODE,missing_before_sab_code,closed_state;neighbor_equation_support;complete_sab_gate,repro/stage222_isolated_compact_ep_integration/proof_gate.csv,Stage222 does not authorize compact EP integration into SAB.
+G7_stage222_decision,PASS_STAGE222_ISOLATED_COMPACT_EP_SUBCLASS_OK_COMPLETE_SELECTOR_DENIED,decision,PASS_STAGE222_ISOLATED_COMPACT_EP_SUBCLASS_OK_COMPLETE_SELECTOR_DENIED,repro/stage222_isolated_compact_ep_integration/proof_gate.csv,"Lane-local compact EP is production-code correct, but complete selector integration is denied."

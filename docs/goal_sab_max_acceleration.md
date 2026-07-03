@@ -1068,3 +1068,6 @@ and complete-SAB speedup evidence.
 - Stage221 compact keygen noise recurrence: `PASS_STAGE221_COMPACT_KEYGEN_NOISE_RECURRENCE_READY_ISOLATED_EP`. This is a relative
   row-noise/resource gate for compact selector rows, not a complete-SAB speedup
   claim.
+- Stage222 isolated compact EP integration: `FAIL_STAGE222`. This confirms a
+  lane-local production compact EP subclass and blocks complete compact SAB
+  integration under the current selector/state shape.

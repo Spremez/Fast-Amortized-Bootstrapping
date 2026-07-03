@@ -2623,3 +2623,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage221_compact_noise_recurrence.md`
   - `scripts/build_stage221_compact_keygen_noise_recurrence.py`
   - `repro/stage221_compact_keygen_noise_recurrence/`
+- stage222_isolated_compact_ep_integration:
+  - `docs/stage222_isolated_compact_ep_integration.md`
+  - `experiments/stage222_isolated_compact_ep_integration_plan.md`
+  - `theory_checks/stage222_isolated_compact_ep_integration_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage222_isolated_compact_ep.md`
+  - `scripts/build_stage222_isolated_compact_ep_integration.py`
+  - `repro/stage222_isolated_compact_ep_integration/`

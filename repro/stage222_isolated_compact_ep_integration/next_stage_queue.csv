@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage223_compact_route_closeout_or_new_state_design,Stage222 confirms lane-local correctness but complete selector denial.,Choose either a new closed lane-pair/neighbor-capable compact state or return to exact PVW/MAT-SAB optimization.,selected,No compact SAB hot-path code.,repro/stage222_isolated_compact_ep_integration/proof_gate.csv
+P1,stage223_exact_pvw_mat_avx_resource_refresh,Compact complete-selector route remains denied.,Continue optimizing valid closed dense MAT path under T_bootstrap/r.,parallel_candidate,Keep previous exact PVW/MAT evidence only.,repro/stage139_compact_closure_audit/summary.csv
+P2,no_complete_sab_claim,Any compact state proof is missing.,Report compact route as isolated/subclass only.,fallback,Do not claim compact SAB acceleration.,repro/stage222_isolated_compact_ep_integration/expressiveness_results.csv

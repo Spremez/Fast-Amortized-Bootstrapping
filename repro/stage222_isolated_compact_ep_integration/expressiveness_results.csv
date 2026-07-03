@@ -1,0 +1,4 @@
+r,stage203_neighbor_active_rows,generic_missing_cross_terms,current_kernel_consumes_body_lanes,current_kernel_outputs_body_lanes,complete_selector_status,interpretation
+2,2,2,same-index body lane only,same-index body lane only,DENY_COMPLETE_SELECTOR_INTEGRATION,Stage203 active neighbor rows are outside the current lane-local compact EP state shape.
+4,4,12,same-index body lane only,same-index body lane only,DENY_COMPLETE_SELECTOR_INTEGRATION,Stage203 active neighbor rows are outside the current lane-local compact EP state shape.
+6,6,30,same-index body lane only,same-index body lane only,DENY_COMPLETE_SELECTOR_INTEGRATION,Stage203 active neighbor rows are outside the current lane-local compact EP state shape.
