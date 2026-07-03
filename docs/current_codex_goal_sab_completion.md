@@ -142,7 +142,12 @@ outside SAB hot paths.
     vector-shared polynomial structs pass 30 phase/noise rows for r=2/4/6,
     N=32/64, seeds 0..4, with zero mismatches and zero noise-bound violations;
     the next valid step is DFT/conversion prototyping outside SAB.
-24. Preserve the current final-audit status:
+24. Treat Stage121 as the current vector-shared DFT/conversion gate:
+    exact modular DFT conversion passes 30 rows for r=2/4/6, N=32/64,
+    seeds 0..4. Roots, round-trip conversion, clean phase, noisy phase, and
+    noise bounds all pass. The next valid step is structured vector-shared
+    external-product arithmetic prototyping outside `sab_pvw_*`.
+25. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

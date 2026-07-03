@@ -4244,3 +4244,57 @@ Layout rows passed with vector/dense polynomial ratios 0.666667 for r=2,
 0.533333 for r=4, and 0.428571 for r=6. The next stage is a DFT/conversion
 object prototype, still outside SAB hot paths.
 ```
+
+## Stage 121: Vector-Shared DFT/Conversion Gate
+
+Goal:
+
+```text
+Advance the vector-shared real C struct route through an exact
+frequency-domain conversion gate before any production FFT, external product,
+or SAB hot-path integration.
+```
+
+Theory basis:
+
+Stage120 proves coefficient-domain vector-shared phase/noise for allocated C
+polynomial structs. Stage121 checks the next necessary boundary: converting
+mask, body, and secret polynomials to a frequency-domain representation,
+computing phase as `DFT(b) - DFT(a) * DFT(s)`, and converting back. The gate
+uses an exact modular negacyclic NTT/DFT over modulus 12289 so failures are
+semantic conversion failures rather than floating-point roundoff artifacts.
+
+Tasks:
+
+- generate and compile a standalone exact DFT/NTT C prototype;
+- find valid 2N-th roots for N=32 and N=64;
+- round-trip every vector-shared mask/body/secret polynomial;
+- compare DFT-domain phase against coefficient-domain phase for clean and
+  noisy shared/body objects;
+- check digit-sum noise bounds after conversion;
+- record vector-shared DFT polynomial-count ratios.
+
+Gate:
+
+- generated C prototype must compile;
+- every root row must pass;
+- every round-trip mismatch count must be zero;
+- every clean and noisy phase mismatch count must be zero;
+- every noise-bound violation count must be zero;
+- layout rows must preserve the vector-shared DFT polynomial-count bound;
+- passing only opens structured external-product arithmetic prototyping
+  outside `sab_pvw_*`.
+
+Status:
+
+```text
+Completed. Stage121 records
+PASS_STAGE121_VECTOR_SHARED_DFT_CONVERSION_READY_STRUCTURED_EP_PROTOTYPE_REQUIRED.
+The generated exact modular DFT prototype compiled and ran 30 conversion rows
+covering r=2/4/6, N=32/64, and seeds 0..4. Root availability, polynomial
+round-trip, clean phase, noisy phase, and noise-bound checks all had zero
+failures. Layout rows passed with vector/dense DFT polynomial ratios 0.666667
+for r=2, 0.533333 for r=4, and 0.428571 for r=6. The next valid stage is a
+structured vector-shared external-product arithmetic prototype, still outside
+the SAB hot path.
+```

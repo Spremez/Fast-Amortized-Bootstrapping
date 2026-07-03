@@ -807,8 +807,7 @@ hypotheses:
       theorem-level, or hardware-counter evidence.
     failure_criteria:
       - scalar binary full run does not end with `Pass`
-      - active-buffer or H14 backend PVW target gate does not print
-        `SAB_PVW target full bootstrap gate: Pass`
+      - "active-buffer or H14 backend PVW target gate does not print `SAB_PVW target full bootstrap gate: Pass`"
       - scalar ternary build fails
       - raw build/run logs are missing from the Stage98 repro package
       - Stage98 is cited as a performance benchmark, novelty claim, theorem
@@ -1356,3 +1355,32 @@ hypotheses:
       - torus/FFT implementation cannot preserve the real-struct invariant
       - isolated external-product prototype reintroduces dense row-output work
       - Stage120 is used as complete-SAB acceleration evidence
+  - id: H45_vector_shared_dft_conversion
+    statement: >
+      Vector-shared lane-local objects can cross an exact frequency-domain
+      conversion boundary while preserving clean and noisy phase semantics,
+      before production FFT or SAB integration.
+    mechanism: >
+      Stage121 generates a standalone C prototype using an exact modular
+      negacyclic NTT/DFT over modulus 12289. It converts mask, body, and secret
+      polynomials, verifies round-trip conversion, and checks that
+      `DFT(b)-DFT(a)*DFT(s)` inverts to the coefficient-domain phase for clean
+      and noisy vector-shared shared/body objects.
+    status: stage121_vector_shared_dft_conversion_ready_structured_ep_prototype_required
+    evidence: docs/stage121_vector_shared_dft_conversion_gate.md; experiments/stage121_vector_shared_dft_conversion_gate_plan.md; theory_checks/stage121_vector_shared_dft_conversion_model.md; algorithm_variants/mat_rlwe_sab_vector_shared_dft_conversion.md; scripts/build_stage121_vector_shared_dft_conversion_gate.py; repro/stage121_vector_shared_dft_conversion_gate/summary.csv; repro/stage121_vector_shared_dft_conversion_gate/conversion_results.csv; repro/stage121_vector_shared_dft_conversion_gate/layout_results.csv; repro/stage121_vector_shared_dft_conversion_gate/compile.log; repro/stage121_vector_shared_dft_conversion_gate/artifact_index.csv
+    current_decision: >
+      Stage121 records PASS_STAGE121_VECTOR_SHARED_DFT_CONVERSION_READY_STRUCTURED_EP_PROTOTYPE_REQUIRED.
+      The generated exact DFT prototype compiled and ran 30 conversion rows
+      covering r=2/4/6, N=32/64, and seeds 0..4. All rows have valid roots,
+      zero round-trip mismatches, zero clean/noisy phase mismatches, and zero
+      noise-bound violations. Layout rows pass with vector/dense DFT
+      polynomial ratios 0.666667 for r=2, 0.533333 for r=4, and 0.428571 for
+      r=6. This opens only a structured external-product arithmetic prototype
+      outside `sab_pvw_*`.
+    failure_criteria:
+      - structured external-product arithmetic cannot match a dense reference
+      - production torus/FFT conversion introduces unacceptable phase or noise
+        error
+      - DFT conversion evidence is used as AVX512 or complete-SAB acceleration
+        evidence
+      - external-product prototype changes the scalar/default SAB behavior

@@ -1780,3 +1780,17 @@ Repro artifacts:
 - `repro/stage120_real_struct_phase_noise_gate/compile.log`
 - `repro/stage120_real_struct_phase_noise_gate/real_struct_phase_noise_gate.c`
 - `repro/stage120_real_struct_phase_noise_gate/artifact_index.csv`
+
+## Stage 121 Vector-Shared DFT/Conversion Gate
+
+- `docs/stage121_vector_shared_dft_conversion_gate.md`
+- `experiments/stage121_vector_shared_dft_conversion_gate_plan.md`
+- `theory_checks/stage121_vector_shared_dft_conversion_model.md`
+- `algorithm_variants/mat_rlwe_sab_vector_shared_dft_conversion.md`
+- `scripts/build_stage121_vector_shared_dft_conversion_gate.py`
+- `repro/stage121_vector_shared_dft_conversion_gate/summary.csv`
+- `repro/stage121_vector_shared_dft_conversion_gate/conversion_results.csv`
+- `repro/stage121_vector_shared_dft_conversion_gate/layout_results.csv`
+- `repro/stage121_vector_shared_dft_conversion_gate/compile.log`
+- `repro/stage121_vector_shared_dft_conversion_gate/vector_shared_dft_conversion_gate.c`
+- `repro/stage121_vector_shared_dft_conversion_gate/artifact_index.csv`

@@ -593,3 +593,12 @@ mask-secret multiplication for phase, and runs r=2/4/6, N=32/64, seeds 0..4.
 All 30 phase/noise rows have zero noiseless mismatches and zero noise-bound
 violations. This supports proceeding to DFT/conversion prototyping only; it is
 not a MOSFHET torus/FFT external product or SAB integration result.
+
+Stage121 runs that DFT/conversion prototype as an exact modular negacyclic
+NTT/DFT gate over modulus 12289. It verifies roots, round-trip conversion for
+mask/body/secret polynomials, DFT-domain phase `DFT(b)-DFT(a)*DFT(s)`, noisy
+phase, and digit-sum noise bounds across r=2/4/6, N=32/64, seeds 0..4. All 30
+conversion rows pass, and vector/dense DFT polynomial ratios remain 0.666667
+for r=2, 0.533333 for r=4, and 0.428571 for r=6. This removes the exact
+conversion semantic blocker but is still not production FFT, AVX512, external
+product, SAB schedule, or complete `T_bootstrap/r` evidence.

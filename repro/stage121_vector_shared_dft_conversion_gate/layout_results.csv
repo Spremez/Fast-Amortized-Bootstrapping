@@ -1,0 +1,7 @@
+r,N,dense_dft_polys,vector_dft_polys,vector_over_dense_dft_poly_ratio,conversion_input_polys,requested_bytes,status
+2,32,12,8,0.666667,10,2768,PASS_LAYOUT
+2,64,12,8,0.666667,10,5328,PASS_LAYOUT
+4,32,30,16,0.533333,20,5488,PASS_LAYOUT
+4,64,30,16,0.533333,20,10608,PASS_LAYOUT
+6,32,56,24,0.428571,30,8208,PASS_LAYOUT
+6,64,56,24,0.428571,30,15888,PASS_LAYOUT
