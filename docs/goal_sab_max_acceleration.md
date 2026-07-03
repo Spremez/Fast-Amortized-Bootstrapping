@@ -457,6 +457,7 @@ Stage 105: goal completion audit. [completed; all scoped requirements proven and
 Stage 106: MAT-RLWE SAB research-loop reset. [completed as process reset; primary endpoint T_total/r fixed, existing evidence reinterpreted as amortized, theoretical optimality remains open]
 Stage 107: MAT kernel structure audit. [completed; current MAT kernels remain dense row-output `(r+1)^2`, Stage108 starts with V106-D layout/locality while V106-B body-linear remains proof-gated]
 Stage 108: V106-D body-major layout gate. [completed; r=6 body-major kernel correctness passed but performance was negative/neutral versus existing tile4/fulltile layouts, not promoted]
+Stage 109: V106-B body-linear invariant gate. [completed; loop-only body-linear skipping is blocked by current MAT_TRGSW_DFT selector/key format, new format gate required]
 ```
 
 ## Current Closure Label
@@ -499,3 +500,12 @@ candidate: r=6 full-output body-major is faster than tile4 but slower than
 fulltile, and r=6 DFT-output is slower than both tile4 and fulltile. This
 closes the blind body-major layout branch as a negative ablation and sends the
 next research step to V106-B invariant analysis or counter-backed attribution.
+
+Stage109 executes the V106-B invariant analysis as a source-backed gate. It
+finds that current `MAT_TRGSW_DFT` rows are full `PVW_TMLWE_DFT` encryptions
+with diagonal gadget injection, not proof-carrying sparse selector rows. A
+loop-only body-linear implementation that skips off-lane ciphertext products
+would break the encrypted-zero relation unless a new selector/key format proves
+otherwise. Therefore theoretical MAT-RLWE SAB optimality remains open and now
+has a concrete next gate: design and verify a new body-linear selector/key
+format before AVX512 kernel work.

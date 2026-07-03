@@ -37,7 +37,9 @@ row-output `(r+1)^2` implementations, so the next runnable gate is V106-D
 layout/locality before any stronger optimality claim. Stage108 has now run
 that V106-D gate: the explicit r=6 body-major path is correct but not
 performance-positive against both existing r=6 layouts, so it is recorded as a
-negative ablation and is not promoted.
+negative ablation and is not promoted. Stage109 then checks V106-B and records
+that body-linear MAT external-product skipping is blocked as a loop-only
+change by the current `MAT_TRGSW_DFT` selector/key format.
 
 ## Execution Route
 
@@ -66,7 +68,11 @@ negative ablation and is not promoted.
     body-major r=6 preserves correctness but is negative/neutral versus the
     existing tile4/fulltile kernels and must not be promoted without new
     complete-SAB `T_total/r` evidence.
-12. Preserve the current final-audit status:
+12. Treat Stage109 as the current V106-B source gate:
+    current selector rows are full PVW encryptions with diagonal gadget
+    injection, so body-linear skipping requires a new selector/key-format
+    design gate before implementation.
+13. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

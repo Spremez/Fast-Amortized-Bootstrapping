@@ -1,0 +1,4 @@
+gate,status,metric,value,evidence,detail,next_action
+stage109_source_invariants,PASS,invariant_rows,8,repro/stage109_body_linear_invariant_gate/invariant_matrix.csv,Source-level invariants extracted from MAT/PVW implementation.,Do not proceed if any required source pattern is missing.
+stage109_operation_model,PASS,dense_products_r1_r2_r4_r6_r8,4;9;25;49;81,repro/stage109_body_linear_invariant_gate/operation_model.csv,"Current k=1,l=1 MAT external product is dense row-output.",Use this model when comparing future body-linear or key-format variants.
+stage109_body_linear_decision,PASS_STAGE109_BODY_LINEAR_BLOCKED_CURRENT_SELECTOR_FORMAT,V106-B_policy,,repro/stage109_body_linear_invariant_gate/summary.csv,Current MAT_TRGSW_DFT cannot support body-linear product skipping as a loop-only change.,Open a new selector/key-format design gate before any body-linear code path.

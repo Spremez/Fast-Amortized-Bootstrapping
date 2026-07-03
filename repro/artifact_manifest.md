@@ -1618,3 +1618,17 @@ Repro artifacts:
 - `repro/stage108_bodymajor_layout_gate/bodymajor.log`
 - `src/mosfhet/Makefile.def`
 - `src/mosfhet/src/mattrgsw.c`
+
+## Stage 109 Body-Linear Invariant Gate
+
+- `docs/stage109_body_linear_invariant_gate.md`
+- `experiments/stage109_body_linear_invariant_gate_plan.md`
+- `theory_checks/stage109_body_linear_external_product.md`
+- `scripts/build_stage109_body_linear_invariant_gate.py`
+- `repro/stage109_body_linear_invariant_gate/summary.csv`
+- `repro/stage109_body_linear_invariant_gate/invariant_matrix.csv`
+- `repro/stage109_body_linear_invariant_gate/operation_model.csv`
+- `repro/stage109_body_linear_invariant_gate/artifact_index.csv`
+- `src/mosfhet/include/mosfhet.h`
+- `src/mosfhet/src/mattrgsw.c`
+- `src/mosfhet/src/pvwtmlwe.c`

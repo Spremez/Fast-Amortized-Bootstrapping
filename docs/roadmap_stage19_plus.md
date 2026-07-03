@@ -3699,3 +3699,48 @@ complete-SAB smoke was skipped because the kernel gate was not positive enough
 to justify promotion. Do not continue blind body-major tuning; route the next
 step to V106-B selector/key invariant analysis or counter-backed explanation.
 ```
+
+## Stage 109: V106-B Body-Linear Invariant Gate
+
+Goal:
+
+```text
+Decide whether body-linear MAT external product can be implemented as a local
+kernel loop rewrite under the current MAT_TRGSW_DFT selector/key format.
+```
+
+Theory basis:
+
+The current MAT external product for `k=1,l=1` has `(r+1)^2` encrypted
+row-output products. A body-linear SAB optimum would need a product shape
+closer to `O(r)`, but skipping encrypted off-lane terms is only valid if the
+selector/key format carries a proof that those terms are redundant zero
+encryptions for every output phase.
+
+Tasks:
+
+- extract source-level invariants for `PVW_TMLWE`, `MAT_TRGSW` rows,
+  gadget injection, decomposition order, and external-product loops;
+- write the dense operation model for r=1/2/4/6/8;
+- decide whether V106-B is ready for a correctness harness or blocked by
+  selector/key semantics.
+
+Gate:
+
+- if source invariants cannot be extracted, stop and update the extractor;
+- if current selector rows are full PVW encryptions without skip metadata,
+  block loop-only body-linear implementation;
+- if not blocked, the next step must be an r=2 equivalence harness before
+  any AVX512 work.
+
+Status:
+
+```text
+Completed. Stage109 records
+PASS_STAGE109_BODY_LINEAR_BLOCKED_CURRENT_SELECTOR_FORMAT. The current
+MAT_TRGSW_DFT format stores full PVW_TMLWE_DFT rows with diagonal gadget
+injection but no metadata/proof that off-lane encrypted-zero terms can be
+skipped. The operation model confirms dense products 4/9/25/49/81 for
+r=1/2/4/6/8. V106-B remains the right theoretical route, but it requires a
+new selector/key-format design gate before implementation.
+```

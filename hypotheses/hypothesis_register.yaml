@@ -1079,3 +1079,32 @@ hypotheses:
       - body-major does not beat both tile4 and fulltile in r=6 kernel timing
       - a kernel-only signal is promoted without complete-SAB `T_total/r`
       - future work repeats body-major loop-order tuning without new evidence
+  - id: H34_body_linear_mat_external_product_current_format
+    statement: >
+      Body-linear MAT external product may be the route to MAT-RLWE SAB
+      optimality, but it cannot be implemented by merely skipping row/output
+      products in the current `MAT_TRGSW_DFT` selector format.
+    mechanism: >
+      Stage109 extracts source-level invariants showing that `PVW_TMLWE` uses
+      a shared mask with r bodies, `MAT_TRGSW` rows are full PVW encryptions of
+      zero with diagonal gadget injection, and `mat_trgsw_mul_pvmtmlwe_DFT`
+      performs dense row-output accumulation. Off-lane ciphertext terms are
+      part of the encrypted-zero relation and cannot be dropped without a new
+      selector/key format or proof-carrying metadata.
+    status: stage109_blocked_current_selector_format
+    evidence: docs/stage109_body_linear_invariant_gate.md; experiments/stage109_body_linear_invariant_gate_plan.md; theory_checks/stage109_body_linear_external_product.md; scripts/build_stage109_body_linear_invariant_gate.py; repro/stage109_body_linear_invariant_gate/summary.csv; repro/stage109_body_linear_invariant_gate/invariant_matrix.csv; repro/stage109_body_linear_invariant_gate/operation_model.csv; repro/stage109_body_linear_invariant_gate/artifact_index.csv
+    current_decision: >
+      Stage109 records PASS_STAGE109_BODY_LINEAR_BLOCKED_CURRENT_SELECTOR_FORMAT.
+      The current dense products for r=1/2/4/6/8 are 4/9/25/49/81, while a
+      body-linear target would be closer to 3/5/9/13/17 products. This gap is
+      algorithmically important, but current `MAT_TRGSW_DFT` does not contain
+      the metadata or key structure needed to skip encrypted off-lane terms
+      safely. The next valid step is a new selector/key-format design gate,
+      not AVX512 loop tuning.
+    failure_criteria:
+      - future work implements body-linear skipping in current MAT_TRGSW_DFT
+        without a new correctness proof
+      - future speedup claims cite body-linear complexity while using dense
+        row-output selectors
+      - the next stage continues theory discussion without defining a finite
+        r=2 selector/key-format equivalence gate
