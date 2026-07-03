@@ -2298,3 +2298,19 @@ hypotheses:
       - prior closure evidence is missing
       - a rejected compact or lazy-DFT route is reopened without a new invariant proof
       - Stage165 is skipped and production SAB code is changed without exact-output microbench evidence
+  - id: H89_closed_fullmat_streaming
+    statement: >
+      Row-streaming the closed full-MAT decompose/DFT/addmul boundary may
+      reduce scratch traffic enough to beat the current all-row r=6 tiled
+      AVX512 MAT EP while preserving exact torus output.
+    mechanism: >
+      Streaming removes the lifetime of all decomposed/DFT rows, but may lose
+      MAT-aware register-tiled accumulation and increase output DFT traffic.
+    status: stage165_closed_fullmat_streaming_microbench
+    evidence: docs/stage165_closed_fullmat_streaming_microbench.md; experiments/stage165_closed_fullmat_streaming_microbench_plan.md; theory_checks/stage165_closed_fullmat_streaming_model.md; repro/stage165_closed_fullmat_streaming_microbench/summary.csv
+    current_decision: >
+      REJECT_STAGE165_STREAMING_LOSES_TO_CURRENT_TILED_AVX
+    failure_criteria:
+      - torus output differs from current all-row MAT EP
+      - per-call timing does not beat current all-row tiled AVX beyond threshold
+      - microbench result is reported as complete-SAB acceleration

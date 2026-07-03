@@ -1,0 +1,2 @@
+metric,samples,mean,min,max,stdev,meaning
+current_over_streaming,5,0.882552056,0.822280730,1.005612972,0.073925608,>1 means row-streaming beats current all-row tiled AVX.

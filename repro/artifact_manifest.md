@@ -2259,3 +2259,9 @@ Repro artifacts:
   - `theory_checks/stage164_representation_closure_model.md`
   - `algorithm_variants/mat_rlwe_sab_representation_closure_route.md`
   - `repro/stage164_representation_closure_route/`
+- stage165_closed_fullmat_streaming_microbench: `REJECT_STAGE165_STREAMING_LOSES_TO_CURRENT_TILED_AVX`
+  - `docs/stage165_closed_fullmat_streaming_microbench.md`
+  - `experiments/stage165_closed_fullmat_streaming_microbench_plan.md`
+  - `theory_checks/stage165_closed_fullmat_streaming_model.md`
+  - `algorithm_variants/mat_rlwe_sab_closed_fullmat_streaming.md`
+  - `repro/stage165_closed_fullmat_streaming_microbench/`

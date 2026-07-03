@@ -253,3 +253,4 @@
 - [x] Stage162 materialization-count feasibility pack recorded.
 - [x] Stage163 from_DFT backend batching microbench pack recorded.
 - [x] Stage164 representation closure route pack recorded.
+- [x] Stage165 closed full-MAT streaming microbench pack recorded.

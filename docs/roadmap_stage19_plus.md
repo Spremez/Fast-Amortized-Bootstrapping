@@ -5448,3 +5448,18 @@ Completed. Stage164 records PASS_STAGE164_REPRESENTATION_ROUTE_TO_CLOSED_FULL_MA
 decompose/DFT streaming microbench and keeps structured compact keygen work
 behind algebra/security/noise proof gates.
 ```
+## Stage 165: Closed Full-MAT Streaming Microbench
+
+Goal:
+
+```text
+Test whether row-streaming decompose/DFT/addmul beats the current all-row r=6
+tiled AVX512 closed full-MAT external product.
+```
+
+Status:
+
+```text
+Completed. Stage165 records REJECT_STAGE165_STREAMING_LOSES_TO_CURRENT_TILED_AVX. The route is microbench-only and does
+not modify production SAB code.
+```

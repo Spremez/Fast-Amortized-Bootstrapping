@@ -858,3 +858,6 @@ Stage164 records representation closure routing after Stage163. Decision:
 `PASS_STAGE164_REPRESENTATION_ROUTE_TO_CLOSED_FULL_MAT_STREAMING_GATE`. It prevents a theory loop by closing already rejected routes and
 selecting Stage165 closed full-MAT decompose/DFT streaming as the next
 executable gate.
+Stage165 tests closed full-MAT row streaming after Stage164. Decision:
+`REJECT_STAGE165_STREAMING_LOSES_TO_CURRENT_TILED_AVX`. This is an exact-output external-product microbench; it is not a
+complete bootstrapping speedup claim unless a later full-SAB gate is added.

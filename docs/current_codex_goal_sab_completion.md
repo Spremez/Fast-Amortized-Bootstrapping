@@ -400,3 +400,6 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE164_REPRESENTATION_ROUTE_TO_CLOSED_FULL_MAT_STREAMING_GATE`. It does not claim a new SAB algorithm; it selects Stage165 as
     the next exact-output microbench and keeps structured compact keygen behind
     proof gates.
+69. Treat Stage165 as the closed full-MAT streaming microbench:
+    `REJECT_STAGE165_STREAMING_LOSES_TO_CURRENT_TILED_AVX`. It decides whether row-streamed decompose/DFT/addmul should
+    be integrated; if not positive, keep the current tiled AVX path.

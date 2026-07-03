@@ -1,0 +1,3 @@
+variant,samples,mean_per_call_us,median_per_call_us,min_per_call_us,max_per_call_us,stdev_per_call_us
+current_allrow_tiled_avx,5,44.190184375,46.126117188,38.605617188,46.201773438,3.274498233
+streaming_row_generic,5,50.314109375,52.934265625,43.609554688,55.784031250,5.258999510

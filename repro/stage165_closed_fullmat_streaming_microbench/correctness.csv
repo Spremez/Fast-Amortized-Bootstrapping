@@ -1,0 +1,2 @@
+case,dft_mismatches,max_dft_gap,torus_mismatches,max_torus_gap,status
+streaming_vs_current,0,0.000000000000e+00,0,0,PASS_TORUS_EQUIV
