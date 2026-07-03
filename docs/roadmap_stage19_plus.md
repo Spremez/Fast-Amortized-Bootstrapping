@@ -4098,3 +4098,51 @@ C skeleton probe compiled and passed for r=2/4/6/8. Skeleton terms are
 and off-lane/missing terms are all zero. The next valid stage is real
 MOSFHET-adjacent type/noise/key design outside the SAB hot path.
 ```
+
+## Stage 118: Real-Type Design Gate
+
+Goal:
+
+```text
+Convert the Stage117 selector skeleton into a MOSFHET-adjacent type, key, and
+noise design gate without touching source hot paths.
+```
+
+Theory basis:
+
+Current `MAT_TRGSW` stores full `PVW_TMLWE` rows, so lane-local body-linear
+SAB cannot be represented by the current type. Stage118 defines a separate
+real-type design: for k=1, the lane-local accumulator has `2r` polynomial
+components, the conservative selector has `2(1+2r)` DFT polynomials, and the
+key secret polynomial count remains `r`. Noise is explicitly recorded as
+unproven and must be checked in a later object prototype.
+
+Tasks:
+
+- generate and compile a C type-shape probe;
+- evaluate r=2/4/6/8 and N=2048/4096;
+- record accumulator, selector, combined DFT byte, and key-secret ratios;
+- record noise-term model and unknowns;
+- route only to a real-object allocation/phase/noise prototype.
+
+Gate:
+
+- type-shape probe must compile;
+- lane-local accumulator must be `2r`;
+- selector must be `2(1+2r)`;
+- key secret count must remain `r` for k=1;
+- target r=4,N=2048 DFT byte ratio must be bounded;
+- noise model must stay `RECORDED_NOT_PROVEN`.
+
+Status:
+
+```text
+Completed. Stage118 records
+PASS_STAGE118_REAL_TYPE_DESIGN_READY_OBJECT_PROTOTYPE_REQUIRED. The generated
+C type-shape probe compiled and passed for r=2/4/6/8 and N=2048/4096. For
+r=4,N=2048, the combined accumulator+selector DFT byte ratio is 0.866667,
+the selector ratio is 0.720000, the accumulator ratio is 1.600000, and the
+key-secret ratio is 1.000000. Noise rows are recorded as
+NOISE_MODEL_RECORDED_NOT_PROVEN, so Stage119 must build a real-object
+allocation/phase/noise prototype before any SAB integration.
+```

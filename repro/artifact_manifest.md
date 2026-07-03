@@ -1738,3 +1738,17 @@ Repro artifacts:
 - `repro/stage117_selector_skeleton_gate/compile.log`
 - `repro/stage117_selector_skeleton_gate/selector_skeleton_gate.c`
 - `repro/stage117_selector_skeleton_gate/artifact_index.csv`
+
+## Stage 118 Real-Type Design Gate
+
+- `docs/stage118_real_type_design_gate.md`
+- `experiments/stage118_real_type_design_gate_plan.md`
+- `theory_checks/stage118_real_type_noise_key_model.md`
+- `algorithm_variants/mat_rlwe_sab_lane_local_real_type_design.md`
+- `scripts/build_stage118_real_type_design_gate.py`
+- `repro/stage118_real_type_design_gate/summary.csv`
+- `repro/stage118_real_type_design_gate/type_layout.csv`
+- `repro/stage118_real_type_design_gate/noise_key_model.csv`
+- `repro/stage118_real_type_design_gate/compile.log`
+- `repro/stage118_real_type_design_gate/real_type_design_gate.c`
+- `repro/stage118_real_type_design_gate/artifact_index.csv`

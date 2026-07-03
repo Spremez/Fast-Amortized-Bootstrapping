@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-117`. This label tracks the
+Current control-plane closure label: `Stage 19-118`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -466,6 +466,7 @@ Stage 114: lane-local resource model. [completed; symbolic resource screen not f
 Stage 115: lane-local toy C representation gate. [completed; generated C layout probe passed, r=4/N=2048 requested-byte ratio 1.100, next gate is toy arithmetic equivalence only]
 Stage 116: toy arithmetic equivalence gate. [completed; dense-vs-lane mismatches zero for r=2/4/6, current-format drop-offlane negative control fails, selector/key skeleton required]
 Stage 117: selector skeleton invariant gate. [completed; `1+2r` term-map skeleton passes for r=2/4/6/8 with zero off-lane and missing terms, real type/noise/key design required]
+Stage 118: real-type design gate. [completed; lane-local type shape passes for r=2/4/6/8 and N=2048/4096, r=4/N=2048 DFT byte ratio 0.866667, noise remains recorded-not-proven]
 ```
 
 ## Current Closure Label
@@ -569,3 +570,10 @@ r=2/4/6/8, skeleton terms are 5/9/13/17, selector polynomials are
 10/18/26/34, accumulator polynomials are 4/8/12/16, and off-lane/missing terms
 are all zero. This opens only real MOSFHET-adjacent type, noise, and key-design
 gates outside the SAB hot path.
+
+Stage118 converts the skeleton into a MOSFHET-adjacent real-type design gate.
+For r=4,N=2048, the combined accumulator+selector DFT byte model is 0.866667x
+the current dense design, while the key-secret polynomial ratio remains
+1.000000. The noise/key model is explicitly `RECORDED_NOT_PROVEN`, so the next
+valid work is a real-object allocation/phase/noise prototype, not SAB
+integration.

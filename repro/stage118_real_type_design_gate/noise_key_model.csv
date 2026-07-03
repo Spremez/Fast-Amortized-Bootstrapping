@@ -1,0 +1,5 @@
+r,dense_noise_terms,lane_noise_terms,noise_term_ratio_lane_over_dense,dense_over_lane_product_ratio,new_noise_unknowns,required_next_gate,status
+2,9,5,0.555556,1.800000,lane-local encryption variance; DFT roundoff; extract/KS compatibility; inter-lane independence,real object phase/noise simulator before MOSFHET hot path,NOISE_MODEL_RECORDED_NOT_PROVEN
+4,25,9,0.360000,2.777778,lane-local encryption variance; DFT roundoff; extract/KS compatibility; inter-lane independence,real object phase/noise simulator before MOSFHET hot path,NOISE_MODEL_RECORDED_NOT_PROVEN
+6,49,13,0.265306,3.769231,lane-local encryption variance; DFT roundoff; extract/KS compatibility; inter-lane independence,real object phase/noise simulator before MOSFHET hot path,NOISE_MODEL_RECORDED_NOT_PROVEN
+8,81,17,0.209877,4.764706,lane-local encryption variance; DFT roundoff; extract/KS compatibility; inter-lane independence,real object phase/noise simulator before MOSFHET hot path,NOISE_MODEL_RECORDED_NOT_PROVEN

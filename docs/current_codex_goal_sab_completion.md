@@ -60,7 +60,9 @@ proves dense-vs-lane-local equality for the finite C model while keeping the
 current-format drop-offlane path rejected; the next step is a selector/key
 skeleton, not SAB integration. Stage117 validates that skeleton as a finite C
 term map for r=2/4/6/8 and routes next to real MOSFHET-adjacent type/noise/key
-design, still outside the SAB hot path.
+design, still outside the SAB hot path. Stage118 executes that type/noise/key
+design gate and routes next to a real-object allocation/phase/noise prototype;
+noise remains recorded but unproven.
 
 ## Execution Route
 
@@ -122,7 +124,11 @@ design, still outside the SAB hot path.
 20. Treat Stage117 as the current selector skeleton gate:
     `1+2r` term maps pass for r=2/4/6/8 with zero off-lane and missing terms;
     the only valid next step is real type/noise/key design outside SAB.
-21. Preserve the current final-audit status:
+21. Treat Stage118 as the current real-type design gate:
+    r=4,N=2048 has combined accumulator+selector DFT byte ratio 0.866667 and
+    key-secret ratio 1.000000, but noise is only recorded-not-proven; next is a
+    real-object allocation/phase/noise prototype outside SAB.
+22. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

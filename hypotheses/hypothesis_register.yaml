@@ -1281,3 +1281,28 @@ hypotheses:
       - real type design cannot preserve the skeleton term map
       - noise/key-size estimates erase the term-count advantage
       - skeleton evidence is used as a complete-SAB or AVX512 claim
+  - id: H42_lane_local_real_type_design
+    statement: >
+      A MOSFHET-adjacent lane-local type shape can preserve the Stage117
+      selector skeleton with bounded DFT storage and unchanged k=1 secret
+      polynomial count, but noise and real-object phase correctness remain
+      unproven.
+    mechanism: >
+      Stage118 generates a C type-shape probe for r=2/4/6/8 and N=2048/4096.
+      It models lane-local accumulators as `2r` polynomials, selectors as
+      `2(1+2r)` DFT polynomials, and k=1 secret count as `r`. It separately
+      records noise-term counts and unknowns without upgrading them to proof.
+    status: stage118_real_type_design_ready_object_prototype_required
+    evidence: docs/stage118_real_type_design_gate.md; experiments/stage118_real_type_design_gate_plan.md; theory_checks/stage118_real_type_noise_key_model.md; algorithm_variants/mat_rlwe_sab_lane_local_real_type_design.md; scripts/build_stage118_real_type_design_gate.py; repro/stage118_real_type_design_gate/summary.csv; repro/stage118_real_type_design_gate/type_layout.csv; repro/stage118_real_type_design_gate/noise_key_model.csv; repro/stage118_real_type_design_gate/compile.log; repro/stage118_real_type_design_gate/artifact_index.csv
+    current_decision: >
+      Stage118 records PASS_STAGE118_REAL_TYPE_DESIGN_READY_OBJECT_PROTOTYPE_REQUIRED.
+      For r=4,N=2048, the combined accumulator+selector DFT byte ratio is
+      0.866667, selector ratio is 0.720000, accumulator ratio is 1.600000, and
+      key-secret ratio is 1.000000. Noise rows remain
+      NOISE_MODEL_RECORDED_NOT_PROVEN. This opens only a real-object
+      allocation/phase/noise prototype outside the SAB hot path.
+    failure_criteria:
+      - real-object phase equivalence fails
+      - measured allocation or RSS contradicts the type-shape byte model
+      - noise simulation exceeds baseline without a parameter explanation
+      - Stage118 is used as proof of complete-SAB acceleration
