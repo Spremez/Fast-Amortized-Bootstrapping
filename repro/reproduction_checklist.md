@@ -268,3 +268,4 @@
 - [x] Stage177 verified literature/novelty gate pack recorded.
 - [x] Stage178 full-MAT per-bit frontier pack recorded.
 - [x] Stage179 MAT EP microarchitecture audit pack recorded.
+- [x] Stage180 MAT EP split probe pack recorded.

@@ -1,0 +1,5 @@
+variant,check,mismatches,max_gap,status,evidence
+sub_decompose,combined_vs_split,0,0,PASS,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log
+torus_to_dft_rows,combined_vs_split,0,0,PASS,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log
+addmul_from_dec_dft,combined_vs_split,0,0,PASS,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log
+combined_current,combined_vs_split,0,0,PASS,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log

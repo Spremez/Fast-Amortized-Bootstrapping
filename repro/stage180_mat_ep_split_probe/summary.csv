@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,detail,next_action
+stage180_inputs,PASS,stage179_summary_present,1,repro/stage179_mat_ep_microarch_audit/summary.csv,Stage180 follows the Stage179 no-code split-probe route.,Repair Stage179 first if missing.
+stage180_remote_secret,PASS,STAGE180_SSHPASS,present,environment variable only; not written to artifacts,Remote password is consumed from environment and scrubbed from logs.,Set STAGE180_SSHPASS for CB5 execution.
+stage180_remote_pipeline,PASS,rcs,build=0;cleanup=0;compile=0;env=0;restore_check=0;run_addmul_from_dec_dft=0;run_combined_current=0;run_sub_decompose=0;run_torus_to_dft_rows=0;sync=0;upload=0,repro/stage180_mat_ep_split_probe,Builds MOSFHET and runs split variants under native perf on CB5.,Fix first nonzero rc before interpreting timings.
+stage180_correctness,PASS,checks,sub_decompose:PASS;torus_to_dft_rows:PASS;addmul_from_dec_dft:PASS;combined_current:PASS,repro/stage180_mat_ep_split_probe/correctness.csv,Combined current path is checked against split decomposition/DFT/addmul for each variant run.,Do not use timings if correctness fails.
+stage180_decision,PASS_STAGE180_SPLIT_PROBE_RECORDED,route,stage181,repro/stage180_mat_ep_split_probe/summary.csv,Stage180 either records split data or explicitly blocks code permission.,Proceed only according to next_stage_queue.

@@ -908,3 +908,6 @@ MAT EP/subdecomp microarchitecture audit.
 Stage179 records MAT EP microarchitecture audit evidence. Decision:
 `PASS_STAGE179_AUDIT_SELECT_MAT_EP_SPLIT_PROBE_NO_CODE`. The project already has MAT-aware AVX512 external product; the
 next valid step is a split probe, not blind AVX512 retuning.
+Stage180 records MAT EP split probe evidence. Decision: `BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED`. This
+stage does not change production SAB; it only decides whether code permission
+can proceed after split measurements.

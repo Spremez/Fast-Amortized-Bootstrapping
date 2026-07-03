@@ -452,3 +452,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE179_AUDIT_SELECT_MAT_EP_SPLIT_PROBE_NO_CODE`. Current r=6 MAT-aware AVX512 exists. Stage180 must split
     sub_decompose, torus_to_DFT, and tiled addmul before any new exact-path
     implementation branch opens.
+84. Treat Stage180 as the MAT EP split probe:
+    `BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED`. Production code remains unchanged. Any Stage181
+    implementation requires split data, correctness, and projected complete-SAB
+    `T_bootstrap/r` impact.

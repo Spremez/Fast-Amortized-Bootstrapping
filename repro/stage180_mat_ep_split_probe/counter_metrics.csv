@@ -1,0 +1,53 @@
+variant,metric,value,unit,evidence,detail
+sub_decompose,cycles,212689002,count,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,"212,689,002      cycles                                                                  (37.80%)"
+sub_decompose,instructions,271642981,count,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,"271,642,981      instructions                     #    1.28  insn per cycle              (48.16%)"
+sub_decompose,cache-references,4570474,count,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,"4,570,474      cache-references                                                        (48.89%)"
+sub_decompose,cache-misses,1174028,count,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,"1,174,028      cache-misses                     #   25.69% of all cache refs           (50.20%)"
+sub_decompose,branches,28225512,count,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,"28,225,512      branches                                                                (51.52%)"
+sub_decompose,branch-misses,67566,count,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,"67,566      branch-misses                    #    0.24% of all branches             (51.88%)"
+sub_decompose,mem_inst_retired.all_loads,31961718,count,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,"31,961,718      mem_inst_retired.all_loads                                              (41.47%)"
+sub_decompose,mem_inst_retired.all_stores,26882399,count,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,"26,882,399      mem_inst_retired.all_stores                                             (40.75%)"
+sub_decompose,fp_arith_inst_retired.512b_packed_double,5909004,count,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,"5,909,004      fp_arith_inst_retired.512b_packed_double                                        (39.43%)"
+sub_decompose,fp_arith_inst_retired.256b_packed_double,1180292,count,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,"1,180,292      fp_arith_inst_retired.256b_packed_double                                        (38.07%)"
+sub_decompose,elapsed_seconds,0.080844524,seconds,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,0.080844524 seconds time elapsed
+sub_decompose,user_seconds,0.044445000,seconds,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,0.044445000 seconds user
+sub_decompose,sys_seconds,0.036544000,seconds,repro/stage180_mat_ep_split_probe/run_sub_decompose_perf.log,0.036544000 seconds sys
+torus_to_dft_rows,cycles,232278924,count,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,"232,278,924      cycles                                                                  (39.59%)"
+torus_to_dft_rows,instructions,456734740,count,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,"456,734,740      instructions                     #    1.97  insn per cycle              (50.67%)"
+torus_to_dft_rows,cache-references,3097814,count,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,"3,097,814      cache-references                                                        (50.79%)"
+torus_to_dft_rows,cache-misses,432993,count,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,"432,993      cache-misses                     #   13.98% of all cache refs           (50.79%)"
+torus_to_dft_rows,branches,37723813,count,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,"37,723,813      branches                                                                (50.79%)"
+torus_to_dft_rows,branch-misses,103309,count,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,"103,309      branch-misses                    #    0.27% of all branches             (50.57%)"
+torus_to_dft_rows,mem_inst_retired.all_loads,68118974,count,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,"68,118,974      mem_inst_retired.all_loads                                              (39.37%)"
+torus_to_dft_rows,mem_inst_retired.all_stores,53511995,count,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,"53,511,995      mem_inst_retired.all_stores                                             (39.37%)"
+torus_to_dft_rows,fp_arith_inst_retired.512b_packed_double,59186396,count,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,"59,186,396      fp_arith_inst_retired.512b_packed_double                                        (39.37%)"
+torus_to_dft_rows,fp_arith_inst_retired.256b_packed_double,12877306,count,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,"12,877,306      fp_arith_inst_retired.256b_packed_double                                        (39.36%)"
+torus_to_dft_rows,elapsed_seconds,0.085164937,seconds,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,0.085164937 seconds time elapsed
+torus_to_dft_rows,user_seconds,0.048156000,seconds,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,0.048156000 seconds user
+torus_to_dft_rows,sys_seconds,0.037120000,seconds,repro/stage180_mat_ep_split_probe/run_torus_to_dft_rows_perf.log,0.037120000 seconds sys
+addmul_from_dec_dft,cycles,259305434,count,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,"259,305,434      cycles                                                                  (40.30%)"
+addmul_from_dec_dft,instructions,346174690,count,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,"346,174,690      instructions                     #    1.34  insn per cycle              (50.25%)"
+addmul_from_dec_dft,cache-references,7346428,count,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,"7,346,428      cache-references                                                        (50.24%)"
+addmul_from_dec_dft,cache-misses,349767,count,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,"349,767      cache-misses                     #    4.76% of all cache refs           (50.25%)"
+addmul_from_dec_dft,branches,37810623,count,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,"37,810,623      branches                                                                (50.25%)"
+addmul_from_dec_dft,branch-misses,54743,count,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,"54,743      branch-misses                    #    0.14% of all branches             (49.75%)"
+addmul_from_dec_dft,mem_inst_retired.all_loads,64970716,count,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,"64,970,716      mem_inst_retired.all_loads                                              (39.80%)"
+addmul_from_dec_dft,mem_inst_retired.all_stores,32210397,count,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,"32,210,397      mem_inst_retired.all_stores                                             (39.80%)"
+addmul_from_dec_dft,fp_arith_inst_retired.512b_packed_double,70084809,count,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,"70,084,809      fp_arith_inst_retired.512b_packed_double                                        (39.80%)"
+addmul_from_dec_dft,fp_arith_inst_retired.256b_packed_double,1432997,count,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,"1,432,997      fp_arith_inst_retired.256b_packed_double                                        (39.80%)"
+addmul_from_dec_dft,elapsed_seconds,0.093732646,seconds,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,0.093732646 seconds time elapsed
+addmul_from_dec_dft,user_seconds,0.053445000,seconds,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,0.053445000 seconds user
+addmul_from_dec_dft,sys_seconds,0.040336000,seconds,repro/stage180_mat_ep_split_probe/run_addmul_from_dec_dft_perf.log,0.040336000 seconds sys
+combined_current,cycles,442864061,count,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,"442,864,061      cycles                                                                  (39.73%)"
+combined_current,instructions,626852405,count,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,"626,852,405      instructions                     #    1.42  insn per cycle              (49.77%)"
+combined_current,cache-references,22650107,count,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,"22,650,107      cache-references                                                        (49.77%)"
+combined_current,cache-misses,2212877,count,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,"2,212,877      cache-misses                     #    9.77% of all cache refs           (49.75%)"
+combined_current,branches,56886655,count,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,"56,886,655      branches                                                                (49.76%)"
+combined_current,branch-misses,115887,count,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,"115,887      branch-misses                    #    0.20% of all branches             (50.22%)"
+combined_current,mem_inst_retired.all_loads,122597685,count,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,"122,597,685      mem_inst_retired.all_loads                                              (40.19%)"
+combined_current,mem_inst_retired.all_stores,68334326,count,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,"68,334,326      mem_inst_retired.all_stores                                             (40.19%)"
+combined_current,fp_arith_inst_retired.512b_packed_double,124139385,count,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,"124,139,385      fp_arith_inst_retired.512b_packed_double                                        (40.20%)"
+combined_current,fp_arith_inst_retired.256b_packed_double,12826555,count,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,"12,826,555      fp_arith_inst_retired.256b_packed_double                                        (40.19%)"
+combined_current,elapsed_seconds,0.142492977,seconds,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,0.142492977 seconds time elapsed
+combined_current,user_seconds,0.114385000,seconds,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,0.114385000 seconds user
+combined_current,sys_seconds,0.028094000,seconds,repro/stage180_mat_ep_split_probe/run_combined_current_perf.log,0.028094000 seconds sys

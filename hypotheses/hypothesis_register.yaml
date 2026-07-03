@@ -2562,3 +2562,19 @@ hypotheses:
       - old fulltile/bodymajor/streaming variants are reopened without a new
         mechanism
       - kernel-only data is reported as complete-SAB acceleration
+  - id: H104_mat_ep_split_probe
+    statement: >
+      The combined MAT EP/subdecomp block should be split into decompose,
+      torus_to_DFT, and addmul before any further exact full-MAT AVX512
+      implementation branch is justified.
+    mechanism: >
+      A native CB5 probe calls current internal boundaries from mattrgsw.c and
+      records correctness, per-call timing, and perf counters for each phase.
+    status: stage180_mat_ep_split_probe
+    evidence: docs/stage180_mat_ep_split_probe.md; experiments/stage180_mat_ep_split_probe_plan.md; theory_checks/stage180_mat_ep_split_probe_model.md; repro/stage180_mat_ep_split_probe/summary.csv
+    current_decision: >
+      BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED
+    failure_criteria:
+      - timings are interpreted without correctness PASS
+      - code is written before split data exists
+      - microbench-only evidence is reported as complete-SAB acceleration

@@ -1,0 +1,3 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,181,decide conditional implementation,Stage180 split rows are complete and correctness passes.,Open an implementation only if one subcomponent can plausibly yield >=3% full-SAB gain.,"If projection is too small, close exact-path tuning."
+P1,182,negative frontier or implementation,Stage181 decision.,Either write a flag-only implementation or write the negative frontier.,No speculative retuning.

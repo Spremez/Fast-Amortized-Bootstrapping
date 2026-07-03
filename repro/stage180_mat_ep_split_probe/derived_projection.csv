@@ -1,0 +1,8 @@
+metric,value,unit,evidence,interpretation
+sub_decompose_share_of_combined,0.172153275,share,repro/stage180_mat_ep_split_probe/run_metrics.csv,sub_decompose share relative to current combined MAT EP/subdecomp probe.
+torus_to_dft_rows_share_of_combined,0.280021129,share,repro/stage180_mat_ep_split_probe/run_metrics.csv,torus_to_dft_rows share relative to current combined MAT EP/subdecomp probe.
+addmul_from_dec_dft_share_of_combined,0.367152584,share,repro/stage180_mat_ep_split_probe/run_metrics.csv,addmul_from_dec_dft share relative to current combined MAT EP/subdecomp probe.
+split_sum_over_combined,0.819326988,ratio,repro/stage180_mat_ep_split_probe/run_metrics.csv,Split probes are isolated microbenches; ratio checks whether they roughly cover the combined path.
+sub_decompose_full_sab_share_and_3pct_requirement,0.103963271;1.389195069,share;speedup,repro/stage180_mat_ep_split_probe/run_metrics.csv,Estimated full-SAB share and subcomponent speedup needed for a 3% complete-SAB gain.
+torus_to_dft_rows_full_sab_share_and_3pct_requirement,0.169104610;1.208076492,share;speedup,repro/stage180_mat_ep_split_probe/run_metrics.csv,Estimated full-SAB share and subcomponent speedup needed for a 3% complete-SAB gain.
+addmul_from_dec_dft_full_sab_share_and_3pct_requirement,0.221723249;1.151228774,share;speedup,repro/stage180_mat_ep_split_probe/run_metrics.csv,Estimated full-SAB share and subcomponent speedup needed for a 3% complete-SAB gain.

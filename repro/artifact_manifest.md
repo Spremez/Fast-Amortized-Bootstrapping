@@ -2349,3 +2349,9 @@ Repro artifacts:
   - `theory_checks/stage179_mat_ep_microarch_model.md`
   - `algorithm_variants/mat_rlwe_sab_mat_ep_microarch_audit.md`
   - `repro/stage179_mat_ep_microarch_audit/`
+- stage180_mat_ep_split_probe: `BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED`
+  - `docs/stage180_mat_ep_split_probe.md`
+  - `experiments/stage180_mat_ep_split_probe_plan.md`
+  - `theory_checks/stage180_mat_ep_split_probe_model.md`
+  - `algorithm_variants/mat_rlwe_sab_mat_ep_split_probe.md`
+  - `repro/stage180_mat_ep_split_probe/`

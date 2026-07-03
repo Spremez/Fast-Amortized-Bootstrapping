@@ -5686,3 +5686,18 @@ Completed. Stage179 records PASS_STAGE179_AUDIT_SELECT_MAT_EP_SPLIT_PROBE_NO_COD
 permission is denied until Stage180 splits sub_decompose, torus_to_DFT, and
 tiled addmul timing inside the hot block.
 ```
+## Stage 180: MAT EP Split Probe
+
+Goal:
+
+```text
+Measure sub_decompose, torus_to_DFT, and tiled addmul inside the current exact
+MAT EP/subdecomp block before opening any new code branch.
+```
+
+Status:
+
+```text
+Completed for this run. Stage180 records BLOCK_STAGE180_REMOTE_SETUP_OR_COMPILE_FAILED. Code implementation remains
+blocked unless split data supports a complete-SAB T_bootstrap/r gain path.
+```
