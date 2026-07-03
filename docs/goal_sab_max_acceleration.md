@@ -823,3 +823,9 @@ Stage155 closes the same-format local frontier after Stage154. Decision:
 full-SAB gates to keep H14 r=6 as the explicit current-head path while routing
 future speedup work toward representation-changing materialization/count
 reduction rather than blind r=6 layout tuning.
+Stage156 rejects naive lazy-DFT state after Stage155. Decision:
+`REJECT_STAGE156_NAIVE_LAZY_DFT_STATE_NOT_CLOSED`. It confirms that materialization cannot be removed by keeping
+only DFT accumulator values, because the next MAT external product needs
+coefficient-domain gadget decomposition. Future representation work must keep
+exact torus/decomposition state or use a compact/shared-source format with
+separate gates.

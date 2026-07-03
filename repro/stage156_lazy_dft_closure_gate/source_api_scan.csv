@@ -1,0 +1,6 @@
+check,status,evidence,detail
+dense_external_product_signature,PASS,mat_trgsw_mul_pvmtmlwe_DFT takes PVW_TMLWE torus input,src/mosfhet/include/mosfhet.h; src/mosfhet/src/mattrgsw.c
+compact_external_product_signature,PASS,mat_trgsw_compact_mul_pvmtmlwe_DFT also takes PVW_TMLWE torus input,src/mosfhet/include/mosfhet.h; src/mosfhet/src/mattrgsw.c
+no_dft_input_external_product_api,PASS,No MAT external-product entry point accepts PVW_TMLWE_DFT as the decomposed input state.,regex_scan=mat_trgsw*_mul*DFT(... PVW_TMLWE_DFT in)
+dense_decomposition_inside_ep,PASS,Dense MAT EP calls pvmtmlwe_decompose before converting digits to DFT.,src/mosfhet/src/mattrgsw.c:673
+compact_decomposition_inside_ep,PASS,Compact MAT EP calls polynomial_decompose_i on shared/body torus components.,src/mosfhet/src/mattrgsw.c:853-860

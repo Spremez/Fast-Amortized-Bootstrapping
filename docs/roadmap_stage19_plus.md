@@ -5310,3 +5310,19 @@ Completed. Stage155 records PASS_STAGE155_SAME_FORMAT_FRONTIER_ROUTE_TO_REPRESEN
 573440 CMUX/MAT_EP/from_DFT schedule count, closes blind r=6 layout tuning,
 and routes next to representation-changing feasibility gates.
 ```
+## Stage 156: Lazy-DFT Closure Gate
+
+Goal:
+
+```text
+Test whether the Stage155 materialization frontier can be attacked by a naive
+DFT-only accumulator state across SAB CMUX/RGSW updates.
+```
+
+Status:
+
+```text
+Completed. Stage156 records REJECT_STAGE156_NAIVE_LAZY_DFT_STATE_NOT_CLOSED. The production API requires torus
+input for MAT EP, and finite MOSFHET-style decomposition tests show
+nonlinearity under addition, negation, and negacyclic sign rotations.
+```

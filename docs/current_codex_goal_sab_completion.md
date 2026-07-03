@@ -369,3 +369,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE155_SAME_FORMAT_FRONTIER_ROUTE_TO_REPRESENTATION_GATE`. The current same-format r-body path keeps the scoped H14 r=6
     evidence, rejects blind bodymajor/fulltile/dual-sub continuation, and
     selects a representation-changing feasibility gate as the next valid step.
+60. Treat Stage156 as the lazy-DFT closure gate:
+    `REJECT_STAGE156_NAIVE_LAZY_DFT_STATE_NOT_CLOSED`. It rejects the naive DFT-only accumulator route and routes
+    next to exact decomposed-cache or compact/shared-source feasibility, not to
+    direct `sab_pvw_*` integration.

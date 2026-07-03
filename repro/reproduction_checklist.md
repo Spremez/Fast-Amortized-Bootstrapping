@@ -243,3 +243,4 @@
 - [x] Stage153 dual-sub full-SAB gate pack recorded.
 - [x] Stage154 bodymajor full-SAB closeout pack recorded.
 - [x] Stage155 same-format frontier refresh generated from measured Stage153/148/151/153/154 evidence.
+- [x] Stage156 lazy-DFT closure gate generated from source API scan and finite decomposition tests.

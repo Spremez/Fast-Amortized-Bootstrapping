@@ -1,0 +1,4 @@
+config,trials,addition_nonlinear_trials,addition_example,negation_nonlinear_trials,negation_example,negacyclic_rotation_nonlinear_trials,negacyclic_rotation_example,status
+Bg_bit=7;l=1;N=8,256,252,"t=0,coeff=2,lhs=-46,rhs=82",21,"t=0,coeff=3,lhs=-64,rhs=64",5,"t=0,coeff=1,lhs=-64,rhs=64",PASS_NEGATIVE_CONTROL
+Bg_bit=7;l=2;N=8,256,256,"t=0,coeff=0,lhs=-49,rhs=79",37,"t=0,coeff=5,lhs=-64,rhs=64",18,"t=0,coeff=3,lhs=25,rhs=24",PASS_NEGATIVE_CONTROL
+Bg_bit=8;l=2;N=16,256,256,"t=0,coeff=3,lhs=20,rhs=-236",30,"t=0,coeff=2,lhs=-93,rhs=-94",14,"t=0,coeff=1,lhs=-93,rhs=-94",PASS_NEGATIVE_CONTROL

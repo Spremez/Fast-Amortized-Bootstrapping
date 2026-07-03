@@ -2151,3 +2151,19 @@ hypotheses:
     failure_criteria:
       - schedule counts differ from the expected SAB call counts
       - a same-format local branch is promoted without full-SAB T_bootstrap_per_lane evidence
+  - id: H80_lazy_dft_state_closure
+    statement: >
+      A naive DFT-only accumulator state is not closed for iterative
+      MAT-RLWE SAB because the next external product requires nonlinear
+      coefficient-domain gadget decomposition.
+    mechanism: >
+      Production MAT EP takes PVW_TMLWE torus input and calls decomposition
+      internally; finite tests show decomposition is nonlinear under SAB
+      addition, negation, and negacyclic sign rotations.
+    status: stage156_lazy_dft_closure_gate
+    evidence: docs/stage156_lazy_dft_closure_gate.md; experiments/stage156_lazy_dft_closure_gate_plan.md; theory_checks/stage156_decomposition_closure_model.md; algorithm_variants/mat_rlwe_sab_lazy_dft_state.md; repro/stage156_lazy_dft_closure_gate/summary.csv
+    current_decision: >
+      REJECT_STAGE156_NAIVE_LAZY_DFT_STATE_NOT_CLOSED
+    failure_criteria:
+      - a MAT external-product API accepting DFT/decomposed accumulator input already exists
+      - decomposition is linearly maintainable under addition, negation, and negacyclic rotations
