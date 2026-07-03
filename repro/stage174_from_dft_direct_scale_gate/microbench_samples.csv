@@ -1,0 +1,15 @@
+variant,run,run_rc,r,N,items,components,reps,calls,total_ns,per_call_us,sink,status,evidence
+baseline,0,0,6,2048,256,7,8,14336,71297953,4.973350516,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_baseline.log
+baseline,1,0,6,2048,256,7,8,14336,70775086,4.936878209,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_baseline.log
+baseline,2,0,6,2048,256,7,8,14336,70374718,4.908950753,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_baseline.log
+baseline,3,0,6,2048,256,7,8,14336,70229872,4.898847098,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_baseline.log
+baseline,4,0,6,2048,256,7,8,14336,73759862,5.145079660,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_baseline.log
+baseline,5,0,6,2048,256,7,8,14336,74783976,5.216516183,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_baseline.log
+baseline,6,0,6,2048,256,7,8,14336,71899396,5.015303850,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_baseline.log
+direct_scale,0,0,6,2048,256,7,8,14336,73152587,5.102719517,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_direct_scale.log
+direct_scale,1,0,6,2048,256,7,8,14336,72485697,5.056200963,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_direct_scale.log
+direct_scale,2,0,6,2048,256,7,8,14336,71878538,5.013848912,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_direct_scale.log
+direct_scale,3,0,6,2048,256,7,8,14336,72264627,5.040780343,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_direct_scale.log
+direct_scale,4,0,6,2048,256,7,8,14336,71673316,4.999533761,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_direct_scale.log
+direct_scale,5,0,6,2048,256,7,8,14336,72417704,5.051458147,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_direct_scale.log
+direct_scale,6,0,6,2048,256,7,8,14336,73943188,5.157867467,4133735383064950534,PASS,repro/stage174_from_dft_direct_scale_gate/run_probe_direct_scale.log

@@ -5573,3 +5573,19 @@ Status:
 Completed. Stage172 records PASS_STAGE172_FRONTIER_CLOSEOUT_RECORDED. The next automatic engineering route
 is Stage174 from_DFT locality; Stage173 remains a separate proof route.
 ```
+## Stage 174: From-DFT Direct-Scale Gate
+
+Goal:
+
+```text
+Test a bounded from_DFT locality/SIMD candidate by replacing the direct
+spqlios scale/copy loop with an explicit AVX512 path behind a flag.
+```
+
+Status:
+
+```text
+Completed. Stage174 records NEUTRAL_STAGE174_DIRECT_SCALE_MICROBENCH_NOT_PROMOTED.
+Microbench evidence is a promotion filter; complete-SAB claims require the
+full-SAB gate.
+```

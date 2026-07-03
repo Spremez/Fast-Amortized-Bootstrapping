@@ -1,0 +1,1 @@
+variant,run,run_rc,correctness,r,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,evidence

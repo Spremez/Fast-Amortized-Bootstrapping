@@ -125,31 +125,42 @@ void execute_direct_torus32(uint32_t *res, const double *a, FFT_Processor_Spqlio
     for (int32_t i = 0; i < proc->N; i++) res[i] = (uint32_t)((int64_t) proc->real_inout_direct[i]);
 }
 
+#if defined(AVX512_OPT) && defined(SPQLIOS_AVX512_DIRECT_SCALE)
+static inline void spqlios_direct_scale_to_buffer(double *restrict dst,
+        const double *restrict src, int32_t N, double scale) {
+    const __m512d scale_v = _mm512_set1_pd(scale);
+    for (int32_t i = 0; i < N; i += 8) {
+        const __m512d in = _mm512_loadu_pd(src + i);
+        _mm512_store_pd(dst + i, _mm512_mul_pd(in, scale_v));
+    }
+}
+#else
+static inline void spqlios_direct_scale_to_buffer(double *restrict dst,
+        const double *restrict src, int32_t N, double scale) {
+    double* dst_it = dst;
+    const double* src_it = src;
+    const double* src_end = src + N;
+    const double* scale_ptr = &scale;
+    __asm__ __volatile__ (
+        "vbroadcastsd (%3),%%ymm2\n"
+        "1:\n"
+        "vmovupd (%1),%%ymm0\n"
+        "vmulpd	%%ymm2,%%ymm0,%%ymm0\n"
+        "vmovapd %%ymm0,(%0)\n"
+        "addq $32,%1\n"
+        "addq $32,%0\n"
+        "cmpq %2,%1\n"
+        "jb 1b\n"
+        : "=r"(dst_it),"=r"(src_it),"=r"(src_end),"=r"(scale_ptr)
+        : "0"(dst_it),"1"(src_it),"2"(src_end),"3"(scale_ptr)
+        : "%ymm0","%ymm2","memory"
+        );
+}
+#endif
+
 void execute_direct_torus64(uint64_t* res, const double* a, FFT_Processor_Spqlios proc) {
     double _2sN = ((double) 2) / ((double) proc->N);
-    //static const double _2p64 = pow(2.,64);
-    //for (int i=0; i<N; i++) real_inout_direct[i]=a[i]*_2sn;
-    {
-    double* dst = proc->real_inout_direct;
-	const double* sit = a;
-	const double* send = a+proc->N;
-	//double __2sN = 2./N;
-	const double* bla = &_2sN;
-	__asm__ __volatile__ (
-		"vbroadcastsd (%3),%%ymm2\n"
-		"1:\n"
-		"vmovupd (%1),%%ymm0\n"
-		"vmulpd	%%ymm2,%%ymm0,%%ymm0\n"
-		"vmovapd %%ymm0,(%0)\n"
-		"addq $32,%1\n"
-		"addq $32,%0\n"
-		"cmpq %2,%1\n"
-		"jb 1b\n"
-		: "=r"(dst),"=r"(sit),"=r"(send),"=r"(bla)
-		: "0"(dst),"1"(sit),"2"(send),"3"(bla)
-		: "%ymm0","%ymm2","memory"
-		);
-    }
+    spqlios_direct_scale_to_buffer(proc->real_inout_direct, a, proc->N, _2sN);
     fft(proc->tables_direct,proc->real_inout_direct); 
     // mod 2^64
     #ifdef AVX512_OPT
@@ -182,26 +193,7 @@ void execute_direct_torus64(uint64_t* res, const double* a, FFT_Processor_Spqlio
 void execute_direct_torus64_add(uint64_t* res, const double* a,
         const uint64_t* addend, FFT_Processor_Spqlios proc) {
     double _2sN = ((double) 2) / ((double) proc->N);
-    {
-    double* dst = proc->real_inout_direct;
-	const double* sit = a;
-	const double* send = a+proc->N;
-	const double* bla = &_2sN;
-	__asm__ __volatile__ (
-		"vbroadcastsd (%3),%%ymm2\n"
-		"1:\n"
-		"vmovupd (%1),%%ymm0\n"
-		"vmulpd	%%ymm2,%%ymm0,%%ymm0\n"
-		"vmovapd %%ymm0,(%0)\n"
-		"addq $32,%1\n"
-		"addq $32,%0\n"
-		"cmpq %2,%1\n"
-		"jb 1b\n"
-		: "=r"(dst),"=r"(sit),"=r"(send),"=r"(bla)
-		: "0"(dst),"1"(sit),"2"(send),"3"(bla)
-		: "%ymm0","%ymm2","memory"
-		);
-    }
+    spqlios_direct_scale_to_buffer(proc->real_inout_direct, a, proc->N, _2sN);
     fft(proc->tables_direct,proc->real_inout_direct);
     #ifdef AVX512_OPT
     __m512d * ri512 = (__m512d *) proc->real_inout_direct;

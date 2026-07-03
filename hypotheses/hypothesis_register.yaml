@@ -2436,3 +2436,22 @@ hypotheses:
       - missing Stage169/170/171 input evidence
       - component microbench evidence is written as complete-SAB speedup
       - compact projection is written as implemented algorithmic acceleration
+  - id: H97_from_dft_direct_scale
+    statement: >
+      Replacing the spqlios direct torus64 scale/copy loop with an explicit
+      AVX512 implementation may reduce from_DFT materialization time enough to
+      matter for complete SAB.
+    mechanism: >
+      The current direct conversion path uses a 256-bit inline assembly
+      scale/copy loop before the direct FFT; a 512-bit loop can reduce that
+      phase's instruction count, but cannot reduce FFT cost or materialization
+      count.
+    status: stage174_from_dft_direct_scale_gate
+    evidence: docs/stage174_from_dft_direct_scale_gate.md; experiments/stage174_from_dft_direct_scale_gate_plan.md; theory_checks/stage174_direct_scale_model.md; repro/stage174_from_dft_direct_scale_gate/summary.csv
+    current_decision: >
+      NEUTRAL_STAGE174_DIRECT_SCALE_MICROBENCH_NOT_PROMOTED
+    failure_criteria:
+      - variant output differs from separate DFT-to-torus plus add
+      - microbench fails promotion threshold
+      - full-SAB A/B fails to improve after microbench promotion
+      - backend-only evidence is reported as algorithmic SAB acceleration

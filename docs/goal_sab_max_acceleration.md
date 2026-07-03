@@ -886,3 +886,6 @@ Stage172 records the frontier closeout after Stage169/170/171. Decision:
 `PASS_STAGE172_FRONTIER_CLOSEOUT_RECORDED`. It allows the current r=6 complete-SAB engineering speedup claim
 under the recorded platform and blocks optimality, compact-SAB, and paper-level
 claims until their gates close.
+Stage174 records the from_DFT direct-scale gate. Decision:
+`NEUTRAL_STAGE174_DIRECT_SCALE_MICROBENCH_NOT_PROMOTED`. The candidate is
+backend/SIMD-only and remains behind `SPQLIOS_AVX512_DIRECT_SCALE`.

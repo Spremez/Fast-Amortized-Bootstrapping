@@ -1,0 +1,3 @@
+scope,metric,value,promotion_threshold,status,evidence
+microbench,baseline_mean/direct_scale_mean;baseline_min/direct_scale_max,0.990754925;0.949781500,mean>=1.02;minmax>=1.0,NEUTRAL_OR_REJECT,repro/stage174_from_dft_direct_scale_gate/microbench_aggregate.csv
+full_sab,not_run,microbench_not_promoted,microbench must promote first,SKIPPED_BY_GATE,repro/stage174_from_dft_direct_scale_gate/comparison.csv

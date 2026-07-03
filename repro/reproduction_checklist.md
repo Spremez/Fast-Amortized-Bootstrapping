@@ -261,3 +261,4 @@
 - [x] Stage170 native split counter microbench pack recorded.
 - [x] Stage171 structured compact keygen feasibility pack recorded.
 - [x] Stage172 frontier closeout pack recorded.
+- [x] Stage174 from_DFT direct-scale gate pack recorded.

@@ -2307,3 +2307,9 @@ Repro artifacts:
   - `theory_checks/stage172_claim_boundary.md`
   - `algorithm_variants/mat_rlwe_sab_frontier_closeout.md`
   - `repro/stage172_frontier_closeout/`
+- stage174_from_dft_direct_scale_gate: `NEUTRAL_STAGE174_DIRECT_SCALE_MICROBENCH_NOT_PROMOTED`
+  - `docs/stage174_from_dft_direct_scale_gate.md`
+  - `experiments/stage174_from_dft_direct_scale_gate_plan.md`
+  - `theory_checks/stage174_direct_scale_model.md`
+  - `algorithm_variants/mat_rlwe_sab_from_dft_direct_scale.md`
+  - `repro/stage174_from_dft_direct_scale_gate/`

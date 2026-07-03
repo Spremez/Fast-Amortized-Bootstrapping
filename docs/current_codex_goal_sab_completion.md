@@ -425,3 +425,7 @@ The new research goal is complete only after a later stage records:
 76. Treat Stage172 as the current claim boundary:
     `PASS_STAGE172_FRONTIER_CLOSEOUT_RECORDED`. The next automatic engineering route is Stage174
     from_DFT locality; Stage173 is proof work only if explicitly prioritized.
+77. Treat Stage174 as bounded from_DFT backend gate:
+    `NEUTRAL_STAGE174_DIRECT_SCALE_MICROBENCH_NOT_PROMOTED`. It does not change
+    MAT/SAB algorithmic claims because the microbench promotion gate did not
+    pass.
