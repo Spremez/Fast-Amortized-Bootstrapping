@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage220_encrypted_compact_keygen_prototype,Stage219 compact key API skeleton passes compile/run/role/ownership gates.,Prototype encrypted compact keygen rows with semantic-zero dummy role preservation and negative controls.,selected,"If encrypted keygen semantics fail, compact route remains API-only and SAB integration is denied.",repro/stage219_mosfhet_compact_key_api_skeleton/proof_gate.csv
+P1,production_noise_recurrence,Encrypted compact keygen prototype exists.,Noise recurrence and parameter/resource bound before complete-SAB integration.,future_blocked,Block compact route from SAB integration.,repro/stage218_compact_key_object_noise_prototype/proof_gate.csv
+P2,exact_pvw_mat_sab_report_fallback,Any compact API/keygen gate fails.,Report only current exact PVW/MAT-SAB T_bootstrap/r evidence.,fallback,No compact algorithmic claim.,repro/stage218_compact_key_object_noise_prototype/proof_gate.csv

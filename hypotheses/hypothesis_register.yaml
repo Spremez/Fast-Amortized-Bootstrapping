@@ -3130,3 +3130,13 @@ H10_stage218_compact_key_object_noise_prototype:
     phase/noise prototype gates with negative controls, but production SAB
     implementation remains denied until MOSFHET API, encrypted keygen,
     security, production noise, and complete-SAB gates are added.
+H10_stage219_mosfhet_compact_key_api_skeleton:
+  status: compact_key_api_skeleton_compile_checked
+  evidence:
+    - repro/stage219_mosfhet_compact_key_api_skeleton/proof_gate.csv
+    - repro/stage219_mosfhet_compact_key_api_skeleton/api_results.csv
+    - docs/stage219_mosfhet_compact_key_api_skeleton.md
+  conclusion: >
+    Stage219 records PASS_STAGE219_MOSFHET_COMPACT_KEY_API_SKELETON_READY_ENCRYPTED_KEYGEN. A MOSFHET-adjacent compact key row-role API
+    skeleton is compile-checked, but encrypted keygen, security, production
+    noise, compact EP integration, and complete-SAB gates remain missing.

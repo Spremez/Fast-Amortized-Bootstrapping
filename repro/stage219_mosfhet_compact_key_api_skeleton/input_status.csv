@@ -1,0 +1,6 @@
+input,status,evidence,role,bytes
+stage203_equation_map,present,repro/stage203_production_selector_equation_probe/equation_map.csv,row-role source for generated C probe,3693
+stage218_layout,present,repro/stage218_compact_key_object_noise_prototype/key_object_layout.csv,expected dense/active/dummy layout,440
+stage218_proof_gate,present,repro/stage218_compact_key_object_noise_prototype/proof_gate.csv,permission for API skeleton only,1577
+mosfhet_header,present,src/mosfhet/include/mosfhet.h,production MOSFHET public types/functions,32723
+mattrgsw_compact_impl,present,src/mosfhet/src/mattrgsw.c,current compact allocator/function implementation,38109

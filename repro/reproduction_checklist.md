@@ -318,3 +318,4 @@
 - [x] Stage216 post-counter frontier recorded.
 - [x] Stage217 compact keygen/security preflight recorded.
 - [x] Stage218 compact key-object/noise prototype recorded.
+- [x] Stage219 MOSFHET compact key API skeleton recorded.

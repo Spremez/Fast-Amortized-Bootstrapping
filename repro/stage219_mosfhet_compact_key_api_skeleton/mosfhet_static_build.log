@@ -1,0 +1,8 @@
+command: cd src/mosfhet && make clean >/dev/null 2>&1 || true && make static FFT_LIB=spqlios A_PRNG=none ENABLE_VAES=false ENABLE_PVW_TMLWE=false -j$(nproc)
+returncode: 0
+--- stdout ---
+gcc -g -c src/keyswitch.c src/bootstrap.c src/bootstrap_ga.c src/tlwe.c src/trlwe.c src/trgsw.c src/misc.c src/polynomial.c src/register.c src/pvwtlwe.c src/sha3/fips202.c src/fft/karatsuba.c src/./rnd/aes_rng.c src/./fft/spqlios/spqlios-fft-fma.s src/./fft/spqlios/spqlios-ifft-fma.s src/./fft/spqlios/spqlios-fft-impl.c src/./fft/spqlios/fft_processor_spqlios.c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DUSE_SPQLIOS -I.//include
+ar rcs lib/libmosfhet.a *.o && rm *.o
+--- stderr ---
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL
+N/ec localhost �Nt0

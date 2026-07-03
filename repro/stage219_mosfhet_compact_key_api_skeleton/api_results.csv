@@ -1,0 +1,7 @@
+backend,r,N,dense_rows,active_rows,dummy_rows,pointer_failures,role_failures,guard_failures,roundtrip_mismatches,max_gap,tolerance,hot_alloc_delta,status
+spqlios,2,1024,9,8,1,0,0,0,0,1,2048,0,PASS_COMPACT_KEY_API_SKELETON
+spqlios,4,1024,25,16,9,0,0,0,0,1,2048,0,PASS_COMPACT_KEY_API_SKELETON
+spqlios,6,1024,49,24,25,0,0,0,0,1,2048,0,PASS_COMPACT_KEY_API_SKELETON
+spqlios,2,2048,9,8,1,0,0,0,0,1,2048,0,PASS_COMPACT_KEY_API_SKELETON
+spqlios,4,2048,25,16,9,0,0,0,0,1,2048,0,PASS_COMPACT_KEY_API_SKELETON
+spqlios,6,2048,49,24,25,0,0,0,0,1,2048,0,PASS_COMPACT_KEY_API_SKELETON

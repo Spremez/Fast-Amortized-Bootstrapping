@@ -2602,3 +2602,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage218_compact_key_object_noise_prototype.md`
   - `scripts/build_stage218_compact_key_object_noise_prototype.py`
   - `repro/stage218_compact_key_object_noise_prototype/`
+- stage219_mosfhet_compact_key_api_skeleton:
+  - `docs/stage219_mosfhet_compact_key_api_skeleton.md`
+  - `experiments/stage219_mosfhet_compact_key_api_skeleton_plan.md`
+  - `theory_checks/stage219_compact_key_api_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage219_compact_key_api_skeleton.md`
+  - `scripts/build_stage219_mosfhet_compact_key_api_skeleton.py`
+  - `repro/stage219_mosfhet_compact_key_api_skeleton/`

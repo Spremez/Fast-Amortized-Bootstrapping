@@ -1057,3 +1057,7 @@ for SAB speedup claims.
 Stage218 records compact key-object/noise prototype. Decision: `PASS_STAGE218_COMPACT_KEY_OBJECT_PROTOTYPE_READY_API_SKELETON`.
 The compact route passes finite phase, negative-control, and toy-noise gates
 but remains outside SAB hot paths and cannot support speedup claims.
+Stage219 records MOSFHET compact key API skeleton. Decision: `PASS_STAGE219_MOSFHET_COMPACT_KEY_API_SKELETON_READY_ENCRYPTED_KEYGEN`. The
+route now has a compile-checked MOSFHET-adjacent key object boundary, but not
+encrypted keygen, production noise, complete-SAB integration, or speedup
+evidence.

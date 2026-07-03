@@ -635,3 +635,8 @@ hot-path code or speedup claim is authorized.
 `PASS_STAGE218_COMPACT_KEY_OBJECT_PROTOTYPE_READY_API_SKELETON` advances the compact route only to an isolated API-skeleton
 candidate. It does not authorize `sab_pvw_*` integration, complete-SAB claims,
 or production security/noise claims.
+### Stage219 MOSFHET compact key API skeleton
+
+`PASS_STAGE219_MOSFHET_COMPACT_KEY_API_SKELETON_READY_ENCRYPTED_KEYGEN` advances the compact route only to an encrypted-keygen prototype
+candidate. It does not authorize `sab_pvw_*` integration, complete-SAB claims,
+or production security/noise claims.

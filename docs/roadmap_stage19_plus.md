@@ -6326,3 +6326,19 @@ Completed. Stage218 records PASS_STAGE218_COMPACT_KEY_OBJECT_PROTOTYPE_READY_API
 negative-control, and toy-noise gates; the next route is a MOSFHET-adjacent
 API skeleton only, not SAB integration.
 ```
+## Stage 219: MOSFHET Compact Key API Skeleton
+
+Goal:
+
+```text
+Compile-check a MOSFHET-adjacent compact key API skeleton after Stage218,
+without touching SAB hot paths.
+```
+
+Status:
+
+```text
+Completed. Stage219 records PASS_STAGE219_MOSFHET_COMPACT_KEY_API_SKELETON_READY_ENCRYPTED_KEYGEN. The compact key row-role API skeleton
+passes build/compile/run gates and routes next to encrypted compact keygen
+prototype only; SAB integration remains denied.
+```
