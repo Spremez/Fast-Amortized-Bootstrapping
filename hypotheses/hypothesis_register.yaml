@@ -1779,3 +1779,23 @@ hypotheses:
       - Stage130 shared-source first-step speedup is reported as iterative
         lane-pair closure evidence
       - complete `T_bootstrap/r` acceleration is claimed before full SAB gates
+  - id: H59_decomp_dft_reuse_target
+    statement: >
+      Generalized lane-pair input compact EP should not be integrated into
+      RGSW/sparse SAB until its decompose/DFT cost is reduced enough to make
+      r=4 full-kernel timing positive.
+    mechanism: >
+      Stage135 derives break-even and 5pct-gain targets from Stage134 measured
+      dense, generalized full, decompose/DFT, and addmul timings. It shows the
+      addmul path is already positive while decompose/DFT remains the blocker.
+    status: stage135_decomp_dft_reuse_targets_ready_stage136
+    evidence: docs/stage135_decomp_dft_reuse_target_gate.md; experiments/stage135_decomp_dft_reuse_target_gate_plan.md; theory_checks/stage135_decomp_dft_reuse_target_model.md; algorithm_variants/mat_rlwe_sab_decomp_dft_reuse_target.md; scripts/build_stage135_decomp_dft_reuse_target_gate.py; repro/stage135_decomp_dft_reuse_target_gate/summary.csv; repro/stage135_decomp_dft_reuse_target_gate/target_matrix.csv; repro/stage135_decomp_dft_reuse_target_gate/route_matrix.csv; repro/stage135_decomp_dft_reuse_target_gate/artifact_index.csv
+    current_decision: >
+      Stage135 records PASS_STAGE135_DECOMP_DFT_REUSE_TARGETS_READY_STAGE136. The maximum required r=4 decompose/DFT
+      speedup for break-even is 1.152711. Stage136 must target
+      decompose/DFT reuse or batching before any RGSW/sparse integration.
+    failure_criteria:
+      - RGSW/sparse integration starts before decompose/DFT timing improves
+      - addmul-only gains are used to claim full EP or full SAB speedup
+      - targets are evaluated without same-backend Stage134 comparison
+      - complete `T_bootstrap/r` acceleration is claimed before full SAB gates

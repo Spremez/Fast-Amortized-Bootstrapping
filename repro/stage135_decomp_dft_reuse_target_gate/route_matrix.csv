@@ -1,0 +1,5 @@
+route,status,stage,target,risk,gate
+lane_pair_decomp_dft_reuse_or_batching,PRIMARY_NEXT,Stage136,r=4 break-even decomp speedup >= 1.153; 5pct target >= 1.245,DFT conversion may dominate and resist reuse if every CMUX input is unique.,microbench must improve Stage134 compact_decomp_dft for both r=4 N=512/1024.
+r4_specialized_decompose_to_dft_kernel,SECONDARY_NEXT,Stage136_variant,remove per-lane/per-t digit overhead without changing selector semantics,constant-factor gain may be below required 1.16x break-even.,"same correctness plus decomp-only microbench, no full-SAB claim."
+proceed_to_rgsw_lane_state,REJECTED_UNTIL_DECOMP_GATE,none,requires positive r=4/r=6 Stage134-style full EP timing first,RGSW integration would multiply a negative r=4 kernel signal.,must pass Stage136 before reopening.
+shared_source_first_step_only,REFERENCE_ONLY,none,keep Stage130 as upper-bound first-step evidence,not iterative after Stage132 lane-pair state.,cannot be used for full SAB closure claims.

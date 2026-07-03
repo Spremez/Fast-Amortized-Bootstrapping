@@ -733,3 +733,9 @@ validates generalized lane-pair input correctness and records same-backend
 microbench ratios against a dense proxy plus Stage130 first-step timing. Its
 decision is `NEUTRAL_STAGE134_GENERALIZED_INPUT_EP_CORRECT_BUT_PERF_BLOCKED`; RGSW integration is allowed only if the performance
 gate is positive for r=4 and r=6.
+
+Stage135 sets the quantitative implementation target created by Stage134:
+generalized lane-pair input is arithmetically closed, but r=4 needs up to
+1.152711 decompose/DFT speedup just to break even and
+1.245156 for a 5pct full-kernel gain. This keeps the loop empirical:
+the next code work must beat these targets before RGSW integration.

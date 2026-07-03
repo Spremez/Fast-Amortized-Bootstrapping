@@ -4952,3 +4952,21 @@ N=512/1024. The full-kernel timing signal has min r=4/r=6 speedup
 0.910791 and max all-row speedup 1.101122. This stage decides only
 isolated EP closure/performance readiness; complete SAB claims remain blocked.
 ```
+
+## Stage 135: Decompose/DFT Reuse Target Gate
+
+Goal:
+
+```text
+Turn Stage134's neutral closure-capable EP result into concrete decompose/DFT
+optimization targets before any RGSW/sparse integration.
+```
+
+Status:
+
+```text
+Completed. Stage135 records PASS_STAGE135_DECOMP_DFT_REUSE_TARGETS_READY_STAGE136. For r=4, the required decompose/DFT
+speedup is 1.152711 for break-even and 1.245156 for a
+5pct full-kernel gain. The next valid stage is a decompose/DFT reuse or
+batching implementation gate.
+```

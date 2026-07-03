@@ -278,3 +278,9 @@ The new research goal is complete only after a later stage records:
     Stage133 and records full-kernel timing with min r=4/r=6 speedup
     0.910791. If this remains neutral, the next valid step is lane-pair
     decompose/DFT reuse or streaming, not RGSW/sparse integration.
+
+39. Treat Stage135 as the current decompose/DFT reuse target gate:
+    `PASS_STAGE135_DECOMP_DFT_REUSE_TARGETS_READY_STAGE136`. The r=4 generalized lane-pair input path needs up to
+    1.152711 decompose/DFT speedup to break even and
+    1.245156 for a 5pct full-kernel gain. RGSW/sparse integration
+    remains rejected until Stage136 improves this measured blocker.

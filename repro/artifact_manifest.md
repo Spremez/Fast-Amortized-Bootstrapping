@@ -2001,3 +2001,15 @@ Repro artifacts:
 - `repro/stage134_generalized_lane_pair_input_ep_gate/run_probe.log`
 - `repro/stage134_generalized_lane_pair_input_ep_gate/generalized_lane_pair_input_ep_gate.c`
 - `repro/stage134_generalized_lane_pair_input_ep_gate/artifact_index.csv`
+
+## Stage 135 Decompose/DFT Reuse Target Gate
+
+- `docs/stage135_decomp_dft_reuse_target_gate.md`
+- `experiments/stage135_decomp_dft_reuse_target_gate_plan.md`
+- `theory_checks/stage135_decomp_dft_reuse_target_model.md`
+- `algorithm_variants/mat_rlwe_sab_decomp_dft_reuse_target.md`
+- `scripts/build_stage135_decomp_dft_reuse_target_gate.py`
+- `repro/stage135_decomp_dft_reuse_target_gate/summary.csv`
+- `repro/stage135_decomp_dft_reuse_target_gate/target_matrix.csv`
+- `repro/stage135_decomp_dft_reuse_target_gate/route_matrix.csv`
+- `repro/stage135_decomp_dft_reuse_target_gate/artifact_index.csv`
