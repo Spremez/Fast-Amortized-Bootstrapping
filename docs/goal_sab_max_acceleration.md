@@ -868,3 +868,6 @@ the current exact tiled-AVX path.
 Stage167 refreshes CB5 native r=6 counters after Stage166. Decision:
 `PASS_STAGE167_CB5_NATIVE_R6_COUNTERS_RECORDED`. This provides native implementation attribution for the current
 exact path, not a new algorithmic speedup claim.
+Stage168 records the native counter frontier after Stage167. Decision:
+`PASS_STAGE168_ROUTE_TO_NATIVE_REPEATED_AND_SPLIT_COUNTERS`. It blocks theoretical optimality and final native throughput
+claims from the single perf-wrapped run and routes next to Stage169/170.

@@ -1,0 +1,7 @@
+claim,status,evidence,limit
+current r=6 exact path has native counter evidence,ALLOWED_ATTRIBUTION,repro/stage167_cb5_native_r6_counter_refresh/counter_metrics.csv,Can discuss cycles/instructions/load/store/cache/FP512 counts for the recorded run.
+current r=6 exact path is theoretically optimal,BLOCKED,repro/stage167_cb5_native_r6_counter_refresh/counter_metrics.csv; repro/stage166_shared_output_compact_algebra_gate/summary.csv,"Counters do not prove a lower bound; generic compact exactness is blocked, but structured keygen remains an open theory route."
+row-streaming decompose/DFT should replace current tiled AVX,REJECTED,repro/stage165_closed_fullmat_streaming_microbench/summary.csv,Exact but slower; keep current tiled AVX path.
+component-major from_DFT batching should be integrated,REJECTED_OR_NEUTRAL,repro/stage163_from_dft_batching_microbench/summary.csv,"Current backend fused-add remains useful, but batching order is not promoted."
+generic shared-output compact is drop-in for dense MAT,BLOCKED,repro/stage166_shared_output_compact_algebra_gate/summary.csv,Missing body-to-body cross terms require structured keygen/security/noise proof.
+native complete-SAB throughput is finalized,BLOCKED_STATS,repro/stage167_cb5_native_r6_counter_refresh/run_metrics.csv,Stage167 is one perf-wrapped run. Need native no-perf repeated A/B and noise/resource gates.

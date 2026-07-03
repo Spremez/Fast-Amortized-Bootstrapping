@@ -409,3 +409,6 @@ The new research goal is complete only after a later stage records:
 71. Treat Stage167 as the CB5 native r=6 counter refresh:
     `PASS_STAGE167_CB5_NATIVE_R6_COUNTERS_RECORDED`. Use it to interpret the current exact path's hardware
     behavior; do not treat counters alone as theoretical optimality proof.
+72. Treat Stage168 as the native counter frontier:
+    `PASS_STAGE168_ROUTE_TO_NATIVE_REPEATED_AND_SPLIT_COUNTERS`. Use Stage167 counters only for attribution; final native
+    throughput and component-level claims require Stage169/170.

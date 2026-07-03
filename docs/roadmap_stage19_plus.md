@@ -5494,3 +5494,19 @@ Status:
 Completed. Stage167 records PASS_STAGE167_CB5_NATIVE_R6_COUNTERS_RECORDED. Counter evidence is attribution-only
 and remains separate from theoretical optimality claims.
 ```
+## Stage 168: Native Counter Frontier
+
+Goal:
+
+```text
+Convert Stage167 native counters into scoped attribution, claim policy, and
+next executable gates.
+```
+
+Status:
+
+```text
+Completed. Stage168 records PASS_STAGE168_ROUTE_TO_NATIVE_REPEATED_AND_SPLIT_COUNTERS. Native counters are attribution-only;
+the next gates are native no-perf repeated full-SAB A/B and split native
+component counters.
+```

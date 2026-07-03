@@ -1,0 +1,12 @@
+metric,value,interpretation
+ipc,1.669427456,Instructions per cycle for the complete perf-wrapped run.
+loads_per_cycle,0.377591580,High value indicates substantial memory instruction pressure.
+stores_per_cycle,0.212563603,Store pressure remains material after copyback/sub-decomp fusions.
+fp512_per_cycle,0.370504829,AVX512 FP work is material; counters alone do not prove FMA-bound.
+fp256_per_cycle,0.069715870,Residual 256-bit FP work likely comes from FFT/backend paths.
+load_store_to_fp512_ratio,1.592840731,Memory instructions exceed FP512 arithmetic instructions; memory layout remains a plausible frontier.
+cache_miss_rate,0.367870933,"High cache miss rate supports locality-focused investigation, but not a standalone optimization claim."
+branch_miss_rate,0.004815412,Branch misses are small relative to memory/FP pressure.
+perf_wrapped_speedup_vs_scalar_repeated,1.127000000,"Single perf-wrapped full-SAB run; attribution evidence only, not high-stat performance claim."
+perf_wrapped_pvw_us,63578097.000,Wall-time under perf overhead for current r=6 path.
+perf_wrapped_scalar_repeated_us,71628359.000,Scalar repeated baseline in the same perf-wrapped run.

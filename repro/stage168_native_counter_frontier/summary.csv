@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage168_inputs,PASS,missing_inputs,none,repro/stage168_native_counter_frontier/evidence_inputs.csv,Stage168 consumes Stage160/163/165/166/167 evidence.,Repair missing input before routing claims.
+stage168_counter_ratios,PASS,cache_miss_rate;load_store_to_fp512,0.367870933;1.592840731,repro/stage168_native_counter_frontier/derived_counter_ratios.csv,Native counters show both memory/locality and AVX512 arithmetic pressure.,Use split counters before component-level claims.
+stage168_stats_policy,BLOCKED_STATS,perf_wrapped_speedup,1.127000000,repro/stage168_native_counter_frontier/claim_policy.csv,Stage167 has a single perf-wrapped full-SAB run; not enough for final native throughput wording.,Run native no-perf repeated A/B as Stage169.
+stage168_decision,PASS_STAGE168_ROUTE_TO_NATIVE_REPEATED_AND_SPLIT_COUNTERS,next_stage,Stage169,repro/stage168_native_counter_frontier/next_stage_queue.csv,Stage168 routes to native repeated full-SAB and split counter gates.,Do not make optimality or final throughput claims before Stage169/170.

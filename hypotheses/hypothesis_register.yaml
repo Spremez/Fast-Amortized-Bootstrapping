@@ -2347,3 +2347,20 @@ hypotheses:
       - remote sync/build/perf fails
       - target_full correctness fails
       - counters are reported as theoretical optimality without lower-bound analysis
+  - id: H92_native_counter_frontier
+    statement: >
+      Stage167 native counters should route the next PVW/MAT-SAB work toward
+      native repeated complete-SAB statistics and split component counters, not
+      theoretical optimality claims.
+    mechanism: >
+      The full-run counters combine high AVX512 FP work with substantial
+      load/store/cache pressure, while prior gates reject from_DFT batching,
+      row streaming, and generic compact drop-in exactness.
+    status: stage168_native_counter_frontier
+    evidence: docs/stage168_native_counter_frontier.md; experiments/stage168_native_counter_frontier_plan.md; theory_checks/stage168_counter_frontier_scope.md; repro/stage168_native_counter_frontier/summary.csv
+    current_decision: >
+      PASS_STAGE168_ROUTE_TO_NATIVE_REPEATED_AND_SPLIT_COUNTERS
+    failure_criteria:
+      - derived ratios are not reproducible from Stage167 raw counters
+      - final native throughput is claimed from one perf-wrapped run
+      - theoretical optimality is claimed without lower-bound proof
