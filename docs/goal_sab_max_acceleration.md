@@ -639,3 +639,15 @@ accumulator+selector count decreases from 180 to 120. This opens only compact
 selector gadget-decomposition and diagonal-injection prototyping; it remains
 outside SAB hot paths and does not prove selector encryption, noise, AVX512
 performance, or complete `T_bootstrap/r`.
+
+Stage125 checks that next gadget boundary. It decomposes lane-local mask/body
+polynomials with MOSFHET `polynomial_decompose_i`, injects diagonal gadget
+monomials into compact `shared[t,q]` and `body[t,q]` rows, and compares the
+coefficient reference against production SPQLIOS DFT multiply-add. For k=1,
+T=7, Bg_bit=7, r=2/4/6, N=1024/2048, and seed subset 0..1, all
+coefficient-vs-DFT mismatches are zero under a fixed 16384 torus-unit
+tolerance; maximum observed DFT gap is 10240. The body-only selector negative
+control fails as required. Selector count ratios remain
+1.125x/1.5625x/2.041667x for r=2/4/6, but after adding decomposition streams
+r=2 is only 1.0x break-even while r=4/r=6 remain positive at
+1.25x/1.555556x. This opens compact selector encryption/noise modeling only.

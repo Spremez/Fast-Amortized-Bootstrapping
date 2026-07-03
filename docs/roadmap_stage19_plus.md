@@ -4476,3 +4476,61 @@ stage is compact selector gadget decomposition and diagonal injection; this is
 still not selector encryption, noise proof, AVX512 performance, SAB schedule
 integration, or complete `T_bootstrap/r` evidence.
 ```
+
+## Stage 125: Compact Selector Gadget-Decomposition Gate
+
+Goal:
+
+```text
+Check whether the Stage124 compact selector skeleton can support lane-local
+gadget decomposition and diagonal injection without reconstructing dense
+`MAT_TRGSW_DFT` rows.
+```
+
+Theory basis:
+
+Current dense MAT external product decomposes `k+r` accumulator components and
+uses dense selector rows. The vector-shared route decomposes two lane-local
+components per lane: shared-mask and body. Stage125 checks that those
+decomposition streams can drive compact selector rows `shared[t,q]` and
+`body[t,q]` whose diagonal gadget injection matches the coefficient reference
+through production DFT.
+
+Tasks:
+
+- build MOSFHET `libmosfhet.a` with `FFT_LIB=spqlios`;
+- generate and compile a standalone compact selector gadget probe;
+- decompose lane-local mask/body polynomials using `polynomial_decompose_i`;
+- inject gadget monomials into compact shared/body selector rows;
+- compare coefficient-domain gadget application with production DFT
+  multiply-add under the declared tolerance;
+- keep body-only selector rows as a required failing negative control;
+- record selector-storage ratio, decomposition-stream overhead, and
+  selector+decomposition count ratio.
+
+Gate:
+
+- build, compile, and run must pass;
+- coefficient-vs-DFT gadget mismatch counts must be zero under tolerance;
+- body-only negative control must fail;
+- compact selector storage ratio must remain above 1.0;
+- selector+decomposition count ratio must not fall below 1.0;
+- passing only opens compact selector encryption/noise prototyping outside the
+  SAB hot path.
+
+Status:
+
+```text
+Completed. Stage125 records
+PASS_STAGE125_COMPACT_SELECTOR_GADGET_READY_ENCRYPTION_NOISE_GATE_REQUIRED.
+The production DFT compact gadget rows pass for k=1, T=7, Bg_bit=7, r=2/4/6,
+N=1024/2048, and seed subset 0..1. All coefficient-vs-DFT mismatch counts are
+zero under the fixed 16384 torus-unit tolerance; the maximum observed DFT gap
+is 10240. Body-only selector rows remain rejected. The layout model records
+selector ratios 1.125x/1.5625x/2.041667x for r=2/4/6, but
+decomposition-stream overhead makes selector+decomposition count only break
+even for r=2 and positive for r=4/r=6 at 1.25x/1.555556x. The next valid
+stage is compact selector encryption/noise modeling; this is still not noise
+proof, AVX512 performance, SAB schedule integration, or complete
+`T_bootstrap/r` evidence.
+```

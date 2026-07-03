@@ -1479,3 +1479,34 @@ hypotheses:
       - type/API skeleton evidence is used as complete-SAB acceleration or
         AVX512 optimality evidence
       - scalar/default SAB behavior changes before a guarded integration stage
+  - id: H49_compact_selector_gadget_decomposition
+    statement: >
+      Compact vector-shared selector rows can support lane-local gadget
+      decomposition and diagonal injection through the production MOSFHET DFT
+      boundary without reconstructing dense `MAT_TRGSW_DFT` rows.
+    mechanism: >
+      Stage125 decomposes lane-local mask/body polynomials with
+      `polynomial_decompose_i`, applies diagonal gadget monomials to compact
+      `shared[t,q]` and `body[t,q]` rows, and compares coefficient-domain
+      gadget application with production SPQLIOS DFT multiply-add. It also
+      rejects a body-only selector negative control and records decomposition
+      stream overhead alongside selector storage savings.
+    status: stage125_compact_selector_gadget_ready_encryption_noise_gate_required
+    evidence: docs/stage125_compact_selector_gadget_gate.md; experiments/stage125_compact_selector_gadget_gate_plan.md; theory_checks/stage125_compact_selector_gadget_model.md; algorithm_variants/mat_rlwe_sab_compact_selector_gadget.md; scripts/build_stage125_compact_selector_gadget_gate.py; repro/stage125_compact_selector_gadget_gate/summary.csv; repro/stage125_compact_selector_gadget_gate/gadget_results.csv; repro/stage125_compact_selector_gadget_gate/layout_results.csv; repro/stage125_compact_selector_gadget_gate/mosfhet_static_build.log; repro/stage125_compact_selector_gadget_gate/compile_probe.log; repro/stage125_compact_selector_gadget_gate/run_probe.log; repro/stage125_compact_selector_gadget_gate/compact_selector_gadget_gate.c; repro/stage125_compact_selector_gadget_gate/artifact_index.csv
+    current_decision: >
+      Stage125 records PASS_STAGE125_COMPACT_SELECTOR_GADGET_READY_ENCRYPTION_NOISE_GATE_REQUIRED.
+      For k=1, T=7, Bg_bit=7, r=2/4/6, N=1024/2048, and seed subset 0..1,
+      coefficient-vs-DFT mismatch counts are zero under a fixed 16384
+      torus-unit tolerance; maximum observed DFT gap is 10240. Body-only
+      selector rows are rejected. Selector ratios are positive, but
+      decomposition-stream overhead makes r=2 break-even for
+      selector+decomposition counts, while r=4/r=6 remain positive at
+      1.25x/1.555556x. This opens only compact selector encryption/noise
+      modeling outside `sab_pvw_*`.
+    failure_criteria:
+      - compact selector encryption cannot preserve the gadget rows without
+        dense selector reconstruction
+      - compact selector noise grows beyond baseline without parameter remedy
+      - r=2 is claimed as a count-level speedup despite break-even evidence
+      - gadget smoke evidence is used as complete-SAB or AVX512 performance
+        evidence

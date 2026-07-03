@@ -79,7 +79,12 @@ that skeleton against MOSFHET allocation and production DFT conversion:
 component ownership, metadata, lane coverage, and DFT roundtrip all pass for
 k=1, T=7, r=2/4/6, and N=1024/2048. This is still not complete-SAB
 `T_total/r`, AVX512 optimality, gadget decomposition, selector encryption, or
-SAB hot-path integration evidence.
+SAB hot-path integration evidence. Stage125 then checks compact selector
+gadget decomposition and diagonal injection using production DFT. It passes
+with zero coefficient-vs-DFT mismatches under a fixed 16384 torus-unit
+tolerance and rejects body-only selector rows. The result opens compact
+selector encryption/noise modeling only; r=2 is count break-even once
+decomposition streams are included, while r=4/r=6 remain count-positive.
 
 ## Execution Route
 
@@ -176,7 +181,13 @@ SAB hot-path integration evidence.
     and r=4 records selector count 112 versus current dense 175 plus total
     count 120 versus 180. The next valid step is compact selector gadget
     decomposition and diagonal injection outside `sab_pvw_*`.
-28. Preserve the current final-audit status:
+28. Treat Stage125 as the current compact selector gadget gate:
+    production DFT compact gadget rows pass for k=1, T=7, Bg_bit=7, r=2/4/6,
+    and N=1024/2048. Coefficient-vs-DFT mismatches are zero under 16384
+    torus-unit tolerance, body-only selector rows are rejected, and layout
+    count evidence shows r=2 break-even but r=4/r=6 positive. The next valid
+    step is compact selector encryption/noise modeling outside `sab_pvw_*`.
+29. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

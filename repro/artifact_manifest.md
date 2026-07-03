@@ -1840,3 +1840,19 @@ Repro artifacts:
 - `repro/stage124_mosfhet_type_api_skeleton/run_probe.log`
 - `repro/stage124_mosfhet_type_api_skeleton/mosfhet_type_api_skeleton.c`
 - `repro/stage124_mosfhet_type_api_skeleton/artifact_index.csv`
+
+## Stage 125 Compact Selector Gadget Gate
+
+- `docs/stage125_compact_selector_gadget_gate.md`
+- `experiments/stage125_compact_selector_gadget_gate_plan.md`
+- `theory_checks/stage125_compact_selector_gadget_model.md`
+- `algorithm_variants/mat_rlwe_sab_compact_selector_gadget.md`
+- `scripts/build_stage125_compact_selector_gadget_gate.py`
+- `repro/stage125_compact_selector_gadget_gate/summary.csv`
+- `repro/stage125_compact_selector_gadget_gate/gadget_results.csv`
+- `repro/stage125_compact_selector_gadget_gate/layout_results.csv`
+- `repro/stage125_compact_selector_gadget_gate/mosfhet_static_build.log`
+- `repro/stage125_compact_selector_gadget_gate/compile_probe.log`
+- `repro/stage125_compact_selector_gadget_gate/run_probe.log`
+- `repro/stage125_compact_selector_gadget_gate/compact_selector_gadget_gate.c`
+- `repro/stage125_compact_selector_gadget_gate/artifact_index.csv`
