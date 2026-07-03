@@ -1,0 +1,6 @@
+route,t1_status,public_difference,security_consequence,implementation_permission
+current_dense_mat_trgsw_distribution,AVAILABLE_REFERENCE,none versus current implementation,standard current route remains the baseline,YES_FOR_EXACT_FULL_MAT_ONLY
+delete_body_cross_rows_and_claim_dense_equivalence,REJECTED,key row count/key size changes,not indistinguishable from dense public key format,NO
+deterministic_zero_cross_rows,REJECTED,zero-mask relation is directly testable,cannot be justified as standard RLWE encryption of zero,NO
+force_equal_or_shared_output_masks,REJECTED_AS_STANDARD_DISTRIBUTION,mask equality relation is directly testable,requires a new structured-key assumption or reduction,NO_UNTIL_PROOF
+new_structured_selector_distribution,OPEN_PROOF_ONLY,must be declared as a new public key distribution,needs hybrid/simulation proof and leakage analysis,PROOF_ONLY

@@ -2409,3 +2409,9 @@ Repro artifacts:
   - `theory_checks/stage189_closed_state_linear_model.md`
   - `algorithm_variants/mat_rlwe_sab_closed_state_linear_probe.md`
   - `repro/stage189_closed_state_linear_probe/`
+- stage190_selector_distribution_distinguisher: `PASS_STAGE190_T1_SELECTOR_DISTRIBUTION_DISTINGUISHERS_RECORDED_IMPLEMENTATION_STILL_DENIED`
+  - `docs/stage190_selector_distribution_distinguisher.md`
+  - `experiments/stage190_selector_distribution_distinguisher_plan.md`
+  - `theory_checks/stage190_selector_distribution_model.md`
+  - `algorithm_variants/mat_rlwe_sab_selector_distribution_distinguisher.md`
+  - `repro/stage190_selector_distribution_distinguisher/`

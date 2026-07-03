@@ -1,0 +1,5 @@
+claim,status,safe_replacement,evidence
+compact_selector_is_standard_dense_key,DENY,compact selector variants change the public distribution unless a new proof is supplied,repro/stage190_selector_distribution_distinguisher/distribution_probe.csv
+row_deletion_is_free,DENY,row deletion is a key-format change with an immediate public size distinguisher,repro/stage190_selector_distribution_distinguisher/distribution_probe.csv
+equal_shared_masks_are_indistinguishable,DENY,equal/shared masks create a public relation in this finite probe,repro/stage190_selector_distribution_distinguisher/distribution_probe.csv
+new_structured_key_may_be_studied,ALLOW_PROOF_ONLY,state an explicit structured-key assumption/reduction target before implementation,repro/stage187_compact_proof_obligation_draft/theorem_matrix.csv; repro/stage176_structured_compact_security_api_gate/api_options.csv

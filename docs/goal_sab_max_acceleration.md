@@ -939,3 +939,6 @@ implementation, and broad novelty claims.
 Stage189 records the closed-state linear probe. Decision: `PASS_STAGE189_T2_PUBLIC_CLOSURE_PROBE_DIRECT_SHARED_MASK_REJECTED`.
 It gives executable evidence for the T2 boundary: current lane-pair compact
 output cannot be publicly collapsed to one shared PVW_TMLWE mask for r>1.
+Stage190 records the selector distribution distinguisher. Decision:
+`PASS_STAGE190_T1_SELECTOR_DISTRIBUTION_DISTINGUISHERS_RECORDED_IMPLEMENTATION_STILL_DENIED`. It rejects standard-distribution shortcut claims for compact
+selectors and keeps production compact SAB code denied.

@@ -2726,3 +2726,21 @@ hypotheses:
       - an r > 1 public shared-mask projection system is consistent
       - production compact SAB code is written without T1/T4 proof gates
       - this T2 probe is reported as a complete compact SAB implementation
+  - id: H114_selector_distribution_distinguisher
+    statement: >
+      Compact selector shortcuts based on row deletion, deterministic zero
+      rows, or forced equal/shared masks are publicly distinguishable from the
+      current dense MAT_TRGSW public key distribution.
+    mechanism: >
+      Stage190 records row-count, zero-mask, and mask-equality distinguishers
+      over finite random probes and ties them to Stage187 T1.
+    status: stage190_t1_distribution_distinguisher
+    evidence: docs/stage190_selector_distribution_distinguisher.md; experiments/stage190_selector_distribution_distinguisher_plan.md; theory_checks/stage190_selector_distribution_model.md; repro/stage190_selector_distribution_distinguisher/summary.csv
+    current_decision: >
+      PASS_STAGE190_T1_SELECTOR_DISTRIBUTION_DISTINGUISHERS_RECORDED_IMPLEMENTATION_STILL_DENIED
+    failure_criteria:
+      - compact selector is claimed equivalent to dense distribution despite
+        public row-count or relation distinguishers
+      - production compact SAB code is written without a structured-key proof
+      - this probe is treated as a complete security proof rather than a
+        shortcut rejection

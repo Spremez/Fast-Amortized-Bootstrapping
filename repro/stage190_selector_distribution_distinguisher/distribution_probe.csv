@@ -1,0 +1,10 @@
+candidate,r,mask_N,trials,dense_observation,structured_observation,distinguisher,successes,status,interpretation
+delete_body_cross_rows,2,16,1,63,56,public_row_count,1,DISTINGUISHER_FOUND,7 public selector rows are missing versus dense format.
+force_equal_output_masks,2,16,64,0,64,mask_equality_relation,64,DISTINGUISHER_FOUND,Forced shared/equal masks create a public equality relation absent from independent dense rows in the probe.
+deterministic_zero_cross_rows,2,16,64,0,64,zero_mask_relation,64,DISTINGUISHER_FOUND,Replacing omitted rows with deterministic zero rows is publicly detectable.
+delete_body_cross_rows,4,16,1,175,112,public_row_count,1,DISTINGUISHER_FOUND,63 public selector rows are missing versus dense format.
+force_equal_output_masks,4,16,64,0,64,mask_equality_relation,64,DISTINGUISHER_FOUND,Forced shared/equal masks create a public equality relation absent from independent dense rows in the probe.
+deterministic_zero_cross_rows,4,16,64,0,64,zero_mask_relation,64,DISTINGUISHER_FOUND,Replacing omitted rows with deterministic zero rows is publicly detectable.
+delete_body_cross_rows,6,16,1,343,168,public_row_count,1,DISTINGUISHER_FOUND,175 public selector rows are missing versus dense format.
+force_equal_output_masks,6,16,64,0,64,mask_equality_relation,64,DISTINGUISHER_FOUND,Forced shared/equal masks create a public equality relation absent from independent dense rows in the probe.
+deterministic_zero_cross_rows,6,16,64,0,64,zero_mask_relation,64,DISTINGUISHER_FOUND,Replacing omitted rows with deterministic zero rows is publicly detectable.

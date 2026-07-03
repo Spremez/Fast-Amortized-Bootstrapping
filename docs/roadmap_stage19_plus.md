@@ -5847,3 +5847,19 @@ projection route is rejected for r>1; production compact SAB code remains
 denied. Remaining routes require multimask state, secret correction/key
 switching, dense re-expansion, or a new structured selector distribution proof.
 ```
+## Stage 190: Selector Distribution Distinguisher
+
+Goal:
+
+```text
+Run an executable T1 public-distribution probe for compact selector shortcuts.
+```
+
+Status:
+
+```text
+Completed. Stage190 records PASS_STAGE190_T1_SELECTOR_DISTRIBUTION_DISTINGUISHERS_RECORDED_IMPLEMENTATION_STILL_DENIED. Row deletion, deterministic zero rows,
+and forced equal/shared masks are publicly distinguishable from the current
+dense MAT_TRGSW distribution. Compact/shared-output SAB implementation remains
+denied unless a new structured-key proof route is supplied.
+```

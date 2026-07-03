@@ -495,3 +495,7 @@ The new research goal is complete only after a later stage records:
     one shared PVW_TMLWE mask is rejected for r>1. Compact/shared-output SAB
     implementation remains denied; only isolated T1/T4 proof probes or a new
     measured dataflow mechanism may proceed.
+94. Treat Stage190 as the selector distribution distinguisher:
+    `PASS_STAGE190_T1_SELECTOR_DISTRIBUTION_DISTINGUISHERS_RECORDED_IMPLEMENTATION_STILL_DENIED`. Compact selector row deletion, deterministic zero rows, and
+    forced equal/shared masks are public distribution changes. T1 remains
+    unproven; production compact SAB implementation remains denied.

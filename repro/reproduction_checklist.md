@@ -278,3 +278,4 @@
 - [x] Stage187 compact proof obligation draft recorded.
 - [x] Stage188 scoped manuscript skeleton recorded.
 - [x] Stage189 closed-state linear probe recorded.
+- [x] Stage190 selector distribution distinguisher recorded.
