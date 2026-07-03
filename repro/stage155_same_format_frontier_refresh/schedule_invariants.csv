@@ -1,0 +1,8 @@
+metric,observed_avg,expected,status,detail
+cmux_calls,573440,573440,PASS,(h+1)*r_prec*in_N
+mat_ep_calls,573440,573440,PASS,one MAT external product per CMUX/NCMUX update
+from_dft_calls,573440,573440,PASS,same-format path materializes every update
+ncmux_calls,5080,5080,PASS,(h+1)*(2^r_prec-1)
+sub_a_calls,39,39,PASS,one sparse subtraction per nonzero sparse secret term
+copyback_calls,0,0,PASS,active-buffer fusion remains effective
+dual_sub_pair_calls,5080,5080,PASS,only NCMUX/direct pairs can share the dual-sub input

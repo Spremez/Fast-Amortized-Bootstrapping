@@ -2135,3 +2135,19 @@ hypotheses:
     failure_criteria:
       - complete SAB correctness fails
       - T_bootstrap_per_lane does not beat same-backend tile4 beyond the neutral band
+  - id: H79_same_format_frontier_refresh
+    statement: >
+      After Stage153/154, further same-format r=6 MAT-RLWE SAB tuning should
+      stop unless a new mechanism reduces materialization count or dense
+      MAT work count under the complete-SAB T_bootstrap/r endpoint.
+    mechanism: >
+      The profile preserves 573440 CMUX/MAT_EP/from_DFT calls, while recent
+      full-SAB gates reject or neutralize dual-sub, bodymajor, and blind layout
+      variants.
+    status: stage155_frontier_refresh
+    evidence: docs/stage155_same_format_frontier_refresh.md; experiments/stage155_same_format_frontier_refresh_plan.md; theory_checks/stage155_same_format_frontier_model.md; algorithm_variants/mat_rlwe_sab_same_format_frontier.md; repro/stage155_same_format_frontier_refresh/summary.csv
+    current_decision: >
+      PASS_STAGE155_SAME_FORMAT_FRONTIER_ROUTE_TO_REPRESENTATION_GATE
+    failure_criteria:
+      - schedule counts differ from the expected SAB call counts
+      - a same-format local branch is promoted without full-SAB T_bootstrap_per_lane evidence

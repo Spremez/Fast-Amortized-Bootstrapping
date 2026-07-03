@@ -5294,3 +5294,19 @@ Status:
 Completed. Stage154 records REJECT_STAGE154_BODYMAJOR_FULLSAB_SLOWER. Bodymajor/tile4 on the primary
 `T_bootstrap/r` endpoint is 0.977892.
 ```
+## Stage 155: Same-Format Frontier Refresh
+
+Goal:
+
+```text
+Use current full-SAB and body-profile evidence to close or route the remaining
+same-format MAT-RLWE SAB optimization frontier after Stage154.
+```
+
+Status:
+
+```text
+Completed. Stage155 records PASS_STAGE155_SAME_FORMAT_FRONTIER_ROUTE_TO_REPRESENTATION_GATE. The measured profile preserves the
+573440 CMUX/MAT_EP/from_DFT schedule count, closes blind r=6 layout tuning,
+and routes next to representation-changing feasibility gates.
+```

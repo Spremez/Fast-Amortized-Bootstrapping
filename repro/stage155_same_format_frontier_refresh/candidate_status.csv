@@ -1,0 +1,7 @@
+candidate,latest_decision,action,reason
+H14-C1 backend FromDFT-add r=6,PASS_STAGE148_H14_R6_REPEATED_REFRESH_PROMOTION_CANDIDATE,KEEP_EXPLICIT_CURRENT_HEAD,"Repeated T_bootstrap/r, noise, and resource gates pass; scalar/default unchanged."
+r6 fulltile layout under H14,WEAK_STAGE151_H14_R6_FULLTILE_BACKEND_TINY_POSITIVE_REPEAT_OPTIONAL,DO_NOT_PRIORITIZE,Smoke signal is tiny and older repeated fulltile evidence was negative; only rerun if a new profile-backed reason appears.
+H14-C3 dual-sub shared-input CMUX,NEUTRAL_STAGE153_DUAL_SUB_FULLSAB_PAIR_FRACTION_LIMITED,CLOSE_LOCAL_PAIR_ROUTE,"Local kernel is positive, but pairable fraction is too small to move complete SAB."
+r6 bodymajor layout under H14,REJECT_STAGE154_BODYMAJOR_FULLSAB_SLOWER,REJECT,Complete-SAB T_bootstrap/r is 0.977892 versus same-backend tile4.
+same-format blind MAT layout tuning,PROFILE_BOUNDED,REQUIRE_NEW_MECHANISM,"MAT EP and FromDFT are still dominant, but prior same-format layout variants do not reliably improve full SAB."
+representation-changing lazy/DFT or compact-state route,OPEN_NEXT,SELECT_FOR_STAGE156_FEASIBILITY,Only a representation change can reduce the 573440 materializations or dense same-format work count.

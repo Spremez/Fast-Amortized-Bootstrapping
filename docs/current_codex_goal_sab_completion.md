@@ -365,3 +365,7 @@ The new research goal is complete only after a later stage records:
 58. Treat Stage154 as the bodymajor full-SAB closeout:
     `REJECT_STAGE154_BODYMAJOR_FULLSAB_SLOWER`. It closes the Stage108 missing complete-SAB evidence for
     `MAT_TRGSW_AVX512_R6_BODYMAJOR` under the H14 r=6 backend path.
+59. Treat Stage155 as the same-format frontier refresh:
+    `PASS_STAGE155_SAME_FORMAT_FRONTIER_ROUTE_TO_REPRESENTATION_GATE`. The current same-format r-body path keeps the scoped H14 r=6
+    evidence, rejects blind bodymajor/fulltile/dual-sub continuation, and
+    selects a representation-changing feasibility gate as the next valid step.

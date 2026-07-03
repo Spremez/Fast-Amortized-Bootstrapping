@@ -2222,3 +2222,4 @@ Repro artifacts:
 - status: `REJECT_STAGE154_BODYMAJOR_FULLSAB_SLOWER`
 - root: `repro/stage154_bodymajor_fullsab_closeout`
 - index: `repro/stage154_bodymajor_fullsab_closeout/artifact_index.csv`
+- `repro/stage155_same_format_frontier_refresh/`: Stage155 profile-backed same-format frontier refresh outputs.

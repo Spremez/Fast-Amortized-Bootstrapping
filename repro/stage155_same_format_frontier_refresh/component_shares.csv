@@ -1,0 +1,8 @@
+component,avg_us,share_of_full,ceiling_if_eliminated,ceiling_if_2x_local,interpretation
+mat_ep,20019803.000,0.483633,1.936608,1.318942,Largest arithmetic block; same-format dense MAT kernels remain bounded by (r+1)^2 selector work.
+from_dft,13496553.000,0.326046,1.483781,1.194776,"Large materialization block; backend add fusion removed cmux_add, so further gain needs fewer materializations or faster IFFT."
+sub,6341291.000,0.153191,1.180904,1.082949,Material but Stage153 proved local pair-sharing has too little schedule coverage.
+ncmux_auto,369424.500,0.008924,1.009005,1.004482,Small NCMUX automorphism tail; low standalone ceiling.
+sub_a,918273.000,0.022183,1.022687,1.011216,Small tail; do not prioritize before larger blocks.
+dual_sub_pair,88215.000,0.002131,1.002136,1.001067,Explicit pair-sharing work is tiny relative to full SAB.
+unattributed_or_timer_overlap,161047.000,0.003891,1.003906,1.001949,Profiler overlap and residual body work; do not target without finer instrumentation.
