@@ -874,3 +874,7 @@ claims from the single perf-wrapped run and routes next to Stage169/170.
 Stage169 records CB5 native repeated r=6 throughput after Stage168. Decision:
 `PASS_STAGE169_NATIVE_REPEATED_R6_POSITIVE`. It upgrades Stage167's single perf-wrapped timing to no-perf
 repeated complete-SAB evidence under the primary `T_bootstrap/r` endpoint.
+Stage170 records native split component counters for the current exact r=6
+PVW/MAT-SAB path. Decision: `PASS_STAGE170_NATIVE_SPLIT_COUNTERS_RECORDED`. The result may guide later
+optimization routing, but it is not by itself a complete bootstrapping
+speedup claim.

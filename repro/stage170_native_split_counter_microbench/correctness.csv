@@ -1,0 +1,3 @@
+variant,check,mismatches,max_gap,status,evidence
+mat_ep_subdecomp,streaming_reference,0,0,PASS,repro/stage170_native_split_counter_microbench/run_mat_ep_subdecomp_perf.log
+from_dft_materialize,fused_add_reference,0,0,PASS,repro/stage170_native_split_counter_microbench/run_from_dft_materialize_perf.log

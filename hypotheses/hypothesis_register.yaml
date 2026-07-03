@@ -2381,3 +2381,22 @@ hypotheses:
       - any repeated run fails target_full correctness
       - mean/min speedup does not support a native throughput claim
       - results are used as theoretical optimality proof
+  - id: H94_native_split_counter_microbench
+    statement: >
+      Native split counters should isolate whether the current exact r=6
+      PVW/MAT-SAB frontier is dominated by MAT EP/subdecomp, from_DFT
+      materialization, or mixed memory/cache pressure.
+    mechanism: >
+      The current SAB CMUX boundary calls mat_trgsw_mul_pvmtmlwe_sub_DFT and
+      then pvmtmlwe_from_DFT_add. Running those boundaries as separate native
+      perf probes records per-call cycles, load/store, cache, and AVX512 FP
+      counters without changing production SAB.
+    status: stage170_native_split_counter_microbench
+    evidence: docs/stage170_native_split_counter_microbench.md; experiments/stage170_native_split_counter_microbench_plan.md; theory_checks/stage170_split_counter_scope.md; repro/stage170_native_split_counter_microbench/summary.csv
+    current_decision: >
+      PASS_STAGE170_NATIVE_SPLIT_COUNTERS_RECORDED
+    failure_criteria:
+      - either probe correctness check fails
+      - required counters are missing for either component
+      - component counters are reported as complete-SAB acceleration or
+        theoretical optimality

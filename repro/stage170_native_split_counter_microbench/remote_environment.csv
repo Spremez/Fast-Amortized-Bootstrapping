@@ -1,0 +1,10 @@
+key,value,evidence
+hostname,dell,repro/stage170_native_split_counter_microbench/remote_environment.log
+whoami,delld,repro/stage170_native_split_counter_microbench/remote_environment.log
+uname,Linux dell 6.8.0-111-generic #111~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue Apr 14 17:13:45 UTC  x86_64 x86_64 x86_64 GNU/Linux,repro/stage170_native_split_counter_microbench/remote_environment.log
+perf,/usr/bin/perf,repro/stage170_native_split_counter_microbench/remote_environment.log
+perf_event_paranoid,4,repro/stage170_native_split_counter_microbench/remote_environment.log
+remote_dir,/home/delld/spz/Fast-Amortized-Bootstrapping-stage170-015de8a,repro/stage170_native_split_counter_microbench/remote_environment.log
+cpu_model,Intel(R) Xeon(R) Gold 6230R CPU @ 2.10GHz,repro/stage170_native_split_counter_microbench/remote_environment.log
+cpus,104,repro/stage170_native_split_counter_microbench/remote_environment.log
+has_avx512f,yes,repro/stage170_native_split_counter_microbench/remote_environment.log

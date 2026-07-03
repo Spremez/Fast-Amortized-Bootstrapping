@@ -2289,3 +2289,9 @@ Repro artifacts:
   - `theory_checks/stage169_native_repeated_stats_scope.md`
   - `algorithm_variants/mat_rlwe_sab_native_repeated_r6.md`
   - `repro/stage169_cb5_native_repeated_r6_gate/`
+- stage170_native_split_counter_microbench: `PASS_STAGE170_NATIVE_SPLIT_COUNTERS_RECORDED`
+  - `docs/stage170_native_split_counter_microbench.md`
+  - `experiments/stage170_native_split_counter_microbench_plan.md`
+  - `theory_checks/stage170_split_counter_scope.md`
+  - `algorithm_variants/mat_rlwe_sab_native_split_counter_microbench.md`
+  - `repro/stage170_native_split_counter_microbench/`

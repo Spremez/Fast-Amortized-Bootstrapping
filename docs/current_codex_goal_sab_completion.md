@@ -415,3 +415,7 @@ The new research goal is complete only after a later stage records:
 73. Treat Stage169 as the CB5 native repeated r=6 gate:
     `PASS_STAGE169_NATIVE_REPEATED_R6_POSITIVE`. It provides native no-perf repeated complete-SAB throughput
     evidence for the current exact path, but not theoretical optimality.
+74. Treat Stage170 as split component counter attribution:
+    `PASS_STAGE170_NATIVE_SPLIT_COUNTERS_RECORDED`. It separates MAT EP/subdecomp from from_DFT materialization
+    using native CB5 counters, while keeping Stage169 as the complete-SAB
+    throughput endpoint.

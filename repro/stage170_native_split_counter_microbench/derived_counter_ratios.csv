@@ -1,0 +1,23 @@
+variant,metric,value,unit,interpretation
+mat_ep_subdecomp,cycles_per_call,358359.977050781,cycles/call,Primary per-call native counter cost for this isolated component.
+mat_ep_subdecomp,instructions_per_call,487458.438476562,instructions/call,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+mat_ep_subdecomp,loads_per_call,107190.038085938,loads/call,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+mat_ep_subdecomp,stores_per_call,54269.848632812,stores/call,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+mat_ep_subdecomp,fp512_per_call,116132.917968750,fp512/call,Checks whether AVX512 arithmetic is actually exercised by the component.
+mat_ep_subdecomp,fp256_per_call,11277.928710938,fp256/call,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+mat_ep_subdecomp,ipc,1.360247990,instructions/cycle,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+mat_ep_subdecomp,load_store_to_fp512_ratio,1.390302505,(loads+stores)/fp512,Higher values mean memory traffic remains important relative to FP512 work.
+mat_ep_subdecomp,cache_miss_rate,0.119493473,cache-misses/cache-references,Locality proxy; not a standalone proof of a better layout.
+mat_ep_subdecomp,elapsed_seconds,0.231272782,seconds,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+mat_ep_subdecomp,calls,2048.000000000,calls,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+from_dft_materialize,cycles_per_call,254924.967773438,cycles/call,Primary per-call native counter cost for this isolated component.
+from_dft_materialize,instructions_per_call,405404.091308594,instructions/call,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+from_dft_materialize,loads_per_call,68284.414550781,loads/call,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+from_dft_materialize,stores_per_call,48811.935546875,stores/call,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+from_dft_materialize,fp512_per_call,60994.669921875,fp512/call,Checks whether AVX512 arithmetic is actually exercised by the component.
+from_dft_materialize,fp256_per_call,17289.661132812,fp256/call,Residual FFT/backend width signal for materialization.
+from_dft_materialize,ipc,1.590287899,instructions/cycle,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+from_dft_materialize,load_store_to_fp512_ratio,1.919780044,(loads+stores)/fp512,Higher values mean memory traffic remains important relative to FP512 work.
+from_dft_materialize,cache_miss_rate,0.646958340,cache-misses/cache-references,Locality proxy; not a standalone proof of a better layout.
+from_dft_materialize,elapsed_seconds,0.169954448,seconds,Component-level attribution only; do not claim full-SAB acceleration from this row alone.
+from_dft_materialize,calls,2048.000000000,calls,Component-level attribution only; do not claim full-SAB acceleration from this row alone.

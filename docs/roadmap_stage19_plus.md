@@ -5526,3 +5526,19 @@ Completed. Stage169 records PASS_STAGE169_NATIVE_REPEATED_R6_POSITIVE. This is n
 evidence for the current exact path, separate from component attribution and
 theoretical optimality.
 ```
+## Stage 170: Native Split Counter Microbench
+
+Goal:
+
+```text
+Isolate native perf counters for the current exact r=6 MAT EP/subdecomp
+boundary and the current from_DFT materialization boundary.
+```
+
+Status:
+
+```text
+Completed. Stage170 records PASS_STAGE170_NATIVE_SPLIT_COUNTERS_RECORDED. The evidence is component-level
+native counter attribution and remains separate from complete-SAB throughput
+and theoretical optimality.
+```
