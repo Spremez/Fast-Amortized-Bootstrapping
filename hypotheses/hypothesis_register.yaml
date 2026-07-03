@@ -1753,3 +1753,29 @@ hypotheses:
       - generalized-input overhead is ignored in `T_bootstrap/r`
       - re-share/key-switch or selector-proof routes are claimed without their
         own correctness, noise, and performance gates
+  - id: H58_generalized_lane_pair_input_ep
+    statement: >
+      A generalized compact external product that consumes per-lane mask/body
+      input streams can make the Stage132 lane-pair accumulator state closed
+      for later SAB schedule integration, but its extra decomposition streams
+      may erase the shared-source first-step speed advantage.
+    mechanism: >
+      Stage134 replays the generated `2r`-source compact EP probe under the
+      current head. It verifies ownership, metadata, guard, component, phase,
+      exact noise-model, and negative-control gates, then benchmarks dense
+      proxy, full generalized compact EP, decomposition/DFT, and addmul parts.
+    status: stage134_generalized_lane_pair_input_ep_gate
+    evidence: docs/stage134_generalized_lane_pair_input_ep_gate.md; experiments/stage134_generalized_lane_pair_input_ep_gate_plan.md; theory_checks/stage134_generalized_lane_pair_input_ep_model.md; algorithm_variants/mat_rlwe_sab_generalized_lane_pair_input_ep.md; scripts/build_stage134_generalized_lane_pair_input_ep_gate.py; repro/stage134_generalized_lane_pair_input_ep_gate/summary.csv; repro/stage134_generalized_lane_pair_input_ep_gate/api_results.csv; repro/stage134_generalized_lane_pair_input_ep_gate/ratio_summary.csv; repro/stage134_generalized_lane_pair_input_ep_gate/comparison_vs_stage130.csv; repro/stage134_generalized_lane_pair_input_ep_gate/artifact_index.csv
+    current_decision: >
+      Stage134 records NEUTRAL_STAGE134_GENERALIZED_INPUT_EP_CORRECT_BUT_PERF_BLOCKED. Correctness and benchmark rows are generated
+      for r=2/4/6 and N=512/1024. The minimum r=4/r=6 full-kernel speedup is
+      0.910791. Promotion to RGSW/sparse integration is allowed only if
+      r=4 and r=6 are both positive; otherwise the next target is lane-pair
+      decomposition/DFT reuse.
+    failure_criteria:
+      - generalized input correctness fails or negative controls do not fail
+      - r=4/r=6 full-kernel speedups are non-positive but the path is still
+        promoted to RGSW/sparse integration
+      - Stage130 shared-source first-step speedup is reported as iterative
+        lane-pair closure evidence
+      - complete `T_bootstrap/r` acceleration is claimed before full SAB gates

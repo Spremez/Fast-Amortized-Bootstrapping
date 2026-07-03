@@ -727,3 +727,9 @@ because the lane-pair output is not closed under the Stage131 shared-source
 input type. Direct repeated shared-source iteration is blocked. The next
 productive implementation target is a generalized lane-pair input compact EP
 gate, with re-share/key-switch and selector-proof routes deferred.
+
+Stage134 establishes the current closure-capable compact EP evidence. It
+validates generalized lane-pair input correctness and records same-backend
+microbench ratios against a dense proxy plus Stage130 first-step timing. Its
+decision is `NEUTRAL_STAGE134_GENERALIZED_INPUT_EP_CORRECT_BUT_PERF_BLOCKED`; RGSW integration is allowed only if the performance
+gate is positive for r=4 and r=6.

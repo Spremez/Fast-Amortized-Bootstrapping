@@ -1982,3 +1982,22 @@ Repro artifacts:
 - `repro/stage133_lane_state_closure_audit/closure_matrix.csv`
 - `repro/stage133_lane_state_closure_audit/route_matrix.csv`
 - `repro/stage133_lane_state_closure_audit/artifact_index.csv`
+
+## Stage 134 Generalized Lane-Pair Input EP Gate
+
+- `docs/stage134_generalized_lane_pair_input_ep_gate.md`
+- `experiments/stage134_generalized_lane_pair_input_ep_gate_plan.md`
+- `theory_checks/stage134_generalized_lane_pair_input_ep_model.md`
+- `algorithm_variants/mat_rlwe_sab_generalized_lane_pair_input_ep.md`
+- `scripts/build_stage134_generalized_lane_pair_input_ep_gate.py`
+- `repro/stage134_generalized_lane_pair_input_ep_gate/summary.csv`
+- `repro/stage134_generalized_lane_pair_input_ep_gate/api_results.csv`
+- `repro/stage134_generalized_lane_pair_input_ep_gate/benchmark_samples.csv`
+- `repro/stage134_generalized_lane_pair_input_ep_gate/benchmark_aggregate.csv`
+- `repro/stage134_generalized_lane_pair_input_ep_gate/ratio_summary.csv`
+- `repro/stage134_generalized_lane_pair_input_ep_gate/comparison_vs_stage130.csv`
+- `repro/stage134_generalized_lane_pair_input_ep_gate/mosfhet_static_build.log`
+- `repro/stage134_generalized_lane_pair_input_ep_gate/compile_probe.log`
+- `repro/stage134_generalized_lane_pair_input_ep_gate/run_probe.log`
+- `repro/stage134_generalized_lane_pair_input_ep_gate/generalized_lane_pair_input_ep_gate.c`
+- `repro/stage134_generalized_lane_pair_input_ep_gate/artifact_index.csv`

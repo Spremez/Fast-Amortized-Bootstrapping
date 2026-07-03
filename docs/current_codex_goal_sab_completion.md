@@ -272,3 +272,9 @@ The new research goal is complete only after a later stage records:
     blocked because the next source would have per-lane masks rather than one
     shared mask. The next valid implementation stage is generalized lane-pair
     input compact EP, followed only later by RGSW/sparse schedule integration.
+
+38. Treat Stage134 as the current generalized lane-pair input EP gate:
+    `NEUTRAL_STAGE134_GENERALIZED_INPUT_EP_CORRECT_BUT_PERF_BLOCKED`. It validates the closure-capable input shape selected by
+    Stage133 and records full-kernel timing with min r=4/r=6 speedup
+    0.910791. If this remains neutral, the next valid step is lane-pair
+    decompose/DFT reuse or streaming, not RGSW/sparse integration.

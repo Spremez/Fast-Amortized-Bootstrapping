@@ -4934,3 +4934,21 @@ Stage131 shared-source compact EP iteration is blocked by state shape. The
 primary next route is a generalized lane-pair input compact EP correctness and
 microbench gate.
 ```
+
+## Stage 134: Generalized Lane-Pair Input EP Gate
+
+Goal:
+
+```text
+Replay and validate the closure-capable generalized lane-pair input compact EP
+path selected by Stage133, including correctness and same-backend microbench.
+```
+
+Status:
+
+```text
+Completed. Stage134 records NEUTRAL_STAGE134_GENERALIZED_INPUT_EP_CORRECT_BUT_PERF_BLOCKED. Correctness rows pass for r=2/4/6 and
+N=512/1024. The full-kernel timing signal has min r=4/r=6 speedup
+0.910791 and max all-row speedup 1.101122. This stage decides only
+isolated EP closure/performance readiness; complete SAB claims remain blocked.
+```
