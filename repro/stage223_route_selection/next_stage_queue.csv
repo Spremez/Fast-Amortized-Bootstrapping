@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage224_exact_pvw_mat_avx_resource_refresh,Stage223 selects exact closed dense MAT/PVW as executable mainline.,"Rerun full-SAB T_bootstrap/r, AVX/backend attribution, resource/noise side conditions.",selected,Keep Stage148 as current best evidence and do not claim further gains.,repro/stage223_route_selection/proof_gate.csv
+P1,stage225_neighbor_capable_compact_state_proof,User explicitly chooses a new compact algebra/proof branch.,Define and falsify a closed neighbor-capable compact state before any code.,proof_only_deferred,Do not touch SAB hot path.,repro/stage222_isolated_compact_ep_integration/expressiveness_results.csv
+P2,paper_claim_boundary_update,After Stage224 refresh or if native platform remains unavailable.,Separate exact MAT/PVW engineering claim from blocked compact route.,future,No novelty/optimality claim.,theory_checks/stage150_claim_scope_model.md

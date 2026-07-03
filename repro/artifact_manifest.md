@@ -2630,3 +2630,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage222_isolated_compact_ep.md`
   - `scripts/build_stage222_isolated_compact_ep_integration.py`
   - `repro/stage222_isolated_compact_ep_integration/`
+- stage223_route_selection:
+  - `docs/stage223_route_selection.md`
+  - `experiments/stage223_route_selection_plan.md`
+  - `theory_checks/stage223_route_selection_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage223_route_selection.md`
+  - `scripts/build_stage223_route_selection.py`
+  - `repro/stage223_route_selection/`

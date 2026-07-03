@@ -3171,3 +3171,13 @@ H10_stage222_isolated_compact_ep_integration:
     Stage222 records FAIL_STAGE222. Production compact EP is correct for the
     lane-local subclass, but complete Stage203/SAB selector integration remains
     denied because neighbor/cross-body equations are unsupported.
+H10_stage223_route_selection:
+  status: exact_pvw_mat_mainline_selected
+  evidence:
+    - repro/stage223_route_selection/proof_gate.csv
+    - repro/stage223_route_selection/route_matrix.csv
+    - docs/stage223_route_selection.md
+  conclusion: >
+    Stage223 records PASS_STAGE223_ROUTE_EXACT_PVW_MAT_REFRESH_SELECTED_COMPACT_COMPLETE_DENIED. Current compact complete-SAB integration remains
+    denied; exact closed dense MAT/PVW is the executable mainline for further
+    T_bootstrap/r optimization.

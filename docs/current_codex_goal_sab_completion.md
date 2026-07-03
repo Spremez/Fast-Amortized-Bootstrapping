@@ -651,3 +651,5 @@ or security claims.
 - Stage222 isolated compact EP integration completed with `FAIL_STAGE222`. The
   compact route remains outside SAB hot paths; the next decision is closed
   neighbor-capable compact state design versus exact PVW/MAT optimization.
+- Stage223 route selection completed with `PASS_STAGE223_ROUTE_EXACT_PVW_MAT_REFRESH_SELECTED_COMPACT_COMPLETE_DENIED`. Next selected stage:
+  Stage224 exact PVW/MAT AVX/resource refresh measured by `T_bootstrap/r`.

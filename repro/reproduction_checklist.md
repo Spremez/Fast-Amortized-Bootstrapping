@@ -322,3 +322,4 @@
 - [x] Stage220 encrypted compact keygen prototype recorded.
 - [x] Stage221 compact keygen noise recurrence recorded.
 - [x] Stage222 isolated compact EP integration recorded.
+- [x] Stage223 route selection recorded.

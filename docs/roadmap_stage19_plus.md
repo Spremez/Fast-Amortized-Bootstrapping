@@ -6392,3 +6392,19 @@ subclass is correct, but complete selector/SAB integration remains denied
 because neighbor/cross-body active equations are outside the current state
 shape.
 ```
+## Stage 223: Route Selection After Compact EP Denial
+
+Goal:
+
+```text
+Select the next executable route after Stage222 proves lane-local compact EP is
+not enough for complete SAB selector integration.
+```
+
+Status:
+
+```text
+Completed. Stage223 records PASS_STAGE223_ROUTE_EXACT_PVW_MAT_REFRESH_SELECTED_COMPACT_COMPLETE_DENIED. The exact closed dense MAT/PVW path is
+selected for Stage224 AVX/resource refresh under T_bootstrap/r; compact
+complete-SAB integration remains denied.
+```

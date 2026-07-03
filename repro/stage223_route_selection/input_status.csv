@@ -1,0 +1,10 @@
+input,status,evidence,role,bytes
+stage222_proof,present,repro/stage222_isolated_compact_ep_integration/proof_gate.csv,compact production EP boundary,1743
+stage222_expressiveness,present,repro/stage222_isolated_compact_ep_integration/expressiveness_results.csv,neighbor/cross-body denial source,717
+stage134_generalized_ep_ratio,present,repro/stage134_generalized_lane_pair_input_ep_gate/ratio_summary.csv,closure-capable compact EP performance evidence,1350
+stage139_closure_audit,present,repro/stage139_compact_closure_audit/summary.csv,direct compact non-closure evidence,1285
+stage166_algebra_gate,present,repro/stage166_shared_output_compact_algebra_gate/summary.csv,generic compact exactness denial,1054
+stage144_r4_full_sab,present,repro/stage144_full_sab_repeated_r4_unrolled_gate/perf_comparison.csv,r=4 full SAB per-lane evidence,429
+stage148_r6_full_sab,present,repro/stage148_h14_r6_repeated_refresh/perf_comparison.csv,r=6 full SAB per-lane evidence,462
+stage148_summary,present,repro/stage148_h14_r6_repeated_refresh/summary.csv,noise/resource side conditions,1613
+stage150_claim_scope,present,theory_checks/stage150_claim_scope_model.md,T_bootstrap/r metric definition,1363

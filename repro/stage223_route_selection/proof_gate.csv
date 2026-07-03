@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,interpretation
+G1_required_inputs,PASS,missing_inputs,,repro/stage223_route_selection/input_status.csv,Stage223 route selection consumes compact denial and exact full-SAB evidence.
+G2_compact_complete_route,DENY_COMPACT_COMPLETE_SAB_ROUTE,stage222_complete_selector,DENY_COMPLETE_SELECTOR_INTEGRATION,repro/stage223_route_selection/evidence_summary.csv,Current compact route cannot be connected to SAB without a new closed state/proof.
+G3_exact_mat_route,SELECT_EXACT_PVW_MAT_MAINLINE,best_current_complete_sab_speedup_per_lane,1.432667,repro/stage223_route_selection/route_matrix.csv,The valid executable route is exact closed dense MAT/PVW optimization under T_bootstrap/r.
+G4_claim_boundary,PASS_ENGINEERING_SCOPE_ONLY,paper_claim_boundary,no_theoretical_optimality;no_compact_complete_sab_claim,docs/stage223_route_selection.md,Stage223 prevents unsupported compact algorithm or optimality claims.
+G5_stage223_decision,PASS_STAGE223_ROUTE_EXACT_PVW_MAT_REFRESH_SELECTED_COMPACT_COMPLETE_DENIED,decision,PASS_STAGE223_ROUTE_EXACT_PVW_MAT_REFRESH_SELECTED_COMPACT_COMPLETE_DENIED,repro/stage223_route_selection/proof_gate.csv,Proceed to exact PVW/MAT AVX/resource refresh; keep compact complete-SAB blocked.

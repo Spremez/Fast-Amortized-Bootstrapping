@@ -1071,3 +1071,6 @@ and complete-SAB speedup evidence.
 - Stage222 isolated compact EP integration: `FAIL_STAGE222`. This confirms a
   lane-local production compact EP subclass and blocks complete compact SAB
   integration under the current selector/state shape.
+- Stage223 route selection: `PASS_STAGE223_ROUTE_EXACT_PVW_MAT_REFRESH_SELECTED_COMPACT_COMPLETE_DENIED`. Mainline execution returns to exact
+  closed dense MAT/PVW; compact complete-SAB remains blocked without a new
+  closed neighbor-capable state proof.
