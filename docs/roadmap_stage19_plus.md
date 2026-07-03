@@ -5211,3 +5211,22 @@ Completed. Stage149 records PASS_STAGE149_H14_R6_EXPLICIT_PROMOTION_POLICY_RECOR
 engineering wording only; default-path and paper-level novelty claims remain
 disallowed.
 ```
+## Stage 150: Final Package Refresh
+
+Goal:
+
+```text
+Refresh the final package around the MAT-RLWE/PVW-SAB amortized endpoint
+T_complete_bootstrap(r)/r and the Stage148/149 explicit H14 r=6 evidence.
+```
+
+Status:
+
+```text
+Completed. Stage150 records PASS_STAGE150_FINAL_PACKAGE_REFRESH_SCOPED_EXPLICIT_H14_R6_RECORDED. The current allowed claim is scoped to
+the explicit H14 r=6 backend path. It reports backend-versus-repeated-scalar
+speedup 1.432667 under
+T_bootstrap/r, key bytes ratio 1.122537, and
+VmHWM ratio 1.030966. Default-path, all-parameter,
+novelty, and theoretical-optimality claims remain blocked.
+```

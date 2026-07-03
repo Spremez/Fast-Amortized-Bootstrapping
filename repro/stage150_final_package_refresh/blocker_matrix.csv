@@ -1,0 +1,6 @@
+blocker_id,status,blocking_condition,required_next_evidence,claim_policy
+B150_default_promotion,BLOCKED,Explicit flags remain default-false by policy.,"Separate default-promotion gate with scalar/default smoke, repeated full-SAB A/B, and rollback policy.",Do not state default-path speedup.
+B150_theoretical_optimality,BLOCKED,No lower-bound proof showing the current dense/closed MAT route is optimal for r-body SAB.,Formal lower-bound gap model plus counter evidence for the promoted kernel and complete-SAB A/B.,Do not state theoretical optimality.
+B150_generalization,BLOCKED,Latest H14 r=6 claim is only for the recorded binary target and backend.,Repeated performance/noise/resource matrix across additional parameters and supported ternary/include-zero branches.,Do not state all-parameter or non-binary speedup.
+B150_novelty,BLOCKED,Stage149 policy disallows paper-level novelty from current engineering evidence alone.,Reviewed related-work matrix and exact claim comparison against real sources for the final algorithm statement.,Do not write novelty claims until a later literature gate upgrades them.
+B150_next_code_target,OPEN,"Stage150 is a package refresh, not a new hot-path optimization.",Stage151 must pick one implementation branch with a falsifiable expected effect on T_bootstrap/r.,Continue implementation only through gated research-loop stages.

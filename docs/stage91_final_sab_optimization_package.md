@@ -61,3 +61,12 @@ The reproduction commands are recorded in
 does not rerun heavy benchmarks; it freezes the current audited evidence
 and requires reruns only when source code, backend, platform, or claim
 scope changes.
+## Stage150 Current-Head Refresh
+
+Stage150 supersedes the older r=6 wording with the current Stage148/149
+evidence. The primary endpoint is `T_complete_bootstrap(r)/r`, not raw total
+runtime. For the explicit H14 r=6 backend path, Stage148 reports
+1.432667x per-lane speedup over
+repeated scalar SAB and Stage149 allows only scoped explicit engineering
+wording. Default-path, all-parameter, novelty, and theoretical-optimality
+claims remain blocked.

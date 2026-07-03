@@ -799,3 +799,9 @@ Stage149 records H14 r=6 claim policy after Stage148 repeated/noise/resource
 evidence. The allowed claim is scoped to the explicit backend route under the
 recorded parameter/backend. Default-path and paper-level novelty/optimality
 wording remain disallowed.
+Stage150 refreshes the final package around the correct MAT-RLWE/PVW-SAB
+metric: `T_complete_bootstrap(r)/r`, equivalent to time per processed
+plaintext bit or LUT/SAB lane. The current scoped explicit H14 r=6 backend
+result is 1.432667x versus repeated
+scalar SAB per lane under Stage148, with Stage149 keeping default-path,
+novelty, and theoretical-optimality claims blocked.

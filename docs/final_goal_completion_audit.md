@@ -51,3 +51,9 @@ scoped engineering acceleration evidence is complete and the former CB5/CB6/CB7 
 | A8 | theory_backend | PASS_COUNTER_ATTRIBUTION_EXTERNAL | MAT-AVX512 theoretical load/store optimality has hardware-counter support | native/perf-enabled Stage 28 summary and Stage101 counter metrics are registered | Interpret hardware counters against Stage 22 timing and objdump evidence before claiming theoretical optimality. |
 | A8b | external_evidence | PASS_EXTERNAL_EVIDENCE_REVIEWED | Optional external full-text and native perf artifacts are registered when supplied | 2025/686 full-text anchors reviewed, related-work novelty boundary scoped, and native perf/counter evidence registered; broad novelty/theory claims remain bounded | No missing external-evidence gate remains for CB5/CB6/CB7; keep scoped claim guardrails unless new evidence is added. |
 | A9 | overall | SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED | Original optimization goal status under current evidence | scoped engineering acceleration evidence is complete and the former CB5/CB6/CB7 external blockers are resolved by native counter evidence, source-anchor review, and scoped novelty boundaries | Use scoped systems/engineering wording; do not upgrade to broad novelty, all-parameter, non-binary, or theoretical-optimality claims without new evidence. |
+## Stage150 Current Claim Refresh
+
+Stage150 refreshes the current claim ledger after Stage148/149. The scoped
+engineering chain remains evidence-backed only for the recorded explicit H14
+r=6 path under `T_complete_bootstrap(r)/r`. It does not upgrade default-path,
+generalization, novelty, or theoretical-optimality wording.

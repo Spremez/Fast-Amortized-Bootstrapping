@@ -2192,3 +2192,9 @@ Repro artifacts:
   - `experiments/stage149_h14_r6_claim_policy_plan.md`
   - `theory_checks/stage149_claim_boundary_model.md`
   - `repro/stage149_h14_r6_claim_policy/`
+- stage150_final_package_refresh: `PASS_STAGE150_FINAL_PACKAGE_REFRESH_SCOPED_EXPLICIT_H14_R6_RECORDED`
+  - `docs/stage150_final_package_refresh.md`
+  - `experiments/stage150_final_package_refresh_plan.md`
+  - `theory_checks/stage150_claim_scope_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage150_final_scope.md`
+  - `repro/stage150_final_package_refresh/`

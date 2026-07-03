@@ -1,0 +1,9 @@
+evidence_id,source,status,metric,value,interpretation
+E150_metric,repro/stage148_h14_r6_repeated_refresh/perf_comparison.csv,PASS,primary_endpoint,T_bootstrap_per_lane,Speedup is evaluated as complete bootstrapping time divided by processed MAT-RLWE body lanes.
+E150_perf_backend_vs_scalar,repro/stage148_h14_r6_repeated_refresh/perf_comparison.csv,PASS_STAGE148_PERF_BACKEND_REPEATED_POSITIVE,backend_mean_speedup_vs_repeated_scalar,1.432667,This is the current explicit-path complete-SAB per-lane throughput result.
+E150_perf_backend_vs_wrapper,repro/stage148_h14_r6_repeated_refresh/perf_comparison.csv,PASS_STAGE148_PERF_BACKEND_REPEATED_POSITIVE,backend_vs_wrapper_mean_speedup,1.042309,This isolates the incremental backend FromDFT-add route over the wrapper fused reference.
+E150_perf_ci_low,repro/stage148_h14_r6_repeated_refresh/perf_comparison.csv,PASS,backend_vs_wrapper_ci95_low,1.035361,The repeated backend-vs-wrapper lower confidence bound remains above one in Stage148.
+E150_noise,repro/stage148_h14_r6_repeated_refresh/noise_aggregate.csv,PASS,r6_noise_failures,pvw=0; scalar=0; pair=0,The current r=6 refresh records zero final-output failures across the recorded seeds.
+E150_resource_key,repro/stage148_h14_r6_repeated_refresh/resource_comparison.csv,PASS,key_bytes_ratio,1.122537,Key-size overhead is reported with the throughput result.
+E150_resource_rss,repro/stage148_h14_r6_repeated_refresh/resource_comparison.csv,PASS,vmhwm_ratio,1.030966,Peak resident memory overhead is reported with the throughput result.
+E150_policy,repro/stage149_h14_r6_claim_policy/claim_policy.csv,PASS_STAGE149_H14_R6_EXPLICIT_PROMOTION_POLICY_RECORDED_NOT_DEFAULT,claim_policy,ALLOW_SCOPED_EXPLICIT_ENGINEERING_CLAIM,"Allowed wording is scoped to the explicit H14 r=6 engineering path, not default or novelty claims."

@@ -344,3 +344,8 @@ The new research goal is complete only after a later stage records:
 53. Treat Stage149 as the H14 r=6 claim-policy gate:
     `PASS_STAGE149_H14_R6_EXPLICIT_PROMOTION_POLICY_RECORDED_NOT_DEFAULT`. It permits only scoped explicit-path engineering wording and
     keeps default-path/paper-novelty claims blocked.
+54. Treat Stage150 as the final-package refresh gate:
+    `PASS_STAGE150_FINAL_PACKAGE_REFRESH_SCOPED_EXPLICIT_H14_R6_RECORDED`. It fixes the comparison dimension to
+    `T_complete_bootstrap(r)/r` and records the current scoped H14 r=6
+    explicit-path result. The next valid stage must pick a concrete
+    implementation candidate and verify it against the same amortized endpoint.

@@ -2053,3 +2053,20 @@ hypotheses:
       - explicit-path evidence is written as default-path speedup
       - engineering speedup is written as theoretical optimality or novelty
       - defaults change without a separate default-promotion gate
+  - id: H74_stage150_final_package_refresh
+    statement: >
+      The final PVW/MAT-SAB evidence package must be refreshed around the
+      amortized MAT-RLWE endpoint T_complete_bootstrap(r)/r before any further
+      implementation or paper claim is promoted.
+    mechanism: >
+      Stage148 supplies current r=6 repeated performance/noise/resource
+      evidence, and Stage149 supplies the explicit-path claim policy. Stage150
+      binds these to allowed wording, blocked wording, and next-stage gates.
+    status: stage150_final_package_refresh
+    evidence: docs/stage150_final_package_refresh.md; experiments/stage150_final_package_refresh_plan.md; theory_checks/stage150_claim_scope_model.md; scripts/build_stage150_final_package_refresh.py; repro/stage150_final_package_refresh/summary.csv; repro/stage150_final_package_refresh/claim_table.csv
+    current_decision: >
+      PASS_STAGE150_FINAL_PACKAGE_REFRESH_SCOPED_EXPLICIT_H14_R6_RECORDED
+    failure_criteria:
+      - raw total runtime is used as the main speedup metric
+      - explicit-path evidence is written as default-path or all-parameter speedup
+      - engineering evidence is written as novelty or theoretical optimality
