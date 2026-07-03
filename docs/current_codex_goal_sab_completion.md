@@ -612,3 +612,15 @@ handoff script.
 ### Stage215 native counter execution
 
 `PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN` updates the executable frontier after Stage214.
+### Stage216 post-counter frontier
+
+`PASS_STAGE216_POST_COUNTER_FRONTIER_ROUTE_COMPACT_KEYGEN_PREFLIGHT` closes the Stage215 DFT-wrapper route for now. The next valid work
+is a compact selector keygen/security/noise preflight outside the SAB hot path,
+or an external backend primitive if one is supplied. No new full-SAB speedup,
+compact implementation, or optimality claim is opened by Stage216.
+### Stage216 post-counter frontier
+
+`PASS_STAGE216_POST_COUNTER_FRONTIER_ROUTE_COMPACT_KEYGEN_PREFLIGHT` closes the Stage215 DFT-wrapper route for now. The next valid work
+is a compact selector keygen/security/noise preflight outside the SAB hot path,
+or an external backend primitive if one is supplied. No new full-SAB speedup,
+compact implementation, or optimality claim is opened by Stage216.

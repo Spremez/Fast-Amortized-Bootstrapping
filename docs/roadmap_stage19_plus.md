@@ -6278,3 +6278,19 @@ Status:
 Completed. Stage215 records PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN. Complete-SAB speedup remains a
 separate gate and is not claimed from counter evidence alone.
 ```
+## Stage 216: Post-Counter Frontier
+
+Goal:
+
+```text
+Use Stage215 native counter evidence to decide whether any exact hot-path code
+is authorized, and if not, select the next bounded non-theory research gate.
+```
+
+Status:
+
+```text
+Completed. Stage216 records PASS_STAGE216_POST_COUNTER_FRONTIER_ROUTE_COMPACT_KEYGEN_PREFLIGHT. Exact wrapper retuning and immediate
+complete-SAB A/B for the wrapper are denied; the next selected executable route
+is compact selector keygen/security/noise preflight outside the SAB hot path.
+```

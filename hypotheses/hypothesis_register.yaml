@@ -3097,3 +3097,14 @@ H10_stage215_native_counter_execution:
   conclusion: >
     Stage215 records PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN. Counter evidence does not imply complete-SAB
     speedup without the next complete-SAB gate.
+H10_stage216_post_counter_frontier:
+  status: post_counter_frontier_recorded
+  evidence:
+    - repro/stage216_post_counter_frontier/mechanism_frontier.csv
+    - repro/stage216_post_counter_frontier/proof_gate.csv
+    - docs/stage216_post_counter_frontier.md
+  conclusion: >
+    Stage216 records PASS_STAGE216_POST_COUNTER_FRONTIER_ROUTE_COMPACT_KEYGEN_PREFLIGHT. Stage215 native counters do not reopen exact
+    wrapper retuning or authorize complete-SAB A/B for that route. The next
+    selected bounded route is compact selector keygen/security/noise preflight
+    outside the SAB hot path.

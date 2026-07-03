@@ -1,0 +1,10 @@
+input,status,evidence,role,bytes
+stage206_current_head_highstat,present,repro/stage206_current_head_highstat/performance_stats.csv,complete-SAB T_bootstrap/r evidence,877
+stage207_resource_refresh,present,repro/stage207_current_head_resource_refresh/resource_comparison.csv,resource cost for current-head path,900
+stage208_profile_attribution,present,repro/stage208_current_head_profile_refresh/component_attribution.csv,current bottleneck and schedule counts,604
+stage200_gap_model,present,repro/stage200_formal_gap_model_with_probe/gap_projection.csv,same-format gap and proof obligations,676
+stage203_selector_equation_probe,present,repro/stage203_production_selector_equation_probe/summary.csv,compact proof-only selector equation status,1452
+stage215_native_counter_comparison,present,repro/stage215_native_counter_execution/comparison.csv,native counter performance admission,659
+stage215_native_counter_summary,present,repro/stage215_native_counter_execution/counter_summary.csv,native load/store/FMA evidence,995
+stage215_proof_gate,present,repro/stage215_native_counter_execution/proof_gate.csv,Stage215 final decision,1294
+stage215_next_queue,present,repro/stage215_native_counter_execution/next_stage_queue.csv,post-counter queue,472

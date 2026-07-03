@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,interpretation
+G1_required_inputs,PASS,missing_inputs,,repro/stage216_post_counter_frontier/input_status.csv,All post-counter admission inputs must exist.
+G2_primary_endpoint_preserved,PASS,min_current_T_bootstrap_over_r_speedup,1.299817000,repro/stage216_post_counter_frontier/metric_snapshot.csv,The current accepted comparison dimension remains amortized complete-SAB T_bootstrap/r.
+G3_stage215_wrapper_reopen,PASS_REJECTED,wrapper_admission,REJECTED_BY_STAGE215,repro/stage215_native_counter_execution/comparison.csv,Native counter evidence does not reopen the Stage213 wrapper route.
+G4_non_theory_loop_route,PASS_SELECTED_EXECUTABLE_PREFLIGHT,selected_candidate,C5_compact_selector_keygen_preflight,repro/stage216_post_counter_frontier/next_stage_queue.csv,The next route has finite/prototype gates and no SAB hot-path code permission.
+G5_stage216_decision,PASS_STAGE216_POST_COUNTER_FRONTIER_ROUTE_COMPACT_KEYGEN_PREFLIGHT,decision,PASS_STAGE216_POST_COUNTER_FRONTIER_ROUTE_COMPACT_KEYGEN_PREFLIGHT,repro/stage216_post_counter_frontier/proof_gate.csv,Post-counter frontier is closed for exact wrapper retuning and routed to bounded compact keygen/security preflight.

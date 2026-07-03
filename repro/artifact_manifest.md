@@ -2581,3 +2581,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage215_native_counter_execution.md`
   - `scripts/build_stage215_native_counter_execution.py`
   - `repro/stage215_native_counter_execution/`
+- stage216_post_counter_frontier:
+  - `docs/stage216_post_counter_frontier.md`
+  - `experiments/stage216_post_counter_frontier_plan.md`
+  - `theory_checks/stage216_research_loop_frontier_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage216_post_counter_frontier.md`
+  - `scripts/build_stage216_post_counter_frontier.py`
+  - `repro/stage216_post_counter_frontier/`

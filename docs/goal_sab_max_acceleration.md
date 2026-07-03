@@ -1046,3 +1046,7 @@ moving without storing secrets or claiming unsupported complete-SAB gains.
 ## Stage215 native counter execution
 
 At commit `19c9c6c`, Stage215 records `PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN` for native split-counter execution.
+Stage216 records post-counter frontier. Decision: `PASS_STAGE216_POST_COUNTER_FRONTIER_ROUTE_COMPACT_KEYGEN_PREFLIGHT`. The accepted
+comparison dimension remains complete-SAB `T_bootstrap/r`; exact wrapper
+retuning is closed after native counters, and Stage217 must use bounded compact
+keygen/security gates rather than theory-only discussion.
