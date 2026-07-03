@@ -714,3 +714,10 @@ are zero for r=2/4/6 and N=512/1024, with max component/phase gaps
 `MAT_TRGSW_COMPACT_OUTPUT_DFT`, one mask/body pair per lane; compressing it to
 a true `PVW_TMLWE_DFT` shared output mask is not yet proven. The next stage must
 design isolated SAB CMUX/RGSW integration around this explicit output boundary.
+
+Stage132 extends the current compact EP chain to the first isolated CMUX
+consumer invariant. The result is still not complete SAB acceleration: it
+proves only that lane-pair output can be added to per-lane accumulator state
+with correct phase/noise, and that collapsing it into a standard shared-output
+PVW ciphertext is invalid. The next promoted target is a lane-state RGSW/sparse
+schedule gate.

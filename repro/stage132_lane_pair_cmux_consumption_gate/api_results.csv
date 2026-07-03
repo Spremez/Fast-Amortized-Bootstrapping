@@ -1,0 +1,7 @@
+backend,r,N,T,k,Bg_bit,seed,component_mismatches,delta_phase_mismatches,consumer_phase_mismatches,noise_model_mismatches,shared_output_negative_failures,max_component_gap,max_delta_phase_gap,max_consumer_phase_gap,tolerance,status
+spqlios,2,512,7,1,7,0,0,0,0,0,16,14656,14644,14644,131072,PASS_LANE_PAIR_CMUX_DELTA_CONSUMPTION
+spqlios,4,512,7,1,7,0,0,0,0,0,17,11345,11349,11349,131072,PASS_LANE_PAIR_CMUX_DELTA_CONSUMPTION
+spqlios,6,512,7,1,7,0,0,0,0,0,28,13484,13478,13478,131072,PASS_LANE_PAIR_CMUX_DELTA_CONSUMPTION
+spqlios,2,1024,7,1,7,0,0,0,0,0,129,12110,12113,12113,131072,PASS_LANE_PAIR_CMUX_DELTA_CONSUMPTION
+spqlios,4,1024,7,1,7,0,0,0,0,0,458,14689,14699,14699,131072,PASS_LANE_PAIR_CMUX_DELTA_CONSUMPTION
+spqlios,6,1024,7,1,7,0,0,0,0,0,851,13183,13171,13171,131072,PASS_LANE_PAIR_CMUX_DELTA_CONSUMPTION

@@ -4867,3 +4867,41 @@ gaps are 13481/13475 under tolerance 131072. The next valid stage is isolated
 SAB CMUX/RGSW integration design using `MAT_TRGSW_COMPACT_OUTPUT_DFT`; complete
 `T_bootstrap/r` claims remain blocked.
 ```
+
+## Stage 132: Lane-Pair CMUX Delta Consumption Gate
+
+Goal:
+
+```text
+Validate that the Stage131 lane-pair compact EP output can be consumed by an
+isolated CMUX delta update `base + EP(in2 - in1)` without converting it into a
+false shared-output-mask PVW ciphertext.
+```
+
+Theory basis:
+
+The Stage131 output is one mask/body pair per lane. A standard `PVW_TMLWE_DFT`
+has one shared mask and r bodies, so treating the Stage131 output as standard
+PVW would be an invalid invariant unless separately proven. Stage132 therefore
+checks the exact per-lane phase/noise consumer equation and keeps a negative
+control that collapses all masks to lane 0.
+
+Gate:
+
+- public API build/compile/run must pass;
+- component, delta-phase, consumer-phase, and noise-model mismatches must be
+  zero for r=2/4/6 and N=512/1024;
+- the shared-output-mask collapse negative control must fail for r>1;
+- passing opens only lane-state RGSW/sparse schedule design.
+
+Status:
+
+```text
+Completed. Stage132 records
+PASS_STAGE132_LANE_PAIR_CMUX_DELTA_CONSUMPTION_READY_LANE_STATE_REQUIRED.
+The deterministic public-API probe passes for k=1, T=7, Bg_bit=7, r=2/4/6,
+and N=512/1024. Component, delta-phase, consumer-phase, and exact noise-model
+mismatch counts are zero. Collapsing lane-pair masks into one shared output
+mask fails as required. The next valid step is a compact lane-state
+accumulator object for RGSW monomial and sparse schedule integration.
+```

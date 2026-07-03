@@ -1701,3 +1701,31 @@ hypotheses:
         reconstruction or losing the Stage130 timing mechanism
       - production API evidence is claimed as complete SAB acceleration
       - scalar/default SAB behavior changes before a guarded integration stage
+  - id: H56_lane_pair_cmux_delta_consumption
+    statement: >
+      The Stage131 shared-source compact external-product output can be
+      consumed by an isolated SAB-facing CMUX delta update per lane without
+      assuming a false shared output mask.
+    mechanism: >
+      Stage132 computes `delta = in2 - in1`, applies the public compact EP API,
+      converts each lane-pair DFT output to torus, and checks that
+      `phase_q(base_q + delta_q)` equals the modeled base phase plus modeled
+      EP delta phase. It also collapses all lane masks to lane 0 as a required
+      negative control.
+    status: stage132_lane_pair_cmux_delta_consumption_ready_lane_state_required
+    evidence: docs/stage132_lane_pair_cmux_consumption_gate.md; experiments/stage132_lane_pair_cmux_consumption_gate_plan.md; theory_checks/stage132_lane_pair_cmux_consumption_model.md; algorithm_variants/mat_rlwe_sab_lane_pair_cmux_consumption.md; scripts/build_stage132_lane_pair_cmux_consumption_gate.py; repro/stage132_lane_pair_cmux_consumption_gate/summary.csv; repro/stage132_lane_pair_cmux_consumption_gate/api_results.csv; repro/stage132_lane_pair_cmux_consumption_gate/mosfhet_static_build.log; repro/stage132_lane_pair_cmux_consumption_gate/compile_probe.log; repro/stage132_lane_pair_cmux_consumption_gate/run_probe.log; repro/stage132_lane_pair_cmux_consumption_gate/lane_pair_cmux_consumption_gate.c; repro/stage132_lane_pair_cmux_consumption_gate/artifact_index.csv
+    current_decision: >
+      Stage132 records PASS_STAGE132_LANE_PAIR_CMUX_DELTA_CONSUMPTION_READY_LANE_STATE_REQUIRED. Build, compile, run, and deterministic
+      lane-pair CMUX delta consumption gates pass for k=1, T=7, Bg_bit=7,
+      r=2/4/6, and N=512/1024. Component, delta-phase, consumer-phase, and
+      exact noise-model mismatch counts are zero. The single shared-output
+      mask collapse negative control fails as required. This opens lane-state
+      RGSW/sparse integration design only.
+    failure_criteria:
+      - later code treats `MAT_TRGSW_COMPACT_OUTPUT_DFT` as a true
+        `PVW_TMLWE_DFT` shared-output-mask ciphertext without a separate gate
+      - RGSW or sparse schedule integration requires dense reconstruction that
+        erases the Stage130 shared-source mechanism
+      - deterministic consumer evidence is claimed as full SAB correctness,
+        multi-seed noise, or complete `T_bootstrap/r` acceleration
+      - scalar/default SAB behavior changes before a guarded integration stage

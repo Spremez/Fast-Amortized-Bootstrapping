@@ -1955,3 +1955,18 @@ Repro artifacts:
 - `repro/stage131_shared_source_production_api_gate/run_probe.log`
 - `repro/stage131_shared_source_production_api_gate/shared_source_production_api_gate.c`
 - `repro/stage131_shared_source_production_api_gate/artifact_index.csv`
+
+## Stage 132 Lane-Pair CMUX Consumption Gate
+
+- `docs/stage132_lane_pair_cmux_consumption_gate.md`
+- `experiments/stage132_lane_pair_cmux_consumption_gate_plan.md`
+- `theory_checks/stage132_lane_pair_cmux_consumption_model.md`
+- `algorithm_variants/mat_rlwe_sab_lane_pair_cmux_consumption.md`
+- `scripts/build_stage132_lane_pair_cmux_consumption_gate.py`
+- `repro/stage132_lane_pair_cmux_consumption_gate/summary.csv`
+- `repro/stage132_lane_pair_cmux_consumption_gate/api_results.csv`
+- `repro/stage132_lane_pair_cmux_consumption_gate/mosfhet_static_build.log`
+- `repro/stage132_lane_pair_cmux_consumption_gate/compile_probe.log`
+- `repro/stage132_lane_pair_cmux_consumption_gate/run_probe.log`
+- `repro/stage132_lane_pair_cmux_consumption_gate/lane_pair_cmux_consumption_gate.c`
+- `repro/stage132_lane_pair_cmux_consumption_gate/artifact_index.csv`

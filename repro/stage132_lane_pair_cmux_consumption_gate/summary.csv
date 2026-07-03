@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,detail,next_action
+stage132_mosfhet_static_build,PASS,make_static_spqlios_enable_pvw,true,repro/stage132_lane_pair_cmux_consumption_gate/mosfhet_static_build.log,MOSFHET static library builds with Stage131 compact EP API.,
+stage132_probe_compile,PASS,public_header_link,true,repro/stage132_lane_pair_cmux_consumption_gate/compile_probe.log,Standalone CMUX-consumption probe compiles against mosfhet.h.,
+stage132_probe_run,PASS,probe_returncode,0,repro/stage132_lane_pair_cmux_consumption_gate/run_probe.log,Lane-pair CMUX delta consumption probe executed.,
+stage132_lane_pair_consumer_correctness,PASS,rows;max_component_gap;max_delta_gap;max_consumer_gap,6;14689;14699;14699,repro/stage132_lane_pair_cmux_consumption_gate/api_results.csv,Per-lane delta and base-plus-delta phase/noise gates pass.,Do not build RGSW/sparse integration if this fails.
+stage132_decision,PASS_STAGE132_LANE_PAIR_CMUX_DELTA_CONSUMPTION_READY_LANE_STATE_REQUIRED,promotion_policy,,repro/stage132_lane_pair_cmux_consumption_gate/summary.csv; repro/stage132_lane_pair_cmux_consumption_gate/api_results.csv,"Stage132 opens a lane-state accumulator design, not full SAB speed claims.",Stage133 should define a compact lane-state object for RGSW/sparse schedule.

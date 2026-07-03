@@ -257,3 +257,11 @@ The new research goal is complete only after a later stage records:
 - an updated literature/novelty review for the exact MAT-RLWE SAB claim;
 - a claim ledger that separates amortized algorithmic improvement from
   backend/SIMD implementation effects.
+
+36. Treat Stage132 as the current lane-pair CMUX consumption gate:
+    `PASS_STAGE132_LANE_PAIR_CMUX_DELTA_CONSUMPTION_READY_LANE_STATE_REQUIRED`. The compact shared-source EP output can be consumed by
+    per-lane `base + delta` CMUX updates for r=2/4/6 and N=512/1024 with zero
+    component, phase, consumer, and noise-model mismatches. A single
+    shared-output-mask collapse fails as required. The next valid step is a
+    compact lane-state accumulator design for RGSW monomial and sparse
+    schedule integration, not complete `T_bootstrap/r` claims.
