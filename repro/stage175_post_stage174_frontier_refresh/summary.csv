@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage175_inputs,PASS,input_count,3,repro/stage175_post_stage174_frontier_refresh/evidence_inputs.csv,Stage175 consumes Stage171/172/174 evidence.,Repair missing input before route decisions.
+stage175_direct_scale_close,PASS,microbench_status,NEUTRAL_OR_REJECT,repro/stage174_from_dft_direct_scale_gate/comparison.csv,Direct-scale is exact but not promoted; do not keep tuning this candidate.,Route away from direct-scale.
+stage175_next_route,PASS,next_stage,Stage173,repro/stage175_post_stage174_frontier_refresh/next_stage_queue.csv,"Next work is bounded structured compact finite phase/noise toy, not open-ended theory.",Implement Stage173 only with finite/toy pass-fail gates.
+stage175_decision,PASS_STAGE175_ROUTE_TO_STRUCTURED_COMPACT_TOY_GATE,route_refresh,recorded,repro/stage175_post_stage174_frontier_refresh/summary.csv,Stage175 records the post-Stage174 route boundary.,Proceed to Stage173 or stop for user review.

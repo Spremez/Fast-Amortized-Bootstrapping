@@ -5589,3 +5589,18 @@ Completed. Stage174 records NEUTRAL_STAGE174_DIRECT_SCALE_MICROBENCH_NOT_PROMOTE
 Microbench evidence is a promotion filter; complete-SAB claims require the
 full-SAB gate.
 ```
+## Stage 175: Post-Stage174 Frontier Refresh
+
+Goal:
+
+```text
+Close the neutral direct-scale backend branch and route the next bounded
+research step.
+```
+
+Status:
+
+```text
+Completed. Stage175 records PASS_STAGE175_ROUTE_TO_STRUCTURED_COMPACT_TOY_GATE. Direct-scale is not promoted; the next
+bounded route is Stage173 structured compact finite phase/noise toy.
+```

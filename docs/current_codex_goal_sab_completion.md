@@ -429,3 +429,6 @@ The new research goal is complete only after a later stage records:
     `NEUTRAL_STAGE174_DIRECT_SCALE_MICROBENCH_NOT_PROMOTED`. It does not change
     MAT/SAB algorithmic claims because the microbench promotion gate did not
     pass.
+78. Treat Stage175 as the post-direct-scale route refresh:
+    `PASS_STAGE175_ROUTE_TO_STRUCTURED_COMPACT_TOY_GATE`. Complete-SAB claims remain unchanged; next bounded work is
+    Stage173 structured compact finite phase/noise toy.

@@ -2313,3 +2313,9 @@ Repro artifacts:
   - `theory_checks/stage174_direct_scale_model.md`
   - `algorithm_variants/mat_rlwe_sab_from_dft_direct_scale.md`
   - `repro/stage174_from_dft_direct_scale_gate/`
+- stage175_post_stage174_frontier_refresh: `PASS_STAGE175_ROUTE_TO_STRUCTURED_COMPACT_TOY_GATE`
+  - `docs/stage175_post_stage174_frontier_refresh.md`
+  - `experiments/stage175_post_stage174_frontier_refresh_plan.md`
+  - `theory_checks/stage175_route_boundary.md`
+  - `algorithm_variants/mat_rlwe_sab_post_stage174_frontier.md`
+  - `repro/stage175_post_stage174_frontier_refresh/`

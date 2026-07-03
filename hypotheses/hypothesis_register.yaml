@@ -2455,3 +2455,20 @@ hypotheses:
       - microbench fails promotion threshold
       - full-SAB A/B fails to improve after microbench promotion
       - backend-only evidence is reported as algorithmic SAB acceleration
+  - id: H98_post_stage174_frontier
+    statement: >
+      After Stage174, direct-scale from_DFT backend tuning should stop unless a
+      new mechanism appears; the next bounded high-upside route is structured
+      compact phase/noise validation.
+    mechanism: >
+      Stage163 and Stage174 give neutral backend evidence, while Stage171
+      identifies structured compact as a proof-gated algorithmic path with
+      larger potential term-count reduction.
+    status: stage175_post_stage174_frontier_refresh
+    evidence: docs/stage175_post_stage174_frontier_refresh.md; experiments/stage175_post_stage174_frontier_refresh_plan.md; theory_checks/stage175_route_boundary.md; repro/stage175_post_stage174_frontier_refresh/summary.csv
+    current_decision: >
+      PASS_STAGE175_ROUTE_TO_STRUCTURED_COMPACT_TOY_GATE
+    failure_criteria:
+      - direct-scale is retuned without a new mechanism
+      - structured compact proceeds to implementation before finite phase/noise gates
+      - complete-SAB claim is changed without full-SAB A/B

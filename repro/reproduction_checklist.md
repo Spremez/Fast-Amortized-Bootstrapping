@@ -262,3 +262,4 @@
 - [x] Stage171 structured compact keygen feasibility pack recorded.
 - [x] Stage172 frontier closeout pack recorded.
 - [x] Stage174 from_DFT direct-scale gate pack recorded.
+- [x] Stage175 post-Stage174 frontier refresh pack recorded.

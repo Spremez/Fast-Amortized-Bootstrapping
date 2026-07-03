@@ -1,0 +1,4 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,173,structured compact formal phase/noise toy,Stage175 closes direct-scale and leaves structured compact as the highest-upside bounded route.,Define compact keygen equations; run finite phase propagation and noise toy checks for r=2/4/6.,"If phase equations or noise toy fail, keep compact route blocked and do not implement SAB code."
+P1,176,alias fallback audit,Only if a quick schedule audit shows nonzero out==addend from_DFT calls in a relevant path.,"Count alias fallback calls, test in-place exactness, and promote only if full-SAB path uses it.","If alias calls are zero in current exact path, record closure and do not optimize."
+P2,177,literature matrix refresh,Before any paper-level novelty claim.,"Verify real related work for SAB, PVW/MAT external products, multi-output bootstrapping, and SIMD FHE kernels.",No novelty wording without source-backed related-work matrix.

@@ -889,3 +889,6 @@ claims until their gates close.
 Stage174 records the from_DFT direct-scale gate. Decision:
 `NEUTRAL_STAGE174_DIRECT_SCALE_MICROBENCH_NOT_PROMOTED`. The candidate is
 backend/SIMD-only and remains behind `SPQLIOS_AVX512_DIRECT_SCALE`.
+Stage175 records the post-Stage174 route refresh. Decision: `PASS_STAGE175_ROUTE_TO_STRUCTURED_COMPACT_TOY_GATE`.
+Direct-scale backend tuning is closed for now; the next bounded route is a
+finite phase/noise toy gate for structured compact MAT-SAB.
