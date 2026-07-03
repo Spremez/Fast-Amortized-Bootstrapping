@@ -147,7 +147,13 @@ outside SAB hot paths.
     seeds 0..4. Roots, round-trip conversion, clean phase, noisy phase, and
     noise bounds all pass. The next valid step is structured vector-shared
     external-product arithmetic prototyping outside `sab_pvw_*`.
-25. Preserve the current final-audit status:
+25. Treat Stage122 as the current structured EP arithmetic gate:
+    structured vector-shared EP passes 30 rows for r=2/4/6, N=32/64,
+    seeds 0..4. Dense clean phase equals structured phase, coefficient EP
+    equals exact DFT EP, noisy bounds pass, and body-only off-lane skipping
+    fails as a negative control. The next valid step is production torus/FFT
+    smoke outside `sab_pvw_*`.
+26. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

@@ -602,3 +602,15 @@ conversion rows pass, and vector/dense DFT polynomial ratios remain 0.666667
 for r=2, 0.533333 for r=4, and 0.428571 for r=6. This removes the exact
 conversion semantic blocker but is still not production FFT, AVX512, external
 product, SAB schedule, or complete `T_bootstrap/r` evidence.
+
+Stage122 runs the next structured external-product arithmetic gate. It
+compares a dense clean reference over `r(r+1)` lane/row terms with a
+vector-shared structured EP over `2r` terms, then checks that coefficient-domain
+structured EP equals exact DFT-domain structured EP. Across r=2/4/6, N=32/64,
+and seeds 0..4, all 30 rows have zero dense/structured phase mismatches, zero
+coefficient/DFT mismatches, and zero noisy-bound violations; the body-only
+off-lane skip negative control fails in every row. The arithmetic term ratios
+are 1.5x, 2.5x, and 3.5x for r=2/4/6, while selector-polynomial ratios are
+1.125x, 1.5625x, and 2.041667x. This is structured arithmetic evidence only;
+production torus/FFT, gadget decomposition, AVX512 behavior, SAB schedule
+integration, and complete `T_bootstrap/r` timing remain open.

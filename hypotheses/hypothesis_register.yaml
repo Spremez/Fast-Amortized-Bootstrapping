@@ -1384,3 +1384,34 @@ hypotheses:
       - DFT conversion evidence is used as AVX512 or complete-SAB acceleration
         evidence
       - external-product prototype changes the scalar/default SAB behavior
+  - id: H46_vector_shared_structured_ep_arithmetic
+    statement: >
+      Vector-shared lane-local objects can apply selector digit polynomials
+      with two external-product terms per lane while matching the dense clean
+      reference phase, and the same structured arithmetic can be represented
+      through an exact DFT multiply-add prototype.
+    mechanism: >
+      Stage122 generates a standalone C prototype over an exact modular
+      negacyclic transform. It builds a dense clean reference using all
+      `r(r+1)` lane/row terms, a structured vector-shared coefficient-domain
+      output using `2r` terms, and the same structured output through DFT
+      multiply-add. It compares decrypted phases and keeps body-only off-lane
+      skipping as a failing negative control.
+    status: stage122_structured_ep_arithmetic_ready_production_fft_smoke_required
+    evidence: docs/stage122_structured_ep_arithmetic_gate.md; experiments/stage122_structured_ep_arithmetic_gate_plan.md; theory_checks/stage122_structured_ep_arithmetic_model.md; algorithm_variants/mat_rlwe_sab_vector_shared_structured_ep.md; scripts/build_stage122_structured_ep_arithmetic_gate.py; repro/stage122_structured_ep_arithmetic_gate/summary.csv; repro/stage122_structured_ep_arithmetic_gate/arithmetic_results.csv; repro/stage122_structured_ep_arithmetic_gate/layout_results.csv; repro/stage122_structured_ep_arithmetic_gate/compile.log; repro/stage122_structured_ep_arithmetic_gate/artifact_index.csv
+    current_decision: >
+      Stage122 records PASS_STAGE122_STRUCTURED_EP_ARITHMETIC_READY_PRODUCTION_FFT_SMOKE_REQUIRED.
+      The generated structured EP prototype compiled and ran 30 rows covering
+      r=2/4/6, N=32/64, and seeds 0..4. Dense clean phase vs structured phase,
+      coefficient EP vs exact DFT EP, and noisy bound checks all have zero
+      failures. Body-only off-lane skip fails in every row as required. EP
+      term ratios are 1.5x for r=2, 2.5x for r=4, and 3.5x for r=6; selector
+      polynomial ratios are 1.125x, 1.5625x, and 2.041667x. This opens only
+      production torus/FFT smoke outside `sab_pvw_*`.
+    failure_criteria:
+      - production torus/FFT smoke cannot preserve structured EP phase
+      - gadget decomposition or selector encoding reintroduces dense row-output
+        work
+      - structured EP arithmetic evidence is used as a full SAB acceleration
+        claim
+      - scalar/default SAB behavior changes before a guarded integration stage

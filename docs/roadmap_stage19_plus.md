@@ -4298,3 +4298,59 @@ for r=2, 0.533333 for r=4, and 0.428571 for r=6. The next valid stage is a
 structured vector-shared external-product arithmetic prototype, still outside
 the SAB hot path.
 ```
+
+## Stage 122: Structured EP Arithmetic Gate
+
+Goal:
+
+```text
+Advance the vector-shared route from exact conversion to structured
+external-product arithmetic, still outside production FFT and SAB hot paths.
+```
+
+Theory basis:
+
+Stage121 proves exact conversion of vector-shared objects. Stage122 checks the
+next finite invariant: applying selector digit polynomials to vector-shared
+objects with only two retained terms per lane must match a dense clean
+reference phase that evaluates all lane/row terms. Because dense and
+vector-shared masks are intentionally different, equality is required at the
+decrypted phase. The gate also checks that coefficient-domain structured EP
+matches exact DFT-domain structured EP, and that body-only off-lane skipping
+fails as a negative control.
+
+Tasks:
+
+- generate and compile a standalone structured EP C prototype;
+- build dense clean reference outputs over `r(r+1)` terms;
+- build vector-shared structured outputs over `2r` terms;
+- build the same structured outputs through exact DFT multiply-add;
+- compare dense clean phase against structured clean phase;
+- compare coefficient-domain structured EP against exact DFT-domain EP;
+- check conservative noisy structured EP bounds;
+- require body-only off-lane skip to fail as a negative control.
+
+Gate:
+
+- generated C prototype must compile;
+- every dense/structured phase mismatch count must be zero;
+- every coefficient/DFT structured EP mismatch count must be zero;
+- every noisy bound violation count must be zero;
+- every negative-control row must have at least one failure;
+- term and selector ratios must remain above 1.0;
+- passing only opens production torus/FFT smoke prototyping outside
+  `sab_pvw_*`.
+
+Status:
+
+```text
+Completed. Stage122 records
+PASS_STAGE122_STRUCTURED_EP_ARITHMETIC_READY_PRODUCTION_FFT_SMOKE_REQUIRED.
+The generated exact modular structured-EP prototype compiled and ran 30 rows
+covering r=2/4/6, N=32/64, and seeds 0..4. Dense clean phase vs structured
+phase mismatches, coefficient-vs-DFT structured mismatches, and noisy bound
+violations are all zero. The body-only off-lane skip negative control fails in
+every row as required. EP term ratios are 1.5x for r=2, 2.5x for r=4, and
+3.5x for r=6; selector-polynomial ratios are 1.125x, 1.5625x, and 2.041667x.
+The next valid stage is production torus/FFT smoke outside the SAB hot path.
+```

@@ -1794,3 +1794,17 @@ Repro artifacts:
 - `repro/stage121_vector_shared_dft_conversion_gate/compile.log`
 - `repro/stage121_vector_shared_dft_conversion_gate/vector_shared_dft_conversion_gate.c`
 - `repro/stage121_vector_shared_dft_conversion_gate/artifact_index.csv`
+
+## Stage 122 Structured EP Arithmetic Gate
+
+- `docs/stage122_structured_ep_arithmetic_gate.md`
+- `experiments/stage122_structured_ep_arithmetic_gate_plan.md`
+- `theory_checks/stage122_structured_ep_arithmetic_model.md`
+- `algorithm_variants/mat_rlwe_sab_vector_shared_structured_ep.md`
+- `scripts/build_stage122_structured_ep_arithmetic_gate.py`
+- `repro/stage122_structured_ep_arithmetic_gate/summary.csv`
+- `repro/stage122_structured_ep_arithmetic_gate/arithmetic_results.csv`
+- `repro/stage122_structured_ep_arithmetic_gate/layout_results.csv`
+- `repro/stage122_structured_ep_arithmetic_gate/compile.log`
+- `repro/stage122_structured_ep_arithmetic_gate/structured_ep_arithmetic_gate.c`
+- `repro/stage122_structured_ep_arithmetic_gate/artifact_index.csv`
