@@ -1054,3 +1054,6 @@ Stage217 records compact keygen/security preflight. Decision: `PASS_STAGE217_PAT
 Bad compact keygen shapes are rejected by finite public-pattern probes; the
 surviving count-matched random dummy shape is pattern-only and cannot be used
 for SAB speedup claims.
+Stage218 records compact key-object/noise prototype. Decision: `PASS_STAGE218_COMPACT_KEY_OBJECT_PROTOTYPE_READY_API_SKELETON`.
+The compact route passes finite phase, negative-control, and toy-noise gates
+but remains outside SAB hot paths and cannot support speedup claims.

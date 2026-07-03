@@ -6310,3 +6310,19 @@ Completed. Stage217 records PASS_STAGE217_PATTERN_ONLY_KEYGEN_PREFLIGHT_NO_SAB_C
 survives only a simple public-pattern screen; SAB hot-path code remains denied.
 The next selected route is an isolated compact key-object/noise prototype.
 ```
+## Stage 218: Compact Key-Object/Noise Prototype
+
+Goal:
+
+```text
+Run an isolated finite key-object/noise prototype for the compact selector route
+without touching SAB hot paths.
+```
+
+Status:
+
+```text
+Completed. Stage218 records PASS_STAGE218_COMPACT_KEY_OBJECT_PROTOTYPE_READY_API_SKELETON. The finite prototype passes phase,
+negative-control, and toy-noise gates; the next route is a MOSFHET-adjacent
+API skeleton only, not SAB integration.
+```

@@ -3119,3 +3119,14 @@ H10_stage217_compact_keygen_security_preflight:
     finite simple public-pattern screen, but production keygen/security/noise
     and complete-SAB gates remain missing. SAB hot-path implementation remains
     denied.
+H10_stage218_compact_key_object_noise_prototype:
+  status: compact_key_object_toy_prototype_passed
+  evidence:
+    - repro/stage218_compact_key_object_noise_prototype/proof_gate.csv
+    - repro/stage218_compact_key_object_noise_prototype/phase_noise_prototype.csv
+    - docs/stage218_compact_key_object_noise_prototype.md
+  conclusion: >
+    Stage218 records PASS_STAGE218_COMPACT_KEY_OBJECT_PROTOTYPE_READY_API_SKELETON. Semantic-zero dummy skipping passes finite
+    phase/noise prototype gates with negative controls, but production SAB
+    implementation remains denied until MOSFHET API, encrypted keygen,
+    security, production noise, and complete-SAB gates are added.

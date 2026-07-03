@@ -1,0 +1,4 @@
+input,status,evidence,role,bytes
+stage203_equation_map,present,repro/stage203_production_selector_equation_probe/equation_map.csv,declared compact selector equation map,3693
+stage217_keygen_candidates,present,repro/stage217_compact_keygen_security_preflight/keygen_candidate_matrix.csv,surviving keygen shape,956
+stage217_proof_gate,present,repro/stage217_compact_keygen_security_preflight/proof_gate.csv,pattern-only route gate,1712

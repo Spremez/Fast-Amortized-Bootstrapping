@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage219_mosfhet_adjacent_compact_key_api_skeleton,Stage218 finite key-object/noise prototype passes.,"Compile-only MOSFHET-adjacent type/API skeleton with ownership, row-role, and no-hot-allocation checks.",selected,"If API skeleton fails, keep compact route prototype-only and do not enter SAB integration.",repro/stage218_compact_key_object_noise_prototype/proof_gate.csv
+P1,production_noise_recurrence,API skeleton exists and maps to encrypted key objects.,Noise recurrence and parameter/resource bound before any complete-SAB integration.,future_blocked,Block compact route from SAB integration.,repro/stage218_compact_key_object_noise_prototype/noise_summary.csv
+P2,exact_pvw_mat_sab_report_fallback,Any compact gate fails.,Report only current exact PVW/MAT-SAB T_bootstrap/r evidence.,fallback,No new algorithmic compact claim.,repro/stage217_compact_keygen_security_preflight/proof_gate.csv

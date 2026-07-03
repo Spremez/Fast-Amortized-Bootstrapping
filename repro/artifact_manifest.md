@@ -2595,3 +2595,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage217_compact_keygen_security_preflight.md`
   - `scripts/build_stage217_compact_keygen_security_preflight.py`
   - `repro/stage217_compact_keygen_security_preflight/`
+- stage218_compact_key_object_noise_prototype:
+  - `docs/stage218_compact_key_object_noise_prototype.md`
+  - `experiments/stage218_compact_key_object_noise_prototype_plan.md`
+  - `theory_checks/stage218_compact_key_object_noise_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage218_compact_key_object_noise_prototype.md`
+  - `scripts/build_stage218_compact_key_object_noise_prototype.py`
+  - `repro/stage218_compact_key_object_noise_prototype/`

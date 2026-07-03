@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,interpretation
+G1_required_inputs,PASS,missing_inputs,,repro/stage218_compact_key_object_noise_prototype/input_status.csv,Stage218 consumes the Stage203 equation map and Stage217 pattern-only route.
+G2_layout_count_matched,PASS,layout_rows,r=2/4/6,repro/stage218_compact_key_object_noise_prototype/key_object_layout.csv,Prototype object keeps dense public row count and marks active versus semantic-zero dummy rows.
+G3_phase_equivalence,PASS,phase_failures,0,repro/stage218_compact_key_object_noise_prototype/phase_noise_prototype.csv,Finite semantic-zero dummy skip must preserve phase.
+G4_negative_controls,PASS,negative_failures,0,repro/stage218_compact_key_object_noise_prototype/negative_controls.csv,Random dummy semantics and missing-active skip must fail.
+G5_noise_bound,PASS_TOY_BOUND,noise_failures,0,repro/stage218_compact_key_object_noise_prototype/noise_summary.csv,Skipping semantic-zero dummy rows does not exceed dense toy noise bound.
+G6_production_admission,DENY_SAB_HOTPATH_CODE,missing_before_sab_code,MOSFHET type/API;encrypted keygen;security proof;production noise;complete-SAB gate,repro/stage218_compact_key_object_noise_prototype/proof_gate.csv,Stage218 permits only MOSFHET-adjacent API skeleton work.
+G7_stage218_decision,PASS_STAGE218_COMPACT_KEY_OBJECT_PROTOTYPE_READY_API_SKELETON,decision,PASS_STAGE218_COMPACT_KEY_OBJECT_PROTOTYPE_READY_API_SKELETON,repro/stage218_compact_key_object_noise_prototype/proof_gate.csv,The compact key-object route remains bounded and can advance only to an isolated API skeleton.

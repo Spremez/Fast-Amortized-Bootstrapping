@@ -1,0 +1,4 @@
+r,samples,min_skip_over_dense,mean_skip_over_dense,max_skip_over_dense,failures,evidence
+2,20,0.807692308,0.902548909,0.965517241,0,repro/stage218_compact_key_object_noise_prototype/noise_summary.csv
+4,20,0.562500000,0.621147370,0.697368421,0,repro/stage218_compact_key_object_noise_prototype/noise_summary.csv
+6,20,0.428571429,0.498045531,0.591549296,0,repro/stage218_compact_key_object_noise_prototype/noise_summary.csv

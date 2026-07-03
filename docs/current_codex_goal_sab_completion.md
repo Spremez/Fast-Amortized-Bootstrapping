@@ -630,3 +630,8 @@ compact implementation, or optimality claim is opened by Stage216.
 random dummy padding survives simple public-pattern probes, while row deletion,
 deterministic zero dummy rows, and forced equal masks are rejected. No SAB
 hot-path code or speedup claim is authorized.
+### Stage218 compact key-object/noise prototype
+
+`PASS_STAGE218_COMPACT_KEY_OBJECT_PROTOTYPE_READY_API_SKELETON` advances the compact route only to an isolated API-skeleton
+candidate. It does not authorize `sab_pvw_*` integration, complete-SAB claims,
+or production security/noise claims.

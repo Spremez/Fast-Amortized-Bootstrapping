@@ -1,0 +1,4 @@
+r,dense_public_rows,active_rows,dummy_zero_rows,public_rows,count_matched,active_over_dense,dummy_over_dense,evidence
+2,9,8,1,9,yes,0.888888889,0.111111111,repro/stage203_production_selector_equation_probe/equation_map.csv
+4,25,16,9,25,yes,0.640000000,0.360000000,repro/stage203_production_selector_equation_probe/equation_map.csv
+6,49,24,25,49,yes,0.489795918,0.510204082,repro/stage203_production_selector_equation_probe/equation_map.csv
