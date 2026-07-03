@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,detail
+G1_stage214_input,PASS,stage214_inputs,present,repro/stage214_frontier_native_counter_handoff/proof_gate.csv; repro/stage214_frontier_native_counter_handoff/run_native_stage214_counters.sh,Stage215 uses the Stage214 runner and route ledger.
+G2_remote_execution,PASS,remote_rcs,"{'remote_env': 0, 'remote_unpack': 0, 'remote_run': 0, 'remote_pull': 0}",repro/stage215_native_counter_execution,"Remote archive, run, and pull must all pass before interpreting counters."
+G3_correctness,PASS,correctness_rows,8,repro/stage215_native_counter_execution/correctness.csv,All split probe runs must remain exact.
+G4_counter_capture,PASS,counter_rows,80,repro/stage215_native_counter_execution/counter_metrics.csv,Native perf counters must include load/store/FMA/cycle evidence.
+G5_performance_admission,PASS_NO_REOPEN,min_combined_speedup,0.953386388,repro/stage215_native_counter_execution/comparison.csv,Complete-SAB A/B is authorized only if native integrated combined_current improves for r=2 and r=4.
+G6_stage215_decision,PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN,decision,PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN,repro/stage215_native_counter_execution/proof_gate.csv,Stage215 decides whether counters reopen any hot-path implementation route.

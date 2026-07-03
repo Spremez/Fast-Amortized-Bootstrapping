@@ -1,0 +1,8 @@
+command: mkdir -p /mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/repro/stage215_native_counter_execution/native_perf_raw && AUTH_ENV=*** auth_tool -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/tmp/codex_stage215_known_hosts -o ConnectTimeout=12  -r delld@192.168.107.220:/home/delld/spz/Fast-Amortized-Bootstrapping-stage215-19c9c6c/repro/stage214_frontier_native_counter_handoff/native_perf_raw/. /mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/repro/stage215_native_counter_execution/native_perf_raw/
+returncode: 0
+--- stdout ---
+
+
+--- stderr ---
+wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
+N/e?c localhost ?N?t?0

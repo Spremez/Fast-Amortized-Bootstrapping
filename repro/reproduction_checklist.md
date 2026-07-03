@@ -314,3 +314,4 @@
   correctness, split timing, and next queue. Decision: `PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY`.
 - [x] Stage214 frontier native counter handoff records route ledger, access
   status, credential-free native runner, and next queue. Decision: `PASS_STAGE214_FRONTIER_NATIVE_COUNTER_HANDOFF_READY`.
+- [x] Stage215 native counter execution records decision `PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN`.

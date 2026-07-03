@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,status,evidence
+P0,stage216_full_sab_ab_reopened_candidate,Stage215 promotes native integrated wrapper candidate.,"Complete-SAB T_bootstrap/r A/B, noise/resource, claim audit.",not_ready,repro/stage215_native_counter_execution/proof_gate.csv
+P1,new_mechanism_or_formal_compact_proof,Counters do not promote current wrapper.,New proof/counter-backed mechanism before code.,required,repro/stage215_native_counter_execution/comparison.csv

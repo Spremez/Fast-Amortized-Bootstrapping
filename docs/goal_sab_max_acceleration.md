@@ -1043,3 +1043,6 @@ multirow DFT wrapper integration preflight.
 At commit `d8d56ee`, Stage214 records the post-Stage213 route ledger and a
 credential-free native counter handoff pack. This keeps the research loop
 moving without storing secrets or claiming unsupported complete-SAB gains.
+## Stage215 native counter execution
+
+At commit `19c9c6c`, Stage215 records `PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN` for native split-counter execution.

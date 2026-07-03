@@ -1,0 +1,9 @@
+implementation,r,variant,N,items,reps,calls,total_ns,per_call_us,sink,status,evidence
+baseline,2,combined_current,2048,128,8,1024,13447421,13.132247070,9305093283185742531,PASS,repro/stage215_native_counter_execution/native_perf_raw/run_baseline_r2_combined_current.log
+baseline,2,torus_to_dft_rows,2048,128,8,1024,7830344,7.646820313,2942057726651775669,PASS,repro/stage215_native_counter_execution/native_perf_raw/run_baseline_r2_torus_to_dft_rows.log
+baseline,4,combined_current,2048,128,8,1024,26976474,26.344212891,17822576285093740891,PASS,repro/stage215_native_counter_execution/native_perf_raw/run_baseline_r4_combined_current.log
+baseline,4,torus_to_dft_rows,2048,128,8,1024,12910172,12.607589844,4562030954040261711,PASS,repro/stage215_native_counter_execution/native_perf_raw/run_baseline_r4_torus_to_dft_rows.log
+wrapper,2,combined_current,2048,128,8,1024,13568973,13.250950195,9305093283185742531,PASS,repro/stage215_native_counter_execution/native_perf_raw/run_wrapper_r2_combined_current.log
+wrapper,2,torus_to_dft_rows,2048,128,8,1024,7840134,7.656380859,2942057726651775669,PASS,repro/stage215_native_counter_execution/native_perf_raw/run_wrapper_r2_torus_to_dft_rows.log
+wrapper,4,combined_current,2048,128,8,1024,28295426,27.632251953,17822576285093740891,PASS,repro/stage215_native_counter_execution/native_perf_raw/run_wrapper_r4_combined_current.log
+wrapper,4,torus_to_dft_rows,2048,128,8,1024,12919273,12.616477539,4562030954040261711,PASS,repro/stage215_native_counter_execution/native_perf_raw/run_wrapper_r4_torus_to_dft_rows.log

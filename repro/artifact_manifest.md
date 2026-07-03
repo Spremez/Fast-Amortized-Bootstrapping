@@ -2574,3 +2574,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage214_frontier_native_counter_handoff.md`
   - `scripts/build_stage214_frontier_native_counter_handoff.py`
   - `repro/stage214_frontier_native_counter_handoff/`
+- stage215_native_counter_execution:
+  - `docs/stage215_native_counter_execution.md`
+  - `experiments/stage215_native_counter_execution_plan.md`
+  - `theory_checks/stage215_counter_interpretation_scope.md`
+  - `algorithm_variants/mat_rlwe_sab_stage215_native_counter_execution.md`
+  - `scripts/build_stage215_native_counter_execution.py`
+  - `repro/stage215_native_counter_execution/`

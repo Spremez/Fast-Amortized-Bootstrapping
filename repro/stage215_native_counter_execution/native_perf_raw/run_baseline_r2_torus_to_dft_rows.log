@@ -1,0 +1,2 @@
+CORRECT209,torus_to_dft_rows,combined_vs_split,0,0,PASS
+RESULT209,torus_to_dft_rows,2,2048,128,8,1024,7830344,7.646820313,2942057726651775669,PASS

@@ -6263,3 +6263,18 @@ is reachable, and non-interactive SSH auth is not configured in this session.
 No new hot-path code is authorized without Stage215 native counters or a new
 formal compact proof.
 ```
+## Stage 215: Native Counter Execution
+
+Goal:
+
+```text
+Execute the Stage214 native counter handoff and decide whether native split
+counters reopen any implementation route.
+```
+
+Status:
+
+```text
+Completed. Stage215 records PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN. Complete-SAB speedup remains a
+separate gate and is not claimed from counter evidence alone.
+```

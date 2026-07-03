@@ -1,0 +1,12 @@
+# started on Sat Jul  4 06:21:10 2026
+
+94021659,,cycles,16869177,37.00,,
+202666463,,instructions,21864807,48.00,2.16,insn per cycle
+1239605,,cache-references,22860986,50.00,,
+62967,,cache-misses,23865112,52.00,5.08,of all cache refs
+15784233,,branches,24869124,54.00,,
+41955,,branch-misses,24549266,54.00,0.27,of all branches
+31928200,,mem_inst_retired.all_loads,18550506,40.00,,
+23984851,,mem_inst_retired.all_stores,17550260,38.00,,
+26946939,,fp_arith_inst_retired.512b_packed_double,16543083,36.00,,
+5719632,,fp_arith_inst_retired.256b_packed_double,15996766,35.00,,

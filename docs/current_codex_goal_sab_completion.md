@@ -609,3 +609,6 @@ integration evidence without claiming complete SAB speedup yet.
 `PASS_STAGE214_FRONTIER_NATIVE_COUNTER_HANDOFF_READY`: local hot-path candidates are closed or proof-gated; the next
 executable route is Stage215 native hardware-counter execution using the
 handoff script.
+### Stage215 native counter execution
+
+`PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN` updates the executable frontier after Stage214.

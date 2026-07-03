@@ -1,0 +1,8 @@
+key,value,evidence
+remote_env,0,repro/stage215_native_counter_execution/remote_environment.log
+remote_unpack,0,repro/stage215_native_counter_execution/remote_unpack.log
+remote_run,0,repro/stage215_native_counter_execution/remote_environment.log
+remote_pull,0,repro/stage215_native_counter_execution/remote_environment.log
+remote_user_host,delld@192.168.107.220,repro/stage215_native_counter_execution/remote_environment.log
+remote_dir,/home/delld/spz/Fast-Amortized-Bootstrapping-stage215-19c9c6c,repro/stage215_native_counter_execution/remote_unpack.log
+perf_available,yes,repro/stage215_native_counter_execution/remote_environment.log

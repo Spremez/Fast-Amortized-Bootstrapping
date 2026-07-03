@@ -3088,3 +3088,12 @@ H10_stage214_frontier_native_counter_handoff:
     Stage214 records PASS_STAGE214_FRONTIER_NATIVE_COUNTER_HANDOFF_READY. No local hot-path code is authorized after
     Stage213; native hardware counters or formal compact proof gates are the
     next evidence routes.
+H10_stage215_native_counter_execution:
+  status: native_counter_execution_recorded
+  evidence:
+    - repro/stage215_native_counter_execution/comparison.csv
+    - repro/stage215_native_counter_execution/proof_gate.csv
+    - docs/stage215_native_counter_execution.md
+  conclusion: >
+    Stage215 records PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN. Counter evidence does not imply complete-SAB
+    speedup without the next complete-SAB gate.
