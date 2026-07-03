@@ -64,7 +64,11 @@ design, still outside the SAB hot path. Stage118 executes that type/noise/key
 design gate and routes next to a real-object allocation/phase/noise prototype;
 noise remains recorded but unproven. Stage119 then checks the shared-term
 semantics and rejects scalar-shared storage for independent LUT lanes; the
-active object route is now vector-shared lane-local storage.
+active object route is now vector-shared lane-local storage. Stage120 then
+builds standalone vector-shared C structs with polynomial arrays and
+negacyclic phase/noise checks. This advances the route to DFT/conversion
+prototype readiness, still outside MOSFHET torus/FFT external products and
+outside SAB hot paths.
 
 ## Execution Route
 
@@ -134,7 +138,11 @@ active object route is now vector-shared lane-local storage.
     scalar-shared is rejected by negative control; vector-shared has zero phase
     mismatches and zero toy-noise bound violations for r=2/4/6, so Stage120
     must build vector-shared real C structs outside `sab_pvw_*`.
-23. Preserve the current final-audit status:
+23. Treat Stage120 as the current real-struct phase/noise gate:
+    vector-shared polynomial structs pass 30 phase/noise rows for r=2/4/6,
+    N=32/64, seeds 0..4, with zero mismatches and zero noise-bound violations;
+    the next valid step is DFT/conversion prototyping outside SAB.
+24. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

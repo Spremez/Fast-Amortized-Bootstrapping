@@ -1766,3 +1766,17 @@ Repro artifacts:
 - `repro/stage119_shared_term_object_gate/compile.log`
 - `repro/stage119_shared_term_object_gate/shared_term_object_gate.c`
 - `repro/stage119_shared_term_object_gate/artifact_index.csv`
+
+## Stage 120 Real Struct Phase/Noise Gate
+
+- `docs/stage120_real_struct_phase_noise_gate.md`
+- `experiments/stage120_real_struct_phase_noise_gate_plan.md`
+- `theory_checks/stage120_real_struct_phase_noise_model.md`
+- `algorithm_variants/mat_rlwe_sab_vector_shared_real_struct.md`
+- `scripts/build_stage120_real_struct_phase_noise_gate.py`
+- `repro/stage120_real_struct_phase_noise_gate/summary.csv`
+- `repro/stage120_real_struct_phase_noise_gate/phase_noise_results.csv`
+- `repro/stage120_real_struct_phase_noise_gate/layout_results.csv`
+- `repro/stage120_real_struct_phase_noise_gate/compile.log`
+- `repro/stage120_real_struct_phase_noise_gate/real_struct_phase_noise_gate.c`
+- `repro/stage120_real_struct_phase_noise_gate/artifact_index.csv`

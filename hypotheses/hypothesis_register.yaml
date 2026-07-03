@@ -1332,3 +1332,27 @@ hypotheses:
       - real polynomial phase/noise tests contradict the toy object gate
       - any future stage reuses scalar-shared `1+2r` as the implementation
         route for independent LUT lanes
+  - id: H44_vector_shared_real_struct_phase_noise
+    statement: >
+      Vector-shared lane-local objects can be represented as allocated C
+      polynomial structs with negacyclic phase correctness and bounded
+      coefficient-noise behavior, before DFT or SAB integration.
+    mechanism: >
+      Stage120 generates a standalone C prototype with lane secrets and `2r`
+      ciphertext-like objects. Each object has mask/body polynomial arrays.
+      Encryption uses negacyclic mask-secret multiplication plus message and
+      optional bounded noise; phase is `body - mask*secret`.
+    status: stage120_real_struct_phase_noise_ready_dft_prototype_required
+    evidence: docs/stage120_real_struct_phase_noise_gate.md; experiments/stage120_real_struct_phase_noise_gate_plan.md; theory_checks/stage120_real_struct_phase_noise_model.md; algorithm_variants/mat_rlwe_sab_vector_shared_real_struct.md; scripts/build_stage120_real_struct_phase_noise_gate.py; repro/stage120_real_struct_phase_noise_gate/summary.csv; repro/stage120_real_struct_phase_noise_gate/phase_noise_results.csv; repro/stage120_real_struct_phase_noise_gate/layout_results.csv; repro/stage120_real_struct_phase_noise_gate/compile.log; repro/stage120_real_struct_phase_noise_gate/artifact_index.csv
+    current_decision: >
+      Stage120 records PASS_STAGE120_REAL_STRUCT_PHASE_NOISE_READY_DFT_PROTOTYPE_REQUIRED.
+      The generated C prototype compiled and ran 30 rows covering r=2/4/6,
+      N=32/64, and seeds 0..4. All rows have zero noiseless mismatches and
+      zero noise-bound violations. Layout rows pass with vector/dense
+      polynomial ratios 0.666667 for r=2, 0.533333 for r=4, and 0.428571 for
+      r=6. This opens only a DFT/conversion prototype outside `sab_pvw_*`.
+    failure_criteria:
+      - DFT/conversion prototype changes phase
+      - torus/FFT implementation cannot preserve the real-struct invariant
+      - isolated external-product prototype reintroduces dense row-output work
+      - Stage120 is used as complete-SAB acceleration evidence

@@ -1,0 +1,7 @@
+r,N,dense_terms,vector_terms,dense_total_polys,vector_total_polys,vector_over_dense_poly_ratio,requested_bytes,status
+2,32,9,4,12,8,0.666667,2768,PASS_LAYOUT
+2,64,9,4,12,8,0.666667,5328,PASS_LAYOUT
+4,32,25,8,30,16,0.533333,5488,PASS_LAYOUT
+4,64,25,8,30,16,0.533333,10608,PASS_LAYOUT
+6,32,49,12,56,24,0.428571,8208,PASS_LAYOUT
+6,64,49,12,56,24,0.428571,15888,PASS_LAYOUT

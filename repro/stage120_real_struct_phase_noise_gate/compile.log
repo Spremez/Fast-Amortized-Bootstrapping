@@ -1,0 +1,7 @@
+command: gcc -O2 -std=c11 -Wall -Wextra -o repro/stage120_real_struct_phase_noise_gate/real_struct_phase_noise_gate repro/stage120_real_struct_phase_noise_gate/real_struct_phase_noise_gate.c
+returncode: 0
+--- stdout ---
+
+--- stderr ---
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL
+N/ec localhost �Nt0

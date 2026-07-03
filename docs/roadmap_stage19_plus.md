@@ -4194,3 +4194,53 @@ phase terms and `4r` selector polynomials for k=1. For r=4, vector/dense byte
 ratio is 0.800000 and vector product ratio is 3.125000. Stage120 should build
 real C structs and allocation/phase tests outside the SAB hot path.
 ```
+
+## Stage 120: Real C Struct Phase/Noise Gate
+
+Goal:
+
+```text
+Advance the vector-shared lane-local route from object-semantics toy model to
+a standalone real C struct prototype with polynomial arrays and negacyclic
+phase/noise checks.
+```
+
+Theory basis:
+
+Stage119 selects vector-shared lane-local storage as the only viable shared-row
+semantics for independent LUT lanes. Stage120 must therefore check whether
+actual allocated C structs with polynomial arrays can preserve the phase
+equation before DFT/conversion or SAB integration. The prototype uses signed
+small coefficients and negacyclic multiplication; it is not a MOSFHET torus or
+FFT implementation.
+
+Tasks:
+
+- generate and compile a standalone C prototype;
+- allocate lane secrets and `2r` ciphertext-like vector-shared objects;
+- encrypt shared/body message polynomials using negacyclic mask-secret
+  products;
+- check noiseless phase equality for r=2/4/6, N=32/64, seeds 0..4;
+- inject bounded coefficient noise and check digit-sum noise bounds;
+- record requested bytes and layout ratios.
+
+Gate:
+
+- generated C prototype must compile;
+- every phase row must have zero noiseless mismatches;
+- every noisy row must have zero bound violations;
+- layout rows must preserve the vector-shared polynomial-count bound;
+- passing only opens DFT/conversion prototyping outside `sab_pvw_*`.
+
+Status:
+
+```text
+Completed. Stage120 records
+PASS_STAGE120_REAL_STRUCT_PHASE_NOISE_READY_DFT_PROTOTYPE_REQUIRED. The
+generated C prototype compiled and ran 30 phase/noise rows covering r=2/4/6,
+N=32/64, and seeds 0..4. All rows had zero noiseless mismatches and zero
+noise-bound violations; max observed noise equaled the configured bound 6.
+Layout rows passed with vector/dense polynomial ratios 0.666667 for r=2,
+0.533333 for r=4, and 0.428571 for r=6. The next stage is a DFT/conversion
+object prototype, still outside SAB hot paths.
+```
