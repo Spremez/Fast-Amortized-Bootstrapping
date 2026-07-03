@@ -792,3 +792,6 @@ Stage147 returns to the H14 r=6 backend route after Stage146 rejects promotion
 for r4-unrolled. It uses current-head `T_bootstrap/r` smoke and body-profile
 attribution only to route the next high-stat refresh; it does not change
 scalar/default behavior or final claim policy.
+Stage148 upgrades the H14 r=6 backend route from Stage147 smoke to repeated
+current-head performance plus final-output noise/resource evidence. It remains
+an explicit-path research gate and does not change scalar/default behavior.

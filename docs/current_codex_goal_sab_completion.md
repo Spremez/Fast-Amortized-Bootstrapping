@@ -337,3 +337,7 @@ The new research goal is complete only after a later stage records:
 51. Treat Stage147 as the H14 r=6 current-head route gate:
     `PASS_STAGE147_H14_R6_CURRENT_HEAD_ROUTE_CONFIRMED_HIGH_STAT_REFRESH_NEXT`. This stage confirms or rejects the next branch after
     r4-unrolled remains explicit-only; it is not a final speedup claim.
+52. Treat Stage148 as the H14 r=6 repeated refresh gate:
+    `PASS_STAGE148_H14_R6_REPEATED_REFRESH_PROMOTION_CANDIDATE`. This stage records current-head repeated/noise/resource
+    evidence for the explicit backend route; it is still not a default-path or
+    paper-level novelty claim by itself.

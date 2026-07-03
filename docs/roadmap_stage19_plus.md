@@ -5180,3 +5180,18 @@ Status:
 Completed. Stage147 records PASS_STAGE147_H14_R6_CURRENT_HEAD_ROUTE_CONFIRMED_HIGH_STAT_REFRESH_NEXT. It runs a current-head wrapper/backend
 r=6 full-SAB profile smoke and preserves scalar/default behavior.
 ```
+## Stage 148: H14 r=6 Repeated Refresh
+
+Goal:
+
+```text
+Upgrade the Stage147 current-head H14 r=6 backend smoke into repeated
+complete-SAB performance, final-output noise, and resource evidence.
+```
+
+Status:
+
+```text
+Completed. Stage148 records PASS_STAGE148_H14_R6_REPEATED_REFRESH_PROMOTION_CANDIDATE. It preserves scalar/default behavior
+and keeps the endpoint at amortized `T_bootstrap/r`.
+```

@@ -2021,3 +2021,19 @@ hypotheses:
       - current-head wrapper/backend r=6 correctness fails
       - backend route changes MAT EP schedule counts or copyback invariants
       - one-run smoke is used as a final speedup claim
+  - id: H72_h14_r6_repeated_refresh
+    statement: >
+      The current-head H14 backend FromDFT-add r=6 route should retain stable
+      full-SAB T_bootstrap/r improvement over the wrapper fused reference and
+      repeated scalar SAB, while passing final-output noise and resource gates.
+    mechanism: >
+      Backend materialization reduces inverse DFT/add lifecycle cost without
+      changing the sparse SAB schedule or scalar default path.
+    status: stage148_h14_r6_repeated_refresh
+    evidence: docs/stage148_h14_r6_repeated_refresh.md; experiments/stage148_h14_r6_repeated_refresh_plan.md; theory_checks/stage148_h14_repeated_stat_model.md; scripts/build_stage148_h14_r6_repeated_refresh.py; repro/stage148_h14_r6_repeated_refresh/summary.csv
+    current_decision: >
+      PASS_STAGE148_H14_R6_REPEATED_REFRESH_PROMOTION_CANDIDATE
+    failure_criteria:
+      - repeated backend-vs-wrapper T_bootstrap/r is not stable
+      - final-output noise has nonzero failures
+      - resource/key overhead is not reported with performance

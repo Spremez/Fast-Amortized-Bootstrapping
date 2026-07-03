@@ -1,0 +1,7 @@
+variant,run,status,r,h,r_prec,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,source_log
+wrapper_fused_from_dft_add,0,PASS,6,39,7,42735915.000,7122652.500,58445059.000,9740843.167,1.368,repro/stage148_h14_r6_repeated_refresh/perf_wrapper_fused_from_dft_add_run_0.log
+wrapper_fused_from_dft_add,1,PASS,6,39,7,42593777.000,7098962.833,58363830.000,9727305.000,1.370,repro/stage148_h14_r6_repeated_refresh/perf_wrapper_fused_from_dft_add_run_1.log
+wrapper_fused_from_dft_add,2,PASS,6,39,7,42961827.000,7160304.500,59068251.000,9844708.500,1.375,repro/stage148_h14_r6_repeated_refresh/perf_wrapper_fused_from_dft_add_run_2.log
+backend_from_dft_add,0,PASS,6,39,7,41072330.000,6845388.333,59186427.000,9864404.500,1.441,repro/stage148_h14_r6_repeated_refresh/perf_backend_from_dft_add_run_0.log
+backend_from_dft_add,1,PASS,6,39,7,41063202.000,6843867.000,58470935.000,9745155.833,1.424,repro/stage148_h14_r6_repeated_refresh/perf_backend_from_dft_add_run_1.log
+backend_from_dft_add,2,PASS,6,39,7,40949190.000,6824865.000,58673495.000,9778915.833,1.433,repro/stage148_h14_r6_repeated_refresh/perf_backend_from_dft_add_run_2.log

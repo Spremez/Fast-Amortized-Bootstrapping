@@ -2182,3 +2182,8 @@ Repro artifacts:
   - `experiments/stage147_h14_r6_current_head_route_plan.md`
   - `theory_checks/stage147_h14_route_model.md`
   - `repro/stage147_h14_r6_current_head_route/`
+- stage148_h14_r6_repeated_refresh: `PASS_STAGE148_H14_R6_REPEATED_REFRESH_PROMOTION_CANDIDATE`
+  - `docs/stage148_h14_r6_repeated_refresh.md`
+  - `experiments/stage148_h14_r6_repeated_refresh_plan.md`
+  - `theory_checks/stage148_h14_repeated_stat_model.md`
+  - `repro/stage148_h14_r6_repeated_refresh/`

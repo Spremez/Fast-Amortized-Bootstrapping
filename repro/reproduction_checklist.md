@@ -235,3 +235,4 @@
 - [x] Run Stage145 r4-unrolled promotion-policy audit; decision `WEAK_STAGE145_POLICY_KEEP_EXPLICIT_DO_NOT_PROMOTE` keeps the path explicit-only unless future repeated evidence becomes stable.
 - [x] Stage146 r4-unrolled variance-attribution pack recorded.
 - [x] Stage147 H14 r=6 current-head route pack recorded.
+- [x] Stage148 H14 r=6 repeated/noise/resource refresh pack recorded.
