@@ -312,3 +312,5 @@
   promotion decision, and next queue. Decision: `PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213`.
 - [x] Stage213 DFT wrapper integration preflight records guarded integration
   correctness, split timing, and next queue. Decision: `PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY`.
+- [x] Stage214 frontier native counter handoff records route ledger, access
+  status, credential-free native runner, and next queue. Decision: `PASS_STAGE214_FRONTIER_NATIVE_COUNTER_HANDOFF_READY`.

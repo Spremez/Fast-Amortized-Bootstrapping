@@ -604,3 +604,8 @@ reopening DFT theory without measured evidence.
 
 `PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY` moves the loop from standalone backend evidence to guarded MAT-EP
 integration evidence without claiming complete SAB speedup yet.
+### Stage214 frontier native counter handoff
+
+`PASS_STAGE214_FRONTIER_NATIVE_COUNTER_HANDOFF_READY`: local hot-path candidates are closed or proof-gated; the next
+executable route is Stage215 native hardware-counter execution using the
+handoff script.

@@ -1038,3 +1038,8 @@ by Stage211. The result is `PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213` and
 
 At commit `36ecfcc`, Stage213 records `PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY` for the default-off MAT-EP
 multirow DFT wrapper integration preflight.
+## Stage214 frontier native counter handoff
+
+At commit `d8d56ee`, Stage214 records the post-Stage213 route ledger and a
+credential-free native counter handoff pack. This keeps the research loop
+moving without storing secrets or claiming unsupported complete-SAB gains.

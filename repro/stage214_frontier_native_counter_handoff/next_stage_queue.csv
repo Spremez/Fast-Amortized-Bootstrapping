@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,evidence
+P0,stage215_native_counter_execution,Native Linux perf is available and credentials are handled outside committed artifacts.,Counter logs for r=2/r=4 split variants; parse load/store/FMA/cycle/cache counters.,ready_handoff,repro/stage214_frontier_native_counter_handoff/run_native_stage214_counters.sh
+P1,structured_compact_formal_proof,"A real proof addresses key distribution, closed state, and noise recurrence.",T1/T2/T4 proof gates before any implementation.,proof_only,repro/stage192_compact_admission_route_selection/summary.csv
+P2,new_hotpath_code,Stage215 counters or proof gates identify a new mechanism.,"Flag-only implementation, staged equivalence, complete-SAB T_bootstrap/r A/B, noise/resource.",denied_now,repro/stage214_frontier_native_counter_handoff/route_ledger.csv

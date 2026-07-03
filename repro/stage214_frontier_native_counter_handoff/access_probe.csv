@@ -1,0 +1,4 @@
+target,probe,status,detail
+delld@192.168.107.220:22,tcp_connect,reachable,Port reachability only; no credentials are used or stored.
+delld@192.168.107.220,ssh_batchmode,noninteractive_auth_not_configured,returncode=255; noninteractive authentication was not accepted
+local_wsl,perf_path,missing,

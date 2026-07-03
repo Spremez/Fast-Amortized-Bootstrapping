@@ -3078,3 +3078,13 @@ H10_stage213_dft_wrapper_integration_preflight:
   conclusion: >
     Stage213 integrates the multirow DFT wrapper behind
     MAT_TRGSW_MULTIROW_DFT_WRAPPER and records decision PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY.
+H10_stage214_frontier_native_counter_handoff:
+  status: native_counter_handoff_ready
+  evidence:
+    - repro/stage214_frontier_native_counter_handoff/route_ledger.csv
+    - repro/stage214_frontier_native_counter_handoff/proof_gate.csv
+    - docs/stage214_frontier_native_counter_handoff.md
+  conclusion: >
+    Stage214 records PASS_STAGE214_FRONTIER_NATIVE_COUNTER_HANDOFF_READY. No local hot-path code is authorized after
+    Stage213; native hardware counters or formal compact proof gates are the
+    next evidence routes.

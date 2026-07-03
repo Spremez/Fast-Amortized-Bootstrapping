@@ -1,0 +1,4 @@
+step,command,expected_output,gate
+build_baseline_and_candidate,bash repro/stage214_frontier_native_counter_handoff/run_native_stage214_counters.sh,native_perf_raw/*.log,Build baseline and MAT_TRGSW_MULTIROW_DFT_WRAPPER variants on native Linux.
+perf_split_variants,"perf stat -x, -e cycles,instructions,cache-references,cache-misses,branches,branch-misses,mem_inst_retired.all_loads,mem_inst_retired.all_stores,fp_arith_inst_retired.512b_packed_double,fp_arith_inst_retired.256b_packed_double",counter logs for r=2/r=4 torus_to_dft_rows and combined_current,Counters must be collected for both baseline and wrapper builds.
+admission_rule,compare wrapper against baseline,promotion only if combined_current improves and counters identify a new mechanism,No complete-SAB A/B is authorized from counters alone.

@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,detail
+G1_stage213_frontier_input,PASS,stage213_decision,PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY,repro/stage213_dft_wrapper_integration_preflight/proof_gate.csv,Stage214 starts after Stage213 denies complete-SAB A/B for the DFT wrapper.
+G2_route_ledger,PASS_RECORDED,route_count,7,repro/stage214_frontier_native_counter_handoff/route_ledger.csv,Local hot-path routes are classified to prevent reopening rejected mechanisms without new evidence.
+G3_local_counter_status,BLOCKED_LOCAL_WSL_NO_PERF,local_perf_path,,repro/stage214_frontier_native_counter_handoff/access_probe.csv,Local WSL cannot provide hardware-counter attribution when perf is missing.
+G4_remote_access_status,REMOTE_PORT_REACHABLE_AUTH_NOT_CONFIGURED,tcp;ssh_batchmode,reachable;noninteractive_auth_not_configured,repro/stage214_frontier_native_counter_handoff/access_probe.csv,Remote execution is possible only after safe non-interactive authentication or manual credential entry.
+G5_stage214_decision,PASS_STAGE214_FRONTIER_NATIVE_COUNTER_HANDOFF_READY,decision,PASS_STAGE214_FRONTIER_NATIVE_COUNTER_HANDOFF_READY,repro/stage214_frontier_native_counter_handoff/proof_gate.csv,"The next executable route is native hardware-counter collection or a new formal compact proof, not speculative local hot-path code."

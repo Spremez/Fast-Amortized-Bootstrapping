@@ -6246,3 +6246,20 @@ Status:
 Completed. Stage213 records PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY. The scalar/default path remains
 unchanged because `MAT_TRGSW_MULTIROW_DFT_WRAPPER` is default-off.
 ```
+## Stage 214: Frontier Native Counter Handoff
+
+Goal:
+
+```text
+Close the post-Stage213 local route ledger and prepare a credential-free native
+hardware-counter handoff for the next evidence route.
+```
+
+Status:
+
+```text
+Completed. Stage214 records PASS_STAGE214_FRONTIER_NATIVE_COUNTER_HANDOFF_READY. Local WSL lacks `perf`, CB5 SSH port
+is reachable, and non-interactive SSH auth is not configured in this session.
+No new hot-path code is authorized without Stage215 native counters or a new
+formal compact proof.
+```
