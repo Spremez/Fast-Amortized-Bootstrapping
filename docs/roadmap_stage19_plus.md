@@ -6122,3 +6122,25 @@ r=2/r=4 high-stat complete-SAB A/B and 20-seed noise gates pass, while
 hardware counters, full-text theorem anchors, resource refresh, and broader
 parameter/branch claims remain separate gates.
 ```
+## Stage 207: Current-Head Resource Refresh
+
+Goal:
+
+```text
+Refresh key size, keygen, and RSS costs for the current-head explicit
+PVW/MAT-SAB path after Stage206 high-stat complete-SAB evidence.
+```
+
+Status:
+
+```text
+Completed. Stage207 records PASS_STAGE207_CURRENT_HEAD_RESOURCE_REFRESH. For the same current-head path used
+by Stage206, r=2 has throughput speedup 1.299817x,
+key bytes ratio 1.013617x, keygen-per-lane ratio
+1.101017x, and max-RSS ratio 0.989539x.
+r=4 has throughput speedup 1.356445x,
+key bytes ratio 1.065349x, keygen-per-lane ratio
+1.197131x, and max-RSS ratio 0.997004x.
+The result is a current-head resource/cost refresh, not a statistical resource
+distribution or optimality proof.
+```

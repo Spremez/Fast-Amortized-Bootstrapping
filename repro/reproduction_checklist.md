@@ -295,3 +295,5 @@
 - [x] Stage204 source anchor intake records real-source metadata only and blocks theorem/equation overclaim.
 - [x] Stage205 current platform probe records WSL smoke, small-sample A/B, and invalid parallel-run rejection.
 - [x] Stage206 current-head high-stat A/B and noise evidence recorded with claim boundary.
+- [x] Stage207 current-head resource refresh links r=2/r=4 key-size, keygen,
+  and RSS costs to Stage206 `T_bootstrap/r` throughput evidence.

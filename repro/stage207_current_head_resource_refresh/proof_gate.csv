@@ -1,0 +1,5 @@
+gate,status,evidence,detail,remaining_gap
+G1_resource_raw,PASS,repro/stage207_current_head_resource_refresh/summary.csv,Current-head r=2/r=4 PVW and repeated-scalar resource rows exist.,"Single sample only; use as cost refresh, not statistical resource distribution."
+G2_cost_bound,PASS_COST_BOUNDED,repro/stage207_current_head_resource_refresh/resource_comparison.csv,PVW key bytes stay within 1.10x repeated scalar and max RSS is not higher in this sample.,Keygen per lane is slower and must be reported with throughput claims.
+G3_throughput_with_cost,PASS_THROUGHPUT_COST_RECORDED,repro/stage207_current_head_resource_refresh/resource_comparison.csv,Stage206 T_bootstrap/r speedup is linked to Stage207 resource costs for the same current-head path.,"This does not prove AVX512 optimality, novelty, or broader branch support."
+G4_decision,PASS_STAGE207_CURRENT_HEAD_RESOURCE_REFRESH,repro/stage207_current_head_resource_refresh/proof_gate.csv,Resource refresh is sufficient for current-head engineering reporting.,Profile attribution and full-text theorem anchors remain separate gates.

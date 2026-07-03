@@ -3013,3 +3013,12 @@ hypotheses:
       - min speedup for either r is not above 1.0
       - any 20-seed final-output noise gate has PVW, scalar, or pair failures
       - current-head engineering evidence is treated as theorem, novelty, or hardware-counter evidence
+H10_stage207_current_head_resource_refresh:
+  status: current_head_cost_recorded
+  evidence:
+    - repro/stage207_current_head_resource_refresh/resource_comparison.csv
+    - docs/stage207_current_head_resource_refresh.md
+  conclusion: >
+    Stage207 records current-head r=2/r=4 resource costs for the same explicit
+    active-buffer PVW/MAT-SAB path measured in Stage206. Key bytes and keygen
+    overhead must be reported with T_bootstrap/r throughput claims.

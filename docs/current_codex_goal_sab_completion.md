@@ -571,3 +571,8 @@ The new research goal is complete only after a later stage records:
     final-output noise has 20 seeds with zero PVW/scalar/pair failures. This
     remains current-head engineering evidence, not full theorem or novelty
     closure.
+### Stage207 current-head resource refresh
+
+`PASS_STAGE207_CURRENT_HEAD_RESOURCE_REFRESH` links Stage206 high-stat complete-SAB throughput to current-head
+resource cost evidence. The goal remains active because profile attribution,
+full-text theorem anchors, and broader branch/generalization gates remain open.

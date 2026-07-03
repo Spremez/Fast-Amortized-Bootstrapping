@@ -997,3 +997,13 @@ Stage206 records current-head high-stat evidence. Decision: `PASS_STAGE206_CURRE
 It upgrades the current active-buffer PVW/MAT-SAB path from Stage205
 small-sample support to r=2/r=4 10-run complete-SAB A/B plus 20-seed
 final-output noise evidence under `T_bootstrap/r`.
+## Stage207 current-head resource refresh
+
+Current-head resource accounting is refreshed at commit `2d6629c` for
+`spqlios_avx512`, `SET_2_3_2048`, binary, active-buffer PVW/MAT-SAB. r=2:
+throughput `T_bootstrap/r` speedup 1.299817x,
+key bytes ratio 1.013617x, keygen-per-lane ratio
+1.101017x, max-RSS ratio 0.989539x.
+r=4: throughput speedup 1.356445x, key
+bytes ratio 1.065349x, keygen-per-lane ratio
+1.197131x, max-RSS ratio 0.997004x.

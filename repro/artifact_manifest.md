@@ -2517,3 +2517,10 @@ Repro artifacts:
 - `theory_checks/stage206_statistical_claim_boundary.md`
 - `algorithm_variants/mat_rlwe_sab_highstat_current_head_evidence.md`
 - `repro/stage206_current_head_highstat/`
+- stage207_current_head_resource_refresh:
+  - `docs/stage207_current_head_resource_refresh.md`
+  - `experiments/stage207_current_head_resource_refresh_plan.md`
+  - `theory_checks/stage207_resource_claim_boundary.md`
+  - `algorithm_variants/mat_rlwe_sab_current_head_resource_refresh.md`
+  - `scripts/build_stage207_current_head_resource_refresh.py`
+  - `repro/stage207_current_head_resource_refresh/`
