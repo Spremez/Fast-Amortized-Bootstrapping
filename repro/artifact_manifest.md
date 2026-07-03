@@ -1808,3 +1808,19 @@ Repro artifacts:
 - `repro/stage122_structured_ep_arithmetic_gate/compile.log`
 - `repro/stage122_structured_ep_arithmetic_gate/structured_ep_arithmetic_gate.c`
 - `repro/stage122_structured_ep_arithmetic_gate/artifact_index.csv`
+
+## Stage 123 Production FFT Smoke Gate
+
+- `docs/stage123_production_fft_smoke_gate.md`
+- `experiments/stage123_production_fft_smoke_gate_plan.md`
+- `theory_checks/stage123_production_fft_smoke_model.md`
+- `algorithm_variants/mat_rlwe_sab_vector_shared_production_fft_smoke.md`
+- `scripts/build_stage123_production_fft_smoke_gate.py`
+- `repro/stage123_production_fft_smoke_gate/summary.csv`
+- `repro/stage123_production_fft_smoke_gate/smoke_results.csv`
+- `repro/stage123_production_fft_smoke_gate/layout_results.csv`
+- `repro/stage123_production_fft_smoke_gate/mosfhet_static_build.log`
+- `repro/stage123_production_fft_smoke_gate/compile_probe.log`
+- `repro/stage123_production_fft_smoke_gate/run_probe.log`
+- `repro/stage123_production_fft_smoke_gate/production_fft_smoke_gate.c`
+- `repro/stage123_production_fft_smoke_gate/artifact_index.csv`

@@ -4354,3 +4354,65 @@ every row as required. EP term ratios are 1.5x for r=2, 2.5x for r=4, and
 3.5x for r=6; selector-polynomial ratios are 1.125x, 1.5625x, and 2.041667x.
 The next valid stage is production torus/FFT smoke outside the SAB hot path.
 ```
+
+## Stage 123: Production FFT Smoke Gate
+
+Goal:
+
+```text
+Move the Stage122 vector-shared structured EP arithmetic across the actual
+MOSFHET `TorusPolynomial` and SPQLIOS DFT API boundary, still outside
+`sab_pvw_*` and without changing scalar/default SAB behavior.
+```
+
+Theory basis:
+
+Stage122 proves structured EP arithmetic only in an exact modular prototype.
+Stage123 checks the next finite boundary: the same structured EP semantics
+must survive MOSFHET torus polynomial multiplication, production
+`polynomial_torus_to_DFT`, `polynomial_mul_addto_DFT`, and
+`polynomial_DFT_to_torus`. Because SPQLIOS is floating point, the production
+DFT comparison is a smoke check with a fixed 1024 torus-unit tolerance, not a
+cryptographic noise proof.
+
+Tasks:
+
+- build MOSFHET `libmosfhet.a` with `FFT_LIB=spqlios`;
+- generate and compile a standalone structured EP smoke probe linked against
+  the production MOSFHET static library;
+- compare coefficient-domain structured EP phase with the dense
+  message-reference phase exactly;
+- compare production DFT structured EP phase with coefficient structured EP
+  within the fixed tolerance;
+- repeat the check with bounded added message noise;
+- keep body-only off-lane skipping as a required failing negative control;
+- record Stage122 term ratios at production smoke sizes.
+
+Gate:
+
+- MOSFHET static build must pass;
+- standalone probe must compile and run;
+- every coefficient-domain phase mismatch count must be zero;
+- every production DFT and noisy DFT mismatch count must be zero under the
+  declared tolerance;
+- every body-only off-lane skip negative-control row must fail;
+- layout rows must preserve structured EP term ratios above 1.0;
+- passing only opens MOSFHET-adjacent type/API sketching outside the SAB hot
+  path.
+
+Status:
+
+```text
+Completed. Stage123 records
+PASS_STAGE123_PRODUCTION_FFT_SMOKE_READY_MOSFHET_TYPE_SKETCH_REQUIRED. The
+MOSFHET static library built with FFT_LIB=spqlios, the standalone probe linked
+against libmosfhet.a, and 7 production FFT smoke rows passed for r=2/4/6 at
+N=1024 plus r=2 at N=2048. Coefficient-domain structured EP mismatches are
+zero, production DFT and noisy DFT mismatches are zero under the fixed 1024
+torus-unit tolerance, and the maximum observed DFT gap is 619. Body-only
+off-lane skip remains rejected with 2048/4096/6144 failures depending on r and
+N. Term ratios remain 1.5x for r=2, 2.5x for r=4, and 3.5x for r=6. The next
+valid stage is a MOSFHET-adjacent vector-shared type/API sketch; this is still
+not gadget decomposition, AVX512 optimality, SAB schedule integration, or
+complete `T_bootstrap/r` evidence.
+```

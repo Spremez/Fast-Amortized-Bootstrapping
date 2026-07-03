@@ -68,7 +68,15 @@ active object route is now vector-shared lane-local storage. Stage120 then
 builds standalone vector-shared C structs with polynomial arrays and
 negacyclic phase/noise checks. This advances the route to DFT/conversion
 prototype readiness, still outside MOSFHET torus/FFT external products and
-outside SAB hot paths.
+outside SAB hot paths. Stage121 then proves exact DFT/conversion semantics in
+a modular prototype, Stage122 proves structured external-product arithmetic
+against a dense clean reference, and Stage123 moves that structured EP smoke
+through the actual MOSFHET torus/SPQLIOS DFT API. Stage123 passes with zero
+coefficient mismatches and zero DFT/noisy DFT mismatches under a fixed 1024
+torus-unit tolerance, with maximum observed DFT gap 619. This opens only a
+MOSFHET-adjacent vector-shared type/API sketch; it is not complete-SAB
+`T_total/r`, AVX512 optimality, gadget decomposition, or SAB hot-path
+integration evidence.
 
 ## Execution Route
 
@@ -153,7 +161,13 @@ outside SAB hot paths.
     equals exact DFT EP, noisy bounds pass, and body-only off-lane skipping
     fails as a negative control. The next valid step is production torus/FFT
     smoke outside `sab_pvw_*`.
-26. Preserve the current final-audit status:
+26. Treat Stage123 as the current production FFT smoke gate:
+    MOSFHET `FFT_LIB=spqlios` static build, standalone probe compile/run,
+    coefficient structured EP, production DFT structured EP, noisy DFT
+    structured EP, negative control, and term-ratio layout gates all pass.
+    The next valid step is MOSFHET-adjacent vector-shared type/API sketching
+    outside `sab_pvw_*`, not hot-path integration or a speedup claim.
+27. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

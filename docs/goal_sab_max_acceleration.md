@@ -614,3 +614,15 @@ are 1.5x, 2.5x, and 3.5x for r=2/4/6, while selector-polynomial ratios are
 1.125x, 1.5625x, and 2.041667x. This is structured arithmetic evidence only;
 production torus/FFT, gadget decomposition, AVX512 behavior, SAB schedule
 integration, and complete `T_bootstrap/r` timing remain open.
+
+Stage123 moves that structured external-product smoke through the actual
+MOSFHET torus/SPQLIOS DFT API. MOSFHET builds with `FFT_LIB=spqlios`, the
+standalone probe links against `libmosfhet.a`, and all 7 smoke rows pass for
+r=2/4/6 at N=1024 plus r=2 at N=2048. Coefficient structured EP has zero
+mismatches against the dense message-reference phase; production DFT and noisy
+DFT structured EP have zero mismatches under a fixed 1024 torus-unit tolerance,
+with maximum observed DFT gap 619. Body-only off-lane skipping remains
+rejected as a negative control. This removes the production FFT smoke blocker
+for MOSFHET-adjacent type/API design only; it is still not gadget
+decomposition, AVX512 optimality, SAB schedule integration, or complete
+`T_bootstrap/r` evidence.

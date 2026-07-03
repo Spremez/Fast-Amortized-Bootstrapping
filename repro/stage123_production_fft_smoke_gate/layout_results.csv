@@ -1,0 +1,5 @@
+r,N,dense_ep_terms,structured_ep_terms,ep_term_ratio,smoke_scope,status
+2,1024,6,4,1.500000,production_fft_smoke,PASS_LAYOUT
+4,1024,20,8,2.500000,production_fft_smoke,PASS_LAYOUT
+6,1024,42,12,3.500000,production_fft_smoke,PASS_LAYOUT
+2,2048,6,4,1.500000,production_fft_smoke,PASS_LAYOUT
