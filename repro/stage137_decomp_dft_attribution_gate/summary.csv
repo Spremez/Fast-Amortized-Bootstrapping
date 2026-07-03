@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,detail,next_action
+stage137_mosfhet_static_build,PASS,make_static_spqlios,true,repro/stage137_decomp_dft_attribution_gate/mosfhet_static_build.log,MOSFHET static build for attribution probe.,
+stage137_probe_compile,PASS,gcc_probe_compile,true,repro/stage137_decomp_dft_attribution_gate/compile_probe.log,Standalone attribution probe compiled.,
+stage137_probe_run,PASS,probe_returncode,0,repro/stage137_decomp_dft_attribution_gate/run_probe.log,Attribution probe executed.,
+stage137_correctness,PASS,correctness_rows,6,repro/stage137_decomp_dft_attribution_gate/correctness.csv,Split decompose-only plus DFT-only output matches current full decomp/DFT.,Do not interpret attribution if this fails.
+stage137_attribution_rows,PASS,bench_rows;attr_rows,90;6,repro/stage137_decomp_dft_attribution_gate/benchmark_samples.csv; repro/stage137_decomp_dft_attribution_gate/attribution.csv,"Current full, decompose-only, and DFT-only timings recorded.",
+stage137_r4_dft_fraction,RECORDED,min_r4_dft_fraction;max_required_dft_speedup_r4,0.862257;1.340453,repro/stage137_decomp_dft_attribution_gate/attribution.csv,DFT fraction and required DFT-only speedup for r=4.,
+stage137_decision,PASS_STAGE137_DFT_CONVERSION_DOMINANT_READY_DFT_ROUTE,promotion_policy,,repro/stage137_decomp_dft_attribution_gate/summary.csv; repro/stage137_decomp_dft_attribution_gate/attribution.csv,Stage137 decides the next decompose/DFT optimization route.,"If DFT-dominant, Stage138 should target DFT conversion count/layout directly."

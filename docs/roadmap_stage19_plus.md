@@ -4987,3 +4987,20 @@ Completed. Stage136 records FAIL_STAGE136_BATCHED_DECOMP_DFT_GATE. The minimum r
 decompose-DFT speedup is . This is a microbench-only result and does
 not prove full EP, RGSW, sparse schedule, or complete `T_bootstrap/r`.
 ```
+
+## Stage 137: Decompose/DFT Attribution Gate
+
+Goal:
+
+```text
+Split generalized lane-pair input decompose/DFT timing into decompose-only and
+DFT-only parts after Stage136 rejected simple batched decomposition.
+```
+
+Status:
+
+```text
+Completed. Stage137 records PASS_STAGE137_DFT_CONVERSION_DOMINANT_READY_DFT_ROUTE. For r=4, minimum DFT fraction is
+0.862257 and maximum required DFT-only speedup is 1.340453. This is an
+attribution gate only, not full EP or SAB acceleration.
+```

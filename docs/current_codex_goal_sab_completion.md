@@ -289,3 +289,8 @@ The new research goal is complete only after a later stage records:
     `FAIL_STAGE136_BATCHED_DECOMP_DFT_GATE`. It checks exact equivalence against `polynomial_decompose_i`
     and benchmarks current versus batched decompose/DFT. Minimum r=4 speedup is
     ; full SAB claims remain blocked.
+
+41. Treat Stage137 as the current decompose/DFT attribution gate:
+    `PASS_STAGE137_DFT_CONVERSION_DOMINANT_READY_DFT_ROUTE`. It measures current full decompose/DFT, decompose-only, and
+    DFT-only timing. For r=4, minimum DFT fraction is 0.862257; full SAB
+    claims remain blocked.

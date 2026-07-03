@@ -744,3 +744,8 @@ Stage136 implements the first Stage135-targeted decompose/DFT optimization
 candidate. It tests exact batched decomposition plus unchanged DFT conversion.
 Decision: `FAIL_STAGE136_BATCHED_DECOMP_DFT_GATE` with minimum r=4 speedup . This determines whether
 to rebench full generalized EP or reject this batching route.
+
+Stage137 provides the next empirical route choice after Stage136: r=4 DFT
+fraction is at least 0.862257, with required DFT-only speedup up to
+1.340453. This determines whether Stage138 should target DFT conversion
+count/layout or a broader mixed memory-traffic path.

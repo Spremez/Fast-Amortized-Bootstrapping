@@ -2031,3 +2031,21 @@ Repro artifacts:
 - `repro/stage136_batched_decomp_dft_gate/run_probe.log`
 - `repro/stage136_batched_decomp_dft_gate/batched_decomp_dft_gate.c`
 - `repro/stage136_batched_decomp_dft_gate/artifact_index.csv`
+
+## Stage 137 Decompose/DFT Attribution Gate
+
+- `docs/stage137_decomp_dft_attribution_gate.md`
+- `experiments/stage137_decomp_dft_attribution_gate_plan.md`
+- `theory_checks/stage137_decomp_dft_attribution_model.md`
+- `algorithm_variants/mat_rlwe_sab_decomp_dft_attribution.md`
+- `scripts/build_stage137_decomp_dft_attribution_gate.py`
+- `repro/stage137_decomp_dft_attribution_gate/summary.csv`
+- `repro/stage137_decomp_dft_attribution_gate/correctness.csv`
+- `repro/stage137_decomp_dft_attribution_gate/benchmark_samples.csv`
+- `repro/stage137_decomp_dft_attribution_gate/benchmark_aggregate.csv`
+- `repro/stage137_decomp_dft_attribution_gate/attribution.csv`
+- `repro/stage137_decomp_dft_attribution_gate/mosfhet_static_build.log`
+- `repro/stage137_decomp_dft_attribution_gate/compile_probe.log`
+- `repro/stage137_decomp_dft_attribution_gate/run_probe.log`
+- `repro/stage137_decomp_dft_attribution_gate/decomp_dft_attribution_gate.c`
+- `repro/stage137_decomp_dft_attribution_gate/artifact_index.csv`

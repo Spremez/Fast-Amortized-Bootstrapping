@@ -1819,3 +1819,22 @@ hypotheses:
       - batched decomposition differs from `polynomial_decompose_i`
       - r=4 speedup misses Stage135 target but full EP/RGSW integration proceeds
       - this microbench is reported as complete SAB acceleration
+  - id: H61_decomp_dft_attribution
+    statement: >
+      After Stage136 rejects simple batched decomposition, the next valid route
+      depends on whether Stage134's generalized lane-pair decompose/DFT blocker
+      is dominated by DFT conversion or by decomposition/memory traffic.
+    mechanism: >
+      Stage137 measures current full decompose/DFT, decompose-only, and
+      DFT-only over precomputed digits, while verifying that split output
+      equals current output.
+    status: stage137_decomp_dft_attribution_gate
+    evidence: docs/stage137_decomp_dft_attribution_gate.md; experiments/stage137_decomp_dft_attribution_gate_plan.md; theory_checks/stage137_decomp_dft_attribution_model.md; algorithm_variants/mat_rlwe_sab_decomp_dft_attribution.md; scripts/build_stage137_decomp_dft_attribution_gate.py; repro/stage137_decomp_dft_attribution_gate/summary.csv; repro/stage137_decomp_dft_attribution_gate/correctness.csv; repro/stage137_decomp_dft_attribution_gate/attribution.csv; repro/stage137_decomp_dft_attribution_gate/artifact_index.csv
+    current_decision: >
+      Stage137 records PASS_STAGE137_DFT_CONVERSION_DOMINANT_READY_DFT_ROUTE. The minimum r=4 DFT fraction is 0.862257.
+      Stage138 must follow the measured attribution rather than assuming a
+      decompose-only fix.
+    failure_criteria:
+      - split output differs from current decompose/DFT
+      - DFT route is chosen without r=4 DFT-dominant evidence
+      - attribution microbench is reported as full SAB speedup
