@@ -6231,3 +6231,18 @@ Completed. Stage212 records PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213. The
 requiring a component win before any complete-SAB claim. See
 repro/stage212_multirow_fft_api_probe/comparison.csv for the promotion result.
 ```
+## Stage 213: DFT Wrapper Integration Preflight
+
+Goal:
+
+```text
+Integrate the Stage212 multirow reverse-DFT wrapper behind an explicit flag
+and decide whether complete-SAB A/B is authorized.
+```
+
+Status:
+
+```text
+Completed. Stage213 records PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY. The scalar/default path remains
+unchanged because `MAT_TRGSW_MULTIROW_DFT_WRAPPER` is default-off.
+```

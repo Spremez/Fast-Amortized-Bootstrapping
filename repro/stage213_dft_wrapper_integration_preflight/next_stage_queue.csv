@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,status,evidence
+P0,stage214_full_sab_ab_dft_wrapper,Stage213 integrated combined_current gate is positive for r=2 and r=4.,"Run complete SAB T_bootstrap/r A/B with scalar baseline, current PVW, and wrapper PVW.",not_ready,repro/stage213_dft_wrapper_integration_preflight/proof_gate.csv
+P1,native_counter_refresh,Hardware counter attribution is needed before paper-level microarchitectural claims.,Collect load/store/FMA/cycle/cache counters on native Linux.,blocked_locally,repro/stage213_dft_wrapper_integration_preflight/environment.csv

@@ -600,3 +600,7 @@ bounded Stage212 backend/API probe or native counter refresh.
 `PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213` records whether a local multirow reverse-DFT wrapper is worth
 carrying toward SAB integration. This keeps the loop executable and prevents
 reopening DFT theory without measured evidence.
+### Stage213 DFT wrapper integration preflight
+
+`PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY` moves the loop from standalone backend evidence to guarded MAT-EP
+integration evidence without claiming complete SAB speedup yet.

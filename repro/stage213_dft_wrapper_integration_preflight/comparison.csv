@@ -1,0 +1,5 @@
+r,variant,baseline_mean_per_call_us,wrapper_mean_per_call_us,speedup_vs_baseline,promotion_threshold,decision,evidence
+2,torus_to_dft_rows,8.099914844,8.581947168,0.943831823,1.010000,NOT_PROMOTED,repro/stage213_dft_wrapper_integration_preflight/aggregate.csv
+2,combined_current,14.697217481,15.263959961,0.962870547,1.010000,NOT_PROMOTED,repro/stage213_dft_wrapper_integration_preflight/aggregate.csv
+4,torus_to_dft_rows,13.686842285,14.474955176,0.945553345,1.010000,NOT_PROMOTED,repro/stage213_dft_wrapper_integration_preflight/aggregate.csv
+4,combined_current,32.666125098,35.525995020,0.919499231,1.010000,NOT_PROMOTED,repro/stage213_dft_wrapper_integration_preflight/aggregate.csv

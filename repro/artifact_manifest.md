@@ -2560,3 +2560,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage212_multirow_fft_api_probe.md`
   - `scripts/build_stage212_multirow_fft_api_probe.py`
   - `repro/stage212_multirow_fft_api_probe/`
+- stage213_dft_wrapper_integration_preflight:
+  - `docs/stage213_dft_wrapper_integration_preflight.md`
+  - `experiments/stage213_dft_wrapper_integration_preflight_plan.md`
+  - `theory_checks/stage213_dft_wrapper_integration_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage213_dft_wrapper_integration_preflight.md`
+  - `scripts/build_stage213_dft_wrapper_integration_preflight.py`
+  - `repro/stage213_dft_wrapper_integration_preflight/`

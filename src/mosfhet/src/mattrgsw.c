@@ -737,9 +737,13 @@ void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT s
   assert(scratch->rows >= rows);
 
   pvmtmlwe_decompose(scratch->dec, in, selector->Q, l);
+#if defined(MAT_TRGSW_MULTIROW_DFT_WRAPPER)
+  polynomial_torus_to_DFT_array(scratch->dec_dft, scratch->dec, rows);
+#else
   for (size_t i = 0; i < rows; i++){
     polynomial_torus_to_DFT(scratch->dec_dft[i], scratch->dec[i]);
   }
+#endif
   mat_trgsw_mul_pvmtmlwe_DFT_from_dec(out, selector, scratch->dec_dft);
 }
 
@@ -833,9 +837,13 @@ void mat_trgsw_mul_pvmtmlwe_sub_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in1,
   assert(scratch->rows >= rows);
 
   mat_trgsw_sub_decompose(in1, in2, scratch->dec, selector->Q, l);
+#if defined(MAT_TRGSW_MULTIROW_DFT_WRAPPER)
+  polynomial_torus_to_DFT_array(scratch->dec_dft, scratch->dec, rows);
+#else
   for (size_t i = 0; i < rows; i++){
     polynomial_torus_to_DFT(scratch->dec_dft[i], scratch->dec[i]);
   }
+#endif
   mat_trgsw_mul_pvmtmlwe_DFT_from_dec(out, selector, scratch->dec_dft);
 }
 

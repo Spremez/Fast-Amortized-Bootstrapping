@@ -379,6 +379,83 @@ void polynomial_torus_to_DFT(DFT_Polynomial out, TorusPolynomial in){
 #endif
 }
 
+#if defined(USE_SPQLIOS) && !defined(TORUS32) && defined(MAT_TRGSW_MULTIROW_DFT_WRAPPER)
+static __thread double ** torus_to_DFT_array_scratch[32] = {NULL};
+static __thread int torus_to_DFT_array_scratch_rows[32] = {0};
+
+static double ** polynomial_torus_to_DFT_array_scratch(int N, int rows){
+  const int idx = N >> 10;
+  assert(idx >= 0 && idx < 32);
+  if (torus_to_DFT_array_scratch_rows[idx] < rows){
+    double ** old = torus_to_DFT_array_scratch[idx];
+    const int old_rows = torus_to_DFT_array_scratch_rows[idx];
+    double ** next = (double **) safe_malloc(sizeof(double *) * rows);
+    for (size_t i = 0; i < rows; i++){
+      if (old != NULL && i < old_rows) next[i] = old[i];
+      else next[i] = (double *) safe_aligned_malloc(sizeof(double) * N);
+    }
+    free(old);
+    torus_to_DFT_array_scratch[idx] = next;
+    torus_to_DFT_array_scratch_rows[idx] = rows;
+  }
+  return torus_to_DFT_array_scratch[idx];
+}
+
+static inline void polynomial_torus64_to_double_row(double * out,
+    const uint64_t * in, int N){
+#ifdef AVX512_OPT
+  __m512d * out_v = (__m512d *) out;
+  const __m512i * in_v = (const __m512i *) in;
+  int i = 0;
+  for (; i + 8 <= N; i += 8){
+    out_v[i >> 3] = _mm512_cvtepi64_pd(in_v[i >> 3]);
+  }
+  const int64_t * in_i = (const int64_t *) in;
+  for (; i < N; i++) out[i] = (double) in_i[i];
+#else
+  const int64_t * in_i = (const int64_t *) in;
+  for (size_t i = 0; i < N; i++) out[i] = (double) in_i[i];
+#endif
+}
+
+static inline void polynomial_copy_double_row(double * out, const double * in,
+    int N){
+#ifdef AVX512_OPT
+  __m512d * out_v = (__m512d *) out;
+  const __m512d * in_v = (const __m512d *) in;
+  int i = 0;
+  for (; i + 8 <= N; i += 8) out_v[i >> 3] = in_v[i >> 3];
+  for (; i < N; i++) out[i] = in[i];
+#else
+  memcpy(out, in, sizeof(double) * N);
+#endif
+}
+#endif
+
+void polynomial_torus_to_DFT_array(DFT_Polynomial * out,
+    TorusPolynomial * in, int rows){
+  if (rows <= 0) return;
+  const int N = in[0]->N;
+  for (size_t i = 0; i < rows; i++){
+    assert(in[i]->N == N);
+    assert(out[i]->N == N);
+  }
+  (void) N;
+#if defined(USE_SPQLIOS) && !defined(TORUS32) && defined(MAT_TRGSW_MULTIROW_DFT_WRAPPER)
+  init_fft(N);
+  FFT_Processor_Spqlios proc = fft_proc[N >> 10];
+  double ** scratch = polynomial_torus_to_DFT_array_scratch(N, rows);
+  for (size_t i = 0; i < rows; i++){
+    polynomial_torus64_to_double_row(scratch[i],
+        (const uint64_t *) in[i]->coeffs, N);
+    ifft(proc->tables_reverse, scratch[i]);
+    polynomial_copy_double_row(out[i]->coeffs, scratch[i], N);
+  }
+#else
+  for (size_t i = 0; i < rows; i++) polynomial_torus_to_DFT(out[i], in[i]);
+#endif
+}
+
 
 /* out = in1*in2 */
 void polynomial_mul_DFT(DFT_Polynomial out, DFT_Polynomial in1, DFT_Polynomial in2){

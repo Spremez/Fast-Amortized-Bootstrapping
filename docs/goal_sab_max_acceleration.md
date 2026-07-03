@@ -1034,3 +1034,7 @@ multirow FFT/backend API probing.
 At commit `ebf7223`, Stage212 executes the bounded backend/API probe selected
 by Stage211. The result is `PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213` and does not change scalar SAB or
 `sab_pvw_*` production behavior.
+## Stage213 DFT wrapper integration preflight
+
+At commit `36ecfcc`, Stage213 records `PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY` for the default-off MAT-EP
+multirow DFT wrapper integration preflight.

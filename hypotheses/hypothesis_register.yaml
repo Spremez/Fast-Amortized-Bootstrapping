@@ -3069,3 +3069,12 @@ H10_stage212_multirow_fft_api_probe:
   conclusion: >
     Stage212 tests source-local multirow reverse-DFT wrappers against the
     current SPQLIOS execute_reverse_torus64 row loop. Decision: PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213.
+H10_stage213_dft_wrapper_integration_preflight:
+  status: guarded_integration_preflight_recorded
+  evidence:
+    - repro/stage213_dft_wrapper_integration_preflight/comparison.csv
+    - repro/stage213_dft_wrapper_integration_preflight/proof_gate.csv
+    - docs/stage213_dft_wrapper_integration_preflight.md
+  conclusion: >
+    Stage213 integrates the multirow DFT wrapper behind
+    MAT_TRGSW_MULTIROW_DFT_WRAPPER and records decision PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY.

@@ -310,3 +310,5 @@
   Stage212 backend/API probe or native counter refresh.
 - [x] Stage212 multirow FFT API probe records correctness, microbench,
   promotion decision, and next queue. Decision: `PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213`.
+- [x] Stage213 DFT wrapper integration preflight records guarded integration
+  correctness, split timing, and next queue. Decision: `PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY`.

@@ -297,6 +297,8 @@ void polynomial_DFT_to_torus(TorusPolynomial out, const DFT_Polynomial in);
 void polynomial_DFT_to_torus_add(TorusPolynomial out, const DFT_Polynomial in,
     TorusPolynomial addend);
 void polynomial_torus_to_DFT(DFT_Polynomial out, TorusPolynomial in);
+void polynomial_torus_to_DFT_array(DFT_Polynomial * out,
+    TorusPolynomial * in, int rows);
 void polynomial_mul_DFT(DFT_Polynomial out, DFT_Polynomial in1, DFT_Polynomial in2);
 void polynomial_mul_addto_DFT(DFT_Polynomial out, DFT_Polynomial in1, DFT_Polynomial in2);
 void polynomial_sub_DFT_polynomials(DFT_Polynomial out, DFT_Polynomial in1, DFT_Polynomial in2);

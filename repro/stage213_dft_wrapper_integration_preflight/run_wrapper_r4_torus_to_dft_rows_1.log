@@ -1,0 +1,9 @@
+command: stdbuf -o0 /mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/repro/stage213_dft_wrapper_integration_preflight/stage213_wrapper_r4_probe torus_to_dft_rows
+returncode: 0
+--- stdout ---
+CORRECT209,torus_to_dft_rows,combined_vs_split,0,0,PASS
+RESULT209,torus_to_dft_rows,4,2048,128,8,1024,14223740,13.890371094,4562030954040261711,PASS
+
+--- stderr ---
+wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
+N/e?c localhost ?N?t?0

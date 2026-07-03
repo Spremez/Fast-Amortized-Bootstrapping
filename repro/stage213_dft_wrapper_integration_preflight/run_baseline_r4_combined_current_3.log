@@ -1,0 +1,9 @@
+command: stdbuf -o0 /mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/repro/stage213_dft_wrapper_integration_preflight/stage213_baseline_r4_probe combined_current
+returncode: 0
+--- stdout ---
+CORRECT209,combined_current,combined_vs_split,0,0,PASS
+RESULT209,combined_current,4,2048,128,8,1024,33073139,32.297987305,17822576285093740891,PASS
+
+--- stderr ---
+wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
+N/e?c localhost ?N?t?0

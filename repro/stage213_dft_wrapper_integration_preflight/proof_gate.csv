@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,detail
+G1_stage212_entry,PASS,stage212_proof_present,1,repro/stage212_multirow_fft_api_probe/proof_gate.csv,Stage213 starts only after the standalone wrapper probe is promoted.
+G2_build_compile,PASS,build_rcs;compile_rcs,"{'baseline': 0, 'wrapper': 0};{('baseline', 2): 0, ('baseline', 4): 0, ('wrapper', 2): 0, ('wrapper', 4): 0}",repro/stage213_dft_wrapper_integration_preflight,Build and compile baseline and wrapper variants for r=2 and r=4.
+G3_correctness,PASS,all_mismatches,0,repro/stage213_dft_wrapper_integration_preflight/correctness.csv,Each integrated wrapper run must match the row-loop split reference.
+G4_component_and_combined_timing,PASS_COMPONENT_ONLY,min_dft_rows_speedup;min_combined_speedup,0.943831823;0.919499231,repro/stage213_dft_wrapper_integration_preflight/comparison.csv,Full SAB A/B is allowed only if combined_current improves for both r=2 and r=4.
+G5_stage213_decision,PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY,decision,PASS_STAGE213_DFT_WRAPPER_COMPONENT_ONLY,repro/stage213_dft_wrapper_integration_preflight/proof_gate.csv,Stage213 decides whether to run complete-SAB A/B for the wrapper path.
