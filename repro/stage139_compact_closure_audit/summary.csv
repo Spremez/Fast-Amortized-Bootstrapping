@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,detail,next_action
+stage139_mosfhet_static_build,PASS,make_static_spqlios_pvw,true,repro/stage139_compact_closure_audit/mosfhet_static_build.log,MOSFHET static build with PVW/MAT objects.,Fix build first.
+stage139_probe_compile,PASS,gcc_probe_compile,true,repro/stage139_compact_closure_audit/compile_probe.log,Standalone compact closure audit compiled.,
+stage139_probe_run,PASS,probe_returncode,0,repro/stage139_compact_closure_audit/run_probe.log,Compact closure audit executed.,
+stage139_closure_rows,PASS,closure_rows,6,repro/stage139_compact_closure_audit/closure.csv,"Closure rows recorded for r=2,4,6 and N=512,1024.",
+stage139_expected_nonclosure,PASS,min_mask_mismatches,512.000000,repro/stage139_compact_closure_audit/closure.csv,Compact diagonal output has lane-specific masks and is not directly PVW_TMLWE closed.,Do not wire this output directly into SAB state.
+stage139_decision,PASS_STAGE139_COMPACT_DIAGONAL_NOT_PVW_CLOSED_REDIRECT_FULL_MAT_ROUTE,route_policy,,repro/stage139_compact_closure_audit/summary.csv; repro/stage139_compact_closure_audit/closure.csv,Stage139 decides whether Stage138 compact output can be direct SAB state.,"Use full MAT PVW_TMLWE output or design shared-output compact, not diagonal compact, for Stage140."

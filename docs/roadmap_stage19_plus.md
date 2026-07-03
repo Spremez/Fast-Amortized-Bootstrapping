@@ -5021,3 +5021,20 @@ Completed. Stage138 records PASS_STAGE138_SHARED_MASK_COMPACT_PROMOTED_READY_SAB
 1.293981-1.491182. This remains a kernel gate; full SAB claims are still
 blocked until compact selectors are integrated into CMUX/RGSW/sparse_mul.
 ```
+
+## Stage 139: Compact Closure Audit
+
+Goal:
+
+```text
+Determine whether Stage138 diagonal compact output is directly usable as a
+PVW_TMLWE SAB state with one shared mask and r bodies.
+```
+
+Status:
+
+```text
+Completed. Stage139 records PASS_STAGE139_COMPACT_DIAGONAL_NOT_PVW_CLOSED_REDIRECT_FULL_MAT_ROUTE. Minimum mask mismatch count is
+512.000000; direct diagonal compact SAB integration is blocked. Stage140
+must use full MAT PVW_TMLWE output or design a shared-output compact kernel.
+```

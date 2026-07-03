@@ -755,3 +755,9 @@ Stage138 refines the comparison metric to the intended MAT-RLWE dimension:
 EP and production shared-mask compact EP, then records r=4 per-bit kernel
 speedup 1.293981-1.491182. The result supports Stage139 compact-SAB integration
 but is not yet a complete bootstrapping claim.
+
+Stage139 corrects the Stage138 promotion boundary. The compact diagonal kernel
+is useful for repeated independent lane-pair EP, but it is not directly closed
+as a PVW_TMLWE r-body ciphertext because lane output masks differ. The next
+algorithmic route is shared-output compact/full-MAT optimization, not direct
+diagonal compact insertion into SAB.

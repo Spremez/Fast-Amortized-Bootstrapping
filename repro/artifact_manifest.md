@@ -2067,3 +2067,18 @@ Repro artifacts:
 - `repro/stage138_shared_mask_compact_gate/run_probe.log`
 - `repro/stage138_shared_mask_compact_gate/shared_mask_compact_gate.c`
 - `repro/stage138_shared_mask_compact_gate/artifact_index.csv`
+
+## Stage 139 Compact Closure Audit
+
+- `docs/stage139_compact_closure_audit.md`
+- `experiments/stage139_compact_closure_audit_plan.md`
+- `theory_checks/stage139_compact_closure_model.md`
+- `algorithm_variants/mat_rlwe_sab_compact_closure_boundary.md`
+- `scripts/build_stage139_compact_closure_audit.py`
+- `repro/stage139_compact_closure_audit/summary.csv`
+- `repro/stage139_compact_closure_audit/closure.csv`
+- `repro/stage139_compact_closure_audit/mosfhet_static_build.log`
+- `repro/stage139_compact_closure_audit/compile_probe.log`
+- `repro/stage139_compact_closure_audit/run_probe.log`
+- `repro/stage139_compact_closure_audit/compact_closure_audit.c`
+- `repro/stage139_compact_closure_audit/artifact_index.csv`

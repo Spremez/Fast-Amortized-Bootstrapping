@@ -1857,3 +1857,20 @@ hypotheses:
       - shared-mask compact output differs from repeated lane-pair output
       - speedup is reported without amortizing by r
       - kernel speedup is claimed as complete SAB bootstrapping speedup
+  - id: H63_compact_diagonal_pvw_closure
+    statement: >
+      The Stage138 diagonal compact external product is not directly closed as
+      a PVW_TMLWE SAB accumulator unless all output lane masks are equal.
+    mechanism: >
+      PVW_TMLWE has one shared mask and r bodies. Diagonal compact EP emits a
+      lane-local mask for each lane, and a secret-key-dependent correction would
+      be needed to fold those masks into one shared mask.
+    status: stage139_compact_closure_audit
+    evidence: docs/stage139_compact_closure_audit.md; experiments/stage139_compact_closure_audit_plan.md; theory_checks/stage139_compact_closure_model.md; algorithm_variants/mat_rlwe_sab_compact_closure_boundary.md; scripts/build_stage139_compact_closure_audit.py; repro/stage139_compact_closure_audit/summary.csv; repro/stage139_compact_closure_audit/closure.csv; repro/stage139_compact_closure_audit/artifact_index.csv
+    current_decision: >
+      Stage139 records PASS_STAGE139_COMPACT_DIAGONAL_NOT_PVW_CLOSED_REDIRECT_FULL_MAT_ROUTE. The minimum mask mismatch count is
+      512.000000. Direct diagonal compact SAB integration is blocked.
+    failure_criteria:
+      - direct compact output is inserted into SAB without shared-mask closure
+      - Stage138 kernel speedup is claimed as r-body SAB speedup
+      - shared-output/full-MAT route is skipped

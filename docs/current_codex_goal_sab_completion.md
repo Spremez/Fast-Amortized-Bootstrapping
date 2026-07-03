@@ -299,3 +299,8 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE138_SHARED_MASK_COMPACT_PROMOTED_READY_SAB_INTEGRATION`. It compares repeated lane-pair EP against production compact
     shared-mask EP using `T_kernel/r`. For r=4, per-bit speedup is
     1.293981-1.491182; complete SAB claims remain blocked.
+
+43. Treat Stage139 as the compact closure audit:
+    `PASS_STAGE139_COMPACT_DIAGONAL_NOT_PVW_CLOSED_REDIRECT_FULL_MAT_ROUTE`. Minimum mask mismatch count is 512.000000. Direct diagonal
+    compact output is not a valid PVW_TMLWE SAB accumulator; Stage140 must
+    target full MAT/shared-output compact closure.
