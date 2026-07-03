@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,detail,next_action
+stage116_compile,PASS,gcc_compile,true,repro/stage116_toy_arithmetic_equivalence/compile.log,Generated toy arithmetic C probe compiled under WSL gcc.,Use only as toy arithmetic evidence.
+stage116_dense_vs_lane_local,PASS,dense_lane_mismatches,0;0;0;0;0;0,repro/stage116_toy_arithmetic_equivalence/equivalence_results.csv,Lane-local compact arithmetic matches dense reference for all tested coefficients.,"If this fails, stop the branch."
+stage116_negative_control,PASS_REJECTED_CURRENT_FORMAT,drop_failures,128;512;253;1009;384;1529,repro/stage116_toy_arithmetic_equivalence/equivalence_results.csv,Current-format drop-offlane negative control fails as expected.,Do not implement loop-only current-format skipping.
+stage116_product_model,PASS,min_dense_over_lane_terms,1.800000,repro/stage116_toy_arithmetic_equivalence/equivalence_results.csv,Dense product terms remain above lane-local terms for all toy cases.,Product model must still be validated in a selector/key prototype.
+stage116_decision,PASS_STAGE116_TOY_ARITH_EQUIV_SELECTOR_PROTOTYPE_REQUIRED,next_gate_policy,,repro/stage116_toy_arithmetic_equivalence/summary.csv,Toy arithmetic equivalence is finite evidence for opening a selector-format prototype only.,"Stage117 should design a MOSFHET-adjacent selector/key skeleton, still outside the SAB hot path."

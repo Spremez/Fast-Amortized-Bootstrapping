@@ -55,7 +55,10 @@ but still blocked from hot-path implementation until a measured toy
 representation gate exists. Stage115 runs that measured toy C gate and keeps
 the branch alive for a toy arithmetic equivalence prototype only; it still
 blocks MOSFHET hot-path integration, noise claims, AVX512 optimality claims,
-and complete-SAB speedup claims.
+and complete-SAB speedup claims. Stage116 runs that toy arithmetic gate and
+proves dense-vs-lane-local equality for the finite C model while keeping the
+current-format drop-offlane path rejected; the next step is a selector/key
+skeleton, not SAB integration.
 
 ## Execution Route
 
@@ -110,7 +113,11 @@ and complete-SAB speedup claims.
     generated C layout evidence passes for r=2/4/6/8 and N=2048/4096; target
     r=4,N=2048 requested-byte ratio is 1.100 and r=2,N=2048 is 1.333, so the
     only valid next step is toy arithmetic equivalence.
-19. Preserve the current final-audit status:
+19. Treat Stage116 as the current toy arithmetic gate:
+    dense-vs-lane-local mismatches are zero for r=2/4/6 and N=64/256, while
+    current-format drop-offlane fails as required; the only valid next step is
+    a selector/key skeleton outside the SAB hot path.
+20. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

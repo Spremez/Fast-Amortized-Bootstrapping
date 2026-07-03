@@ -1712,3 +1712,16 @@ Repro artifacts:
 - `repro/stage115_lane_local_toy_c_gate/compile.log`
 - `repro/stage115_lane_local_toy_c_gate/toy_lane_local_layout.c`
 - `repro/stage115_lane_local_toy_c_gate/artifact_index.csv`
+
+## Stage 116 Toy Arithmetic Equivalence
+
+- `docs/stage116_toy_arithmetic_equivalence.md`
+- `experiments/stage116_toy_arithmetic_equivalence_plan.md`
+- `theory_checks/stage116_lane_local_arithmetic_equivalence.md`
+- `algorithm_variants/mat_rlwe_sab_lane_local_arithmetic_model.md`
+- `scripts/build_stage116_toy_arithmetic_equivalence.py`
+- `repro/stage116_toy_arithmetic_equivalence/summary.csv`
+- `repro/stage116_toy_arithmetic_equivalence/equivalence_results.csv`
+- `repro/stage116_toy_arithmetic_equivalence/compile.log`
+- `repro/stage116_toy_arithmetic_equivalence/toy_arithmetic_equivalence.c`
+- `repro/stage116_toy_arithmetic_equivalence/artifact_index.csv`

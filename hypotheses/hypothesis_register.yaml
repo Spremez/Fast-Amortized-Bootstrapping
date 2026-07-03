@@ -1232,3 +1232,29 @@ hypotheses:
       - toy arithmetic equivalence fails against dense reference
       - noise/key switching costs erase the layout/product advantage
       - Stage115 resource evidence is used as a complete-SAB acceleration claim
+  - id: H40_lane_local_toy_arithmetic_equivalence
+    statement: >
+      Lane-local compact arithmetic can match dense shared-mask reference
+      phases in a finite C model, while current-format off-lane skipping
+      remains incorrect.
+    mechanism: >
+      Stage116 generates a deterministic C arithmetic probe. The dense
+      reference evaluates all shared-mask rows; the lane-local model evaluates
+      only the shared row and each lane's own body row under a changed
+      lane-local mask invariant; the current-format drop-offlane path keeps the
+      shared mask contribution but omits off-lane bodies as a negative control.
+    status: stage116_toy_arith_equiv_selector_prototype_required
+    evidence: docs/stage116_toy_arithmetic_equivalence.md; experiments/stage116_toy_arithmetic_equivalence_plan.md; theory_checks/stage116_lane_local_arithmetic_equivalence.md; algorithm_variants/mat_rlwe_sab_lane_local_arithmetic_model.md; scripts/build_stage116_toy_arithmetic_equivalence.py; repro/stage116_toy_arithmetic_equivalence/summary.csv; repro/stage116_toy_arithmetic_equivalence/equivalence_results.csv; repro/stage116_toy_arithmetic_equivalence/compile.log; repro/stage116_toy_arithmetic_equivalence/artifact_index.csv
+    current_decision: >
+      Stage116 records PASS_STAGE116_TOY_ARITH_EQUIV_SELECTOR_PROTOTYPE_REQUIRED.
+      Dense-vs-lane-local mismatches are zero for r=2/4/6 and N=64/256.
+      Current-format drop-offlane fails in every row, with drop failures
+      128/512 for r=2, 253/1009 for r=4, and 384/1529 for r=6. The minimum
+      dense-over-lane product ratio is 1.800. This opens only a selector/key
+      skeleton gate; it is not encryption, noise, AVX512, or complete-SAB
+      evidence.
+    failure_criteria:
+      - selector/key skeleton cannot represent the lane-local invariant
+      - encryption or phase tests fail once real polynomial ciphertext objects
+        replace the toy arithmetic arrays
+      - toy arithmetic evidence is used as a performance claim

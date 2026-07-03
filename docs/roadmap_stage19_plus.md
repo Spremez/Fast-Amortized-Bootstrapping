@@ -4005,3 +4005,51 @@ requested-byte ratio 1.333 and product-over-requested ratio 1.350. This keeps
 the branch alive only for Stage116 toy arithmetic equivalence; it is not
 complete-SAB or MOSFHET hot-path evidence.
 ```
+
+## Stage 116: Toy Arithmetic Equivalence Gate
+
+Goal:
+
+```text
+Prove in a finite C arithmetic model that the lane-local compact formula
+matches the dense shared-mask reference, while current-format off-lane
+skipping remains rejected.
+```
+
+Theory basis:
+
+Stage115 says the lane-local layout is not resource-fatal, but resource
+feasibility is not correctness. The next finite gate must therefore compare
+arithmetic phases directly. The dense reference evaluates all rows and relies
+on off-lane body terms to cancel shared-mask contributions. The lane-local
+candidate changes the mask invariant, so each lane may evaluate only the
+shared row and its own body row.
+
+Tasks:
+
+- generate a standalone C arithmetic probe;
+- test r=2/4/6 and N=64/256;
+- compare dense shared-mask reference, lane-local compact arithmetic, and
+  current-format drop-offlane negative control;
+- record product terms and mismatches.
+
+Gate:
+
+- lane-local compact arithmetic must have zero mismatches against dense
+  reference;
+- current-format drop-offlane must fail as a negative control;
+- dense product terms must remain above lane-local terms;
+- passing only opens a selector/key-format prototype, not SAB integration.
+
+Status:
+
+```text
+Completed. Stage116 records
+PASS_STAGE116_TOY_ARITH_EQUIV_SELECTOR_PROTOTYPE_REQUIRED. The generated C
+probe compiled and ran. Dense-vs-lane-local mismatches were zero for all
+r=2/4/6 and N=64/256 rows. The current-format drop-offlane negative control
+failed in every row, with drop failures 128/512 for r=2, 253/1009 for r=4,
+and 384/1529 for r=6. The minimum dense-over-lane product ratio is 1.800.
+This opens only a MOSFHET-adjacent selector/key skeleton gate; it still does
+not authorize hot-path integration or complete-SAB speedup claims.
+```

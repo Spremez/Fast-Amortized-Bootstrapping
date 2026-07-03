@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-115`. This label tracks the
+Current control-plane closure label: `Stage 19-116`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -464,6 +464,7 @@ Stage 112: selector/key-format gate. [completed; shared-mask counterexample reje
 Stage 113: r=2 selector simulator. [completed; lane-local multimask is phase-equivalent in toy algebra with 9 vs 5 product model, resource/noise model required]
 Stage 114: lane-local resource model. [completed; symbolic resource screen not fatal, min coarse product-over-accumulator ratio 1.350, toy representation required]
 Stage 115: lane-local toy C representation gate. [completed; generated C layout probe passed, r=4/N=2048 requested-byte ratio 1.100, next gate is toy arithmetic equivalence only]
+Stage 116: toy arithmetic equivalence gate. [completed; dense-vs-lane mismatches zero for r=2/4/6, current-format drop-offlane negative control fails, selector/key skeleton required]
 ```
 
 ## Current Closure Label
@@ -554,3 +555,10 @@ r=4,N=2048 requested-byte ratio is 1.100 while product terms drop from 25 to
 9; the r=2,N=2048 control row has requested-byte ratio 1.333. This keeps the
 lane-local branch alive only for a toy arithmetic equivalence prototype. It is
 not MOSFHET hot-path, noise, AVX512, or complete-SAB performance evidence.
+
+Stage116 runs that toy arithmetic equivalence prototype. Dense shared-mask
+reference and lane-local compact arithmetic match exactly for all tested
+r=2/4/6 and N=64/256 coefficients, while the current-format drop-offlane
+negative control fails in every row. This validates only the finite arithmetic
+invariant and opens a selector/key skeleton gate; it still does not prove
+encryption, noise, DFT layout, AVX512 performance, or complete-SAB speedup.
