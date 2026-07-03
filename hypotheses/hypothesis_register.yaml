@@ -1183,3 +1183,26 @@ hypotheses:
       - toy C representation cannot preserve phase equivalence
       - complete-SAB integration reintroduces dense cancellation or excessive
         post-processing cost
+  - id: H38_lane_local_resource_model
+    statement: >
+      The lane-local multimask body-linear candidate is not immediately ruled
+      out by symbolic accumulator/key-format overhead, but it remains blocked
+      until measured toy representation evidence exists.
+    mechanism: >
+      Stage114 models current k=1 PVW accumulators as `1+r` polynomial
+      components and lane-local multimask accumulators as `2r` components. It
+      compares current dense products `(1+r)^2` with lane-local target products
+      `1+2r` for r=2/4/6/8.
+    status: stage114_resource_not_fatal_toy_required
+    evidence: docs/stage114_lane_local_resource_model.md; experiments/stage114_lane_local_resource_model_plan.md; theory_checks/stage114_lane_local_resource_model.md; scripts/build_stage114_lane_local_resource_model.py; repro/stage114_lane_local_resource_model/summary.csv; repro/stage114_lane_local_resource_model/resource_model.csv; repro/stage114_lane_local_resource_model/artifact_index.csv
+    current_decision: >
+      Stage114 records PASS_STAGE114_RESOURCE_MODEL_NOT_FATAL_TOY_C_REQUIRED.
+      Lane-local accumulator polynomial ratios for r=2/4/6/8 are
+      1.333/1.600/1.714/1.778. Raw product ratios are
+      1.800/2.778/3.769/4.765. The minimum coarse product-over-accumulator
+      ratio is 1.350 at r=2. This keeps the branch alive only for a toy
+      representation and measured allocation/RSS gate.
+    failure_criteria:
+      - measured toy representation overhead exceeds the arithmetic advantage
+      - noise/key switching costs are not modeled
+      - symbolic resource ratios are used as performance claims

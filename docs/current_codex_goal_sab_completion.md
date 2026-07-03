@@ -49,7 +49,10 @@ the body-linear question into a selector/key-format gate and rejects
 current-format loop-only off-lane skipping via a concrete shared-mask phase
 counterexample. Stage113 then runs the finite r=2 simulator and finds the
 lane-local multimask new-format candidate phase-equivalent in toy algebra,
-while keeping it blocked on key/ciphertext/noise/resource modeling.
+while keeping it blocked on key/ciphertext/noise/resource modeling. Stage114
+adds the symbolic resource screen and finds the branch not immediately fatal,
+but still blocked from hot-path implementation until a measured toy
+representation gate exists.
 
 ## Execution Route
 
@@ -96,7 +99,11 @@ while keeping it blocked on key/ciphertext/noise/resource modeling.
     lane-local multimask passes r=2 phase simulation, but it changes resource
     semantics and must not be implemented in the hot path until Stage114
     key/ciphertext/noise modeling passes.
-17. Preserve the current final-audit status:
+17. Treat Stage114 as the current resource screen:
+    symbolic accumulator overhead does not immediately kill lane-local
+    multimask, but the next valid step is a measured toy representation, not
+    complete-SAB integration.
+18. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

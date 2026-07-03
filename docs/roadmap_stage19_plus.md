@@ -3914,3 +3914,44 @@ For r=2, the arithmetic product model is dense 9 products versus lane-local
 target 5 products, a raw 1.8x product-count ratio. This is only phase and
 arithmetic evidence; Stage114 must quantify key/ciphertext/noise/resource cost.
 ```
+
+## Stage 114: Lane-Local Resource Model
+
+Goal:
+
+```text
+Screen whether the Stage113 lane-local multimask candidate is immediately
+killed by symbolic accumulator/key-format resource overhead.
+```
+
+Theory basis:
+
+The current k=1 PVW accumulator has `1+r` polynomial components. A lane-local
+multimask representation has roughly `2r` accumulator components. The current
+dense external product has `(1+r)^2` product terms, while the lane-local
+body-linear target has `1+2r` terms. This symbolic comparison must be positive
+before any toy C representation is worth building.
+
+Tasks:
+
+- compute accumulator polynomial ratios for r=2/4/6/8;
+- compute dense versus lane-local product-count ratios;
+- compute a coarse product-over-accumulator screening ratio;
+- preserve the warning that this is not measured RSS or complete-SAB timing.
+
+Gate:
+
+- if the coarse ratio is below 1, stop the lane-local branch;
+- if not fatal, proceed only to a toy representation/resource measurement
+  gate, not hot-path integration.
+
+Status:
+
+```text
+Completed. Stage114 records
+PASS_STAGE114_RESOURCE_MODEL_NOT_FATAL_TOY_C_REQUIRED. Lane-local accumulator
+polynomial ratios for r=2/4/6/8 are 1.333/1.600/1.714/1.778, while raw product
+ratios are 1.800/2.778/3.769/4.765. The minimum coarse product-over-accumulator
+ratio is 1.350 at r=2. The branch is not immediately killed, but Stage115 must
+measure a toy representation before implementation.
+```

@@ -462,6 +462,7 @@ Stage 110: r=6 fulltile complete-SAB gate. [completed as one-run smoke; fulltile
 Stage 111: r=6 fulltile repeated gate. [completed; 3-run complete-SAB gate rejects fulltile promotion, repeated PVW ratio 0.974x versus tile4]
 Stage 112: selector/key-format gate. [completed; shared-mask counterexample rejects current-format loop-only body-linear skipping, new-format r=2 simulator required]
 Stage 113: r=2 selector simulator. [completed; lane-local multimask is phase-equivalent in toy algebra with 9 vs 5 product model, resource/noise model required]
+Stage 114: lane-local resource model. [completed; symbolic resource screen not fatal, min coarse product-over-accumulator ratio 1.350, toy representation required]
 ```
 
 ## Current Closure Label
@@ -539,3 +540,9 @@ Stage113 runs that r=2 simulator. It preserves dense reference phases
 toy algebra. The arithmetic model is 9 dense products versus 5 lane-local
 target products, but this is not a complete-SAB claim; the next gate is
 resource/key/noise modeling for the changed ciphertext format.
+
+Stage114 performs the first symbolic resource screen for that changed format.
+The accumulator component overhead is real, but the raw product-count advantage
+is not immediately erased: the minimum coarse product-over-accumulator ratio is
+1.350 at r=2. This only justifies a toy representation and measured allocation
+gate; it does not justify hot-path integration.

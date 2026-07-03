@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage114_resource_rows,PASS,r_values,2;4;6;8,repro/stage114_lane_local_resource_model/resource_model.csv,"Resource model covers r=2,4,6,8.","Use only as a symbolic model, not measured memory evidence."
+stage114_accumulator_overhead,PASS_RECORDED,lane_local/current_acc_polys,1.333;1.600;1.714;1.778,repro/stage114_lane_local_resource_model/resource_model.csv,Lane-local masks increase accumulator polynomial count.,A toy C representation must measure actual allocation/RSS.
+stage114_coarse_tradeoff,PASS_NOT_FATAL,min_product_over_accumulator_ratio,1.350,repro/stage114_lane_local_resource_model/resource_model.csv,Raw arithmetic gain remains above accumulator polynomial overhead in this symbolic model.,"Proceed only to toy representation, not hot-path integration."
+stage114_decision,PASS_STAGE114_RESOURCE_MODEL_NOT_FATAL_TOY_C_REQUIRED,next_gate_policy,,repro/stage114_lane_local_resource_model/summary.csv,"Resource model does not immediately kill lane-local multimask, but implementation risk remains high.",Stage115 should build a small toy C representation or stop this branch.

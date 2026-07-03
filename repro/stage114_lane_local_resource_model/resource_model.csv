@@ -1,0 +1,5 @@
+r,current_acc_polys,lane_local_acc_polys,accumulator_poly_ratio,current_dense_products,lane_local_target_products,raw_product_ratio,current_selector_poly_model,lane_local_selector_poly_model,selector_poly_ratio,coarse_product_over_accumulator_ratio,status
+2,3,4,1.333,9,5,1.800,9,10,1.111,1.350,RESOURCE_MODEL_NOT_FATAL
+4,5,8,1.600,25,9,2.778,25,18,0.720,1.736,RESOURCE_MODEL_NOT_FATAL
+6,7,12,1.714,49,13,3.769,49,26,0.531,2.199,RESOURCE_MODEL_NOT_FATAL
+8,9,16,1.778,81,17,4.765,81,34,0.420,2.680,RESOURCE_MODEL_NOT_FATAL

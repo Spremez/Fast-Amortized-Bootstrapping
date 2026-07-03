@@ -1688,3 +1688,13 @@ Repro artifacts:
 - `repro/stage113_r2_selector_simulator/phase_simulation.csv`
 - `repro/stage113_r2_selector_simulator/product_model.csv`
 - `repro/stage113_r2_selector_simulator/artifact_index.csv`
+
+## Stage 114 Lane-Local Resource Model
+
+- `docs/stage114_lane_local_resource_model.md`
+- `experiments/stage114_lane_local_resource_model_plan.md`
+- `theory_checks/stage114_lane_local_resource_model.md`
+- `scripts/build_stage114_lane_local_resource_model.py`
+- `repro/stage114_lane_local_resource_model/summary.csv`
+- `repro/stage114_lane_local_resource_model/resource_model.csv`
+- `repro/stage114_lane_local_resource_model/artifact_index.csv`
