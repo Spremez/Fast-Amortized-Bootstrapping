@@ -590,3 +590,8 @@ post-processing detour.
 
 `PASS_STAGE210_SELECT_DFT_ROWS_PREFLIGHT_NO_HOTPATH_CODE` prevents theory drift and blind tuning: Stage211 must produce a
 concrete DFT/FFT dataflow preflight or reject implementation permission.
+### Stage211 FFT/DFT dataflow preflight
+
+`PASS_STAGE211_DFT_DATAFLOW_PREFLIGHT_DENY_HOTPATH_CODE` prevents the optimization loop from drifting into repeated DFT
+theory. The current code has no existing multirow DFT primitive; proceed to a
+bounded Stage212 backend/API probe or native counter refresh.

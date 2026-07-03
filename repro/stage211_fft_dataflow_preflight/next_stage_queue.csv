@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,evidence
+P0,stage212_multirow_fft_backend_api_probe,Stage211 admits backend/API design only.,"Define exact API, scratch layout, correctness oracle, and microbench for row groups before SAB integration.",ready,repro/stage211_fft_dataflow_preflight/mechanism_matrix.csv
+P1,native_perf_counter_refresh,Native Linux perf or configured remote host is available.,Collect load/store/FMA/cache/cycle counters for Stage209 split variants.,blocked_locally,repro/stage209_current_head_mat_ep_split/environment.csv
+P2,sab_hotpath_integration,Stage212 or native counters promote a concrete mechanism.,"Flag-only implementation, staged equivalence, full SAB A/B, noise/resource, and claim audit.",denied_now,repro/stage211_fft_dataflow_preflight/proof_gate.csv

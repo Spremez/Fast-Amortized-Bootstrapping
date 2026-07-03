@@ -3049,3 +3049,14 @@ H10_stage210_candidate_admission:
     Stage210 admits only a new DFT/FFT dataflow preflight. It denies reopening
     old DFT batching/direct-scale, direct sub-decompose, or addmul retile
     routes without new evidence.
+H10_stage211_fft_dataflow_preflight:
+  status: hotpath_code_denied_backend_api_probe_selected
+  evidence:
+    - repro/stage211_fft_dataflow_preflight/api_surface.csv
+    - repro/stage211_fft_dataflow_preflight/mechanism_matrix.csv
+    - docs/stage211_fft_dataflow_preflight.md
+  conclusion: >
+    Current-head source exposes only single-polynomial torus-to-DFT conversion
+    APIs for MAT-EP row conversion. Old same-format DFT routes remain denied;
+    the next admitted work is a standalone multirow FFT/backend API probe or
+    native counter refresh, not production SAB hot-path implementation.

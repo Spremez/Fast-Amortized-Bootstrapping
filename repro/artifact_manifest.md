@@ -2546,3 +2546,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage210_candidate_admission.md`
   - `scripts/build_stage210_candidate_admission.py`
   - `repro/stage210_candidate_admission/`
+- stage211_fft_dataflow_preflight:
+  - `docs/stage211_fft_dataflow_preflight.md`
+  - `experiments/stage211_fft_dataflow_preflight_plan.md`
+  - `theory_checks/stage211_fft_dataflow_preflight_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage211_fft_dataflow_preflight.md`
+  - `scripts/build_stage211_fft_dataflow_preflight.py`
+  - `repro/stage211_fft_dataflow_preflight/`

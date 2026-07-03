@@ -1,0 +1,6 @@
+gate,status,evidence,detail,remaining_gap
+G1_stage210_input,PASS,repro/stage210_candidate_admission/candidate_matrix.csv,Stage210 admits only C2 as preflight-only DFT/FFT dataflow work.,Stage211 must decide whether a concrete mechanism exists now.
+G2_api_surface,PASS_SINGLE_ROW_DFT_API_ONLY,repro/stage211_fft_dataflow_preflight/api_surface.csv,The current wrapper/backend exposes single-poly reverse DFT and row-loop call sites.,No existing multirow DFT primitive can be integrated directly.
+G3_prior_route_guard,PASS_OLD_DFT_ROUTES_REJECTED,repro/stage211_fft_dataflow_preflight/prior_gate_matrix.csv,"Same-format batching, direct-scale, batched decomp-to-DFT, and naive lazy-state routes are closed or proof-blocked.",Only genuinely new mechanisms may proceed.
+G4_mechanism_admission,PASS_BACKEND_API_DESIGN_ONLY,repro/stage211_fft_dataflow_preflight/mechanism_matrix.csv,"The only admitted route is a future standalone multirow FFT/backend API design, not current SAB hot-path code.",Needs a prototype API and microbench before integration.
+G5_stage211_decision,PASS_STAGE211_DFT_DATAFLOW_PREFLIGHT_DENY_HOTPATH_CODE,repro/stage211_fft_dataflow_preflight/proof_gate.csv,Stage211 prevents theory drift by denying local production hot-path edits when no current source-level primitive exists.,Proceed to Stage212 backend API sketch/probe or native counter refresh.

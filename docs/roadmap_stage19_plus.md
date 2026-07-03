@@ -6196,3 +6196,21 @@ Completed. Stage210 records PASS_STAGE210_SELECT_DFT_ROWS_PREFLIGHT_NO_HOTPATH_C
 direct sub-decompose, and addmul retile routes are denied for hot-path code.
 Only a genuinely new FFT/dataflow preflight is admitted as Stage211.
 ```
+## Stage 211: FFT/DFT Dataflow Preflight
+
+Goal:
+
+```text
+Audit whether the admitted DFT/FFT dataflow route has a current source-level
+mechanism concrete enough for production SAB hot-path implementation.
+```
+
+Status:
+
+```text
+Completed. Stage211 records PASS_STAGE211_DFT_DATAFLOW_PREFLIGHT_DENY_HOTPATH_CODE. The current code exposes single-row
+torus-to-DFT APIs and row-loop MAT-EP conversions; old same-format DFT routes
+remain denied by prior gates. The only admitted continuation is a standalone
+multirow FFT/backend API probe or native counter refresh, not production SAB
+hot-path edits at this stage.
+```

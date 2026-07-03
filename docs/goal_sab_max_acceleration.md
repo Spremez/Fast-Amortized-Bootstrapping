@@ -1023,3 +1023,9 @@ bounded implementation gate while preserving the rule that complete-SAB
 
 At commit `ddb80eb`, Stage210 selects DFT/FFT dataflow as the only admitted
 preflight route and explicitly denies speculative production hot-path code.
+## Stage211 FFT/DFT dataflow preflight
+
+At commit `7a461f5`, Stage211 keeps the MAT-RLWE SAB metric and current
+complete-SAB evidence intact while denying local hot-path DFT edits without a
+new backend primitive or proof. The next executable route is Stage212
+multirow FFT/backend API probing.
