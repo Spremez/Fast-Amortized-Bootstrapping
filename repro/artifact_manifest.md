@@ -2397,3 +2397,9 @@ Repro artifacts:
   - `theory_checks/stage187_compact_proof_obligations.md`
   - `algorithm_variants/mat_rlwe_sab_compact_proof_obligation_draft.md`
   - `repro/stage187_compact_proof_obligation_draft/`
+- stage188_scoped_manuscript_skeleton: `PASS_STAGE188_SCOPED_MANUSCRIPT_SKELETON_READY`
+  - `docs/stage188_scoped_manuscript_skeleton.md`
+  - `experiments/stage188_scoped_manuscript_skeleton_plan.md`
+  - `theory_checks/stage188_manuscript_claim_model.md`
+  - `algorithm_variants/mat_rlwe_sab_scoped_manuscript_skeleton.md`
+  - `repro/stage188_scoped_manuscript_skeleton/`

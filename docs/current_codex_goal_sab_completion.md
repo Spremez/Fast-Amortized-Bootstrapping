@@ -486,3 +486,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE187_COMPACT_PROOF_DRAFT_IMPLEMENTATION_STILL_DENIED`. Compact/shared-output MAT-SAB now has explicit theorem
     obligations and falsification gates. Only isolated proof probes are allowed;
     production SAB code remains denied.
+92. Treat Stage188 as the scoped manuscript skeleton:
+    `PASS_STAGE188_SCOPED_MANUSCRIPT_SKELETON_READY`. It is a writing artifact constrained by Stage185/187 claim
+    guards, not a final paper or proof. Final citation verification remains
+    required before submission-level claims.

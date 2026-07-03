@@ -5814,3 +5814,19 @@ Completed. Stage187 records PASS_STAGE187_COMPACT_PROOF_DRAFT_IMPLEMENTATION_STI
 keeps production compact SAB code denied until key distribution, closed-state,
 phase, and noise obligations pass.
 ```
+## Stage 188: Scoped Manuscript Skeleton
+
+Goal:
+
+```text
+Create a manuscript skeleton from the scoped exact PVW/MAT-SAB evidence while
+preserving forbidden-claim guardrails.
+```
+
+Status:
+
+```text
+Completed. Stage188 records PASS_STAGE188_SCOPED_MANUSCRIPT_SKELETON_READY. The skeleton reports the implemented
+exact-route `T_bootstrap/r` evidence and treats compact/shared-output MAT-SAB
+as proof-gated future work.
+```

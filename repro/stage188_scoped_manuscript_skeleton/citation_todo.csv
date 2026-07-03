@@ -1,0 +1,11 @@
+id,title,role,url,required_action
+GP2025_686,Fast amortized bootstrapping with small keys and polynomial noise overhead,Target baseline; current repository implements and extends this SAB line.,https://eprint.iacr.org/2025/686,cite_verify_before_submission
+PDMHSY2025_696,Faster amortized bootstrapping using the incomplete NTT for free,Direct post-686 adjacent work.,https://eprint.iacr.org/2025/696,cite_verify_before_submission
+GPL2023_014,"Amortized Bootstrapping Revisited: Simpler, Asymptotically-faster, Implemented",Algorithmic ancestor for practical amortized bootstrapping.,https://eprint.iacr.org/2023/014,cite_verify_before_submission
+DKMS2023_112,Faster Amortized FHEW bootstrapping using Ring Automorphisms,Adjacent amortized FHEW algorithmic work.,https://eprint.iacr.org/2023/112,cite_verify_before_submission
+LW2023_910,"Amortized Functional Bootstrapping in less than 7ms, with O~(1) polynomial multiplications",Adjacent batch functional bootstrapping.,https://eprint.iacr.org/2023/910,cite_verify_before_submission
+LW2023_BatchI_II,Batch Bootstrapping I/II,Alternative SIMD/batch bootstrapping framework.,https://link.springer.com/content/pdf/10.1007/978-3-031-30620-4_11.pdf,cite_verify_before_submission
+BGH2012_565,Packed Ciphertexts in LWE-Based Homomorphic Encryption,PVW packing ancestry.,https://eprint.iacr.org/2012/565,cite_verify_before_submission
+CGGI2018_421,TFHE: Fast Fully Homomorphic Encryption over the Torus,TFHE/GSW external-product baseline.,https://eprint.iacr.org/2018/421,cite_verify_before_submission
+DM2014_816,FHEW: Bootstrapping Homomorphic Encryption in less than a second,FHEW predecessor to TFHE/amortized FHEW lines.,https://eprint.iacr.org/2014/816,cite_verify_before_submission
+MS2018_ICALP,Ring Packing and Amortized FHEW Bootstrapping,Original amortized FHEW-style bootstrapping line.,https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ICALP.2018.100,cite_verify_before_submission

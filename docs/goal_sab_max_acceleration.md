@@ -932,3 +932,7 @@ not all satisfied.
 Stage187 records the compact proof obligation draft. Decision: `PASS_STAGE187_COMPACT_PROOF_DRAFT_IMPLEMENTATION_STILL_DENIED`.
 It turns the compact/shared-output route into a bounded theorem/gate program
 and keeps implementation denied.
+Stage188 records the scoped manuscript skeleton. Decision: `PASS_STAGE188_SCOPED_MANUSCRIPT_SKELETON_READY`.
+It packages the current implemented exact PVW/MAT-SAB result into a paper
+outline while preserving claim guards against optimality, compact
+implementation, and broad novelty claims.

@@ -2695,3 +2695,19 @@ hypotheses:
       - production compact SAB code is written before T1-T4 pass
       - kernel-only compact timing is reported as complete-SAB speedup
       - novelty is claimed before T1-T6 and citation-level review pass
+  - id: H112_scoped_manuscript_skeleton
+    statement: >
+      The current PVW/MAT-SAB evidence can support a scoped manuscript
+      skeleton only if the text stays within Stage185/187 claim guards.
+    mechanism: >
+      Stage188 maps sections, claims, citations, and experiment tables to
+      authoritative artifacts and runs a forbidden-claim guard over the
+      generated skeleton.
+    status: stage188_scoped_manuscript_skeleton
+    evidence: docs/stage188_scoped_manuscript_skeleton.md; experiments/stage188_scoped_manuscript_skeleton_plan.md; theory_checks/stage188_manuscript_claim_model.md; repro/stage188_scoped_manuscript_skeleton/summary.csv
+    current_decision: >
+      PASS_STAGE188_SCOPED_MANUSCRIPT_SKELETON_READY
+    failure_criteria:
+      - skeleton claims theoretical optimality
+      - skeleton claims implemented compact SAB or compact complete-SAB speedup
+      - final paper uses unverified citations

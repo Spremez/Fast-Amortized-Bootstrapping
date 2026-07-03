@@ -1,0 +1,5 @@
+table,rows,primary_metric,current_values,evidence
+Complete SAB amortized throughput,exact PVW/MAT-SAB r=6 versus repeated scalar,T_bootstrap/r,mean 1.131666667x; min 1.115000000x; CI-low 1.095041982x,repro/stage178_fullmat_perbit_frontier/per_bit_throughput.csv
+Component projection and Amdahl requirements,"sub-decompose, torus-to-DFT rows, addmul",component share and speedup required for 3pct full-SAB gain,sub 0.103963271;1.389195069; dft 0.169104610;1.208076492; addmul 0.221723249;1.151228774,repro/stage180_mat_ep_split_probe/derived_projection.csv
+Negative AVX512 sub-decompose ablation,baseline versus default-off AVX512 sub-decompose,combined_current speedup,0.972794296x,repro/stage181_sub_decomp_avx512_gate/comparison.csv
+Compact proof status,T1-T6 proof obligations,implementation permission,production SAB code denied,repro/stage187_compact_proof_obligation_draft/implementation_entry_rule.csv

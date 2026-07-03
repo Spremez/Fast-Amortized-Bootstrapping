@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage188_inputs,PASS,required_inputs_present,1,repro/stage185_research_repro_package_refresh/claim_table.csv; repro/stage187_compact_proof_obligation_draft/theorem_matrix.csv,"Stage188 consumes scoped claim ledger, compact proof obligations, literature matrix, and experiment evidence.",Repair missing inputs before manuscript use.
+stage188_manuscript_skeleton,PASS_DRAFTED,sections,7,repro/stage188_scoped_manuscript_skeleton/manuscript_skeleton.md,Manuscript skeleton is scoped to allowed current claims.,Use as outline only; final paper still needs citation verification.
+stage188_forbidden_claim_guard,PASS,forbidden_hits,0,repro/stage188_scoped_manuscript_skeleton/claim_guard.csv,Generated skeleton avoids forbidden compact/optimality claims.,Fix skeleton before commit if nonzero.
+stage188_decision,PASS_STAGE188_SCOPED_MANUSCRIPT_SKELETON_READY,route,scoped_manuscript_ready,repro/stage188_scoped_manuscript_skeleton/summary.csv,"The artifact is a manuscript skeleton, not a final paper or novelty proof.",Proceed to citation verification or targeted proof probes.
