@@ -455,6 +455,7 @@ Stage 103: related-work and novelty boundary review. [completed; real-source rel
 Stage 104: post-external final package refresh. [completed; Stage91 final package refreshed with Stage101-103 evidence and scoped claim boundaries]
 Stage 105: goal completion audit. [completed; all scoped requirements proven and stronger claims remain blocked]
 Stage 106: MAT-RLWE SAB research-loop reset. [completed as process reset; primary endpoint T_total/r fixed, existing evidence reinterpreted as amortized, theoretical optimality remains open]
+Stage 107: MAT kernel structure audit. [completed; current MAT kernels remain dense row-output `(r+1)^2`, Stage108 starts with V106-D layout/locality while V106-B body-linear remains proof-gated]
 ```
 
 ## Current Closure Label
@@ -483,3 +484,9 @@ r=2/r=4 speedups are valid amortized evidence because they compare equal
 processed lane counts, but theoretical MAT-RLWE SAB optimality remains open
 until lower-bound gap, counter/assembly attribution, correctness/noise/resource,
 and complete-SAB statistical gates are all recorded.
+
+Stage107 grounds that research track in the current implementation: the
+existing generic, r=2, r=4, r=6, and r=8 MAT kernels are specialized/tiled but
+still dense row-output accumulations. Therefore the immediate runnable path is
+V106-D layout/locality measurement, while the theory-critical V106-B body-linear
+MAT external product requires a selector/key invariant proof before code.

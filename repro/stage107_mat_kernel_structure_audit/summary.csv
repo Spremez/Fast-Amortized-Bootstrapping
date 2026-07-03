@@ -1,0 +1,4 @@
+gate,status,evidence,detail,next_action
+stage107_source_structure_audit,PASS,repro/stage107_mat_kernel_structure_audit/kernel_structure.csv,Current MAT kernels are AVX512-specialized/tiled but still dense row-output accumulations.,Do not claim body-linear optimality from current kernels.
+stage107_first_runnable_gate,SELECT_V106_D_FIRST_AND_V106_B_THEORY_PARALLEL,repro/stage107_mat_kernel_structure_audit/next_gate.csv,Run layout/locality gate first because it is runnable without key-format changes; keep body-linear external product as the required optimality path.,Start Stage108 with V106-D measurement or code behind an explicit flag.
+stage107_decision,PASS_STAGE107_DENSE_KERNEL_AUDIT_NEXT_GATE_SELECTED,repro/stage107_mat_kernel_structure_audit/summary.csv,The current implementation is not theoretical-optimality evidence; next work is a bounded runnable gate.,Implement and measure Stage108 V106-D; derive V106-B invariants before code.

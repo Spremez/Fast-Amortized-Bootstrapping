@@ -1025,3 +1025,29 @@ hypotheses:
         SAB samples and model-gap attribution
       - theory discussion continues for more than two iterations without a
         runnable kernel or complete-SAB experiment gate
+  - id: H32_current_mat_kernel_dense_structure
+    statement: >
+      The current MAT external-product implementation should not be treated as
+      body-linear or theoretical-optimality evidence because its source-level
+      row/output structure remains dense `(r+1)^2` for k=1,l=1.
+    mechanism: >
+      Stage107 audits `src/mosfhet/src/mattrgsw.c` and records that generic,
+      r=2, r=4, r=6, and r=8 paths all accumulate `(r+1)` decomposition rows
+      into `(r+1)` output polynomials. The AVX512 flags improve specialization,
+      row unrolling, and output tiling, but do not change the dense row-output
+      operation shape. Stage107 therefore selects V106-D layout/locality as the
+      first runnable gate and keeps V106-B body-linear external product behind
+      an invariant/proof gate.
+    status: stage107_dense_kernel_audit_next_gate_selected
+    evidence: docs/stage107_mat_kernel_structure_audit.md; scripts/build_stage107_mat_kernel_structure_audit.py; repro/stage107_mat_kernel_structure_audit/summary.csv; repro/stage107_mat_kernel_structure_audit/kernel_structure.csv; repro/stage107_mat_kernel_structure_audit/next_gate.csv; repro/stage107_mat_kernel_structure_audit/artifact_index.csv; src/mosfhet/src/mattrgsw.c
+    current_decision: >
+      Stage107 records PASS_STAGE107_DENSE_KERNEL_AUDIT_NEXT_GATE_SELECTED.
+      Current MAT kernels are AVX512-specialized/tiled but not body-linear.
+      The next non-theory-loop step is Stage108 V106-D layout/locality, while
+      the real optimality path V106-B requires selector/key invariant proof
+      before code.
+    failure_criteria:
+      - current dense kernels are cited as body-linear optimality evidence
+      - Stage108 starts by claiming a theorem instead of running a bounded gate
+      - V106-B changes selector/key semantics without proof review
+      - a layout-only microbench win is promoted without complete-SAB `T_total/r`

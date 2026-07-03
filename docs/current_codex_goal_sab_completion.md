@@ -24,7 +24,7 @@ The route is still scoped, not an unrestricted paper-level novelty claim:
 
 ## Active Goal
 
-Continue from the Stage106 state without changing scalar/default SAB behavior.
+Continue from the Stage107 state without changing scalar/default SAB behavior.
 The previous scoped systems/engineering package remains complete through
 Stage105, but Stage106 opens a new research objective: treat PVW/MAT-SAB as an
 r-body MAT-RLWE SAB algorithm and optimize the amortized complete-SAB latency
@@ -32,6 +32,9 @@ per processed plaintext lane/bit, `T_total/r`.
 
 Do not reinterpret Stage105 as theoretical optimality. Stage106 fixes the
 research loop and primary endpoint while leaving MAT-RLWE SAB optimality open.
+Stage107 audits the current MAT kernels and records that they remain dense
+row-output `(r+1)^2` implementations, so the next runnable gate is V106-D
+layout/locality before any stronger optimality claim.
 
 ## Execution Route
 
@@ -53,7 +56,12 @@ research loop and primary endpoint while leaving MAT-RLWE SAB optimality open.
 9. Treat Stage106 as the MAT-RLWE SAB research-loop reset:
    primary metric `T_total/r`, existing Stage36 speedups reinterpreted as
    amortized evidence, and theoretical optimality explicitly open.
-10. Preserve the current final-audit status:
+10. Treat Stage107 as the current source-level MAT kernel structure audit:
+    current r=2/r=4/r=6/r=8 kernels are AVX512-specialized but dense
+    row-output; Stage108 should run V106-D layout/locality as the first
+    runnable gate and keep V106-B body-linear external product behind an
+    invariant/proof gate.
+11. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

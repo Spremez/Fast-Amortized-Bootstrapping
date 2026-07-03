@@ -1,0 +1,8 @@
+kernel_id,kind,r,rows,outputs,complex_terms_per_coeff_vector,terms_per_lane,asymptotic_shape,body_linear,source_flag,source_status,interpretation
+generic_fallback,generic,2,3,3,9,4.500000,dense_row_output_O_r2,no,no flag,SOURCE_TOKEN_PRESENT,generic row/output loops
+r2_smallr_avx512,avx512_smallr,2,3,3,9,4.500000,dense_row_output_O_r2,no,MAT_TRGSW_AVX512_SMALLR_SPECIALIZED,SOURCE_TOKEN_PRESENT,manual r=2 specialization
+r4_smallr_avx512,avx512_smallr,4,5,5,25,6.250000,dense_row_output_O_r2,no,MAT_TRGSW_AVX512_SMALLR_SPECIALIZED,SOURCE_TOKEN_PRESENT,manual r=4 specialization
+r4_unrolled_rows,avx512_unrolled,4,5,5,25,6.250000,dense_row_output_O_r2,no,MAT_TRGSW_AVX512_R4_UNROLLED_ROWS,SOURCE_TOKEN_PRESENT,row pointers unrolled
+r6_rgt4_tiled,avx512_tiled,6,7,7,49,8.166667,dense_row_output_O_r2,no,MAT_TRGSW_AVX512_RGT4_FUSED,SOURCE_TOKEN_PRESENT,tile outputs by four
+r6_fulltile,avx512_fulltile,6,7,7,49,8.166667,dense_row_output_O_r2,no,MAT_TRGSW_AVX512_R6_FULLTILE,SOURCE_TOKEN_PRESENT,full output tile
+r8_rgt4_tiled,avx512_tiled,8,9,9,81,10.125000,dense_row_output_O_r2,no,MAT_TRGSW_AVX512_RGT4_FUSED,SOURCE_TOKEN_PRESENT,tile outputs by four

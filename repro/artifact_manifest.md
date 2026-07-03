@@ -1592,3 +1592,13 @@ Repro artifacts:
 - `repro/stage106_mat_rlwe_sab_research_loop/theory_bound_matrix.csv`
 - `repro/stage106_mat_rlwe_sab_research_loop/candidate_variant_matrix.csv`
 - `repro/stage106_mat_rlwe_sab_research_loop/artifact_index.csv`
+
+## Stage 107 MAT Kernel Structure Audit
+
+- `docs/stage107_mat_kernel_structure_audit.md`
+- `scripts/build_stage107_mat_kernel_structure_audit.py`
+- `repro/stage107_mat_kernel_structure_audit/summary.csv`
+- `repro/stage107_mat_kernel_structure_audit/kernel_structure.csv`
+- `repro/stage107_mat_kernel_structure_audit/next_gate.csv`
+- `repro/stage107_mat_kernel_structure_audit/artifact_index.csv`
+- `src/mosfhet/src/mattrgsw.c`

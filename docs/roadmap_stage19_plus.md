@@ -3618,3 +3618,37 @@ PASS_STAGE106_RESEARCH_LOOP_FIXED_OPTIMALITY_OPEN. Existing r=2/r=4 Stage36
 speedups are valid amortized complete-SAB evidence, the r=6 H14 path remains a
 candidate, and MAT-RLWE SAB theoretical optimality is explicitly open.
 ```
+
+## Stage 107: MAT Kernel Structure Audit
+
+Goal:
+
+```text
+Ground the next MAT-RLWE SAB step in the current source implementation and
+select a runnable gate instead of continuing theory-only discussion.
+```
+
+Tasks:
+
+- audit `src/mosfhet/src/mattrgsw.c` for generic, r=2, r=4, r=6, and r=8 MAT
+  external-product paths;
+- compute the source-level row/output term shape for k=1,l=1;
+- decide whether current AVX512 kernels are body-linear or dense row-output;
+- select the first runnable Stage108 gate.
+
+Gate:
+
+- if current kernels remain dense `(r+1)^2`, do not treat them as theoretical
+  optimality evidence;
+- select a next gate with explicit correctness, performance, and stop rules.
+
+Status:
+
+```text
+Completed. Stage107 records
+PASS_STAGE107_DENSE_KERNEL_AUDIT_NEXT_GATE_SELECTED. Current MAT kernels are
+AVX512-specialized/tiled but still dense row-output accumulations. Stage108
+should start with V106-D layout/locality as the first runnable gate, while
+V106-B body-linear external product remains the theory-dependent optimality
+path.
+```
