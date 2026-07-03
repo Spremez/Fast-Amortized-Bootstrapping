@@ -456,6 +456,7 @@ Stage 104: post-external final package refresh. [completed; Stage91 final packag
 Stage 105: goal completion audit. [completed; all scoped requirements proven and stronger claims remain blocked]
 Stage 106: MAT-RLWE SAB research-loop reset. [completed as process reset; primary endpoint T_total/r fixed, existing evidence reinterpreted as amortized, theoretical optimality remains open]
 Stage 107: MAT kernel structure audit. [completed; current MAT kernels remain dense row-output `(r+1)^2`, Stage108 starts with V106-D layout/locality while V106-B body-linear remains proof-gated]
+Stage 108: V106-D body-major layout gate. [completed; r=6 body-major kernel correctness passed but performance was negative/neutral versus existing tile4/fulltile layouts, not promoted]
 ```
 
 ## Current Closure Label
@@ -490,3 +491,11 @@ existing generic, r=2, r=4, r=6, and r=8 MAT kernels are specialized/tiled but
 still dense row-output accumulations. Therefore the immediate runnable path is
 V106-D layout/locality measurement, while the theory-critical V106-B body-linear
 MAT external product requires a selector/key invariant proof before code.
+
+Stage108 executes that V106-D gate. The explicit
+`MAT_TRGSW_AVX512_R6_BODYMAJOR` path preserves scalar/default behavior and
+passes the r>4 MAT/PVW kernel identity gate, but it is not a promotion
+candidate: r=6 full-output body-major is faster than tile4 but slower than
+fulltile, and r=6 DFT-output is slower than both tile4 and fulltile. This
+closes the blind body-major layout branch as a negative ablation and sends the
+next research step to V106-B invariant analysis or counter-backed attribution.

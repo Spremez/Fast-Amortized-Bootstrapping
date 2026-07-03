@@ -34,7 +34,10 @@ Do not reinterpret Stage105 as theoretical optimality. Stage106 fixes the
 research loop and primary endpoint while leaving MAT-RLWE SAB optimality open.
 Stage107 audits the current MAT kernels and records that they remain dense
 row-output `(r+1)^2` implementations, so the next runnable gate is V106-D
-layout/locality before any stronger optimality claim.
+layout/locality before any stronger optimality claim. Stage108 has now run
+that V106-D gate: the explicit r=6 body-major path is correct but not
+performance-positive against both existing r=6 layouts, so it is recorded as a
+negative ablation and is not promoted.
 
 ## Execution Route
 
@@ -58,10 +61,12 @@ layout/locality before any stronger optimality claim.
    amortized evidence, and theoretical optimality explicitly open.
 10. Treat Stage107 as the current source-level MAT kernel structure audit:
     current r=2/r=4/r=6/r=8 kernels are AVX512-specialized but dense
-    row-output; Stage108 should run V106-D layout/locality as the first
-    runnable gate and keep V106-B body-linear external product behind an
-    invariant/proof gate.
-11. Preserve the current final-audit status:
+    row-output.
+11. Treat Stage108 as the current V106-D result:
+    body-major r=6 preserves correctness but is negative/neutral versus the
+    existing tile4/fulltile kernels and must not be promoted without new
+    complete-SAB `T_total/r` evidence.
+12. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

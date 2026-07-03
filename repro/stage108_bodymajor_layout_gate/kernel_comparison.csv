@@ -1,0 +1,5 @@
+bench,r,tile4_mat_avg_us,fulltile_mat_avg_us,bodymajor_mat_avg_us,bodymajor_vs_tile4,bodymajor_vs_fulltile,tile4_speedup_vs_scalar,fulltile_speedup_vs_scalar,bodymajor_speedup_vs_scalar,tile4_log,fulltile_log,bodymajor_log
+dft_output,6,50.831,50.940,54.355,0.935,0.937,0.968,1.205,1.180,repro/stage108_bodymajor_layout_gate/tile4.log,repro/stage108_bodymajor_layout_gate/fulltile.log,repro/stage108_bodymajor_layout_gate/bodymajor.log
+dft_output,8,67.478,59.703,71.158,0.948,0.839,1.015,1.287,1.365,repro/stage108_bodymajor_layout_gate/tile4.log,repro/stage108_bodymajor_layout_gate/fulltile.log,repro/stage108_bodymajor_layout_gate/bodymajor.log
+full_output,6,76.533,57.666,62.575,1.223,0.922,1.166,1.431,1.380,repro/stage108_bodymajor_layout_gate/tile4.log,repro/stage108_bodymajor_layout_gate/fulltile.log,repro/stage108_bodymajor_layout_gate/bodymajor.log
+full_output,8,86.137,83.039,85.683,1.005,0.969,1.384,1.254,1.221,repro/stage108_bodymajor_layout_gate/tile4.log,repro/stage108_bodymajor_layout_gate/fulltile.log,repro/stage108_bodymajor_layout_gate/bodymajor.log

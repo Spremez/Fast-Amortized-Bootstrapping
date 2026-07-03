@@ -1602,3 +1602,19 @@ Repro artifacts:
 - `repro/stage107_mat_kernel_structure_audit/next_gate.csv`
 - `repro/stage107_mat_kernel_structure_audit/artifact_index.csv`
 - `src/mosfhet/src/mattrgsw.c`
+
+## Stage 108 Body-Major Layout Gate
+
+- `docs/stage108_bodymajor_layout_gate.md`
+- `experiments/stage108_bodymajor_layout_gate_plan.md`
+- `scripts/run_stage108_bodymajor_layout_gate.sh`
+- `scripts/build_stage108_bodymajor_layout_gate.py`
+- `repro/stage108_bodymajor_layout_gate/summary.csv`
+- `repro/stage108_bodymajor_layout_gate/kernel_comparison.csv`
+- `repro/stage108_bodymajor_layout_gate/full_sab_smoke.csv`
+- `repro/stage108_bodymajor_layout_gate/artifact_index.csv`
+- `repro/stage108_bodymajor_layout_gate/tile4.log`
+- `repro/stage108_bodymajor_layout_gate/fulltile.log`
+- `repro/stage108_bodymajor_layout_gate/bodymajor.log`
+- `src/mosfhet/Makefile.def`
+- `src/mosfhet/src/mattrgsw.c`

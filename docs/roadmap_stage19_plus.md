@@ -3652,3 +3652,50 @@ should start with V106-D layout/locality as the first runnable gate, while
 V106-B body-linear external product remains the theory-dependent optimality
 path.
 ```
+
+## Stage 108: V106-D Body-Major Layout Gate
+
+Goal:
+
+```text
+Run a bounded, implementation-backed layout/locality experiment for r=6 MAT
+external product before attempting any body-linear MAT-RLWE SAB optimality
+claim.
+```
+
+Theory basis:
+
+Stage107 shows the current MAT kernels are dense row-output accumulations. A
+layout-only path cannot change the asymptotic `(r+1)^2` encrypted
+row-output product count, but it can test whether coefficient/body traversal
+order is a practical limiter for r>4. This is the correct finite gate for
+V106-D because it does not change selector/key semantics.
+
+Tasks:
+
+- add `MAT_TRGSW_AVX512_R6_BODYMAJOR=true` as an explicit build flag;
+- implement an r=6, `k=1`, `l=1` body-major AVX512 MAT external-product path;
+- compare against the existing tile4 and fulltile r>4 kernels under the same
+  harness;
+- record correctness, kernel timing, promotion decision, and repro artifacts.
+
+Gate:
+
+- tile4, fulltile, and bodymajor must all pass the r>4 kernel identity gate;
+- bodymajor is performance-positive only if it beats both tile4 and fulltile
+  for r=6 kernel timing;
+- complete-SAB promotion still requires positive `T_total/r` evidence,
+  correctness/noise, and resource gates.
+
+Status:
+
+```text
+Completed. Stage108 records
+PASS_STAGE108_BODYMAJOR_NEGATIVE_NOT_PROMOTED. The body-major r=6 kernel is
+correct, but it does not beat both existing r=6 layouts: for r=6 full-output
+it is 1.223x faster than tile4 but 0.922x versus fulltile, and for r=6
+DFT-output it is 0.935x versus tile4 and 0.937x versus fulltile. The optional
+complete-SAB smoke was skipped because the kernel gate was not positive enough
+to justify promotion. Do not continue blind body-major tuning; route the next
+step to V106-B selector/key invariant analysis or counter-backed explanation.
+```

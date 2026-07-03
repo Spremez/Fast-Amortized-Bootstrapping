@@ -1051,3 +1051,31 @@ hypotheses:
       - Stage108 starts by claiming a theorem instead of running a bounded gate
       - V106-B changes selector/key semantics without proof review
       - a layout-only microbench win is promoted without complete-SAB `T_total/r`
+  - id: H33_bodymajor_r6_layout_gate
+    statement: >
+      A body-major r=6 MAT external-product traversal might improve locality
+      enough to beat the existing tile4 and fulltile r>4 kernels without
+      changing selector/key semantics.
+    mechanism: >
+      Stage108 adds `MAT_TRGSW_AVX512_R6_BODYMAJOR=true` as an explicit
+      k=1,l=1,r=6 path. The path computes the same dense row-output MAT
+      product but changes the loop order so one output body is accumulated at a
+      time, testing whether body-major coefficient traversal reduces load/store
+      pressure in the current AVX512 implementation.
+    status: stage108_negative_not_promoted
+    evidence: docs/stage108_bodymajor_layout_gate.md; experiments/stage108_bodymajor_layout_gate_plan.md; scripts/run_stage108_bodymajor_layout_gate.sh; scripts/build_stage108_bodymajor_layout_gate.py; repro/stage108_bodymajor_layout_gate/summary.csv; repro/stage108_bodymajor_layout_gate/kernel_comparison.csv; repro/stage108_bodymajor_layout_gate/full_sab_smoke.csv; repro/stage108_bodymajor_layout_gate/artifact_index.csv; src/mosfhet/Makefile.def; src/mosfhet/src/mattrgsw.c
+    current_decision: >
+      Stage108 records PASS_STAGE108_BODYMAJOR_NEGATIVE_NOT_PROMOTED. The
+      body-major r=6 kernel passes the r>4 MAT/PVW identity gate, but it does
+      not beat both existing r=6 layouts. For r=6 full-output it is 1.223x
+      faster than tile4 but 0.922x versus fulltile; for r=6 DFT-output it is
+      0.935x versus tile4 and 0.937x versus fulltile. The optional complete-SAB
+      smoke is skipped because the kernel gate is not promotion-positive.
+      Treat body-major as a negative ablation and do not continue blind
+      body-major tuning without native counters or a distinct invariant-backed
+      layout hypothesis.
+    failure_criteria:
+      - body-major correctness fails
+      - body-major does not beat both tile4 and fulltile in r=6 kernel timing
+      - a kernel-only signal is promoted without complete-SAB `T_total/r`
+      - future work repeats body-major loop-order tuning without new evidence

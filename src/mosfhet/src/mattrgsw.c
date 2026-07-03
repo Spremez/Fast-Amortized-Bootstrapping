@@ -601,6 +601,59 @@ static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r6_fulltile_avx512(
   }
 }
 #endif
+
+#if defined(MAT_TRGSW_AVX512_R6_BODYMAJOR)
+static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r6_bodymajor_avx512(
+    PVW_TMLWE_DFT out, MAT_TRGSW_DFT selector, DFT_Polynomial * dec_dft){
+  const int r = out->r;
+  const int outputs = r + 1;
+  const int rows = r + 1;
+  const int N = out->a[0]->N;
+  const int vec_half = N / 16;
+  __m512d * out_coeffs[7];
+  const __m512d * dec_coeffs[7];
+  const __m512d * sel_coeffs[7][7];
+
+  assert(out->k == 1);
+  assert(selector->T == 1);
+  assert(r == 6);
+
+  for (int idx = 0; idx < outputs; idx++){
+    out_coeffs[idx] = (__m512d *) mat_rgt4_poly_at(out, idx)->coeffs;
+  }
+  for (int row = 0; row < rows; row++){
+    dec_coeffs[row] = (const __m512d *) dec_dft[row]->coeffs;
+    for (int idx = 0; idx < outputs; idx++){
+      sel_coeffs[row][idx] =
+          (const __m512d *) mat_rgt4_poly_at(selector->samples[row], idx)->coeffs;
+    }
+  }
+
+  for (int idx = 0; idx < outputs; idx++){
+    __m512d * restrict dst = out_coeffs[idx];
+    for (int coeff = 0; coeff < vec_half; coeff++){
+      __m512d dec_re = dec_coeffs[0][coeff];
+      __m512d dec_im = dec_coeffs[0][coeff + vec_half];
+      const __m512d * restrict sel = sel_coeffs[0][idx];
+      __m512d acc_re, acc_im;
+
+      mat_avx512_complex_mul(dec_re, dec_im, sel[coeff],
+          sel[coeff + vec_half], &acc_re, &acc_im);
+
+      for (int row = 1; row < rows; row++){
+        dec_re = dec_coeffs[row][coeff];
+        dec_im = dec_coeffs[row][coeff + vec_half];
+        sel = sel_coeffs[row][idx];
+        mat_avx512_complex_addmul(dec_re, dec_im, sel[coeff],
+            sel[coeff + vec_half], &acc_re, &acc_im);
+      }
+
+      dst[coeff] = acc_re;
+      dst[coeff + vec_half] = acc_im;
+    }
+  }
+}
+#endif
 #endif
 #endif
 
@@ -639,6 +692,13 @@ void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT s
     return;
   }
 #if defined(MAT_TRGSW_AVX512_RGT4_FUSED)
+  #if defined(MAT_TRGSW_AVX512_R6_BODYMAJOR)
+  if(k == 1 && l == 1 && r == 6){
+    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r6_bodymajor_avx512(out, selector,
+        scratch->dec_dft);
+    return;
+  }
+  #endif
   #if defined(MAT_TRGSW_AVX512_R6_FULLTILE)
   if(k == 1 && l == 1 && r == 6){
     mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r6_fulltile_avx512(out, selector,
