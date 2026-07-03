@@ -5748,3 +5748,20 @@ MAT-aware AVX512 tiled/fulltile/bodymajor addmul variants, and prior gates
 reject the obvious alternatives. No new exact addmul hot-path code is allowed
 without a new assembly/counter-backed mechanism.
 ```
+## Stage 184: Exact-Route Closeout Claim Refresh
+
+Goal:
+
+```text
+Refresh the final exact-route claim ledger after Stage183 denies new exact
+addmul code permission.
+```
+
+Status:
+
+```text
+Completed. Stage184 records PASS_STAGE184_EXACT_ROUTE_CLOSEOUT_CLAIM_REFRESH. The only allowed current exact-route
+claim is scoped complete-SAB `T_bootstrap/r` speedup under recorded conditions.
+AVX512 theoretical optimality, sub-decompose improvement, and implemented
+compact MAT-SAB claims are denied.
+```

@@ -1,0 +1,4 @@
+route,state,required_unlock,why_not_now
+exact_full_mat_hot_path,closed_until_new_mechanism,assembly/counter-backed addmul or DFT mechanism with projected full-SAB gain,Stage181 rejected sub-decompose; Stage183 denies layout-only addmul code.
+structured_compact_shared_output,proof_literature_blocked,"selector distribution proof, closed shared-mask state, noise/resource model, real related-work review",Stage176/177 block implementation and strong novelty claims.
+paper_writeup,scoped_engineering_possible,use claim ledger wording and cite only verified sources,No broad novelty or theoretical-optimality claim is permitted.

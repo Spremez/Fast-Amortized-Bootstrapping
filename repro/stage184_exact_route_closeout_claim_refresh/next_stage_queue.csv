@@ -1,0 +1,3 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,185,paper/repro package refresh,User wants report or manuscript artifacts from current evidence.,Use Stage184 claim ledger; no novelty/optimality overclaim.,"If unsupported wording appears, reject before writing."
+P1,186,compact proof unlock,A proof package or new source evidence is supplied.,Security/API/noise/literature gates before any SAB code.,No implementation from toy evidence alone.

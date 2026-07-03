@@ -917,3 +917,6 @@ is closed until a new dataflow/proof mechanism appears.
 Stage183 records the addmul dataflow mechanism screen. Decision:
 `PASS_STAGE183_ADDMUL_DATAFLOW_SCREEN_NO_CODE_PERMISSION`. Exact addmul remains a large component, but no currently
 untested loop/layout mechanism passes the code-entry rule.
+Stage184 records the exact-route closeout claim refresh. Decision:
+`PASS_STAGE184_EXACT_ROUTE_CLOSEOUT_CLAIM_REFRESH`. Current exact-route work is closed for blind implementation;
+claim wording must follow the scoped `T_bootstrap/r` ledger.

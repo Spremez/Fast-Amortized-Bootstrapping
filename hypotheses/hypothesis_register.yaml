@@ -2628,3 +2628,20 @@ hypotheses:
       - new addmul code is written without a new measured mechanism
       - prior rejected layout variants are reopened under new names
       - source-level AVX512 presence is reported as theoretical optimality
+  - id: H108_exact_route_claim_closeout
+    statement: >
+      The exact full-MAT PVW/MAT-SAB route currently supports only scoped
+      complete-SAB amortized speedup claims; stronger AVX512 optimality,
+      sub-decompose, or compact-SAB claims are unsupported.
+    mechanism: >
+      Stage178-183 establish the primary endpoint, split hot components,
+      reject the AVX512 sub-decompose candidate, close blind exact retuning,
+      and deny new addmul code permission.
+    status: stage184_exact_route_closeout_claim_refresh
+    evidence: docs/stage184_exact_route_closeout_claim_refresh.md; experiments/stage184_exact_route_closeout_claim_refresh_plan.md; theory_checks/stage184_claim_boundary_model.md; repro/stage184_exact_route_closeout_claim_refresh/summary.csv
+    current_decision: >
+      PASS_STAGE184_EXACT_ROUTE_CLOSEOUT_CLAIM_REFRESH
+    failure_criteria:
+      - unsupported optimality or novelty wording enters reports
+      - exact hot-path code is reopened without a new mechanism
+      - compact SAB is described as implemented acceleration

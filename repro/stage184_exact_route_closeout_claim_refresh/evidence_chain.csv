@@ -1,0 +1,6 @@
+stage,decision,role,key_result,evidence
+178,PASS_STAGE178_FULLMAT_PERBIT_FRONTIER_SELECT_MAT_EP_AUDIT,primary endpoint,T_bootstrap/r speedup mean 1.131666667x; CI-low 1.095041982x,repro/stage178_fullmat_perbit_frontier/per_bit_throughput.csv
+180,PASS_STAGE180_SPLIT_PROBE_RECORDED,component split,sub/decomp requirement 1.389195069x; DFT requirement 1.208076492x; addmul requirement 1.151228774x,repro/stage180_mat_ep_split_probe/derived_projection.csv
+181,REJECT_STAGE181_SUB_DECOMP_AVX512_NOT_FASTER,candidate rejection,combined_current AVX512-subdecomp speedup 0.972794296x,repro/stage181_sub_decomp_avx512_gate/comparison.csv
+182,PASS_STAGE182_EXACT_PATH_NEGATIVE_FRONTIER_RECORDED,frontier policy,blind AVX512/layout retuning closed; new mechanism required before code,repro/stage182_exact_path_negative_frontier/summary.csv
+183,PASS_STAGE183_ADDMUL_DATAFLOW_SCREEN_NO_CODE_PERMISSION,mechanism screen,tiled/fulltile/bodymajor/streaming families are exhausted without a new mechanism,repro/stage183_addmul_dataflow_screen/summary.csv

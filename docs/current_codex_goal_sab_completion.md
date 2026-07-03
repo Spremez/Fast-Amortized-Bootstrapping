@@ -469,3 +469,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE183_ADDMUL_DATAFLOW_SCREEN_NO_CODE_PERMISSION`. The code already contains MAT-aware AVX512 tiled,
     fulltile, and bodymajor addmul variants. Prior gates reject those dataflow
     families, so no new exact addmul code is allowed without a new mechanism.
+88. Treat Stage184 as the exact-route claim closeout:
+    `PASS_STAGE184_EXACT_ROUTE_CLOSEOUT_CLAIM_REFRESH`. Scoped complete-SAB `T_bootstrap/r` speedup wording is
+    allowed; AVX512 theoretical optimality, sub-decompose speedup, and
+    implemented compact MAT-SAB claims are denied.

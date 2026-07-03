@@ -2373,3 +2373,9 @@ Repro artifacts:
   - `theory_checks/stage183_addmul_dataflow_model.md`
   - `algorithm_variants/mat_rlwe_sab_addmul_dataflow_screen.md`
   - `repro/stage183_addmul_dataflow_screen/`
+- stage184_exact_route_closeout_claim_refresh: `PASS_STAGE184_EXACT_ROUTE_CLOSEOUT_CLAIM_REFRESH`
+  - `docs/stage184_exact_route_closeout_claim_refresh.md`
+  - `experiments/stage184_exact_route_closeout_claim_refresh_plan.md`
+  - `theory_checks/stage184_claim_boundary_model.md`
+  - `algorithm_variants/mat_rlwe_sab_exact_route_closeout.md`
+  - `repro/stage184_exact_route_closeout_claim_refresh/`

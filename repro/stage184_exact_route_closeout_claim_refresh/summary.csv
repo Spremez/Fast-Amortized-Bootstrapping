@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage184_inputs,PASS,required_inputs_present,1,repro/stage178_fullmat_perbit_frontier/per_bit_throughput.csv; repro/stage183_addmul_dataflow_screen/summary.csv,Stage184 consumes the exact-route evidence chain through Stage183.,Repair missing evidence before claim refresh.
+stage184_claim_alignment,PASS,allowed_claim_count;denied_claim_count,1;3,repro/stage184_exact_route_closeout_claim_refresh/claim_ledger.csv,Only scoped complete-SAB amortized speedup is allowed; stronger claims are denied.,Use claim ledger wording in paper/report.
+stage184_exact_code_permission,DENY_NEW_EXACT_CODE,stage183_code_permission,denied,repro/stage183_addmul_dataflow_screen/summary.csv,No new exact AVX512 hot-path code should be written without a new mechanism.,Do not continue blind retuning.
+stage184_decision,PASS_STAGE184_EXACT_ROUTE_CLOSEOUT_CLAIM_REFRESH,route,closeout_or_proof_lane,repro/stage184_exact_route_closeout_claim_refresh/summary.csv,Exact-route closeout is refreshed; next work is paper packaging or proof-gated compact work.,Proceed according to next_stage_queue.
