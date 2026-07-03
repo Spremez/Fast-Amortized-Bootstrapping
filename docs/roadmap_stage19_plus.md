@@ -5558,3 +5558,18 @@ Completed. Stage171 records PASS_STAGE171_STRUCTURED_COMPACT_PROOF_ROUTE_NOT_IMP
 feasible under zero-cross logical constraints but remains blocked for
 production SAB until proof obligations close.
 ```
+## Stage 172: Frontier Closeout
+
+Goal:
+
+```text
+Close the Stage169-171 evidence loop, record allowed/blocked claims, and route
+the next bounded experiment.
+```
+
+Status:
+
+```text
+Completed. Stage172 records PASS_STAGE172_FRONTIER_CLOSEOUT_RECORDED. The next automatic engineering route
+is Stage174 from_DFT locality; Stage173 remains a separate proof route.
+```

@@ -2301,3 +2301,9 @@ Repro artifacts:
   - `theory_checks/stage171_structured_compact_keygen_model.md`
   - `algorithm_variants/mat_rlwe_sab_structured_compact_keygen_feasibility.md`
   - `repro/stage171_structured_compact_keygen_feasibility/`
+- stage172_frontier_closeout: `PASS_STAGE172_FRONTIER_CLOSEOUT_RECORDED`
+  - `docs/stage172_frontier_closeout.md`
+  - `experiments/stage172_frontier_closeout_plan.md`
+  - `theory_checks/stage172_claim_boundary.md`
+  - `algorithm_variants/mat_rlwe_sab_frontier_closeout.md`
+  - `repro/stage172_frontier_closeout/`

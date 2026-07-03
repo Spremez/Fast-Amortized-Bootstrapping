@@ -422,3 +422,6 @@ The new research goal is complete only after a later stage records:
 75. Treat Stage171 as structured compact proof-route gate:
     `PASS_STAGE171_STRUCTURED_COMPACT_PROOF_ROUTE_NOT_IMPLEMENTATION_READY`. It provides a bounded algebraic and Stage170-informed
     projection, not an implementation or final speedup claim.
+76. Treat Stage172 as the current claim boundary:
+    `PASS_STAGE172_FRONTIER_CLOSEOUT_RECORDED`. The next automatic engineering route is Stage174
+    from_DFT locality; Stage173 is proof work only if explicitly prioritized.

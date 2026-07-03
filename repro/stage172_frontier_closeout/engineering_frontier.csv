@@ -1,0 +1,4 @@
+rank,frontier,why_now,next_gate,risk
+P0,from_DFT locality and materialization cost,Stage170 shows from_DFT is about 35.21 us/call with high cache-miss and load/store-to-FP512 ratios.,Stage174 bounded from_DFT locality microbench; promote only with full-SAB A/B.,Backend-only wins may not move complete SAB if MAT EP or sparse schedule remains dominant.
+P1,structured compact keygen proof route,Stage171 gives an r=6 component upper bound but leaves five proof obligations open.,Stage173 formal equations plus finite/noise toy; no production code before proof.,May require a new security assumption or fail closed-state/API constraints.
+P2,full-SAB repeated statistics after any promoted variant,Stage169 is the current complete-SAB endpoint; every new change must return to it.,"Native no-perf repeated A/B with T_bootstrap/r, correctness, and resource reporting.",Microbench speedups can disappear at SAB schedule level.

@@ -2419,3 +2419,20 @@ hypotheses:
       - structured finite-field matrices do not project exactly
       - compact route is implemented before keygen/phase/noise/security proof
       - Stage171 projection is reported as complete-SAB benchmark speedup
+  - id: H96_frontier_closeout
+    statement: >
+      The current PVW/MAT-SAB evidence supports an r=6 complete-SAB engineering
+      throughput claim on CB5, but not theoretical optimality, implemented
+      compact SAB, or paper-level novelty.
+    mechanism: >
+      Stage169 supplies complete-SAB repeated A/B, Stage170 supplies split
+      component counters, and Stage171 separates structured compact into a
+      proof route with open obligations.
+    status: stage172_frontier_closeout
+    evidence: docs/stage172_frontier_closeout.md; experiments/stage172_frontier_closeout_plan.md; theory_checks/stage172_claim_boundary.md; repro/stage172_frontier_closeout/summary.csv
+    current_decision: >
+      PASS_STAGE172_FRONTIER_CLOSEOUT_RECORDED
+    failure_criteria:
+      - missing Stage169/170/171 input evidence
+      - component microbench evidence is written as complete-SAB speedup
+      - compact projection is written as implemented algorithmic acceleration

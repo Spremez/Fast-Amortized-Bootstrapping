@@ -1,0 +1,4 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,174,from_DFT locality experiment,Stage172 selects a concrete non-proof-loop engineering frontier from Stage170 counters.,"Design one bounded locality/layout/scratch candidate; require exactness, microbench win, then full-SAB A/B.","If microbench is neutral or full-SAB A/B does not improve, reject/neutral and do not keep tuning blindly."
+P1,173,structured compact formal phase/noise toy,Only if the project explicitly pursues new keygen/security proof work.,Formal equations plus finite/noise toy checks for compact distribution.,"If equations do not close, compact route remains blocked."
+P2,175,full-SAB claim refresh,After Stage174 or Stage173 produces a promotable variant.,Repeat Stage169-style native full-SAB A/B and update claim matrix.,No complete-SAB claim from microbench-only evidence.

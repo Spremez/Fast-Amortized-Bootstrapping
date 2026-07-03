@@ -882,3 +882,7 @@ Stage171 records structured compact keygen feasibility after Stage170.
 Decision: `PASS_STAGE171_STRUCTURED_COMPACT_PROOF_ROUTE_NOT_IMPLEMENTATION_READY`. It keeps compact MAT-SAB as a proof-driven possible
 algorithmic improvement and blocks implementation/claim escalation until
 keygen, phase, noise, security, and closed-state API obligations are resolved.
+Stage172 records the frontier closeout after Stage169/170/171. Decision:
+`PASS_STAGE172_FRONTIER_CLOSEOUT_RECORDED`. It allows the current r=6 complete-SAB engineering speedup claim
+under the recorded platform and blocks optimality, compact-SAB, and paper-level
+claims until their gates close.
