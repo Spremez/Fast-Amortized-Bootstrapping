@@ -788,3 +788,7 @@ Stage146 records r4-unrolled variance attribution after Stage145. It treats
 Stage144 run-level spread as a routing input, not as a reason to promote the
 r4-unrolled AVX512 path. All final acceleration wording remains bound to
 repeated complete-SAB `T_bootstrap/r` gates.
+Stage147 returns to the H14 r=6 backend route after Stage146 rejects promotion
+for r4-unrolled. It uses current-head `T_bootstrap/r` smoke and body-profile
+attribution only to route the next high-stat refresh; it does not change
+scalar/default behavior or final claim policy.

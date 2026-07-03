@@ -5164,3 +5164,19 @@ Completed. Stage146 records PASS_STAGE146_VARIANCE_ATTRIBUTED_KEEP_R4_EXPLICIT_R
 rows, runs one body-profile diagnostic pair, and keeps scalar/default behavior
 unchanged.
 ```
+## Stage 147: H14 r=6 Current-Head Route
+
+Goal:
+
+```text
+After the r4-unrolled branch remains explicit-only, verify whether the
+previously preferred H14 backend FromDFT-add r=6 path is still the right
+current-head candidate branch.
+```
+
+Status:
+
+```text
+Completed. Stage147 records PASS_STAGE147_H14_R6_CURRENT_HEAD_ROUTE_CONFIRMED_HIGH_STAT_REFRESH_NEXT. It runs a current-head wrapper/backend
+r=6 full-SAB profile smoke and preserves scalar/default behavior.
+```

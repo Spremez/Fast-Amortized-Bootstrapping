@@ -151,7 +151,7 @@ def append_once(path: Path, heading: str, block: str) -> None:
         return
     if text and not text.endswith("\n"):
         text += "\n"
-    write_text_lf(path, text + block.strip() + "\n")
+    write_text_lf(path, text + block.strip("\n") + "\n")
 
 
 def bash(command: str, timeout: int = 1800) -> subprocess.CompletedProcess[str]:

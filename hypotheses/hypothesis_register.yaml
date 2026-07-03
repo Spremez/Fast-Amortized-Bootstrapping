@@ -1989,7 +1989,7 @@ hypotheses:
     failure_criteria:
       - default path changes without a PASS repeated full-SAB gate
       - weak full-SAB evidence is written as a final speedup claim
-- id: H70_r4_unrolled_variance_attribution
+  - id: H70_r4_unrolled_variance_attribution
     statement: >
       The Stage144 weak r4-unrolled complete-SAB result is dominated by
       run-level variance or non-promotable local effects, so r4-unrolled must
@@ -2005,3 +2005,19 @@ hypotheses:
     failure_criteria:
       - profile or repeated rows are used as final speedup proof without a repeated complete-SAB gate
       - scalar/default SAB behavior changes during variance attribution
+  - id: H71_h14_r6_current_head_route
+    statement: >
+      After r4-unrolled remains explicit-only, the H14 backend FromDFT-add r=6
+      route should be the next current-head branch if it still beats the wrapper
+      fused reference under T_bootstrap/r smoke and preserves schedule counts.
+    mechanism: >
+      Backend FromDFT-add reduces inverse DFT materialization/add lifetime
+      without changing MAT EP call counts or scalar SAB behavior.
+    status: stage147_h14_r6_current_head_route
+    evidence: docs/stage147_h14_r6_current_head_route.md; experiments/stage147_h14_r6_current_head_route_plan.md; theory_checks/stage147_h14_route_model.md; scripts/build_stage147_h14_r6_current_head_route.py; repro/stage147_h14_r6_current_head_route/summary.csv
+    current_decision: >
+      PASS_STAGE147_H14_R6_CURRENT_HEAD_ROUTE_CONFIRMED_HIGH_STAT_REFRESH_NEXT
+    failure_criteria:
+      - current-head wrapper/backend r=6 correctness fails
+      - backend route changes MAT EP schedule counts or copyback invariants
+      - one-run smoke is used as a final speedup claim

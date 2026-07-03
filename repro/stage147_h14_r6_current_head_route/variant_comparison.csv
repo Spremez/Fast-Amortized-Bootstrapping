@@ -1,0 +1,11 @@
+metric,wrapper,backend,backend_over_wrapper,status,detail
+correctness,PASS,PASS,1,PASS,Both current-head r=6 explicit variants must pass full-SAB correctness.
+pvw_lane_speedup_backend_over_wrapper,7078412.500,6815693.000,1.038546,SMOKE_ONLY,Primary current-head smoke metric is T_bootstrap/r.
+body_full_speedup_backend_over_wrapper,42019022,40420213,1.039555,PROFILE_ONLY,Instrumented body hot-path comparison.
+from_dft_speedup_backend_over_wrapper,14854939,13117963,1.132412,PROFILE_ONLY,Backend callback should reduce inverse DFT materialization/add lifetime.
+mat_ep_speedup_backend_over_wrapper,19619048,19654922,0.998175,PROFILE_ONLY,MAT EP should be the same algorithmic kernel across these two variants.
+speedup_vs_scalar_wrapper,1.386,,1.386,SMOKE_ONLY,Wrapper variant speedup against repeated scalar SAB.
+speedup_vs_scalar_backend,,1.417,1.417,SMOKE_ONLY,Backend variant speedup against repeated scalar SAB.
+mat_ep_calls_equal,573440,573440,1,PASS,Backend materialization must not change SAB schedule counts.
+copyback_zero,0,0,1,PASS,Active-buffer route should keep copyback eliminated.
+cmux_add_delta_backend_minus_wrapper,0,0,0.000000,PROFILE_ONLY,Both variants are expected to keep explicit add timing near zero under fused epilogue.

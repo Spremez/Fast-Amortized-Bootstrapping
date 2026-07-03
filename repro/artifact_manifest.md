@@ -2177,3 +2177,8 @@ Repro artifacts:
   - `experiments/stage146_r4_unrolled_variance_attribution_plan.md`
   - `theory_checks/stage146_variance_model.md`
   - `repro/stage146_r4_unrolled_variance_attribution/`
+- stage147_h14_r6_current_head_route: `PASS_STAGE147_H14_R6_CURRENT_HEAD_ROUTE_CONFIRMED_HIGH_STAT_REFRESH_NEXT`
+  - `docs/stage147_h14_r6_current_head_route.md`
+  - `experiments/stage147_h14_r6_current_head_route_plan.md`
+  - `theory_checks/stage147_h14_route_model.md`
+  - `repro/stage147_h14_r6_current_head_route/`

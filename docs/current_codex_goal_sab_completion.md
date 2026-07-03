@@ -334,3 +334,6 @@ The new research goal is complete only after a later stage records:
 50. Treat Stage146 as the r4-unrolled variance-attribution gate:
     `PASS_STAGE146_VARIANCE_ATTRIBUTED_KEEP_R4_EXPLICIT_ROUTE_TO_SCHEDULE_OR_HIGHER_STAT`. This stage may guide the next research route, but it does not
     promote the r4-unrolled path or modify scalar/default SAB behavior.
+51. Treat Stage147 as the H14 r=6 current-head route gate:
+    `PASS_STAGE147_H14_R6_CURRENT_HEAD_ROUTE_CONFIRMED_HIGH_STAT_REFRESH_NEXT`. This stage confirms or rejects the next branch after
+    r4-unrolled remains explicit-only; it is not a final speedup claim.
