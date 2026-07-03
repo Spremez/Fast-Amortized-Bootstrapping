@@ -1,0 +1,5 @@
+frontier,decision,reason,evidence,reopen_condition
+compact_shared_output,PROOF_ONLY,implementation admission denied by T1/T2/T4 gates,repro/stage192_compact_admission_route_selection/summary.csv,T1/T2/T4 proof and then complete-SAB A/B.
+exact_addmul,NO_CODE,new dec-cache mechanism below 3pct complete-SAB gate; prior families rejected,repro/stage193_exact_addmul_dataflow_preflight/summary.csv,new dataflow reducing selector loads or FMA-equivalent work with counter evidence.
+exact_dft_conversion,NO_LOCAL_CODE,same-format count closed; backend batching/direct-scale neutral; only external backend primitive possible,repro/stage194_exact_dft_conversion_preflight/summary.csv,new backend primitive with exact equivalence and component speedup above Stage180 gate.
+paper_package,READY_SCOPED_NOT_FINAL,current evidence can support a scoped engineering report but not final broad claims,repro/stage195_scoped_paper_repro_refresh/scoped_report.md,citation verification and final venue-specific writing pass.

@@ -955,3 +955,6 @@ a DFT/conversion mechanism preflight.
 Stage194 records exact DFT/conversion preflight. Decision: `PASS_STAGE194_EXACT_DFT_PREFLIGHT_NO_CODE_ROUTE_SCOPED_REFRESH`.
 No local DFT/conversion implementation is authorized; the loop routes to
 scoped paper/repro refresh unless an external backend primitive is supplied.
+Stage195 records scoped paper/repro refresh. Decision: `PASS_STAGE195_SCOPED_PAPER_REPRO_REFRESH_READY_GOAL_ACTIVE`. It
+packages the current exact full-MAT result and blocked frontiers without
+claiming compact implementation, optimality, or broad novelty.

@@ -1,0 +1,7 @@
+item,status,evidence,detail
+primary_endpoint,SUPPORTED_SCOPED,repro/stage178_fullmat_perbit_frontier/per_bit_throughput.csv,T_bootstrap/r mean 1.131666667x; min 1.115000000x; CI-low 1.095041982x.
+component_budget,RECORDED,repro/stage180_mat_ep_split_probe/derived_projection.csv,sub 0.103963271;1.389195069; dft 0.169104610;1.208076492; addmul 0.221723249;1.151228774.
+manuscript_scope,DRAFT_READY_NOT_FINAL,repro/stage188_scoped_manuscript_skeleton/summary.csv,"A scoped skeleton exists, but final citation verification remains required."
+compact_admission,IMPLEMENTATION_DENIED,repro/stage192_compact_admission_route_selection/summary.csv,T1/T2/T4 block compact/shared-output production code.
+exact_addmul_frontier,NO_CODE_CANDIDATE,repro/stage193_exact_addmul_dataflow_preflight/summary.csv,No addmul candidate passed the complete-SAB projection gate.
+exact_dft_frontier,NO_LOCAL_CODE_CANDIDATE,repro/stage194_exact_dft_conversion_preflight/summary.csv,No local DFT/conversion candidate passed prior gates and budget checks.

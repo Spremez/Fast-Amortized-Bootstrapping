@@ -517,3 +517,7 @@ The new research goal is complete only after a later stage records:
     reduction is closed, backend batching/direct-scale candidates were neutral,
     and representation routes need closure/noise proof. Next route: Stage195
     scoped paper/repro refresh.
+99. Treat Stage195 as scoped paper/repro refresh:
+    `PASS_STAGE195_SCOPED_PAPER_REPRO_REFRESH_READY_GOAL_ACTIVE`. The current exact full-MAT `T_bootstrap/r` evidence is ready
+    for scoped reporting, but the broader research goal remains active and
+    stronger claims remain blocked.

@@ -2809,3 +2809,19 @@ hypotheses:
       - local DFT/conversion code is written despite no promoted mechanism
       - Stage163/174 neutral candidates are reopened without new mechanism
       - backend timing is reported as algorithmic count reduction
+  - id: H119_scoped_paper_repro_refresh
+    statement: >
+      After compact and exact local implementation frontiers are audited, the
+      current package can support only scoped exact full-MAT reporting while
+      keeping stronger claims blocked.
+    mechanism: >
+      Stage195 aggregates Stage178, Stage188, Stage192, Stage193, and Stage194
+      into a claim ledger, evidence chain, negative frontier, and report guard.
+    status: stage195_scoped_paper_repro_refresh
+    evidence: docs/stage195_scoped_paper_repro_refresh.md; experiments/stage195_scoped_paper_repro_refresh_plan.md; theory_checks/stage195_scoped_claim_model.md; repro/stage195_scoped_paper_repro_refresh/summary.csv
+    current_decision: >
+      PASS_STAGE195_SCOPED_PAPER_REPRO_REFRESH_READY_GOAL_ACTIVE
+    failure_criteria:
+      - report claims compact/shared-output implementation or complete-SAB speedup
+      - report claims optimality or broad novelty
+      - speedup wording uses kernel-only evidence instead of complete-SAB T_bootstrap/r

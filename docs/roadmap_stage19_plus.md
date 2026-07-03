@@ -5925,3 +5925,18 @@ Status:
 Completed. Stage194 records PASS_STAGE194_EXACT_DFT_PREFLIGHT_NO_CODE_ROUTE_SCOPED_REFRESH. No local DFT/conversion code candidate
 is promoted; route next to Stage195 scoped paper/repro refresh.
 ```
+## Stage 195: Scoped Paper/Repro Refresh
+
+Goal:
+
+```text
+Refresh the scoped paper/repro package after compact and exact local
+implementation frontiers were audited.
+```
+
+Status:
+
+```text
+Completed. Stage195 records PASS_STAGE195_SCOPED_PAPER_REPRO_REFRESH_READY_GOAL_ACTIVE. The package is ready for scoped
+reporting, while the broader research goal remains active.
+```

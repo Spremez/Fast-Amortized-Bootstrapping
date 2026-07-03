@@ -283,3 +283,4 @@
 - [x] Stage192 compact admission and route selection recorded.
 - [x] Stage193 exact addmul dataflow preflight recorded.
 - [x] Stage194 exact DFT/conversion preflight recorded.
+- [x] Stage195 scoped paper/repro refresh recorded.

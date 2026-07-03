@@ -1,0 +1,7 @@
+phrase,hits,status,evidence
+theoretically optimal,0,PASS,repro/stage195_scoped_paper_repro_refresh/scoped_report.md
+optimal avx512,0,PASS,repro/stage195_scoped_paper_repro_refresh/scoped_report.md
+implemented compact,0,PASS,repro/stage195_scoped_paper_repro_refresh/scoped_report.md
+compact sab speedup,0,PASS,repro/stage195_scoped_paper_repro_refresh/scoped_report.md
+novel compact,0,PASS,repro/stage195_scoped_paper_repro_refresh/scoped_report.md
+prove novelty,0,PASS,repro/stage195_scoped_paper_repro_refresh/scoped_report.md

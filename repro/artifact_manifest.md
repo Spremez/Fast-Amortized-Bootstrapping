@@ -2439,3 +2439,9 @@ Repro artifacts:
   - `theory_checks/stage194_exact_dft_conversion_model.md`
   - `algorithm_variants/mat_rlwe_sab_exact_dft_conversion_preflight.md`
   - `repro/stage194_exact_dft_conversion_preflight/`
+- stage195_scoped_paper_repro_refresh: `PASS_STAGE195_SCOPED_PAPER_REPRO_REFRESH_READY_GOAL_ACTIVE`
+  - `docs/stage195_scoped_paper_repro_refresh.md`
+  - `experiments/stage195_scoped_paper_repro_refresh_plan.md`
+  - `theory_checks/stage195_scoped_claim_model.md`
+  - `algorithm_variants/mat_rlwe_sab_scoped_paper_repro_refresh.md`
+  - `repro/stage195_scoped_paper_repro_refresh/`
