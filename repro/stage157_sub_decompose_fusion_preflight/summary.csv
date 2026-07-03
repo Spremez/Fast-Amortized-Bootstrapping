@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage157_build,PASS,gcc,D:\programs\LLVM\bin\gcc.EXE,repro/stage157_sub_decompose_fusion_preflight/build.log,Standalone C probe compile gate.,Install/use gcc before interpreting microbench if blocked.
+stage157_correctness,PASS,mismatches,0;0;0,repro/stage157_sub_decompose_fusion_preflight/correctness.csv,Fused sub-decompose must match separate sub then dense pvmtmlwe_decompose exactly.,Do not implement if any mismatch appears.
+stage157_microbench,PASS,target_speedup,1.090909,repro/stage157_sub_decompose_fusion_preflight/microbench_results.csv,Standalone loop preflight only; no full-SAB claim.,Only open production implementation if target speedup exceeds preflight threshold.
+stage157_decision,PASS_STAGE157_SUB_DECOMP_FUSION_PREFLIGHT_POSITIVE_IMPLEMENTATION_CANDIDATE,candidate_route,sub_decompose_fusion,repro/stage157_sub_decompose_fusion_preflight/decision.csv,Decide whether direct decompose(in2-in1) is worth implementing behind a flag.,"If positive, add an explicit MAT EP from precomputed decomposed-difference path; otherwise route to compact/cache work."

@@ -2224,3 +2224,4 @@ Repro artifacts:
 - index: `repro/stage154_bodymajor_fullsab_closeout/artifact_index.csv`
 - `repro/stage155_same_format_frontier_refresh/`: Stage155 profile-backed same-format frontier refresh outputs.
 - `repro/stage156_lazy_dft_closure_gate/`: Stage156 lazy-DFT closure gate outputs.
+- `repro/stage157_sub_decompose_fusion_preflight/`: Stage157 sub-decompose fusion preflight outputs.

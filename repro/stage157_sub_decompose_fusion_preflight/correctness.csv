@@ -1,0 +1,4 @@
+case,status,mismatches,first_mismatch,detail
+target_r6_N2048_l1_bg23,PASS,0,-1,
+control_r4_N2048_l1_bg23,PASS,0,-1,
+control_r6_N2048_l2_bg8,PASS,0,-1,

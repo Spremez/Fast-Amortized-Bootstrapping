@@ -1,0 +1,1 @@
+command: D:\programs\LLVM\bin\gcc.EXE -O3 -march=native D:\codexprograms\whFast-Amortized-Bootstrapping\Fast-Amortized-Bootstrapping\repro\stage157_sub_decompose_fusion_preflight\stage157_sub_decompose_probe.c -o D:\codexprograms\whFast-Amortized-Bootstrapping\Fast-Amortized-Bootstrapping\repro\stage157_sub_decompose_fusion_preflight\stage157_sub_decompose_probe.exe

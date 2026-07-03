@@ -373,3 +373,6 @@ The new research goal is complete only after a later stage records:
     `REJECT_STAGE156_NAIVE_LAZY_DFT_STATE_NOT_CLOSED`. It rejects the naive DFT-only accumulator route and routes
     next to exact decomposed-cache or compact/shared-source feasibility, not to
     direct `sab_pvw_*` integration.
+61. Treat Stage157 as the sub-decompose fusion preflight:
+    `PASS_STAGE157_SUB_DECOMP_FUSION_PREFLIGHT_POSITIVE_IMPLEMENTATION_CANDIDATE`. It gives or denies permission to implement direct
+    `decompose(in2-in1)` behind an explicit PVW/MAT-SAB flag.

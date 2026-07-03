@@ -2167,3 +2167,18 @@ hypotheses:
     failure_criteria:
       - a MAT external-product API accepting DFT/decomposed accumulator input already exists
       - decomposition is linearly maintainable under addition, negation, and negacyclic rotations
+  - id: H81_sub_decompose_fusion
+    statement: >
+      Directly computing decompose(in2-in1) may reduce same-format
+      PVW/MAT-SAB memory traffic enough to justify a guarded production path.
+    mechanism: >
+      The fused loop removes the intermediate PVW_TMLWE sub write/read while
+      preserving the exact dense pvmtmlwe_decompose formula.
+    status: stage157_sub_decompose_fusion_preflight
+    evidence: docs/stage157_sub_decompose_fusion_preflight.md; experiments/stage157_sub_decompose_fusion_preflight_plan.md; theory_checks/stage157_sub_decompose_fusion_model.md; algorithm_variants/mat_rlwe_sab_sub_decompose_fusion.md; repro/stage157_sub_decompose_fusion_preflight/summary.csv
+    current_decision: >
+      PASS_STAGE157_SUB_DECOMP_FUSION_PREFLIGHT_POSITIVE_IMPLEMENTATION_CANDIDATE
+    failure_criteria:
+      - fused digits mismatch separate sub then decomposition
+      - target standalone speedup is neutral or negative
+      - complete SAB T_bootstrap_per_lane does not improve after guarded integration

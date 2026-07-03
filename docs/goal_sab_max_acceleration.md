@@ -829,3 +829,7 @@ only DFT accumulator values, because the next MAT external product needs
 coefficient-domain gadget decomposition. Future representation work must keep
 exact torus/decomposition state or use a compact/shared-source format with
 separate gates.
+Stage157 tests sub-decompose fusion as a narrow same-format candidate after
+Stage156. Decision: `PASS_STAGE157_SUB_DECOMP_FUSION_PREFLIGHT_POSITIVE_IMPLEMENTATION_CANDIDATE`. This preflight targets the intermediate
+`pvmtmlwe_sub` plus dense decomposition memory path only and does not claim
+complete-SAB acceleration without later integration.

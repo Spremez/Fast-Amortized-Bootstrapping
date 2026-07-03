@@ -5326,3 +5326,19 @@ Completed. Stage156 records REJECT_STAGE156_NAIVE_LAZY_DFT_STATE_NOT_CLOSED. The
 input for MAT EP, and finite MOSFHET-style decomposition tests show
 nonlinearity under addition, negation, and negacyclic sign rotations.
 ```
+## Stage 157: Sub-Decompose Fusion Preflight
+
+Goal:
+
+```text
+Test whether direct decompose(in2-in1) is a viable same-format implementation
+candidate after naive lazy DFT is rejected.
+```
+
+Status:
+
+```text
+Completed. Stage157 records PASS_STAGE157_SUB_DECOMP_FUSION_PREFLIGHT_POSITIVE_IMPLEMENTATION_CANDIDATE. It is an isolated C microbench only;
+any positive result still requires a guarded production path and full-SAB
+T_bootstrap/r gate.
+```
