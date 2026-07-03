@@ -213,7 +213,14 @@ break-even once decomposition terms are included.
     negative-control, and complexity gates for r=2/4/6. Max component/phase
     gaps are 14605/14608 under tolerance 131072. The next valid step is
     isolated compact EP microbench/profiling outside `sab_pvw_*`.
-32. Preserve the current final-audit status:
+32. Treat Stage129 as the current isolated compact EP microbench gate:
+    build, compile, run, API correctness replay, and benchmark rows pass, but
+    the promotion signal is neutral. r=4 full speedup is 0.925687 at N=512 and
+    0.888032 at N=1024; r=6 is positive at 1.063672 and 1.109918. Compact
+    addmul is positive for r=4/r=6, but compact decomposition/DFT is slower.
+    The next valid step is a decompose/DFT reuse or streaming gate, not SAB
+    integration.
+33. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

@@ -685,3 +685,13 @@ phase gap is 14608 under tolerance 131072, and body-only API kernel rows are
 rejected. This opens isolated compact EP microbench/profiling only; it is not a
 production header change, AVX512 proof, SAB schedule integration, or complete
 `T_bootstrap/r` claim.
+
+Stage129 runs that isolated microbench/profiling gate. It replays the Stage128
+API correctness checks, then compares all r compact lanes against a dense-count
+proxy and splits timing into full kernel, decomposition/DFT, and DFT addmul.
+The result is neutral, not promoted: r=4 full speedup is 0.925687 at N=512 and
+0.888032 at N=1024, while r=6 is positive at 1.063672 and 1.109918. The useful
+signal is attribution: compact addmul is positive for r=4/r=6, but compact
+decomposition/DFT is slower enough to erase r=4 full-kernel gains. The next
+algorithmic work must target decompose/DFT reuse or streaming before production
+API or SAB integration.

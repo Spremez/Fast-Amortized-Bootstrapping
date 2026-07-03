@@ -4717,3 +4717,54 @@ are 1.0x/1.25x/1.555556x. The next valid stage is isolated compact EP
 microbench/profiling and assembly/perf-counter attribution, still outside SAB
 integration and complete `T_bootstrap/r` claims.
 ```
+
+## Stage 129: Compact EP Isolated Microbench Gate
+
+Goal:
+
+```text
+Measure whether the Stage128 API-shaped compact EP kernel preserves its count
+advantage as wall-clock time before production header work or SAB integration.
+```
+
+Theory basis:
+
+Stage128 proves the API boundary semantically. Stage129 checks timing under the
+same MOSFHET/SPQLIOS primitive boundary by comparing an all-lane compact kernel
+against a dense-count proxy and separating full kernel time from
+decomposition/DFT-only and DFT-addmul-only time. The dense proxy is not a full
+SAB or production key-format benchmark; it is a cost proxy for current dense
+`T*(k+r)^2` DFT multiply-add work.
+
+Tasks:
+
+- replay Stage128 API correctness rows before timing;
+- benchmark `dense_all_proxy` versus `compact_all_lanes` for r=2/4/6 and
+  N=512/1024;
+- benchmark `dense_decomp_dft_proxy` versus `compact_decomp_dft`;
+- benchmark `dense_addmul_proxy` versus `compact_addmul`;
+- report mean timing over five samples, six reps per sample;
+- decide promote/neutral strictly from r=4/r=6 full-kernel timing.
+
+Gate:
+
+- build, compile, run, API correctness replay, and benchmark row generation
+  must pass;
+- promotion toward production API requires compact all-lane timing to beat the
+  dense-count proxy for both r=4 and r=6;
+- if addmul is positive but full timing is not, do not promote; instead target
+  decomposition/DFT reuse or streaming.
+
+Status:
+
+```text
+Completed as neutral. Stage129 records
+NEUTRAL_STAGE129_COMPACT_EP_MICROBENCH_NOT_PROMOTED. Build, compile, run, API
+correctness replay, and benchmark row generation pass. The full compact
+all-lane signal is negative for r=4: speedup is 0.925687 at N=512 and 0.888032
+at N=1024. r=6 is positive at 1.063672 and 1.109918. Attribution shows compact
+DFT addmul is positive for r=4/r=6 (1.369610-1.867126), but compact
+decomposition/DFT is slower (0.580632-0.619392 for r=4/r=6). The next valid
+stage is a decompose/DFT reuse or streaming gate, not production API or SAB
+integration.
+```

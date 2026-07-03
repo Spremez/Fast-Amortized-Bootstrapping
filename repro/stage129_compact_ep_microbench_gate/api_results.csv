@@ -1,0 +1,7 @@
+backend,r,N,T,k,Bg_bit,seed,ownership_failures,metadata_failures,guard_failures,kernel_allocations,component_mismatches,phase_mismatches,noise_model_mismatches,negative_failures,max_component_gap,max_phase_gap,tolerance,dft_term_ratio,total_term_ratio,status
+spqlios,2,512,7,1,7,0,0,0,0,0,0,0,0,1024,11267,11269,131072,1.125000,1.000000,PASS_COMPACT_EP_API_BOUNDARY
+spqlios,4,512,7,1,7,0,0,0,0,0,0,0,0,2048,11570,11572,131072,1.562500,1.250000,PASS_COMPACT_EP_API_BOUNDARY
+spqlios,6,512,7,1,7,0,0,0,0,0,0,0,0,3072,14605,14608,131072,2.041667,1.555556,PASS_COMPACT_EP_API_BOUNDARY
+spqlios,2,1024,7,1,7,0,0,0,0,0,0,0,0,2048,12598,12623,131072,1.125000,1.000000,PASS_COMPACT_EP_API_BOUNDARY
+spqlios,4,1024,7,1,7,0,0,0,0,0,0,0,0,4096,12921,12909,131072,1.562500,1.250000,PASS_COMPACT_EP_API_BOUNDARY
+spqlios,6,1024,7,1,7,0,0,0,0,0,0,0,0,6144,12921,12936,131072,2.041667,1.555556,PASS_COMPACT_EP_API_BOUNDARY

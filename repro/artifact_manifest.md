@@ -1902,3 +1902,21 @@ Repro artifacts:
 - `repro/stage128_compact_ep_api_boundary_gate/run_probe.log`
 - `repro/stage128_compact_ep_api_boundary_gate/compact_ep_api_boundary_gate.c`
 - `repro/stage128_compact_ep_api_boundary_gate/artifact_index.csv`
+
+## Stage 129 Compact EP Microbench Gate
+
+- `docs/stage129_compact_ep_microbench_gate.md`
+- `experiments/stage129_compact_ep_microbench_gate_plan.md`
+- `theory_checks/stage129_compact_ep_microbench_model.md`
+- `algorithm_variants/mat_rlwe_sab_compact_ep_microbench.md`
+- `scripts/build_stage129_compact_ep_microbench_gate.py`
+- `repro/stage129_compact_ep_microbench_gate/summary.csv`
+- `repro/stage129_compact_ep_microbench_gate/api_results.csv`
+- `repro/stage129_compact_ep_microbench_gate/benchmark_samples.csv`
+- `repro/stage129_compact_ep_microbench_gate/benchmark_aggregate.csv`
+- `repro/stage129_compact_ep_microbench_gate/ratio_summary.csv`
+- `repro/stage129_compact_ep_microbench_gate/mosfhet_static_build.log`
+- `repro/stage129_compact_ep_microbench_gate/compile_probe.log`
+- `repro/stage129_compact_ep_microbench_gate/run_probe.log`
+- `repro/stage129_compact_ep_microbench_gate/compact_ep_microbench_gate.c`
+- `repro/stage129_compact_ep_microbench_gate/artifact_index.csv`

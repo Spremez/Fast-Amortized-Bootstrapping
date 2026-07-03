@@ -1,0 +1,9 @@
+gate,status,metric,value,evidence,detail,next_action
+stage129_mosfhet_static_build,PASS,make_static_spqlios,true,repro/stage129_compact_ep_microbench_gate/mosfhet_static_build.log,MOSFHET static library build using FFT_LIB=spqlios.,
+stage129_probe_compile,PASS,gcc_probe_compile,true,repro/stage129_compact_ep_microbench_gate/compile_probe.log,Standalone compact EP microbench probe linked against libmosfhet.a.,
+stage129_probe_run,PASS,probe_returncode,0,repro/stage129_compact_ep_microbench_gate/run_probe.log,Compact EP microbench probe executed.,
+stage129_api_correctness_guard,PASS,api_rows,6,repro/stage129_compact_ep_microbench_gate/api_results.csv,Stage128 API correctness gate is replayed before timing.,
+stage129_microbench_rows,PASS,bench_rows;ratio_rows,180;6,repro/stage129_compact_ep_microbench_gate/benchmark_samples.csv; repro/stage129_compact_ep_microbench_gate/ratio_summary.csv,Dense-count proxy and compact all-lane samples were recorded.,
+stage129_full_microbench_signal,NEUTRAL_OR_NEGATIVE,min_full_speedup_r4_r6;max_full_speedup_all,0.888032;1.109918,repro/stage129_compact_ep_microbench_gate/ratio_summary.csv,Mean dense_all_proxy / compact_all_lanes timing ratio.,Proceed to production API design only if positive; otherwise record neutral and redesign.
+stage129_attribution_signal,RECORDED,min_decomp_speedup;min_addmul_speedup,0.580632;0.891968,repro/stage129_compact_ep_microbench_gate/ratio_summary.csv,Separate decomposition/DFT and DFT addmul timing attribution.,Use attribution to decide whether the bottleneck is decomposition/DFT or multiply-add.
+stage129_decision,NEUTRAL_STAGE129_COMPACT_EP_MICROBENCH_NOT_PROMOTED,promotion_policy,,repro/stage129_compact_ep_microbench_gate/summary.csv; repro/stage129_compact_ep_microbench_gate/ratio_summary.csv,Stage129 decides only isolated microbench promotion readiness.,"No SAB integration claim until production API, AVX512, and full SAB gates pass."

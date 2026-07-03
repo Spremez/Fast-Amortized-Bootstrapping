@@ -1613,3 +1613,31 @@ hypotheses:
       - AVX512 or complete-SAB acceleration is claimed from API-boundary
         semantics alone
       - scalar/default SAB behavior changes before a guarded integration stage
+  - id: H53_compact_ep_microbench
+    statement: >
+      The Stage128 API-shaped compact external-product kernel should preserve
+      its DFT-term count advantage as wall-clock isolated all-lane timing
+      against a dense-count proxy for r=4 and r=6.
+    mechanism: >
+      Stage129 replays Stage128 API correctness, then benchmarks a dense-count
+      proxy and the compact all-lane kernel under MOSFHET/SPQLIOS. It records
+      full kernel timing plus separate decomposition/DFT-only and DFT-addmul
+      timing for r=2/4/6 and N=512/1024.
+    status: neutral_stage129_compact_ep_microbench_not_promoted
+    evidence: docs/stage129_compact_ep_microbench_gate.md; experiments/stage129_compact_ep_microbench_gate_plan.md; theory_checks/stage129_compact_ep_microbench_model.md; algorithm_variants/mat_rlwe_sab_compact_ep_microbench.md; scripts/build_stage129_compact_ep_microbench_gate.py; repro/stage129_compact_ep_microbench_gate/summary.csv; repro/stage129_compact_ep_microbench_gate/api_results.csv; repro/stage129_compact_ep_microbench_gate/benchmark_samples.csv; repro/stage129_compact_ep_microbench_gate/benchmark_aggregate.csv; repro/stage129_compact_ep_microbench_gate/ratio_summary.csv; repro/stage129_compact_ep_microbench_gate/mosfhet_static_build.log; repro/stage129_compact_ep_microbench_gate/compile_probe.log; repro/stage129_compact_ep_microbench_gate/run_probe.log; repro/stage129_compact_ep_microbench_gate/compact_ep_microbench_gate.c; repro/stage129_compact_ep_microbench_gate/artifact_index.csv
+    current_decision: >
+      Stage129 records NEUTRAL_STAGE129_COMPACT_EP_MICROBENCH_NOT_PROMOTED.
+      Build, compile, run, API correctness replay, and benchmark rows pass.
+      r=4 full speedup is 0.925687 at N=512 and 0.888032 at N=1024, so the
+      compact API kernel is not promoted. r=6 is positive at 1.063672 and
+      1.109918. Attribution is useful: compact DFT addmul is positive for
+      r=4/r=6, but compact decomposition/DFT is slower enough to erase r=4
+      full-kernel gains. The next hypothesis must target decomposition/DFT
+      reuse or streaming before production API or SAB integration.
+    failure_criteria:
+      - production API or SAB integration is attempted before the r=4
+        decompose/DFT bottleneck is addressed
+      - r=6 positive isolated timing is generalized to r=4 or complete SAB
+        without matching full-kernel evidence
+      - dense-count proxy timing is represented as a production SAB baseline
+      - scalar/default SAB behavior changes before a guarded integration stage
