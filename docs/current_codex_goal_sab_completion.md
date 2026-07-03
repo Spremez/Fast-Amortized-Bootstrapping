@@ -328,3 +328,6 @@ The new research goal is complete only after a later stage records:
     r4/generic speedup 1.000249 with CI95
     [0.835834, 1.164664].
     Noise/resource are recorded in the Stage144 repro pack.
+49. Treat Stage145 as the r4-unrolled promotion-policy audit:
+    `WEAK_STAGE145_POLICY_KEEP_EXPLICIT_DO_NOT_PROMOTE`. The explicit r4-unrolled path is retained only for
+    ablation/variance analysis; it is not promoted to default or final claim.

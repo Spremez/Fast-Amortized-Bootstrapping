@@ -1,0 +1,4 @@
+gate,status,metric,value,evidence,detail,next_action
+stage145_precondition,PASS,stage144_inputs,summary;perf,repro/stage144_full_sab_repeated_r4_unrolled_gate/summary.csv; repro/stage144_full_sab_repeated_r4_unrolled_gate/perf_comparison.csv,Stage145 reads Stage144 gate outputs.,
+stage145_default_guard,PASS,default_policy,KEEP_DEFAULT_UNCHANGED_EXPLICIT_EXPERIMENT_ONLY,repro/stage145_r4_unrolled_policy_audit/policy.csv,No default/scalar path change is authorized.,
+stage145_claim_guard,WEAK_STAGE145_POLICY_KEEP_EXPLICIT_DO_NOT_PROMOTE,claim_policy,DISALLOW_FINAL_SPEEDUP_CLAIM_ALLOW_NEGATIVE_ABLATION,repro/stage145_r4_unrolled_policy_audit/policy.csv,Promotion wording follows Stage144 evidence strength.,Stage146 should attribute variance or route to another algorithmic candidate.

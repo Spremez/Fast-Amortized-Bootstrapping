@@ -781,3 +781,6 @@ for r4-unrolled active-buffer PVW/MAT-SAB, but keeps the claim at smoke level.
 Stage144 upgrades the r4-unrolled AVX512 path from smoke evidence to repeated
 complete-SAB/noise/resource evidence under the amortized `T_bootstrap/r`
 metric. It does not change scalar/default behavior.
+Stage145 records the r4-unrolled promotion boundary: Stage144 repeated
+performance is weak, although noise/resource pass. Therefore r4-unrolled stays
+explicit-only and cannot be used as a final complete-SAB acceleration claim.

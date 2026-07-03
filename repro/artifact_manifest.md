@@ -2163,3 +2163,12 @@ Repro artifacts:
 - `repro/stage144_full_sab_repeated_r4_unrolled_gate/resource_comparison.csv`
 - `repro/stage144_full_sab_repeated_r4_unrolled_gate/*.log`
 - `repro/stage144_full_sab_repeated_r4_unrolled_gate/artifact_index.csv`
+## Stage 145 r4-Unrolled Policy Audit
+
+- `docs/stage145_r4_unrolled_policy_audit.md`
+- `experiments/stage145_r4_unrolled_policy_audit_plan.md`
+- `theory_checks/stage145_policy_boundary.md`
+- `scripts/build_stage145_r4_unrolled_policy_audit.py`
+- `repro/stage145_r4_unrolled_policy_audit/summary.csv`
+- `repro/stage145_r4_unrolled_policy_audit/policy.csv`
+- `repro/stage145_r4_unrolled_policy_audit/artifact_index.csv`

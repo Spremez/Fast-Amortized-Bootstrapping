@@ -5132,3 +5132,19 @@ and CI95 [0.835834, 1.164664].
 Noise status is PASS across 3 seeds. Resource
 key/RSS ratios are 1.065349 and 0.997049.
 ```
+## Stage 145: r4-Unrolled Promotion-Policy Audit
+
+Goal:
+
+```text
+Convert Stage144 evidence into an explicit keep/promote/reject policy without
+overstating the full-SAB result.
+```
+
+Status:
+
+```text
+Completed. Stage145 records WEAK_STAGE145_POLICY_KEEP_EXPLICIT_DO_NOT_PROMOTE. Default behavior remains
+unchanged. Claim policy is DISALLOW_FINAL_SPEEDUP_CLAIM_ALLOW_NEGATIVE_ABLATION. Next action:
+Stage146 should attribute variance or route to another algorithmic candidate.
+```

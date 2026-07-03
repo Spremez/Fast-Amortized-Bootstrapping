@@ -1972,3 +1972,20 @@ hypotheses:
       - paired speedup is not stable
       - final-output noise has nonzero failures
       - resource overhead is not reported with speed
+  - id: H69_r4_unrolled_policy_boundary
+    statement: >
+      r4-unrolled AVX512 should not be promoted beyond an explicit experimental
+      path unless repeated complete-SAB T_bootstrap/r evidence is statistically
+      stable and noise/resource gates pass.
+    mechanism: >
+      Stage144 shows noise/resource pass, but performance is weak with CI
+      crossing one, so Stage145 prevents kernel/smoke gains from being
+      overclaimed as final bootstrapping acceleration.
+    status: stage145_r4_unrolled_policy_audit
+    evidence: docs/stage145_r4_unrolled_policy_audit.md; experiments/stage145_r4_unrolled_policy_audit_plan.md; theory_checks/stage145_policy_boundary.md; scripts/build_stage145_r4_unrolled_policy_audit.py; repro/stage145_r4_unrolled_policy_audit/summary.csv; repro/stage145_r4_unrolled_policy_audit/policy.csv
+    current_decision: >
+      Stage145 records WEAK_STAGE145_POLICY_KEEP_EXPLICIT_DO_NOT_PROMOTE. Default policy is
+      KEEP_DEFAULT_UNCHANGED_EXPLICIT_EXPERIMENT_ONLY; claim policy is DISALLOW_FINAL_SPEEDUP_CLAIM_ALLOW_NEGATIVE_ABLATION.
+    failure_criteria:
+      - default path changes without a PASS repeated full-SAB gate
+      - weak full-SAB evidence is written as a final speedup claim

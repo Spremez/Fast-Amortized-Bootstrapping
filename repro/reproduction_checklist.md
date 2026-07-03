@@ -232,3 +232,4 @@
 - [ ] Run Stage85 repeated complete-SAB/noise/resource promotion gates only if a future preflight is full-SAB positive.
 - [x] Review full related-work papers before promoting any novelty claim; resolved by Stage103 as scoped novelty wording, with broad claims still blocked.
 - [x] Fill Stage38 source-anchor review checklist before theorem-level 2025/686 manuscript citations; resolved by Stage102 for scoped citations.
+- [x] Run Stage145 r4-unrolled promotion-policy audit; decision `WEAK_STAGE145_POLICY_KEEP_EXPLICIT_DO_NOT_PROMOTE` keeps the path explicit-only unless future repeated evidence becomes stable.
