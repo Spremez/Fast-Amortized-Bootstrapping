@@ -403,3 +403,6 @@ The new research goal is complete only after a later stage records:
 69. Treat Stage165 as the closed full-MAT streaming microbench:
     `REJECT_STAGE165_STREAMING_LOSES_TO_CURRENT_TILED_AVX`. It decides whether row-streamed decompose/DFT/addmul should
     be integrated; if not positive, keep the current tiled AVX path.
+70. Treat Stage166 as the shared-output compact algebra gate:
+    `PASS_STAGE166_GENERIC_COMPACT_EXACTNESS_BLOCKED_KEYGEN_PROOF_REQUIRED`. Generic compact shared-output is not a drop-in optimization;
+    it needs structured keygen/security/noise proof before SAB integration.

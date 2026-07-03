@@ -861,3 +861,7 @@ executable gate.
 Stage165 tests closed full-MAT row streaming after Stage164. Decision:
 `REJECT_STAGE165_STREAMING_LOSES_TO_CURRENT_TILED_AVX`. This is an exact-output external-product microbench; it is not a
 complete bootstrapping speedup claim unless a later full-SAB gate is added.
+Stage166 blocks generic compact exactness after Stage165. Decision:
+`PASS_STAGE166_GENERIC_COMPACT_EXACTNESS_BLOCKED_KEYGEN_PROOF_REQUIRED`. It preserves compact SAB only as a structured-keygen research
+route and directs immediate engineering evidence toward native counters for
+the current exact tiled-AVX path.

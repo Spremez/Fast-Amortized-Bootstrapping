@@ -5463,3 +5463,19 @@ Status:
 Completed. Stage165 records REJECT_STAGE165_STREAMING_LOSES_TO_CURRENT_TILED_AVX. The route is microbench-only and does
 not modify production SAB code.
 ```
+## Stage 166: Shared-Output Compact Algebra Gate
+
+Goal:
+
+```text
+Test whether shared-output compact SAB is a generic exact implementation route
+or requires a new structured keygen/noise proof.
+```
+
+Status:
+
+```text
+Completed. Stage166 records PASS_STAGE166_GENERIC_COMPACT_EXACTNESS_BLOCKED_KEYGEN_PROOF_REQUIRED. Generic compact exactness is blocked
+by missing body-to-body cross terms; compact SAB remains proof-driven, not an
+implementation-ready optimization.
+```

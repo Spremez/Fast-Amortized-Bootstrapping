@@ -2314,3 +2314,19 @@ hypotheses:
       - torus output differs from current all-row MAT EP
       - per-call timing does not beat current all-row tiled AVX beyond threshold
       - microbench result is reported as complete-SAB acceleration
+  - id: H90_shared_output_compact_algebra
+    statement: >
+      A lane-local shared-output compact selector cannot represent a generic
+      dense MAT selector exactly because it omits body-to-body cross terms.
+    mechanism: >
+      Dense MAT is an arbitrary `(1+r)x(1+r)` linear map, while lane-local
+      compact keeps only the shared row, body shared-input terms, and diagonal
+      body terms.
+    status: stage166_shared_output_compact_algebra_gate
+    evidence: docs/stage166_shared_output_compact_algebra_gate.md; experiments/stage166_shared_output_compact_algebra_gate_plan.md; theory_checks/stage166_shared_output_compact_algebra_model.md; repro/stage166_shared_output_compact_algebra_gate/summary.csv
+    current_decision: >
+      PASS_STAGE166_GENERIC_COMPACT_EXACTNESS_BLOCKED_KEYGEN_PROOF_REQUIRED
+    failure_criteria:
+      - random dense finite-field selectors are representable with zero mismatches
+      - compact SAB is integrated without a structured keygen/security/noise proof
+      - generic dense exactness is claimed from lane-local compact evidence

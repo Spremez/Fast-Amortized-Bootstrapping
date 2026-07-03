@@ -1,0 +1,5 @@
+r,state_polys,dense_terms_per_level,shared_output_lane_local_terms,missing_cross_body_terms,dense_over_compact,interpretation
+2,3,9,7,2,1.285714,Generic exact dense MAT needs all body-to-body cross terms unless keygen constrains them.
+4,5,25,13,12,1.923077,Generic exact dense MAT needs all body-to-body cross terms unless keygen constrains them.
+6,7,49,19,30,2.578947,Generic exact dense MAT needs all body-to-body cross terms unless keygen constrains them.
+8,9,81,25,56,3.240000,Generic exact dense MAT needs all body-to-body cross terms unless keygen constrains them.

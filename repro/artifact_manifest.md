@@ -2265,3 +2265,9 @@ Repro artifacts:
   - `theory_checks/stage165_closed_fullmat_streaming_model.md`
   - `algorithm_variants/mat_rlwe_sab_closed_fullmat_streaming.md`
   - `repro/stage165_closed_fullmat_streaming_microbench/`
+- stage166_shared_output_compact_algebra_gate: `PASS_STAGE166_GENERIC_COMPACT_EXACTNESS_BLOCKED_KEYGEN_PROOF_REQUIRED`
+  - `docs/stage166_shared_output_compact_algebra_gate.md`
+  - `experiments/stage166_shared_output_compact_algebra_gate_plan.md`
+  - `theory_checks/stage166_shared_output_compact_algebra_model.md`
+  - `algorithm_variants/mat_rlwe_sab_shared_output_compact_algebra.md`
+  - `repro/stage166_shared_output_compact_algebra_gate/`
