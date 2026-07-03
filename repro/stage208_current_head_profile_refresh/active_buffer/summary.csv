@@ -1,0 +1,3 @@
+r,run,status,pvw_avg_us,scalar_repeated_avg_us,speedup,in_N,h,r_prec,rgsw_monomial_calls,cmux_calls,expected_cmux,ncmux_calls,expected_ncmux,mat_ep_calls,sub_a_calls,expected_sub_a,copyback_calls,expected_active_copyback,legacy_copyback,copyback_saved,source_log
+2,0,PASS,15689933.000,20164901.000,1.285,2048,39,7,40,573440,573440,5080,5080,573440,39,39,0,0,40,40,repro/stage208_current_head_profile_refresh/active_buffer/r2/run_0.log
+4,0,PASS,29328649.000,40253516.000,1.372,2048,39,7,40,573440,573440,5080,5080,573440,39,39,0,0,40,40,repro/stage208_current_head_profile_refresh/active_buffer/r4/run_0.log

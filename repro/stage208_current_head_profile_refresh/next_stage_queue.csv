@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,current_status,evidence
+P0,mat_ep_split_or_counter_refresh,Stage208 shows MAT EP is the largest CMUX subcomponent.,Use native/perf counters if available; otherwise run a bounded split microbench before code.,ready_but_counter_limited,repro/stage208_current_head_profile_refresh/component_attribution.csv
+P1,from_dft_dataflow_preflight,from_DFT remains material but prior direct-scale variants were neutral.,Require a specific new dataflow mechanism before implementation.,preflight_only,repro/stage208_current_head_profile_refresh/component_attribution.csv
+P2,postproc_deferred,postproc tail max is below 2 percent in Stage208.,Reopen only if future body optimizations raise postproc share.,deferred,repro/stage208_current_head_profile_refresh/component_attribution.csv

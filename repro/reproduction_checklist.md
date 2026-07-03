@@ -297,3 +297,6 @@
 - [x] Stage206 current-head high-stat A/B and noise evidence recorded with claim boundary.
 - [x] Stage207 current-head resource refresh links r=2/r=4 key-size, keygen,
   and RSS costs to Stage206 `T_bootstrap/r` throughput evidence.
+- [x] Stage208 current-head profile attribution records r=2/r=4 schedule
+  counts, CMUX component shares, active-buffer copyback elimination, and
+  post-processing deferral.

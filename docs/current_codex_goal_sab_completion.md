@@ -576,3 +576,8 @@ The new research goal is complete only after a later stage records:
 `PASS_STAGE207_CURRENT_HEAD_RESOURCE_REFRESH` links Stage206 high-stat complete-SAB throughput to current-head
 resource cost evidence. The goal remains active because profile attribution,
 full-text theorem anchors, and broader branch/generalization gates remain open.
+### Stage208 current-head profile attribution
+
+`PASS_STAGE208_CURRENT_HEAD_PROFILE_ATTRIBUTION` records route-selection evidence only. The goal remains active:
+the next executable route is a bounded MAT EP/from_DFT split or native-counter
+gate, not another broad theory loop.

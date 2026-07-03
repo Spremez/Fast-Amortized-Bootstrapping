@@ -6144,3 +6144,22 @@ key bytes ratio 1.065349x, keygen-per-lane ratio
 The result is a current-head resource/cost refresh, not a statistical resource
 distribution or optimality proof.
 ```
+## Stage 208: Current-Head Profile Attribution
+
+Goal:
+
+```text
+Refresh profile-only attribution for the current-head explicit active-buffer
+PVW/MAT-SAB path after Stage206 throughput and Stage207 resource gates.
+```
+
+Status:
+
+```text
+Completed. Stage208 records PASS_STAGE208_CURRENT_HEAD_PROFILE_ATTRIBUTION. Active-buffer schedule counts pass
+for r=2/r=4 with CMUX/MAT EP 573440, NCMUX 5080, and copyback 0. MAT EP is
+the largest CMUX subcomponent: 40.879% of CMUX time for
+r=2 and 47.760% for r=4. Post-processing remains below
+the 2% implementation threshold, with max tail 1.218%
+for r=2 and 1.222% for r=4.
+```

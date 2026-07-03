@@ -2524,3 +2524,11 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_current_head_resource_refresh.md`
   - `scripts/build_stage207_current_head_resource_refresh.py`
   - `repro/stage207_current_head_resource_refresh/`
+- stage208_current_head_profile_refresh:
+  - `docs/stage208_current_head_profile_refresh.md`
+  - `experiments/stage208_current_head_profile_refresh_plan.md`
+  - `theory_checks/stage208_profile_claim_boundary.md`
+  - `algorithm_variants/mat_rlwe_sab_current_head_profile_refresh.md`
+  - `scripts/run_stage208_current_head_profile_refresh.sh`
+  - `scripts/build_stage208_current_head_profile_refresh.py`
+  - `repro/stage208_current_head_profile_refresh/`

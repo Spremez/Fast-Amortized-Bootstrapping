@@ -1,0 +1,5 @@
+gate,status,evidence,detail,remaining_gap
+G1_profile_counts,PASS,repro/stage208_current_head_profile_refresh/component_attribution.csv,"CMUX, NCMUX, MAT EP, sub_a, and active-buffer copyback counts match the current target schedule.",Profile timing is instrumentation evidence only.
+G2_component_attribution,PASS_MAT_EP_REMAINS_PRIMARY,repro/stage208_current_head_profile_refresh/component_attribution.csv,"MAT EP is the largest CMUX subcomponent, with from_DFT, subtract, and add still material.",Hardware counters are still needed for load/store/FMA attribution.
+G3_postproc_filter,PASS_POSTPROC_DEFER,repro/stage208_current_head_profile_refresh/component_attribution.csv,Post-processing tail remains below the 2 percent implementation threshold.,Do not spend hot-path effort on extract/KS unless body path changes the tail share.
+G4_decision,PASS_STAGE208_CURRENT_HEAD_PROFILE_ATTRIBUTION,repro/stage208_current_head_profile_refresh/proof_gate.csv,Current-head profile attribution is recorded and routes next work away from postproc-only tuning.,Next executable route needs a new MAT EP/from_DFT dataflow mechanism or native counters.

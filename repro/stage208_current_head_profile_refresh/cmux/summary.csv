@@ -1,0 +1,3 @@
+r,run,status,pvw_avg_us,scalar_repeated_avg_us,speedup,cmux_calls,mat_ep_calls,ncmux_calls,cmux_us,mat_ep_us,cmux_sub_us,cmux_from_dft_us,cmux_add_us,ncmux_auto_us,cmux_other_us,cmux_other_pct
+2,0,Pass,15732073.000,19952549.000,1.268,573440,573440,5080,15011195,6136400,2500392,3883279,2371583,108615,119541.000,0.796
+4,0,Pass,29647802.000,39871639.000,1.345,573440,573440,5080,28391460,13559851,4022655,6648935,4068436,176022,91583.000,0.323

@@ -3022,3 +3022,12 @@ H10_stage207_current_head_resource_refresh:
     Stage207 records current-head r=2/r=4 resource costs for the same explicit
     active-buffer PVW/MAT-SAB path measured in Stage206. Key bytes and keygen
     overhead must be reported with T_bootstrap/r throughput claims.
+H10_stage208_current_head_profile_attribution:
+  status: current_head_profile_recorded
+  evidence:
+    - repro/stage208_current_head_profile_refresh/component_attribution.csv
+    - docs/stage208_current_head_profile_refresh.md
+  conclusion: >
+    Current-head profile-only evidence keeps the next engineering target in
+    the body/CMUX/MAT-EP path. Post-processing remains deferred, and profile
+    timing must not be used as final latency evidence.

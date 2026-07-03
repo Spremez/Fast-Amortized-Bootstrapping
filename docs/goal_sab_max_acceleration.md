@@ -1007,3 +1007,9 @@ key bytes ratio 1.013617x, keygen-per-lane ratio
 r=4: throughput speedup 1.356445x, key
 bytes ratio 1.065349x, keygen-per-lane ratio
 1.197131x, max-RSS ratio 0.997004x.
+## Stage208 current-head profile attribution
+
+At commit `a1ed2cb`, current-head profile-only attribution confirms the next
+engineering target is still the body/CMUX path, not post-processing. r=2/r=4
+copyback calls are 0 under active-buffer fusion, MAT EP remains the largest
+CMUX subcomponent, and post-processing max tail is below 2%.
