@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,current_status,evidence
+P0,source_anchor_intake,Reviewed 2025/686 full text is supplied locally.,Map source-specific SAB claims to inspected paper anchors.,waiting_external_artifact,repro/stage196_public_source_refresh/citation_gate.csv
+P1,production_keygen_equation_design,A production selector keygen design is proposed using Stage203 declared equations.,"Show public distribution, semantic zero, noise recurrence, key size, and complete-SAB T_bootstrap/r value.",blocked_on_real_keygen_design,repro/stage203_production_selector_equation_probe/proof_gate.csv
+P2,new_exact_mechanism_admission,A concrete exact-path backend/addmul/DFT mechanism is supplied.,"Projection, correctness, noise/resource, and complete-SAB T_bootstrap/r gates.",waiting_new_mechanism,repro/stage200_formal_gap_model_with_probe/gap_projection.csv

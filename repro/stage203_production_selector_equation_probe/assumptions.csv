@@ -1,0 +1,4 @@
+assumption_id,statement,scope,evidence,falsification
+A1_declared_equation_v0,The finite probe declares four active equation classes per body lane and semantic-zero dummy equations elsewhere.,"finite production-shaped probe, not production keygen",repro/stage203_production_selector_equation_probe/equation_map.csv,A real selector keygen equation may have a different active set or coefficient structure.
+A2_dummy_semantic_zero,Inactive dense-shape rows are public dummy rows but must have zero semantic contribution.,dummy padding proof route,repro/stage203_production_selector_equation_probe/phase_noise_probe.csv,Random semantic dummy rows are a negative control and must mismatch.
+A3_noise_skip_model,Evaluator-side skipping of semantic-zero dummy rows avoids dummy noise accumulation only after a proof identifies them.,noise/resource model,repro/stage203_production_selector_equation_probe/proof_gate.csv,"If dummy rows must be evaluated, noise and runtime value degrade."

@@ -979,3 +979,6 @@ random dummy padding as proof-only, not implementation-ready.
 Stage202 records dummy padding semantic probe. Decision: `PASS_STAGE202_DUMMY_PADDING_SEMANTIC_PROBE_PROOF_ONLY`. It
 keeps dummy padding proof-only: semantic-zero dummy rows pass the toy model,
 but random-semantic and dense-general controls fail, and no code path opens.
+Stage203 records production selector equation probe. Decision: `PASS_STAGE203_PRODUCTION_SELECTOR_EQUATION_PROBE_PROOF_ONLY`.
+It advances dummy padding from toy semantic rows to a declared finite equation
+candidate, while preserving proof-only status.

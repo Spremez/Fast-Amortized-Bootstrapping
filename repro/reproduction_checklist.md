@@ -291,3 +291,4 @@
 - [x] Stage200 formal gap model with probe recorded.
 - [x] Stage201 structured selector distribution probe recorded.
 - [x] Stage202 dummy padding semantic probe recorded.
+- [x] Stage203 production selector equation probe recorded.

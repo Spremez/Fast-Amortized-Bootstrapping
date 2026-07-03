@@ -1,0 +1,73 @@
+probe,r,seed,evaluated_active_rows,dummy_rows,mismatches,skip_noise_units,dense_eval_noise_units,noise_ratio_dense_over_skip,status,interpretation
+declared_equations_full_vs_skip,2,0,8,1,0,24.000000,25.000000,1.041666667,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,2,0,8,1,24,24.000000,25.000000,1.041666667,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,2,0,7,2,7,24.000000,21.000000,0.875000000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,2,1,8,1,0,24.000000,25.000000,1.041666667,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,2,1,8,1,24,24.000000,25.000000,1.041666667,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,2,1,7,2,8,24.000000,21.000000,0.875000000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,2,2,8,1,0,24.000000,25.000000,1.041666667,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,2,2,8,1,24,24.000000,25.000000,1.041666667,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,2,2,7,2,8,24.000000,21.000000,0.875000000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,2,3,8,1,0,24.000000,25.000000,1.041666667,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,2,3,8,1,24,24.000000,25.000000,1.041666667,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,2,3,7,2,8,24.000000,21.000000,0.875000000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,2,4,8,1,0,24.000000,25.000000,1.041666667,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,2,4,8,1,24,24.000000,25.000000,1.041666667,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,2,4,7,2,8,24.000000,21.000000,0.875000000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,2,5,8,1,0,24.000000,25.000000,1.041666667,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,2,5,8,1,24,24.000000,25.000000,1.041666667,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,2,5,7,2,8,24.000000,21.000000,0.875000000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,2,6,8,1,0,24.000000,25.000000,1.041666667,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,2,6,8,1,24,24.000000,25.000000,1.041666667,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,2,6,7,2,8,24.000000,21.000000,0.875000000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,2,7,8,1,0,24.000000,25.000000,1.041666667,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,2,7,8,1,24,24.000000,25.000000,1.041666667,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,2,7,7,2,8,24.000000,21.000000,0.875000000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,4,0,16,9,0,48.000000,57.000000,1.187500000,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,4,0,16,9,40,48.000000,57.000000,1.187500000,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,4,0,15,10,8,48.000000,45.000000,0.937500000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,4,1,16,9,0,48.000000,57.000000,1.187500000,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,4,1,16,9,40,48.000000,57.000000,1.187500000,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,4,1,15,10,8,48.000000,45.000000,0.937500000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,4,2,16,9,0,48.000000,57.000000,1.187500000,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,4,2,16,9,40,48.000000,57.000000,1.187500000,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,4,2,15,10,8,48.000000,45.000000,0.937500000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,4,3,16,9,0,48.000000,57.000000,1.187500000,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,4,3,16,9,40,48.000000,57.000000,1.187500000,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,4,3,15,10,8,48.000000,45.000000,0.937500000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,4,4,16,9,0,48.000000,57.000000,1.187500000,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,4,4,16,9,40,48.000000,57.000000,1.187500000,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,4,4,15,10,8,48.000000,45.000000,0.937500000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,4,5,16,9,0,48.000000,57.000000,1.187500000,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,4,5,16,9,40,48.000000,57.000000,1.187500000,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,4,5,15,10,8,48.000000,45.000000,0.937500000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,4,6,16,9,0,48.000000,57.000000,1.187500000,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,4,6,16,9,40,48.000000,57.000000,1.187500000,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,4,6,15,10,8,48.000000,45.000000,0.937500000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,4,7,16,9,0,48.000000,57.000000,1.187500000,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,4,7,16,9,39,48.000000,57.000000,1.187500000,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,4,7,15,10,8,48.000000,45.000000,0.937500000,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,6,0,24,25,0,72.000000,97.000000,1.347222222,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,6,0,24,25,54,72.000000,97.000000,1.347222222,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,6,0,23,26,8,72.000000,69.000000,0.958333333,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,6,1,24,25,0,72.000000,97.000000,1.347222222,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,6,1,24,25,56,72.000000,97.000000,1.347222222,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,6,1,23,26,8,72.000000,69.000000,0.958333333,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,6,2,24,25,0,72.000000,97.000000,1.347222222,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,6,2,24,25,56,72.000000,97.000000,1.347222222,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,6,2,23,26,7,72.000000,69.000000,0.958333333,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,6,3,24,25,0,72.000000,97.000000,1.347222222,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,6,3,24,25,55,72.000000,97.000000,1.347222222,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,6,3,23,26,8,72.000000,69.000000,0.958333333,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,6,4,24,25,0,72.000000,97.000000,1.347222222,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,6,4,24,25,56,72.000000,97.000000,1.347222222,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,6,4,23,26,8,72.000000,69.000000,0.958333333,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,6,5,24,25,0,72.000000,97.000000,1.347222222,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,6,5,24,25,56,72.000000,97.000000,1.347222222,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,6,5,23,26,8,72.000000,69.000000,0.958333333,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,6,6,24,25,0,72.000000,97.000000,1.347222222,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,6,6,24,25,56,72.000000,97.000000,1.347222222,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,6,6,23,26,8,72.000000,69.000000,0.958333333,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.
+declared_equations_full_vs_skip,6,7,24,25,0,72.000000,97.000000,1.347222222,PASS_EQUIVALENCE,"Full dense-shape evaluation with semantic-zero dummies equals active-row skipping in phase, but may add dummy noise if rows are evaluated."
+negative_random_dummy_semantics,6,7,24,25,56,72.000000,97.000000,1.347222222,PASS_COUNTEREXAMPLE,Random semantic dummy rows break the declared structured function.
+negative_missing_active_equation,6,7,23,26,8,72.000000,69.000000,0.958333333,PASS_COUNTEREXAMPLE,Removing an active equation breaks the declared structured function.

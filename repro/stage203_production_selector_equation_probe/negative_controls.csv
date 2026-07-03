@@ -1,0 +1,3 @@
+negative_control,expected,failures,decision,evidence
+random_dummy_semantics,must mismatch structured-zero reference,0,PASS_REJECTS_BAD_DUMMY,repro/stage203_production_selector_equation_probe/phase_noise_probe.csv
+missing_active_equation,must mismatch structured-zero reference,0,PASS_REJECTS_MISSING_EQUATION,repro/stage203_production_selector_equation_probe/phase_noise_probe.csv

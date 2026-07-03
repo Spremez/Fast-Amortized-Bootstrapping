@@ -2487,3 +2487,9 @@ Repro artifacts:
   - `theory_checks/stage202_dummy_padding_semantic_model.md`
   - `algorithm_variants/mat_rlwe_sab_dummy_padding_semantic_probe.md`
   - `repro/stage202_dummy_padding_semantic_probe/`
+- stage203_production_selector_equation_probe: `PASS_STAGE203_PRODUCTION_SELECTOR_EQUATION_PROBE_PROOF_ONLY`
+  - `docs/stage203_production_selector_equation_probe.md`
+  - `experiments/stage203_production_selector_equation_probe_plan.md`
+  - `theory_checks/stage203_production_selector_equation_model.md`
+  - `algorithm_variants/mat_rlwe_sab_production_selector_equation_probe.md`
+  - `repro/stage203_production_selector_equation_probe/`

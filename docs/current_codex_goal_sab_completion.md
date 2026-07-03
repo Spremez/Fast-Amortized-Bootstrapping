@@ -548,3 +548,7 @@ The new research goal is complete only after a later stage records:
 106. Treat Stage202 as dummy padding semantic probe:
     `PASS_STAGE202_DUMMY_PADDING_SEMANTIC_PROBE_PROOF_ONLY`. Dummy padding is narrowed to a toy proof-only route with no
     key-size, security/noise, production keygen, or complete-SAB claim.
+107. Treat Stage203 as production selector equation probe:
+    `PASS_STAGE203_PRODUCTION_SELECTOR_EQUATION_PROBE_PROOF_ONLY`. A declared finite equation candidate passes phase and
+    negative-control checks, but compact/shared-output SAB remains blocked on
+    real keygen, security/noise, resource, and complete-SAB evidence.

@@ -1,0 +1,5 @@
+gate,status,evidence,detail,missing_before_code
+E1_declared_equation_phase,PASS_FINITE,repro/stage203_production_selector_equation_probe/phase_noise_probe.csv,declared equation phase failures=0,Map declared equations to actual production selector keygen.
+E2_negative_controls,PASS,repro/stage203_production_selector_equation_probe/negative_controls.csv,negative control failures=0,Keep negative controls in any production-shaped proof.
+E3_noise_resource,MODEL_ONLY,repro/stage203_production_selector_equation_probe/resource_projection.csv,dummy row skipping has modeled value but public row count remains dense,Run production noise recurrence and complete-SAB T_bootstrap/r gates.
+E4_security_keygen,BLOCKED,repro/stage202_dummy_padding_semantic_probe/proof_gate.csv,no production keygen or security reduction is supplied,Define production keygen equations and proof that dummy rows leak nothing beyond declared distribution.

@@ -6051,3 +6051,19 @@ Completed. Stage202 records PASS_STAGE202_DUMMY_PADDING_SEMANTIC_PROBE_PROOF_ONL
 only in a toy zero-semantic model and remains proof-only; keygen, security,
 resource, noise, and complete-SAB gates are still missing.
 ```
+## Stage 203: Production Selector Equation Probe
+
+Goal:
+
+```text
+Check a declared production-shaped selector equation candidate for the dummy
+padding proof route using finite phase/noise probes and negative controls.
+```
+
+Status:
+
+```text
+Completed. Stage203 records PASS_STAGE203_PRODUCTION_SELECTOR_EQUATION_PROBE_PROOF_ONLY. The declared equation candidate passes
+finite phase/negative-control checks, but remains proof-only because production
+keygen, security/noise, and complete-SAB gates are missing.
+```

@@ -1,0 +1,4 @@
+r,dense_rows_per_T,active_rows_per_T,dummy_rows_per_T,public_row_saving,evaluator_row_reduction_if_skip_proven,dense_eval_noise_over_skip_mean,interpretation,evidence
+2,9,8,1,0,0.111111111,1.041666667,Potential evaluator work/noise reduction exists only if dummy rows are proven identifiable semantic-zero rows.,repro/stage203_production_selector_equation_probe/phase_noise_probe.csv
+4,25,16,9,0,0.360000000,1.187500000,Potential evaluator work/noise reduction exists only if dummy rows are proven identifiable semantic-zero rows.,repro/stage203_production_selector_equation_probe/phase_noise_probe.csv
+6,49,24,25,0,0.510204082,1.347222222,Potential evaluator work/noise reduction exists only if dummy rows are proven identifiable semantic-zero rows.,repro/stage203_production_selector_equation_probe/phase_noise_probe.csv

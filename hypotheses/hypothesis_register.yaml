@@ -2942,3 +2942,19 @@ hypotheses:
       - semantic-zero dummy rows fail the toy equivalence check
       - random-semantic dummy rows do not produce counterexamples
       - the toy proof route is treated as production code permission
+  - id: H127_production_selector_equation_probe
+    statement: >
+      A dummy-padding selector route can only advance if a declared equation
+      candidate preserves phase under semantic-zero dummy rows and rejects
+      random dummy semantics and missing active equations.
+    mechanism: >
+      Stage203 records a finite equation map and phase/noise probes for
+      r=2/4/6, with negative controls and model-only resource/noise estimates.
+    status: stage203_production_selector_equation_probe
+    evidence: docs/stage203_production_selector_equation_probe.md; experiments/stage203_production_selector_equation_probe_plan.md; theory_checks/stage203_production_selector_equation_model.md; repro/stage203_production_selector_equation_probe/summary.csv
+    current_decision: >
+      PASS_STAGE203_PRODUCTION_SELECTOR_EQUATION_PROBE_PROOF_ONLY
+    failure_criteria:
+      - dummy-zero equation rows fail phase equivalence
+      - random dummy or missing-active negative controls do not fail
+      - finite equation evidence is treated as production keygen permission
