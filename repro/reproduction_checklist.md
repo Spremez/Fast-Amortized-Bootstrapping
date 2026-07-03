@@ -288,3 +288,4 @@
 - [x] Stage197 metadata-safe citation bank recorded.
 - [x] Stage198 metadata-safe manuscript refresh recorded.
 - [x] Stage199 active goal verifier recorded.
+- [x] Stage200 formal gap model with probe recorded.

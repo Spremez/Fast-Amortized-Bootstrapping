@@ -1,0 +1,7 @@
+r,T,input_components_m,mat_input_dft_lower_bound,repeated_scalar_input_dft,mat_input_dft_over_repeated,dense_mat_addmul_terms,repeated_scalar_dense_terms,dense_terms_over_repeated,interpretation,evidence
+2,1,3,3,4,0.750000000,9,8,1.125000000,MAT shares input conversion work but pays dense row/output interactions under the closed full-MAT selector.,repro/stage140_closed_fullmat_attribution_gate/attribution.csv
+2,7,3,21,28,0.750000000,63,56,1.125000000,MAT shares input conversion work but pays dense row/output interactions under the closed full-MAT selector.,repro/stage140_closed_fullmat_attribution_gate/attribution.csv
+4,1,5,5,8,0.625000000,25,16,1.562500000,MAT shares input conversion work but pays dense row/output interactions under the closed full-MAT selector.,repro/stage140_closed_fullmat_attribution_gate/attribution.csv
+4,7,5,35,56,0.625000000,175,112,1.562500000,MAT shares input conversion work but pays dense row/output interactions under the closed full-MAT selector.,repro/stage140_closed_fullmat_attribution_gate/attribution.csv
+6,1,7,7,12,0.583333333,49,24,2.041666667,MAT shares input conversion work but pays dense row/output interactions under the closed full-MAT selector.,repro/stage140_closed_fullmat_attribution_gate/attribution.csv
+6,7,7,49,84,0.583333333,343,168,2.041666667,MAT shares input conversion work but pays dense row/output interactions under the closed full-MAT selector.,repro/stage140_closed_fullmat_attribution_gate/attribution.csv

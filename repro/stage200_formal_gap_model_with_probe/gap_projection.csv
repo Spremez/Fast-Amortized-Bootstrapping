@@ -1,0 +1,4 @@
+component,full_sab_share_and_required_speedup,route_status,interpretation,evidence
+sub_decompose,0.103963271;1.389195069,prior AVX512 candidate rejected,Needs a new dataflow mechanism before code is reopened.,repro/stage180_mat_ep_split_probe/derived_projection.csv
+torus_to_dft_rows,0.169104610;1.208076492,same-format count reduction closed,Only backend primitive or representation change can move the count.,repro/stage180_mat_ep_split_probe/derived_projection.csv
+addmul_from_dec_dft,0.221723249;1.151228774,prior layout/dataflow families rejected,New code needs selector-load or FMA-equivalent mechanism evidence.,repro/stage180_mat_ep_split_probe/derived_projection.csv

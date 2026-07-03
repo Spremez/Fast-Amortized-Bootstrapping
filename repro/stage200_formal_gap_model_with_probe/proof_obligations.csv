@@ -1,0 +1,5 @@
+obligation_id,statement,status,evidence,needed_before_stronger_claim
+O1_bound_scope,State the lower bound only for exact same-format torus-input full-MAT PVW_TMLWE paths.,RECORDED,repro/stage200_formal_gap_model_with_probe/assumptions.csv; repro/stage200_formal_gap_model_with_probe/lower_bound_model.csv,"Separate proof for compact, multimask, or lazy-state representations."
+O2_selector_structure,Prove any component skipping from keygen-imposed zero structure before implementation.,OPEN,repro/stage200_formal_gap_model_with_probe/counterexample_matrix.csv,Structured selector distribution proof and production keygen/noise gates.
+O3_complete_sab_endpoint,Convert any component-level win into complete-SAB T_bootstrap/r evidence.,RECORDED_POLICY,repro/stage199_active_goal_requirement_verifier/next_action_selector.csv,"Correctness, noise/resource, repeated complete-SAB timing, and claim ledger refresh."
+O4_source_anchor,Cite 2025/686 algorithm/proof details only after reviewed full text is available.,BLOCKED,repro/stage196_public_source_refresh/citation_gate.csv,Local full-text artifact plus source-anchor extraction.

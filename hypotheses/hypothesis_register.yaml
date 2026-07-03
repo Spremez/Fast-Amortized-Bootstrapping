@@ -2892,3 +2892,21 @@ hypotheses:
       - scoped writing artifacts are treated as full objective completion
       - partial proof or source-anchor evidence is upgraded without direct artifacts
       - a new code branch opens without mechanism admission gates
+  - id: H124_formal_gap_model_with_probe
+    statement: >
+      For the current exact same-format full-MAT PVW/MAT-SAB path, input DFT
+      count reduction is already at the m*T lower-bound count, so further
+      exact-path gains need backend/addmul mechanisms or a representation proof
+      that changes the assumptions.
+    mechanism: >
+      Stage200 combines Stage140 count evidence, Stage162 materialization
+      closure, Stage180 projection data, and finite counterexample probes for
+      component omission and toy decomposition shortcuts.
+    status: stage200_formal_gap_model_with_probe
+    evidence: docs/stage200_formal_gap_model_with_probe.md; experiments/stage200_formal_gap_model_with_probe_plan.md; theory_checks/stage200_rbody_gap_lower_bound_model.md; repro/stage200_formal_gap_model_with_probe/summary.csv
+    current_decision: >
+      PASS_STAGE200_FORMAL_GAP_MODEL_WITH_PROBE_RECORDED_GOAL_ACTIVE
+    failure_criteria:
+      - finite probes fail to reject the tested shortcuts
+      - lower-bound wording is applied outside the stated same-format assumptions
+      - a component-level model is used as complete-SAB acceleration evidence

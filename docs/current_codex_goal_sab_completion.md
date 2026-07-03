@@ -537,3 +537,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE199_ACTIVE_GOAL_VERIFIER_RECORDED_GOAL_ACTIVE`. The requirement matrix keeps the goal active: scoped
     implementation evidence exists, while formal proof, full-text source
     anchors, and stronger completion claims remain incomplete.
+104. Treat Stage200 as formal gap model with probe:
+    `PASS_STAGE200_FORMAL_GAP_MODEL_WITH_PROBE_RECORDED_GOAL_ACTIVE`. R3 is improved from partial to a scoped model plus executable
+    finite probes, but full goal completion remains open because source anchors
+    and stronger implementation claims remain incomplete.

@@ -1,0 +1,4 @@
+candidate_shortcut,expected_if_valid,observed,decision,evidence
+drop_or_skip_any_input_component,No mismatch after omitting a component for all tested dense selectors.,omit probe failures=0; total rows=75,REJECT_SHORTCUT,repro/stage200_formal_gap_model_with_probe/finite_probe.csv
+same_format_lazy_decomposed_addition,Toy decomposition would commute with addition in all sampled rows.,non-additivity probe failures=0; total rows=5,REJECT_SHORTCUT,repro/stage200_formal_gap_model_with_probe/finite_probe.csv
+reduce_same_format_materialization_count,Observed materialization calls would exceed the same-format lower-bound model.,Stage162 records reducible_calls_without_rep_change=0 and matching 573440 count.,REJECT_SAME_FORMAT_COUNT_REDUCTION,repro/stage162_materialization_count_feasibility/summary.csv

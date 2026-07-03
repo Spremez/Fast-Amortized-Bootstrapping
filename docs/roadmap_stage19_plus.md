@@ -6003,3 +6003,19 @@ Completed. Stage199 records PASS_STAGE199_ACTIVE_GOAL_VERIFIER_RECORDED_GOAL_ACT
 but the full active goal remains open because formal, source-anchor, and
 stronger completion evidence are incomplete.
 ```
+## Stage 200: Formal Gap Model with Probe
+
+Goal:
+
+```text
+Improve the active-goal formal lower-bound/gap requirement using explicit
+assumptions plus executable finite counterexample probes.
+```
+
+Status:
+
+```text
+Completed. Stage200 records PASS_STAGE200_FORMAL_GAP_MODEL_WITH_PROBE_RECORDED_GOAL_ACTIVE. The exact same-format full-MAT route
+now has a scoped gap model and finite shortcut rejections, while stronger
+claims remain behind proof/source/implementation gates.
+```

@@ -2469,3 +2469,9 @@ Repro artifacts:
   - `theory_checks/stage199_active_goal_completion_model.md`
   - `algorithm_variants/mat_rlwe_sab_active_goal_verifier.md`
   - `repro/stage199_active_goal_requirement_verifier/`
+- stage200_formal_gap_model_with_probe: `PASS_STAGE200_FORMAL_GAP_MODEL_WITH_PROBE_RECORDED_GOAL_ACTIVE`
+  - `docs/stage200_formal_gap_model_with_probe.md`
+  - `experiments/stage200_formal_gap_model_with_probe_plan.md`
+  - `theory_checks/stage200_rbody_gap_lower_bound_model.md`
+  - `algorithm_variants/mat_rlwe_sab_formal_gap_model.md`
+  - `repro/stage200_formal_gap_model_with_probe/`

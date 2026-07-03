@@ -970,3 +970,6 @@ stronger related-work, and implementation gates separate.
 Stage199 records active goal verifier. Decision: `PASS_STAGE199_ACTIVE_GOAL_VERIFIER_RECORDED_GOAL_ACTIVE`. It confirms
 that scoped `T_bootstrap/r` evidence and metadata-safe writing exist, but full
 goal completion remains unproven.
+Stage200 records formal gap model with probe. Decision: `PASS_STAGE200_FORMAL_GAP_MODEL_WITH_PROBE_RECORDED_GOAL_ACTIVE`. It
+states same-format assumptions, records input DFT and dense-term count models,
+and runs finite counterexample probes for unsafe shortcuts.

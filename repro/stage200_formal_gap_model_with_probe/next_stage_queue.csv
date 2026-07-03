@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,current_status,evidence
+P0,source_anchor_intake,Reviewed 2025/686 full text is supplied locally.,Map every source-specific algorithm/proof sentence to inspected text anchors.,waiting_external_artifact,repro/stage196_public_source_refresh/citation_gate.csv
+P1,structured_selector_proof_probe,A compact/shared-output selector distribution proof route is proposed.,"Show keygen-imposed structure safely removes dense terms without public distribution change, then run finite and production noise gates.",proof_required,repro/stage200_formal_gap_model_with_probe/counterexample_matrix.csv
+P2,new_exact_mechanism_admission,"A new addmul, DFT, or backend primitive mechanism is supplied.",Projection clears complete-SAB threshold and then correctness/noise/resource/full-SAB gates pass.,waiting_new_mechanism,repro/stage200_formal_gap_model_with_probe/gap_projection.csv
