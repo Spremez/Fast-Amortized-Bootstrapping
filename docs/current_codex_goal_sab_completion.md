@@ -478,3 +478,7 @@ The new research goal is complete only after a later stage records:
     MAT-RLWE/r-body SAB research objective and confirms that the overall goal
     remains active: scoped complete-SAB speedup is supported, but theoretical
     optimality and compact/shared-output implementation remain open.
+90. Treat Stage186 as the compact proof unlock audit:
+    `BLOCK_STAGE186_COMPACT_PROOF_UNLOCK_NOT_READY`. Compact/shared-output MAT-SAB is not unlocked for
+    implementation. Stage138 remains kernel-level motivation only; Stage139,
+    Stage176, and Stage177 continue to block full SAB code and strong claims.

@@ -1,0 +1,3 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,187,compact proof obligation draft,User wants to pursue compact/shared-output MAT-SAB theory.,"Write formal key distribution, closed-state API, phase, and noise proof outline before code.","If any obligation remains unresolved, implementation remains denied."
+P1,188,scoped manuscript skeleton,Use current implemented exact PVW/MAT-SAB result for paper/report.,Use Stage185/186 claim boundaries; compact remains future work.,Reject novelty/compact speedup claims without complete-SAB implementation.

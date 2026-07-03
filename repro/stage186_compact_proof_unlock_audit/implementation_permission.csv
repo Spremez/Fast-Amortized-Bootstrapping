@@ -1,0 +1,5 @@
+candidate,permission,reason,evidence
+existing_compact_diagonal_output,DENY,Not closed as PVW_TMLWE shared-mask SAB state.,repro/stage139_compact_closure_audit/summary.csv; repro/stage176_structured_compact_security_api_gate/api_options.csv
+omit_body_cross_zero_encryptions,DENY,Changes public bootstrapping-key distribution without reduction.,repro/stage176_structured_compact_security_api_gate/evidence_matrix.csv; repro/stage173_structured_compact_phase_noise_toy/proof_status_update.csv
+new_structured_shared_mask_encryption,PROOF_ONLY,"Potential route, but requires new assumption/reduction and closed-state API.",repro/stage176_structured_compact_security_api_gate/api_options.csv
+compact_then_dense_reexpand,DEFER,May cancel compact benefit; no proof or microbench gate yet.,repro/stage176_structured_compact_security_api_gate/api_options.csv

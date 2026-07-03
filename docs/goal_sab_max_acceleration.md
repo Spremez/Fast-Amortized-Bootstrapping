@@ -924,3 +924,8 @@ Stage185 records the research/repro package refresh. Decision:
 `PASS_STAGE185_RESEARCH_REPRO_PACKAGE_REFRESH`. It consolidates the exact-route evidence and claim-safe paper
 outline while preserving open proof/implementation gaps for the original
 MAT-RLWE/r-body SAB objective.
+Stage186 records the compact proof unlock audit. Decision: `BLOCK_STAGE186_COMPACT_PROOF_UNLOCK_NOT_READY`.
+The compact/shared-output route remains blocked for implementation despite
+kernel-level signal, because security distribution, closed shared-mask state,
+production noise/phase proof, complete-SAB benchmark, and novelty gates are
+not all satisfied.

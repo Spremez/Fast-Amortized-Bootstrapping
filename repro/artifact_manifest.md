@@ -2385,3 +2385,9 @@ Repro artifacts:
   - `theory_checks/stage185_research_loop_gap_model.md`
   - `algorithm_variants/mat_rlwe_sab_research_program_snapshot.md`
   - `repro/stage185_research_repro_package_refresh/`
+- stage186_compact_proof_unlock_audit: `BLOCK_STAGE186_COMPACT_PROOF_UNLOCK_NOT_READY`
+  - `docs/stage186_compact_proof_unlock_audit.md`
+  - `experiments/stage186_compact_proof_unlock_audit_plan.md`
+  - `theory_checks/stage186_compact_proof_unlock_model.md`
+  - `algorithm_variants/mat_rlwe_sab_compact_unlock_audit.md`
+  - `repro/stage186_compact_proof_unlock_audit/`

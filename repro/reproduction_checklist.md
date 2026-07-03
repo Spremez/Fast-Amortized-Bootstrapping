@@ -274,3 +274,4 @@
 - [x] Stage183 addmul dataflow screen pack recorded.
 - [x] Stage184 exact-route closeout claim refresh pack recorded.
 - [x] Stage185 research/repro package refresh recorded.
+- [x] Stage186 compact proof unlock audit recorded.
