@@ -1,0 +1,6 @@
+mechanism,status,evidence,reason,required_gate
+M1_split_mat_ep_subcomponents,SELECT_FOR_STAGE180_PROBE,repro/stage178_fullmat_perbit_frontier/component_attribution.csv,"Stage178 shows MAT EP/subdecomp is 60.39% of full time, but Stage170 only times the combined block.","Measure sub_decompose, torus_to_DFT rows, and tiled addmul separately before code."
+M2_manual_avx512_sub_decompose,CONDITIONAL,src/mosfhet/src/mattrgsw.c,"The decompose loop is scalar-looking, but its actual share is unknown.",Only implement if Stage180 shows enough share for >=3% full-SAB projection.
+M3_fulltile_or_bodymajor_retuning,REJECT_NO_NEW_MECHANISM,repro/stage111_r6_fulltile_repeated_gate/summary.csv; repro/stage154_bodymajor_fullsab_closeout/summary.csv,Fulltile/bodymajor variants exist and were not promoted at complete-SAB gates.,Do not reopen without a different arithmetic/dataflow mechanism.
+M4_streaming_row_dft,REJECT_NO_NEW_MECHANISM,repro/stage165_closed_fullmat_streaming_microbench/summary.csv,Closed full-MAT streaming was slower than current tiled AVX.,Do not reopen row-streaming unless the addmul locality problem is changed.
+M5_from_dft_direct_scale,DEFER,repro/stage174_from_dft_direct_scale_gate/summary.csv,Stage174 direct-scale was neutral and is outside the selected MAT EP/subdecomp block.,Reopen only with a new from_DFT mechanism.

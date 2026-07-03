@@ -2545,3 +2545,20 @@ hypotheses:
       - a new branch is opened without projected complete-SAB impact
       - kernel-only speedup is reported as final bootstrapping acceleration
       - compact implementation is resumed despite Stage176/177 blocks
+  - id: H103_mat_ep_microarch_audit
+    statement: >
+      The project already has a MAT-aware AVX512 exact external-product path;
+      further full-MAT speedup requires a measured subcomponent mechanism inside
+      mat_trgsw_mul_pvmtmlwe_sub_DFT rather than blind layout retuning.
+    mechanism: >
+      Stage179 audits code facts and prior negative full-SAB gates, then
+      selects a split probe for sub_decompose, torus_to_DFT, and tiled addmul.
+    status: stage179_mat_ep_microarch_audit
+    evidence: docs/stage179_mat_ep_microarch_audit.md; experiments/stage179_mat_ep_microarch_audit_plan.md; theory_checks/stage179_mat_ep_microarch_model.md; repro/stage179_mat_ep_microarch_audit/summary.csv
+    current_decision: >
+      PASS_STAGE179_AUDIT_SELECT_MAT_EP_SPLIT_PROBE_NO_CODE
+    failure_criteria:
+      - code is written before subcomponent timing exists
+      - old fulltile/bodymajor/streaming variants are reopened without a new
+        mechanism
+      - kernel-only data is reported as complete-SAB acceleration

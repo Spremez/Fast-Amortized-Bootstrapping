@@ -2343,3 +2343,9 @@ Repro artifacts:
   - `theory_checks/stage178_fullmat_perbit_frontier_model.md`
   - `algorithm_variants/mat_rlwe_sab_exact_fullmat_frontier.md`
   - `repro/stage178_fullmat_perbit_frontier/`
+- stage179_mat_ep_microarch_audit: `PASS_STAGE179_AUDIT_SELECT_MAT_EP_SPLIT_PROBE_NO_CODE`
+  - `docs/stage179_mat_ep_microarch_audit.md`
+  - `experiments/stage179_mat_ep_microarch_audit_plan.md`
+  - `theory_checks/stage179_mat_ep_microarch_model.md`
+  - `algorithm_variants/mat_rlwe_sab_mat_ep_microarch_audit.md`
+  - `repro/stage179_mat_ep_microarch_audit/`

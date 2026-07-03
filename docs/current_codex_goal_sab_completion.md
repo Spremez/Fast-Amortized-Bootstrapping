@@ -448,3 +448,7 @@ The new research goal is complete only after a later stage records:
     1.131666667x mean speedup on
     `T_bootstrap/r` versus repeated scalar. Stage179 may audit MAT
     EP/subdecomp only if it stays tied to complete-SAB impact.
+83. Treat Stage179 as the MAT EP microarchitecture audit:
+    `PASS_STAGE179_AUDIT_SELECT_MAT_EP_SPLIT_PROBE_NO_CODE`. Current r=6 MAT-aware AVX512 exists. Stage180 must split
+    sub_decompose, torus_to_DFT, and tiled addmul before any new exact-path
+    implementation branch opens.

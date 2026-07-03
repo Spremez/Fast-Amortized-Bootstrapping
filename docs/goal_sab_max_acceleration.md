@@ -905,3 +905,6 @@ Stage178 records the exact full-MAT per-bit frontier. Decision:
 `PASS_STAGE178_FULLMAT_PERBIT_FRONTIER_SELECT_MAT_EP_AUDIT`. The current accepted complete-SAB speedup dimension is
 `T_bootstrap/r`; compact remains blocked; next executable work is a bounded
 MAT EP/subdecomp microarchitecture audit.
+Stage179 records MAT EP microarchitecture audit evidence. Decision:
+`PASS_STAGE179_AUDIT_SELECT_MAT_EP_SPLIT_PROBE_NO_CODE`. The project already has MAT-aware AVX512 external product; the
+next valid step is a split probe, not blind AVX512 retuning.

@@ -5670,3 +5670,19 @@ Completed. Stage178 records PASS_STAGE178_FULLMAT_PERBIT_FRONTIER_SELECT_MAT_EP_
 scalar on the complete-SAB T_bootstrap/r endpoint. Next route is an audit-only
 MAT EP/subdecomp microarchitecture gate, not compact implementation.
 ```
+## Stage 179: MAT EP Microarchitecture Audit
+
+Goal:
+
+```text
+Audit whether current exact full-MAT r=6 still has an implementable AVX512
+mechanism before writing more code.
+```
+
+Status:
+
+```text
+Completed. Stage179 records PASS_STAGE179_AUDIT_SELECT_MAT_EP_SPLIT_PROBE_NO_CODE. MAT-aware AVX512 exists; code
+permission is denied until Stage180 splits sub_decompose, torus_to_DFT, and
+tiled addmul timing inside the hot block.
+```

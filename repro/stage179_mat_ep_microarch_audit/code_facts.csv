@@ -1,0 +1,7 @@
+fact,source,status,evidence,implication
+current_r_gt4_tiled_avx512_exists,src/mosfhet/src/mattrgsw.c,PRESENT,Current r=6/r=8 exact path has a MAT-aware AVX512 tiled output kernel.,The project is not missing a basic MAT-aware AVX512 external-product implementation.
+r6_fulltile_variant_exists,src/mosfhet/src/mattrgsw.c,PRESENT,Full-output r=6 tile variant exists behind MAT_TRGSW_AVX512_R6_FULLTILE.,All-output register residency has already been tested and was not promoted.
+r6_bodymajor_variant_exists,src/mosfhet/src/mattrgsw.c,PRESENT,Body-major r=6 variant exists behind MAT_TRGSW_AVX512_R6_BODYMAJOR.,Pure layout retuning has prior negative full-SAB evidence.
+sub_decompose_is_separate_scalar_loop,src/mosfhet/src/mattrgsw.c,PRESENT,mat_trgsw_sub_decompose computes diff/offset/shift/mask into scratch->dec before DFT.,The remaining unmeasured mechanism is not another MAT multiply layout; it is subcomponent split and possible vectorized decompose/DFT dataflow.
+sub_decompose_then_dft_then_addmul_boundary,src/mosfhet/src/mattrgsw.c,PRESENT,"mat_trgsw_mul_pvmtmlwe_sub_DFT decomposes to scratch, converts every row to DFT, then calls the AVX512 addmul kernel.",Stage180 must split these three phases before deciding whether a code change is justified.
+explicit_flags_exist,src/mosfhet/Makefile.def,PRESENT,All relevant exact MAT variants are controlled by explicit flags.,Any Stage180+ implementation must stay behind a flag and preserve scalar/default behavior.

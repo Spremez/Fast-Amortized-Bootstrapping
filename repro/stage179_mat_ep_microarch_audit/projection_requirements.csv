@@ -1,0 +1,6 @@
+target_full_sab_speedup,mat_ep_share,required_mat_ep_component_speedup,interpretation
+1.010000,0.603899465,1.016668376,Minimum component speedup over the current MAT EP/subdecomp block needed to reach target full-SAB gain.
+1.020000,0.603899465,1.033558316,Minimum component speedup over the current MAT EP/subdecomp block needed to reach target full-SAB gain.
+1.030000,0.603899465,1.050674268,Minimum component speedup over the current MAT EP/subdecomp block needed to reach target full-SAB gain.
+1.050000,0.603899465,1.085602596,Minimum component speedup over the current MAT EP/subdecomp block needed to reach target full-SAB gain.
+1.100000,0.603899465,1.177214029,Minimum component speedup over the current MAT EP/subdecomp block needed to reach target full-SAB gain.

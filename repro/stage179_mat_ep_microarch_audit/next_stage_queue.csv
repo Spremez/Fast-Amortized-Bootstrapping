@@ -1,0 +1,4 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,180,MAT EP split probe,Stage179 selects split probe and denies code now.,"Measure sub_decompose, torus_to_DFT, and tiled addmul inside mat_trgsw_mul_pvmtmlwe_sub_DFT.","If no subcomponent can project >=3% full-SAB gain, close exact-path tuning."
+P1,181,conditional AVX512 sub-decompose implementation,Stage180 shows sub_decompose share is large enough.,"Implement behind flag, pass correctness, microbench, full-SAB repeated A/B.",Reject if full-SAB T_bootstrap/r does not improve.
+P2,182,negative frontier,Stage180 does not identify an implementable mechanism.,Record remaining exact-path headroom and stop blind optimization.,Do not retune old fulltile/bodymajor/streaming candidates.
