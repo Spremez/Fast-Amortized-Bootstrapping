@@ -967,3 +967,6 @@ frontiers to explicit evidence and qualifications.
 Stage198 records metadata-safe manuscript refresh. Decision: `PASS_STAGE198_METADATA_SAFE_MANUSCRIPT_REFRESH_READY_GOAL_ACTIVE`. It
 generates a scoped draft from the support bank and keeps full-text citation,
 stronger related-work, and implementation gates separate.
+Stage199 records active goal verifier. Decision: `PASS_STAGE199_ACTIVE_GOAL_VERIFIER_RECORDED_GOAL_ACTIVE`. It confirms
+that scoped `T_bootstrap/r` evidence and metadata-safe writing exist, but full
+goal completion remains unproven.

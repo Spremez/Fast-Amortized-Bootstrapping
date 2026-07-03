@@ -1,0 +1,4 @@
+requirement_id,gap,needed_evidence,current_action
+R3_complexity_lower_bound,Formal lower-bound proof and exact proof assumptions remain incomplete.,"formal proof note with assumptions, lower-bound statement, and counterexample/falsification checks",prepare a bounded proof-obligation stage only if it includes falsifiable checks
+R7_literature_citation,"Reviewed 2025/686 full text is still required for theorem, equation, proof, and experiment anchors.",local reviewed full text path plus source-anchor extraction,wait for full-text artifact or keep metadata-safe writing
+R8_final_completion,"Formal proof closure, source-anchor review, and any stronger implementation claim remain open.",all partial rows upgraded with direct evidence and no remaining blocked stronger claims,keep goal active

@@ -2463,3 +2463,9 @@ Repro artifacts:
   - `theory_checks/stage198_manuscript_compliance_model.md`
   - `algorithm_variants/mat_rlwe_sab_metadata_safe_manuscript_refresh.md`
   - `repro/stage198_metadata_safe_manuscript_refresh/`
+- stage199_active_goal_requirement_verifier: `PASS_STAGE199_ACTIVE_GOAL_VERIFIER_RECORDED_GOAL_ACTIVE`
+  - `docs/stage199_active_goal_requirement_verifier.md`
+  - `experiments/stage199_active_goal_requirement_verifier_plan.md`
+  - `theory_checks/stage199_active_goal_completion_model.md`
+  - `algorithm_variants/mat_rlwe_sab_active_goal_verifier.md`
+  - `repro/stage199_active_goal_requirement_verifier/`

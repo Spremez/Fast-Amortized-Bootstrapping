@@ -533,3 +533,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE198_METADATA_SAFE_MANUSCRIPT_REFRESH_READY_GOAL_ACTIVE`. A guarded scoped manuscript draft exists, with paragraph
     compliance and claim-guard tables. It is not a final paper and opens no
     new code branch.
+103. Treat Stage199 as active goal verifier:
+    `PASS_STAGE199_ACTIVE_GOAL_VERIFIER_RECORDED_GOAL_ACTIVE`. The requirement matrix keeps the goal active: scoped
+    implementation evidence exists, while formal proof, full-text source
+    anchors, and stronger completion claims remain incomplete.

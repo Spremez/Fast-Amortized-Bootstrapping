@@ -2876,3 +2876,19 @@ hypotheses:
       - a paragraph uses a sentence id outside the Stage197 map
       - a used sentence lacks ALLOW-family support
       - the draft opens theorem-level, broad related-work, or implementation claims
+  - id: H123_active_goal_requirement_verifier
+    statement: >
+      The active PVW/MAT-SAB objective should remain open unless every
+      requirement has direct current evidence; scoped artifacts are not enough
+      to prove full research completion.
+    mechanism: >
+      Stage199 maps each active-goal requirement to evidence, evidence
+      strength, remaining gaps, and next admissible actions.
+    status: stage199_active_goal_requirement_verifier
+    evidence: docs/stage199_active_goal_requirement_verifier.md; experiments/stage199_active_goal_requirement_verifier_plan.md; theory_checks/stage199_active_goal_completion_model.md; repro/stage199_active_goal_requirement_verifier/summary.csv
+    current_decision: >
+      PASS_STAGE199_ACTIVE_GOAL_VERIFIER_RECORDED_GOAL_ACTIVE
+    failure_criteria:
+      - scoped writing artifacts are treated as full objective completion
+      - partial proof or source-anchor evidence is upgraded without direct artifacts
+      - a new code branch opens without mechanism admission gates

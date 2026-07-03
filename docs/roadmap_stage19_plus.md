@@ -5987,3 +5987,19 @@ Status:
 Completed. Stage198 records PASS_STAGE198_METADATA_SAFE_MANUSCRIPT_REFRESH_READY_GOAL_ACTIVE. The refreshed draft is metadata-safe
 and compliance-checked, but not a final paper or a new implementation claim.
 ```
+## Stage 199: Active Goal Requirement Verifier
+
+Goal:
+
+```text
+Audit the active PVW/MAT-SAB research objective requirement-by-requirement and
+select the next admissible route from actual evidence gaps.
+```
+
+Status:
+
+```text
+Completed. Stage199 records PASS_STAGE199_ACTIVE_GOAL_VERIFIER_RECORDED_GOAL_ACTIVE. The scoped evidence chain is usable,
+but the full active goal remains open because formal, source-anchor, and
+stronger completion evidence are incomplete.
+```
