@@ -280,3 +280,4 @@
 - [x] Stage189 closed-state linear probe recorded.
 - [x] Stage190 selector distribution distinguisher recorded.
 - [x] Stage191 secret-correction noise/resource gate recorded.
+- [x] Stage192 compact admission and route selection recorded.

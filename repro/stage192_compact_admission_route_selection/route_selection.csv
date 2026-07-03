@@ -1,0 +1,6 @@
+route,status,why,primary_metric,allowed_next,stage193_priority
+compact_shared_output_mat_sab,PROOF_ONLY_IMPLEMENTATION_DENIED,G1/G2/G4 failed or remain unproven; G3 is toy-only and G5 cannot run,no valid T_bootstrap/r benchmark,formal structured-key proof or isolated noise proof only; no sab_pvw production code,no
+exact_full_mat_current_path,CURRENT_SCOPED_BASELINE,implemented PVW/MAT-SAB exact route remains the only closed r-body ciphertext SAB path,T_bootstrap/r speedup mean 1.131666667x; min 1.115000000x,keep as baseline and regression reference,reference
+exact_addmul_from_dec_dft_new_dataflow,SELECT_FOR_STAGE193_PREFLIGHT,Stage182 keeps R3 open only for a new dataflow proof; Stage178/180 show addmul share is large enough for modest gains,MAT EP/subdecomp full share 0.603899465; from_DFT share 0.321561912,assembly/counter/source-backed preflight; no code promotion unless projected >=3% complete-SAB gain,yes
+exact_torus_to_dft_new_mechanism,SECONDARY_AFTER_R3,share is meaningful but Stage174 direct-scale/backend locality was neutral,from_DFT materialize share 0.321561912,only a genuinely new DFT/conversion mechanism,defer
+tail_setup_extract_ks,DEFER,residual share is too small to drive the main objective unless profiling changes,residual share 0.074538623,reopen only if new profile shows residual >15%,no

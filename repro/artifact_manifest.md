@@ -2421,3 +2421,9 @@ Repro artifacts:
   - `theory_checks/stage191_secret_correction_noise_model.md`
   - `algorithm_variants/mat_rlwe_sab_secret_correction_closure.md`
   - `repro/stage191_secret_correction_noise_resource_gate/`
+- stage192_compact_admission_route_selection: `PASS_STAGE192_COMPACT_IMPLEMENTATION_DENIED_ROUTE_EXACT_ADDMUL_PREFLIGHT`
+  - `docs/stage192_compact_admission_route_selection.md`
+  - `experiments/stage192_compact_admission_route_selection_plan.md`
+  - `theory_checks/stage192_compact_admission_model.md`
+  - `algorithm_variants/mat_rlwe_sab_compact_admission_route_selection.md`
+  - `repro/stage192_compact_admission_route_selection/`

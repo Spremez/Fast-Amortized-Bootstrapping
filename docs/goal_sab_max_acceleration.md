@@ -946,3 +946,6 @@ Stage191 records the secret-correction noise/resource gate. Decision:
 `PASS_STAGE191_T4_SECRET_CORRECTION_LOWER_BOUND_RECORDED_IMPLEMENTATION_DENIED`. It quantifies the latency, resource, and normalized noise
 barriers for key-switch/re-share closure and keeps compact SAB implementation
 denied.
+Stage192 records compact admission and route selection. Decision:
+`PASS_STAGE192_COMPACT_IMPLEMENTATION_DENIED_ROUTE_EXACT_ADDMUL_PREFLIGHT`. It keeps compact/shared-output MAT-SAB proof-only and routes the
+active research loop to exact full-MAT addmul dataflow preflight.

@@ -503,3 +503,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE191_T4_SECRET_CORRECTION_LOWER_BOUND_RECORDED_IMPLEMENTATION_DENIED`. Secret-correction or key-switch closure remains proof-only:
     it needs explicit key-format, latency, resource, and noise recurrence
     evidence before any `sab_pvw_*` production implementation.
+96. Treat Stage192 as compact admission and route selection:
+    `PASS_STAGE192_COMPACT_IMPLEMENTATION_DENIED_ROUTE_EXACT_ADDMUL_PREFLIGHT`. Compact/shared-output SAB implementation is denied after
+    T1/T2/T4 gates. The next non-theory executable route is Stage193 exact
+    full-MAT addmul dataflow preflight.

@@ -1,0 +1,5 @@
+claim,status,safe_wording,forbidden_wording,evidence
+exact_full_mat_complete_sab_speedup,ALLOW_SCOPED,current exact PVW/MAT-SAB path has scoped complete-SAB T_bootstrap/r speedup under recorded conditions,theoretically optimal or general across all parameters/backends,repro/stage178_fullmat_perbit_frontier/per_bit_throughput.csv
+compact_shared_output_implementation,DENY,compact/shared-output remains proof-only,implemented compact SAB or compact complete-SAB speedup,repro/stage189_closed_state_linear_probe/summary.csv; repro/stage190_selector_distribution_distinguisher/summary.csv; repro/stage191_secret_correction_noise_resource_gate/summary.csv
+avx512_or_addmul_optimality,DENY,exact addmul remains open only for a new dataflow preflight,current AVX512 MAT addmul is theoretically optimal,repro/stage182_exact_path_negative_frontier/frontier_decisions.csv; repro/stage183_addmul_dataflow_screen/mechanism_screen.csv
+stage193_future_candidate,EXPERIMENT_PENDING,Stage193 may screen an exact addmul dataflow candidate,Stage193 candidate speeds up bootstrapping before measured gates,repro/stage192_compact_admission_route_selection/next_stage_queue.csv
