@@ -5765,3 +5765,20 @@ claim is scoped complete-SAB `T_bootstrap/r` speedup under recorded conditions.
 AVX512 theoretical optimality, sub-decompose improvement, and implemented
 compact MAT-SAB claims are denied.
 ```
+## Stage 185: Research/Repro Package Refresh
+
+Goal:
+
+```text
+Package the current MAT-RLWE/r-body SAB research loop into a claim-safe
+reproducibility bundle while preserving open gaps.
+```
+
+Status:
+
+```text
+Completed. Stage185 records PASS_STAGE185_RESEARCH_REPRO_PACKAGE_REFRESH. The package maps the original
+objective to current evidence, keeps `T_bootstrap/r` as the primary endpoint,
+and explicitly leaves the overall goal active because optimality and compact
+MAT-SAB implementation remain unproven.
+```

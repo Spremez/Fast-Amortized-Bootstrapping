@@ -920,3 +920,7 @@ untested loop/layout mechanism passes the code-entry rule.
 Stage184 records the exact-route closeout claim refresh. Decision:
 `PASS_STAGE184_EXACT_ROUTE_CLOSEOUT_CLAIM_REFRESH`. Current exact-route work is closed for blind implementation;
 claim wording must follow the scoped `T_bootstrap/r` ledger.
+Stage185 records the research/repro package refresh. Decision:
+`PASS_STAGE185_RESEARCH_REPRO_PACKAGE_REFRESH`. It consolidates the exact-route evidence and claim-safe paper
+outline while preserving open proof/implementation gaps for the original
+MAT-RLWE/r-body SAB objective.

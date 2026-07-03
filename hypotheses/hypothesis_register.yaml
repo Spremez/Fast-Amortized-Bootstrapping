@@ -2645,3 +2645,20 @@ hypotheses:
       - unsupported optimality or novelty wording enters reports
       - exact hot-path code is reopened without a new mechanism
       - compact SAB is described as implemented acceleration
+  - id: H109_research_repro_package_refresh
+    statement: >
+      The current PVW/MAT-SAB evidence should be packaged as a scoped
+      MAT-RLWE/r-body SAB research result with explicit open gaps, not as a
+      completed theoretical optimum or compact-SAB implementation.
+    mechanism: >
+      Stage185 consolidates Stage178-184 evidence, maps objective requirements
+      to authoritative artifacts, preserves negative ablations, and records
+      next gates for compact proof or new dataflow preflights.
+    status: stage185_research_repro_package_refresh
+    evidence: docs/stage185_research_repro_package_refresh.md; experiments/stage185_research_repro_package_refresh_plan.md; theory_checks/stage185_research_loop_gap_model.md; repro/stage185_research_repro_package_refresh/summary.csv
+    current_decision: >
+      PASS_STAGE185_RESEARCH_REPRO_PACKAGE_REFRESH
+    failure_criteria:
+      - the package presents scoped speedup as theoretical optimality
+      - open compact/shared-output proof gaps are hidden
+      - reproduction commands or artifact paths are missing for current claims

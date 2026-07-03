@@ -473,3 +473,8 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE184_EXACT_ROUTE_CLOSEOUT_CLAIM_REFRESH`. Scoped complete-SAB `T_bootstrap/r` speedup wording is
     allowed; AVX512 theoretical optimality, sub-decompose speedup, and
     implemented compact MAT-SAB claims are denied.
+89. Treat Stage185 as the research/repro package refresh:
+    `PASS_STAGE185_RESEARCH_REPRO_PACKAGE_REFRESH`. It packages the current evidence around the original
+    MAT-RLWE/r-body SAB research objective and confirms that the overall goal
+    remains active: scoped complete-SAB speedup is supported, but theoretical
+    optimality and compact/shared-output implementation remain open.

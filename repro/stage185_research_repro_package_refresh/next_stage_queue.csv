@@ -1,0 +1,4 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,186,compact proof unlock audit,A proof/source package is available or the user asks to pursue compact/shared-output MAT-SAB theory.,Security/API/noise/key distribution/literature gates before production SAB code.,"If proof is incomplete, keep compact route blocked and preserve the failure matrix."
+P1,187,manuscript skeleton from scoped ledger,User wants paper drafting from current evidence.,Use only Stage185 safe claims and verified citations; label all stronger claims as future work.,Reject manuscript wording that states theoretical optimality or compact implementation.
+P2,188,new dataflow preflight,A concrete non-layout AVX/dataflow idea is proposed.,"Projection >=3% complete-SAB impact, deterministic equivalence, microbench, then full-SAB A/B.",No hot-path implementation from source-level plausibility alone.

@@ -2379,3 +2379,9 @@ Repro artifacts:
   - `theory_checks/stage184_claim_boundary_model.md`
   - `algorithm_variants/mat_rlwe_sab_exact_route_closeout.md`
   - `repro/stage184_exact_route_closeout_claim_refresh/`
+- stage185_research_repro_package_refresh: `PASS_STAGE185_RESEARCH_REPRO_PACKAGE_REFRESH`
+  - `docs/stage185_research_repro_package_refresh.md`
+  - `experiments/stage185_research_repro_package_refresh_plan.md`
+  - `theory_checks/stage185_research_loop_gap_model.md`
+  - `algorithm_variants/mat_rlwe_sab_research_program_snapshot.md`
+  - `repro/stage185_research_repro_package_refresh/`
