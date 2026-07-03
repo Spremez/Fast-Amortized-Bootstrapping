@@ -331,3 +331,6 @@ The new research goal is complete only after a later stage records:
 49. Treat Stage145 as the r4-unrolled promotion-policy audit:
     `WEAK_STAGE145_POLICY_KEEP_EXPLICIT_DO_NOT_PROMOTE`. The explicit r4-unrolled path is retained only for
     ablation/variance analysis; it is not promoted to default or final claim.
+50. Treat Stage146 as the r4-unrolled variance-attribution gate:
+    `PASS_STAGE146_VARIANCE_ATTRIBUTED_KEEP_R4_EXPLICIT_ROUTE_TO_SCHEDULE_OR_HIGHER_STAT`. This stage may guide the next research route, but it does not
+    promote the r4-unrolled path or modify scalar/default SAB behavior.

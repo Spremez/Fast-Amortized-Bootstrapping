@@ -1,0 +1,10 @@
+metric,value,detail,status
+stage144_decision,WEAK_STAGE144_PERF_POSITIVE_BUT_CI_CROSSES_ONE,Input repeated gate decision.,PASS
+paired_runs,3,Ordinal generic/r4 Stage144 rows compared.,PASS
+paired_median_r4_over_generic_speedup,1.032626,Median is robust to the slow r4 sample.,PASS
+paired_mean_without_r4_outlier,1.038317,Mean after removing rows flagged by relative-median rule.,PASS_VARIANCE_OUTLIER_IDENTIFIED
+generic_lane_cv_pct,0.578544,Stage144 generic PVW lane coefficient of variation.,PASS
+r4_lane_cv_pct,7.464700,Stage144 r4-unrolled PVW lane coefficient of variation.,PASS_VARIANCE_OUTLIER_IDENTIFIED
+generic_scalar_lane_cv_pct,0.481682,Stage144 scalar lane variation in generic runs.,PASS
+r4_scalar_lane_cv_pct,1.519900,Stage144 scalar lane variation in r4 runs.,PASS
+r4_outlier_count,1,Rows with r4-only deviation >=8% and generic deviation <=3%.,PASS_VARIANCE_OUTLIER_IDENTIFIED

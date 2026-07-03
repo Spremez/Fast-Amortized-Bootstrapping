@@ -1,0 +1,9 @@
+metric,generic,r4_unrolled,ratio_or_delta,status,detail
+profile_status,PASS,PASS,0,PASS,Correctness and body-profile lines were parsed.
+bench_pvw_lane_speedup_generic_over_r4,7424772.750,7083430.250,1.048189,PROFILE_ONLY,One profiled full-SAB run; not a final performance claim.
+body_full_speedup_generic_over_r4,29405098,28065272,1.047740,PROFILE_ONLY,Body hot-path timing excludes post-processing.
+mat_ep_speedup_generic_over_r4,14257427,12834514,1.110866,PROFILE_ONLY,"If >1, the profiled r4-unrolled MAT EP is faster."
+non_mat_body_speedup_generic_over_r4,15147671.000000,15230758.000000,0.994545,PROFILE_ONLY,Non-MAT body work includes sub/from_DFT/add/rotation/schedule overhead.
+mat_ep_share_delta_r4_minus_generic,0.484862,0.457309,-0.027553,PROFILE_ONLY,Share delta is diagnostic only because profile instrumentation changes absolute timing.
+mat_ep_calls_equal,573440,573440,1,PASS,Schedule counts must remain unchanged across kernel variants.
+copyback_calls_equal_zero,0,0,1,PASS,Active-buffer fusion should keep copyback eliminated.

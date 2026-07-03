@@ -2172,3 +2172,8 @@ Repro artifacts:
 - `repro/stage145_r4_unrolled_policy_audit/summary.csv`
 - `repro/stage145_r4_unrolled_policy_audit/policy.csv`
 - `repro/stage145_r4_unrolled_policy_audit/artifact_index.csv`
+- stage146_r4_unrolled_variance_attribution: `PASS_STAGE146_VARIANCE_ATTRIBUTED_KEEP_R4_EXPLICIT_ROUTE_TO_SCHEDULE_OR_HIGHER_STAT`
+  - `docs/stage146_r4_unrolled_variance_attribution.md`
+  - `experiments/stage146_r4_unrolled_variance_attribution_plan.md`
+  - `theory_checks/stage146_variance_model.md`
+  - `repro/stage146_r4_unrolled_variance_attribution/`

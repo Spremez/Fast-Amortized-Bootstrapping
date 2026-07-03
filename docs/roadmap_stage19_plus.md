@@ -5148,3 +5148,19 @@ Completed. Stage145 records WEAK_STAGE145_POLICY_KEEP_EXPLICIT_DO_NOT_PROMOTE. D
 unchanged. Claim policy is DISALLOW_FINAL_SPEEDUP_CLAIM_ALLOW_NEGATIVE_ABLATION. Next action:
 Stage146 should attribute variance or route to another algorithmic candidate.
 ```
+## Stage 146: r4-Unrolled Variance Attribution
+
+Goal:
+
+```text
+Explain the Stage144 weak repeated result and decide whether r4-unrolled AVX512
+deserves more full-SAB work or should remain only an explicit ablation.
+```
+
+Status:
+
+```text
+Completed. Stage146 records PASS_STAGE146_VARIANCE_ATTRIBUTED_KEEP_R4_EXPLICIT_ROUTE_TO_SCHEDULE_OR_HIGHER_STAT. It consumes Stage144 repeated
+rows, runs one body-profile diagnostic pair, and keeps scalar/default behavior
+unchanged.
+```

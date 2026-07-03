@@ -784,3 +784,7 @@ metric. It does not change scalar/default behavior.
 Stage145 records the r4-unrolled promotion boundary: Stage144 repeated
 performance is weak, although noise/resource pass. Therefore r4-unrolled stays
 explicit-only and cannot be used as a final complete-SAB acceleration claim.
+Stage146 records r4-unrolled variance attribution after Stage145. It treats
+Stage144 run-level spread as a routing input, not as a reason to promote the
+r4-unrolled AVX512 path. All final acceleration wording remains bound to
+repeated complete-SAB `T_bootstrap/r` gates.
