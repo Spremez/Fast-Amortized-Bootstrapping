@@ -3784,3 +3784,47 @@ took 41,410,757 us total and 6,901,792.833 us/lane. The fulltile/tile4 ratio
 is 1.026x for total and per-lane latency. This justifies a future 3+ run gate
 but does not promote fulltile by itself.
 ```
+
+## Stage 111: r=6 Fulltile Repeated Gate
+
+Goal:
+
+```text
+Confirm or reject the Stage110 one-run r=6 fulltile complete-SAB signal with
+at least three repeated complete-SAB runs for tile4 and fulltile.
+```
+
+Theory basis:
+
+Stage110's fulltile signal is too small and based on one run. Since the primary
+endpoint is `T_total/r`, the repeated gate must compare the PVW total/per-lane
+time of the two variants directly under the same backend and active-buffer
+path. A higher speedup versus repeated scalar is not enough if the scalar
+baseline differs between sequential runs.
+
+Tasks:
+
+- run tile4 and fulltile r=6 complete-SAB benchmark for three process runs;
+- require full-output correctness for every run;
+- report mean, standard deviation, min, max, total latency ratio, and per-lane
+  latency ratio;
+- preserve raw logs as repro evidence.
+
+Gate:
+
+- correctness must pass for all runs;
+- at least three runs are required;
+- fulltile can only continue to noise/resource if its repeated PVW mean beats
+  tile4 by a practical margin;
+- otherwise keep it as an ablation and do not promote.
+
+Status:
+
+```text
+Completed. Stage111 records
+PASS_STAGE111_R6_FULLTILE_REPEATED_NEGATIVE_NOT_PROMOTED. All six complete-SAB
+runs passed correctness. tile4 averaged 42,219,780.667 us total and
+7,036,630.111 us/lane. fulltile averaged 43,336,939.000 us total and
+7,222,823.167 us/lane. The repeated fulltile/tile4 PVW ratio is 0.974x, so the
+Stage110 one-run signal does not survive repetition. Do not promote fulltile.
+```

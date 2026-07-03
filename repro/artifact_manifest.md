@@ -1646,3 +1646,21 @@ Repro artifacts:
 - `repro/stage110_r6_fulltile_fullsab_gate/tile4/run_0.log`
 - `repro/stage110_r6_fulltile_fullsab_gate/fulltile/summary.csv`
 - `repro/stage110_r6_fulltile_fullsab_gate/fulltile/run_0.log`
+
+## Stage 111 r=6 Fulltile Repeated Gate
+
+- `docs/stage111_r6_fulltile_repeated_gate.md`
+- `experiments/stage111_r6_fulltile_repeated_gate_plan.md`
+- `scripts/run_stage111_r6_fulltile_repeated_gate.sh`
+- `scripts/build_stage111_r6_fulltile_repeated_gate.py`
+- `repro/stage111_r6_fulltile_repeated_gate/summary.csv`
+- `repro/stage111_r6_fulltile_repeated_gate/comparison.csv`
+- `repro/stage111_r6_fulltile_repeated_gate/artifact_index.csv`
+- `repro/stage111_r6_fulltile_repeated_gate/tile4/summary.csv`
+- `repro/stage111_r6_fulltile_repeated_gate/tile4/run_0.log`
+- `repro/stage111_r6_fulltile_repeated_gate/tile4/run_1.log`
+- `repro/stage111_r6_fulltile_repeated_gate/tile4/run_2.log`
+- `repro/stage111_r6_fulltile_repeated_gate/fulltile/summary.csv`
+- `repro/stage111_r6_fulltile_repeated_gate/fulltile/run_0.log`
+- `repro/stage111_r6_fulltile_repeated_gate/fulltile/run_1.log`
+- `repro/stage111_r6_fulltile_repeated_gate/fulltile/run_2.log`

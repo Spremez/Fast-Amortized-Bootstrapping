@@ -42,7 +42,9 @@ that body-linear MAT external-product skipping is blocked as a loop-only
 change by the current `MAT_TRGSW_DFT` selector/key format. Stage110 then runs
 a one-run complete-SAB r=6 tile4/fulltile gate and records fulltile as a
 candidate only: 1.026x faster than tile4 in this smoke, with repeated/noise/
-resource gates still required.
+resource gates still required. Stage111 runs the required repeated gate and
+rejects that candidate: fulltile is 0.974x versus tile4 on repeated complete
+SAB PVW mean, despite all correctness gates passing.
 
 ## Execution Route
 
@@ -78,7 +80,10 @@ resource gates still required.
 13. Treat Stage110 as routing evidence only:
     r=6 fulltile has a one-run complete-SAB positive signal over tile4, but it
     is not promoted without 3+ repeated runs and noise/resource checks.
-14. Preserve the current final-audit status:
+14. Treat Stage111 as the current r=6 layout decision:
+    repeated complete-SAB evidence rejects fulltile promotion; future r=6 work
+    needs a new profile-backed hypothesis rather than more fulltile tuning.
+15. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

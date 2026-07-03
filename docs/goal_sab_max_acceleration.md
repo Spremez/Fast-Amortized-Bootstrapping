@@ -459,6 +459,7 @@ Stage 107: MAT kernel structure audit. [completed; current MAT kernels remain de
 Stage 108: V106-D body-major layout gate. [completed; r=6 body-major kernel correctness passed but performance was negative/neutral versus existing tile4/fulltile layouts, not promoted]
 Stage 109: V106-B body-linear invariant gate. [completed; loop-only body-linear skipping is blocked by current MAT_TRGSW_DFT selector/key format, new format gate required]
 Stage 110: r=6 fulltile complete-SAB gate. [completed as one-run smoke; fulltile beat tile4 by 1.026x total/per-lane but is not promoted without repeated/noise/resource gates]
+Stage 111: r=6 fulltile repeated gate. [completed; 3-run complete-SAB gate rejects fulltile promotion, repeated PVW ratio 0.974x versus tile4]
 ```
 
 ## Current Closure Label
@@ -516,3 +517,9 @@ iteration. It tests whether the existing r=6 fulltile kernel signal transfers
 to complete SAB. The one-run result is positive but small: 1.026x total and
 per-lane improvement over tile4. This is useful routing evidence for a future
 3+ run confirmation, not a promotion or paper-level claim.
+
+Stage111 runs that 3-run confirmation and rejects the fulltile route. Although
+all correctness gates pass, fulltile is slower than tile4 in repeated
+complete-SAB PVW time: 43.337s versus 42.220s on average, or 0.974x. This is a
+negative ablation and closes the Stage110 one-run candidate unless a different
+profile-backed hypothesis reopens r=6 layout work.

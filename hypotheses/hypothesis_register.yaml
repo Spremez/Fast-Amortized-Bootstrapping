@@ -1117,15 +1117,16 @@ hypotheses:
       full-output MAT kernel comparison. Stage110 tests the same choice at the
       complete-SAB layer because only complete-SAB latency per lane can support
       an acceleration claim.
-    status: stage110_onerun_candidate_not_promoted
-    evidence: docs/stage110_r6_fulltile_fullsab_gate.md; experiments/stage110_r6_fulltile_fullsab_gate_plan.md; scripts/run_stage110_r6_fulltile_fullsab_gate.sh; scripts/build_stage110_r6_fulltile_fullsab_gate.py; repro/stage110_r6_fulltile_fullsab_gate/summary.csv; repro/stage110_r6_fulltile_fullsab_gate/comparison.csv; repro/stage110_r6_fulltile_fullsab_gate/artifact_index.csv
+    status: stage111_repeated_negative_not_promoted
+    evidence: docs/stage110_r6_fulltile_fullsab_gate.md; experiments/stage110_r6_fulltile_fullsab_gate_plan.md; scripts/run_stage110_r6_fulltile_fullsab_gate.sh; scripts/build_stage110_r6_fulltile_fullsab_gate.py; repro/stage110_r6_fulltile_fullsab_gate/summary.csv; repro/stage110_r6_fulltile_fullsab_gate/comparison.csv; repro/stage110_r6_fulltile_fullsab_gate/artifact_index.csv; docs/stage111_r6_fulltile_repeated_gate.md; experiments/stage111_r6_fulltile_repeated_gate_plan.md; scripts/run_stage111_r6_fulltile_repeated_gate.sh; scripts/build_stage111_r6_fulltile_repeated_gate.py; repro/stage111_r6_fulltile_repeated_gate/summary.csv; repro/stage111_r6_fulltile_repeated_gate/comparison.csv; repro/stage111_r6_fulltile_repeated_gate/artifact_index.csv
     current_decision: >
-      Stage110 records PASS_STAGE110_R6_FULLTILE_ONERUN_CANDIDATE_NOT_PROMOTED.
-      Both tile4 and fulltile passed complete-SAB correctness for r=6. tile4
-      averaged 42,492,394 us total and 7,082,065.667 us/lane; fulltile
-      averaged 41,410,757 us total and 6,901,792.833 us/lane. The complete-SAB
-      total/per-lane ratio is 1.026x in favor of fulltile. This justifies a
-      future 3+ run confirmation but is not promoted.
+      Stage110 recorded a one-run positive signal for fulltile, but Stage111
+      rejects promotion after the required 3-run complete-SAB gate. All six
+      r=6 runs passed correctness. tile4 averaged 42,219,780.667 us total and
+      7,036,630.111 us/lane; fulltile averaged 43,336,939.000 us total and
+      7,222,823.167 us/lane. The repeated fulltile/tile4 PVW total and
+      per-lane ratio is 0.974x. Keep fulltile as an ablation and do not route
+      it to noise/resource promotion gates.
     failure_criteria:
       - repeated runs erase the one-run fulltile advantage
       - noise/resource gates fail

@@ -1,0 +1,4 @@
+variant,runs,all_correct,pvw_avg_us_mean,pvw_avg_us_stddev,pvw_avg_us_min,pvw_avg_us_max,pvw_lane_avg_us_mean,pvw_lane_avg_us_stddev,scalar_repeated_avg_us_mean,speedup_vs_scalar_mean,speedup_vs_scalar_stddev,summary
+tile4,3,True,42219780.667,231381.658,41959553.000,42402322.000,7036630.111,38563.610,58088355.667,1.376,0.013,repro/stage111_r6_fulltile_repeated_gate/tile4/summary.csv
+fulltile,3,True,43336939.000,1646101.902,41445691.000,44446993.000,7222823.167,274350.317,60701915.667,1.402,0.041,repro/stage111_r6_fulltile_repeated_gate/fulltile/summary.csv
+ratio_fulltile_vs_tile4,3,True,0.974,,,,0.974,,,1.019,,repro/stage111_r6_fulltile_repeated_gate/tile4/summary.csv; repro/stage111_r6_fulltile_repeated_gate/fulltile/summary.csv

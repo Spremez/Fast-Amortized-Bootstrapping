@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,detail,next_action
+stage111_inputs_available,PASS,tile4_summary;fulltile_summary,True;True,repro/stage111_r6_fulltile_repeated_gate/tile4/summary.csv; repro/stage111_r6_fulltile_repeated_gate/fulltile/summary.csv,Both repeated complete-SAB summaries are available.,Run scripts/run_stage111_r6_fulltile_repeated_gate.sh if missing.
+stage111_correctness,PASS,all_correct,True,repro/stage111_r6_fulltile_repeated_gate/comparison.csv,All repeated runs passed correctness.,Do not interpret timing unless correctness passes.
+stage111_repetition_count,PASS,runs_per_variant,3,repro/stage111_r6_fulltile_repeated_gate/comparison.csv,At least 3 runs are required for this routing gate.,Rerun with STAGE111_RUNS=3 or higher if insufficient.
+stage111_fullsab_timing,NEGATIVE_OR_NEUTRAL,tile4_pvw_mean/fulltile_pvw_mean;speedup_ratio,0.974;1.019,repro/stage111_r6_fulltile_repeated_gate/comparison.csv,Ratio above 1 means fulltile is faster than tile4.,Promotion requires noise/resource and resource-overhead review.
+stage111_decision,PASS_STAGE111_R6_FULLTILE_REPEATED_NEGATIVE_NOT_PROMOTED,promotion_policy,,repro/stage111_r6_fulltile_repeated_gate/summary.csv,fulltile does not beat tile4 in repeated complete-SAB means.,"If positive, open Stage112 noise/resource gate; otherwise keep fulltile as an ablation."
