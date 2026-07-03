@@ -3871,3 +3871,46 @@ loop-only-drop-offlane is rejected. Candidate S112-D lane-local-multimask and
 S112-E proof-carrying-mask-partition remain design routes, but both require a
 finite r=2 algebraic simulator before C implementation.
 ```
+
+## Stage 113: r=2 Selector Simulator
+
+Goal:
+
+```text
+Run the finite r=2 algebraic simulator required by Stage112 for the
+lane-local multimask body-linear selector-format candidate.
+```
+
+Theory basis:
+
+Stage112 rejects current-format loop-only off-lane skipping. A possible escape
+route is to change the ciphertext/key format so each lane has local mask
+accumulation. If a row used for lane 0 no longer contributes to lane 1's mask,
+then off-lane body cancellation is not required for that row. This must first
+be checked at phase level before any resource or C implementation work.
+
+Tasks:
+
+- simulate r=2 dense shared-mask reference phases;
+- simulate current-format loop-only off-lane dropping as a counterexample;
+- simulate lane-local multimask phases;
+- record arithmetic product-count model and warnings.
+
+Gate:
+
+- dense reference must match expected phases;
+- current-format loop-only skip must fail;
+- lane-local multimask must match dense phases;
+- success only permits resource/key-size modeling, not performance claims.
+
+Status:
+
+```text
+Completed. Stage113 records
+PASS_STAGE113_R2_LANE_LOCAL_SIM_PHASE_EQUIV_RESOURCE_REQUIRED. Dense reference
+phases are `(73, 121)`, current-format loop-only skipping fails with
+`(-362, -224)`, and the lane-local multimask candidate matches `(73, 121)`.
+For r=2, the arithmetic product model is dense 9 products versus lane-local
+target 5 products, a raw 1.8x product-count ratio. This is only phase and
+arithmetic evidence; Stage114 must quantify key/ciphertext/noise/resource cost.
+```

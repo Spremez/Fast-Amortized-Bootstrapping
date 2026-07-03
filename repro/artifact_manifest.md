@@ -1676,3 +1676,15 @@ Repro artifacts:
 - `repro/stage112_selector_format_gate/shared_mask_counterexample.csv`
 - `repro/stage112_selector_format_gate/candidate_format_matrix.csv`
 - `repro/stage112_selector_format_gate/artifact_index.csv`
+
+## Stage 113 r=2 Selector Simulator
+
+- `docs/stage113_r2_selector_simulator.md`
+- `experiments/stage113_r2_selector_simulator_plan.md`
+- `theory_checks/stage113_lane_local_multimask_phase.md`
+- `algorithm_variants/mat_rlwe_sab_r2_lane_local_multimask.md`
+- `scripts/build_stage113_r2_selector_simulator.py`
+- `repro/stage113_r2_selector_simulator/summary.csv`
+- `repro/stage113_r2_selector_simulator/phase_simulation.csv`
+- `repro/stage113_r2_selector_simulator/product_model.csv`
+- `repro/stage113_r2_selector_simulator/artifact_index.csv`

@@ -461,6 +461,7 @@ Stage 109: V106-B body-linear invariant gate. [completed; loop-only body-linear 
 Stage 110: r=6 fulltile complete-SAB gate. [completed as one-run smoke; fulltile beat tile4 by 1.026x total/per-lane but is not promoted without repeated/noise/resource gates]
 Stage 111: r=6 fulltile repeated gate. [completed; 3-run complete-SAB gate rejects fulltile promotion, repeated PVW ratio 0.974x versus tile4]
 Stage 112: selector/key-format gate. [completed; shared-mask counterexample rejects current-format loop-only body-linear skipping, new-format r=2 simulator required]
+Stage 113: r=2 selector simulator. [completed; lane-local multimask is phase-equivalent in toy algebra with 9 vs 5 product model, resource/noise model required]
 ```
 
 ## Current Closure Label
@@ -531,3 +532,10 @@ shared mask contribution changes an expected zero phase into `-70` in the toy
 model. Therefore body-linear MAT-SAB cannot be implemented as current-format
 loop tuning; it needs a new selector/key or ciphertext format, with an r=2
 algebraic simulator as the next finite gate.
+
+Stage113 runs that r=2 simulator. It preserves dense reference phases
+`(73, 121)`, confirms current-format loop-only skipping fails with
+`(-362, -224)`, and shows lane-local multimask can match `(73, 121)` in the
+toy algebra. The arithmetic model is 9 dense products versus 5 lane-local
+target products, but this is not a complete-SAB claim; the next gate is
+resource/key/noise modeling for the changed ciphertext format.

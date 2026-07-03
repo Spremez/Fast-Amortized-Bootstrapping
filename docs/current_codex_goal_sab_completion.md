@@ -47,7 +47,9 @@ rejects that candidate: fulltile is 0.974x versus tile4 on repeated complete
 SAB PVW mean, despite all correctness gates passing. Stage112 then converts
 the body-linear question into a selector/key-format gate and rejects
 current-format loop-only off-lane skipping via a concrete shared-mask phase
-counterexample.
+counterexample. Stage113 then runs the finite r=2 simulator and finds the
+lane-local multimask new-format candidate phase-equivalent in toy algebra,
+while keeping it blocked on key/ciphertext/noise/resource modeling.
 
 ## Execution Route
 
@@ -90,7 +92,11 @@ counterexample.
     current shared-mask `MAT_TRGSW_DFT` cannot support loop-only off-lane
     skipping; the next finite path is an r=2 simulator for a new selector/key
     or ciphertext format.
-16. Preserve the current final-audit status:
+16. Treat Stage113 as the current new-format candidate status:
+    lane-local multimask passes r=2 phase simulation, but it changes resource
+    semantics and must not be implemented in the hot path until Stage114
+    key/ciphertext/noise modeling passes.
+17. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

@@ -1,0 +1,4 @@
+variant,phase0,expected0,phase1,expected1,status,interpretation
+dense_shared_mask_reference,73,73,121,121,PASS,Dense shared-mask row-output products match the expected phases.
+loop_only_drop_offlane_current_format,-362,73,-224,121,FAIL_COUNTEREXAMPLE,Skipping off-lane bodies while retaining shared masks breaks both lane phases.
+lane_local_multimask_candidate,73,73,121,121,PASS_PHASE_EQUIV,Lane-local masks allow skipping off-lane body rows in this r=2 algebraic model.

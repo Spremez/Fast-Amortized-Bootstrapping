@@ -1157,3 +1157,29 @@ hypotheses:
         ciphertext semantics
       - a new selector format lacks a per-lane phase proof
       - the next stage discusses formats without an executable r=2 simulator
+  - id: H37_r2_lane_local_multimask_candidate
+    statement: >
+      A lane-local multimask selector/ciphertext format can make body-linear
+      MAT external product phase-equivalent to dense MAT at r=2, but only by
+      changing the ciphertext/key resource model.
+    mechanism: >
+      Stage113 simulates r=2 dense shared-mask reference, current-format
+      loop-only off-lane skipping, and a lane-local multimask candidate. The
+      dense reference phases are (73, 121); current-format skipping fails with
+      (-362, -224); lane-local multimask matches (73, 121). The product model
+      is dense 9 products versus lane-local target 5 products for r=2.
+    status: stage113_phase_plausible_resource_required
+    evidence: docs/stage113_r2_selector_simulator.md; experiments/stage113_r2_selector_simulator_plan.md; theory_checks/stage113_lane_local_multimask_phase.md; algorithm_variants/mat_rlwe_sab_r2_lane_local_multimask.md; scripts/build_stage113_r2_selector_simulator.py; repro/stage113_r2_selector_simulator/summary.csv; repro/stage113_r2_selector_simulator/phase_simulation.csv; repro/stage113_r2_selector_simulator/product_model.csv; repro/stage113_r2_selector_simulator/artifact_index.csv
+    current_decision: >
+      Stage113 records PASS_STAGE113_R2_LANE_LOCAL_SIM_PHASE_EQUIV_RESOURCE_REQUIRED.
+      The lane-local multimask candidate is phase-plausible in a deterministic
+      r=2 algebraic model and offers a raw 1.8x product-count ratio versus
+      dense r=2 MAT. It is not a complete-SAB or implementation claim because
+      it changes ciphertext/key structure. Stage114 must quantify key size,
+      ciphertext size, noise terms, and whether the resource cost defeats the
+      arithmetic gain.
+    failure_criteria:
+      - resource/key model shows lane-local masks erase the arithmetic benefit
+      - toy C representation cannot preserve phase equivalence
+      - complete-SAB integration reintroduces dense cancellation or excessive
+        post-processing cost

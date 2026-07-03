@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage113_dense_reference,PASS,dense_phase_equiv,True,repro/stage113_r2_selector_simulator/phase_simulation.csv,Dense reference matches expected r=2 phases.,Use dense shared-mask as the simulator baseline.
+stage113_current_format_drop_offlane,PASS_REJECTED,counterexample,True,repro/stage113_r2_selector_simulator/phase_simulation.csv,Current-format loop-only skipping is rejected.,Do not implement this as C hot-path optimization.
+stage113_lane_local_candidate,PASS_PHASE_EQUIV,r2_phase_equiv,True,repro/stage113_r2_selector_simulator/phase_simulation.csv,Lane-local multimask candidate matches dense phases in the r=2 algebraic model.,Open resource/key-size and toy C representation gate before performance work.
+stage113_decision,PASS_STAGE113_R2_LANE_LOCAL_SIM_PHASE_EQUIV_RESOURCE_REQUIRED,next_gate_policy,,repro/stage113_r2_selector_simulator/summary.csv,The candidate is phase-plausible but changes ciphertext/key resources.,Stage114 should quantify key/ciphertext resource cost before implementation.

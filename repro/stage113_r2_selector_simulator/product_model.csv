@@ -1,0 +1,4 @@
+model,r,products,products_per_lane,resource_warning
+current_dense_shared_mask,2,9,4.500,Current valid baseline.
+lane_local_multimask_target,2,5,2.500,Requires separate lane-local mask/key resource model.
+raw_product_ratio_dense_over_lane_local,2,1.800,1.800,Arithmetic ratio only; not a complete-SAB speedup claim.
