@@ -1887,3 +1887,18 @@ Repro artifacts:
 - `repro/stage127_isolated_compact_ep_kernel_gate/run_probe.log`
 - `repro/stage127_isolated_compact_ep_kernel_gate/isolated_compact_ep_kernel_gate.c`
 - `repro/stage127_isolated_compact_ep_kernel_gate/artifact_index.csv`
+
+## Stage 128 Compact EP API Boundary Gate
+
+- `docs/stage128_compact_ep_api_boundary_gate.md`
+- `experiments/stage128_compact_ep_api_boundary_gate_plan.md`
+- `theory_checks/stage128_compact_ep_api_boundary_model.md`
+- `algorithm_variants/mat_rlwe_sab_compact_ep_api_boundary.md`
+- `scripts/build_stage128_compact_ep_api_boundary_gate.py`
+- `repro/stage128_compact_ep_api_boundary_gate/summary.csv`
+- `repro/stage128_compact_ep_api_boundary_gate/api_results.csv`
+- `repro/stage128_compact_ep_api_boundary_gate/mosfhet_static_build.log`
+- `repro/stage128_compact_ep_api_boundary_gate/compile_probe.log`
+- `repro/stage128_compact_ep_api_boundary_gate/run_probe.log`
+- `repro/stage128_compact_ep_api_boundary_gate/compact_ep_api_boundary_gate.c`
+- `repro/stage128_compact_ep_api_boundary_gate/artifact_index.csv`

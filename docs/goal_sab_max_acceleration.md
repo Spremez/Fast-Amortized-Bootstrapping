@@ -675,3 +675,13 @@ and maximum phase gap is 14653 under tolerance 131072. DFT-term ratios are
 decomposition are 1.0x/1.25x/1.555556x. This is still a generated isolated
 kernel, not a production MOSFHET API, AVX512 kernel, SAB integration, or
 complete `T_bootstrap/r` benchmark.
+
+Stage128 wraps that isolated kernel in a generated MOSFHET-adjacent API
+boundary with explicit selector, output, and scratch ownership. For k=1, T=7,
+Bg_bit=7, r=2/4/6, N=512/1024, and seed subset 0..1, ownership, metadata,
+invalid-guard, hot-kernel allocation, component, phase, and exact noise-model
+mismatch counts are all zero. The maximum component gap is 14605 and maximum
+phase gap is 14608 under tolerance 131072, and body-only API kernel rows are
+rejected. This opens isolated compact EP microbench/profiling only; it is not a
+production header change, AVX512 proof, SAB schedule integration, or complete
+`T_bootstrap/r` claim.

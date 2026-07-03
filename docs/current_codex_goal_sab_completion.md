@@ -207,7 +207,13 @@ break-even once decomposition terms are included.
     control, and complexity gates for r=2/4/6. Max component/phase gaps are
     14645/14653 under tolerance 131072. The next valid step is a
     MOSFHET-adjacent compact EP API boundary outside `sab_pvw_*`.
-31. Preserve the current final-audit status:
+31. Treat Stage128 as the current compact EP API boundary gate:
+    MOSFHET-adjacent selector/output/scratch API shapes pass ownership,
+    metadata, invalid-guard, no-hot-allocation, component, phase, noise-model,
+    negative-control, and complexity gates for r=2/4/6. Max component/phase
+    gaps are 14605/14608 under tolerance 131072. The next valid step is
+    isolated compact EP microbench/profiling outside `sab_pvw_*`.
+32. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

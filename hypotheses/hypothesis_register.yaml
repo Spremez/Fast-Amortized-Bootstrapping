@@ -1577,3 +1577,39 @@ hypotheses:
       - AVX512 or complete-SAB acceleration is claimed from isolated kernel
         semantics alone
       - scalar/default SAB behavior changes before a guarded integration stage
+  - id: H52_compact_ep_api_boundary
+    statement: >
+      The isolated compact selector external-product kernel can be wrapped in
+      MOSFHET-adjacent selector, output, and scratch API shapes while
+      preserving ownership, guard, no-hot-allocation, component, phase,
+      noise-model, negative-control, and count-model invariants.
+    mechanism: >
+      Stage128 generates a standalone C probe defining `CompactEpSelectorDft`,
+      `CompactEpOutputDft`, `CompactEpScratch`,
+      `compact_ep_selector_set_row_from_torus(...)`, and
+      `compact_ep_kernel_dft_api(...)`. The probe checks non-null and
+      non-aliased ownership, metadata, invalid row/lane guards, absence of
+      API-owned allocation inside the hot kernel call, component-level DFT
+      output equivalence, phase/noise equivalence, body-only negative-control
+      rejection, and preservation of the Stage127 count model.
+    status: stage128_compact_ep_api_boundary_ready_microbench_required
+    evidence: docs/stage128_compact_ep_api_boundary_gate.md; experiments/stage128_compact_ep_api_boundary_gate_plan.md; theory_checks/stage128_compact_ep_api_boundary_model.md; algorithm_variants/mat_rlwe_sab_compact_ep_api_boundary.md; scripts/build_stage128_compact_ep_api_boundary_gate.py; repro/stage128_compact_ep_api_boundary_gate/summary.csv; repro/stage128_compact_ep_api_boundary_gate/api_results.csv; repro/stage128_compact_ep_api_boundary_gate/mosfhet_static_build.log; repro/stage128_compact_ep_api_boundary_gate/compile_probe.log; repro/stage128_compact_ep_api_boundary_gate/run_probe.log; repro/stage128_compact_ep_api_boundary_gate/compact_ep_api_boundary_gate.c; repro/stage128_compact_ep_api_boundary_gate/artifact_index.csv
+    current_decision: >
+      Stage128 records
+      PASS_STAGE128_COMPACT_EP_API_BOUNDARY_READY_MICROBENCH_REQUIRED. For
+      k=1, T=7, Bg_bit=7, r=2/4/6, N=512/1024, and seed subset 0..1,
+      ownership, metadata, invalid-guard, hot-kernel allocation, component,
+      phase, and exact noise-model mismatch counts are all zero. The maximum
+      component gap is 14605 and maximum phase gap is 14608 under tolerance
+      131072. Body-only API kernel rows are rejected. DFT-term ratios are
+      1.125x/1.5625x/2.041667x and decomposition-included total ratios are
+      1.0x/1.25x/1.555556x for r=2/4/6. This opens only isolated compact EP
+      microbench/profiling outside `sab_pvw_*`.
+    failure_criteria:
+      - isolated microbench shows the API-shaped compact kernel loses the
+        expected count advantage for r=4/r=6
+      - production header ownership cannot preserve selector/output/scratch
+        lifecycle without hot-path allocation or dense selector reconstruction
+      - AVX512 or complete-SAB acceleration is claimed from API-boundary
+        semantics alone
+      - scalar/default SAB behavior changes before a guarded integration stage

@@ -4656,3 +4656,64 @@ decomposition are 1.0x/1.25x/1.555556x. The next valid stage is a
 MOSFHET-adjacent compact EP API boundary, still outside SAB integration and
 complete `T_bootstrap/r` claims.
 ```
+
+## Stage 128: Compact EP API Boundary Gate
+
+Goal:
+
+```text
+Wrap the isolated compact EP kernel in MOSFHET-adjacent selector, output, and
+scratch API shapes without changing production MOSFHET headers, scalar SAB, or
+`sab_pvw_*`.
+```
+
+Theory basis:
+
+Stage127 proves a generated isolated compact EP kernel. Stage128 checks the
+next implementation boundary before any hot-path integration: selector row
+ownership, output ownership, explicit scratch ownership, invalid-lane guards,
+and no API-owned allocation in the hot call must all preserve the same
+component, phase, noise-model, negative-control, and count-model invariants.
+
+Tasks:
+
+- build MOSFHET `libmosfhet.a` with `FFT_LIB=spqlios`;
+- generate and compile a standalone compact EP API boundary probe;
+- define `CompactEpSelectorDft`, `CompactEpOutputDft`, and `CompactEpScratch`;
+- verify selector/output/scratch ownership and metadata;
+- verify invalid row/lane guards reject bad inputs;
+- verify `compact_ep_kernel_dft_api(...)` performs no API-owned allocation in
+  the measured hot call;
+- compare API kernel DFT output components with the coefficient-domain
+  reference;
+- compare API kernel phases against the modeled noisy reference;
+- keep a body-only API kernel as a required failing negative control;
+- preserve the Stage127 DFT-term and decomposition-included count model.
+
+Gate:
+
+- build, compile, and run must pass;
+- ownership, metadata, guard, and hot-kernel allocation failure counts must be
+  zero;
+- component, phase, and noise-model mismatch counts must be zero under the
+  declared tolerance;
+- body-only API kernel must fail;
+- DFT-term ratio must stay above 1.0 and total ratio must stay at least 1.0;
+- passing only opens isolated microbench/profiling and production API design,
+  not SAB integration or complete `T_bootstrap/r` claims.
+
+Status:
+
+```text
+Completed. Stage128 records
+PASS_STAGE128_COMPACT_EP_API_BOUNDARY_READY_MICROBENCH_REQUIRED. The generated
+API-boundary probe passes for k=1, T=7, Bg_bit=7, r=2/4/6, N=512/1024, and
+seed subset 0..1. Ownership, metadata, invalid-guard, hot-kernel allocation,
+component, phase, and exact noise-model mismatch counts are all zero. The
+maximum component gap is 14605 and maximum phase gap is 14608 under tolerance
+131072. Body-only API kernel rows remain rejected. DFT-term ratios are
+1.125x/1.5625x/2.041667x for r=2/4/6; total ratios including decomposition
+are 1.0x/1.25x/1.555556x. The next valid stage is isolated compact EP
+microbench/profiling and assembly/perf-counter attribution, still outside SAB
+integration and complete `T_bootstrap/r` claims.
+```
