@@ -5195,3 +5195,19 @@ Status:
 Completed. Stage148 records PASS_STAGE148_H14_R6_REPEATED_REFRESH_PROMOTION_CANDIDATE. It preserves scalar/default behavior
 and keeps the endpoint at amortized `T_bootstrap/r`.
 ```
+## Stage 149: H14 r=6 Claim Policy
+
+Goal:
+
+```text
+Convert Stage148 repeated/noise/resource evidence into a bounded claim policy
+without changing defaults or overclaiming novelty.
+```
+
+Status:
+
+```text
+Completed. Stage149 records PASS_STAGE149_H14_R6_EXPLICIT_PROMOTION_POLICY_RECORDED_NOT_DEFAULT. It allows scoped explicit-path
+engineering wording only; default-path and paper-level novelty claims remain
+disallowed.
+```

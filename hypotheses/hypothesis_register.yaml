@@ -2037,3 +2037,19 @@ hypotheses:
       - repeated backend-vs-wrapper T_bootstrap/r is not stable
       - final-output noise has nonzero failures
       - resource/key overhead is not reported with performance
+  - id: H73_h14_r6_claim_policy
+    statement: >
+      Stage148 evidence is sufficient to promote H14 r=6 backend as a scoped
+      explicit engineering path, but insufficient to claim default-path speedup
+      or paper-level novelty/optimality.
+    mechanism: >
+      Repeated T_bootstrap/r, final-output noise, resource reporting, and
+      default false flag checks bound the allowed claim scope.
+    status: stage149_h14_r6_claim_policy
+    evidence: docs/stage149_h14_r6_claim_policy.md; experiments/stage149_h14_r6_claim_policy_plan.md; theory_checks/stage149_claim_boundary_model.md; scripts/build_stage149_h14_r6_claim_policy.py; repro/stage149_h14_r6_claim_policy/summary.csv; repro/stage149_h14_r6_claim_policy/claim_policy.csv
+    current_decision: >
+      PASS_STAGE149_H14_R6_EXPLICIT_PROMOTION_POLICY_RECORDED_NOT_DEFAULT
+    failure_criteria:
+      - explicit-path evidence is written as default-path speedup
+      - engineering speedup is written as theoretical optimality or novelty
+      - defaults change without a separate default-promotion gate

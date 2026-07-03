@@ -341,3 +341,6 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE148_H14_R6_REPEATED_REFRESH_PROMOTION_CANDIDATE`. This stage records current-head repeated/noise/resource
     evidence for the explicit backend route; it is still not a default-path or
     paper-level novelty claim by itself.
+53. Treat Stage149 as the H14 r=6 claim-policy gate:
+    `PASS_STAGE149_H14_R6_EXPLICIT_PROMOTION_POLICY_RECORDED_NOT_DEFAULT`. It permits only scoped explicit-path engineering wording and
+    keeps default-path/paper-novelty claims blocked.

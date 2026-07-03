@@ -236,3 +236,4 @@
 - [x] Stage146 r4-unrolled variance-attribution pack recorded.
 - [x] Stage147 H14 r=6 current-head route pack recorded.
 - [x] Stage148 H14 r=6 repeated/noise/resource refresh pack recorded.
+- [x] Stage149 H14 r=6 claim-policy pack recorded.

@@ -795,3 +795,7 @@ scalar/default behavior or final claim policy.
 Stage148 upgrades the H14 r=6 backend route from Stage147 smoke to repeated
 current-head performance plus final-output noise/resource evidence. It remains
 an explicit-path research gate and does not change scalar/default behavior.
+Stage149 records H14 r=6 claim policy after Stage148 repeated/noise/resource
+evidence. The allowed claim is scoped to the explicit backend route under the
+recorded parameter/backend. Default-path and paper-level novelty/optimality
+wording remain disallowed.

@@ -1,0 +1,4 @@
+flag,expected_default,observed_line,status,evidence
+SAB_PVW_BACKEND_FROM_DFT_ADD,false,SAB_PVW_BACKEND_FROM_DFT_ADD ?= false,PASS,src/mosfhet/Makefile.def
+MAT_TRGSW_AVX512_RGT4_FUSED,false,MAT_TRGSW_AVX512_RGT4_FUSED ?= false,PASS,src/mosfhet/Makefile.def
+SAB_PVW_ACTIVE_BUFFER_FUSION,false,SAB_PVW_ACTIVE_BUFFER_FUSION ?= false,PASS,src/mosfhet/Makefile.def

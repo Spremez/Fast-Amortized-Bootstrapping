@@ -2187,3 +2187,8 @@ Repro artifacts:
   - `experiments/stage148_h14_r6_repeated_refresh_plan.md`
   - `theory_checks/stage148_h14_repeated_stat_model.md`
   - `repro/stage148_h14_r6_repeated_refresh/`
+- stage149_h14_r6_claim_policy: `PASS_STAGE149_H14_R6_EXPLICIT_PROMOTION_POLICY_RECORDED_NOT_DEFAULT`
+  - `docs/stage149_h14_r6_claim_policy.md`
+  - `experiments/stage149_h14_r6_claim_policy_plan.md`
+  - `theory_checks/stage149_claim_boundary_model.md`
+  - `repro/stage149_h14_r6_claim_policy/`
