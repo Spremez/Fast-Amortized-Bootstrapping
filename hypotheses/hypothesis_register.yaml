@@ -3040,3 +3040,12 @@ H10_stage209_current_head_mat_ep_split:
     Current-head r=2/r=4 split microbench evidence records which MAT-EP
     subcomponents can plausibly move complete-SAB T_bootstrap/r. It grants
     candidate selection only, not implementation success or latency claims.
+H10_stage210_candidate_admission:
+  status: preflight_route_selected
+  evidence:
+    - repro/stage210_candidate_admission/candidate_matrix.csv
+    - docs/stage210_candidate_admission.md
+  conclusion: >
+    Stage210 admits only a new DFT/FFT dataflow preflight. It denies reopening
+    old DFT batching/direct-scale, direct sub-decompose, or addmul retile
+    routes without new evidence.

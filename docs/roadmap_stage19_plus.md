@@ -6181,3 +6181,18 @@ at r=4 with estimated full-SAB share 0.238961.
 This is preflight evidence only; implementation and complete-SAB speedup claims
 remain gated by Stage210+.
 ```
+## Stage 210: Candidate Admission
+
+Goal:
+
+```text
+Turn Stage209 split measurements into explicit code-admission policy.
+```
+
+Status:
+
+```text
+Completed. Stage210 records PASS_STAGE210_SELECT_DFT_ROWS_PREFLIGHT_NO_HOTPATH_CODE. Existing DFT batching/direct-scale,
+direct sub-decompose, and addmul retile routes are denied for hot-path code.
+Only a genuinely new FFT/dataflow preflight is admitted as Stage211.
+```

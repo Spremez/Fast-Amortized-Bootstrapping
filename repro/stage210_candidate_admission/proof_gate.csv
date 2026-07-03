@@ -1,0 +1,5 @@
+gate,status,evidence,detail,remaining_gap
+G1_stage209_input,PASS,repro/stage209_current_head_mat_ep_split/split_projection.csv,Stage209 split projection is present and current-head r=2/r=4 scoped.,Microbench route selection only.
+G2_old_mechanism_guard,PASS_OLD_DFT_ROUTES_REJECTED,repro/stage210_candidate_admission/candidate_matrix.csv,Known DFT batching/direct-scale/subdecomp/addmul reopen routes are denied.,Does not block genuinely new FFT/dataflow preflights.
+G3_candidate_selection,PASS_PREFLIGHT_SELECTED,repro/stage210_candidate_admission/candidate_matrix.csv,Selected preflight target C2_new_multirow_fft_api_or_dft_dataflow with max estimated full-SAB share 0.241408.,Hot-path implementation remains unauthorized until Stage211 preflight passes.
+G4_decision,PASS_STAGE210_SELECT_DFT_ROWS_PREFLIGHT_NO_HOTPATH_CODE,repro/stage210_candidate_admission/proof_gate.csv,Stage210 routes to a bounded preflight instead of speculative hot-path implementation.,Implementation and complete-SAB A/B remain future gates.

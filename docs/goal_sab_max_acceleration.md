@@ -1019,3 +1019,7 @@ At commit `caa09fa`, Stage209 records r=2/r=4 split microbench evidence for the
 current exact small-r MAT path. It identifies candidate subcomponents for a
 bounded implementation gate while preserving the rule that complete-SAB
 `T_bootstrap/r` claims require full A/B evidence.
+## Stage210 candidate admission
+
+At commit `ddb80eb`, Stage210 selects DFT/FFT dataflow as the only admitted
+preflight route and explicitly denies speculative production hot-path code.

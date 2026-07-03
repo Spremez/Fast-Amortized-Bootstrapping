@@ -2539,3 +2539,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_current_head_mat_ep_split.md`
   - `scripts/build_stage209_current_head_mat_ep_split.py`
   - `repro/stage209_current_head_mat_ep_split/`
+- stage210_candidate_admission:
+  - `docs/stage210_candidate_admission.md`
+  - `experiments/stage210_candidate_admission_plan.md`
+  - `theory_checks/stage210_candidate_admission_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage210_candidate_admission.md`
+  - `scripts/build_stage210_candidate_admission.py`
+  - `repro/stage210_candidate_admission/`

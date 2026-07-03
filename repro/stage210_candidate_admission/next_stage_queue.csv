@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,current_status,evidence
+P0,stage211_fft_dataflow_preflight,Stage210 admits only a new DFT/FFT dataflow preflight.,Produce a concrete probe or reject code permission.,ready,repro/stage210_candidate_admission/candidate_matrix.csv
+P1,native_counter_refresh,Native perf is available.,Collect counters for Stage209 split variants.,blocked_by_stage209_environment,repro/stage209_current_head_mat_ep_split/environment.csv
+P2,production_hotpath_code,Stage211 or native counters provides a new mechanism.,"Flag-only implementation, correctness, noise/resource, full SAB A/B.",denied_now,repro/stage210_candidate_admission/proof_gate.csv

@@ -303,3 +303,5 @@
 - [x] Stage209 current-head MAT-EP split preflight records r=2/r=4
   sub_decompose, torus_to_DFT, addmul, combined timing, correctness, and
   projection gates.
+- [x] Stage210 candidate admission denies speculative hot-path code and routes
+  only to a bounded new DFT/FFT dataflow preflight.

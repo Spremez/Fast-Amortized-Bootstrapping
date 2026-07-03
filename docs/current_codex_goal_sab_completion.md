@@ -586,3 +586,7 @@ gate, not another broad theory loop.
 `PASS_STAGE209_CURRENT_HEAD_MAT_EP_SPLIT_PREFLIGHT` keeps the research loop executable: the next step is Stage210
 candidate selection from measured split shares, not a broad theory loop or a
 post-processing detour.
+### Stage210 candidate admission
+
+`PASS_STAGE210_SELECT_DFT_ROWS_PREFLIGHT_NO_HOTPATH_CODE` prevents theory drift and blind tuning: Stage211 must produce a
+concrete DFT/FFT dataflow preflight or reject implementation permission.
