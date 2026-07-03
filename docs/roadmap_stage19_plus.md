@@ -6067,3 +6067,20 @@ Completed. Stage203 records PASS_STAGE203_PRODUCTION_SELECTOR_EQUATION_PROBE_PRO
 finite phase/negative-control checks, but remains proof-only because production
 keygen, security/noise, and complete-SAB gates are missing.
 ```
+
+## Stage 204: Source Anchor Intake
+
+Goal:
+
+```text
+Ground the active 2025/686 work in real public sources without overstating
+metadata-only evidence as theorem or implementation proof.
+```
+
+Status:
+
+```text
+Completed. Stage204 records PASS_STAGE204_SOURCE_ANCHOR_INTAKE_METADATA_ONLY.
+Real source metadata and implementation-environment policy are recorded, while
+full-text theorem/equation anchors and production keygen gates remain open.
+```

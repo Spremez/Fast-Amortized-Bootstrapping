@@ -1,0 +1,5 @@
+boundary_id,allowed,blocked,next_gate
+B1_pdf_gap,Use metadata/abstract/README facts from accessible sources.,"Full-text theorem, remark, algorithm, and equation references remain blocked until the PDF/full text is supplied or manually accessible.",Acquire reviewed full text and build a page/section anchor table.
+B2_benchmark_gap,Use source-reported external benchmarks as context.,"No paper benchmark value can be merged with our PVW/MAT-SAB result unless same metric, same backend, and same hardware are controlled.",Run same-platform baseline and PVW/MAT-SAB A/B with T_bootstrap/r as primary endpoint.
+B3_algorithm_gap,Use sparse polynomial multiplication as the source-reported bottleneck/method axis.,No production selector/keygen change follows from metadata-only sources.,"Map SAB setup, sparse_mul, CMUX/NCMUX, RGSW monomial, and extract/KS to source anchors."
+B4_novelty_gap,Record candidate novelty questions.,No novelty claim is allowed without related-work search and full-text comparison.,Build related-work matrix after full text and post-686 works are anchored.

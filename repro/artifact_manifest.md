@@ -2493,3 +2493,11 @@ Repro artifacts:
   - `theory_checks/stage203_production_selector_equation_model.md`
   - `algorithm_variants/mat_rlwe_sab_production_selector_equation_probe.md`
   - `repro/stage203_production_selector_equation_probe/`
+
+### Stage204 Source Anchor Intake
+
+- `docs/stage204_source_anchor_intake.md`
+- `experiments/stage204_source_anchor_intake_plan.md`
+- `theory_checks/stage204_source_anchor_claim_boundary.md`
+- `algorithm_variants/mat_rlwe_sab_source_anchor_policy.md`
+- `repro/stage204_source_anchor_intake/`

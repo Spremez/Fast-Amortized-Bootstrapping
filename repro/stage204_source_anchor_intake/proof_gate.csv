@@ -1,0 +1,5 @@
+gate,status,evidence,detail,remaining_gap
+G1_real_sources,PASS_METADATA,repro/stage204_source_anchor_intake/source_access_log.csv,Real public source URLs and accessible metadata are recorded.,Full ePrint PDF text was not localized through automated fetch.
+G2_claim_boundaries,PASS_RECORDED,repro/stage204_source_anchor_intake/claim_boundaries.csv,Allowed and blocked uses are separated.,No theorem/equation-level source anchors.
+G3_experiment_policy,PASS_RECORDED,repro/stage204_source_anchor_intake/source_claim_map.csv,README hardware/backend/noise warnings are converted into benchmark policy.,Same-platform experiment rerun still required.
+G4_production_keygen,BLOCKED,repro/stage203_production_selector_equation_probe/proof_gate.csv,"Stage204 supplies source metadata only, not selector equations or keygen proof.",Production keygen/security/noise proof and full SAB A/B.

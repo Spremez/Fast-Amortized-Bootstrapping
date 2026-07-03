@@ -982,3 +982,8 @@ but random-semantic and dense-general controls fail, and no code path opens.
 Stage203 records production selector equation probe. Decision: `PASS_STAGE203_PRODUCTION_SELECTOR_EQUATION_PROBE_PROOF_ONLY`.
 It advances dummy padding from toy semantic rows to a declared finite equation
 candidate, while preserving proof-only status.
+
+Stage204 records source anchor intake. Decision: `PASS_STAGE204_SOURCE_ANCHOR_INTAKE_METADATA_ONLY`.
+It grounds paper identity, source-reported complexity context, README backend
+policy, and parameter/noise-measurement constraints in real public sources,
+while keeping theorem/equation, novelty, and production keygen claims blocked.

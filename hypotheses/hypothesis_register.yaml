@@ -2958,3 +2958,20 @@ hypotheses:
       - dummy-zero equation rows fail phase equivalence
       - random dummy or missing-active negative controls do not fail
       - finite equation evidence is treated as production keygen permission
+
+  - id: H128_source_anchor_intake
+    statement: >
+      Source-level grounding must distinguish real metadata, source-reported
+      claims, same-platform benchmark requirements, and full-text theorem gaps.
+    mechanism: >
+      Stage204 records accessible public sources for 2025/686, maps each
+      supported claim to allowed and blocked uses, and turns README platform and
+      noise warnings into experiment policy.
+    status: stage204_source_anchor_intake
+    evidence: docs/stage204_source_anchor_intake.md; experiments/stage204_source_anchor_intake_plan.md; theory_checks/stage204_source_anchor_claim_boundary.md; repro/stage204_source_anchor_intake/summary.csv
+    current_decision: >
+      PASS_STAGE204_SOURCE_ANCHOR_INTAKE_METADATA_ONLY
+    failure_criteria:
+      - metadata-only evidence is used as theorem or equation support
+      - source-reported external benchmarks are merged with our results without same-platform controls
+      - production keygen or novelty claims proceed without full-text anchors

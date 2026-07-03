@@ -552,3 +552,9 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE203_PRODUCTION_SELECTOR_EQUATION_PROBE_PROOF_ONLY`. A declared finite equation candidate passes phase and
     negative-control checks, but compact/shared-output SAB remains blocked on
     real keygen, security/noise, resource, and complete-SAB evidence.
+
+108. Treat Stage204 as source anchor intake:
+    `PASS_STAGE204_SOURCE_ANCHOR_INTAKE_METADATA_ONLY`. Real public source
+    metadata and implementation-environment constraints are recorded, but
+    full-text theorem/equation anchors and production keygen evidence remain
+    missing.

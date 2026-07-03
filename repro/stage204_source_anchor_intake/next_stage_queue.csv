@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,current_status,evidence
+P0,full_text_anchor_table,A reviewed local PDF/full text of 2025/686 is available.,"Map algorithm, theorem, remark, and experiment claims to page/section anchors.",waiting_full_text,repro/stage204_source_anchor_intake/proof_gate.csv
+P1,same_platform_benchmark_refresh,Linux/WSL or native performance platform with spqlios_avx512/AVX path is available.,"Separate scalar SAB, repeated scalar, PVW/MAT-SAB, and noise-instrumented runs under T_bootstrap/r.",ready_when_compute_available,repro/stage204_source_anchor_intake/source_claim_map.csv
+P2,production_keygen_design,Full-text equations and code schedule are aligned.,"Show selector distribution, semantic zero, noise recurrence, key size, and complete-SAB throughput.",blocked_on_full_text_and_design,repro/stage203_production_selector_equation_probe/proof_gate.csv
