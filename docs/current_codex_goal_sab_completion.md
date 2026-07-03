@@ -386,3 +386,6 @@ The new research goal is complete only after a later stage records:
 64. Treat Stage160 as the post-fusion frontier gate:
     `PASS_STAGE160_POST_FUSION_FRONTIER_RECORDED`. It prevents a theory loop by selecting the next target from
     measured post-fusion component shares rather than speculative layout work.
+65. Treat Stage161 as the post-fusion attribution gate:
+    `PASS_STAGE161_PROXY_ATTRIBUTION_NATIVE_COUNTER_REQUIRED`. It prevents overclaiming by separating objdump/time proxy
+    evidence from native hardware-counter proof.

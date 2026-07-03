@@ -1,0 +1,9 @@
+source_stage,metric,value,unit,evidence,scope_note
+Stage101 historical r=4 native,cycles,607952411223,count,repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_perf.log,Historical native counter reference; not a current r=6 post-fusion proof.
+Stage101 historical r=4 native,instructions,1101054109000,count,repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_perf.log,Historical native counter reference; not a current r=6 post-fusion proof.
+Stage101 historical r=4 native,cache-references,18952022397,count,repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_perf.log,Historical native counter reference; not a current r=6 post-fusion proof.
+Stage101 historical r=4 native,cache-misses,9012327260,count,repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_perf.log,Historical native counter reference; not a current r=6 post-fusion proof.
+Stage101 historical r=4 native,mem_inst_retired.all_loads,254877142145,count,repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_perf.log,Historical native counter reference; not a current r=6 post-fusion proof.
+Stage101 historical r=4 native,mem_inst_retired.all_stores,139977326972,count,repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_perf.log,Historical native counter reference; not a current r=6 post-fusion proof.
+Stage101 historical r=4 native,fp_arith_inst_retired.512b_packed_double,236434492449,count,repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_perf.log,Historical native counter reference; not a current r=6 post-fusion proof.
+Stage101 historical r=4 native,fp_arith_inst_retired.256b_packed_double,46465202085,count,repro/stage101_cb5_remote_native_perf/attribution_probe/bench_attribution_perf.log,Historical native counter reference; not a current r=6 post-fusion proof.

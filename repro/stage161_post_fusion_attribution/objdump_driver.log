@@ -1,0 +1,5 @@
+command: objdump -d build/mattrgsw.o build/polynomial.o > repro/stage161_post_fusion_attribution/objdump_full.txt && sed -i 's/[[:space:]]*$//' repro/stage161_post_fusion_attribution/objdump_full.txt && grep -E '<mat_trgsw_mul_pvmtmlwe|<polynomial_|vfmadd|vfnmadd|vfmsub|vfm|zmm|ymm|vmov|vbroadcast|vperm|vmul|vadd|vsub' repro/stage161_post_fusion_attribution/objdump_full.txt | head -n 400 > repro/stage161_post_fusion_attribution/objdump_filtered.txt && sed -i 's/[[:space:]]*$//' repro/stage161_post_fusion_attribution/objdump_filtered.txt
+returncode: 0
+--- output ---
+wsl: hKm0R localhost N?tMn??FO*g\P0R WSL?0NAT !j?_?Nv WSL
+N/e?c localhost N?t?0

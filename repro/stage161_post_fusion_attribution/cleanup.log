@@ -1,0 +1,5 @@
+command: make clean >/dev/null 2>&1 || true
+returncode: 0
+--- output ---
+wsl: hKm0R localhost N?tMn??FO*g\P0R WSL?0NAT !j?_?Nv WSL
+N/e?c localhost N?t?0

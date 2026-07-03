@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage161_build_run_correctness,PASS,build_rc;run_rc;correctness,0;0;Pass,repro/stage161_post_fusion_attribution/run_metrics.csv,Build and run the current r=6 post-fusion explicit path without body-profile overhead.,
+stage161_perf_status,missing,perf_available,false,repro/stage161_post_fusion_attribution/perf_probe.log,perf not found in WSL,Native counters are required for FMA-vs-memory classification if perf is missing.
+stage161_objdump_proxy,PASS,fma_family;zmm_refs,104;494,repro/stage161_post_fusion_attribution/instruction_counts.csv; repro/stage161_post_fusion_attribution/objdump_filtered.txt,"Proxy confirms the active rgt4 tiled function contains AVX512/FMA-family instructions, but not throughput optimality.",
+stage161_decision,PASS_STAGE161_PROXY_ATTRIBUTION_NATIVE_COUNTER_REQUIRED,attribution_scope,proxy_only,repro/stage161_post_fusion_attribution/summary.csv,Stage161 decides how far current attribution evidence can support the MAT EP frontier.,Proceed to Stage162 and schedule native counter run for current r=6 post-fusion path.

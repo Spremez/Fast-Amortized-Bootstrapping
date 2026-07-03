@@ -1,0 +1,6 @@
+command: if command -v perf >/dev/null 2>&1; then command -v perf; perf stat true; else echo PERF_MISSING; fi
+returncode: 0
+--- output ---
+wsl: hKm0R localhost N?tMn??FO*g\P0R WSL?0NAT !j?_?Nv WSL
+N/e?c localhost N?t?0
+PERF_MISSING

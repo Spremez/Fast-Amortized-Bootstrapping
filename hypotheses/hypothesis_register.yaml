@@ -2229,3 +2229,20 @@ hypotheses:
       - body-profile build or correctness fails
       - sparse schedule counts no longer match the SAB model
       - next-stage queue is not tied to measured component shares
+  - id: H85_post_fusion_attribution
+    statement: >
+      The Stage160 dominant fused MAT EP/decompose block should be attributed
+      with native counters before making theoretical optimality claims; if
+      native counters are unavailable, objdump/time evidence is proxy-only.
+    mechanism: >
+      Stage161 builds and runs the current r=6 post-fusion path, records perf
+      availability, instruction-family counts, source dispatch, and Stage160
+      component linkage.
+    status: stage161_post_fusion_attribution
+    evidence: docs/stage161_post_fusion_attribution.md; experiments/stage161_post_fusion_attribution_plan.md; theory_checks/stage161_post_fusion_attribution_model.md; repro/stage161_post_fusion_attribution/summary.csv
+    current_decision: >
+      PASS_STAGE161_PROXY_ATTRIBUTION_NATIVE_COUNTER_REQUIRED
+    failure_criteria:
+      - current post-fusion full-SAB correctness fails
+      - objdump does not show expected AVX512/FMA-family instructions
+      - proxy evidence is reported as theoretical optimality

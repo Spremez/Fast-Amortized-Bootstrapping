@@ -1,0 +1,400 @@
+0000000000000000 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512>:
+      60:	0f 8e 56 04 00 00    	jle    4bc <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x4bc>
+      73:	0f 84 a3 00 00 00    	je     11c <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x11c>
+      8d:	0f 84 89 00 00 00    	je     11c <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x11c>
+      a3:	74 77                	je     11c <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x11c>
+      b5:	74 65                	je     11c <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x11c>
+      ca:	74 50                	je     11c <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x11c>
+      e0:	74 3a                	je     11c <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x11c>
+      f5:	74 25                	je     11c <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x11c>
+     10a:	74 10                	je     11c <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x11c>
+     142:	0f 85 5c 01 00 00    	jne    2a4 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x2a4>
+     167:	74 7e                	je     1e7 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x1e7>
+     17a:	74 6b                	je     1e7 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x1e7>
+     18a:	74 5b                	je     1e7 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x1e7>
+     19a:	74 4b                	je     1e7 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x1e7>
+     1aa:	74 3b                	je     1e7 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x1e7>
+     1ba:	74 2b                	je     1e7 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x1e7>
+     1ca:	74 1b                	je     1e7 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x1e7>
+     1da:	74 0b                	je     1e7 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x1e7>
+     1f2:	0f 84 ea 02 00 00    	je     4e2 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x4e2>
+     217:	74 7e                	je     297 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x297>
+     22a:	74 6b                	je     297 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x297>
+     23a:	74 5b                	je     297 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x297>
+     24a:	74 4b                	je     297 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x297>
+     25a:	74 3b                	je     297 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x297>
+     26a:	74 2b                	je     297 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x297>
+     27a:	74 1b                	je     297 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x297>
+     28a:	74 0b                	je     297 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x297>
+     29f:	e9 a4 fe ff ff       	jmp    148 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x148>
+     2c8:	0f 84 86 00 00 00    	je     354 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x354>
+     2e0:	74 72                	je     354 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x354>
+     2f1:	74 61                	je     354 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x354>
+     302:	74 50                	je     354 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x354>
+     313:	74 3f                	je     354 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x354>
+     324:	74 2e                	je     354 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x354>
+     335:	74 1d                	je     354 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x354>
+     346:	74 0c                	je     354 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x354>
+     366:	e9 dd fd ff ff       	jmp    148 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x148>
+     37d:	62 71 fd 48 29 44 24 	vmovapd %zmm8,0x200(%rsp)
+     389:	62 f1 fd 48 29 64 24 	vmovapd %zmm4,0x100(%rsp)
+     391:	74 08                	je     39b <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x39b>
+     393:	62 71 fd 48 29 6c 24 	vmovapd %zmm13,0x280(%rsp)
+     39f:	74 08                	je     3a9 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x3a9>
+     3a1:	62 71 fd 48 29 5c 24 	vmovapd %zmm11,0x180(%rsp)
+     3ac:	74 08                	je     3b6 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x3b6>
+     3ae:	62 71 fd 48 29 4c 24 	vmovapd %zmm9,0x240(%rsp)
+     3b9:	74 08                	je     3c3 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x3c3>
+     3bb:	62 71 fd 48 29 54 24 	vmovapd %zmm10,0x140(%rsp)
+     3c7:	74 08                	je     3d1 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x3d1>
+     3c9:	62 f1 fd 48 29 54 24 	vmovapd %zmm2,0x2c0(%rsp)
+     3d5:	74 08                	je     3df <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x3df>
+     3d7:	62 71 fd 48 29 64 24 	vmovapd %zmm12,0x1c0(%rsp)
+     3e4:	62 71 fd 48 28 54 24 	vmovapd 0x100(%rsp),%zmm10
+     3ec:	62 71 fd 48 28 5c 24 	vmovapd 0x200(%rsp),%zmm11
+     3f8:	62 31 fd 48 29 14 23 	vmovapd %zmm10,(%rbx,%r12,1)
+     3ff:	62 71 fd 48 29 1c 03 	vmovapd %zmm11,(%rbx,%rax,1)
+     409:	7e 7a                	jle    485 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x485>
+     410:	62 71 fd 48 28 64 24 	vmovapd 0x140(%rsp),%zmm12
+     418:	62 f1 fd 48 28 64 24 	vmovapd 0x240(%rsp),%zmm4
+     425:	62 31 fd 48 29 24 27 	vmovapd %zmm12,(%rdi,%r12,1)
+     42c:	62 f1 fd 48 29 24 07 	vmovapd %zmm4,(%rdi,%rax,1)
+     436:	7e 4d                	jle    485 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x485>
+     43d:	62 71 fd 48 28 74 24 	vmovapd 0x180(%rsp),%zmm14
+     445:	62 f1 fd 48 28 4c 24 	vmovapd 0x280(%rsp),%zmm1
+     44d:	62 11 fd 48 29 74 25 	vmovapd %zmm14,0x0(%r13,%r12,1)
+     455:	62 d1 fd 48 29 4c 05 	vmovapd %zmm1,0x0(%r13,%rax,1)
+     460:	7e 23                	jle    485 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x485>
+     467:	62 71 fd 48 28 44 24 	vmovapd 0x1c0(%rsp),%zmm8
+     46f:	62 f1 fd 48 28 5c 24 	vmovapd 0x2c0(%rsp),%zmm3
+     477:	62 11 fd 48 29 04 26 	vmovapd %zmm8,(%r14,%r12,1)
+     47e:	62 d1 fd 48 29 1c 06 	vmovapd %zmm3,(%r14,%rax,1)
+     4a0:	0f 8f ad 00 00 00    	jg     553 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x553>
+     4b7:	7f 70                	jg     529 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x529>
+     4cd:	0f 85 26 0a 00 00    	jne    ef9 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xef9>
+     4e6:	7e d4                	jle    4bc <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x4bc>
+     560:	62 91 fd 48 28 0c 26 	vmovapd (%r14,%r12,1),%zmm1
+     567:	62 d1 fd 48 28 1c 03 	vmovapd (%r11,%rax,1),%zmm3
+     56e:	62 91 fd 48 28 14 23 	vmovapd (%r11,%r12,1),%zmm2
+     575:	62 91 fd 48 28 04 22 	vmovapd (%r10,%r12,1),%zmm0
+     57c:	62 71 f5 48 59 f3    	vmulpd %zmm3,%zmm1,%zmm14
+     582:	62 f1 f5 48 59 e2    	vmulpd %zmm2,%zmm1,%zmm4
+     588:	62 72 fd 48 ba f2    	vfmsub231pd %zmm2,%zmm0,%zmm14
+     58e:	62 f2 dd 48 98 d8    	vfmadd132pd %zmm0,%zmm4,%zmm3
+     594:	62 71 fd 48 29 74 24 	vmovapd %zmm14,0x100(%rsp)
+     59c:	62 f1 fd 48 29 5c 24 	vmovapd %zmm3,0x200(%rsp)
+     5a7:	0f 8e 86 08 00 00    	jle    e33 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xe33>
+     5b1:	62 d1 fd 48 28 34 01 	vmovapd (%r9,%rax,1),%zmm6
+     5b8:	62 91 fd 48 28 3c 21 	vmovapd (%r9,%r12,1),%zmm7
+     5bf:	62 f1 f5 48 59 ee    	vmulpd %zmm6,%zmm1,%zmm5
+     5c5:	62 71 f5 48 59 c7    	vmulpd %zmm7,%zmm1,%zmm8
+     5cb:	62 f2 fd 48 ba ef    	vfmsub231pd %zmm7,%zmm0,%zmm5
+     5d1:	62 f2 bd 48 98 f0    	vfmadd132pd %zmm0,%zmm8,%zmm6
+     5d7:	62 f1 fd 48 29 6c 24 	vmovapd %zmm5,0x140(%rsp)
+     5df:	62 f1 fd 48 29 74 24 	vmovapd %zmm6,0x240(%rsp)
+     5ea:	7e 7b                	jle    667 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x667>
+     5f0:	62 51 fd 48 28 0c 00 	vmovapd (%r8,%rax,1),%zmm9
+     5f7:	62 11 fd 48 28 14 20 	vmovapd (%r8,%r12,1),%zmm10
+     5fe:	62 51 f5 48 59 d9    	vmulpd %zmm9,%zmm1,%zmm11
+     604:	62 51 f5 48 59 e2    	vmulpd %zmm10,%zmm1,%zmm12
+     60a:	62 52 fd 48 ba da    	vfmsub231pd %zmm10,%zmm0,%zmm11
+     610:	62 72 9d 48 98 c8    	vfmadd132pd %zmm0,%zmm12,%zmm9
+     616:	62 71 fd 48 29 5c 24 	vmovapd %zmm11,0x180(%rsp)
+     61e:	62 71 fd 48 29 4c 24 	vmovapd %zmm9,0x280(%rsp)
+     629:	7e 3c                	jle    667 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x667>
+     62f:	62 51 fd 48 28 6c 05 	vmovapd 0x0(%r13,%rax,1),%zmm13
+     637:	62 11 fd 48 28 7c 25 	vmovapd 0x0(%r13,%r12,1),%zmm15
+     63f:	62 f1 95 48 59 d1    	vmulpd %zmm1,%zmm13,%zmm2
+     645:	62 f1 85 48 59 c9    	vmulpd %zmm1,%zmm15,%zmm1
+     64b:	62 d2 fd 48 ba d7    	vfmsub231pd %zmm15,%zmm0,%zmm2
+     651:	62 d2 f5 48 98 c5    	vfmadd132pd %zmm13,%zmm1,%zmm0
+     657:	62 f1 fd 48 29 54 24 	vmovapd %zmm2,0x1c0(%rsp)
+     65f:	62 f1 fd 48 29 44 24 	vmovapd %zmm0,0x2c0(%rsp)
+     66c:	0f 84 e8 07 00 00    	je     e5a <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xe5a>
+     677:	0f 8e 09 08 00 00    	jle    e86 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xe86>
+     67d:	62 71 fd 48 28 54 24 	vmovapd 0x140(%rsp),%zmm10
+     685:	62 f1 fd 48 28 74 24 	vmovapd 0x240(%rsp),%zmm6
+     694:	62 71 fd 48 28 5c 24 	vmovapd 0x180(%rsp),%zmm11
+     69c:	62 f1 fd 48 28 7c 24 	vmovapd 0x280(%rsp),%zmm7
+     6ac:	62 71 fd 48 28 64 24 	vmovapd 0x1c0(%rsp),%zmm12
+     6b4:	62 f1 fd 48 28 54 24 	vmovapd 0x2c0(%rsp),%zmm2
+     6cc:	62 d1 fd 48 28 6c 05 	vmovapd 0x0(%r13,%rax,1),%zmm5
+     6d4:	62 51 fd 48 28 0c 06 	vmovapd (%r14,%rax,1),%zmm9
+     6db:	62 11 fd 48 28 04 26 	vmovapd (%r14,%r12,1),%zmm8
+     6e2:	62 91 fd 48 28 64 25 	vmovapd 0x0(%r13,%r12,1),%zmm4
+     6ea:	62 52 d5 48 ba f1    	vfmsub231pd %zmm9,%zmm5,%zmm14
+     6f4:	62 d2 d5 48 b8 d8    	vfmadd231pd %zmm8,%zmm5,%zmm3
+     6fa:	62 81 fd 48 28 44 25 	vmovapd 0x0(%r13,%r12,1),%zmm16
+     702:	62 d1 fd 48 28 4c 05 	vmovapd 0x0(%r13,%rax,1),%zmm1
+     711:	62 52 dd 48 ba f0    	vfmsub231pd %zmm8,%zmm4,%zmm14
+     717:	62 11 fd 48 28 6c 25 	vmovapd 0x0(%r13,%r12,1),%zmm13
+     71f:	62 72 e5 48 98 cc    	vfmadd132pd %zmm4,%zmm3,%zmm9
+     725:	62 d1 fd 48 28 5c 05 	vmovapd 0x0(%r13,%rax,1),%zmm3
+     72d:	62 72 f5 48 ba f3    	vfmsub231pd %zmm3,%zmm1,%zmm14
+     733:	62 52 fd 40 ba f5    	vfmsub231pd %zmm13,%zmm16,%zmm14
+     739:	62 72 b5 48 98 e9    	vfmadd132pd %zmm1,%zmm9,%zmm13
+     73f:	62 b2 95 48 98 d8    	vfmadd132pd %zmm16,%zmm13,%zmm3
+     748:	0f 8e 49 01 00 00    	jle    897 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x897>
+     759:	62 51 fd 48 28 3c 06 	vmovapd (%r14,%rax,1),%zmm15
+     760:	62 91 fd 48 28 04 26 	vmovapd (%r14,%r12,1),%zmm0
+     767:	62 11 fd 48 28 44 25 	vmovapd 0x0(%r13,%r12,1),%zmm8
+     76f:	62 52 d5 48 ba d7    	vfmsub231pd %zmm15,%zmm5,%zmm10
+     775:	62 72 dd 48 ba d0    	vfmsub231pd %zmm0,%zmm4,%zmm10
+     77b:	62 f2 cd 48 98 c5    	vfmadd132pd %zmm5,%zmm6,%zmm0
+     781:	62 d1 fd 48 28 74 05 	vmovapd 0x0(%r13,%rax,1),%zmm6
+     789:	62 72 fd 48 98 fc    	vfmadd132pd %zmm4,%zmm0,%zmm15
+     78f:	62 72 f5 48 ba d6    	vfmsub231pd %zmm6,%zmm1,%zmm10
+     795:	62 52 fd 40 ba d0    	vfmsub231pd %zmm8,%zmm16,%zmm10
+     79b:	62 72 85 48 98 c1    	vfmadd132pd %zmm1,%zmm15,%zmm8
+     7a1:	62 b2 bd 48 98 f0    	vfmadd132pd %zmm16,%zmm8,%zmm6
+     7a7:	62 71 fd 48 29 54 24 	vmovapd %zmm10,0x140(%rsp)
+     7af:	62 f1 fd 48 29 74 24 	vmovapd %zmm6,0x240(%rsp)
+     7ba:	0f 8e d7 00 00 00    	jle    897 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x897>
+     7cb:	62 51 fd 48 28 04 06 	vmovapd (%r14,%rax,1),%zmm8
+     7d2:	62 11 fd 48 28 0c 26 	vmovapd (%r14,%r12,1),%zmm9
+     7d9:	62 11 fd 48 28 6c 25 	vmovapd 0x0(%r13,%r12,1),%zmm13
+     7e1:	62 52 d5 48 ba d8    	vfmsub231pd %zmm8,%zmm5,%zmm11
+     7e7:	62 52 dd 48 ba d9    	vfmsub231pd %zmm9,%zmm4,%zmm11
+     7ed:	62 72 c5 48 98 cd    	vfmadd132pd %zmm5,%zmm7,%zmm9
+     7f3:	62 d1 fd 48 28 7c 05 	vmovapd 0x0(%r13,%rax,1),%zmm7
+     7fb:	62 72 b5 48 98 c4    	vfmadd132pd %zmm4,%zmm9,%zmm8
+     801:	62 72 f5 48 ba df    	vfmsub231pd %zmm7,%zmm1,%zmm11
+     807:	62 52 fd 40 ba dd    	vfmsub231pd %zmm13,%zmm16,%zmm11
+     80d:	62 72 bd 48 98 e9    	vfmadd132pd %zmm1,%zmm8,%zmm13
+     813:	62 b2 95 48 98 f8    	vfmadd132pd %zmm16,%zmm13,%zmm7
+     819:	62 71 fd 48 29 5c 24 	vmovapd %zmm11,0x180(%rsp)
+     821:	62 f1 fd 48 29 7c 24 	vmovapd %zmm7,0x280(%rsp)
+     82c:	7e 69                	jle    897 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x897>
+     839:	62 d1 fd 48 28 04 06 	vmovapd (%r14,%rax,1),%zmm0
+     840:	62 11 fd 48 28 3c 26 	vmovapd (%r14,%r12,1),%zmm15
+     847:	62 72 d5 48 ba e0    	vfmsub231pd %zmm0,%zmm5,%zmm12
+     84d:	62 d2 d5 48 b8 d7    	vfmadd231pd %zmm15,%zmm5,%zmm2
+     853:	62 91 fd 48 28 6c 25 	vmovapd 0x0(%r13,%r12,1),%zmm5
+     85b:	62 52 dd 48 ba e7    	vfmsub231pd %zmm15,%zmm4,%zmm12
+     861:	62 f2 ed 48 98 e0    	vfmadd132pd %zmm0,%zmm2,%zmm4
+     867:	62 d1 fd 48 28 54 05 	vmovapd 0x0(%r13,%rax,1),%zmm2
+     86f:	62 72 f5 48 ba e2    	vfmsub231pd %zmm2,%zmm1,%zmm12
+     875:	62 f2 dd 48 98 cd    	vfmadd132pd %zmm5,%zmm4,%zmm1
+     87b:	62 72 fd 40 ba e5    	vfmsub231pd %zmm5,%zmm16,%zmm12
+     881:	62 b2 f5 48 98 d0    	vfmadd132pd %zmm16,%zmm1,%zmm2
+     887:	62 71 fd 48 29 64 24 	vmovapd %zmm12,0x1c0(%rsp)
+     88f:	62 f1 fd 48 29 54 24 	vmovapd %zmm2,0x2c0(%rsp)
+     8c2:	0f 8c fc fd ff ff    	jl     6c4 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x6c4>
+     8c8:	62 f1 fd 48 29 5c 24 	vmovapd %zmm3,0x200(%rsp)
+     8d0:	62 71 fd 48 29 74 24 	vmovapd %zmm14,0x100(%rsp)
+     8e5:	62 71 fd 48 28 ce    	vmovapd %zmm6,%zmm9
+     8fc:	62 71 fd 48 28 ef    	vmovapd %zmm7,%zmm13
+     91e:	62 d1 fd 48 28 0c 00 	vmovapd (%r8,%rax,1),%zmm1
+     925:	62 11 fd 48 28 34 20 	vmovapd (%r8,%r12,1),%zmm14
+     93b:	62 f1 fd 48 28 e1    	vmovapd %zmm1,%zmm4
+     946:	62 51 fd 48 28 04 02 	vmovapd (%r10,%rax,1),%zmm8
+     94d:	62 91 fd 48 28 1c 22 	vmovapd (%r10,%r12,1),%zmm3
+     957:	62 f2 bd 48 aa 64 24 	vfmsub213pd 0x100(%rsp),%zmm8,%zmm4
+     95f:	62 f2 8d 48 ba e3    	vfmsub231pd %zmm3,%zmm14,%zmm4
+     965:	62 f2 f5 48 a8 5c 24 	vfmadd213pd 0x200(%rsp),%zmm1,%zmm3
+     96d:	62 52 e5 48 98 c6    	vfmadd132pd %zmm14,%zmm3,%zmm8
+     976:	0f 8e d6 00 00 00    	jle    a52 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xa52>
+     986:	62 d1 fd 48 28 44 05 	vmovapd 0x0(%r13,%rax,1),%zmm0
+     98e:	62 11 fd 48 28 7c 25 	vmovapd 0x0(%r13,%r12,1),%zmm15
+     99c:	62 72 f5 48 ba d0    	vfmsub231pd %zmm0,%zmm1,%zmm10
+     9a2:	62 52 8d 48 ba d7    	vfmsub231pd %zmm15,%zmm14,%zmm10
+     9a8:	62 72 cd 48 98 f9    	vfmadd132pd %zmm1,%zmm6,%zmm15
+     9ae:	62 d2 85 48 98 c6    	vfmadd132pd %zmm14,%zmm15,%zmm0
+     9b4:	62 71 fd 48 28 c8    	vmovapd %zmm0,%zmm9
+     9bd:	0f 8e 8f 00 00 00    	jle    a52 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xa52>
+     9c7:	62 d1 fd 48 28 2c 06 	vmovapd (%r14,%rax,1),%zmm5
+     9ce:	62 91 fd 48 28 34 26 	vmovapd (%r14,%r12,1),%zmm6
+     9d5:	62 72 f5 48 ba dd    	vfmsub231pd %zmm5,%zmm1,%zmm11
+     9db:	62 72 8d 48 ba de    	vfmsub231pd %zmm6,%zmm14,%zmm11
+     9e1:	62 f2 c5 48 98 f1    	vfmadd132pd %zmm1,%zmm7,%zmm6
+     9e7:	62 d2 cd 48 98 ee    	vfmadd132pd %zmm14,%zmm6,%zmm5
+     9ed:	62 71 fd 48 28 ed    	vmovapd %zmm5,%zmm13
+     9f6:	0f 8e e2 04 00 00    	jle    ede <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xede>
+     a26:	62 d1 fd 48 28 3c 00 	vmovapd (%r8,%rax,1),%zmm7
+     a2d:	62 91 fd 48 28 1c 20 	vmovapd (%r8,%r12,1),%zmm3
+     a34:	62 72 f5 48 ba e7    	vfmsub231pd %zmm7,%zmm1,%zmm12
+     a3a:	62 f2 ed 48 98 cb    	vfmadd132pd %zmm3,%zmm2,%zmm1
+     a40:	62 d1 fd 48 28 d6    	vmovapd %zmm14,%zmm2
+     a46:	62 72 8d 48 ba e3    	vfmsub231pd %zmm3,%zmm14,%zmm12
+     a4c:	62 f2 f5 48 98 d7    	vfmadd132pd %zmm7,%zmm1,%zmm2
+     a5e:	0f 8e 19 f9 ff ff    	jle    37d <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x37d>
+     a6a:	0f 84 26 01 00 00    	je     b96 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xb96>
+     a78:	62 f1 fd 48 28 0c 07 	vmovapd (%rdi,%rax,1),%zmm1
+     a7f:	62 d1 fd 48 28 04 01 	vmovapd (%r9,%rax,1),%zmm0
+     a86:	62 31 fd 48 28 34 27 	vmovapd (%rdi,%r12,1),%zmm14
+     a8d:	62 11 fd 48 28 3c 21 	vmovapd (%r9,%r12,1),%zmm15
+     a94:	62 f2 f5 48 ba e0    	vfmsub231pd %zmm0,%zmm1,%zmm4
+     a9a:	62 d2 8d 48 ba e7    	vfmsub231pd %zmm15,%zmm14,%zmm4
+     aa0:	62 72 bd 48 98 f9    	vfmadd132pd %zmm1,%zmm8,%zmm15
+     aa6:	62 d2 85 48 98 c6    	vfmadd132pd %zmm14,%zmm15,%zmm0
+     aac:	62 71 fd 48 28 c0    	vmovapd %zmm0,%zmm8
+     ab5:	0f 8e c5 00 00 00    	jle    b80 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xb80>
+     abf:	62 d1 fd 48 28 6c 05 	vmovapd 0x0(%r13,%rax,1),%zmm5
+     ac7:	62 91 fd 48 28 74 25 	vmovapd 0x0(%r13,%r12,1),%zmm6
+     acf:	62 72 f5 48 ba d5    	vfmsub231pd %zmm5,%zmm1,%zmm10
+     ad5:	62 72 8d 48 ba d6    	vfmsub231pd %zmm6,%zmm14,%zmm10
+     adb:	62 f2 b5 48 98 f1    	vfmadd132pd %zmm1,%zmm9,%zmm6
+     ae1:	62 d2 cd 48 98 ee    	vfmadd132pd %zmm14,%zmm6,%zmm5
+     ae7:	62 71 fd 48 28 cd    	vmovapd %zmm5,%zmm9
+     af0:	0f 8e d7 03 00 00    	jle    ecd <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xecd>
+     afa:	62 d1 fd 48 28 3c 06 	vmovapd (%r14,%rax,1),%zmm7
+     b01:	62 91 fd 48 28 1c 26 	vmovapd (%r14,%r12,1),%zmm3
+     b08:	62 72 f5 48 ba df    	vfmsub231pd %zmm7,%zmm1,%zmm11
+     b0e:	62 72 8d 48 ba db    	vfmsub231pd %zmm3,%zmm14,%zmm11
+     b14:	62 f2 95 48 98 d9    	vfmadd132pd %zmm1,%zmm13,%zmm3
+     b1a:	62 d2 e5 48 98 fe    	vfmadd132pd %zmm14,%zmm3,%zmm7
+     b20:	62 71 fd 48 28 ef    	vmovapd %zmm7,%zmm13
+     b29:	0f 8e 91 03 00 00    	jle    ec0 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xec0>
+     b54:	62 d1 fd 48 28 04 01 	vmovapd (%r9,%rax,1),%zmm0
+     b5b:	62 11 fd 48 28 3c 21 	vmovapd (%r9,%r12,1),%zmm15
+     b62:	62 72 f5 48 ba e0    	vfmsub231pd %zmm0,%zmm1,%zmm12
+     b68:	62 d2 ed 48 98 cf    	vfmadd132pd %zmm15,%zmm2,%zmm1
+     b6e:	62 d1 fd 48 28 d6    	vmovapd %zmm14,%zmm2
+     b74:	62 52 8d 48 ba e7    	vfmsub231pd %zmm15,%zmm14,%zmm12
+     b7a:	62 f2 f5 48 98 d0    	vfmadd132pd %zmm0,%zmm1,%zmm2
+     b90:	0f 8e e7 f7 ff ff    	jle    37d <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x37d>
+     ba8:	e9 b8 01 00 00       	jmp    d65 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xd65>
+     bb4:	62 f1 fd 48 28 1c 01 	vmovapd (%rcx,%rax,1),%zmm3
+     bbb:	62 b1 fd 48 28 3c 21 	vmovapd (%rcx,%r12,1),%zmm7
+     bc2:	62 72 f5 48 ba db    	vfmsub231pd %zmm3,%zmm1,%zmm11
+     bc8:	62 72 8d 48 ba df    	vfmsub231pd %zmm7,%zmm14,%zmm11
+     bce:	62 f2 95 48 98 f9    	vfmadd132pd %zmm1,%zmm13,%zmm7
+     bd4:	62 d2 c5 48 98 de    	vfmadd132pd %zmm14,%zmm7,%zmm3
+     bda:	62 71 fd 48 28 eb    	vmovapd %zmm3,%zmm13
+     be3:	0f 8e 2f 02 00 00    	jle    e18 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xe18>
+     c0b:	62 71 fd 48 28 3c 06 	vmovapd (%rsi,%rax,1),%zmm15
+     c12:	62 b1 fd 48 28 04 26 	vmovapd (%rsi,%r12,1),%zmm0
+     c1e:	62 52 f5 48 ba e7    	vfmsub231pd %zmm15,%zmm1,%zmm12
+     c24:	62 72 8d 48 ba e0    	vfmsub231pd %zmm0,%zmm14,%zmm12
+     c2a:	62 f2 ed 48 98 c1    	vfmadd132pd %zmm1,%zmm2,%zmm0
+     c30:	62 d1 fd 48 28 d6    	vmovapd %zmm14,%zmm2
+     c36:	62 d2 fd 48 98 d7    	vfmadd132pd %zmm15,%zmm0,%zmm2
+     c4c:	62 51 fd 48 28 04 00 	vmovapd (%r8,%rax,1),%zmm8
+     c53:	62 91 fd 48 28 2c 20 	vmovapd (%r8,%r12,1),%zmm5
+     c5a:	62 d1 fd 48 28 0c 02 	vmovapd (%r10,%rax,1),%zmm1
+     c61:	62 11 fd 48 28 34 22 	vmovapd (%r10,%r12,1),%zmm14
+     c68:	62 d2 f5 48 ba e0    	vfmsub231pd %zmm8,%zmm1,%zmm4
+     c6e:	62 f2 8d 48 ba e5    	vfmsub231pd %zmm5,%zmm14,%zmm4
+     c74:	62 f2 cd 48 98 e9    	vfmadd132pd %zmm1,%zmm6,%zmm5
+     c7a:	62 52 d5 48 98 c6    	vfmadd132pd %zmm14,%zmm5,%zmm8
+     c83:	0f 8e ca 00 00 00    	jle    d53 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xd53>
+     c8d:	62 d1 fd 48 28 1c 06 	vmovapd (%r14,%rax,1),%zmm3
+     c94:	62 91 fd 48 28 34 26 	vmovapd (%r14,%r12,1),%zmm6
+     c9b:	62 72 f5 48 ba d3    	vfmsub231pd %zmm3,%zmm1,%zmm10
+     ca1:	62 72 8d 48 ba d6    	vfmsub231pd %zmm6,%zmm14,%zmm10
+     ca7:	62 f2 b5 48 98 f1    	vfmadd132pd %zmm1,%zmm9,%zmm6
+     cad:	62 d2 cd 48 98 de    	vfmadd132pd %zmm14,%zmm6,%zmm3
+     cb3:	62 71 fd 48 28 cb    	vmovapd %zmm3,%zmm9
+     cbc:	0f 8e 40 01 00 00    	jle    e02 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xe02>
+     cc6:	62 51 fd 48 28 7c 05 	vmovapd 0x0(%r13,%rax,1),%zmm15
+     cce:	62 91 fd 48 28 7c 25 	vmovapd 0x0(%r13,%r12,1),%zmm7
+     cd6:	62 52 f5 48 ba df    	vfmsub231pd %zmm15,%zmm1,%zmm11
+     cdc:	62 72 8d 48 ba df    	vfmsub231pd %zmm7,%zmm14,%zmm11
+     ce2:	62 f2 95 48 98 f9    	vfmadd132pd %zmm1,%zmm13,%zmm7
+     ce8:	62 52 c5 48 98 fe    	vfmadd132pd %zmm14,%zmm7,%zmm15
+     cee:	62 51 fd 48 28 ef    	vmovapd %zmm15,%zmm13
+     cf7:	0f 8e fb 00 00 00    	jle    df8 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xdf8>
+     d22:	62 f1 fd 48 28 04 01 	vmovapd (%rcx,%rax,1),%zmm0
+     d29:	62 b1 fd 48 28 2c 21 	vmovapd (%rcx,%r12,1),%zmm5
+     d35:	62 72 f5 48 ba e0    	vfmsub231pd %zmm0,%zmm1,%zmm12
+     d3b:	62 f2 ed 48 98 cd    	vfmadd132pd %zmm5,%zmm2,%zmm1
+     d41:	62 d1 fd 48 28 d6    	vmovapd %zmm14,%zmm2
+     d47:	62 72 8d 48 ba e5    	vfmsub231pd %zmm5,%zmm14,%zmm12
+     d4d:	62 f2 f5 48 98 d0    	vfmadd132pd %zmm0,%zmm1,%zmm2
+     d5f:	0f 8e 06 f6 ff ff    	jle    36b <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x36b>
+     d6c:	62 f1 fd 48 28 0c 07 	vmovapd (%rdi,%rax,1),%zmm1
+     d73:	62 d1 fd 48 28 34 01 	vmovapd (%r9,%rax,1),%zmm6
+     d7a:	62 31 fd 48 28 34 27 	vmovapd (%rdi,%r12,1),%zmm14
+     d81:	62 91 fd 48 28 2c 21 	vmovapd (%r9,%r12,1),%zmm5
+     d88:	62 f2 f5 48 ba e6    	vfmsub231pd %zmm6,%zmm1,%zmm4
+     d8e:	62 f2 8d 48 ba e5    	vfmsub231pd %zmm5,%zmm14,%zmm4
+     d94:	62 f2 bd 48 98 e9    	vfmadd132pd %zmm1,%zmm8,%zmm5
+     d9a:	62 d2 d5 48 98 f6    	vfmadd132pd %zmm14,%zmm5,%zmm6
+     da3:	0f 8e 93 fe ff ff    	jle    c3c <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xc3c>
+     dad:	62 51 fd 48 28 44 05 	vmovapd 0x0(%r13,%rax,1),%zmm8
+     db5:	62 91 fd 48 28 7c 25 	vmovapd 0x0(%r13,%r12,1),%zmm7
+     dbd:	62 52 f5 48 ba d0    	vfmsub231pd %zmm8,%zmm1,%zmm10
+     dc3:	62 72 8d 48 ba d7    	vfmsub231pd %zmm7,%zmm14,%zmm10
+     dc9:	62 f2 b5 48 98 f9    	vfmadd132pd %zmm1,%zmm9,%zmm7
+     dcf:	62 52 c5 48 98 c6    	vfmadd132pd %zmm14,%zmm7,%zmm8
+     dd5:	62 51 fd 48 28 c8    	vmovapd %zmm8,%zmm9
+     dde:	0f 8f cc fd ff ff    	jg     bb0 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xbb0>
+     df0:	e9 47 fe ff ff       	jmp    c3c <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xc3c>
+     e0e:	e9 40 ff ff ff       	jmp    d53 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xd53>
+     e2e:	e9 09 fe ff ff       	jmp    c3c <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xc3c>
+     e38:	0f 85 34 f8 ff ff    	jne    672 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x672>
+     e47:	62 31 fd 48 29 34 27 	vmovapd %zmm14,(%rdi,%r12,1)
+     e4e:	62 f1 fd 48 29 1c 07 	vmovapd %zmm3,(%rdi,%rax,1)
+     e55:	e9 2b f6 ff ff       	jmp    485 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x485>
+     e5f:	62 f1 fd 48 28 44 24 	vmovapd 0x100(%rsp),%zmm0
+     e67:	62 f1 fd 48 28 5c 24 	vmovapd 0x200(%rsp),%zmm3
+     e73:	62 91 fd 48 29 04 26 	vmovapd %zmm0,(%r14,%r12,1)
+     e7a:	62 d1 fd 48 29 1c 06 	vmovapd %zmm3,(%r14,%rax,1)
+     e81:	e9 85 f5 ff ff       	jmp    40b <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x40b>
+     e86:	62 71 fd 48 28 54 24 	vmovapd 0x140(%rsp),%zmm10
+     e8e:	62 f1 fd 48 28 74 24 	vmovapd 0x240(%rsp),%zmm6
+     e9b:	62 71 fd 48 28 5c 24 	vmovapd 0x180(%rsp),%zmm11
+     ea3:	62 f1 fd 48 28 7c 24 	vmovapd 0x280(%rsp),%zmm7
+     eab:	62 71 fd 48 28 64 24 	vmovapd 0x1c0(%rsp),%zmm12
+     eb3:	62 f1 fd 48 28 54 24 	vmovapd 0x2c0(%rsp),%zmm2
+     ebb:	e9 18 fa ff ff       	jmp    8d8 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0x8d8>
+     ed9:	e9 a2 fc ff ff       	jmp    b80 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xb80>
+     ef4:	e9 59 fb ff ff       	jmp    a52 <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xa52>
+     ef9:	e8 00 00 00 00       	call   efe <mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512+0xefe>
+0000000000000f00 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec>:
+     f33:	0f 85 88 05 00 00    	jne    14c1 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x5c1>
+     f3c:	0f 85 7f 05 00 00    	jne    14c1 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x5c1>
+     f45:	0f 84 a2 05 00 00    	je     14ed <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x5ed>
+     f4e:	0f 84 50 08 00 00    	je     17a4 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x8a4>
+     f63:	0f 84 6b 05 00 00    	je     14d4 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x5d4>
+     f74:	0f 84 a5 00 00 00    	je     101f <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x11f>
+     f7e:	74 61                	je     fe1 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0xe1>
+     f84:	74 2b                	je     fb1 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0xb1>
+     fa8:	e8 00 00 00 00       	call   fad <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0xad>
+     fd8:	e8 00 00 00 00       	call   fdd <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0xdd>
+    1008:	e8 00 00 00 00       	call   100d <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x10d>
+    1019:	0f 84 9a 00 00 00    	je     10b9 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x1b9>
+    103b:	e8 00 00 00 00       	call   1040 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x140>
+    105c:	e8 00 00 00 00       	call   1061 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x161>
+    107d:	e8 00 00 00 00       	call   1082 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x182>
+    10a2:	e8 00 00 00 00       	call   10a7 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x1a7>
+    10af:	0f 85 6e ff ff ff    	jne    1023 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x123>
+    10c7:	0f 84 2f 01 00 00    	je     11fc <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x2fc>
+    10d0:	0f 84 90 00 00 00    	je     1166 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x266>
+    10da:	74 53                	je     112f <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x22f>
+    10e0:	74 24                	je     1106 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x206>
+    1101:	e8 00 00 00 00       	call   1106 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x206>
+    112a:	e8 00 00 00 00       	call   112f <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x22f>
+    1153:	e8 00 00 00 00       	call   1158 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x258>
+    1160:	0f 84 96 00 00 00    	je     11fc <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x2fc>
+    117f:	e8 00 00 00 00       	call   1184 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x284>
+    11a1:	e8 00 00 00 00       	call   11a6 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x2a6>
+    11c3:	e8 00 00 00 00       	call   11c8 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x2c8>
+    11e9:	e8 00 00 00 00       	call   11ee <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x2ee>
+    11f6:	0f 85 6a ff ff ff    	jne    1166 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x266>
+    1210:	0f 86 9c 02 00 00    	jbe    14b2 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x5b2>
+    1238:	0f 84 13 01 00 00    	je     1351 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x451>
+    1241:	74 7b                	je     12be <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x3be>
+    1247:	74 49                	je     1292 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x392>
+    124d:	74 22                	je     1271 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x371>
+    126c:	e8 00 00 00 00       	call   1271 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x371>
+    128d:	e8 00 00 00 00       	call   1292 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x392>
+    12ae:	e8 00 00 00 00       	call   12b3 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x3b3>
+    12b8:	0f 84 93 00 00 00    	je     1351 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x451>
+    12d7:	e8 00 00 00 00       	call   12dc <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x3dc>
+    12f9:	e8 00 00 00 00       	call   12fe <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x3fe>
+    131b:	e8 00 00 00 00       	call   1320 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x420>
+    1341:	e8 00 00 00 00       	call   1346 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x446>
+    134b:	0f 85 6d ff ff ff    	jne    12be <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x3be>
+    1369:	0f 84 27 01 00 00    	je     1496 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x596>
+    1372:	0f 84 81 00 00 00    	je     13f9 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x4f9>
+    137c:	74 4b                	je     13c9 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x4c9>
+    1382:	74 23                	je     13a7 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x4a7>
+    13a2:	e8 00 00 00 00       	call   13a7 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x4a7>
+    13c4:	e8 00 00 00 00       	call   13c9 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x4c9>
+    13e6:	e8 00 00 00 00       	call   13eb <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x4eb>
+    13f3:	0f 84 9d 00 00 00    	je     1496 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x596>
+    1413:	e8 00 00 00 00       	call   1418 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x518>
+    1437:	e8 00 00 00 00       	call   143c <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x53c>
+    145b:	e8 00 00 00 00       	call   1460 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x560>
+    1483:	e8 00 00 00 00       	call   1488 <mat_trgsw_mul_pvmtmlwe_DFT_from_dec+0x588>

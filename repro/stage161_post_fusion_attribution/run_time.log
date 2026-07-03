@@ -1,0 +1,31 @@
+command: /usr/bin/time -v stdbuf -o0 ./main
+returncode: 0
+--- output ---
+wsl: hKm0R localhost N?tMn??FO*g\P0R WSL?0NAT !j?_?Nv WSL
+N/e?c localhost N?t?0
+SAB_PVW_BENCH correctness target_full r=6 h=39 r_prec=7: Pass
+SAB_PVW_BENCH sample target_full r=6 rep=0 pvw_us=39809444 scalar_repeated_us=60132925 speedup=1.511x
+SAB_PVW_BENCH summary target_full r=6 reps=1 pvw_avg_us=39809444.000 pvw_stddev_us=0.000 pvw_lane_avg_us=6634907.333 scalar_repeated_avg_us=60132925.000 scalar_stddev_us=0.000 scalar_lane_avg_us=10022154.167 speedup_vs_scalar_repeated=1.511x speedup_stddev=0.000
+	Command being timed: "stdbuf -o0 ./main"
+	User time (seconds): 203.75
+	System time (seconds): 2.37
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:26.37
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 3577048
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 11
+	Minor (reclaiming a frame) page faults: 1061411
+	Voluntary context switches: 125
+	Involuntary context switches: 76
+	Swaps: 0
+	File system inputs: 1024
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

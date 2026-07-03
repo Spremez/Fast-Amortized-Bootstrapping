@@ -1,0 +1,5 @@
+source_stage,metric,value,evidence,interpretation
+Stage160,mat_ep_plus_subdecomp,0.625878,repro/stage160_post_fusion_frontier/component_shares.csv,Dominant fused MAT EP/decompose block; now includes direct diff decomposition under the fusion flag.
+Stage160,from_dft_materialization,0.338201,repro/stage160_post_fusion_frontier/component_shares.csv,Still one materialization per update; reducing count requires representation/schedule change.
+Stage160,explicit_sub,0.000000,repro/stage160_post_fusion_frontier/component_shares.csv,Should be near zero after sub-decompose fusion; this route is now closed.
+Stage160,mat_ep_calls;from_dft_calls,573440;573440,repro/stage160_post_fusion_frontier/profile_sample.csv,Stage161 attribution applies to a path with unchanged 573440 MAT EP/materialization calls.

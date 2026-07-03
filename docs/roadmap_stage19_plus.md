@@ -5384,3 +5384,18 @@ Status:
 ```text
 Completed. Stage160 records PASS_STAGE160_POST_FUSION_FRONTIER_RECORDED; next frontier is mat_ep_plus_subdecomp;0.623301.
 ```
+## Stage 161: Post-Fusion Attribution
+
+Goal:
+
+```text
+Attribute the Stage160 dominant fused MAT EP/decompose block with native
+counters if available, otherwise with explicitly scoped proxy evidence.
+```
+
+Status:
+
+```text
+Completed. Stage161 records PASS_STAGE161_PROXY_ATTRIBUTION_NATIVE_COUNTER_REQUIRED; WSL perf is not treated as native
+counter evidence when unavailable.
+```

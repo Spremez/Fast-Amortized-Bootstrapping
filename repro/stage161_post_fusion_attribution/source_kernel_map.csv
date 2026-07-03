@@ -1,0 +1,5 @@
+layer,symbol_or_flag,role,evidence
+SAB CMUX,SAB_PVW_SUB_DECOMP_FUSION=true,routes CMUX difference directly into MAT EP input decomposition,src/sab_pvw.c
+MAT EP entry,mat_trgsw_mul_pvmtmlwe_sub_DFT,calls mat_trgsw_sub_decompose then mat_trgsw_mul_pvmtmlwe_DFT_from_dec,src/mosfhet/src/mattrgsw.c
+r>4 AVX512 dispatch,MAT_TRGSW_AVX512_RGT4_FUSED=true,selects mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512 for r=6 current path,src/mosfhet/src/mattrgsw.c; src/mosfhet/Makefile.def
+materialization,SAB_PVW_BACKEND_FROM_DFT_ADD=true,"keeps backend FromDFT-add materialization fused with add, but does not reduce materialization count",src/sab_pvw.c

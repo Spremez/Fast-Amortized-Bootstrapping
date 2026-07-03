@@ -249,3 +249,4 @@
 - [x] Stage159 sub-decompose fusion repeated/noise/resource gate pack recorded.
 - [x] Stage160 post-fusion profile/frontier pack recorded.
 - [x] Stage160 post-fusion profile/frontier pack recorded.
+- [x] Stage161 post-fusion attribution pack recorded.

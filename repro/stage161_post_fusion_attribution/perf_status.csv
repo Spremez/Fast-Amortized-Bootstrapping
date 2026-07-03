@@ -1,0 +1,2 @@
+perf_available,perf_probe_rc,perf_status,perf_detail,metric,value,unit,evidence,detail,source_log
+false,0,missing,perf not found in WSL,,,,,,repro/stage161_post_fusion_attribution/perf_probe.log

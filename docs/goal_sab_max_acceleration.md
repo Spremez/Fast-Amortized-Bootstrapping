@@ -844,3 +844,6 @@ Stage160 refreshes the post-fusion component frontier after the Stage159
 promotion-candidate result. Decision: `PASS_STAGE160_POST_FUSION_FRONTIER_RECORDED`. It keeps profile timing as
 attribution evidence and routes the next work toward counter-supported kernel
 limits or materialization-count reduction.
+Stage161 records post-fusion attribution scope for the dominant MAT EP block.
+Decision: `PASS_STAGE161_PROXY_ATTRIBUTION_NATIVE_COUNTER_REQUIRED`. Proxy objdump evidence confirms the AVX512/FMA build
+path, but native counters remain required for FMA-vs-memory optimality claims.

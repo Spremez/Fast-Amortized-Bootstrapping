@@ -1,0 +1,4 @@
+priority,stage,name,reason,gate
+P0,162,materialization-count reduction feasibility,Stage160 from_DFT materialization remains 33.8201% and Stage161 proxy cannot prove MAT EP theoretical optimality.,Prove closure/equivalence before full SAB; reject if materialization count stays 573440.
+P0,161N,native post-fusion counter run,Current WSL perf status is missing; native counters are required to classify FMA vs memory/spill limits.,"cycles, instructions, cache, loads/stores, and AVX512 FP counters on current r=6 post-fusion path."
+P1,163,explicit best-path policy boundary,Stage161 decision is PASS_STAGE161_PROXY_ATTRIBUTION_NATIVE_COUNTER_REQUIRED; Stage159 remains an explicit promotion candidate.,No scalar/default behavior change without a separate policy commit.

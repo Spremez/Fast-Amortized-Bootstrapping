@@ -2237,3 +2237,8 @@ Repro artifacts:
   - `experiments/stage160_post_fusion_frontier_plan.md`
   - `theory_checks/stage160_post_fusion_frontier_model.md`
   - `repro/stage160_post_fusion_frontier/`
+- stage161_post_fusion_attribution: `PASS_STAGE161_PROXY_ATTRIBUTION_NATIVE_COUNTER_REQUIRED`
+  - `docs/stage161_post_fusion_attribution.md`
+  - `experiments/stage161_post_fusion_attribution_plan.md`
+  - `theory_checks/stage161_post_fusion_attribution_model.md`
+  - `repro/stage161_post_fusion_attribution/`

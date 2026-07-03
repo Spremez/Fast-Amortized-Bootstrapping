@@ -1,0 +1,2 @@
+run_mode,correctness,r,reps,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,time_elapsed,time_user_seconds,time_sys_seconds,time_max_rss_kb,source_log
+time_fallback_perf_missing,Pass,6,1,39809444.000,6634907.333,60132925.000,10022154.167,1.511,3:26.37,203.75,2.37,3577048,repro/stage161_post_fusion_attribution/run_time.log
