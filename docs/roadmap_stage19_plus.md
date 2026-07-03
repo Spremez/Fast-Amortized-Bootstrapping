@@ -5653,3 +5653,20 @@ Completed. Stage177 records PASS_STAGE177_VERIFIED_LITERATURE_BOUNDARY_NO_STRONG
 the next executable route is Stage178 exact full-MAT `T_bootstrap/r`
 frontier selection.
 ```
+## Stage 178: Full-MAT Per-Bit Frontier
+
+Goal:
+
+```text
+Re-normalize current complete-SAB evidence as T_bootstrap/r and select the next
+exact full-MAT optimization candidate from measured component shares.
+```
+
+Status:
+
+```text
+Completed. Stage178 records PASS_STAGE178_FULLMAT_PERBIT_FRONTIER_SELECT_MAT_EP_AUDIT. Current exact r=6 speedup is
+1.131666667x mean versus repeated
+scalar on the complete-SAB T_bootstrap/r endpoint. Next route is an audit-only
+MAT EP/subdecomp microarchitecture gate, not compact implementation.
+```

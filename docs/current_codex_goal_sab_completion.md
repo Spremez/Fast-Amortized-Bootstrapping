@@ -443,3 +443,8 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE177_VERIFIED_LITERATURE_BOUNDARY_NO_STRONG_NOVELTY_CLAIM`. Real adjacent work includes 2025/696 and prior amortized,
     batch, PVW packing, FHEW/TFHE sources. Strong novelty claims remain
     blocked; proceed to exact full-MAT `T_bootstrap/r` frontier work.
+82. Treat Stage178 as the per-bit exact full-MAT frontier:
+    `PASS_STAGE178_FULLMAT_PERBIT_FRONTIER_SELECT_MAT_EP_AUDIT`. The current complete-SAB r=6 endpoint is
+    1.131666667x mean speedup on
+    `T_bootstrap/r` versus repeated scalar. Stage179 may audit MAT
+    EP/subdecomp only if it stays tied to complete-SAB impact.

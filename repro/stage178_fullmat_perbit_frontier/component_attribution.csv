@@ -1,0 +1,5 @@
+component,per_call_us,estimated_full_us,share_of_pvw_full,source,interpretation
+mat_ep_subdecomp,66.127151855,37919953.959731199,0.603899465,repro/stage170_native_split_counter_microbench/run_metrics.csv,Largest exact-path component; includes sub-decompose and MAT DFT addmul.
+from_dft_materialize,35.211114746,20191461.639946241,0.321561912,repro/stage170_native_split_counter_microbench/run_metrics.csv,Second-largest exact-path component; Stage174 direct-scale attempt was neutral.
+split_hot_components_total,101.338266601,58111415.599677444,0.925461377,repro/stage169_cb5_native_repeated_r6_gate/aggregate.csv; repro/stage170_native_split_counter_microbench/run_metrics.csv,Explains most of full-SAB time; good sanity check for attribution.
+residual_setup_extract_ks_profile_gap,,4680416.733655892,0.074538623,repro/stage169_cb5_native_repeated_r6_gate/aggregate.csv,Too small to be the primary next optimization target unless a specific bug is found.

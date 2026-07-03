@@ -2337,3 +2337,9 @@ Repro artifacts:
   - `theory_checks/stage177_literature_novelty_model.md`
   - `algorithm_variants/mat_rlwe_sab_literature_claim_boundary.md`
   - `repro/stage177_verified_literature_novelty_gate/`
+- stage178_fullmat_perbit_frontier: `PASS_STAGE178_FULLMAT_PERBIT_FRONTIER_SELECT_MAT_EP_AUDIT`
+  - `docs/stage178_fullmat_perbit_frontier.md`
+  - `experiments/stage178_fullmat_perbit_frontier_plan.md`
+  - `theory_checks/stage178_fullmat_perbit_frontier_model.md`
+  - `algorithm_variants/mat_rlwe_sab_exact_fullmat_frontier.md`
+  - `repro/stage178_fullmat_perbit_frontier/`

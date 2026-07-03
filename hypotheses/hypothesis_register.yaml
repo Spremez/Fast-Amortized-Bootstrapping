@@ -2528,3 +2528,20 @@ hypotheses:
       - broad novelty is claimed from bounded search
       - citations are invented or unsupported
       - 2025/696 and batch/amortized prior work are omitted from paper framing
+  - id: H102_fullmat_perbit_frontier
+    statement: >
+      After compact SAB is blocked, the only exact full-MAT component large
+      enough to justify further implementation work is MAT EP/subdecomp, and
+      all claims must use complete-SAB T_bootstrap/r.
+    mechanism: >
+      Stage169 supplies repeated complete-SAB per-lane throughput and Stage170
+      splits MAT EP/subdecomp from from_DFT materialization. Amdahl bounds route
+      away from tail work and previously neutral layout/backend retuning.
+    status: stage178_fullmat_perbit_frontier
+    evidence: docs/stage178_fullmat_perbit_frontier.md; experiments/stage178_fullmat_perbit_frontier_plan.md; theory_checks/stage178_fullmat_perbit_frontier_model.md; repro/stage178_fullmat_perbit_frontier/summary.csv
+    current_decision: >
+      PASS_STAGE178_FULLMAT_PERBIT_FRONTIER_SELECT_MAT_EP_AUDIT
+    failure_criteria:
+      - a new branch is opened without projected complete-SAB impact
+      - kernel-only speedup is reported as final bootstrapping acceleration
+      - compact implementation is resumed despite Stage176/177 blocks

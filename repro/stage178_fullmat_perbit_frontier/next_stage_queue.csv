@@ -1,0 +1,4 @@
+priority,stage,name,entry_condition,gate,failure_rule
+P0,179,MAT EP/subdecomp microarchitecture audit,Stage178 selects C1 as audit-only candidate.,"Find a concrete load/store/FMA/dataflow mechanism with projected >=3% complete-SAB gain, or reject.","If no mechanism is found, do not write code; record negative frontier."
+P1,180,exact-path implementation gate,Stage179 produces a concrete mechanism.,"Implement behind a flag, run correctness, microbench, full-SAB repeated A/B, noise/resource.",Neutral/reject if complete-SAB T_bootstrap/r does not improve.
+P2,181,negative frontier package,Stage179 finds no viable exact-path mechanism.,Write the remaining-headroom and blocked-route report.,Do not continue speculative exact-path tuning.

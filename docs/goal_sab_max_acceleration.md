@@ -901,3 +901,7 @@ SAB acceleration work continues on the closed exact full-MAT `sab_pvw_*` path.
 Stage177 records verified related-work and novelty-risk evidence. Decision:
 `PASS_STAGE177_VERIFIED_LITERATURE_BOUNDARY_NO_STRONG_NOVELTY_CLAIM`. No broad novelty claim is allowed yet; continue exact full-MAT
 complete-SAB engineering and reserve compact work for proof/literature only.
+Stage178 records the exact full-MAT per-bit frontier. Decision:
+`PASS_STAGE178_FULLMAT_PERBIT_FRONTIER_SELECT_MAT_EP_AUDIT`. The current accepted complete-SAB speedup dimension is
+`T_bootstrap/r`; compact remains blocked; next executable work is a bounded
+MAT EP/subdecomp microarchitecture audit.

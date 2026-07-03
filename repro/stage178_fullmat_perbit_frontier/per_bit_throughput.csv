@@ -1,0 +1,8 @@
+metric,value,unit,evidence,interpretation
+pvw_full_bootstrap_mean_us,62791832.333333336,us,repro/stage169_cb5_native_repeated_r6_gate/aggregate.csv,Time for one exact full-MAT PVW/MAT-SAB bootstrap carrying r lanes.
+pvw_T_bootstrap_over_r_mean_us,10465305.389000000,us_per_lane,repro/stage169_cb5_native_repeated_r6_gate/aggregate.csv,Primary amortized endpoint for the current exact path.
+scalar_repeated_full_mean_us,71026555.000000000,us,repro/stage169_cb5_native_repeated_r6_gate/aggregate.csv,Repeated scalar baseline for r independent lanes.
+scalar_T_bootstrap_over_r_mean_us,11837759.166666666,us_per_lane,repro/stage169_cb5_native_repeated_r6_gate/aggregate.csv,Scalar repeated baseline normalized per processed lane.
+speedup_vs_scalar_repeated_mean,1.131666667,x,repro/stage169_cb5_native_repeated_r6_gate/aggregate.csv,Mean complete-SAB T_bootstrap/r speedup.
+speedup_vs_scalar_repeated_min,1.115000000,x,repro/stage169_cb5_native_repeated_r6_gate/aggregate.csv,Conservative repeated-run minimum speedup.
+speedup_vs_scalar_repeated_ci95_low,1.095041982,x,repro/stage169_cb5_native_repeated_r6_gate/aggregate.csv,CI lower bound used for cautious claim wording.
