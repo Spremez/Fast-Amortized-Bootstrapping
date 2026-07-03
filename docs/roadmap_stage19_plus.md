@@ -5342,3 +5342,17 @@ Completed. Stage157 records PASS_STAGE157_SUB_DECOMP_FUSION_PREFLIGHT_POSITIVE_I
 any positive result still requires a guarded production path and full-SAB
 T_bootstrap/r gate.
 ```
+## Stage 158: Sub-Decompose Fusion Full-SAB Gate
+
+Goal:
+
+```text
+Integrate Stage157 sub-decompose fusion behind an explicit flag and test
+complete SAB T_bootstrap/r against the same H14 r=6 backend control.
+```
+
+Status:
+
+```text
+Completed. Stage158 records SMOKE_STAGE158_SUB_DECOMP_FUSION_FULLSAB_POSITIVE_REPEATED_REQUIRED. Defaults remain unchanged.
+```

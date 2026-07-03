@@ -376,3 +376,6 @@ The new research goal is complete only after a later stage records:
 61. Treat Stage157 as the sub-decompose fusion preflight:
     `PASS_STAGE157_SUB_DECOMP_FUSION_PREFLIGHT_POSITIVE_IMPLEMENTATION_CANDIDATE`. It gives or denies permission to implement direct
     `decompose(in2-in1)` behind an explicit PVW/MAT-SAB flag.
+62. Treat Stage158 as the sub-decompose fusion full-SAB gate:
+    `SMOKE_STAGE158_SUB_DECOMP_FUSION_FULLSAB_POSITIVE_REPEATED_REQUIRED`. It is the first complete-SAB check for the Stage157
+    implementation candidate; promotion still requires repeated gates.

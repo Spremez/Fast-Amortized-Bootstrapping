@@ -657,6 +657,72 @@ static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r6_bodymajor_avx512(
 #endif
 #endif
 
+static void mat_trgsw_mul_pvmtmlwe_DFT_from_dec(PVW_TMLWE_DFT out,
+    MAT_TRGSW_DFT selector, DFT_Polynomial * dec_dft){
+  const int k = out->k;
+  const int r = out->r;
+  const int l = selector->T;
+  const int rows = mat_trgsw_rows(l, k, r);
+
+  assert(selector->samples[0]->k == k);
+  assert(selector->samples[0]->r == r);
+
+#if defined(AVX512_OPT) && defined(MAT_TRGSW_AVX512_SMALLR_SPECIALIZED)
+  if(k == 1 && l == 1 && r == 2){
+    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r2_avx512(out, selector,
+        dec_dft);
+    return;
+  }
+  if(k == 1 && l == 1 && r == 4){
+#if defined(MAT_TRGSW_AVX512_R4_UNROLLED_ROWS)
+    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_unrolled_avx512(out, selector,
+        dec_dft);
+#else
+    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_avx512(out, selector,
+        dec_dft);
+#endif
+    return;
+  }
+#if defined(MAT_TRGSW_AVX512_RGT4_FUSED)
+  #if defined(MAT_TRGSW_AVX512_R6_BODYMAJOR)
+  if(k == 1 && l == 1 && r == 6){
+    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r6_bodymajor_avx512(out, selector,
+        dec_dft);
+    return;
+  }
+  #endif
+  #if defined(MAT_TRGSW_AVX512_R6_FULLTILE)
+  if(k == 1 && l == 1 && r == 6){
+    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r6_fulltile_avx512(out, selector,
+        dec_dft);
+    return;
+  }
+  #endif
+  if(k == 1 && l == 1 && (r == 6 || r == 8)){
+    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512(out, selector,
+        dec_dft);
+    return;
+  }
+#endif
+#endif
+
+  for (size_t j = 0; j < k; j++){
+    polynomial_mul_DFT(out->a[j], dec_dft[0], selector->samples[0]->a[j]);
+  }
+  for (size_t j = 0; j < r; j++){
+    polynomial_mul_DFT(out->b[j], dec_dft[0], selector->samples[0]->b[j]);
+  }
+
+  for (size_t row = 1; row < rows; row++){
+    for (size_t j = 0; j < k; j++){
+      polynomial_mul_addto_DFT(out->a[j], dec_dft[row], selector->samples[row]->a[j]);
+    }
+    for (size_t j = 0; j < r; j++){
+      polynomial_mul_addto_DFT(out->b[j], dec_dft[row], selector->samples[row]->b[j]);
+    }
+  }
+}
+
 void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT selector, MAT_TRGSW_MUL_SCRATCH scratch){
   const int k = in->k;
   const int r = in->r;
@@ -674,61 +740,65 @@ void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT s
   for (size_t i = 0; i < rows; i++){
     polynomial_torus_to_DFT(scratch->dec_dft[i], scratch->dec[i]);
   }
+  mat_trgsw_mul_pvmtmlwe_DFT_from_dec(out, selector, scratch->dec_dft);
+}
 
-#if defined(AVX512_OPT) && defined(MAT_TRGSW_AVX512_SMALLR_SPECIALIZED)
-  if(k == 1 && l == 1 && r == 2){
-    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r2_avx512(out, selector,
-        scratch->dec_dft);
-    return;
-  }
-  if(k == 1 && l == 1 && r == 4){
-#if defined(MAT_TRGSW_AVX512_R4_UNROLLED_ROWS)
-    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_unrolled_avx512(out, selector,
-        scratch->dec_dft);
-#else
-    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_avx512(out, selector,
-        scratch->dec_dft);
-#endif
-    return;
-  }
-#if defined(MAT_TRGSW_AVX512_RGT4_FUSED)
-  #if defined(MAT_TRGSW_AVX512_R6_BODYMAJOR)
-  if(k == 1 && l == 1 && r == 6){
-    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r6_bodymajor_avx512(out, selector,
-        scratch->dec_dft);
-    return;
-  }
-  #endif
-  #if defined(MAT_TRGSW_AVX512_R6_FULLTILE)
-  if(k == 1 && l == 1 && r == 6){
-    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r6_fulltile_avx512(out, selector,
-        scratch->dec_dft);
-    return;
-  }
-  #endif
-  if(k == 1 && l == 1 && (r == 6 || r == 8)){
-    mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_rgt4_tiled_avx512(out, selector,
-        scratch->dec_dft);
-    return;
-  }
-#endif
-#endif
+static void mat_trgsw_sub_decompose(PVW_TMLWE in1, PVW_TMLWE in2,
+    TorusPolynomial * out, int Bg_bit, int l){
+  const int k = in1->k, r = in1->r, N = in1->b[0]->N;
+  const uint64_t half_Bg = (1ULL << (Bg_bit - 1));
+  const uint64_t h_mask = (1ULL << Bg_bit) - 1;
+  const uint64_t word_size = sizeof(Torus)*8;
 
-  for (size_t j = 0; j < k; j++){
-    polynomial_mul_DFT(out->a[j], scratch->dec_dft[0], selector->samples[0]->a[j]);
-  }
-  for (size_t j = 0; j < r; j++){
-    polynomial_mul_DFT(out->b[j], scratch->dec_dft[0], selector->samples[0]->b[j]);
+  assert(in2->k == k);
+  assert(in2->r == r);
+  assert(in2->b[0]->N == N);
+
+  uint64_t offset = 0;
+  for (size_t i = 0; i < l; i++){
+    offset += (1ULL << (word_size - i * Bg_bit - 1));
   }
 
-  for (size_t row = 1; row < rows; row++){
+  for (size_t i = 0; i < l; i++) {
+    const uint64_t h_bit = word_size - (i + 1) * Bg_bit;
     for (size_t j = 0; j < k; j++){
-      polynomial_mul_addto_DFT(out->a[j], scratch->dec_dft[row], selector->samples[row]->a[j]);
+      for (size_t c = 0; c < N; c++){
+        const uint64_t diff = in2->a[j]->coeffs[c] - in1->a[j]->coeffs[c];
+        const uint64_t coeff_off = diff + offset;
+        out[j*l + i]->coeffs[c] = ((coeff_off>>h_bit) & h_mask) - half_Bg;
+      }
     }
     for (size_t j = 0; j < r; j++){
-      polynomial_mul_addto_DFT(out->b[j], scratch->dec_dft[row], selector->samples[row]->b[j]);
+      for (size_t c = 0; c < N; c++){
+        const uint64_t diff = in2->b[j]->coeffs[c] - in1->b[j]->coeffs[c];
+        const uint64_t coeff_off = diff + offset;
+        out[k*l + j*l + i]->coeffs[c] = ((coeff_off>>h_bit) & h_mask) - half_Bg;
+      }
     }
   }
+}
+
+void mat_trgsw_mul_pvmtmlwe_sub_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in1,
+    PVW_TMLWE in2, MAT_TRGSW_DFT selector, MAT_TRGSW_MUL_SCRATCH scratch){
+  const int k = in1->k;
+  const int r = in1->r;
+  const int l = selector->T;
+  const int rows = mat_trgsw_rows(l, k, r);
+
+  assert(in2->k == k);
+  assert(in2->r == r);
+  assert(out->k == k);
+  assert(out->r == r);
+  assert(selector->samples[0]->k == k);
+  assert(selector->samples[0]->r == r);
+  assert(scratch != NULL);
+  assert(scratch->rows >= rows);
+
+  mat_trgsw_sub_decompose(in1, in2, scratch->dec, selector->Q, l);
+  for (size_t i = 0; i < rows; i++){
+    polynomial_torus_to_DFT(scratch->dec_dft[i], scratch->dec[i]);
+  }
+  mat_trgsw_mul_pvmtmlwe_DFT_from_dec(out, selector, scratch->dec_dft);
 }
 
 static int mat_trgsw_compact_rows(MAT_TRGSW_COMPACT_DFT in){

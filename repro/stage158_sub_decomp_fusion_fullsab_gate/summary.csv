@@ -1,0 +1,4 @@
+gate,status,metric,value,evidence,detail,next_action
+stage158_build_correctness,PASS,control;fusion,Pass;Pass,repro/stage158_sub_decomp_fusion_fullsab_gate/variant_results.csv,Both variants must build and pass full-SAB correctness.,Do not interpret timing if this fails.
+stage158_fullsab_smoke,PASS,T_bootstrap_per_lane_us,1.038192,repro/stage158_sub_decomp_fusion_fullsab_gate/comparison.csv,"Same backend, same r=6, same H14 current-head path.",Repeat and add noise/resource only if positive.
+stage158_decision,SMOKE_STAGE158_SUB_DECOMP_FUSION_FULLSAB_POSITIVE_REPEATED_REQUIRED,candidate_route,sub_decomp_fusion_fullsab,repro/stage158_sub_decomp_fusion_fullsab_gate/summary.csv,Decide whether the Stage157 positive microbench survives full SAB.,Promote only after repeated full-SAB/noise/resource gates.

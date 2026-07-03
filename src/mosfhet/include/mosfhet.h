@@ -696,6 +696,8 @@ void mat_trgsw_monomial_DFT_sample(MAT_TRGSW_DFT out, int64_t m, int e, MAT_TRGS
 MAT_TRGSW_MUL_SCRATCH mat_trgsw_alloc_mul_scratch(int rows, int N);
 void free_mat_trgsw_mul_scratch(MAT_TRGSW_MUL_SCRATCH scratch);
 void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT selector, MAT_TRGSW_MUL_SCRATCH scratch);
+void mat_trgsw_mul_pvmtmlwe_sub_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in1,
+    PVW_TMLWE in2, MAT_TRGSW_DFT selector, MAT_TRGSW_MUL_SCRATCH scratch);
 MAT_TRGSW_COMPACT_DFT mat_trgsw_compact_alloc_new_DFT_sample(int l, int Bg_bit, int k, int r, int N);
 void free_mat_trgsw_compact_DFT(void * p_v);
 MAT_TRGSW_COMPACT_OUTPUT_DFT mat_trgsw_compact_alloc_new_output_DFT(int r, int N);

@@ -245,3 +245,4 @@
 - [x] Stage155 same-format frontier refresh generated from measured Stage153/148/151/153/154 evidence.
 - [x] Stage156 lazy-DFT closure gate generated from source API scan and finite decomposition tests.
 - [x] Stage157 sub-decompose fusion standalone C microbench generated and recorded.
+- [x] Stage158 sub-decompose fusion full-SAB WSL gate generated and recorded.

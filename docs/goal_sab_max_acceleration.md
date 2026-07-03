@@ -833,3 +833,6 @@ Stage157 tests sub-decompose fusion as a narrow same-format candidate after
 Stage156. Decision: `PASS_STAGE157_SUB_DECOMP_FUSION_PREFLIGHT_POSITIVE_IMPLEMENTATION_CANDIDATE`. This preflight targets the intermediate
 `pvmtmlwe_sub` plus dense decomposition memory path only and does not claim
 complete-SAB acceleration without later integration.
+Stage158 tests sub-decompose fusion in complete SAB after Stage157. Decision:
+`SMOKE_STAGE158_SUB_DECOMP_FUSION_FULLSAB_POSITIVE_REPEATED_REQUIRED`. It keeps `SAB_PVW_SUB_DECOMP_FUSION` explicit/default false and
+does not upgrade claims unless repeated/noise/resource gates pass.

@@ -2225,3 +2225,4 @@ Repro artifacts:
 - `repro/stage155_same_format_frontier_refresh/`: Stage155 profile-backed same-format frontier refresh outputs.
 - `repro/stage156_lazy_dft_closure_gate/`: Stage156 lazy-DFT closure gate outputs.
 - `repro/stage157_sub_decompose_fusion_preflight/`: Stage157 sub-decompose fusion preflight outputs.
+- `repro/stage158_sub_decomp_fusion_fullsab_gate/`: Stage158 sub-decompose fusion full-SAB gate outputs.

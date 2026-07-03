@@ -1,0 +1,3 @@
+metric,control,fusion,fusion_over_control,status
+T_bootstrap_per_lane_us,6843046.833,6591311.500,1.038192,PASS
+full_sab_pvw_us,41058281.000,39547869.000,1.038192,INFO

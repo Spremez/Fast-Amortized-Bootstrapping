@@ -2182,3 +2182,17 @@ hypotheses:
       - fused digits mismatch separate sub then decomposition
       - target standalone speedup is neutral or negative
       - complete SAB T_bootstrap_per_lane does not improve after guarded integration
+  - id: H82_sub_decomp_fusion_fullsab
+    statement: >
+      The Stage157 sub-decompose fusion candidate should improve complete
+      r=6 PVW/MAT-SAB T_bootstrap/r under the same H14 backend path.
+    mechanism: >
+      It removes the intermediate PVW_TMLWE sub write/read and directly
+      decomposes in2-in1 before the unchanged MAT addmul/materialization.
+    status: stage158_sub_decomp_fusion_fullsab_gate
+    evidence: docs/stage158_sub_decomp_fusion_fullsab_gate.md; experiments/stage158_sub_decomp_fusion_fullsab_gate_plan.md; theory_checks/stage158_sub_decomp_fusion_fullsab_model.md; algorithm_variants/mat_rlwe_sab_sub_decomp_fusion_fullsab.md; repro/stage158_sub_decomp_fusion_fullsab_gate/summary.csv
+    current_decision: >
+      SMOKE_STAGE158_SUB_DECOMP_FUSION_FULLSAB_POSITIVE_REPEATED_REQUIRED
+    failure_criteria:
+      - full SAB correctness fails
+      - candidate does not improve T_bootstrap_per_lane over same-backend control

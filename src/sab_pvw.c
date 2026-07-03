@@ -427,17 +427,9 @@ void free_sab_pvw_key(SAB_PVW_Key sab){
   free(sab);
 }
 
-static void sab_pvw_CMUX_from_sub_internal(PVW_TMLWE out, PVW_TMLWE addend,
-    PVW_TMLWE sub, MAT_TRGSW_DFT selector, SAB_PVW_Key sab,
-    int prefer_fused_from_dft_add){
+static void sab_pvw_CMUX_materialize_internal(PVW_TMLWE out,
+    PVW_TMLWE addend, SAB_PVW_Key sab, int prefer_fused_from_dft_add){
 #ifdef SAB_PVW_BODY_PROFILE
-  const uint64_t mat_ep_begin = sab_pvw_now_us();
-#endif
-  mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft, sub,
-      selector, sab->tmp->scratch);
-#ifdef SAB_PVW_BODY_PROFILE
-  sab_pvw_body_profile_acc(&sab_pvw_body_profile.mat_ep_us,
-      &sab_pvw_body_profile.mat_ep_calls, mat_ep_begin);
   const uint64_t cmux_from_dft_begin = sab_pvw_now_us();
 #endif
   if(prefer_fused_from_dft_add && out != addend){
@@ -462,11 +454,52 @@ static void sab_pvw_CMUX_from_sub_internal(PVW_TMLWE out, PVW_TMLWE addend,
   }
 }
 
+static void sab_pvw_CMUX_from_sub_internal(PVW_TMLWE out, PVW_TMLWE addend,
+    PVW_TMLWE sub, MAT_TRGSW_DFT selector, SAB_PVW_Key sab,
+    int prefer_fused_from_dft_add){
+#ifdef SAB_PVW_BODY_PROFILE
+  const uint64_t mat_ep_begin = sab_pvw_now_us();
+#endif
+  mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft, sub,
+      selector, sab->tmp->scratch);
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.mat_ep_us,
+      &sab_pvw_body_profile.mat_ep_calls, mat_ep_begin);
+#endif
+  sab_pvw_CMUX_materialize_internal(out, addend, sab,
+      prefer_fused_from_dft_add);
+}
+
+#ifdef SAB_PVW_SUB_DECOMP_FUSION
+static void sab_pvw_CMUX_from_diff_internal(PVW_TMLWE out, PVW_TMLWE addend,
+    PVW_TMLWE in1, PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_Key sab,
+    int prefer_fused_from_dft_add){
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile.cmux_sub_calls++;
+  const uint64_t mat_ep_begin = sab_pvw_now_us();
+#endif
+  mat_trgsw_mul_pvmtmlwe_sub_DFT(sab->tmp->tmlwe_dft, in1, in2,
+      selector, sab->tmp->scratch);
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.mat_ep_us,
+      &sab_pvw_body_profile.mat_ep_calls, mat_ep_begin);
+#endif
+  sab_pvw_CMUX_materialize_internal(out, addend, sab,
+      prefer_fused_from_dft_add);
+}
+#endif
+
 static void sab_pvw_CMUX_internal(PVW_TMLWE out, PVW_TMLWE in1,
     PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_Key sab,
     int prefer_fused_from_dft_add){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t cmux_begin = sab_pvw_now_us();
+#endif
+#ifdef SAB_PVW_SUB_DECOMP_FUSION
+  sab_pvw_CMUX_from_diff_internal(out, in1, in1, in2, selector, sab,
+      prefer_fused_from_dft_add);
+#else
+#ifdef SAB_PVW_BODY_PROFILE
   const uint64_t cmux_sub_begin = sab_pvw_now_us();
 #endif
   pvmtmlwe_sub(sab->tmp->tmlwe, in2, in1);
@@ -476,6 +509,7 @@ static void sab_pvw_CMUX_internal(PVW_TMLWE out, PVW_TMLWE in1,
 #endif
   sab_pvw_CMUX_from_sub_internal(out, in1, sab->tmp->tmlwe,
       selector, sab, prefer_fused_from_dft_add);
+#endif
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.cmux_us,
       &sab_pvw_body_profile.cmux_calls, cmux_begin);
