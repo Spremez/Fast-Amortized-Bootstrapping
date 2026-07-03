@@ -6294,3 +6294,19 @@ Completed. Stage216 records PASS_STAGE216_POST_COUNTER_FRONTIER_ROUTE_COMPACT_KE
 complete-SAB A/B for the wrapper are denied; the next selected executable route
 is compact selector keygen/security/noise preflight outside the SAB hot path.
 ```
+## Stage 217: Compact Keygen/Security Preflight
+
+Goal:
+
+```text
+Run executable public-pattern, equation/resource, and admission gates for the
+compact selector keygen route selected by Stage216.
+```
+
+Status:
+
+```text
+Completed. Stage217 records PASS_STAGE217_PATTERN_ONLY_KEYGEN_PREFLIGHT_NO_SAB_CODE. Count-matched random dummy padding
+survives only a simple public-pattern screen; SAB hot-path code remains denied.
+The next selected route is an isolated compact key-object/noise prototype.
+```

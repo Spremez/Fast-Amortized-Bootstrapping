@@ -1,0 +1,5 @@
+candidate,status,probe_rows,unexpected_failures,code_permission,reason,evidence
+row_deletion,REJECT_PUBLICLY_DISTINGUISHABLE,30,0,deny,Negative control must remain publicly distinguishable.,repro/stage217_compact_keygen_security_preflight/public_distribution_probe.csv
+deterministic_zero_dummy,REJECT_PUBLICLY_DISTINGUISHABLE,30,0,deny,Negative control must remain publicly distinguishable.,repro/stage217_compact_keygen_security_preflight/public_distribution_probe.csv
+forced_equal_dummy,REJECT_PUBLICLY_DISTINGUISHABLE,30,0,deny,Negative control must remain publicly distinguishable.,repro/stage217_compact_keygen_security_preflight/public_distribution_probe.csv
+count_matched_random_dummy,PATTERN_ONLY_SURVIVES,30,0,stage218_isolated_object_probe_only,Matches dense public row count with random dummy masks in finite simple-pattern probes; still lacks security/noise proof.,repro/stage217_compact_keygen_security_preflight/public_distribution_probe.csv

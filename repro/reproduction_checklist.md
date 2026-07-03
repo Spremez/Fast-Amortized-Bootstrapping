@@ -316,3 +316,4 @@
   status, credential-free native runner, and next queue. Decision: `PASS_STAGE214_FRONTIER_NATIVE_COUNTER_HANDOFF_READY`.
 - [x] Stage215 native counter execution records decision `PASS_STAGE215_NATIVE_COUNTERS_NO_HOTPATH_REOPEN`.
 - [x] Stage216 post-counter frontier recorded.
+- [x] Stage217 compact keygen/security preflight recorded.

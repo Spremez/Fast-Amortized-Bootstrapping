@@ -1,0 +1,7 @@
+input,status,evidence,role,bytes
+stage201_public_pattern,present,repro/stage201_structured_selector_distribution_probe/summary.csv,prior public-pattern gate,1602
+stage202_dummy_semantics,present,repro/stage202_dummy_padding_semantic_probe/summary.csv,semantic-zero dummy toy gate,1488
+stage203_equation_map,present,repro/stage203_production_selector_equation_probe/equation_map.csv,declared production-shaped equation map,3693
+stage203_resource_projection,present,repro/stage203_production_selector_equation_probe/resource_projection.csv,modeled evaluator-row/noise value,823
+stage203_proof_gate,present,repro/stage203_production_selector_equation_probe/proof_gate.csv,remaining security/keygen blockers,926
+stage216_frontier,present,repro/stage216_post_counter_frontier/proof_gate.csv,post-counter route selection,1208

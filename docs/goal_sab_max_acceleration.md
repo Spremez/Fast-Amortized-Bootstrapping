@@ -1050,3 +1050,7 @@ Stage216 records post-counter frontier. Decision: `PASS_STAGE216_POST_COUNTER_FR
 comparison dimension remains complete-SAB `T_bootstrap/r`; exact wrapper
 retuning is closed after native counters, and Stage217 must use bounded compact
 keygen/security gates rather than theory-only discussion.
+Stage217 records compact keygen/security preflight. Decision: `PASS_STAGE217_PATTERN_ONLY_KEYGEN_PREFLIGHT_NO_SAB_CODE`.
+Bad compact keygen shapes are rejected by finite public-pattern probes; the
+surviving count-matched random dummy shape is pattern-only and cannot be used
+for SAB speedup claims.

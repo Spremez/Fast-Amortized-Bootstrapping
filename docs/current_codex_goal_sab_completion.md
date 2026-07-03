@@ -624,3 +624,9 @@ compact implementation, or optimality claim is opened by Stage216.
 is a compact selector keygen/security/noise preflight outside the SAB hot path,
 or an external backend primitive if one is supplied. No new full-SAB speedup,
 compact implementation, or optimality claim is opened by Stage216.
+### Stage217 compact keygen/security preflight
+
+`PASS_STAGE217_PATTERN_ONLY_KEYGEN_PREFLIGHT_NO_SAB_CODE` keeps the compact route executable but bounded. Count-matched
+random dummy padding survives simple public-pattern probes, while row deletion,
+deterministic zero dummy rows, and forced equal masks are rejected. No SAB
+hot-path code or speedup claim is authorized.

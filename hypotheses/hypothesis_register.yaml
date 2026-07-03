@@ -3108,3 +3108,14 @@ H10_stage216_post_counter_frontier:
     wrapper retuning or authorize complete-SAB A/B for that route. The next
     selected bounded route is compact selector keygen/security/noise preflight
     outside the SAB hot path.
+H10_stage217_compact_keygen_security_preflight:
+  status: compact_keygen_pattern_only_recorded
+  evidence:
+    - repro/stage217_compact_keygen_security_preflight/keygen_candidate_matrix.csv
+    - repro/stage217_compact_keygen_security_preflight/proof_gate.csv
+    - docs/stage217_compact_keygen_security_preflight.md
+  conclusion: >
+    Stage217 records PASS_STAGE217_PATTERN_ONLY_KEYGEN_PREFLIGHT_NO_SAB_CODE. Count-matched random dummy padding survives a
+    finite simple public-pattern screen, but production keygen/security/noise
+    and complete-SAB gates remain missing. SAB hot-path implementation remains
+    denied.

@@ -2588,3 +2588,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage216_post_counter_frontier.md`
   - `scripts/build_stage216_post_counter_frontier.py`
   - `repro/stage216_post_counter_frontier/`
+- stage217_compact_keygen_security_preflight:
+  - `docs/stage217_compact_keygen_security_preflight.md`
+  - `experiments/stage217_compact_keygen_security_preflight_plan.md`
+  - `theory_checks/stage217_compact_keygen_security_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage217_compact_keygen_security_preflight.md`
+  - `scripts/build_stage217_compact_keygen_security_preflight.py`
+  - `repro/stage217_compact_keygen_security_preflight/`
