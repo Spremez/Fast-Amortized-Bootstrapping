@@ -1698,3 +1698,17 @@ Repro artifacts:
 - `repro/stage114_lane_local_resource_model/summary.csv`
 - `repro/stage114_lane_local_resource_model/resource_model.csv`
 - `repro/stage114_lane_local_resource_model/artifact_index.csv`
+
+## Stage 115 Lane-Local Toy C Gate
+
+- `docs/stage115_lane_local_toy_c_gate.md`
+- `experiments/stage115_lane_local_toy_c_gate_plan.md`
+- `theory_checks/stage115_lane_local_toy_c_resource_gate.md`
+- `algorithm_variants/mat_rlwe_sab_lane_local_toy_layout.md`
+- `scripts/build_stage115_lane_local_toy_c_gate.py`
+- `repro/stage115_lane_local_toy_c_gate/summary.csv`
+- `repro/stage115_lane_local_toy_c_gate/toy_c_raw.csv`
+- `repro/stage115_lane_local_toy_c_gate/layout_ratios.csv`
+- `repro/stage115_lane_local_toy_c_gate/compile.log`
+- `repro/stage115_lane_local_toy_c_gate/toy_lane_local_layout.c`
+- `repro/stage115_lane_local_toy_c_gate/artifact_index.csv`

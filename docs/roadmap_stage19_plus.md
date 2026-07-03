@@ -3955,3 +3955,53 @@ ratios are 1.800/2.778/3.769/4.765. The minimum coarse product-over-accumulator
 ratio is 1.350 at r=2. The branch is not immediately killed, but Stage115 must
 measure a toy representation before implementation.
 ```
+
+## Stage 115: Lane-Local Toy C Representation Gate
+
+Goal:
+
+```text
+Measure whether the lane-local multimask representation is resource-feasible
+in a concrete C layout model before implementing any MOSFHET hot-path code.
+```
+
+Theory basis:
+
+Stage113 makes lane-local multimask phase-plausible in toy algebra and
+Stage114 says the symbolic resource model is not immediately fatal. The next
+valid step must therefore be executable representation evidence, not another
+theory-only discussion. The measured endpoint is layout/requested bytes and RSS
+for current dense shared-mask toy layout versus lane-local multimask toy layout.
+
+Tasks:
+
+- generate a standalone C layout probe under `repro/stage115_*`;
+- compile it with WSL `gcc`;
+- run current and lane-local layouts for r=2/4/6/8 and N=2048/4096;
+- report requested bytes, RSS, touch time, product terms, and
+  product-over-requested ratios;
+- route only to a toy arithmetic equivalence prototype if resource overhead is
+  bounded.
+
+Gate:
+
+- C probe must compile and run;
+- all r/N rows must keep product-over-requested ratio above 1.0;
+- target r=4, N=2048 requested-byte ratio must be at most 1.25;
+- r=2, N=2048 worst-small-r control must be at most 1.50;
+- passing does not permit SAB integration, AVX512 claims, noise claims, or
+  complete-SAB speedup claims.
+
+Status:
+
+```text
+Completed. Stage115 records
+PASS_STAGE115_TOY_C_LAYOUT_FEASIBLE_PROTOTYPE_REQUIRED. The generated C probe
+compiled under WSL gcc and measured current versus lane-local layouts for
+r=2/4/6/8 and N=2048/4096. For the target r=4,N=2048 row, requested-byte
+ratio is 1.100 while product terms fall from 25 to 9, giving a
+product-over-requested ratio of 2.525. The r=2,N=2048 lower-control row has
+requested-byte ratio 1.333 and product-over-requested ratio 1.350. This keeps
+the branch alive only for Stage116 toy arithmetic equivalence; it is not
+complete-SAB or MOSFHET hot-path evidence.
+```

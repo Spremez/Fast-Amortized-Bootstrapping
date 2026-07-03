@@ -2,7 +2,7 @@
 
 Date: 2026-06-25
 
-Current control-plane closure label: `Stage 19-98`. This label tracks the
+Current control-plane closure label: `Stage 19-115`. This label tracks the
 latest Stage19+ roadmap entry for reproducibility audits; it does not upgrade
 the scoped engineering claim.
 
@@ -463,6 +463,7 @@ Stage 111: r=6 fulltile repeated gate. [completed; 3-run complete-SAB gate rejec
 Stage 112: selector/key-format gate. [completed; shared-mask counterexample rejects current-format loop-only body-linear skipping, new-format r=2 simulator required]
 Stage 113: r=2 selector simulator. [completed; lane-local multimask is phase-equivalent in toy algebra with 9 vs 5 product model, resource/noise model required]
 Stage 114: lane-local resource model. [completed; symbolic resource screen not fatal, min coarse product-over-accumulator ratio 1.350, toy representation required]
+Stage 115: lane-local toy C representation gate. [completed; generated C layout probe passed, r=4/N=2048 requested-byte ratio 1.100, next gate is toy arithmetic equivalence only]
 ```
 
 ## Current Closure Label
@@ -546,3 +547,10 @@ The accumulator component overhead is real, but the raw product-count advantage
 is not immediately erased: the minimum coarse product-over-accumulator ratio is
 1.350 at r=2. This only justifies a toy representation and measured allocation
 gate; it does not justify hot-path integration.
+
+Stage115 runs that measured representation gate with a generated C layout
+probe. It passes under WSL gcc for r=2/4/6/8 and N=2048/4096. The target
+r=4,N=2048 requested-byte ratio is 1.100 while product terms drop from 25 to
+9; the r=2,N=2048 control row has requested-byte ratio 1.333. This keeps the
+lane-local branch alive only for a toy arithmetic equivalence prototype. It is
+not MOSFHET hot-path, noise, AVX512, or complete-SAB performance evidence.

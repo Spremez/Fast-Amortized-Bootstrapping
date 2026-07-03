@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,detail,next_action
+stage115_compile,PASS,gcc_compile,true,repro/stage115_lane_local_toy_c_gate/compile.log,Toy C layout probe compiled and executed under WSL gcc.,Use measured rows only as layout/RSS evidence.
+stage115_layout_matrix,PASS,rows,8,repro/stage115_lane_local_toy_c_gate/layout_ratios.csv,r=2/4/6/8 and N=2048/4096 current-vs-lane-local rows are measured.,Stop if any product-over-requested ratio is below 1.
+stage115_target_r4_resource,PASS_BOUNDED,r4_N2048_requested_ratio,1.100000,repro/stage115_lane_local_toy_c_gate/layout_ratios.csv,Target r=4 lane-local toy layout requested-byte overhead is bounded.,"Proceed only to a compact arithmetic prototype, not SAB integration."
+stage115_r2_lower_bound_control,PASS_BOUNDED,r2_N2048_requested_ratio,1.333333,repro/stage115_lane_local_toy_c_gate/layout_ratios.csv,r=2 is the worst small-r resource control and remains within the configured 1.50 cap.,Use r=2 as the first correctness prototype if Stage116 opens.
+stage115_decision,PASS_STAGE115_TOY_C_LAYOUT_FEASIBLE_PROTOTYPE_REQUIRED,next_gate_policy,,repro/stage115_lane_local_toy_c_gate/summary.csv,"Toy C layout evidence does not kill lane-local multimask, but no correctness/noise/performance claim is made.",Stage116 should implement a toy arithmetic equivalence prototype before any MOSFHET hot-path work.

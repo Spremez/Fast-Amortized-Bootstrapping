@@ -1206,3 +1206,29 @@ hypotheses:
       - measured toy representation overhead exceeds the arithmetic advantage
       - noise/key switching costs are not modeled
       - symbolic resource ratios are used as performance claims
+  - id: H39_lane_local_toy_c_layout_gate
+    statement: >
+      The lane-local multimask body-linear candidate is resource-feasible
+      enough in a concrete toy C layout to justify a toy arithmetic
+      equivalence prototype, but not enough to justify MOSFHET hot-path
+      integration.
+    mechanism: >
+      Stage115 generates and compiles a standalone C probe that allocates and
+      touches current dense shared-mask and conservative lane-local multimask
+      toy layouts. It measures requested bytes, RSS, touch time, and product
+      terms for r=2/4/6/8 and N=2048/4096.
+    status: stage115_layout_feasible_arithmetic_prototype_required
+    evidence: docs/stage115_lane_local_toy_c_gate.md; experiments/stage115_lane_local_toy_c_gate_plan.md; theory_checks/stage115_lane_local_toy_c_resource_gate.md; algorithm_variants/mat_rlwe_sab_lane_local_toy_layout.md; scripts/build_stage115_lane_local_toy_c_gate.py; repro/stage115_lane_local_toy_c_gate/summary.csv; repro/stage115_lane_local_toy_c_gate/toy_c_raw.csv; repro/stage115_lane_local_toy_c_gate/layout_ratios.csv; repro/stage115_lane_local_toy_c_gate/compile.log; repro/stage115_lane_local_toy_c_gate/artifact_index.csv
+    current_decision: >
+      Stage115 records PASS_STAGE115_TOY_C_LAYOUT_FEASIBLE_PROTOTYPE_REQUIRED.
+      The target r=4,N=2048 requested-byte ratio is 1.100 while the product
+      model drops from 25 dense products to 9 lane-local terms, giving a
+      product-over-requested ratio of 2.525. The r=2,N=2048 worst small-r
+      control has requested-byte ratio 1.333 and product-over-requested ratio
+      1.350. The branch can proceed only to Stage116 toy arithmetic
+      equivalence; this is not correctness, noise, AVX512, or complete-SAB
+      performance evidence.
+    failure_criteria:
+      - toy arithmetic equivalence fails against dense reference
+      - noise/key switching costs erase the layout/product advantage
+      - Stage115 resource evidence is used as a complete-SAB acceleration claim

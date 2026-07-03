@@ -1,0 +1,7 @@
+command: gcc -O2 -std=c11 -Wall -Wextra -o repro/stage115_lane_local_toy_c_gate/toy_lane_local_layout repro/stage115_lane_local_toy_c_gate/toy_lane_local_layout.c
+returncode: 0
+--- stdout ---
+
+--- stderr ---
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL
+N/ec localhost �Nt0
