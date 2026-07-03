@@ -1,0 +1,6 @@
+variant_id,name,status,main_delta,primary_metric,required_next_experiment
+V106-A,current_active_buffer_pvw_mat_sab,BASELINE_FOR_NEW_RESEARCH_LOOP,r-body shared-mask accumulator plus active-buffer copyback fusion,T_total/r,keep as baseline for all future MAT-RLWE optimality variants
+V106-B,body_linear_mat_external_product,HYPOTHESIS_THEORY_AND_KERNEL_GATE_REQUIRED,avoid dense r^2 body interaction when SAB lanes are independent,C_mat_cmux(r)/r and full SAB T_total/r,microbench r=2/4/6/8 plus full SAB A/B under same schedule
+V106-C,dfT_lazy_schedule_window,HYPOTHESIS_SCHEDULE_GATE_REQUIRED,carry DFT or partially materialized state across CMUX windows,fromDFT/add/store traffic per lane,"single-window equivalence, then full sparse_mul correctness and profile"
+V106-D,body_major_coefficient_blocked_layout,HYPOTHESIS_LAYOUT_GATE_REQUIRED,re-layout r bodies to improve AVX512 load/store locality,load/store counters and T_total/r,layout-only kernel microbench; do not change key format until positive
+V106-E,r_adaptive_tile_policy,HYPOTHESIS_POLICY_GATE_REQUIRED,"select small-r, r=6, and r>6 tiles from measured model gaps",best validated A_mat(r) under resource limits,r sweep with the same gates and resource thresholds

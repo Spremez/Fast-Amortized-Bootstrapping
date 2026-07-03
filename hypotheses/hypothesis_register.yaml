@@ -996,3 +996,32 @@ hypotheses:
         Stage97 scalar/default guard, Stage101 counters, Stage102 anchors,
         Stage103 novelty boundary, Stage104 final package, or Stage42 verifier
       - Stage105 artifacts are omitted from the repro pack or closure audit
+  - id: H31_mat_rlwe_sab_amortized_optimality_loop
+    statement: >
+      PVW/MAT-SAB should now be studied as an r-body MAT-RLWE SAB algorithm
+      with primary endpoint `T_complete_bootstrap(r)/r`, not merely as an
+      implementation speedup over scalar SAB.
+    mechanism: >
+      Stage106 fixes the equal-work comparison between repeated scalar SAB for
+      `r` independent lanes and one MAT-RLWE SAB call producing `r` lanes. It
+      reinterprets existing Stage36 r=2/r=4 data as amortized evidence, records
+      r=6 H14 as candidate-only evidence, and defines finite theory and
+      experiment gates for lower-bound gap, body-linear MAT external product,
+      DFT/materialization reduction, layout locality, and r-adaptive tiling.
+    status: stage106_research_loop_fixed_optimality_open
+    evidence: docs/stage106_mat_rlwe_sab_research_loop.md; experiments/stage106_mat_rlwe_sab_research_plan.md; theory_checks/mat_rlwe_sab_amortized_optimality.md; algorithm_variants/mat_rlwe_sab_rbody_optimal_path.md; literature/mat_rlwe_sab_literature_axes.csv; scripts/build_stage106_mat_rlwe_sab_research_loop.py; repro/stage106_mat_rlwe_sab_research_loop/summary.csv; repro/stage106_mat_rlwe_sab_research_loop/amortized_metric_table.csv; repro/stage106_mat_rlwe_sab_research_loop/research_gate_matrix.csv; repro/stage106_mat_rlwe_sab_research_loop/theory_bound_matrix.csv; repro/stage106_mat_rlwe_sab_research_loop/candidate_variant_matrix.csv
+    current_decision: >
+      Stage106 records PASS_STAGE106_RESEARCH_LOOP_FIXED_OPTIMALITY_OPEN. The
+      current r=2/r=4 complete-SAB evidence supports amortized improvement
+      because both sides process the same number of lanes; r=6 remains an
+      explicit candidate; theoretical MAT-RLWE SAB optimality remains open and
+      must not be claimed until lower-bound, counter/assembly, correctness,
+      noise, resource, and complete-SAB statistical gates are closed.
+    failure_criteria:
+      - future speedup tables omit `T_total/r`
+      - a MAT run producing `r` lanes is compared against a single scalar lane
+      - Stage36/Stage88 evidence is described as theoretical optimality
+      - r=6 candidate evidence is promoted to paper-level without 10+ complete
+        SAB samples and model-gap attribution
+      - theory discussion continues for more than two iterations without a
+        runnable kernel or complete-SAB experiment gate

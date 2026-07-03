@@ -1,0 +1,6 @@
+model_id,object,formula,instantiated_count,status,next_required_check
+M1,scalar repeated SAB,T_scalar_repeat(r)=r*((h+1)*rho*N*C_scalar_cmux+T_tail_scalar),r*573440 CMUX/NCMUX-equivalent scalar updates,FORMAL_MODEL_BASELINE,keep same backend and same processed lane count for every comparison
+M2,MAT-RLWE SAB schedule,T_mat(r)=(h+1)*rho*N*C_mat_cmux(r)+T_tail_mat(r),573440 MAT CMUX/NCMUX schedule steps updating r bodies,FORMAL_MODEL_TO_REFINE,measure C_mat_cmux(r) decomposition into DFT/FMA/load/store/fromDFT/body-add
+M3,amortized primary endpoint,A_mat(r)=T_mat(r)/r; improvement=A_scalar_repeat(r)/A_mat(r),reported stage speedups are valid only because both sides process r lanes,PRIMARY_ENDPOINT_FIXED,all future tables must report total time and per-lane time
+M4,optimality lower-bound gap,"gap(r)=A_impl(r)/A_lower_bound(r), where bound separates shared schedule and unavoidable body work",not yet numerically closed,THEORY_GAP_OPEN_NOT_A_RESULT,derive lower bound from memory/FMA counts and validate with assembly/perf counters
+M5,dense MAT risk,"if C_mat_cmux(r) grows like r^2, A_mat(r) can stop improving despite schedule sharing",observed r=6 candidate improves but needs model-gap attribution,RISK_TO_TEST,"compare body-linear, tiled, and dense MAT kernels under same SAB schedule"

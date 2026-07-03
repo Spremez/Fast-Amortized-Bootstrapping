@@ -454,11 +454,15 @@ Stage 102: 2025/686 source-anchor review. [completed; all Stage38 checklist rows
 Stage 103: related-work and novelty boundary review. [completed; real-source related-work matrix generated, broad novelty rejected, scoped systems claim allowed]
 Stage 104: post-external final package refresh. [completed; Stage91 final package refreshed with Stage101-103 evidence and scoped claim boundaries]
 Stage 105: goal completion audit. [completed; all scoped requirements proven and stronger claims remain blocked]
+Stage 106: MAT-RLWE SAB research-loop reset. [completed as process reset; primary endpoint T_total/r fixed, existing evidence reinterpreted as amortized, theoretical optimality remains open]
 ```
 
 ## Current Closure Label
 
-Current control-plane closure range: `Stage 19-105`.
+Current scoped engineering closure range: `Stage 19-105`.
+
+Stage106 is a new research-loop reset layered on top of that closed package,
+not a regenerated Stage42 engineering-closure range.
 
 Stage101-103 resolve the previous external blockers: CB5 has native Linux
 hardware-counter evidence, CB7 has reviewed 2025/686 source anchors, and CB6
@@ -471,3 +475,11 @@ requirement and records
 scoped systems/engineering wording for the PVW/MAT-SAB optimization, while
 broad novelty, all-parameter, non-binary, and theoretical MAT-AVX512 optimality
 claims remain blocked without new evidence.
+
+Stage106 opens the next research track without changing the completed scoped
+package: PVW/MAT-SAB is now treated as an r-body MAT-RLWE SAB algorithmic
+object with primary endpoint `T_complete_bootstrap(r)/r`. Existing Stage36
+r=2/r=4 speedups are valid amortized evidence because they compare equal
+processed lane counts, but theoretical MAT-RLWE SAB optimality remains open
+until lower-bound gap, counter/assembly attribution, correctness/noise/resource,
+and complete-SAB statistical gates are all recorded.

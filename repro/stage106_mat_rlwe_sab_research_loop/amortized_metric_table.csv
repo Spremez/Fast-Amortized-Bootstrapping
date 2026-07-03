@@ -1,0 +1,4 @@
+source,variant,param,backend,r,samples,evidence_level,pvw_total_us,scalar_repeated_total_us,pvw_per_lane_us,scalar_per_lane_us,amortized_speedup,ci95_low,status,interpretation
+stage36_target_r2_10run,active_buffer_pvw_mat_sab,SET_2_3_2048,spqlios_avx512,2,10,10_run_complete_sab,14665116.800,17315264.100,7332558.400,8657632.050,1.191,1.075307,PASS_TARGET_PERF_10RUN,same-r total-time speedup equals per-lane amortized speedup
+stage36_target_r4_10run,active_buffer_pvw_mat_sab,SET_2_3_2048,spqlios_avx512,4,10,10_run_complete_sab,27556959.000,37958530.600,6889239.750,9489632.650,1.377,1.314893,PASS_TARGET_PERF_10RUN,same-r total-time speedup equals per-lane amortized speedup
+stage88_h14_backend_r6_3run,h14_backend_from_dft_add_explicit,SET_2_3_2048,spqlios_avx512,6,3,3_run_complete_sab_candidate,38368030.000,55137541.000,6394671.667,9189590.167,1.437,,CANDIDATE_EXPLICIT_NOT_DEFAULT,amortized candidate evidence; not high-stat or paper-level

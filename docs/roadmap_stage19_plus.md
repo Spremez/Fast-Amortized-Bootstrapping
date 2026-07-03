@@ -3577,3 +3577,44 @@ PASS_STAGE105_SCOPED_GOAL_COMPLETE_STRONGER_CLAIMS_BLOCKED. The scoped
 PVW/MAT-SAB systems/engineering evidence chain is complete and auditable under
 its stated claim limits.
 ```
+
+## Stage 106: MAT-RLWE SAB Research-Loop Reset
+
+Goal:
+
+```text
+Reframe PVW/MAT-SAB as an r-body MAT-RLWE SAB algorithmic research program
+with primary endpoint T_complete_bootstrap(r)/r, rather than as only an
+engineering speedup over scalar SAB.
+```
+
+Tasks:
+
+- define the equal-work comparison: repeated scalar SAB for `r` independent
+  lanes versus one MAT-RLWE SAB call producing `r` lanes;
+- reinterpret Stage36 and Stage88 evidence as amortized per-lane evidence;
+- write the theory model for `T_scalar_repeat(r)`, `T_mat(r)`, and the
+  lower-bound gap `A_impl(r)/A_lower_bound(r)`;
+- create candidate variants for body-linear MAT external product, DFT-lazy
+  schedule windows, body-major coefficient-blocked layout, and r-adaptive
+  tiling;
+- record strict stop rules so theory discussion must lead to a runnable
+  microbench or complete-SAB gate.
+
+Gate:
+
+- every future speedup table must include both total latency and `T_total/r`;
+- theoretical optimality remains `OPEN_NOT_PROVEN` until lower-bound gap,
+  assembly/counter attribution, correctness/noise/resource, and complete-SAB
+  statistics are all recorded;
+- no future stage may compare one MAT run against a single scalar lane when
+  the MAT run produces `r` lanes.
+
+Status:
+
+```text
+Completed as a research-loop reset. Stage106 records
+PASS_STAGE106_RESEARCH_LOOP_FIXED_OPTIMALITY_OPEN. Existing r=2/r=4 Stage36
+speedups are valid amortized complete-SAB evidence, the r=6 H14 path remains a
+candidate, and MAT-RLWE SAB theoretical optimality is explicitly open.
+```

@@ -1,0 +1,7 @@
+axis_id,axis,search_query,status,required_before_claim
+L106-1,2025/686 SAB protocol anchors,"2025/686 sparse amortized bootstrapping CMUX packing key switching external product",reviewed_by_stage102,Use reviewed local anchors only for base SAB protocol claims.
+L106-2,PVW or multi-body RLWE ciphertexts,"PVW multi body RLWE ciphertext external product matrix TRGSW",to_check,Needed before broad novelty about r-body ciphertext form.
+L106-3,MAT/TRGSW external product batching,"matrix TRGSW external product batched bootstrapping shared mask",to_check,Needed before claiming first or broad MAT external-product batching.
+L106-4,multi-output or batched FHE bootstrapping,"multi output bootstrapping FHE batched LUT bootstrapping",to_check,Needed before claiming SAB-level multi-lane novelty.
+L106-5,AVX512 FHE polynomial/MAT kernels,"AVX512 FHE external product polynomial matrix kernel load store FMA",to_check,Needed before claiming backend-level kernel optimality.
+L106-6,amortized latency metrics,"amortized bootstrapping time per bit FHE throughput latency",to_check,Needed before paper wording around primary endpoint.

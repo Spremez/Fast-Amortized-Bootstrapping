@@ -24,10 +24,14 @@ The route is still scoped, not an unrestricted paper-level novelty claim:
 
 ## Active Goal
 
-Continue from the Stage105 state without changing scalar/default SAB behavior.
-Maintain the scoped PVW/MAT-SAB engineering package and only upgrade beyond
-scoped systems/engineering wording when new theorem, literature, correctness,
-noise, resource, parameter, or full-SAB benchmark evidence supports it.
+Continue from the Stage106 state without changing scalar/default SAB behavior.
+The previous scoped systems/engineering package remains complete through
+Stage105, but Stage106 opens a new research objective: treat PVW/MAT-SAB as an
+r-body MAT-RLWE SAB algorithm and optimize the amortized complete-SAB latency
+per processed plaintext lane/bit, `T_total/r`.
+
+Do not reinterpret Stage105 as theoretical optimality. Stage106 fixes the
+research loop and primary endpoint while leaving MAT-RLWE SAB optimality open.
 
 ## Execution Route
 
@@ -45,8 +49,11 @@ noise, resource, parameter, or full-SAB benchmark evidence supports it.
 6. Use Stage103 allowed wording for novelty positioning: scoped
    systems/engineering optimization only.
 7. Treat Stage104 as the current final package refresh.
-8. Treat Stage105 as the current scoped goal-completion audit.
-9. Preserve the current final-audit status:
+8. Treat Stage105 as the scoped systems/engineering goal-completion audit.
+9. Treat Stage106 as the MAT-RLWE SAB research-loop reset:
+   primary metric `T_total/r`, existing Stage36 speedups reinterpreted as
+   amortized evidence, and theoretical optimality explicitly open.
+10. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard
@@ -58,3 +65,14 @@ overhead, scalar/default isolation, native-perf attribution where claimed,
 reviewed 2025/686 source anchors, scoped related-work/novelty review, and a
 reproducibility pack with commands, commits, logs, summaries, and decisions.
 Claims beyond that scope remain blocked until new evidence is added.
+
+## Stage106 Research Boundary
+
+The new research goal is complete only after a later stage records:
+
+- a formal lower-bound gap model for r-body MAT-RLWE SAB;
+- a promoted implementation candidate with deterministic equivalence,
+  multi-seed noise, resource, complete-SAB `T_total/r`, and counter evidence;
+- an updated literature/novelty review for the exact MAT-RLWE SAB claim;
+- a claim ledger that separates amortized algorithmic improvement from
+  backend/SIMD implementation effects.

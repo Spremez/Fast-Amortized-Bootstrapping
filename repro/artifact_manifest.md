@@ -1577,3 +1577,18 @@ Repro artifacts:
 - `repro/stage105_goal_completion_audit/requirement_matrix.csv`
 - `repro/stage105_goal_completion_audit/claim_limit_matrix.csv`
 - `repro/stage105_goal_completion_audit/artifact_index.csv`
+
+## Stage 106 MAT-RLWE SAB Research Loop
+
+- `docs/stage106_mat_rlwe_sab_research_loop.md`
+- `experiments/stage106_mat_rlwe_sab_research_plan.md`
+- `theory_checks/mat_rlwe_sab_amortized_optimality.md`
+- `algorithm_variants/mat_rlwe_sab_rbody_optimal_path.md`
+- `literature/mat_rlwe_sab_literature_axes.csv`
+- `scripts/build_stage106_mat_rlwe_sab_research_loop.py`
+- `repro/stage106_mat_rlwe_sab_research_loop/summary.csv`
+- `repro/stage106_mat_rlwe_sab_research_loop/amortized_metric_table.csv`
+- `repro/stage106_mat_rlwe_sab_research_loop/research_gate_matrix.csv`
+- `repro/stage106_mat_rlwe_sab_research_loop/theory_bound_matrix.csv`
+- `repro/stage106_mat_rlwe_sab_research_loop/candidate_variant_matrix.csv`
+- `repro/stage106_mat_rlwe_sab_research_loop/artifact_index.csv`
