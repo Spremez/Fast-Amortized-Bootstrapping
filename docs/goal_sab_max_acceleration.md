@@ -851,3 +851,6 @@ Stage162 closes same-format materialization-count reduction for the current
 exact torus-input API. Decision: `PASS_STAGE162_COUNT_REDUCTION_SAME_FORMAT_CLOSED_REP_CHANGE_REQUIRED`. Backend batching remains open
 only as wall-time optimization; algorithmic count reduction requires a new
 closed representation/API with equivalence and noise gates.
+Stage163 tests `from_DFT` backend batching after Stage162. Decision:
+`NEUTRAL_STAGE163_BACKEND_ADD_ALREADY_DOMINANT_BATCHING_NOT_PROMOTED`. The result is explicitly scoped to backend wall-time; it does
+not change the algorithmic materialization count or scalar/default behavior.

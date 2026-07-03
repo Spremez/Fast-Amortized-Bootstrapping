@@ -251,3 +251,4 @@
 - [x] Stage160 post-fusion profile/frontier pack recorded.
 - [x] Stage161 post-fusion attribution pack recorded.
 - [x] Stage162 materialization-count feasibility pack recorded.
+- [x] Stage163 from_DFT backend batching microbench pack recorded.

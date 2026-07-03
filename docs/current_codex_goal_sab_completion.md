@@ -392,3 +392,7 @@ The new research goal is complete only after a later stage records:
 66. Treat Stage162 as the materialization-count feasibility gate:
     `PASS_STAGE162_COUNT_REDUCTION_SAME_FORMAT_CLOSED_REP_CHANGE_REQUIRED`. It prevents conflating backend IFFT batching with algorithmic
     materialization-count reduction.
+67. Treat Stage163 as the from_DFT backend batching microbench:
+    `NEUTRAL_STAGE163_BACKEND_ADD_ALREADY_DOMINANT_BATCHING_NOT_PROMOTED`. This stage decides whether component-major batching of
+    `polynomial_DFT_to_torus_add` deserves a later complete-SAB gate. It must
+    not be used as an algorithmic count-reduction or final bootstrapping claim.

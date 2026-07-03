@@ -5415,3 +5415,20 @@ Completed. Stage162 records PASS_STAGE162_COUNT_REDUCTION_SAME_FORMAT_CLOSED_REP
 while backend batching and representation-changing exact states remain separate
 routes.
 ```
+## Stage 163: From-DFT Backend Batching Microbench
+
+Goal:
+
+```text
+Measure whether backend batching or component-major loop order can lower each
+from_DFT materialization's wall time after Stage162 closes same-format count
+reduction.
+```
+
+Status:
+
+```text
+Completed. Stage163 records NEUTRAL_STAGE163_BACKEND_ADD_ALREADY_DOMINANT_BATCHING_NOT_PROMOTED. This is backend wall-time evidence
+only; it does not reduce the 573440 materialization count and cannot be used
+as a complete-SAB acceleration claim without a later T_bootstrap/r gate.
+```

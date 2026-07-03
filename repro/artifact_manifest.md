@@ -2247,3 +2247,9 @@ Repro artifacts:
   - `experiments/stage162_materialization_count_feasibility_plan.md`
   - `theory_checks/stage162_materialization_count_model.md`
   - `repro/stage162_materialization_count_feasibility/`
+- stage163_from_dft_batching_microbench: `NEUTRAL_STAGE163_BACKEND_ADD_ALREADY_DOMINANT_BATCHING_NOT_PROMOTED`
+  - `docs/stage163_from_dft_batching_microbench.md`
+  - `experiments/stage163_from_dft_batching_microbench_plan.md`
+  - `theory_checks/stage163_from_dft_batching_model.md`
+  - `algorithm_variants/mat_rlwe_sab_from_dft_batching_microbench.md`
+  - `repro/stage163_from_dft_batching_microbench/`

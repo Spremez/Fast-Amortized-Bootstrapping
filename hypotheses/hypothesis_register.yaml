@@ -2262,3 +2262,20 @@ hypotheses:
       - Stage160 count evidence is missing
       - Stage156 closure rejection is ignored
       - backend batching is claimed as algorithmic count reduction
+  - id: H87_from_dft_backend_batching
+    statement: >
+      Under the current exact torus-input MAT-RLWE SAB API, batching or
+      component-major loop order for from_DFT materialization may reduce
+      per-call wall time but cannot reduce the materialization count.
+    mechanism: >
+      `execute_direct_torus64_add` fuses inverse-DFT conversion with the addend
+      store path; component-major ordering may improve locality across the
+      r-body MAT state while preserving exact torus outputs.
+    status: stage163_from_dft_batching_microbench
+    evidence: docs/stage163_from_dft_batching_microbench.md; experiments/stage163_from_dft_batching_microbench_plan.md; theory_checks/stage163_from_dft_batching_model.md; repro/stage163_from_dft_batching_microbench/summary.csv
+    current_decision: >
+      NEUTRAL_STAGE163_BACKEND_ADD_ALREADY_DOMINANT_BATCHING_NOT_PROMOTED
+    failure_criteria:
+      - backend-add or batched outputs differ from separate materialization plus add
+      - component-major batching does not beat current backend-add order beyond the promotion threshold
+      - backend batching is reported as algorithmic materialization-count reduction
