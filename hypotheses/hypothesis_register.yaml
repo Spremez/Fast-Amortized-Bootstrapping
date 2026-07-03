@@ -1799,3 +1799,23 @@ hypotheses:
       - addmul-only gains are used to claim full EP or full SAB speedup
       - targets are evaluated without same-backend Stage134 comparison
       - complete `T_bootstrap/r` acceleration is claimed before full SAB gates
+  - id: H60_batched_decomp_dft
+    statement: >
+      Computing all gadget digits for a lane-pair source polynomial in one
+      coefficient pass may reduce Stage134's decompose/DFT blocker enough to
+      meet the Stage135 r=4 break-even target.
+    mechanism: >
+      Stage136 implements exact batched decomposition matching
+      `polynomial_decompose_i`, keeps the same DFT conversion count, and
+      microbenchmarks current versus batched decompose/DFT.
+    status: stage136_batched_decomp_dft_gate
+    evidence: docs/stage136_batched_decomp_dft_gate.md; experiments/stage136_batched_decomp_dft_gate_plan.md; theory_checks/stage136_batched_decomp_dft_model.md; algorithm_variants/mat_rlwe_sab_batched_decomp_dft.md; scripts/build_stage136_batched_decomp_dft_gate.py; repro/stage136_batched_decomp_dft_gate/summary.csv; repro/stage136_batched_decomp_dft_gate/correctness.csv; repro/stage136_batched_decomp_dft_gate/ratio_summary.csv; repro/stage136_batched_decomp_dft_gate/artifact_index.csv
+    current_decision: >
+      Stage136 records NEUTRAL_STAGE136_BATCHED_DECOMP_DFT_MISSES_TARGET. The minimum r=4 decompose/DFT speedup is
+      0.671246. If this misses Stage135 targets, the batching route is not
+      sufficient and the next candidate must attack DFT conversion or memory
+      traffic more directly.
+    failure_criteria:
+      - batched decomposition differs from `polynomial_decompose_i`
+      - r=4 speedup misses Stage135 target but full EP/RGSW integration proceeds
+      - this microbench is reported as complete SAB acceleration

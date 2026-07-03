@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,detail,next_action
+stage136_mosfhet_static_build,PASS,make_static_spqlios,true,repro/stage136_batched_decomp_dft_gate/mosfhet_static_build.log,MOSFHET static library build for batched decompose/DFT probe.,
+stage136_probe_compile,PASS,gcc_probe_compile,true,repro/stage136_batched_decomp_dft_gate/compile_probe.log,Standalone batched decompose/DFT probe compiled.,
+stage136_probe_run,PASS,probe_returncode,0,repro/stage136_batched_decomp_dft_gate/run_probe.log,Batched decompose/DFT correctness and microbench probe executed.,
+stage136_correctness,PASS,correctness_rows,6,repro/stage136_batched_decomp_dft_gate/correctness.csv,Batched decomposition exactly matches decompose_i and DFT output.,Do not interpret timing if correctness fails.
+stage136_microbench_rows,PASS,bench_rows;ratio_rows,60;6,repro/stage136_batched_decomp_dft_gate/benchmark_samples.csv; repro/stage136_batched_decomp_dft_gate/ratio_summary.csv,Current and batched decompose/DFT timings recorded.,
+stage136_r4_target,NEUTRAL_OR_NEGATIVE,min_r4_speedup,0.671246,repro/stage136_batched_decomp_dft_gate/ratio_summary.csv,Stage136 must meet Stage135 r=4 break-even targets to proceed.,"If neutral, reject this batching variant and choose another decompose/DFT route."
+stage136_decision,NEUTRAL_STAGE136_BATCHED_DECOMP_DFT_MISSES_TARGET,promotion_policy,,repro/stage136_batched_decomp_dft_gate/summary.csv; repro/stage136_batched_decomp_dft_gate/ratio_summary.csv,Stage136 decides whether batched decompose/DFT is enough for full EP rebench.,Only proceed to full EP rebench if r=4 targets pass.

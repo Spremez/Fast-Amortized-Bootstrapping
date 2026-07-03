@@ -284,3 +284,8 @@ The new research goal is complete only after a later stage records:
     1.152711 decompose/DFT speedup to break even and
     1.245156 for a 5pct full-kernel gain. RGSW/sparse integration
     remains rejected until Stage136 improves this measured blocker.
+
+40. Treat Stage136 as the current batched decompose/DFT gate:
+    `FAIL_STAGE136_BATCHED_DECOMP_DFT_GATE`. It checks exact equivalence against `polynomial_decompose_i`
+    and benchmarks current versus batched decompose/DFT. Minimum r=4 speedup is
+    ; full SAB claims remain blocked.

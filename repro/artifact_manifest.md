@@ -2013,3 +2013,21 @@ Repro artifacts:
 - `repro/stage135_decomp_dft_reuse_target_gate/target_matrix.csv`
 - `repro/stage135_decomp_dft_reuse_target_gate/route_matrix.csv`
 - `repro/stage135_decomp_dft_reuse_target_gate/artifact_index.csv`
+
+## Stage 136 Batched Decompose/DFT Gate
+
+- `docs/stage136_batched_decomp_dft_gate.md`
+- `experiments/stage136_batched_decomp_dft_gate_plan.md`
+- `theory_checks/stage136_batched_decomp_dft_model.md`
+- `algorithm_variants/mat_rlwe_sab_batched_decomp_dft.md`
+- `scripts/build_stage136_batched_decomp_dft_gate.py`
+- `repro/stage136_batched_decomp_dft_gate/summary.csv`
+- `repro/stage136_batched_decomp_dft_gate/correctness.csv`
+- `repro/stage136_batched_decomp_dft_gate/benchmark_samples.csv`
+- `repro/stage136_batched_decomp_dft_gate/benchmark_aggregate.csv`
+- `repro/stage136_batched_decomp_dft_gate/ratio_summary.csv`
+- `repro/stage136_batched_decomp_dft_gate/mosfhet_static_build.log`
+- `repro/stage136_batched_decomp_dft_gate/compile_probe.log`
+- `repro/stage136_batched_decomp_dft_gate/run_probe.log`
+- `repro/stage136_batched_decomp_dft_gate/batched_decomp_dft_gate.c`
+- `repro/stage136_batched_decomp_dft_gate/artifact_index.csv`

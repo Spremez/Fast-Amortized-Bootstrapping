@@ -739,3 +739,8 @@ generalized lane-pair input is arithmetically closed, but r=4 needs up to
 1.152711 decompose/DFT speedup just to break even and
 1.245156 for a 5pct full-kernel gain. This keeps the loop empirical:
 the next code work must beat these targets before RGSW integration.
+
+Stage136 implements the first Stage135-targeted decompose/DFT optimization
+candidate. It tests exact batched decomposition plus unchanged DFT conversion.
+Decision: `FAIL_STAGE136_BATCHED_DECOMP_DFT_GATE` with minimum r=4 speedup . This determines whether
+to rebench full generalized EP or reject this batching route.

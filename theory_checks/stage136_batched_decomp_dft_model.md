@@ -1,0 +1,20 @@
+# Stage136 Batched Decompose/DFT Model
+
+Date: 2026-07-03
+
+The candidate computes all T gadget digits for one source polynomial
+in one coefficient pass, matching `polynomial_decompose_i` exactly
+including its offset. It then performs the same number of DFT
+conversions as Stage134. Therefore it can only remove decomposition
+loop overhead, not the DFT conversion count.
+
+## Ratio Results
+
+| backend | r | N | T | Bg_bit | seed | current_mean_us | batched_mean_us | speedup_current_over_batched | stage135_break_even_target | stage135_5pct_target | decision |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| spqlios | 2 | 1024 | 7 | 7 | 0 | 37.081120 | 53.432470 | 0.693981 | 1.205905 | 1.302486 | MISSES_STAGE135_TARGET |
+| spqlios | 2 | 512 | 7 | 7 | 0 | 16.275470 | 24.533180 | 0.663406 | 1.714454 | 1.912783 | MISSES_STAGE135_TARGET |
+| spqlios | 4 | 1024 | 7 | 7 | 0 | 79.256410 | 107.128340 | 0.739827 | 1.152711 | 1.245156 | MISSES_STAGE135_TARGET |
+| spqlios | 4 | 512 | 7 | 7 | 0 | 31.795230 | 47.367460 | 0.671246 | 1.117512 | 1.212734 | MISSES_STAGE135_TARGET |
+| spqlios | 6 | 1024 | 7 | 7 | 0 | 104.790060 | 146.828530 | 0.713690 | 1.000000 | 1.000000 | MISSES_STAGE135_TARGET |
+| spqlios | 6 | 512 | 7 | 7 | 0 | 51.947400 | 73.886750 | 0.703068 | 1.000000 | 1.000000 | MISSES_STAGE135_TARGET |

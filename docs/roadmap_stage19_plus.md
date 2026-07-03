@@ -4970,3 +4970,20 @@ speedup is 1.152711 for break-even and 1.245156 for a
 5pct full-kernel gain. The next valid stage is a decompose/DFT reuse or
 batching implementation gate.
 ```
+
+## Stage 136: Batched Decompose/DFT Gate
+
+Goal:
+
+```text
+Prototype exact batched decompose-to-DFT for generalized lane-pair input and
+check whether it meets the Stage135 r=4 target.
+```
+
+Status:
+
+```text
+Completed. Stage136 records FAIL_STAGE136_BATCHED_DECOMP_DFT_GATE. The minimum r=4 batched/current
+decompose-DFT speedup is . This is a microbench-only result and does
+not prove full EP, RGSW, sparse schedule, or complete `T_bootstrap/r`.
+```
