@@ -1065,3 +1065,6 @@ Stage220 records encrypted compact keygen prototype. Decision: `PASS_STAGE220_EN
 The compact route now has an isolated encrypted-row prototype, but still lacks
 security reduction, production SAB noise recurrence, compact EP integration,
 and complete-SAB speedup evidence.
+- Stage221 compact keygen noise recurrence: `PASS_STAGE221_COMPACT_KEYGEN_NOISE_RECURRENCE_READY_ISOLATED_EP`. This is a relative
+  row-noise/resource gate for compact selector rows, not a complete-SAB speedup
+  claim.

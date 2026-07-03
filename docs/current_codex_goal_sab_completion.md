@@ -645,3 +645,6 @@ or production security/noise claims.
 `PASS_STAGE220_ENCRYPTED_COMPACT_KEYGEN_READY_NOISE_RECURRENCE` advances the compact route only to a production-noise recurrence
 candidate. It does not authorize `sab_pvw_*` integration, complete-SAB claims,
 or security claims.
+- Stage221 compact keygen noise recurrence completed with `PASS_STAGE221_COMPACT_KEYGEN_NOISE_RECURRENCE_READY_ISOLATED_EP`. The next
+  selected route is isolated compact external-product integration; `sab_pvw_*`
+  remains untouched.

@@ -2616,3 +2616,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage220_encrypted_compact_keygen_prototype.md`
   - `scripts/build_stage220_encrypted_compact_keygen_prototype.py`
   - `repro/stage220_encrypted_compact_keygen_prototype/`
+- stage221_compact_keygen_noise_recurrence:
+  - `docs/stage221_compact_keygen_noise_recurrence.md`
+  - `experiments/stage221_compact_keygen_noise_recurrence_plan.md`
+  - `theory_checks/stage221_compact_keygen_noise_recurrence_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage221_compact_noise_recurrence.md`
+  - `scripts/build_stage221_compact_keygen_noise_recurrence.py`
+  - `repro/stage221_compact_keygen_noise_recurrence/`

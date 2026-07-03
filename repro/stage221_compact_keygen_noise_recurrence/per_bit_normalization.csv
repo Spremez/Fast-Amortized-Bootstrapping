@@ -1,0 +1,7 @@
+r,N,processed_bits_per_batch,steps_per_lane,scalar_repeated_schedule_steps,mat_batch_schedule_steps,lane_amortization_step_ceiling,compact_vs_dense_mat_row_ceiling,compact_active_rows_per_bit,dense_mat_rows_per_bit,claim_boundary
+2,1024,2,286720,573440,286720,2.000000000,1.125000000,4.000000000,4.500000000,row-count/model ceiling only; requires Stage222 isolated EP and complete SAB A/B before latency claim
+4,1024,4,286720,1146880,286720,4.000000000,1.562500000,4.000000000,6.250000000,row-count/model ceiling only; requires Stage222 isolated EP and complete SAB A/B before latency claim
+6,1024,6,286720,1720320,286720,6.000000000,2.041666667,4.000000000,8.166666667,row-count/model ceiling only; requires Stage222 isolated EP and complete SAB A/B before latency claim
+2,2048,2,573440,1146880,573440,2.000000000,1.125000000,4.000000000,4.500000000,row-count/model ceiling only; requires Stage222 isolated EP and complete SAB A/B before latency claim
+4,2048,4,573440,2293760,573440,4.000000000,1.562500000,4.000000000,6.250000000,row-count/model ceiling only; requires Stage222 isolated EP and complete SAB A/B before latency claim
+6,2048,6,573440,3440640,573440,6.000000000,2.041666667,4.000000000,8.166666667,row-count/model ceiling only; requires Stage222 isolated EP and complete SAB A/B before latency claim

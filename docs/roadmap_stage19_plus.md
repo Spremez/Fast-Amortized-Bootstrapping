@@ -6358,3 +6358,20 @@ Completed. Stage220 records PASS_STAGE220_ENCRYPTED_COMPACT_KEYGEN_READY_NOISE_R
 phase/DFT/public-pattern/negative/noise gates and route next to production
 noise recurrence; SAB integration remains denied.
 ```
+## Stage 221: Compact Keygen Noise Recurrence
+
+Goal:
+
+```text
+Bind encrypted compact keygen rows to a SAB schedule-level relative
+noise/resource recurrence and decide whether isolated compact EP experiments
+are allowed.
+```
+
+Status:
+
+```text
+Completed. Stage221 records PASS_STAGE221_COMPACT_KEYGEN_NOISE_RECURRENCE_READY_ISOLATED_EP. Relative dense-vs-active recurrence and
+`T_bootstrap/r` row normalization pass, but only isolated compact EP experiments
+are authorized; SAB hot-path integration remains denied.
+```

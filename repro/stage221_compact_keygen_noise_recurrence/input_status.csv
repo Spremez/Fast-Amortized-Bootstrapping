@@ -1,0 +1,6 @@
+input,status,evidence,role,bytes
+stage220_proof_gate,present,repro/stage220_encrypted_compact_keygen_prototype/proof_gate.csv,admission proof for encrypted compact keygen prototype,2384
+stage220_keygen_results,present,repro/stage220_encrypted_compact_keygen_prototype/keygen_results.csv,measured encrypted-row max noise and pass/fail data,1033
+stage220_layout_results,present,repro/stage220_encrypted_compact_keygen_prototype/layout_results.csv,dense/active/dummy row counts,725
+stage203_resource_projection,present,repro/stage203_production_selector_equation_probe/resource_projection.csv,selector row reduction reference,823
+stage187_theorem_matrix,present,repro/stage187_compact_proof_obligation_draft/theorem_matrix.csv,claim-boundary proof obligations,2657

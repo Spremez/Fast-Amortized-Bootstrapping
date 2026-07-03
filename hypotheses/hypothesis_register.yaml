@@ -3151,3 +3151,13 @@ H10_stage220_encrypted_compact_keygen_prototype:
     keygen prototype with semantic-zero dummy role preservation and negative
     controls, but security, production noise recurrence, compact EP
     integration, and complete-SAB gates remain missing.
+H10_stage221_compact_keygen_noise_recurrence:
+  status: compact_noise_recurrence_passed
+  evidence:
+    - repro/stage221_compact_keygen_noise_recurrence/proof_gate.csv
+    - repro/stage221_compact_keygen_noise_recurrence/recurrence_model.csv
+    - repro/stage221_compact_keygen_noise_recurrence/per_bit_normalization.csv
+  conclusion: >
+    Stage221 records PASS_STAGE221_COMPACT_KEYGEN_NOISE_RECURRENCE_READY_ISOLATED_EP. The compact route has a relative dense-vs-active
+    noise/resource recurrence and explicit T_bootstrap/r normalization, but only
+    isolated compact EP experiments are admitted.
