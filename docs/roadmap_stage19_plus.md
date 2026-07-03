@@ -3828,3 +3828,46 @@ runs passed correctness. tile4 averaged 42,219,780.667 us total and
 7,222,823.167 us/lane. The repeated fulltile/tile4 PVW ratio is 0.974x, so the
 Stage110 one-run signal does not survive repetition. Do not promote fulltile.
 ```
+
+## Stage 112: Selector/Key-Format Gate
+
+Goal:
+
+```text
+Turn the Stage109 current-format blocker into a concrete selector/key-format
+design gate for body-linear MAT external product.
+```
+
+Theory basis:
+
+With a shared-mask PVW accumulator, a selector row that contributes to the
+output mask affects every lane phase. Even if a row has zero plaintext message
+for an off-lane body, the body ciphertext component is needed to cancel the
+shared mask contribution for that lane. Therefore loop-only off-lane skipping
+is not valid under the current `MAT_TRGSW_DFT` format.
+
+Tasks:
+
+- write a concrete phase counterexample for dropping off-lane body terms while
+  keeping the shared mask contribution;
+- classify selector/key-format candidates for body-linear external product;
+- select a finite r=2 simulator gate for any still-viable new-format route.
+
+Gate:
+
+- if the counterexample exists, reject current-format loop-only body-linear
+  skipping;
+- route only new ciphertext/key-format candidates to future implementation;
+- do not reopen dense r=6 layout tuning without profile-backed evidence.
+
+Status:
+
+```text
+Completed. Stage112 records
+PASS_STAGE112_SELECTOR_FORMAT_GATE_NEW_FORMAT_REQUIRED. In the counterexample,
+dense shared-mask row-output terms preserve phases `(22, 0)`, while dropping
+the off-lane body term leaves phase `(22, -70)`. Candidate S112-B
+loop-only-drop-offlane is rejected. Candidate S112-D lane-local-multimask and
+S112-E proof-carrying-mask-partition remain design routes, but both require a
+finite r=2 algebraic simulator before C implementation.
+```

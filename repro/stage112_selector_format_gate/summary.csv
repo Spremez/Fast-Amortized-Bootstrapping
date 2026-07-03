@@ -1,0 +1,4 @@
+gate,status,metric,value,evidence,detail,next_action
+stage112_shared_mask_counterexample,PASS,drop_offlane_phase_failure,present,repro/stage112_selector_format_gate/shared_mask_counterexample.csv,Loop-only off-lane skipping fails when a shared mask contribution remains.,Do not implement body-linear skipping in current MAT_TRGSW_DFT.
+stage112_candidate_format_matrix,PASS,candidate_count,5,repro/stage112_selector_format_gate/candidate_format_matrix.csv,Candidate selector/key-format routes are classified.,Route only new-format candidates to finite r=2 gates.
+stage112_decision,PASS_STAGE112_SELECTOR_FORMAT_GATE_NEW_FORMAT_REQUIRED,body_linear_policy,,repro/stage112_selector_format_gate/summary.csv,"Body-linear MAT-SAB requires a new selector/key or ciphertext format, not loop-only tuning.",Open Stage113 r=2 algebraic simulator for lane-local or proof-carrying format candidates.

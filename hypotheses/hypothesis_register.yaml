@@ -1131,3 +1131,29 @@ hypotheses:
       - repeated runs erase the one-run fulltile advantage
       - noise/resource gates fail
       - fulltile is promoted based on one-run evidence
+  - id: H36_body_linear_selector_format_gate
+    statement: >
+      A body-linear MAT external product for MAT-RLWE SAB requires a new
+      selector/key or ciphertext format; current-format loop-only off-lane
+      skipping is incorrect under shared-mask phase cancellation.
+    mechanism: >
+      Stage112 constructs a concrete shared-mask phase counterexample. A row
+      with decomposition digit d=2, mask A=7, lane secret s1=5, and zero
+      off-lane message has dense off-lane phase 0 when the body term
+      B1=A*s1 is included. If the off-lane body term is dropped while the
+      shared mask contribution remains, the off-lane phase becomes -70. This
+      shows that dense off-lane body terms are not merely removable noise in
+      the current format.
+    status: stage112_new_format_required
+    evidence: docs/stage112_selector_format_gate.md; experiments/stage112_selector_format_gate_plan.md; theory_checks/stage112_shared_mask_body_linear_counterexample.md; algorithm_variants/mat_rlwe_sab_body_linear_selector_format.md; scripts/build_stage112_selector_format_gate.py; repro/stage112_selector_format_gate/summary.csv; repro/stage112_selector_format_gate/shared_mask_counterexample.csv; repro/stage112_selector_format_gate/candidate_format_matrix.csv; repro/stage112_selector_format_gate/artifact_index.csv
+    current_decision: >
+      Stage112 records PASS_STAGE112_SELECTOR_FORMAT_GATE_NEW_FORMAT_REQUIRED.
+      Candidate S112-B loop-only-drop-offlane is rejected by counterexample.
+      S112-D lane-local-multimask and S112-E proof-carrying-mask-partition
+      remain possible research routes, but both require a deterministic r=2
+      algebraic simulator and key/resource model before C implementation.
+    failure_criteria:
+      - body-linear code is implemented without changing selector/key or
+        ciphertext semantics
+      - a new selector format lacks a per-lane phase proof
+      - the next stage discusses formats without an executable r=2 simulator

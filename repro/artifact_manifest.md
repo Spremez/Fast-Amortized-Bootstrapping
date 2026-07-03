@@ -1664,3 +1664,15 @@ Repro artifacts:
 - `repro/stage111_r6_fulltile_repeated_gate/fulltile/run_0.log`
 - `repro/stage111_r6_fulltile_repeated_gate/fulltile/run_1.log`
 - `repro/stage111_r6_fulltile_repeated_gate/fulltile/run_2.log`
+
+## Stage 112 Selector/Key-Format Gate
+
+- `docs/stage112_selector_format_gate.md`
+- `experiments/stage112_selector_format_gate_plan.md`
+- `theory_checks/stage112_shared_mask_body_linear_counterexample.md`
+- `algorithm_variants/mat_rlwe_sab_body_linear_selector_format.md`
+- `scripts/build_stage112_selector_format_gate.py`
+- `repro/stage112_selector_format_gate/summary.csv`
+- `repro/stage112_selector_format_gate/shared_mask_counterexample.csv`
+- `repro/stage112_selector_format_gate/candidate_format_matrix.csv`
+- `repro/stage112_selector_format_gate/artifact_index.csv`

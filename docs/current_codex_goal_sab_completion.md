@@ -44,7 +44,10 @@ a one-run complete-SAB r=6 tile4/fulltile gate and records fulltile as a
 candidate only: 1.026x faster than tile4 in this smoke, with repeated/noise/
 resource gates still required. Stage111 runs the required repeated gate and
 rejects that candidate: fulltile is 0.974x versus tile4 on repeated complete
-SAB PVW mean, despite all correctness gates passing.
+SAB PVW mean, despite all correctness gates passing. Stage112 then converts
+the body-linear question into a selector/key-format gate and rejects
+current-format loop-only off-lane skipping via a concrete shared-mask phase
+counterexample.
 
 ## Execution Route
 
@@ -83,7 +86,11 @@ SAB PVW mean, despite all correctness gates passing.
 14. Treat Stage111 as the current r=6 layout decision:
     repeated complete-SAB evidence rejects fulltile promotion; future r=6 work
     needs a new profile-backed hypothesis rather than more fulltile tuning.
-15. Preserve the current final-audit status:
+15. Treat Stage112 as the current body-linear route decision:
+    current shared-mask `MAT_TRGSW_DFT` cannot support loop-only off-lane
+    skipping; the next finite path is an r=2 simulator for a new selector/key
+    or ciphertext format.
+16. Preserve the current final-audit status:
    `SCOPED_ENGINEERING_CHAIN_READY__EXTERNAL_REVIEWED_STRONGER_CLAIMS_SCOPED`.
 
 ## Completion Standard

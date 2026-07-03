@@ -460,6 +460,7 @@ Stage 108: V106-D body-major layout gate. [completed; r=6 body-major kernel corr
 Stage 109: V106-B body-linear invariant gate. [completed; loop-only body-linear skipping is blocked by current MAT_TRGSW_DFT selector/key format, new format gate required]
 Stage 110: r=6 fulltile complete-SAB gate. [completed as one-run smoke; fulltile beat tile4 by 1.026x total/per-lane but is not promoted without repeated/noise/resource gates]
 Stage 111: r=6 fulltile repeated gate. [completed; 3-run complete-SAB gate rejects fulltile promotion, repeated PVW ratio 0.974x versus tile4]
+Stage 112: selector/key-format gate. [completed; shared-mask counterexample rejects current-format loop-only body-linear skipping, new-format r=2 simulator required]
 ```
 
 ## Current Closure Label
@@ -523,3 +524,10 @@ all correctness gates pass, fulltile is slower than tile4 in repeated
 complete-SAB PVW time: 43.337s versus 42.220s on average, or 0.974x. This is a
 negative ablation and closes the Stage110 one-run candidate unless a different
 profile-backed hypothesis reopens r=6 layout work.
+
+Stage112 makes the body-linear route precise. A concrete shared-mask phase
+counterexample shows that dropping an off-lane body term while retaining the
+shared mask contribution changes an expected zero phase into `-70` in the toy
+model. Therefore body-linear MAT-SAB cannot be implemented as current-format
+loop tuning; it needs a new selector/key or ciphertext format, with an r=2
+algebraic simulator as the next finite gate.
