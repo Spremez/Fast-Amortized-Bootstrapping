@@ -435,3 +435,7 @@ The new research goal is complete only after a later stage records:
 79. Treat Stage173 as finite phase/noise toy evidence:
     `PASS_STAGE173_PHASE_NOISE_TOY_PROOF_STILL_OPEN`. It improves the proof-route evidence for structured compact
     MAT-SAB while keeping security/API/full-SAB claims blocked.
+80. Treat Stage176 as the compact security/API boundary:
+    `BLOCK_STAGE176_STRUCTURED_COMPACT_SECURITY_API_NOT_CLOSED_REDIRECT_FULL_MAT`. Stage173 phase/noise toy evidence does not overcome missing
+    standard security distribution and shared-mask API closure. Do not implement
+    compact SAB directly; continue exact full-MAT `T_bootstrap/r` work.

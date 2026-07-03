@@ -895,3 +895,6 @@ finite phase/noise toy gate for structured compact MAT-SAB.
 Stage173 records structured compact phase/noise toy evidence. Decision:
 `PASS_STAGE173_PHASE_NOISE_TOY_PROOF_STILL_OPEN`. This keeps the compact route alive as a bounded algorithmic path,
 but does not permit implementation or paper claims.
+Stage176 denies compact SAB implementation permission. Decision:
+`BLOCK_STAGE176_STRUCTURED_COMPACT_SECURITY_API_NOT_CLOSED_REDIRECT_FULL_MAT`. Structured compact remains a proof/literature branch; complete
+SAB acceleration work continues on the closed exact full-MAT `sab_pvw_*` path.

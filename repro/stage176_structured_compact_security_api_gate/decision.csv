@@ -1,0 +1,4 @@
+claim,stage176_position,allowed_wording,forbidden_wording
+complete_sab_speedup_claim,unchanged_from_stage172_173,Current exact PVW/MAT-SAB has measured complete-SAB T_bootstrap/r throughput evidence; Stage176 adds no new speedup.,Structured compact SAB is implemented or accelerates complete SAB.
+compact_algorithm_claim,blocked,Structured compact has finite/toy support but is blocked by security/API closure.,Omitting encrypted zero rows is free under standard RLWE.
+implementation_route,redirect_full_mat,Proceed with exact full-MAT sab_pvw_* optimizations behind flags.,Modify sab_pvw_* to consume compact output directly.

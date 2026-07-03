@@ -1,0 +1,6 @@
+option,state,security_status,api_status,implementation_permission,risk
+A_current_full_mat_pvw,PVW_TMLWE_DFT/PVW_TMLWE with one shared mask and r bodies,standard current distribution,closed and implemented,YES_FOR_EXACT_FULL_MAT_ONLY,performance bounded by dense MAT term count and from_DFT materialization
+B_existing_compact_diagonal_output,MAT_TRGSW_COMPACT_OUTPUT_DFT with r lane-local masks,isolated kernel only,not closed for SAB PVW_TMLWE accumulator,NO_DIRECT_SAB,would need dense re-expansion or secret-dependent correction
+C_omit_body_cross_zero_encryptions,attempt shared-output compact selector by deleting logical zero rows,no standard RLWE reduction recorded,"phase toy passes, mask closure unresolved",NO,public BK distribution and output covariance change
+D_new_structured_shared_mask_encryption,non-standard selector samples constrained to keep one shared mask,new assumption or proof required,not implemented,NO,may leak secret selector bits if masking is weakened
+E_compact_then_dense_reexpand,compact internal product followed by dense PVW_TMLWE reconstruction,could be explored after proof,closed only after re-expansion,NO_NOW,likely cancels compact term-count benefit; must be microbench-gated

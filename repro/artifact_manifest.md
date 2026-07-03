@@ -2325,3 +2325,9 @@ Repro artifacts:
   - `theory_checks/stage173_structured_compact_phase_noise_model.md`
   - `algorithm_variants/mat_rlwe_sab_structured_compact_phase_noise_toy.md`
   - `repro/stage173_structured_compact_phase_noise_toy/`
+- stage176_structured_compact_security_api_gate: `BLOCK_STAGE176_STRUCTURED_COMPACT_SECURITY_API_NOT_CLOSED_REDIRECT_FULL_MAT`
+  - `docs/stage176_structured_compact_security_api_gate.md`
+  - `experiments/stage176_structured_compact_security_api_gate_plan.md`
+  - `theory_checks/stage176_structured_compact_security_api_model.md`
+  - `algorithm_variants/mat_rlwe_sab_structured_compact_security_api.md`
+  - `repro/stage176_structured_compact_security_api_gate/`
