@@ -5246,3 +5246,19 @@ Completed. Stage151 records WEAK_STAGE151_H14_R6_FULLTILE_BACKEND_TINY_POSITIVE_
 1.002631;1.013780 for `T_bootstrap/r;mat_ep`. This is routing evidence
 only; default-path and final-paper claims remain blocked.
 ```
+## Stage 152: Dual-Sub Kernel Gate
+
+Goal:
+
+```text
+Test H14-C3 shared-input dual subtraction as an isolated kernel before any
+complete-SAB integration.
+```
+
+Status:
+
+```text
+Completed. Stage152 records PASS_STAGE152_DUAL_SUB_LOCAL_POSITIVE_INTEGRATION_CANDIDATE. Isolated local speedup is
+1.421413 and predicted r=6 body speedup is
+1.047273. This is not a complete SAB claim.
+```

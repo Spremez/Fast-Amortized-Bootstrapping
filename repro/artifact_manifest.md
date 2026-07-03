@@ -2204,3 +2204,9 @@ Repro artifacts:
   - `theory_checks/stage151_h14_r6_fulltile_backend_model.md`
   - `algorithm_variants/mat_rlwe_sab_h14_r6_fulltile_backend.md`
   - `repro/stage151_h14_r6_fulltile_backend_smoke/`
+- stage152_dual_sub_kernel_gate: `PASS_STAGE152_DUAL_SUB_LOCAL_POSITIVE_INTEGRATION_CANDIDATE`
+  - `docs/stage152_dual_sub_kernel_gate.md`
+  - `experiments/stage152_dual_sub_kernel_gate_plan.md`
+  - `theory_checks/stage152_dual_sub_kernel_model.md`
+  - `algorithm_variants/mat_rlwe_sab_dual_sub_kernel.md`
+  - `repro/stage152_dual_sub_kernel_gate/`

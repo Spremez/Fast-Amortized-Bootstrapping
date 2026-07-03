@@ -353,3 +353,7 @@ The new research goal is complete only after a later stage records:
     `WEAK_STAGE151_H14_R6_FULLTILE_BACKEND_TINY_POSITIVE_REPEAT_OPTIONAL`. It is a concrete implementation-candidate gate, not a final
     claim. If it is not positive, fulltile remains an ablation and the next
     stage must choose a different hot-path candidate.
+56. Treat Stage152 as the isolated dual-sub kernel gate:
+    `PASS_STAGE152_DUAL_SUB_LOCAL_POSITIVE_INTEGRATION_CANDIDATE`. It is necessary evidence for H14-C3 but cannot be used as a
+    complete SAB speedup claim. Full integration requires a later `T_bootstrap/r`
+    gate if this local result is strong enough.

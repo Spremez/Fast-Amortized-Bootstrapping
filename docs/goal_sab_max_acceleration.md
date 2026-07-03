@@ -809,3 +809,7 @@ Stage151 tests H14 r=6 fulltile backend composition after Stage150 fixes the
 amortized endpoint. It changes only the r=6 MAT layout under the explicit
 backend path and evaluates complete SAB `T_bootstrap/r`; the decision is
 `WEAK_STAGE151_H14_R6_FULLTILE_BACKEND_TINY_POSITIVE_REPEAT_OPTIONAL`.
+Stage152 tests dual-subtraction as an isolated H14-C3 gate after Stage151's
+fulltile composition remains weak. It measures a shared-input AVX512
+dual-subtraction kernel against two current `pvmtmlwe_sub`-equivalent loops
+for k=1,r=6,N=2048. Decision: `PASS_STAGE152_DUAL_SUB_LOCAL_POSITIVE_INTEGRATION_CANDIDATE`.

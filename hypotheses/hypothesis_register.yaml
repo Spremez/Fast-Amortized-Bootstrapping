@@ -2087,3 +2087,20 @@ hypotheses:
       - fulltile correctness fails under complete SAB
       - MAT EP calls or copyback invariants change
       - T_bootstrap/r does not beat backend tile4 under the same backend
+  - id: H76_dual_sub_kernel_gate
+    statement: >
+      A shared-input dual-subtraction kernel may reduce the H14-C3 CMUX sub
+      cost enough to justify complete-SAB integration if it outperforms two
+      current pvmtmlwe_sub-equivalent loops and clears the Stage151 Amdahl gate.
+    mechanism: >
+      Adjacent direct/NCMUX butterfly updates reuse `p[j]` with opposite signs;
+      the fused kernel loads this shared sample once and writes both subtraction
+      outputs.
+    status: stage152_dual_sub_kernel_gate
+    evidence: docs/stage152_dual_sub_kernel_gate.md; experiments/stage152_dual_sub_kernel_gate_plan.md; theory_checks/stage152_dual_sub_kernel_model.md; scripts/build_stage152_dual_sub_kernel_gate.py; repro/stage152_dual_sub_kernel_gate/summary.csv; repro/stage152_dual_sub_kernel_gate/raw_results.csv
+    current_decision: >
+      PASS_STAGE152_DUAL_SUB_LOCAL_POSITIVE_INTEGRATION_CANDIDATE
+    failure_criteria:
+      - fused dual-sub output differs from two scalar subtractions
+      - local speedup is too small to move complete SAB T_bootstrap/r
+      - isolated kernel result is written as a full SAB claim
