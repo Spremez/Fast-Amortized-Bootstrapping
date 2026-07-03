@@ -1,0 +1,9 @@
+r,variant,check,mismatches,max_gap,status,evidence
+2,sub_decompose,combined_vs_split,0,0,PASS,repro/stage209_current_head_mat_ep_split/run_r2_sub_decompose.log
+2,torus_to_dft_rows,combined_vs_split,0,0,PASS,repro/stage209_current_head_mat_ep_split/run_r2_torus_to_dft_rows.log
+2,addmul_from_dec_dft,combined_vs_split,0,0,PASS,repro/stage209_current_head_mat_ep_split/run_r2_addmul_from_dec_dft.log
+2,combined_current,combined_vs_split,0,0,PASS,repro/stage209_current_head_mat_ep_split/run_r2_combined_current.log
+4,sub_decompose,combined_vs_split,0,0,PASS,repro/stage209_current_head_mat_ep_split/run_r4_sub_decompose.log
+4,torus_to_dft_rows,combined_vs_split,0,0,PASS,repro/stage209_current_head_mat_ep_split/run_r4_torus_to_dft_rows.log
+4,addmul_from_dec_dft,combined_vs_split,0,0,PASS,repro/stage209_current_head_mat_ep_split/run_r4_addmul_from_dec_dft.log
+4,combined_current,combined_vs_split,0,0,PASS,repro/stage209_current_head_mat_ep_split/run_r4_combined_current.log

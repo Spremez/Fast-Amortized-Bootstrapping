@@ -1,0 +1,9 @@
+r,variant,per_call_us,combined_current_us,share_of_combined,mat_ep_share_of_full_from_stage208,estimated_full_sab_share,component_speedup_for_3pct_full_gain,route_value,evidence
+2,sub_decompose,4.283314453,15.000221680,0.285550,0.390057,0.111381,1.354099,candidate,repro/stage209_current_head_mat_ep_split/run_metrics.csv
+2,torus_to_dft_rows,9.283705078,15.000221680,0.618905,0.390057,0.241408,1.137206,candidate,repro/stage209_current_head_mat_ep_split/run_metrics.csv
+2,addmul_from_dec_dft,2.991871094,15.000221680,0.199455,0.390057,0.077799,1.598411,candidate,repro/stage209_current_head_mat_ep_split/run_metrics.csv
+2,split_sum_over_combined,16.558890625,15.000221680,1.103910,0.390057,,,coverage_check,repro/stage209_current_head_mat_ep_split/run_metrics.csv
+4,sub_decompose,12.609452148,36.008648437,0.350178,0.457364,0.160159,1.222282,candidate,repro/stage209_current_head_mat_ep_split/run_metrics.csv
+4,torus_to_dft_rows,15.319426758,36.008648437,0.425437,0.457364,0.194580,1.176038,candidate,repro/stage209_current_head_mat_ep_split/run_metrics.csv
+4,addmul_from_dec_dft,12.594865234,36.008648437,0.349773,0.457364,0.159974,1.222596,candidate,repro/stage209_current_head_mat_ep_split/run_metrics.csv
+4,split_sum_over_combined,40.523744140,36.008648437,1.125389,0.457364,,,coverage_check,repro/stage209_current_head_mat_ep_split/run_metrics.csv

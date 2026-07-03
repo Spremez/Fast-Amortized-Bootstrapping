@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,current_status,evidence
+P0,stage210_candidate_selection,Stage209 correctness and split projection pass.,"Select a bounded implementation candidate, currently first=torus_to_dft_rows.",ready,repro/stage209_current_head_mat_ep_split/split_projection.csv
+P1,native_counter_refresh,perf/native Linux is available.,Collect load/store/FMA counters for the same r=2/r=4 split variants.,blocked_if_no_perf,repro/stage209_current_head_mat_ep_split/environment.csv
+P2,no_postproc_work,Stage208 postproc tail remains below threshold.,Keep extract/KS work deferred unless future body changes increase tail share.,deferred,repro/stage208_current_head_profile_refresh/component_attribution.csv

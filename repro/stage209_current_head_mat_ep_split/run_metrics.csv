@@ -1,0 +1,9 @@
+r,variant,run_rc,N,items,reps,calls,total_ns,per_call_us,sink,status,evidence
+2,sub_decompose,0,2048,128,8,1024,4386114,4.283314453,3551924225257174190,PASS,repro/stage209_current_head_mat_ep_split/run_r2_sub_decompose.log
+2,torus_to_dft_rows,0,2048,128,8,1024,9506514,9.283705078,2942057726651775669,PASS,repro/stage209_current_head_mat_ep_split/run_r2_torus_to_dft_rows.log
+2,addmul_from_dec_dft,0,2048,128,8,1024,3063676,2.991871094,13774992252921477820,PASS,repro/stage209_current_head_mat_ep_split/run_r2_addmul_from_dec_dft.log
+2,combined_current,0,2048,128,8,1024,15360227,15.000221680,9305093283185742531,PASS,repro/stage209_current_head_mat_ep_split/run_r2_combined_current.log
+4,sub_decompose,0,2048,128,8,1024,12912079,12.609452148,8903520147927469156,PASS,repro/stage209_current_head_mat_ep_split/run_r4_sub_decompose.log
+4,torus_to_dft_rows,0,2048,128,8,1024,15687093,15.319426758,4562030954040261711,PASS,repro/stage209_current_head_mat_ep_split/run_r4_torus_to_dft_rows.log
+4,addmul_from_dec_dft,0,2048,128,8,1024,12897142,12.594865234,1947437533696470262,PASS,repro/stage209_current_head_mat_ep_split/run_r4_addmul_from_dec_dft.log
+4,combined_current,0,2048,128,8,1024,36872856,36.008648437,17822576285093740891,PASS,repro/stage209_current_head_mat_ep_split/run_r4_combined_current.log

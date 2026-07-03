@@ -1,0 +1,111 @@
+command: gcc -O3 -march=native -Wall -Wextra -DUSE_SPQLIOS -DAVX512_OPT -DMAT_TRGSW_AVX512_SMALLR_SPECIALIZED -DSTAGE209_R=2 -DSTAGE209_N=2048 -DSTAGE209_ITEMS=128 -DSTAGE209_REPS=8 -DSTAGE209_WARMUPS=2 -DSTAGE209_BG_BIT=23 -I . -I src/mosfhet/include -o /mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/repro/stage209_current_head_mat_ep_split/stage209_r2_probe /mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/repro/stage209_current_head_mat_ep_split/stage209_current_head_mat_ep_split.c src/mosfhet/lib/libmosfhet.a -lm
+returncode: 0
+--- stdout ---
+
+
+--- stderr ---
+wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
+N/e?c localhost ?N?t?0
+
+In file included from /mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/repro/stage209_current_head_mat_ep_split/stage209_current_head_mat_ep_split.c:29:
+./src/mosfhet/src/mattrgsw.c: In function ?mat_trgsw_alloc_new_sample?:
+./src/mosfhet/src/mattrgsw.c:31:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+   31 |   for (size_t i = 0; i < rows; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c: In function ?mat_trgsw_alloc_new_DFT_sample?:
+./src/mosfhet/src/mattrgsw.c:43:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+   43 |   for (size_t i = 0; i < rows; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c: In function ?free_mat_trgsw?:
+./src/mosfhet/src/mattrgsw.c:54:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+   54 |   for (size_t i = 0; i < rows; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c: In function ?free_mat_trgsw_DFT?:
+./src/mosfhet/src/mattrgsw.c:64:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+   64 |   for (size_t i = 0; i < rows; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c: In function ?mat_trgsw_monomial_sample?:
+./src/mosfhet/src/mattrgsw.c:87:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+   87 |   for (size_t i = 0; i < rows; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c:91:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+   91 |   for (size_t i = 0; i < l; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c:93:26: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+   93 |     for (size_t j = 0; j < k; j++){
+      |                          ^
+./src/mosfhet/src/mattrgsw.c:96:26: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+   96 |     for (size_t j = 0; j < r; j++){
+      |                          ^
+./src/mosfhet/src/mattrgsw.c: In function ?mat_trgsw_to_DFT?:
+./src/mosfhet/src/mattrgsw.c:109:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  109 |   for (size_t i = 0; i < rows; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c: In function ?free_mat_trgsw_mul_scratch?:
+./src/mosfhet/src/mattrgsw.c:132:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  132 |   for (size_t i = 0; i < scratch->rows; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c: In function ?mat_trgsw_mul_pvmtmlwe_DFT_from_dec?:
+./src/mosfhet/src/mattrgsw.c:709:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  709 |   for (size_t j = 0; j < k; j++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c:712:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  712 |   for (size_t j = 0; j < r; j++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c:716:28: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  716 |   for (size_t row = 1; row < rows; row++){
+      |                            ^
+./src/mosfhet/src/mattrgsw.c:717:26: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  717 |     for (size_t j = 0; j < k; j++){
+      |                          ^
+./src/mosfhet/src/mattrgsw.c:720:26: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  720 |     for (size_t j = 0; j < r; j++){
+      |                          ^
+./src/mosfhet/src/mattrgsw.c: In function ?mat_trgsw_mul_pvmtmlwe_DFT?:
+./src/mosfhet/src/mattrgsw.c:740:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  740 |   for (size_t i = 0; i < rows; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c: In function ?mat_trgsw_sub_decompose?:
+./src/mosfhet/src/mattrgsw.c:786:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  786 |   for (size_t i = 0; i < l; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c:790:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  790 |   for (size_t i = 0; i < l; i++) {
+      |                        ^
+./src/mosfhet/src/mattrgsw.c:792:26: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  792 |     for (size_t j = 0; j < k; j++){
+      |                          ^
+./src/mosfhet/src/mattrgsw.c:797:28: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  797 |       for (size_t c = 0; c < N; c++){
+      |                            ^
+./src/mosfhet/src/mattrgsw.c:804:26: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  804 |     for (size_t j = 0; j < r; j++){
+      |                          ^
+./src/mosfhet/src/mattrgsw.c:809:28: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  809 |       for (size_t c = 0; c < N; c++){
+      |                            ^
+./src/mosfhet/src/mattrgsw.c: In function ?mat_trgsw_mul_pvmtmlwe_sub_DFT?:
+./src/mosfhet/src/mattrgsw.c:836:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  836 |   for (size_t i = 0; i < rows; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c: In function ?mat_trgsw_compact_zero_output_DFT?:
+./src/mosfhet/src/mattrgsw.c:852:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  852 |   for (size_t i = 0; i < out->r; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c: In function ?free_mat_trgsw_compact_DFT?:
+./src/mosfhet/src/mattrgsw.c:877:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  877 |   for (size_t i = 0; i < rows; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c: In function ?free_mat_trgsw_compact_output_DFT?:
+./src/mosfhet/src/mattrgsw.c:902:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  902 |   for (size_t i = 0; i < p->r; i++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c: In function ?mat_trgsw_compact_mul_pvmtmlwe_DFT?:
+./src/mosfhet/src/mattrgsw.c:960:24: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  960 |   for (size_t t = 0; t < selector->T; t++){
+      |                        ^
+./src/mosfhet/src/mattrgsw.c:964:32: warning: comparison of integer expressions of different signedness: ?size_t? {aka ?long unsigned int?} and ?int? [-Wsign-compare]
+  964 |     for (size_t lane = 0; lane < selector->r; lane++){
+      |                                ^
+/usr/bin/ld: warning: spqlios-ifft-avx512.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker

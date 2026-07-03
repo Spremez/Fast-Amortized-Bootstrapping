@@ -3031,3 +3031,12 @@ H10_stage208_current_head_profile_attribution:
     Current-head profile-only evidence keeps the next engineering target in
     the body/CMUX/MAT-EP path. Post-processing remains deferred, and profile
     timing must not be used as final latency evidence.
+H10_stage209_current_head_mat_ep_split:
+  status: current_head_split_prefight_recorded
+  evidence:
+    - repro/stage209_current_head_mat_ep_split/split_projection.csv
+    - docs/stage209_current_head_mat_ep_split.md
+  conclusion: >
+    Current-head r=2/r=4 split microbench evidence records which MAT-EP
+    subcomponents can plausibly move complete-SAB T_bootstrap/r. It grants
+    candidate selection only, not implementation success or latency claims.

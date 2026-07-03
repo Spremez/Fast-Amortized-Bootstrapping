@@ -1013,3 +1013,9 @@ At commit `a1ed2cb`, current-head profile-only attribution confirms the next
 engineering target is still the body/CMUX path, not post-processing. r=2/r=4
 copyback calls are 0 under active-buffer fusion, MAT EP remains the largest
 CMUX subcomponent, and post-processing max tail is below 2%.
+## Stage209 current-head MAT-EP split preflight
+
+At commit `caa09fa`, Stage209 records r=2/r=4 split microbench evidence for the
+current exact small-r MAT path. It identifies candidate subcomponents for a
+bounded implementation gate while preserving the rule that complete-SAB
+`T_bootstrap/r` claims require full A/B evidence.

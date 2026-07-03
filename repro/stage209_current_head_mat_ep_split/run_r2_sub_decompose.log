@@ -1,0 +1,9 @@
+command: stdbuf -o0 /mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/repro/stage209_current_head_mat_ep_split/stage209_r2_probe sub_decompose
+returncode: 0
+--- stdout ---
+CORRECT209,sub_decompose,combined_vs_split,0,0,PASS
+RESULT209,sub_decompose,2,2048,128,8,1024,4386114,4.283314453,3551924225257174190,PASS
+
+--- stderr ---
+wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
+N/e?c localhost ?N?t?0

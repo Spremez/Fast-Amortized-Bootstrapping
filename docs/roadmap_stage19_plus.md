@@ -6163,3 +6163,21 @@ r=2 and 47.760% for r=4. Post-processing remains below
 the 2% implementation threshold, with max tail 1.218%
 for r=2 and 1.222% for r=4.
 ```
+## Stage 209: Current-Head MAT-EP Split Preflight
+
+Goal:
+
+```text
+Split current-head r=2/r=4 MAT external-product cost into sub_decompose,
+torus_to_DFT, and addmul_from_dec_dft before authorizing any new hot-path code.
+```
+
+Status:
+
+```text
+Completed. Stage209 records PASS_STAGE209_CURRENT_HEAD_MAT_EP_SPLIT_PREFLIGHT. Correctness passes for all r=2/r=4
+split variants. The top route by estimated full-SAB share is torus_to_dft_rows
+at r=4 with estimated full-SAB share 0.238961.
+This is preflight evidence only; implementation and complete-SAB speedup claims
+remain gated by Stage210+.
+```

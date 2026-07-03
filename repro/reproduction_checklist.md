@@ -300,3 +300,6 @@
 - [x] Stage208 current-head profile attribution records r=2/r=4 schedule
   counts, CMUX component shares, active-buffer copyback elimination, and
   post-processing deferral.
+- [x] Stage209 current-head MAT-EP split preflight records r=2/r=4
+  sub_decompose, torus_to_DFT, addmul, combined timing, correctness, and
+  projection gates.

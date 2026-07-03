@@ -2532,3 +2532,10 @@ Repro artifacts:
   - `scripts/run_stage208_current_head_profile_refresh.sh`
   - `scripts/build_stage208_current_head_profile_refresh.py`
   - `repro/stage208_current_head_profile_refresh/`
+- stage209_current_head_mat_ep_split:
+  - `docs/stage209_current_head_mat_ep_split.md`
+  - `experiments/stage209_current_head_mat_ep_split_plan.md`
+  - `theory_checks/stage209_current_head_mat_ep_split_model.md`
+  - `algorithm_variants/mat_rlwe_sab_current_head_mat_ep_split.md`
+  - `scripts/build_stage209_current_head_mat_ep_split.py`
+  - `repro/stage209_current_head_mat_ep_split/`

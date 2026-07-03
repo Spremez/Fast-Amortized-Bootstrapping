@@ -581,3 +581,8 @@ full-text theorem anchors, and broader branch/generalization gates remain open.
 `PASS_STAGE208_CURRENT_HEAD_PROFILE_ATTRIBUTION` records route-selection evidence only. The goal remains active:
 the next executable route is a bounded MAT EP/from_DFT split or native-counter
 gate, not another broad theory loop.
+### Stage209 current-head MAT-EP split preflight
+
+`PASS_STAGE209_CURRENT_HEAD_MAT_EP_SPLIT_PREFLIGHT` keeps the research loop executable: the next step is Stage210
+candidate selection from measured split shares, not a broad theory loop or a
+post-processing detour.

@@ -1,0 +1,6 @@
+gate,status,evidence,detail,remaining_gap
+G1_environment,PASS_COUNTER_BLOCKED_RECORDED,repro/stage209_current_head_mat_ep_split/environment.csv,WSL environment and perf availability are recorded.,Hardware counter claims remain blocked when perf is unavailable.
+G2_build_run,PASS,repro/stage209_current_head_mat_ep_split/run_metrics.csv,r=2/r=4 split variants build and emit RESULT209 rows.,Microbench only; not complete-SAB latency evidence.
+G3_correctness,PASS,repro/stage209_current_head_mat_ep_split/correctness.csv,Combined current equals split decompose -> DFT -> addmul for every r/variant run.,Does not prove alternative implementation correctness.
+G4_projection,PASS_PREFLIGHT_CANDIDATES_RECORDED,repro/stage209_current_head_mat_ep_split/split_projection.csv,Split projection estimates which subcomponents can plausibly move complete SAB.,Any implementation still needs a flag-only code gate and complete-SAB A/B.
+G5_decision,PASS_STAGE209_CURRENT_HEAD_MAT_EP_SPLIT_PREFLIGHT,repro/stage209_current_head_mat_ep_split/proof_gate.csv,"Stage209 is a preflight gate; it grants route selection, not speedup claims.",Native counters and implementation gates remain separate.
