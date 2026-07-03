@@ -1,0 +1,3 @@
+run,mode,status,keygen_us,keygen_lane_avg_us,estimated_key_bytes,estimated_key_bytes_ratio_vs_scalar_repeated,internal_vmhwm_kb,time_max_rss_kb,source_log
+0,pvw,PASS,4492659,748776.500,1032871032,1.122537,1191672,1191808,repro/stage225_exact_refresh_noise_resource_rerun/resource_pvw_run_0.log
+0,scalar,PASS,3793390,632231.667,920121648,1.000000,1155716,1156012,repro/stage225_exact_refresh_noise_resource_rerun/resource_scalar_run_0.log

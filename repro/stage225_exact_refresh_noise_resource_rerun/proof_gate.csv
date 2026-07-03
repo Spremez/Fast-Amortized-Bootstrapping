@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_required_inputs,PASS,missing_inputs,,repro/stage225_exact_refresh_noise_resource_rerun/input_status.csv,Stage225 consumes Stage224 performance and reruns fresh side conditions.
+G2_stage224_admission,PASS,stage225_selected,true,repro/stage224_exact_pvw_mat_avx_resource_refresh/next_stage_queue.csv,Fresh side-condition rerun is valid only after Stage224 positive performance refresh.
+G3_fresh_noise,PASS,seeds;failures;avg_gap,3;0/0/0;-0.097333,repro/stage225_exact_refresh_noise_resource_rerun/noise_results.csv; repro/stage225_exact_refresh_noise_resource_rerun/noise_aggregate.csv,Fresh final-output noise/correctness for the Stage224 backend path.
+G4_fresh_resource,PASS,key_bytes_ratio;vmhwm_ratio;time_max_rss_ratio,1.122537;1.031111;1.030965,repro/stage225_exact_refresh_noise_resource_rerun/resource_results.csv; repro/stage225_exact_refresh_noise_resource_rerun/resource_comparison.csv,Fresh key/memory side conditions for the Stage224 backend path.
+G5_claim_boundary,PASS_ENGINEERING_SIDE_CONDITIONS_ONLY,claim_boundary,no_compact_complete_sab_claim;no_theoretical_optimality,docs/stage225_exact_refresh_noise_resource_rerun.md,Stage225 strengthens exact-route evidence only; it does not change algorithmic novelty claims.
+G6_stage225_decision,PASS_STAGE225_EXACT_REFRESH_FRESH_NOISE_RESOURCE,decision,PASS_STAGE225_EXACT_REFRESH_FRESH_NOISE_RESOURCE,repro/stage225_exact_refresh_noise_resource_rerun/proof_gate.csv,Fresh side conditions are ready for Stage226 claim/counter package if gates pass.

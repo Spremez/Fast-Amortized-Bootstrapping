@@ -6423,3 +6423,19 @@ Status:
 Completed. Stage224 records PASS_STAGE224_EXACT_PVW_MAT_AVX_REFRESH_POSITIVE. It refreshes exact PVW/MAT full-SAB
 performance and preserves the compact complete-SAB denial boundary.
 ```
+## Stage 225: Exact Refresh Noise/Resource Rerun
+
+Goal:
+
+```text
+Rerun fresh correctness/noise and resource side conditions for the exact
+PVW/MAT backend path refreshed in Stage224.
+```
+
+Status:
+
+```text
+Completed. Stage225 records PASS_STAGE225_EXACT_REFRESH_FRESH_NOISE_RESOURCE. It strengthens the exact-route evidence
+package without changing scalar/default behavior or the compact complete-SAB
+denial.
+```

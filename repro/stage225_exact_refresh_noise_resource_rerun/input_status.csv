@@ -1,0 +1,7 @@
+input,status,evidence,role,bytes
+stage224_proof_gate,present,repro/stage224_exact_pvw_mat_avx_resource_refresh/proof_gate.csv,positive performance refresh admission,1532
+stage224_perf_comparison,present,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv,fresh T_bootstrap/r performance result,479
+stage224_next_queue,present,repro/stage224_exact_pvw_mat_avx_resource_refresh/next_stage_queue.csv,selected fresh side-condition rerun route,930
+stage148_noise_aggregate,present,repro/stage148_h14_r6_repeated_refresh/noise_aggregate.csv,comparison baseline for previous side condition,186
+stage148_resource_comparison,present,repro/stage148_h14_r6_repeated_refresh/resource_comparison.csv,comparison baseline for previous side condition,363
+stage150_claim_scope,present,theory_checks/stage150_claim_scope_model.md,metric and claim boundary,1363

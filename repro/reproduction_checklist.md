@@ -324,3 +324,4 @@
 - [x] Stage222 isolated compact EP integration recorded.
 - [x] Stage223 route selection recorded.
 - [x] Stage224 exact PVW/MAT AVX refresh recorded.
+- [x] Stage225 exact refresh noise/resource recorded.

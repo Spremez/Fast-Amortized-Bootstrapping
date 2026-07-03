@@ -1,0 +1,20 @@
+command: MOSFHET_TEST_RNG_SEED=6869581 ./main
+returncode: 0
+--- stdout ---
+SAB_PVW_NOISE trial target_full r=6 trial=0 complete
+SAB_PVW_NOISE lane target_full r=6 lane=0 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-8.271 scalar_log2_sigma_torus=-8.125 pair_log2_sigma_torus=-7.626
+SAB_PVW_NOISE lane target_full r=6 lane=1 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-8.301 scalar_log2_sigma_torus=-8.256 pair_log2_sigma_torus=-7.984
+SAB_PVW_NOISE lane target_full r=6 lane=2 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-8.239 scalar_log2_sigma_torus=-8.435 pair_log2_sigma_torus=-7.814
+SAB_PVW_NOISE lane target_full r=6 lane=3 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-8.293 scalar_log2_sigma_torus=-8.348 pair_log2_sigma_torus=-7.696
+SAB_PVW_NOISE lane target_full r=6 lane=4 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-8.265 scalar_log2_sigma_torus=-8.309 pair_log2_sigma_torus=-7.958
+SAB_PVW_NOISE lane target_full r=6 lane=5 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-8.254 scalar_log2_sigma_torus=-8.439 pair_log2_sigma_torus=-7.838
+SAB_PVW_NOISE summary target_full r=6 trials=1 points=12288 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-8.270 scalar_log2_sigma_torus=-8.310 pair_log2_sigma_torus=-7.808 pvw_minus_scalar_log2=0.040 max_allowed_log2_gap=4.000
+SAB_PVW_NOISE pvw_total count=12288 failures=0 log2_sigma_torus=-8.270 log2_max_abs_torus=-6.354
+SAB_PVW_NOISE scalar_total count=12288 failures=0 log2_sigma_torus=-8.310 log2_max_abs_torus=-6.333
+SAB_PVW_NOISE pair_total count=12288 failures=0 log2_sigma_torus=-7.808 log2_max_abs_torus=-5.616
+SAB_PVW_NOISE target full bootstrap gate: Pass
+--- stderr ---
+wsl: �hKm0R localhost �NtM�n
+�FO*g\��P0R WSL0NAT !j_
+N�v WSL
+N/ec localhost �Nt0

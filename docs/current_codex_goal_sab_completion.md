@@ -655,3 +655,5 @@ or security claims.
   Stage224 exact PVW/MAT AVX/resource refresh measured by `T_bootstrap/r`.
 - Stage224 exact PVW/MAT AVX refresh completed with `PASS_STAGE224_EXACT_PVW_MAT_AVX_REFRESH_POSITIVE`. Continue with
   fresh noise/resource rerun only if this refresh is promoted beyond Stage148.
+- Stage225 exact refresh noise/resource completed with `PASS_STAGE225_EXACT_REFRESH_FRESH_NOISE_RESOURCE`. The next
+  selected route is counter attribution for the exact MAT/PVW backend gain.

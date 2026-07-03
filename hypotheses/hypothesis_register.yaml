@@ -3191,3 +3191,13 @@ H10_stage224_exact_pvw_mat_avx_refresh:
     Stage224 records PASS_STAGE224_EXACT_PVW_MAT_AVX_REFRESH_POSITIVE. The valid exact closed dense MAT/PVW route is
     refreshed under T_bootstrap/r; compact complete-SAB integration remains
     denied.
+H10_stage225_exact_refresh_noise_resource:
+  status: exact_route_fresh_side_conditions_passed
+  evidence:
+    - repro/stage225_exact_refresh_noise_resource_rerun/proof_gate.csv
+    - repro/stage225_exact_refresh_noise_resource_rerun/noise_aggregate.csv
+    - repro/stage225_exact_refresh_noise_resource_rerun/resource_comparison.csv
+  conclusion: >
+    Stage225 records PASS_STAGE225_EXACT_REFRESH_FRESH_NOISE_RESOURCE. Fresh correctness/noise/resource evidence
+    supports the Stage224 exact PVW/MAT full-SAB performance refresh; compact
+    complete-SAB integration remains denied.

@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage226_exact_mat_avx_counter_attribution,Stage224 performance and Stage225 fresh side conditions pass.,Attribute backend-vs-wrapper gain to cycles/load/store/FMA where counters are available.,selected,Keep timing-only exact-route evidence and do not claim backend mechanism.,repro/stage225_exact_refresh_noise_resource_rerun/proof_gate.csv
+P1,paper_claim_boundary_update,After Stage226 counter attribution or if counters remain unavailable.,Separate exact MAT/PVW engineering acceleration from blocked compact route.,future,No novelty/optimality claim.,theory_checks/stage150_claim_scope_model.md
+P2,neighbor_capable_compact_state_proof,Only if user chooses a new compact algebra/proof branch.,Define closed neighbor-capable compact state before implementation.,proof_only_deferred,Do not touch SAB hot path.,repro/stage224_exact_pvw_mat_avx_resource_refresh/proof_gate.csv

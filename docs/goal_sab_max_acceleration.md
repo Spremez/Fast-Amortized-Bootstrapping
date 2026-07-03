@@ -1077,3 +1077,5 @@ and complete-SAB speedup evidence.
 - Stage224 exact PVW/MAT AVX refresh: `PASS_STAGE224_EXACT_PVW_MAT_AVX_REFRESH_POSITIVE`. This is a complete-SAB
   `T_bootstrap/r` performance refresh for the valid exact route, not a compact
   complete-SAB claim.
+- Stage225 exact refresh noise/resource: `PASS_STAGE225_EXACT_REFRESH_FRESH_NOISE_RESOURCE`. Fresh side conditions now
+  accompany the Stage224 exact PVW/MAT `T_bootstrap/r` performance refresh.
