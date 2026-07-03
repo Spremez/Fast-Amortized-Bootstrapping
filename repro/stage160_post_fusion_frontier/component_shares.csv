@@ -1,0 +1,8 @@
+component,us,share_of_full,ceiling_if_eliminated,ceiling_if_2x_local,interpretation
+mat_ep_plus_subdecomp,24288451.000,0.625878,2.672926,1.455475,Dominant fused MAT EP/decompose block; now includes direct diff decomposition under the fusion flag.
+from_dft_materialization,13124576.000,0.338201,1.511034,1.203515,Still one materialization per update; reducing count requires representation/schedule change.
+sub_a,885883.000,0.022828,1.023361,1.011546,Sparse subtraction tail.
+ncmux_auto,401943.000,0.010357,1.010466,1.005206,Small automorphism tail.
+unattributed_or_timer_overlap,106139.000,0.002735,1.002743,1.001369,Residual body/post-processing/timer overlap; target only with finer evidence.
+explicit_sub,0.000,0.000000,1.000000,1.000000,Should be near zero after sub-decompose fusion; this route is now closed.
+copyback,0.000,0.000000,1.000000,1.000000,Active-buffer copyback tail.

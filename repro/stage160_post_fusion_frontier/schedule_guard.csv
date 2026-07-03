@@ -1,0 +1,8 @@
+metric,observed,expected,status,detail
+rgsw_monomial_calls,40,40,PASS,sparse_mul_calls*(h+1)
+cmux_calls,573440,573440,PASS,(h+1)*r_prec*in_N
+mat_ep_calls,573440,573440,PASS,one MAT EP per CMUX/NCMUX update
+from_dft_calls,573440,573440,PASS,one materialization per update
+ncmux_calls,5080,5080,PASS,(h+1)*(2^r_prec-1)
+sub_a_calls,39,39,PASS,one sparse subtraction per nonzero sparse term
+copyback_calls,0,0,PASS,active-buffer final normalization only

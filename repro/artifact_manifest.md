@@ -2232,3 +2232,8 @@ Repro artifacts:
   - `theory_checks/stage159_sub_decomp_fusion_stat_model.md`
   - `algorithm_variants/mat_rlwe_sab_sub_decomp_fusion_repeated.md`
   - `repro/stage159_sub_decomp_fusion_repeated_gate/`
+- stage160_post_fusion_frontier: `PASS_STAGE160_POST_FUSION_FRONTIER_RECORDED`
+  - `docs/stage160_post_fusion_frontier.md`
+  - `experiments/stage160_post_fusion_frontier_plan.md`
+  - `theory_checks/stage160_post_fusion_frontier_model.md`
+  - `repro/stage160_post_fusion_frontier/`

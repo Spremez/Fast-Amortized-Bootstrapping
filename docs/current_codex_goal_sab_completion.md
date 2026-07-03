@@ -383,3 +383,6 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE159_SUB_DECOMP_FUSION_REPEATED_PROMOTION_CANDIDATE`. This stage decides whether the Stage158 candidate is a
     promotion candidate, weak/neutral ablation, or failed path under strict
     complete-SAB research gates.
+64. Treat Stage160 as the post-fusion frontier gate:
+    `PASS_STAGE160_POST_FUSION_FRONTIER_RECORDED`. It prevents a theory loop by selecting the next target from
+    measured post-fusion component shares rather than speculative layout work.

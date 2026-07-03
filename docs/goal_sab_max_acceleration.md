@@ -840,3 +840,7 @@ Stage159 upgrades sub-decompose fusion from Stage158 smoke to repeated
 complete-SAB performance plus final-output noise/resource evidence. It uses
 `T_bootstrap/r` as the endpoint and keeps `SAB_PVW_SUB_DECOMP_FUSION` explicit.
 Decision: `PASS_STAGE159_SUB_DECOMP_FUSION_REPEATED_PROMOTION_CANDIDATE`.
+Stage160 refreshes the post-fusion component frontier after the Stage159
+promotion-candidate result. Decision: `PASS_STAGE160_POST_FUSION_FRONTIER_RECORDED`. It keeps profile timing as
+attribution evidence and routes the next work toward counter-supported kernel
+limits or materialization-count reduction.

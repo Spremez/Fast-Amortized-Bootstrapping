@@ -247,3 +247,5 @@
 - [x] Stage157 sub-decompose fusion standalone C microbench generated and recorded.
 - [x] Stage158 sub-decompose fusion full-SAB WSL gate generated and recorded.
 - [x] Stage159 sub-decompose fusion repeated/noise/resource gate pack recorded.
+- [x] Stage160 post-fusion profile/frontier pack recorded.
+- [x] Stage160 post-fusion profile/frontier pack recorded.

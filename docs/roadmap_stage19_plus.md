@@ -5370,3 +5370,17 @@ Status:
 ```text
 Completed. Stage159 records PASS_STAGE159_SUB_DECOMP_FUSION_REPEATED_PROMOTION_CANDIDATE. Scalar/default paths remain unchanged.
 ```
+## Stage 160: Post-Fusion Frontier
+
+Goal:
+
+```text
+Refresh the profile frontier after Stage159 sub-decompose fusion and choose the
+next non-theoretical optimization target from actual component shares.
+```
+
+Status:
+
+```text
+Completed. Stage160 records PASS_STAGE160_POST_FUSION_FRONTIER_RECORDED; next frontier is mat_ep_plus_subdecomp;0.623301.
+```

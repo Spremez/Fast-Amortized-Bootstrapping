@@ -2213,3 +2213,19 @@ hypotheses:
       - paired repeated T_bootstrap/r does not improve over same-backend control
       - final-output noise has nonzero failures
       - resource/key overhead is not reported
+  - id: H84_post_fusion_frontier
+    statement: >
+      After sub-decompose fusion, the next useful PVW/MAT-SAB optimization
+      should target the measured dominant post-fusion components, not another
+      blind same-format layout variant.
+    mechanism: >
+      Stage160 profiles the explicit r=6 fusion path, verifies schedule counts,
+      and ranks component shares for the next falsifiable gate.
+    status: stage160_post_fusion_frontier
+    evidence: docs/stage160_post_fusion_frontier.md; experiments/stage160_post_fusion_frontier_plan.md; theory_checks/stage160_post_fusion_frontier_model.md; repro/stage160_post_fusion_frontier/summary.csv
+    current_decision: >
+      PASS_STAGE160_POST_FUSION_FRONTIER_RECORDED
+    failure_criteria:
+      - body-profile build or correctness fails
+      - sparse schedule counts no longer match the SAB model
+      - next-stage queue is not tied to measured component shares

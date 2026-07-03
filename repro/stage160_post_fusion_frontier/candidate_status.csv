@@ -1,0 +1,4 @@
+candidate,latest_decision,action,reason
+H83 sub-decompose fusion,PASS_STAGE159_SUB_DECOMP_FUSION_REPEATED_PROMOTION_CANDIDATE,KEEP_EXPLICIT_PROMOTION_CANDIDATE,"Repeated complete-SAB T_bootstrap/r, noise, and resource gates passed."
+explicit sub PVW_TMLWE write/read route,CLOSED_BY_STAGE159,DO_NOT_REOPEN_WITHOUT_NEW_MECHANISM,The remaining explicit sub time is expected to be near zero under SAB_PVW_SUB_DECOMP_FUSION.
+same-format blind layout tuning,STILL_PROFILE_BOUNDED,REQUIRE_COUNTER_OR_COUNT_CHANGE,Stage154 rejected body-major and Stage155 closed blind layout work without a new measured mechanism.

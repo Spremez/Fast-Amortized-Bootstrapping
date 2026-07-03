@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage160_build_run,PASS,build_rc;run_rc,0;0,repro/stage160_post_fusion_frontier/build.log; repro/stage160_post_fusion_frontier/run.log,Build and run the explicit Stage159 fusion path with body profile enabled.,
+stage160_schedule_guard,PASS,schedule_counts,PASS,repro/stage160_post_fusion_frontier/schedule_guard.csv,Confirm fusion did not change the sparse SAB schedule counts.,Stop if any count differs.
+stage160_component_frontier,PASS,top_component;share,mat_ep_plus_subdecomp;0.625878,repro/stage160_post_fusion_frontier/component_shares.csv,Post-fusion component shares determine the next optimization target.,Prioritize count-changing or counter-supported work over blind layout variants.
+stage160_decision,PASS_STAGE160_POST_FUSION_FRONTIER_RECORDED,next_frontier,mat_ep_plus_subdecomp,repro/stage160_post_fusion_frontier/summary.csv,Stage160 is a route-selection gate after Stage159 promotion evidence.,Proceed to Stage161/162: counter attribution or materialization-count feasibility.
