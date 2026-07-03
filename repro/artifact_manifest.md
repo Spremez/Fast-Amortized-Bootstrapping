@@ -2553,3 +2553,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage211_fft_dataflow_preflight.md`
   - `scripts/build_stage211_fft_dataflow_preflight.py`
   - `repro/stage211_fft_dataflow_preflight/`
+- stage212_multirow_fft_api_probe:
+  - `docs/stage212_multirow_fft_api_probe.md`
+  - `experiments/stage212_multirow_fft_api_probe_plan.md`
+  - `theory_checks/stage212_multirow_fft_api_probe_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage212_multirow_fft_api_probe.md`
+  - `scripts/build_stage212_multirow_fft_api_probe.py`
+  - `repro/stage212_multirow_fft_api_probe/`

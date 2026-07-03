@@ -6214,3 +6214,20 @@ remain denied by prior gates. The only admitted continuation is a standalone
 multirow FFT/backend API probe or native counter refresh, not production SAB
 hot-path edits at this stage.
 ```
+## Stage 212: Multirow FFT API Probe
+
+Goal:
+
+```text
+Execute a standalone multirow reverse-DFT wrapper probe for the current
+SPQLIOS primitive before considering SAB hot-path integration.
+```
+
+Status:
+
+```text
+Completed. Stage212 records PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213. The probe is correctness-gated for
+3-row and 5-row MAT cases and uses T_bootstrap/r research discipline by
+requiring a component win before any complete-SAB claim. See
+repro/stage212_multirow_fft_api_probe/comparison.csv for the promotion result.
+```

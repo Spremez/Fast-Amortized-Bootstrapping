@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,evidence
+P0,stage213_flag_only_sab_dft_wrapper_integration_preflight,Stage212 promotes multirow wrapper component probe.,Flag-only SAB preflight with staged equivalence and full SAB A/B.,ready,repro/stage212_multirow_fft_api_probe/proof_gate.csv
+P1,native_counter_or_true_backend_fft_design,Stage212 local wrapper is not promoted or needs hardware attribution.,Use native perf counters or implement a genuinely new backend batch FFT primitive outside SAB first.,ready,repro/stage212_multirow_fft_api_probe/comparison.csv
+P2,sab_hotpath_integration,A component probe is promoted and then passes staged SAB gates.,"Correctness, noise/resource, complete-SAB T_bootstrap/r A/B, and claim audit.",requires_stage213,repro/stage212_multirow_fft_api_probe/proof_gate.csv

@@ -1,0 +1,5 @@
+rows,variant,baseline_mean_per_group_us,variant_mean_per_group_us,speedup_vs_current,promotion_threshold,decision,evidence
+3,multirow_interleaved_scratch,12.136842481,9.858934668,1.231050097,1.030000,PROMOTE_COMPONENT_PROBE,repro/stage212_multirow_fft_api_probe/benchmark_aggregate.csv
+3,multirow_two_phase_scratch,12.136842481,10.522659570,1.153400659,1.030000,PROMOTE_COMPONENT_PROBE,repro/stage212_multirow_fft_api_probe/benchmark_aggregate.csv
+5,multirow_interleaved_scratch,17.863931543,14.714591016,1.214028411,1.030000,PROMOTE_COMPONENT_PROBE,repro/stage212_multirow_fft_api_probe/benchmark_aggregate.csv
+5,multirow_two_phase_scratch,17.863931543,16.025151660,1.114743369,1.030000,PROMOTE_COMPONENT_PROBE,repro/stage212_multirow_fft_api_probe/benchmark_aggregate.csv

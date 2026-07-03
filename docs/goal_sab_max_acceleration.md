@@ -1029,3 +1029,8 @@ At commit `7a461f5`, Stage211 keeps the MAT-RLWE SAB metric and current
 complete-SAB evidence intact while denying local hot-path DFT edits without a
 new backend primitive or proof. The next executable route is Stage212
 multirow FFT/backend API probing.
+## Stage212 multirow FFT API probe
+
+At commit `ebf7223`, Stage212 executes the bounded backend/API probe selected
+by Stage211. The result is `PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213` and does not change scalar SAB or
+`sab_pvw_*` production behavior.

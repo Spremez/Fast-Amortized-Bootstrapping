@@ -3060,3 +3060,12 @@ H10_stage211_fft_dataflow_preflight:
     APIs for MAT-EP row conversion. Old same-format DFT routes remain denied;
     the next admitted work is a standalone multirow FFT/backend API probe or
     native counter refresh, not production SAB hot-path implementation.
+H10_stage212_multirow_fft_api_probe:
+  status: standalone_backend_probe_recorded
+  evidence:
+    - repro/stage212_multirow_fft_api_probe/comparison.csv
+    - repro/stage212_multirow_fft_api_probe/proof_gate.csv
+    - docs/stage212_multirow_fft_api_probe.md
+  conclusion: >
+    Stage212 tests source-local multirow reverse-DFT wrappers against the
+    current SPQLIOS execute_reverse_torus64 row loop. Decision: PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213.

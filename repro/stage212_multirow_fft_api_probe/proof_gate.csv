@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,detail
+G1_stage211_entry,PASS,stage211_proof_present,1,repro/stage211_fft_dataflow_preflight/proof_gate.csv,Stage212 is entered only after Stage211 denies direct hot-path code and admits backend/API probing.
+G2_build_compile,PASS,build_rc;compile_rc,0;0,repro/stage212_multirow_fft_api_probe/build_static.log; repro/stage212_multirow_fft_api_probe/compile_probe.log,Build current spqlios_avx512 static library and compile standalone multirow reverse-DFT probe.
+G3_correctness,PASS,all_variant_mismatches,0,repro/stage212_multirow_fft_api_probe/correctness.csv,Multirow wrapper variants must match current execute_reverse_torus64 output exactly.
+G4_microbench_promotion,PASS_PROMOTE,min_best_speedup_across_3row_5row;best_speedup_any,1.214028411;1.231050097,repro/stage212_multirow_fft_api_probe/comparison.csv,Promotion requires >= 1.03x for both 3-row and 5-row groups.
+G5_stage212_decision,PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213,decision,PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213,repro/stage212_multirow_fft_api_probe/proof_gate.csv,Stage212 either promotes a standalone wrapper probe to a later integration gate or closes this local wrapper route.

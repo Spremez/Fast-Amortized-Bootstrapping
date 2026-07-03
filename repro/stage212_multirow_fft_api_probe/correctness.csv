@@ -1,0 +1,5 @@
+rows,variant,mismatches,max_abs_diff,status,evidence
+3,multirow_interleaved_scratch,0,0,PASS,repro/stage212_multirow_fft_api_probe/run_probe.log
+3,multirow_two_phase_scratch,0,0,PASS,repro/stage212_multirow_fft_api_probe/run_probe.log
+5,multirow_interleaved_scratch,0,0,PASS,repro/stage212_multirow_fft_api_probe/run_probe.log
+5,multirow_two_phase_scratch,0,0,PASS,repro/stage212_multirow_fft_api_probe/run_probe.log

@@ -308,3 +308,5 @@
 - [x] Stage211 FFT/DFT dataflow preflight records the current single-row DFT
   API boundary, denies old DFT route reopenings, and routes only to a bounded
   Stage212 backend/API probe or native counter refresh.
+- [x] Stage212 multirow FFT API probe records correctness, microbench,
+  promotion decision, and next queue. Decision: `PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213`.

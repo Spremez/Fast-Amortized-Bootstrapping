@@ -595,3 +595,8 @@ concrete DFT/FFT dataflow preflight or reject implementation permission.
 `PASS_STAGE211_DFT_DATAFLOW_PREFLIGHT_DENY_HOTPATH_CODE` prevents the optimization loop from drifting into repeated DFT
 theory. The current code has no existing multirow DFT primitive; proceed to a
 bounded Stage212 backend/API probe or native counter refresh.
+### Stage212 multirow FFT API probe
+
+`PASS_STAGE212_MULTIROW_WRAPPER_PROMOTE_STAGE213` records whether a local multirow reverse-DFT wrapper is worth
+carrying toward SAB integration. This keeps the loop executable and prevents
+reopening DFT theory without measured evidence.

@@ -1,0 +1,11 @@
+command: gcc -O3 -march=native -Wall -Wextra -DUSE_SPQLIOS -DAVX512_OPT -DSTAGE212_N=2048 -DSTAGE212_MAX_ROWS=5 -DSTAGE212_ITEMS=128 -DSTAGE212_RUNS=10 -DSTAGE212_REPS=8 -DSTAGE212_WARMUPS=2 -I src/mosfhet/include -I src/mosfhet/src/fft/spqlios -o /mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/repro/stage212_multirow_fft_api_probe/stage212_multirow_fft_api_probe /mnt/d/codexprograms/whFast-Amortized-Bootstrapping/Fast-Amortized-Bootstrapping/repro/stage212_multirow_fft_api_probe/stage212_multirow_fft_api_probe.c src/mosfhet/lib/libmosfhet.a -lm
+returncode: 0
+--- stdout ---
+
+
+--- stderr ---
+wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
+N/e?c localhost ?N?t?0
+
+/usr/bin/ld: warning: spqlios-ifft-avx512.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
