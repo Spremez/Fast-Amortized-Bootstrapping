@@ -349,3 +349,7 @@ The new research goal is complete only after a later stage records:
     `T_complete_bootstrap(r)/r` and records the current scoped H14 r=6
     explicit-path result. The next valid stage must pick a concrete
     implementation candidate and verify it against the same amortized endpoint.
+55. Treat Stage151 as the H14 r=6 fulltile backend smoke gate:
+    `WEAK_STAGE151_H14_R6_FULLTILE_BACKEND_TINY_POSITIVE_REPEAT_OPTIONAL`. It is a concrete implementation-candidate gate, not a final
+    claim. If it is not positive, fulltile remains an ablation and the next
+    stage must choose a different hot-path candidate.

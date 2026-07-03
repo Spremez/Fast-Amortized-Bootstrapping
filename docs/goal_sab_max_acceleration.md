@@ -805,3 +805,7 @@ plaintext bit or LUT/SAB lane. The current scoped explicit H14 r=6 backend
 result is 1.432667x versus repeated
 scalar SAB per lane under Stage148, with Stage149 keeping default-path,
 novelty, and theoretical-optimality claims blocked.
+Stage151 tests H14 r=6 fulltile backend composition after Stage150 fixes the
+amortized endpoint. It changes only the r=6 MAT layout under the explicit
+backend path and evaluates complete SAB `T_bootstrap/r`; the decision is
+`WEAK_STAGE151_H14_R6_FULLTILE_BACKEND_TINY_POSITIVE_REPEAT_OPTIONAL`.

@@ -1,0 +1,5 @@
+source,gate,status,metric,value,evidence,detail
+Stage150,stage150_decision,PASS_STAGE150_FINAL_PACKAGE_REFRESH_SCOPED_EXPLICIT_H14_R6_RECORDED,final_package_refresh,scoped_explicit_h14_r6,repro/stage150_final_package_refresh/claim_table.csv; repro/stage150_final_package_refresh/evidence_matrix.csv; repro/stage150_final_package_refresh/blocker_matrix.csv,Stage150 refreshes the final package without changing scalar/default SAB behavior.
+Stage111,stage111_fullsab_timing,NEGATIVE_OR_NEUTRAL,tile4_pvw_mean/fulltile_pvw_mean;speedup_ratio,0.974;1.019,repro/stage111_r6_fulltile_repeated_gate/comparison.csv,Ratio above 1 means fulltile is faster than tile4.
+Stage111,stage111_decision,PASS_STAGE111_R6_FULLTILE_REPEATED_NEGATIVE_NOT_PROMOTED,promotion_policy,,repro/stage111_r6_fulltile_repeated_gate/summary.csv,fulltile does not beat tile4 in repeated complete-SAB means.
+Stage148,stage148_perf_baseline,PASS_STAGE148_PERF_BACKEND_REPEATED_POSITIVE,T_bootstrap_per_lane,1.432667,repro/stage148_h14_r6_repeated_refresh/perf_comparison.csv,Current H14 backend tile4 evidence before Stage151 layout composition.

@@ -2070,3 +2070,20 @@ hypotheses:
       - raw total runtime is used as the main speedup metric
       - explicit-path evidence is written as default-path or all-parameter speedup
       - engineering evidence is written as novelty or theoretical optimality
+  - id: H75_h14_r6_fulltile_backend_smoke
+    statement: >
+      Composing the H14 backend FromDFT-add route with the r=6 fulltile MAT
+      external-product layout may improve complete SAB T_bootstrap/r if the
+      fulltile MAT EP locality gain survives the full sparse schedule.
+    mechanism: >
+      The backend route already reduces inverse DFT/add materialization; the
+      fulltile layout changes only the r=6 MAT output tiling while preserving
+      MAT EP count and active-buffer copyback invariants.
+    status: stage151_h14_r6_fulltile_backend_smoke
+    evidence: docs/stage151_h14_r6_fulltile_backend_smoke.md; experiments/stage151_h14_r6_fulltile_backend_smoke_plan.md; theory_checks/stage151_h14_r6_fulltile_backend_model.md; scripts/build_stage151_h14_r6_fulltile_backend_smoke.py; repro/stage151_h14_r6_fulltile_backend_smoke/summary.csv; repro/stage151_h14_r6_fulltile_backend_smoke/comparison.csv
+    current_decision: >
+      WEAK_STAGE151_H14_R6_FULLTILE_BACKEND_TINY_POSITIVE_REPEAT_OPTIONAL
+    failure_criteria:
+      - fulltile correctness fails under complete SAB
+      - MAT EP calls or copyback invariants change
+      - T_bootstrap/r does not beat backend tile4 under the same backend

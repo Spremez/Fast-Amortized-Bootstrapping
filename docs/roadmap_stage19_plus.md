@@ -5230,3 +5230,19 @@ T_bootstrap/r, key bytes ratio 1.122537, and
 VmHWM ratio 1.030966. Default-path, all-parameter,
 novelty, and theoretical-optimality claims remain blocked.
 ```
+## Stage 151: H14 r=6 Fulltile Backend Smoke
+
+Goal:
+
+```text
+Test whether composing the Stage148 H14 backend FromDFT-add route with the
+r=6 fulltile MAT external-product layout improves complete SAB T_bootstrap/r.
+```
+
+Status:
+
+```text
+Completed. Stage151 records WEAK_STAGE151_H14_R6_FULLTILE_BACKEND_TINY_POSITIVE_REPEAT_OPTIONAL. The timing smoke value is
+1.002631;1.013780 for `T_bootstrap/r;mat_ep`. This is routing evidence
+only; default-path and final-paper claims remain blocked.
+```

@@ -238,3 +238,4 @@
 - [x] Stage148 H14 r=6 repeated/noise/resource refresh pack recorded.
 - [x] Stage149 H14 r=6 claim-policy pack recorded.
 - [x] Stage150 final-package refresh pack recorded.
+- [x] Stage151 H14 r=6 fulltile backend smoke pack recorded.

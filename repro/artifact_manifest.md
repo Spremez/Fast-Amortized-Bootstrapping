@@ -2198,3 +2198,9 @@ Repro artifacts:
   - `theory_checks/stage150_claim_scope_model.md`
   - `algorithm_variants/mat_rlwe_sab_stage150_final_scope.md`
   - `repro/stage150_final_package_refresh/`
+- stage151_h14_r6_fulltile_backend_smoke: `WEAK_STAGE151_H14_R6_FULLTILE_BACKEND_TINY_POSITIVE_REPEAT_OPTIONAL`
+  - `docs/stage151_h14_r6_fulltile_backend_smoke.md`
+  - `experiments/stage151_h14_r6_fulltile_backend_smoke_plan.md`
+  - `theory_checks/stage151_h14_r6_fulltile_backend_model.md`
+  - `algorithm_variants/mat_rlwe_sab_h14_r6_fulltile_backend.md`
+  - `repro/stage151_h14_r6_fulltile_backend_smoke/`

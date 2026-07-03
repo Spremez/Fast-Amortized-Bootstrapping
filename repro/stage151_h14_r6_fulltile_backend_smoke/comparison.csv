@@ -1,0 +1,10 @@
+metric,tile4,fulltile,fulltile_over_tile4,status,detail
+correctness,PASS,PASS,1,PASS,Both layout variants must pass full-SAB correctness before timing is interpreted.
+T_bootstrap_per_lane_fulltile_over_tile4,6851368.833,6833391.667,1.002631,SMOKE_ONLY,Primary endpoint; ratio above one means fulltile is faster.
+T_bootstrap_total_fulltile_over_tile4,41108213.000,41000350.000,1.002631,SMOKE_ONLY,Total time check; final interpretation remains per lane.
+mat_ep_speedup_fulltile_over_tile4,19920612,19649845,1.013780,PROFILE_ONLY,MAT external-product body-profile attribution.
+from_dft_speedup_fulltile_over_tile4,13165914,13198000,0.997569,PROFILE_ONLY,The backend FromDFT-add route is held fixed; this should not be the source of a fulltile gain.
+speedup_vs_scalar_tile4,1.411,,1.411,SMOKE_ONLY,Current tile4 backend path versus repeated scalar SAB.
+speedup_vs_scalar_fulltile,,1.433,1.433,SMOKE_ONLY,Current fulltile backend path versus repeated scalar SAB.
+mat_ep_calls_equal,573440,573440,1,PASS,Layout change must not alter SAB schedule counts.
+copyback_zero,0,0,1,PASS,Active-buffer invariant must remain intact.
