@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,detail,next_action
+stage169_remote_secret,PASS,STAGE169_SSHPASS,present,environment variable only; not written to artifacts,Remote password is consumed from environment and scrubbed from logs.,Provide STAGE169_SSHPASS only at runtime.
+stage169_sync,PASS,sync_rc,0,repro/stage169_cb5_native_repeated_r6_gate/sync.log,git archive HEAD synchronized to CB5.,Fix remote sync before interpreting runs.
+stage169_build,PASS,build_rc,0,repro/stage169_cb5_native_repeated_r6_gate/build.log,Build current exact r=6 post-fusion path once on CB5.,Fix build before repeated timing.
+stage169_runs,PASS,run_rcs,0;0;0,repro/stage169_cb5_native_repeated_r6_gate/run_results.csv,Native no-perf repeated full-SAB runs.,Rerun failed samples before claiming native throughput.
+stage169_correctness,PASS,correctness,PASS;PASS;PASS,repro/stage169_cb5_native_repeated_r6_gate/run_results.csv,Every repeated run must pass target_full correctness.,Do not use performance numbers if any correctness fails.
+stage169_speedup_stats,PASS,speedup_mean;min;ci95_low,1.131666667;1.115000000;1.095041982,repro/stage169_cb5_native_repeated_r6_gate/aggregate.csv,Primary endpoint is T_bootstrap/r versus repeated scalar.,Use mean/min/CI and not a single sample.
+stage169_decision,PASS_STAGE169_NATIVE_REPEATED_R6_POSITIVE,native_repeated_r6_route,current_exact_path,repro/stage169_cb5_native_repeated_r6_gate/summary.csv,Stage169 upgrades Stage167 timing from perf-wrapped single run to native repeated no-perf evidence.,"If positive, proceed to split component counters or final claim refresh."

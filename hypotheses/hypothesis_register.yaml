@@ -2364,3 +2364,20 @@ hypotheses:
       - derived ratios are not reproducible from Stage167 raw counters
       - final native throughput is claimed from one perf-wrapped run
       - theoretical optimality is claimed without lower-bound proof
+  - id: H93_cb5_native_repeated_r6
+    statement: >
+      The current exact r=6 PVW/MAT-SAB path should retain positive amortized
+      T_bootstrap/r throughput on CB5 when measured without perf overhead and
+      repeated across multiple complete-SAB runs.
+    mechanism: >
+      The explicit path batches six independent lanes through MAT external
+      products while preserving scalar/default SAB behavior; repeated native
+      timing tests whether the speedup is stable outside perf instrumentation.
+    status: stage169_cb5_native_repeated_r6_gate
+    evidence: docs/stage169_cb5_native_repeated_r6_gate.md; experiments/stage169_cb5_native_repeated_r6_gate_plan.md; theory_checks/stage169_native_repeated_stats_scope.md; repro/stage169_cb5_native_repeated_r6_gate/summary.csv
+    current_decision: >
+      PASS_STAGE169_NATIVE_REPEATED_R6_POSITIVE
+    failure_criteria:
+      - any repeated run fails target_full correctness
+      - mean/min speedup does not support a native throughput claim
+      - results are used as theoretical optimality proof

@@ -412,3 +412,6 @@ The new research goal is complete only after a later stage records:
 72. Treat Stage168 as the native counter frontier:
     `PASS_STAGE168_ROUTE_TO_NATIVE_REPEATED_AND_SPLIT_COUNTERS`. Use Stage167 counters only for attribution; final native
     throughput and component-level claims require Stage169/170.
+73. Treat Stage169 as the CB5 native repeated r=6 gate:
+    `PASS_STAGE169_NATIVE_REPEATED_R6_POSITIVE`. It provides native no-perf repeated complete-SAB throughput
+    evidence for the current exact path, but not theoretical optimality.

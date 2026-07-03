@@ -5510,3 +5510,19 @@ Completed. Stage168 records PASS_STAGE168_ROUTE_TO_NATIVE_REPEATED_AND_SPLIT_COU
 the next gates are native no-perf repeated full-SAB A/B and split native
 component counters.
 ```
+## Stage 169: CB5 Native Repeated r=6 Gate
+
+Goal:
+
+```text
+Run native no-perf repeated complete-SAB A/B for the current exact r=6
+PVW/MAT-SAB path using T_bootstrap/r as the primary endpoint.
+```
+
+Status:
+
+```text
+Completed. Stage169 records PASS_STAGE169_NATIVE_REPEATED_R6_POSITIVE. This is native repeated throughput
+evidence for the current exact path, separate from component attribution and
+theoretical optimality.
+```

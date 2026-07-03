@@ -257,3 +257,4 @@
 - [x] Stage166 shared-output compact algebra gate pack recorded.
 - [x] Stage167 CB5 native r=6 counter refresh pack recorded.
 - [x] Stage168 native counter frontier pack recorded.
+- [x] Stage169 CB5 native repeated r=6 gate pack recorded.

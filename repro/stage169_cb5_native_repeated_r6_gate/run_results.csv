@@ -1,0 +1,4 @@
+run,run_rc,correctness,r,reps,pvw_avg_us,pvw_lane_avg_us,scalar_repeated_avg_us,scalar_lane_avg_us,speedup_vs_scalar_repeated,evidence
+1,0,PASS,6,1,62327236.000,10387872.667,71215897.000,11869316.167,1.143,repro/stage169_cb5_native_repeated_r6_gate/run_1.log
+2,0,PASS,6,1,64280189.000,10713364.833,71646218.000,11941036.333,1.115,repro/stage169_cb5_native_repeated_r6_gate/run_2.log
+3,0,PASS,6,1,61768072.000,10294678.667,70217550.000,11702925.000,1.137,repro/stage169_cb5_native_repeated_r6_gate/run_3.log

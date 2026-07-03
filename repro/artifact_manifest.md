@@ -2283,3 +2283,9 @@ Repro artifacts:
   - `theory_checks/stage168_counter_frontier_scope.md`
   - `algorithm_variants/mat_rlwe_sab_native_counter_frontier.md`
   - `repro/stage168_native_counter_frontier/`
+- stage169_cb5_native_repeated_r6_gate: `PASS_STAGE169_NATIVE_REPEATED_R6_POSITIVE`
+  - `docs/stage169_cb5_native_repeated_r6_gate.md`
+  - `experiments/stage169_cb5_native_repeated_r6_gate_plan.md`
+  - `theory_checks/stage169_native_repeated_stats_scope.md`
+  - `algorithm_variants/mat_rlwe_sab_native_repeated_r6.md`
+  - `repro/stage169_cb5_native_repeated_r6_gate/`

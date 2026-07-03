@@ -871,3 +871,6 @@ exact path, not a new algorithmic speedup claim.
 Stage168 records the native counter frontier after Stage167. Decision:
 `PASS_STAGE168_ROUTE_TO_NATIVE_REPEATED_AND_SPLIT_COUNTERS`. It blocks theoretical optimality and final native throughput
 claims from the single perf-wrapped run and routes next to Stage169/170.
+Stage169 records CB5 native repeated r=6 throughput after Stage168. Decision:
+`PASS_STAGE169_NATIVE_REPEATED_R6_POSITIVE`. It upgrades Stage167's single perf-wrapped timing to no-perf
+repeated complete-SAB evidence under the primary `T_bootstrap/r` endpoint.
