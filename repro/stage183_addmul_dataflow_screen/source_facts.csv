@@ -1,0 +1,6 @@
+fact,status,line,evidence,implication
+complex_addmul_uses_avx512_fma,yes,146,src/mosfhet/src/mattrgsw.c,The addmul hot loop is already vectorized with AVX512 FMA helpers.
+rgt4_tiled_kernel_exists,yes,458,src/mosfhet/src/mattrgsw.c,Current r=6/r=8 path already reuses each decomposed row across output tiles.
+r6_fulltile_kernel_exists,yes,520,src/mosfhet/src/mattrgsw.c,Register-resident all-output accumulation was implemented as an explicit variant.
+r6_bodymajor_kernel_exists,yes,606,src/mosfhet/src/mattrgsw.c,Output-major dataflow was implemented as an explicit variant.
+rgt4_dispatch_is_flagged,yes,,src/mosfhet/Makefile.def,All r>4 MAT variants remain explicit and default-controllable.

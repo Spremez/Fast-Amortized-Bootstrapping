@@ -2367,3 +2367,9 @@ Repro artifacts:
   - `theory_checks/stage182_exact_path_negative_frontier_model.md`
   - `algorithm_variants/mat_rlwe_sab_exact_path_negative_frontier.md`
   - `repro/stage182_exact_path_negative_frontier/`
+- stage183_addmul_dataflow_screen: `PASS_STAGE183_ADDMUL_DATAFLOW_SCREEN_NO_CODE_PERMISSION`
+  - `docs/stage183_addmul_dataflow_screen.md`
+  - `experiments/stage183_addmul_dataflow_screen_plan.md`
+  - `theory_checks/stage183_addmul_dataflow_model.md`
+  - `algorithm_variants/mat_rlwe_sab_addmul_dataflow_screen.md`
+  - `repro/stage183_addmul_dataflow_screen/`

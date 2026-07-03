@@ -2612,3 +2612,19 @@ hypotheses:
       - a full-SAB claim is made from kernel-only or negative evidence
       - old layout/direct-scale routes are reopened without a new mechanism
       - compact SAB is implemented before proof/literature gates close
+  - id: H107_addmul_dataflow_screen
+    statement: >
+      The remaining exact addmul component is large, but current evidence does
+      not justify another AVX512/layout implementation unless it introduces a
+      new dataflow beyond tiled, fulltile, bodymajor, or streaming variants.
+    mechanism: >
+      Source audit shows existing MAT-aware AVX512 helpers and r=6 variants;
+      prior complete-SAB and exact-output gates reject the obvious alternatives.
+    status: stage183_addmul_dataflow_screen
+    evidence: docs/stage183_addmul_dataflow_screen.md; experiments/stage183_addmul_dataflow_screen_plan.md; theory_checks/stage183_addmul_dataflow_model.md; repro/stage183_addmul_dataflow_screen/summary.csv
+    current_decision: >
+      PASS_STAGE183_ADDMUL_DATAFLOW_SCREEN_NO_CODE_PERMISSION
+    failure_criteria:
+      - new addmul code is written without a new measured mechanism
+      - prior rejected layout variants are reopened under new names
+      - source-level AVX512 presence is reported as theoretical optimality

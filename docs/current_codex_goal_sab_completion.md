@@ -465,3 +465,7 @@ The new research goal is complete only after a later stage records:
     `PASS_STAGE182_EXACT_PATH_NEGATIVE_FRONTIER_RECORDED`. Stage181 rejects sub-decompose AVX512. Future exact-path
     code requires a new dataflow mechanism with projected complete-SAB impact;
     compact SAB remains proof/literature gated.
+87. Treat Stage183 as the addmul dataflow screen:
+    `PASS_STAGE183_ADDMUL_DATAFLOW_SCREEN_NO_CODE_PERMISSION`. The code already contains MAT-aware AVX512 tiled,
+    fulltile, and bodymajor addmul variants. Prior gates reject those dataflow
+    families, so no new exact addmul code is allowed without a new mechanism.

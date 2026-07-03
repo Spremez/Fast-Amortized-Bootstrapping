@@ -1,0 +1,8 @@
+mechanism,decision,evidence,reason,code_permission
+D1_current_tile4_reuse,CURRENT_BASELINE,src/mosfhet/src/mattrgsw.c,The tiled r>4 kernel already loads one decomposed row and updates output tiles for each coefficient.,no_new_code
+D2_fulltile_register_resident_outputs,REJECT_PRIOR_GATE,repro/stage111_r6_fulltile_repeated_gate/summary.csv,A full-output r=6 path exists; repeated complete-SAB evidence did not promote it.,do_not_reopen_without_new_mechanism
+D3_bodymajor_output_major,REJECT_PRIOR_GATE,repro/stage154_bodymajor_fullsab_closeout/summary.csv,Complete-SAB `T_bootstrap/r` bodymajor/tile4 result was 0.977892.,do_not_reopen_without_new_mechanism
+D4_row_streaming_decompose_dft_addmul,REJECT_PRIOR_GATE,repro/stage165_closed_fullmat_streaming_microbench/summary.csv,Streaming reduced scratch lifetime but lost to current all-row tiled AVX in exact-output microbench.,do_not_reopen_without_changed_locality_model
+D5_more_coefficient_unrolling,DENY_NO_EVIDENCE,repro/stage183_addmul_dataflow_screen/source_facts.csv,Unrolling coefficients duplicates many accumulator registers on top of dec/selector registers; no measured mechanism suggests it beats current tile/fulltile tradeoff.,requires_assembly_counter_preflight_first
+D6_selector_transposed_key_layout,BLOCK_KEY_FORMAT_CHANGE,repro/stage112_selector_format_gate/summary.csv,"Better selector locality likely requires key/selector layout changes, not a loop-only exact-path change.",requires_keygen_resource_noise_gate
+D7_sparse_selector_skip,BLOCK_SECURITY_FORMAT,repro/stage176_structured_compact_security_api_gate/summary.csv,Encrypted selector rows cannot be skipped as plaintext zeros under the current key format.,proof_branch_only

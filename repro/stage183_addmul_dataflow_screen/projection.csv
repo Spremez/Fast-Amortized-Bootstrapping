@@ -1,0 +1,6 @@
+metric,value,unit,interpretation
+r,6,lanes,Stage183 screens the current exact r=6 path.
+dense_complex_products_per_coeff,49,complex_vector_products,Closed full-MAT shape has (r+1)^2 products per coefficient block.
+stage180_addmul_per_call_us,22.923460937,us,Measured isolated addmul-from-decomposed-DFT time.
+addmul_full_sab_share,0.221723249,share,Estimated full-SAB share from Stage180 projection.
+required_addmul_speedup_for_3pct_full_sab,1.151228774,x,Minimum local speedup needed before a code branch is worthwhile.

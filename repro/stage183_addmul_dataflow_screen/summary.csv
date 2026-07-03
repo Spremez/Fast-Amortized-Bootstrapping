@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,detail,next_action
+stage183_inputs,PASS,required_inputs_present,1,repro/stage182_exact_path_negative_frontier/summary.csv; src/mosfhet/src/mattrgsw.c,Stage183 consumes Stage182 frontier and current MAT addmul source.,Repair missing inputs before mechanism screening.
+stage183_source_fact_check,PASS,mat_aware_avx512_variants_present,1,repro/stage183_addmul_dataflow_screen/source_facts.csv,"Current source already contains tiled, fulltile, and bodymajor MAT-aware AVX512 variants.",Do not describe the project as lacking MAT AVX512 addmul.
+stage183_projection_check,PASS,required_addmul_speedup_for_3pct_full_sab,1.151228774,repro/stage183_addmul_dataflow_screen/projection.csv,The addmul component is large enough only if a real dataflow gain exists.,Reject layout-only retuning without a new proof or counter preflight.
+stage183_decision,PASS_STAGE183_ADDMUL_DATAFLOW_SCREEN_NO_CODE_PERMISSION,code_permission,denied,repro/stage183_addmul_dataflow_screen/mechanism_screen.csv,No untested exact addmul dataflow mechanism currently meets the code-entry rule.,Route to final exact-frontier closeout or proof-gated compact work.

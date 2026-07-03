@@ -914,3 +914,6 @@ Stage182 records the exact-path negative frontier. Decision: `PASS_STAGE182_EXAC
 Current scoped complete-SAB `T_bootstrap/r` evidence remains valid, but
 sub-decompose AVX512 is a negative ablation and exact full-MAT blind retuning
 is closed until a new dataflow/proof mechanism appears.
+Stage183 records the addmul dataflow mechanism screen. Decision:
+`PASS_STAGE183_ADDMUL_DATAFLOW_SCREEN_NO_CODE_PERMISSION`. Exact addmul remains a large component, but no currently
+untested loop/layout mechanism passes the code-entry rule.

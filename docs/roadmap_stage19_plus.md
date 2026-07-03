@@ -5731,3 +5731,20 @@ sub-decompose candidate is rejected; exact same-format blind tuning is closed.
 Only a new addmul/DFT dataflow mechanism or the separately proof-gated compact
 route may proceed.
 ```
+## Stage 183: Addmul Dataflow Screen
+
+Goal:
+
+```text
+Decide whether the remaining exact addmul component has a concrete untested
+dataflow mechanism before writing code.
+```
+
+Status:
+
+```text
+Completed. Stage183 records PASS_STAGE183_ADDMUL_DATAFLOW_SCREEN_NO_CODE_PERMISSION. The current project already has
+MAT-aware AVX512 tiled/fulltile/bodymajor addmul variants, and prior gates
+reject the obvious alternatives. No new exact addmul hot-path code is allowed
+without a new assembly/counter-backed mechanism.
+```
