@@ -2957,3 +2957,8 @@ Repro artifacts:
   - `scripts/run_stage273_sub_a_from_DFT_add_alias_microtest.sh`
   - `scripts/build_stage273_sub_a_from_DFT_add_alias_microtest.py`
   - `repro/stage273_sub_a_from_DFT_add_alias_microtest/`
+- stage274_sub_a_fused_materialization_smoke:
+  - `docs/stage274_sub_a_fused_materialization_smoke.md`
+  - `scripts/run_stage274_sub_a_fused_materialization_smoke.sh`
+  - `scripts/build_stage274_sub_a_fused_materialization_smoke.py`
+  - `repro/stage274_sub_a_fused_materialization_smoke/`

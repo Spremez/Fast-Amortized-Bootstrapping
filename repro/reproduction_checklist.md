@@ -389,3 +389,5 @@
 - [x] Stage272 records `PASS_STAGE272_SUB_A_SELECTOR_MATERIALIZATION_DESIGN_GATE` and selects Stage273 alias-safety microtest before implementation.
 <!-- stage273-sub-a-from-dft-add-alias-microtest-checklist -->
 - [x] Stage273 records `PASS_STAGE273_SUB_A_ALIAS_MICROTEST_ENABLES_FLAGGED_SMOKE` with raw logs, parsed gates, and claim boundaries.
+<!-- stage274-sub-a-fused-materialization-smoke-checklist -->
+- [x] Stage274 fused sub_a smoke records `NEUTRAL_STAGE274_SUB_A_FUSED_SMOKE_NO_PROMOTION` with primary metric `T_bootstrap/r`.

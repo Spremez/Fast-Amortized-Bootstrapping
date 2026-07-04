@@ -1006,6 +1006,13 @@ void sab_pvw_sub_a_include_zero(PVW_TMLWE * p, const uint64_t * a,
         &sab_pvw_body_profile.sub_a_mat_ep_calls, mat_ep_begin);
     const uint64_t from_dft_begin = sab_pvw_now_us();
 #endif
+#ifdef SAB_PVW_SUBA_FUSED_FROM_DFT_ADD
+    pvmtmlwe_from_DFT_add(p[idx], sab->tmp->tmlwe_dft, p[idx]);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_from_dft_us,
+        &sab_pvw_body_profile.sub_a_from_dft_calls, from_dft_begin);
+#endif
+#else
     pvmtmlwe_from_DFT(sab->tmp->tmlwe, sab->tmp->tmlwe_dft);
 #ifdef SAB_PVW_BODY_PROFILE
     sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_from_dft_us,
@@ -1016,6 +1023,7 @@ void sab_pvw_sub_a_include_zero(PVW_TMLWE * p, const uint64_t * a,
 #ifdef SAB_PVW_BODY_PROFILE
     sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_add_us,
         &sab_pvw_body_profile.sub_a_add_calls, add_begin);
+#endif
 #endif
   }
 #ifdef SAB_PVW_BODY_PROFILE
@@ -1059,6 +1067,13 @@ void sab_pvw_sub_a_ternary(PVW_TMLWE * p, const uint64_t * a,
         &sab_pvw_body_profile.sub_a_mat_ep_calls, mat_ep_begin);
     const uint64_t from_dft_begin = sab_pvw_now_us();
 #endif
+#ifdef SAB_PVW_SUBA_FUSED_FROM_DFT_ADD
+    pvmtmlwe_from_DFT_add(p[idx], sab->tmp->tmlwe_dft, p[idx]);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_from_dft_us,
+        &sab_pvw_body_profile.sub_a_from_dft_calls, from_dft_begin);
+#endif
+#else
     pvmtmlwe_from_DFT(sab->tmp->tmlwe, sab->tmp->tmlwe_dft);
 #ifdef SAB_PVW_BODY_PROFILE
     sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_from_dft_us,
@@ -1069,6 +1084,7 @@ void sab_pvw_sub_a_ternary(PVW_TMLWE * p, const uint64_t * a,
 #ifdef SAB_PVW_BODY_PROFILE
     sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_add_us,
         &sab_pvw_body_profile.sub_a_add_calls, add_begin);
+#endif
 #endif
   }
 #ifdef SAB_PVW_BODY_PROFILE

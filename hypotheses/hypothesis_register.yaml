@@ -3774,3 +3774,14 @@ H10_stage273_sub_a_from_DFT_add_alias_microtest:
     Stage273 records PASS_STAGE273_SUB_A_ALIAS_MICROTEST_ENABLES_FLAGGED_SMOKE. It permits only a flagged Stage274 smoke for
     backend-based sub_a fused materialization; it does not prove full SAB
     speedup and does not make the portable fallback alias-safe.
+H10_stage274_sub_a_fused_materialization_smoke:
+  status: NEUTRAL_STAGE274_SUB_A_FUSED_SMOKE_NO_PROMOTION
+  evidence:
+    - repro/stage274_sub_a_fused_materialization_smoke/bench_summary.csv
+    - repro/stage274_sub_a_fused_materialization_smoke/variant_compare.csv
+    - repro/stage274_sub_a_fused_materialization_smoke/proof_gate.csv
+    - docs/stage274_sub_a_fused_materialization_smoke.md
+  conclusion: >
+    Stage274 records NEUTRAL_STAGE274_SUB_A_FUSED_SMOKE_NO_PROMOTION. It keeps the result scoped to an explicit
+    fused sub_a smoke and measures incremental benefit as fused-vs-backend,
+    not only fused-vs-default.

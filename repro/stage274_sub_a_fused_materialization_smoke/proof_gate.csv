@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,interpretation
+G1_coverage,PASS,variant/mode coverage,"backend_from_dft_add:include_zero,default:include_zero,suba_fused_from_dft_add:include_zero,backend_from_dft_add:ternary,default:ternary,suba_fused_from_dft_add:ternary",bench_summary.csv,"Covers default, backend direct-add, and sub_a fused variants for r=4 include-zero and ternary."
+G2_correctness,PASS,PVW/scalar target correctness,6/6,bench_summary.csv,Correctness must pass before interpreting timing.
+G3_primary_metric,PASS,T_bootstrap/r,fused_vs_backend_same_backend,variant_compare.csv,"Incremental fused benefit is measured against backend direct-add, not only against default."
+G4_smoke_threshold,NEUTRAL,minimum fused speedup vs backend,0.751103x,variant_compare.csv,Single-run smoke requires both modes above 1.005x before repeated/noise/resource promotion.
+G5_default_path,PASS,default behavior,unchanged unless SAB_PVW_SUBA_FUSED_FROM_DFT_ADD=true,src/sab_pvw.c; src/mosfhet/Makefile.def,The scalar SAB and default PVW/MAT-SAB paths remain explicit baselines.
+G6_claim_boundary,PASS_SMOKE_ONLY,no final speedup claim,single_run,claim_boundary.csv,"Stage274 is a smoke gate, not final repeated evidence."
+G7_decision,NEUTRAL_STAGE274_SUB_A_FUSED_SMOKE_NO_PROMOTION,stage decision,NEUTRAL_STAGE274_SUB_A_FUSED_SMOKE_NO_PROMOTION,proof_gate.csv,Promotion requires a positive smoke; neutral results close this local fused materialization candidate.

@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+sub_a_fused_materialization,neutral_or_failed,Stage274 screens an explicit sub_a fused materialization flag using full SAB T_bootstrap/r.,Stage274 is final evidence for a complete SAB acceleration.,variant_compare.csv; proof_gate.csv
+incremental_algorithm_delta,measured_as_fused_vs_backend,The incremental local change is fused vs backend direct-add under the same backend.,Default-vs-fused alone proves the sub_a fusion contribution.,variant_compare.csv
+default_scalar_baseline,preserved,Default paths are unchanged unless explicit flags are passed.,The fused path replaces scalar SAB or default PVW/MAT-SAB.,src/sab_pvw.c; src/mosfhet/Makefile.def

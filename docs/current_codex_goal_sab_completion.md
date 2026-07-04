@@ -921,3 +921,9 @@ implementation and keeps all speedup claims bounded by Stage271 Amdahl shares.
 `sub_a` fused materialization candidate. It validates only the backend
 direct-add route under deterministic r=4 fixtures and keeps the default fallback
 as a negative control.
+### Stage274 sub_a fused materialization smoke
+
+`NEUTRAL_STAGE274_SUB_A_FUSED_SMOKE_NO_PROMOTION` records the explicit `SAB_PVW_SUBA_FUSED_FROM_DFT_ADD` full SAB
+smoke. The primary metric is `T_bootstrap/r`, and the incremental local
+comparison is fused vs backend direct-add under the same `spqlios_avx512`
+backend.

@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,status,failure_action
+P0,stage275_close_s272a_select_next_candidate,Stage274 neutral or failed.,Close fused materialization candidate and select selector MAT EP or rotation/copy candidate from Stage272.,selected,Do not default-enable fused sub_a.
+P1,stage276_selector_mat_ep_kernel_or_profile,Stage271 says selector MAT EP dominates non-binary sub_a.,Design a falsifiable selector-kernel or schedule-level candidate.,conditional,Keep claim boundary: no speedup without full SAB A/B.

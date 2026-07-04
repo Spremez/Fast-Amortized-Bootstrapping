@@ -1,0 +1,3 @@
+mode,r,default_t_bootstrap_over_r_us,backend_t_bootstrap_over_r_us,fused_t_bootstrap_over_r_us,backend_speedup_vs_default,fused_speedup_vs_default,fused_speedup_vs_backend,default_correctness,backend_correctness,fused_correctness,status
+include_zero,4,7772539.250,7662980.000,10202304.750,1.014297,0.761842,0.751103,Pass,Pass,Pass,neutral_or_negative
+ternary,4,7898839.750,7733272.750,9612174.000,1.021410,0.821754,0.804529,Pass,Pass,Pass,neutral_or_negative
