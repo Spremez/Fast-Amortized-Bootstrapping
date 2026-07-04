@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_logs,PASS,raw run logs,3,Repeated isolated microbench logs must exist.
+G2_correctness,PASS,all runs status,3/3,Array wrapper must match scalar-loop DFT output.
+G3_performance,NO_PROMOTION,min speedup,0.923000,Promotion requires every repeated run to clear 1.02x before full-SAB A/B.
+G4_claim_boundary,PASS,claim scope,isolated torus_to_DFT wrapper only,No complete-SAB speedup or theoretical-optimality claim is made here.
+G5_decision,NEUTRAL_STAGE289_DFT_ARRAY_WRAPPER_NO_PROMOTION,stage decision,NEUTRAL_STAGE289_DFT_ARRAY_WRAPPER_NO_PROMOTION,Use this result to admit or reject the wrapper as the next hot-path candidate.

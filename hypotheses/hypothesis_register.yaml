@@ -3915,3 +3915,16 @@ H10_stage288_mat_ep_split_profile:
     Stage288 records instrumentation-only MAT EP split evidence for the
     selected path. It selects the next isolated microbench target but does not
     provide final latency or optimality evidence.
+
+H10_stage289_mat_dft_array_microbench:
+  status: NEUTRAL_STAGE289_DFT_ARRAY_WRAPPER_NO_PROMOTION
+  evidence:
+    - repro/stage289_mat_dft_array_microbench/run_metrics.csv
+    - repro/stage289_mat_dft_array_microbench/bench_summary.csv
+    - repro/stage289_mat_dft_array_microbench/proof_gate.csv
+    - docs/stage289_mat_dft_array_microbench.md
+  conclusion: >
+    Stage289 isolates the dominant Stage288 torus_to_dft component. The
+    multi-row DFT wrapper is correctness-clean, but it is promoted only if the
+    repeated isolated microbench clears the speedup gate; otherwise Stage290
+    must target deeper DFT lifecycle reduction.

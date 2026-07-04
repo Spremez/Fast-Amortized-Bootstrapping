@@ -1,0 +1,2 @@
+MAT_DFT_ARRAY correctness rows=5 N=2048 max_abs_diff=0 diff_count=0 status=Pass
+MAT_DFT_ARRAY bench rows=5 N=2048 reps=5000 scalar_loop_avg_us=10.805 array_avg_us=11.666 scalar_per_row_us=2.161 array_per_row_us=2.333 speedup_vs_scalar_loop=0.926x checksum=-5.3139805124940551e+21

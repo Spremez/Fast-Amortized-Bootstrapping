@@ -3028,3 +3028,12 @@ Repro artifacts:
   - `scripts/run_stage288_mat_ep_split_profile.sh`
   - `scripts/build_stage288_mat_ep_split_profile.py`
   - `repro/stage288_mat_ep_split_profile/`
+
+- stage289_mat_dft_array_microbench:
+  - `docs/stage289_mat_dft_array_microbench.md`
+  - `theory_checks/stage289_torus_to_dft_array_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage289_dft_array_wrapper_result.md`
+  - `experiments/stage289_mat_dft_array_microbench_plan.md`
+  - `scripts/run_stage289_mat_dft_array_microbench.sh`
+  - `scripts/build_stage289_mat_dft_array_microbench.py`
+  - `repro/stage289_mat_dft_array_microbench/`

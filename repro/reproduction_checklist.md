@@ -415,3 +415,6 @@
 - [x] Stage286 records `PASS_STAGE286_MAT_EP_SPLIT_PROXY_READY_NATIVE_COUNTER_REQUIRED` for MAT EP split/counter admission.
 <!-- stage288-mat-ep-split-profile-checklist -->
 - [x] Stage288 records `PASS_STAGE288_MAT_EP_SPLIT_PROFILE_RECORDED_MICROBENCH_NEXT` for MAT EP split profiling.
+
+<!-- stage289-mat-dft-array-microbench-checklist -->
+- [x] Stage289 records `NEUTRAL_STAGE289_DFT_ARRAY_WRAPPER_NO_PROMOTION` for isolated torus-to-DFT array-wrapper microbench.

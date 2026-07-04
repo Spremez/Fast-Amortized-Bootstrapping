@@ -1,0 +1,2 @@
+decision,runs,correct_runs,rows,N,reps,scalar_loop_avg_us_mean,array_avg_us_mean,speedup_vs_scalar_loop_mean,speedup_vs_scalar_loop_min,speedup_vs_scalar_loop_max,claim
+NEUTRAL_STAGE289_DFT_ARRAY_WRAPPER_NO_PROMOTION,3,3,5,2048,5000,10.838000,11.405667,0.948000,0.923000,0.995000,microbench_only_not_full_sab_latency

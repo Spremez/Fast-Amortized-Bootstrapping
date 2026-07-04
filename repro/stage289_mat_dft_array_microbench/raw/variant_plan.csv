@@ -1,0 +1,2 @@
+variant,rows,N,reps,runs,fft_lib,flags
+multirow_dft_wrapper,5,2048,5000,3,spqlios_avx512,MAT_TRGSW_DFT_ARRAY_BENCH=true MAT_TRGSW_MULTIROW_DFT_WRAPPER=true

@@ -4825,9 +4825,112 @@ void test_sab_pvw_include_zero_fast_resource(){
 }
 #endif
 
+#if defined(MAT_TRGSW_DFT_ARRAY_BENCH)
+#ifndef MAT_TRGSW_DFT_ARRAY_BENCH_N
+#define MAT_TRGSW_DFT_ARRAY_BENCH_N 2048
+#endif
+#ifndef MAT_TRGSW_DFT_ARRAY_BENCH_ROWS
+#define MAT_TRGSW_DFT_ARRAY_BENCH_ROWS 5
+#endif
+#ifndef MAT_TRGSW_DFT_ARRAY_BENCH_REPS
+#define MAT_TRGSW_DFT_ARRAY_BENCH_REPS 2000
+#endif
+
+void test_mat_trgsw_dft_array_bench(){
+  const int N = MAT_TRGSW_DFT_ARRAY_BENCH_N;
+  const int rows = MAT_TRGSW_DFT_ARRAY_BENCH_ROWS;
+  const uint64_t reps = MAT_TRGSW_DFT_ARRAY_BENCH_REPS;
+  if(N <= 0 || rows <= 0 || reps == 0){
+    printf("MAT_DFT_ARRAY invalid config rows=%d N=%d reps=%" PRIu64 "\n",
+           rows, N, reps);
+    exit(1);
+  }
+
+  TorusPolynomial * input = polynomial_new_array_of_torus_polynomials(N, rows);
+  DFT_Polynomial * scalar_out = polynomial_new_array_of_polynomials_DFT(N, rows);
+  DFT_Polynomial * array_out = polynomial_new_array_of_polynomials_DFT(N, rows);
+  for (size_t row = 0; row < (size_t) rows; row++){
+    generate_random_bytes(sizeof(Torus) * (size_t) N,
+        (uint8_t *) input[row]->coeffs);
+  }
+
+  init_fft(N);
+  for (size_t warm = 0; warm < 10; warm++){
+    for (size_t row = 0; row < (size_t) rows; row++){
+      polynomial_torus_to_DFT(scalar_out[row], input[row]);
+    }
+    polynomial_torus_to_DFT_array(array_out, input, rows);
+  }
+
+  for (size_t row = 0; row < (size_t) rows; row++){
+    polynomial_torus_to_DFT(scalar_out[row], input[row]);
+  }
+  polynomial_torus_to_DFT_array(array_out, input, rows);
+
+  double max_abs_diff = 0.0;
+  uint64_t diff_count = 0;
+  for (size_t row = 0; row < (size_t) rows; row++){
+    for (size_t idx = 0; idx < (size_t) N; idx++){
+      double diff = scalar_out[row]->coeffs[idx] - array_out[row]->coeffs[idx];
+      if(diff < 0.0) diff = -diff;
+      if(diff > max_abs_diff) max_abs_diff = diff;
+      if(diff != 0.0) diff_count++;
+    }
+  }
+  const int pass = max_abs_diff <= 1e-9;
+  printf("MAT_DFT_ARRAY correctness rows=%d N=%d max_abs_diff=%.17g"
+         " diff_count=%" PRIu64 " status=%s\n",
+         rows, N, max_abs_diff, diff_count, pass ? "Pass" : "Fail");
+  if(!pass) exit(1);
+
+  uint64_t scalar_total_us = 0;
+  volatile double scalar_sink = 0.0;
+  for (size_t rep = 0; rep < (size_t) reps; rep++){
+    const uint64_t start = get_time();
+    for (size_t row = 0; row < (size_t) rows; row++){
+      polynomial_torus_to_DFT(scalar_out[row], input[row]);
+    }
+    scalar_total_us += get_time() - start;
+    scalar_sink += scalar_out[rep % (size_t) rows]->coeffs[rep % (size_t) N];
+  }
+
+  uint64_t array_total_us = 0;
+  volatile double array_sink = 0.0;
+  for (size_t rep = 0; rep < (size_t) reps; rep++){
+    const uint64_t start = get_time();
+    polynomial_torus_to_DFT_array(array_out, input, rows);
+    array_total_us += get_time() - start;
+    array_sink += array_out[rep % (size_t) rows]->coeffs[rep % (size_t) N];
+  }
+
+  const double scalar_avg_us = ((double) scalar_total_us) / ((double) reps);
+  const double array_avg_us = ((double) array_total_us) / ((double) reps);
+  const double scalar_per_row_us = scalar_avg_us / ((double) rows);
+  const double array_per_row_us = array_avg_us / ((double) rows);
+  const double speedup =
+      array_total_us == 0 ? 0.0 : ((double) scalar_total_us) / ((double) array_total_us);
+  printf("MAT_DFT_ARRAY bench rows=%d N=%d reps=%" PRIu64
+         " scalar_loop_avg_us=%.3f array_avg_us=%.3f"
+         " scalar_per_row_us=%.3f array_per_row_us=%.3f"
+         " speedup_vs_scalar_loop=%.3fx checksum=%.17g\n",
+         rows, N, reps, scalar_avg_us, array_avg_us, scalar_per_row_us,
+         array_per_row_us, speedup, (double) (scalar_sink + array_sink));
+
+  for (size_t row = 0; row < (size_t) rows; row++){
+    free_DFT_polynomial(array_out[row]);
+    free_DFT_polynomial(scalar_out[row]);
+  }
+  free(array_out);
+  free(scalar_out);
+  free_array_of_polynomials(input, rows);
+}
+#endif
+
 int main(int argc, char const *argv[])
 {
-#if defined(SAB_PVW_TARGET_TEST)
+#if defined(MAT_TRGSW_DFT_ARRAY_BENCH)
+  test_mat_trgsw_dft_array_bench();
+#elif defined(SAB_PVW_TARGET_TEST)
   test_sab_pvw_target_full();
 #elif defined(SAB_PVW_SUBA_ALIAS_TEST)
   test_sab_pvw_suba_alias_microtest();

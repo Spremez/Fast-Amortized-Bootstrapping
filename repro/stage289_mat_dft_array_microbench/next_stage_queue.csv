@@ -1,0 +1,3 @@
+priority,stage,input,task,gate
+P0,stage290_dft_lifecycle_avoidance_design,Stage289 negative wrapper result,Design a candidate that removes or fuses torus-to-double/DFT lifecycle work instead of only wrapping per-row calls.,isolated correctness plus microbench before full-SAB A/B
+P1,stage291_full_sab_ab_after_dft_candidate,first Stage290 positive candidate,Run unprofiled complete-SAB T_bootstrap/r A/B only after an isolated candidate clears Stage290.,same-backend repeated full-SAB correctness/performance

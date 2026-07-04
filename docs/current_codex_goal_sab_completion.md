@@ -999,3 +999,11 @@ exists.
 `PASS_STAGE288_MAT_EP_SPLIT_PROFILE_RECORDED_MICROBENCH_NEXT` records a profiled split run for the current selected
 `backend_sub_decomp_dual` path. The result is instrumentation-only and selects
 the next isolated microbench target; it is not final `T_bootstrap/r` evidence.
+
+<!-- stage289-mat-dft-array-microbench -->
+### Stage289 MAT DFT array microbench
+
+`NEUTRAL_STAGE289_DFT_ARRAY_WRAPPER_NO_PROMOTION` isolates the Stage288 `torus_to_dft` bottleneck by testing the
+existing multi-row DFT wrapper against the scalar per-row conversion loop.
+Correctness is separated from performance, and the result remains
+microbench-only. Complete-SAB `T_bootstrap/r` claims remain gated.
