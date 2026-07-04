@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_stage333_input,PASS,Stage333 decision,PASS,Stage334 requires a prior real-source novelty matrix.
+G2_686_anchor_review,PASS,Stage102 reviewed anchors,reviewed,The target scalar SAB protocol has source anchors.
+G3_ring_packing_fulltext,PASS,Ring Packing local full text,pdf=True; text=True; anchors=True,Broad multi-message novelty is blocked by audited prior art.
+G4_high_risk_fulltext_complete,BLOCK,Sharing the Mask / packed TFHE / MOSFHET / 2025_696,metadata_only_or_blocked,Novelty remains open; no broad novelty wording is allowed.
+G5_decision,PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED,claim boundary,scoped systems result allowed; novelty blocked,Controls Stage335: acquire missing full texts or continue compact security.

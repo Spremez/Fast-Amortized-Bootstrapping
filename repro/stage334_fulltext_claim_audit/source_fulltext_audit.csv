@@ -1,0 +1,7 @@
+source,status,evidence,sha256_or_path,claim_boundary
+2025_686_target_sab,FULLTEXT_ANCHORS_REVIEWED_BY_STAGE102,repro/stage102_686_source_anchor_review/review_matrix.csv,external PDF sha recorded in Stage100; full text not committed,Can cite protocol/complexity/correctness anchors for scalar 2025/686; does not prove local PVW/MAT novelty.
+ring_packing_2018,LOCAL_FULLTEXT_AUDITED,repro/stage334_fulltext_claim_audit/ring_packing_anchor_hits.csv,pdf_sha256=59f47e38139129b62b5c51cc7186427d03a121f6ea3b49a70a4d3c787615097e; text_sha256=2da7fea2c1e38c212214dac90cd62a717d4cca2f2e302e5aba08a8ac1ac68846,Strong prior art against broad multi-message/amortized bootstrapping novelty wording.
+sharing_the_mask_2025_2112,FULLTEXT_BLOCKED_BY_EPRINT_CLOUDFLARE_METADATA_ONLY,Stage333 DBLP/AskCryptography metadata,not acquired,Critical blocker for shared-mask/r-body novelty; no novelty wording until full text is audited.
+packed_tfhe_2017_430,FULLTEXT_BLOCKED_BY_EPRINT_CLOUDFLARE_METADATA_ONLY,Stage333 metadata,not acquired,Blocks broad packed-TFHE novelty wording.
+mosfhet_2022_515,FULLTEXT_BLOCKED_BY_EPRINT_CLOUDFLARE_METADATA_PLUS_GITHUB,Stage333 metadata and MOSFHET GitHub,not acquired,Blocks backend/AVX novelty or optimality wording.
+2025_696_incomplete_ntt,FULLTEXT_BLOCKED_BY_EPRINT_CLOUDFLARE_METADATA_ONLY,Stage333 metadata,not acquired,Blocks broad latest-amortized-bootstrapping comparison wording.

@@ -3312,3 +3312,10 @@ Repro artifacts:
   - `experiments/stage334_fulltext_claim_audit_or_compact_security_plan.md`
   - `scripts/build_stage333_literature_novelty_verification.py`
   - `repro/stage333_literature_novelty_verification/`
+<!-- stage334-fulltext-claim-audit-manifest -->
+- stage334_fulltext_claim_audit:
+  - `docs/stage334_fulltext_claim_audit.md`
+  - `theory_checks/stage334_fulltext_claim_boundary_model.md`
+  - `experiments/stage335_fulltext_acquisition_or_compact_security_plan.md`
+  - `scripts/build_stage334_fulltext_claim_audit.py`
+  - `repro/stage334_fulltext_claim_audit/`

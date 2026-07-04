@@ -7259,3 +7259,10 @@ Status: `PASS_STAGE332_SCOPED_PAPER_RESULT_PACK`.
 Goal: build a verified related-work matrix and novelty-risk map for PVW/MAT-SAB.
 
 Status: `PASS_STAGE333_REAL_SOURCE_MATRIX_NOVELTY_CLAIM_OPEN`.
+<!-- stage334-fulltext-claim-audit-roadmap -->
+## Stage 334: Full-Text Claim Audit
+
+Goal: replace metadata-only novelty risk with source-anchor/full-text claim
+boundaries where available.
+
+Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.

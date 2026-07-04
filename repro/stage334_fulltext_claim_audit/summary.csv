@@ -1,0 +1,2 @@
+decision,target_686_fulltext,ring_packing_fulltext,critical_adjacent_fulltext,allowed_claim,blocked_claims,selected_next
+PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED,reviewed_by_stage102,audited,blocked_or_metadata_only,scoped systems T_bootstrap/r result,novelty; shared-mask/r-body first claim; compact acceleration; AVX optimality; all-parameter generality,stage335_missing_fulltext_acquisition_or_compact_security

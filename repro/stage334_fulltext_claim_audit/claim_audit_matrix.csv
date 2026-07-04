@@ -1,0 +1,6 @@
+claim,status,evidence,safe_wording,blocked_wording
+scoped_systems_result,ALLOW,Stage331/332 high-stat current-head result plus Stage102 scalar SAB anchors.,Scoped measured PVW/MAT-SAB complete T_bootstrap/r improvement for the tested path.,Universal or theorem-level acceleration.
+broad_multi_message_novelty,BLOCK,Ring Packing full-text audit shows prior simultaneous/amortized refresh over many messages.,Our work is a scoped implementation study within 2025/686 SAB.,First amortized or multi-message bootstrapping.
+shared_mask_r_body_novelty,BLOCK,Sharing-the-Mask full text unavailable; Stage333 metadata shows direct high-risk adjacent work.,PVW/MAT shared-mask path evaluated for this SAB implementation.,Novel shared-mask/r-body bootstrapping construction.
+external_product_count_reduction,BLOCK,Current path improves throughput constants; compact product-count reduction remains proof-blocked.,Measured constant-factor throughput improvement.,New asymptotic SAB algorithm or external-product count theorem.
+backend_avx_optimality,BLOCK,"MOSFHET/AVX full text not audited; current evidence is experimental, not lower-bound proof.",Implementation uses spqlios_avx512 under recorded flags.,MAT AVX512 implementation is theoretically optimal.

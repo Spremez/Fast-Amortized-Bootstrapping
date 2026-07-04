@@ -509,3 +509,5 @@
 - [x] Stage332 records `PASS_STAGE332_SCOPED_PAPER_RESULT_PACK` and updates the current PVW/MAT-SAB result table.
 <!-- stage333-literature-novelty-checklist -->
 - [x] Stage333 records `PASS_STAGE333_REAL_SOURCE_MATRIX_NOVELTY_CLAIM_OPEN` with real sources and no novelty claim.
+<!-- stage334-fulltext-claim-audit-checklist -->
+- [x] Stage334 records `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED` and keeps novelty blocked pending missing full-text audits.

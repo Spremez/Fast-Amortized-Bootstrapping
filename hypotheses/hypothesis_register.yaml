@@ -4405,3 +4405,15 @@ H333_literature_novelty_verification:
   conclusion: >
     Stage333 verifies real related sources and blocks broad novelty wording
     until Stage334 full-text claim audit closes high-risk adjacent work.
+H334_fulltext_claim_audit:
+  status: PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED
+  primary_metric: fulltext_claim_boundary
+  evidence:
+    - repro/stage334_fulltext_claim_audit/source_fulltext_audit.csv
+    - repro/stage334_fulltext_claim_audit/claim_audit_matrix.csv
+    - repro/stage334_fulltext_claim_audit/fulltext_blockers.csv
+    - repro/stage334_fulltext_claim_audit/proof_gate.csv
+  conclusion: >
+    Stage334 supports only the scoped systems result. Broad novelty remains
+    blocked because high-risk shared-mask/backend/latest-work full texts are
+    not yet audited.

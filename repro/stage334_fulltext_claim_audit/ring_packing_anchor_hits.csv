@@ -1,0 +1,5 @@
+anchor,status,line_refs,claim_use
+abstract_simultaneous_refresh,FOUND,18;19;20,Prior art for broad multi-message/amortized refresh wording; not a proof about 2025/686 PVW/MAT-SAB.
+intro_packed_bootstrapping,FOUND,86;87;88;98;99;100;148;149,Prior art for broad multi-message/amortized refresh wording; not a proof about 2025/686 PVW/MAT-SAB.
+overview_many_messages,FOUND,84;85;86;98;99;100;101;102,Prior art for broad multi-message/amortized refresh wording; not a proof about 2025/686 PVW/MAT-SAB.
+packing_lwe_to_ring,FOUND,198;199;200;427;428;429;430;431,Prior art for broad multi-message/amortized refresh wording; not a proof about 2025/686 PVW/MAT-SAB.

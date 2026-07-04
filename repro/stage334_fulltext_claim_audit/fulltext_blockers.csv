@@ -1,0 +1,3 @@
+blocked_source,observed_failure,affected_claims,required_resolution
+ePrint PDFs,Cloudflare challenge HTML returned instead of PDF for automated curl attempts.,sharing-mask novelty; packed TFHE novelty; MOSFHET backend claims; 2025/696 latest-work comparison,"Provide accessible PDFs or manually register full-text anchors, then rerun Stage334/335."
+compact_selector_security,Stage329 finite algebra passed but production keygen/distribution/noise obligations remain open.,compact selector acceleration; external-product count reduction,Stage335 compact keygen/security preflight before code or claim promotion.
