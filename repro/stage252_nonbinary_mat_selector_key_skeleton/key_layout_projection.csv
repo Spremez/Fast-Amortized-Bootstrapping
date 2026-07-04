@@ -1,0 +1,13 @@
+param,branch,h,r_prec,distance_count,coff_count,sign_count,total_selector_objects,count_ratio_vs_binary,interpretation
+target_SET_2_3_2048,binary,39,7,280,0,0,280,1.000000,"selector-object count only; not byte, noise, or speed evidence"
+target_SET_2_3_2048,include_zero,39,7,280,39,0,319,1.139286,"selector-object count only; not byte, noise, or speed evidence"
+target_SET_2_3_2048,ternary,39,7,280,0,39,319,1.139286,"selector-object count only; not byte, noise, or speed evidence"
+target_SET_2_3_2048,include_zero_plus_ternary_stress,39,7,280,39,39,358,1.278571,"selector-object count only; not byte, noise, or speed evidence"
+added_SET_4_5_2048,binary,42,7,301,0,0,301,1.000000,"selector-object count only; not byte, noise, or speed evidence"
+added_SET_4_5_2048,include_zero,42,7,301,42,0,343,1.139535,"selector-object count only; not byte, noise, or speed evidence"
+added_SET_4_5_2048,ternary,42,7,301,0,42,343,1.139535,"selector-object count only; not byte, noise, or speed evidence"
+added_SET_4_5_2048,include_zero_plus_ternary_stress,42,7,301,42,42,385,1.279070,"selector-object count only; not byte, noise, or speed evidence"
+added_SET_2_3_4096,binary,32,8,264,0,0,264,1.000000,"selector-object count only; not byte, noise, or speed evidence"
+added_SET_2_3_4096,include_zero,32,8,264,32,0,296,1.121212,"selector-object count only; not byte, noise, or speed evidence"
+added_SET_2_3_4096,ternary,32,8,264,0,32,296,1.121212,"selector-object count only; not byte, noise, or speed evidence"
+added_SET_2_3_4096,include_zero_plus_ternary_stress,32,8,264,32,32,328,1.242424,"selector-object count only; not byte, noise, or speed evidence"

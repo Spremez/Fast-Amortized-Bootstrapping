@@ -1,0 +1,5 @@
+component,selector_family,role,count_per_key,mat_object,source_delta,production_status
+distance_bits,s,binary sparse distance bits shared across r body lanes,(h + 1) * r_prec,MAT_TRGSW_DFT,matches current SAB_PVW_Key::s,existing_binary_only
+include_zero_presence,s_coff,"presence selector c in {0,1}: p + c((X^a - 1)p)",h if include_zero,MAT_TRGSW_DFT,new non-production skeleton family,not_implemented
+ternary_sign,s_sign,"sign selector s in {0,1}: choose X^a or X^-a",h if ternary,MAT_TRGSW_DFT,new non-production skeleton family,not_implemented
+selector_api_boundary,stage252_key,own optional selector families without changing SAB_PVW_Key,distance + optional s_coff + optional s_sign,metadata-only C skeleton in repro,no production header/source edit,isolated_preflight_only

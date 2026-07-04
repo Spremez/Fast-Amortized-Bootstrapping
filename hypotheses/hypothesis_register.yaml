@@ -3506,3 +3506,16 @@ H10_stage251_nonbinary_selector_semantics:
     negative-control fails as expected. Current PVW/MAT-SAB lacks MAT
     s_sign/s_coff selector families and remains binary-only; production
     implementation is denied pending a separate selector/key skeleton.
+H10_stage252_nonbinary_mat_selector_key_skeleton:
+  status: nonbinary_selector_key_skeleton_ready_isolated_equivalence
+  evidence:
+    - repro/stage252_nonbinary_mat_selector_key_skeleton/skeleton_design_matrix.csv
+    - repro/stage252_nonbinary_mat_selector_key_skeleton/toy_key_object_probe.csv
+    - repro/stage252_nonbinary_mat_selector_key_skeleton/source_isolation.csv
+    - repro/stage252_nonbinary_mat_selector_key_skeleton/proof_gate.csv
+    - docs/stage252_nonbinary_mat_selector_key_skeleton.md
+  conclusion: >
+    Stage252 records PASS_STAGE252_NONBINARY_MAT_SELECTOR_KEY_SKELETON_READY_ISOLATED_EQUIVALENCE. It defines a non-production MAT selector
+    key/storage skeleton for distance bits plus optional s_coff and s_sign,
+    compile-probes layout/guard/hot-scan invariants, and keeps production
+    SAB/PVW source unchanged. Only isolated equivalence is admitted next.

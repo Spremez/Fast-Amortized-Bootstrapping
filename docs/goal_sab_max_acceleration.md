@@ -1187,3 +1187,6 @@ sources as explicit TODOs instead of fabricating references.
 - Stage251 non-binary selector semantics records `PASS_STAGE251_NONBINARY_SELECTOR_SEMANTICS_PREFLIGHT_BLOCKS_IMPLEMENTATION`: scalar
   ternary/include-zero equations are identified, but current PVW/MAT-SAB
   remains binary-only and no non-binary production implementation is admitted.
+- Stage252 non-binary MAT selector key skeleton records `PASS_STAGE252_NONBINARY_MAT_SELECTOR_KEY_SKELETON_READY_ISOLATED_EQUIVALENCE`: the
+  required `s_coff/s_sign` MAT selector storage is now defined as a
+  non-production skeleton, but non-binary PVW/MAT-SAB remains unimplemented.

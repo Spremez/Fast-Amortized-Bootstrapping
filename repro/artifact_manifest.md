@@ -2828,3 +2828,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage251_nonbinary_selector_semantics.md`
   - `scripts/build_stage251_nonbinary_selector_semantics.py`
   - `repro/stage251_nonbinary_selector_semantics/`
+- stage252_nonbinary_mat_selector_key_skeleton:
+  - `docs/stage252_nonbinary_mat_selector_key_skeleton.md`
+  - `experiments/stage252_nonbinary_mat_selector_key_skeleton_plan.md`
+  - `theory_checks/stage252_nonbinary_mat_selector_key_skeleton_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage252_nonbinary_mat_selector_key_skeleton.md`
+  - `scripts/build_stage252_nonbinary_mat_selector_key_skeleton.py`
+  - `repro/stage252_nonbinary_mat_selector_key_skeleton/`

@@ -351,3 +351,4 @@
 - [x] Stage249 structured compact distribution/security preflight freezes production route `PASS_STAGE249_COMPACT_SECURITY_PREFLIGHT_FREEZE_PRODUCTION_ROUTE`.
 - [x] Stage250 exact dense lower-bound gap keeps optimality open `PASS_STAGE250_EXACT_DENSE_GAP_REFRESH_OPTIMALITY_OPEN`.
 - [x] Stage251 non-binary selector semantics blocks production implementation `PASS_STAGE251_NONBINARY_SELECTOR_SEMANTICS_PREFLIGHT_BLOCKS_IMPLEMENTATION`.
+- [x] Stage252 non-binary MAT selector key skeleton ready for isolated equivalence `PASS_STAGE252_NONBINARY_MAT_SELECTOR_KEY_SKELETON_READY_ISOLATED_EQUIVALENCE`.

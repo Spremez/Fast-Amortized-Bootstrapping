@@ -1,0 +1,4 @@
+route,decision,production_permission,allowed_next_step,blocked_before
+stage252_key_skeleton,ADMITTED_NON_PRODUCTION,no,Stage253 isolated sub_a equivalence,production keygen; full sparse_mul; full SAB; speed claim
+include_zero_pvw,SKELETON_ONLY,no,prove p + c((X^a - 1)p) per lane using MAT s_coff,noise/resource/full-SAB evidence
+ternary_pvw,SKELETON_ONLY,no,prove X^a vs X^-a per lane using MAT s_sign,noise/resource/full-SAB evidence

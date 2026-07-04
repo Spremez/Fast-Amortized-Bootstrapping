@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage253_isolated_nonbinary_pvw_sub_a_equivalence,Stage252 skeleton passes compile/layout/source-isolation gates.,prove include-zero and ternary sub_a equations per lane against scalar reference,selected_next,keep non-binary PVW unsupported,repro/stage252_nonbinary_mat_selector_key_skeleton/toy_key_object_probe.csv
+P1,stage254_nonbinary_selector_keygen_noise_preflight,Stage253 isolated equivalence passes.,define encrypted MAT s_coff/s_sign keygen and noise/resource side conditions,conditional,do not integrate full SAB,repro/stage252_nonbinary_mat_selector_key_skeleton/admission_decision.csv
+P2,stage255_nonbinary_full_sab,keygen/noise preflight passes and production implementation is explicitly admitted,"same-backend complete-SAB T_bootstrap/r, multi-seed correctness/noise, resource",future_gated,no non-binary speedup claim,repro/stage252_nonbinary_mat_selector_key_skeleton/claim_boundary.csv

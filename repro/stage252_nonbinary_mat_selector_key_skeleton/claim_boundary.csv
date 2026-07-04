@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+nonbinary_selector_key_skeleton,supported_nonproduction,A non-production MAT selector key skeleton for s_coff/s_sign is defined and compile-probed.,Non-binary PVW/MAT-SAB is implemented.,repro/stage252_nonbinary_mat_selector_key_skeleton/toy_key_object_probe.csv
+nonbinary_speedup,unsupported,No non-binary speedup is claimed.,Ternary/include-zero PVW bootstrapping is faster than scalar.,repro/stage252_nonbinary_mat_selector_key_skeleton/admission_decision.csv
+source_isolation,supported,Stage252 does not change production SAB/PVW source files.,Stage252 productionizes non-binary support.,repro/stage252_nonbinary_mat_selector_key_skeleton/source_isolation.csv

@@ -783,3 +783,8 @@ mechanism, and final paper/citation closure.
 `PASS_STAGE251_NONBINARY_SELECTOR_SEMANTICS_PREFLIGHT_BLOCKS_IMPLEMENTATION` keeps the active research goal disciplined. Non-binary PVW/MAT-SAB
 cannot be claimed or implemented by removing binary guards; the next valid work
 is a separate MAT selector/key skeleton for `s_sign` and `s_coff`.
+### Stage252 non-binary MAT selector key skeleton
+
+`PASS_STAGE252_NONBINARY_MAT_SELECTOR_KEY_SKELETON_READY_ISOLATED_EQUIVALENCE` advances non-binary support from semantics to a compile-probed
+selector/key skeleton. The active goal remains open for isolated equivalence,
+keygen/noise/resource, full SAB A/B, and paper claim closure.

@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs_and_stage251,PASS,inputs;stage251,true;true,repro/stage252_nonbinary_mat_selector_key_skeleton/input_status.csv; repro/stage251_nonbinary_selector_semantics/proof_gate.csv,Stage252 is valid only after Stage251 blocks current production non-binary PVW.
+G2_compile_run,PASS,compile;run,true;true,repro/stage252_nonbinary_mat_selector_key_skeleton/compile_probe.log; repro/stage252_nonbinary_mat_selector_key_skeleton/run_probe.log,The skeleton compiles and runs as an isolated C key-object probe.
+G3_layout_roles,PASS,probe_rows,8,repro/stage252_nonbinary_mat_selector_key_skeleton/toy_key_object_probe.csv,"Distance, s_coff, and s_sign selector-family counts and guards match the skeleton contract."
+G4_source_isolation,PASS,production_source_modified,no,repro/stage252_nonbinary_mat_selector_key_skeleton/source_isolation.csv,Stage252 leaves scalar/default and sab_pvw production sources unchanged.
+G5_admission_boundary,PASS_NO_PRODUCTION,production_permission,no,repro/stage252_nonbinary_mat_selector_key_skeleton/admission_decision.csv,Stage252 admits only Stage253 isolated equivalence.
+G6_stage252_decision,PASS_STAGE252_NONBINARY_MAT_SELECTOR_KEY_SKELETON_READY_ISOLATED_EQUIVALENCE,decision,PASS_STAGE252_NONBINARY_MAT_SELECTOR_KEY_SKELETON_READY_ISOLATED_EQUIVALENCE,repro/stage252_nonbinary_mat_selector_key_skeleton/proof_gate.csv,"Proceed to isolated include-zero/ternary sub_a equivalence, not production SAB integration."

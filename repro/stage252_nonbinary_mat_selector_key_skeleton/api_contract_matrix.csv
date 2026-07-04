@@ -1,0 +1,5 @@
+api,inputs,positive_contract,negative_contract,hot_path_status
+stage252_key_alloc,"r, h, r_prec, include_zero, ternary",allocates distance bits plus requested optional selector families,"rejects r<=0, h<=0, r_prec<=0",non_production
+stage252_selector_at,"family, step, bit",returns distance/coff/sign selector metadata in range,rejects missing family and out-of-range indices,non_production
+stage252_hot_scan,key object,counts selector families without allocation,detects role/count mismatches,no hot allocation in probe
+stage253_entry_requirement,skeleton plus scalar equation target,may proceed to isolated sub_a equivalence only,does not authorize full SAB or production keygen,blocked

@@ -6849,3 +6849,21 @@ PVW/MAT-SAB has no MAT sign/coefficient selector families, rejects
 implementation is blocked; Stage252 must design a non-production selector/key
 skeleton first.
 ```
+## Stage 252: Non-Binary MAT Selector Key Skeleton
+
+Goal:
+
+```text
+Define the non-production MAT selector key/storage/API skeleton needed for
+include-zero and ternary PVW/MAT-SAB branches.
+```
+
+Status:
+
+```text
+Generated from input head `c5ed044` with `PASS_STAGE252_NONBINARY_MAT_SELECTOR_KEY_SKELETON_READY_ISOLATED_EQUIVALENCE`. Stage252 compiles and
+runs an isolated selector-key skeleton with existing distance bits plus
+optional `s_coff` and `s_sign` MAT selector families. Production SAB/PVW source
+files remain unchanged; Stage253 isolated sub_a equivalence is the only
+admitted next step.
+```
