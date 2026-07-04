@@ -958,3 +958,9 @@ residual components rather than pre-fast bottleneck assumptions.
 `PASS_STAGE280_RESIDUAL_CANDIDATE_SELECTED_REPEAT_REQUIRED` screens existing explicit CMUX/MAT-EP residual candidates under the
 guarded include-zero fast path. The selected next candidate is `backend_sub_decomp_dual` and
 requires repeated full-SAB A/B before any promotion.
+<!-- stage281-cmux-residual-repeated-gate -->
+### Stage281 CMUX residual repeated gate
+
+`PASS_STAGE281_REPEATED_POSITIVE_NOISE_RESOURCE_REQUIRED` repeats the Stage280 selected `backend_sub_decomp_dual` candidate
+against fast control using unprofiled complete SAB `T_bootstrap/r`. Noise,
+resource, and native gates remain open.

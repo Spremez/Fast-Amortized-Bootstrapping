@@ -1,0 +1,7 @@
+variant,rep,correctness,mode,r,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup_vs_scalar_repeated,source_run_log
+fast_control,0,Pass,include_zero,4,28390484,7097621.000,42334507,10583626.750,1.491,repro/stage281_cmux_residual_repeated_gate/raw/fast_control_latency_run.log
+fast_control,1,Pass,include_zero,4,28227766,7056941.500,42417923,10604480.750,1.503,repro/stage281_cmux_residual_repeated_gate/raw/fast_control_latency_run.log
+fast_control,2,Pass,include_zero,4,28087049,7021762.250,41912591,10478147.750,1.492,repro/stage281_cmux_residual_repeated_gate/raw/fast_control_latency_run.log
+backend_sub_decomp_dual,0,Pass,include_zero,4,26373865,6593466.250,42203454,10550863.500,1.600,repro/stage281_cmux_residual_repeated_gate/raw/backend_sub_decomp_dual_latency_run.log
+backend_sub_decomp_dual,1,Pass,include_zero,4,26412606,6603151.500,41887566,10471891.500,1.586,repro/stage281_cmux_residual_repeated_gate/raw/backend_sub_decomp_dual_latency_run.log
+backend_sub_decomp_dual,2,Pass,include_zero,4,26223686,6555921.500,42012224,10503056.000,1.602,repro/stage281_cmux_residual_repeated_gate/raw/backend_sub_decomp_dual_latency_run.log

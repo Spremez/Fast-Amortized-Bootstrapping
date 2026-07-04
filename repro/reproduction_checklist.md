@@ -403,3 +403,5 @@
 - [x] Stage279 records `PASS_STAGE279_NATIVE_ACCESS_MISSING_PROFILE_SELECT_RESIDUAL` with native access status and fast-path residual profile.
 <!-- stage280-cmux-mat-ep-residual-screen-checklist -->
 - [x] Stage280 records `PASS_STAGE280_RESIDUAL_CANDIDATE_SELECTED_REPEAT_REQUIRED` with unprofiled T_bootstrap/r and separate profile attribution.
+<!-- stage281-cmux-residual-repeated-gate-checklist -->
+- [x] Stage281 records `PASS_STAGE281_REPEATED_POSITIVE_NOISE_RESOURCE_REQUIRED` for the selected CMUX residual candidate with repeated unprofiled T_bootstrap/r.

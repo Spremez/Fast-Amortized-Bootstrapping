@@ -1,0 +1,11 @@
+component,control_component_us,candidate_component_us,control_over_candidate,status
+rgsw_monomial,27703225.000,25313795.000,1.094392,reduced
+cmux_total,27502958.000,25061287.000,1.097428,reduced
+mat_ep,13013291.000,15666484.000,0.830645,not_reduced
+cmux_from_dft,6451011.000,9338286.000,0.690813,not_reduced
+cmux_add,4006296.000,0.000,,reduced
+cmux_sub,3939465.000,59085.000,66.674537,reduced
+ncmux_total,428143.000,440656.000,0.971604,not_reduced
+ncmux_auto,168817.000,165853.000,1.017871,reduced
+dual_sub_pair,0.000,59085.000,,not_reduced
+sub_a_total,652545.000,651293.000,1.001922,reduced

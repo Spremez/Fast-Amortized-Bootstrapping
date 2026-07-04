@@ -1,0 +1,4 @@
+variant,reps,correctness,t_over_r_mean_us,t_over_r_stddev_us,t_over_r_min_us,t_over_r_max_us,scalar_t_over_r_mean_us,speedup_vs_scalar_mean,speedup_vs_fast_control_mean,conservative_control_min_over_candidate_max,decision
+fast_control,3,Pass,7058774.917,30996.328,7021762.250,7097621.000,10555418.417,1.495361,,,
+backend_sub_decomp_dual,3,Pass,6584179.750,20369.054,6555921.500,6603151.500,10508603.667,1.596038,,,
+comparison,3,Pass,,,,,,,1.072081,1.063396,PASS_STAGE281_REPEATED_POSITIVE_NOISE_RESOURCE_REQUIRED

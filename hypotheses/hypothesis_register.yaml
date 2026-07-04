@@ -3849,3 +3849,13 @@ H10_stage280_cmux_mat_ep_residual_screen:
     Stage280 screens CMUX/MAT-EP residual candidates under the current
     include-zero fast path. Selected candidate: backend_sub_decomp_dual. Repeated full-SAB
     A/B remains required before promotion.
+H10_stage281_cmux_residual_repeated_gate:
+  status: PASS_STAGE281_REPEATED_POSITIVE_NOISE_RESOURCE_REQUIRED
+  evidence:
+    - repro/stage281_cmux_residual_repeated_gate/latency_summary.csv
+    - repro/stage281_cmux_residual_repeated_gate/profile_delta_vs_control.csv
+    - repro/stage281_cmux_residual_repeated_gate/proof_gate.csv
+    - docs/stage281_cmux_residual_repeated_gate.md
+  conclusion: >
+    Stage281 repeated the selected CMUX residual candidate against the guarded
+    include-zero fast control. Noise/resource and native gates remain required.

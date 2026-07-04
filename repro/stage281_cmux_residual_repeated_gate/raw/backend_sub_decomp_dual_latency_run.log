@@ -1,0 +1,6 @@
+SAB_PVW_NONBINARY_BENCH correctness target_full mode=include_zero r=4 h=39 r_prec=7: Pass
+SAB_PVW_NONBINARY_BENCH sample target_full mode=include_zero r=4 rep=0 pvw_us=26373865 pvw_lane_us=6593466.250 scalar_repeated_us=42203454 scalar_lane_us=10550863.500 speedup=1.600x
+SAB_PVW_NONBINARY_BENCH sample target_full mode=include_zero r=4 rep=1 pvw_us=26412606 pvw_lane_us=6603151.500 scalar_repeated_us=41887566 scalar_lane_us=10471891.500 speedup=1.586x
+SAB_PVW_NONBINARY_BENCH sample target_full mode=include_zero r=4 rep=2 pvw_us=26223686 pvw_lane_us=6555921.500 scalar_repeated_us=42012224 scalar_lane_us=10503056.000 speedup=1.602x
+SAB_PVW_NONBINARY_BENCH summary target_full mode=include_zero r=4 reps=3 pvw_avg_us=26336719.000 pvw_stddev_us=99787.577 pvw_lane_avg_us=6584179.750 scalar_repeated_avg_us=42034414.667 scalar_stddev_us=159108.851 scalar_lane_avg_us=10508603.667 speedup_vs_scalar_repeated=1.596x speedup_stddev=0.009 t_bootstrap_over_r_pvw_us=6584179.750 t_bootstrap_over_r_scalar_us=10508603.667
+SAB_PVW_NONBINARY_BENCH target full nonbinary T_bootstrap_over_r gate: Pass

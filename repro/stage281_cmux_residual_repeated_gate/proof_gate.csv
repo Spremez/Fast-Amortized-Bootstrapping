@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_input,PASS,input commit,8ec1db9,Stage281 starts after Stage280 candidate selection.
+G2_correctness,PASS,latency correctness,Pass/Pass,Timing is interpreted only after both variants pass.
+G3_repeated_mean,PASS,candidate speedup vs fast_control mean,1.072081,Repeated mean uses unprofiled full SAB T_bootstrap/r.
+G4_conservative_bound,PASS_STRONG,control_min/candidate_max,1.063396,Conservative overlap check; not required for screen promotion but recorded.
+G5_profile_refresh,PASS,profile rows,20,Profile remains attribution-only.
+G6_decision,PASS_STAGE281_REPEATED_POSITIVE_NOISE_RESOURCE_REQUIRED,stage decision,PASS_STAGE281_REPEATED_POSITIVE_NOISE_RESOURCE_REQUIRED,Positive repeated result still needs noise/resource and native gates before final claims.

@@ -2992,3 +2992,8 @@ Repro artifacts:
   - `scripts/run_stage280_cmux_mat_ep_residual_screen.sh`
   - `scripts/build_stage280_cmux_mat_ep_residual_screen.py`
   - `repro/stage280_cmux_mat_ep_residual_screen/`
+- stage281_cmux_residual_repeated_gate:
+  - `docs/stage281_cmux_residual_repeated_gate.md`
+  - `scripts/run_stage281_cmux_residual_repeated_gate.sh`
+  - `scripts/build_stage281_cmux_residual_repeated_gate.py`
+  - `repro/stage281_cmux_residual_repeated_gate/`
