@@ -2966,3 +2966,8 @@ Repro artifacts:
   - `docs/stage275_close_s272a_select_next_candidate.md`
   - `scripts/build_stage275_close_s272a_select_next_candidate.py`
   - `repro/stage275_close_s272a_select_next_candidate/`
+- stage276_include_zero_coeff_one_fast_path:
+  - `docs/stage276_include_zero_coeff_one_fast_path.md`
+  - `scripts/run_stage276_include_zero_coeff_one_fast_path.sh`
+  - `scripts/build_stage276_include_zero_coeff_one_fast_path.py`
+  - `repro/stage276_include_zero_coeff_one_fast_path/`

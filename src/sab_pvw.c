@@ -989,6 +989,25 @@ void sab_pvw_sub_a_include_zero(PVW_TMLWE * p, const uint64_t * a,
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t sub_a_begin = sab_pvw_now_us();
 #endif
+#ifdef SAB_PVW_SUBA_INCLUDE_ZERO_COEFF_ONE_FAST
+  (void) selector;
+  for (size_t idx = 0; idx < sab->in_N; idx++){
+#ifdef SAB_PVW_BODY_PROFILE
+    const uint64_t rotate_begin = sab_pvw_now_us();
+#endif
+    pvmtmlwe_mul_by_xai(sab->tmp->tmlwe, p[idx], a[idx]);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_rotate_us,
+        &sab_pvw_body_profile.sub_a_rotate_calls, rotate_begin);
+    const uint64_t copy_begin = sab_pvw_now_us();
+#endif
+    pvmtmlwe_copy(p[idx], sab->tmp->tmlwe);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_copy_us,
+        &sab_pvw_body_profile.sub_a_copy_calls, copy_begin);
+#endif
+  }
+#else
   for (size_t idx = 0; idx < sab->in_N; idx++){
 #ifdef SAB_PVW_BODY_PROFILE
     const uint64_t mul_minus_1_begin = sab_pvw_now_us();
@@ -1026,6 +1045,7 @@ void sab_pvw_sub_a_include_zero(PVW_TMLWE * p, const uint64_t * a,
 #endif
 #endif
   }
+#endif
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_us,
       &sab_pvw_body_profile.sub_a_calls, sub_a_begin);

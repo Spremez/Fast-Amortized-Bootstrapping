@@ -932,3 +932,8 @@ backend.
 `PASS_STAGE275_CLOSE_S272A_SELECT_INCLUDE_ZERO_COEFF_ONE_FAST_PATH` closes the in-place `sub_a` fused materialization candidate after
 the Stage274 neutral smoke and selects a guarded include-zero coeff-one fast
 path as the next executable experiment. No speed claim is made at this stage.
+### Stage276 include-zero coeff-one fast path
+
+`PASS_STAGE276_INCLUDE_ZERO_FAST_SMOKE_POSITIVE_REPEAT_REQUIRED` records an explicit-flag smoke for the guarded current-PVW
+include-zero coeff-one fast path. The primary metric is `T_bootstrap/r`; the
+scope is include-zero only.

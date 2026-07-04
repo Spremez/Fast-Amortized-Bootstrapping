@@ -393,3 +393,5 @@
 - [x] Stage274 fused sub_a smoke records `NEUTRAL_STAGE274_SUB_A_FUSED_SMOKE_NO_PROMOTION` with primary metric `T_bootstrap/r`.
 <!-- stage275-close-s272a-select-next-candidate-checklist -->
 - [x] Stage275 records `PASS_STAGE275_CLOSE_S272A_SELECT_INCLUDE_ZERO_COEFF_ONE_FAST_PATH` and selects Stage276 guarded include-zero coeff-one fast path.
+<!-- stage276-include-zero-coeff-one-fast-path-checklist -->
+- [x] Stage276 include-zero coeff-one fast-path smoke records `PASS_STAGE276_INCLUDE_ZERO_FAST_SMOKE_POSITIVE_REPEAT_REQUIRED` with primary metric `T_bootstrap/r`.

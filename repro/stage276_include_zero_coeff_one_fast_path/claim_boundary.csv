@@ -1,0 +1,3 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+include_zero_coeff_one_fast_path,smoke_positive,Stage276 tests a guarded current-PVW include-zero coeff-one fast path under an explicit flag.,All include-zero SAB can remove s_coff.,variant_compare.csv; proof_gate.csv
+complete_sab_speedup,smoke_only,The smoke reports full SAB T_bootstrap/r for include-zero r=4.,The smoke is final repeated evidence or covers ternary.,bench_summary.csv

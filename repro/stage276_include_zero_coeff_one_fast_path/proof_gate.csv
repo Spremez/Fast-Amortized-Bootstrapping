@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_coverage,PASS,variant coverage,"backend_from_dft_add:include_zero,default:include_zero,include_zero_coeff_one_fast:include_zero",bench_summary.csv,"Covers default, backend direct-add, and include-zero coeff-one fast path."
+G2_correctness,PASS,PVW/scalar target correctness,3/3,bench_summary.csv,Correctness must pass before interpreting timing.
+G3_primary_metric,PASS,T_bootstrap/r,fast_vs_backend_and_default,variant_compare.csv,The fast path must beat both same-backend backend direct-add and default on the amortized per-body metric.
+G4_smoke_threshold,PASS,fast speedup vs backend,1.071880x,variant_compare.csv,Single-run smoke threshold is 1.01x; repeated/noise/resource is still required for promotion.
+G5_claim_boundary,PASS_SMOKE_ONLY,scope,current_pvw_include_zero_only,claim_boundary.csv,This does not claim a general include-zero SAB shortcut or ternary improvement.
+G6_decision,PASS_STAGE276_INCLUDE_ZERO_FAST_SMOKE_POSITIVE_REPEAT_REQUIRED,stage decision,PASS_STAGE276_INCLUDE_ZERO_FAST_SMOKE_POSITIVE_REPEAT_REQUIRED,proof_gate.csv,Promotion requires repeated timing and noise/resource if smoke is positive.

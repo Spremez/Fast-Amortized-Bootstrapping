@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,status,failure_action
+P0,stage277_include_zero_fast_repeated_noise_resource,Stage276 smoke positive.,Repeated T_bootstrap/r plus noise/resource for include-zero fast path.,selected,Demote if repeated/noise/resource fails.
+P1,stage278_generalize_or_selector_kernel,Stage277 passes or residual profile suggests selector MAT EP work.,Decide whether current-PVW include-zero fast path is paper-claimable or only engineering-specialized.,conditional,Keep claim guarded.

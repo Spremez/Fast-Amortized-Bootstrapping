@@ -3796,3 +3796,14 @@ H10_stage275_close_s272a_select_next_candidate:
     Stage275 records PASS_STAGE275_CLOSE_S272A_SELECT_INCLUDE_ZERO_COEFF_ONE_FAST_PATH. It closes the fused from_DFT_add sub_a
     candidate and selects a guarded include-zero coeff-one fast-path experiment
     as Stage276.
+H10_stage276_include_zero_coeff_one_fast_path:
+  status: PASS_STAGE276_INCLUDE_ZERO_FAST_SMOKE_POSITIVE_REPEAT_REQUIRED
+  evidence:
+    - repro/stage276_include_zero_coeff_one_fast_path/bench_summary.csv
+    - repro/stage276_include_zero_coeff_one_fast_path/variant_compare.csv
+    - repro/stage276_include_zero_coeff_one_fast_path/proof_gate.csv
+    - docs/stage276_include_zero_coeff_one_fast_path.md
+  conclusion: >
+    Stage276 records PASS_STAGE276_INCLUDE_ZERO_FAST_SMOKE_POSITIVE_REPEAT_REQUIRED. It tests only the guarded current-PVW
+    include-zero coeff-one fast path and keeps claims scoped to full SAB
+    smoke evidence until repeated/noise/resource gates pass.
