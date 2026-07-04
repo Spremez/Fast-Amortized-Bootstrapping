@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_harness,PASS,nonbinary target benchmark flag,SAB_PVW_NONBINARY_BENCH,main.c; src/mosfhet/Makefile.def,Explicit target full SAB T_bootstrap/r harness exists.
+G2_correctness,PASS,target full PVW/scalar phase equivalence,4/4,repro/stage261_nonbinary_target_perf_preflight/bench_summary.csv,Each measured row first compares PVW lane output against repeated scalar SAB.
+G3_branch_coverage,PASS,mode/r coverage,"include_zero:r2,include_zero:r4,ternary:r2,ternary:r4",repro/stage261_nonbinary_target_perf_preflight/bench_summary.csv,Preflight covers include-zero and ternary for r=2 and r=4.
+G4_same_backend_speed,PASS,speedup_vs_scalar_repeated,1.283x..1.387x,repro/stage261_nonbinary_target_perf_preflight/bench_summary.csv,"Same spqlios_avx512 backend comparison, measured as complete SAB T_bootstrap/r."
+G5_statistics,PREFLIGHT_ONLY,reps,1 per row,raw run logs,This is not yet a statistical paper-grade speed claim.
+G6_decision,PASS_STAGE261_NONBINARY_TARGET_PER_BIT_PREFLIGHT,stage decision,PASS_STAGE261_NONBINARY_TARGET_PER_BIT_PREFLIGHT,repro/stage261_nonbinary_target_perf_preflight/proof_gate.csv,Proceed to repeated/native/profiled Stage262+ validation.

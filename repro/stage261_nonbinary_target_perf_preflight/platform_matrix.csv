@@ -1,0 +1,4 @@
+platform,backend,cpu_avx512,status,evidence,claim_use
+WSL2/Linux,spqlios_avx512,observed,PASS_PREFLIGHT,"raw/wsl_spqlios_avx512_*_{build,run}.log",same-backend target T_bootstrap/r preflight
+Windows,ffnt,not_applicable,BUILD_SMOKE_ONLY,manual build check; FFNT target run was not used for speed claim,correctness/build smoke only
+native Linux,spqlios_avx512 + perf counters,required,NEXT_GATE,not run in Stage261,paper-grade performance attribution

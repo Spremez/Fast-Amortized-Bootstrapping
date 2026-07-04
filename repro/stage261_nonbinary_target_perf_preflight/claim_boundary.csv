@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+nonbinary_target_per_bit_preflight,supported_preflight,"On WSL2/Linux spqlios_avx512, the target SET_2_3 non-binary PVW/MAT-SAB path passes complete SAB correctness and shows 1.283x-1.387x T_bootstrap/r speedup for r=2/4.",The implementation has reached theoretical optimum or paper-grade final speedup.,bench_summary.csv
+amortized_metric_definition,supported,"The comparison dimension is full SAB time divided by r output lanes, with scalar baseline measured as r repeated scalar SAB calls.",The speedup is a single-output latency speedup over scalar SAB.,main.c SAB_PVW_NONBINARY_BENCH summary fields
+nonbinary_final_performance,not_final,Stage261 admits repeated/statistical performance validation.,Stage261 alone is sufficient for a publication performance claim.,proof_gate.csv G5_statistics
+mat_avx_theoretical_optimum,unsupported,The Stage261 harness uses the current small-r MAT AVX512 specialization.,The MAT external product AVX512 implementation is theoretically optimal.,build logs; no perf counter/assembly proof in Stage261
