@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_correctness,PASS,target full PVW/scalar phase equivalence,6/6,bench_summary.csv,Every repeated-stat row performs a correctness comparison before timing.
+G2_coverage,PASS,mode/r coverage,"include_zero:r1,include_zero:r2,include_zero:r4,ternary:r1,ternary:r2,ternary:r4",bench_summary.csv,Covers r=1/2/4 for include-zero and ternary.
+G3_negative_control,PASS,max abs(r=1 speedup - 1),0.008,bench_summary.csv,"r=1 remains near parity, supporting the lane-amortization interpretation."
+G4_target_speed,PASS,r=2/4 speedup range,1.272x..1.367x,bench_summary.csv,Repeated WSL same-backend target rows retain amortized speedup.
+G5_variability,PASS,max speedup stddev,0.021,bench_summary.csv; sample_rows.csv,Three-repetition rows show low local variation; still not native paper-grade evidence.
+G6_decision,PASS_STAGE262_NONBINARY_TARGET_REPEATED_STATS,stage decision,PASS_STAGE262_NONBINARY_TARGET_REPEATED_STATS,proof_gate.csv,Proceed to profile attribution and MAT AVX512 limit analysis.

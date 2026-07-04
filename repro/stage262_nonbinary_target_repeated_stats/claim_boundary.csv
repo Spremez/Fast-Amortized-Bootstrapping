@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+target_repeated_t_bootstrap_over_r,supported_wsl_repeated,"On WSL2/Linux spqlios_avx512, repeated target measurements show r=2/4 non-binary PVW/MAT-SAB T_bootstrap/r speedup of 1.272x-1.367x.",This is the final native Linux or paper-grade performance claim.,bench_summary.csv; sample_rows.csv
+lane_amortization_interpretation,supported_by_negative_control,"r=1 stays within 0.008 of parity, while r=2/4 shows stable speedup, supporting the multi-body amortization interpretation.",The MAT path is intrinsically faster for a single scalar body.,bench_summary.csv
+mat_avx512_theoretical_optimum,unsupported,Stage262 measures the current small-r AVX512 implementation in full SAB.,Stage262 proves the AVX512 MAT kernel is at its theoretical optimum.,no perf-counter or assembly audit in Stage262
