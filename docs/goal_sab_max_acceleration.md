@@ -1104,3 +1104,9 @@ current-head `SET_2_3_4096`, r=4 preflight is positive under complete-SAB
 `T_bootstrap/r` and includes resource/keygen/RSS side conditions. This does not
 close all-parameter, non-binary, final-paper statistics, or theoretical
 optimality gates.
+## Stage233 first high-stat added-parameter slice
+
+Generated from input head `b1064ed`, Stage233 records `PASS_STAGE233_FIRST_HIGHSTAT_SLICE_RESOURCE_RECORDED_MATRIX_PENDING`. The
+current-head `SET_4_5_2048`, r=4 slice passes high-stat complete-SAB
+`T_bootstrap/r`, noise, and resource gates. This is a per-slice result, not a
+full-matrix, non-binary, compact, or theoretical-optimality closure.

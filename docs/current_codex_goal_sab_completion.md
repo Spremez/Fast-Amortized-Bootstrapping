@@ -680,3 +680,8 @@ or security claims.
 `PASS_STAGE232_SELECTED_SUBSET_PREFLIGHT_RESOURCE_RECORDED_FULL_MATRIX_PENDING` records a bounded executable step after Stage231. The goal remains
 active: Stage232 is selected-subset preflight evidence only; full matrix
 high-statistics and manuscript packaging remain open.
+### Stage233 first high-stat added-parameter slice
+
+`PASS_STAGE233_FIRST_HIGHSTAT_SLICE_RESOURCE_RECORDED_MATRIX_PENDING` records the first current-head added-parameter high-stat slice.
+The active goal remains open because the remaining matrix slices, manuscript
+packaging, and broader optimality/theory gates are not complete.

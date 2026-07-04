@@ -1,0 +1,2 @@
+param,r,runs,status,pvw_mean_us,scalar_repeated_mean_us,mean_speedup,min_speedup,max_speedup,source_csv,decision
+SET_4_5_2048,4,10,PASS,31168792.200,42323545.700,1.357,1.332,1.391,repro/stage233_set_4_5_2048_r4_runs10_seeds20/perf_SET_4_5_2048_r4_runs10/summary.csv,PASS_REPEATED_SMOKE

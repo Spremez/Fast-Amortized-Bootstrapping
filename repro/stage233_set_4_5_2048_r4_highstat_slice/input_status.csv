@@ -1,0 +1,8 @@
+input,status,role,bytes
+repro/stage232_selected_subset_fullstat_resource/proof_gate.csv,present,Stage232 proof gate selecting matrix continuation,1807
+repro/stage232_selected_subset_fullstat_resource/next_stage_queue.csv,present,Stage232 next queue,1145
+repro/stage233_set_4_5_2048_r4_runs10_seeds20/performance_summary.csv,present,Stage233 raw high-stat performance aggregate,286
+repro/stage233_set_4_5_2048_r4_runs10_seeds20/perf_SET_4_5_2048_r4_runs10/summary.csv,present,Stage233 per-run performance,973
+repro/stage233_set_4_5_2048_r4_runs10_seeds20/noise_summary.csv,present,Stage233 high-stat noise aggregate summary,309
+repro/stage233_set_4_5_2048_r4_runs10_seeds20/noise_SET_4_5_2048_r4_seeds20/summary.csv,present,Stage233 per-seed noise,3325
+repro/stage233_set_4_5_2048_r4_resource/summary.csv,present,Stage233 resource/keygen/RSS,672

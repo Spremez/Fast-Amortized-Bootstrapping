@@ -3272,3 +3272,15 @@ H10_stage232_selected_subset_fullstat_resource:
     preflight passes 3-run complete-SAB T_bootstrap/r, 3-seed noise, and
     resource gates, but full added-parameter matrix statistics, non-binary
     support, and theoretical optimality remain pending.
+H10_stage233_first_highstat_slice:
+  status: first_added_parameter_highstat_slice_passed_matrix_pending
+  evidence:
+    - repro/stage233_set_4_5_2048_r4_highstat_slice/performance_stats.csv
+    - repro/stage233_set_4_5_2048_r4_highstat_slice/noise_aggregate.csv
+    - repro/stage233_set_4_5_2048_r4_highstat_slice/resource_comparison.csv
+    - docs/stage233_set_4_5_2048_r4_highstat_slice.md
+  conclusion: >
+    Stage233 records PASS_STAGE233_FIRST_HIGHSTAT_SLICE_RESOURCE_RECORDED_MATRIX_PENDING. The current-head binary SET_4_5_2048, r=4
+    slice passes 10-run complete-SAB T_bootstrap/r, 20-seed noise, and resource
+    gates. Remaining added-parameter slices, non-binary support, compact route,
+    and theoretical optimality remain pending.

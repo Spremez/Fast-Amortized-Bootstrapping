@@ -6550,3 +6550,19 @@ Generated from input head `db72720` with `PASS_STAGE232_SELECTED_SUBSET_PREFLIGH
 passes selected-subset 3-run complete-SAB A/B, 3-seed noise, and resource
 recording. Full added-parameter matrix statistics remain pending.
 ```
+## Stage 233: First High-Stat Added-Parameter Slice
+
+Goal:
+
+```text
+Promote one added-parameter current-head slice from smoke/preflight to
+10-run/20-seed/resource evidence under complete-SAB `T_bootstrap/r`.
+```
+
+Status:
+
+```text
+Generated from input head `b1064ed` with `PASS_STAGE233_FIRST_HIGHSTAT_SLICE_RESOURCE_RECORDED_MATRIX_PENDING`. `SET_4_5_2048`, r=4
+passes 10-run complete-SAB A/B, 20-seed noise, and resource recording. The full
+added-parameter matrix remains pending.
+```

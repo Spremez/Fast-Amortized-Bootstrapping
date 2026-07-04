@@ -1,0 +1,2 @@
+param,r,runs,pass_runs,metric,pvw_mean_us,pvw_stdev_us,scalar_repeated_mean_us,scalar_repeated_stdev_us,mean_of_speedups,speedup_stdev,speedup_ci95_low,speedup_ci95_high,ratio_of_means_speedup,min_speedup,max_speedup,stats_label,decision
+SET_4_5_2048,4,10,10,T_bootstrap/r,31168792.200,826806.574,42323545.700,1526110.457,1.357500,0.018745,1.344091,1.370909,1.357882,1.332000,1.391000,high-stat slice n=10; one parameter/r only,PASS_HIGHSTAT_SLICE

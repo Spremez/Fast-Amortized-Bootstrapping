@@ -1,0 +1,8 @@
+gate,required,observed,status,claim_effect
+G1_inputs,Stage232 route plus raw Stage233 logs exist,all present,PASS,allows high-stat slice aggregation
+G2_shape,"SET_4_5_2048 selects h=42, r_prec=7","h=42, r_prec=7",PASS,prevents default-parameter fallback
+G3_performance_highstat_slice,"10 complete-SAB A/B runs, all correctness Pass, mean T_bootstrap/r speedup > 1","runs=10, speedup_mean=1.357500, CI95=1.344091..1.370909",PASS_HIGHSTAT_SLICE,supports this parameter/r slice only
+G4_noise_highstat_slice,"20 deterministic seeds, zero PVW/scalar/pair failures","seeds=20, failures=0/0/0",PASS_HIGHSTAT_SLICE,noise side condition supports this slice only
+G5_resource,pvw and scalar resource/keygen/RSS rows for this slice,pvw/scalar resource rows present,PASS,records key/RSS side cost beside throughput
+G6_matrix_boundary,do not promote the whole added-parameter matrix from one slice,remaining r/parameter slices pending,BOUNDARY_HELD,blocks full-matrix and all-parameter claims
+G7_stage233_decision,all high-stat slice gates pass and matrix boundary stays explicit,PASS_STAGE233_FIRST_HIGHSTAT_SLICE_RESOURCE_RECORDED_MATRIX_PENDING,PASS_STAGE233_FIRST_HIGHSTAT_SLICE_RESOURCE_RECORDED_MATRIX_PENDING,continue remaining high-stat matrix slices or manuscript skeleton with scoped wording
