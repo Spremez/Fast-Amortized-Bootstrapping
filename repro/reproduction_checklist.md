@@ -381,3 +381,5 @@
 - [x] Stage268 backend FromDFT-add smoke records `PASS_STAGE268_BACKEND_FROM_DFT_ADD_SMOKE_POSITIVE_REPEAT_REQUIRED` with primary metric `T_bootstrap/r`.
 <!-- stage269-backend-from-dft-add-repeated-noise-resource-checklist -->
 - [x] Stage269 backend FromDFT-add repeated/noise/resource records `NEUTRAL_STAGE269_BACKEND_FROM_DFT_ADD_REPEATED_NO_PROMOTION` with primary metric `T_bootstrap/r`.
+<!-- stage270-candidate-closeout-next-selection-checklist -->
+- [x] Stage270 closes backend FromDFT-add as neutral and records `PASS_STAGE270_FROM_DFT_ADD_CLOSED_SELECT_SUBA_SPLIT_PROFILE`.

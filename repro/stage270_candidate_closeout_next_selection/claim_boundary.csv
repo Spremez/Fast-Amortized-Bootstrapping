@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+backend_from_dft_add,closed_neutral,The existing backend FromDFT-add flag had a positive smoke but failed repeated promotion.,Backend FromDFT-add improves full SAB throughput.,candidate_closeout.csv
+mat_ep_optimality,blocked_no_native_counter,MAT EP remains the largest single component and needs native counter attribution.,Current MAT AVX512 is theoretically optimal.,auth_probe.csv; Stage264/266 proof gates
+sub_a_next,selected_preflight_only,sub_a split profiling is the next local executable gate.,sub_a optimization is proven beneficial before split profile and full SAB A/B.,next_candidate_selection.csv

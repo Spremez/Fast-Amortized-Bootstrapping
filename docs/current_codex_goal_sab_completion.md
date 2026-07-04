@@ -899,3 +899,9 @@ speedup claim.
 `NEUTRAL_STAGE269_BACKEND_FROM_DFT_ADD_REPEATED_NO_PROMOTION` records the repeated timing and optional noise/resource gate for
 the existing backend FromDFT-add route. The primary metric remains
 `T_bootstrap/r`.
+### Stage270 candidate closeout next selection
+
+`PASS_STAGE270_FROM_DFT_ADD_CLOSED_SELECT_SUBA_SPLIT_PROFILE` closes the existing backend FromDFT-add materialization candidate
+as neutral after repeated timing and selects local non-binary `sub_a` split
+profiling as the next executable gate. Native MAT EP counter claims remain
+blocked until authenticated/native counter evidence is recorded.

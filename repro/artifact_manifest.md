@@ -2937,3 +2937,7 @@ Repro artifacts:
   - `scripts/run_stage269_backend_from_dft_add_repeated_noise_resource.sh`
   - `scripts/build_stage269_backend_from_dft_add_repeated_noise_resource.py`
   - `repro/stage269_backend_from_dft_add_repeated_noise_resource/`
+- stage270_candidate_closeout_next_selection:
+  - `docs/stage270_candidate_closeout_next_selection.md`
+  - `scripts/build_stage270_candidate_closeout_next_selection.py`
+  - `repro/stage270_candidate_closeout_next_selection/`

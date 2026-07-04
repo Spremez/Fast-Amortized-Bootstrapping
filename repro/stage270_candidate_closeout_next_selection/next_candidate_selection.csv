@@ -1,0 +1,4 @@
+candidate,profile_basis,execution_status,selected,next_gate,reason
+mat_ep_native_counter_or_layout_change,r4 mat_ep share_pvw_max=0.414869,blocked_auth_or_counter_platform,no,Native current-head counters for load/store/FMA before new layout code.,"MAT EP remains largest single component, but source-only tuning cannot prove AVX512 optimality or guide layout safely."
+nonbinary_sub_a_split_profile,r4 sub_a share_pvw_max=0.120180,available_local,yes,"Stage271 add profile-only split counters for rotation, MAT EP, from_DFT, and add/copy inside non-binary sub_a; run r=4 include-zero/ternary correctness plus body profile.",Materialization flag was neutral on repeated timing; sub_a is the next material local bottleneck with isolated source entry points.
+postproc_extract_packing,r4 postproc share_pvw_max=0.009362,deferred_low_share,no,Only revisit if body optimizations raise tail share.,Current tail share is below 1%; high-risk tail work is not justified.

@@ -1,0 +1,2 @@
+candidate,stage267_target,stage268_smoke_min_speedup,stage269_repeated_min_speedup,stage269_modes,decision,rule
+backend_from_dft_add_materialization,materialization_lifecycle,1.014700,0.991473,include_zero=0.991473x status=neutral_or_negative; ternary=1.008847x status=neutral_or_negative,CLOSE_NEUTRAL_NO_PROMOTION,Do not use Stage268 smoke as final evidence; do not reopen this flag without a new mechanism or changed profile.

@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,status,failure_action
+P0,stage271_nonbinary_sub_a_split_profile,Stage270 selects local sub_a split profile after FromDFT-add closeout.,"profile-only counters, r=4 include-zero/ternary correctness, split attribution; no hot-path claim.",selected,"If split counters show no actionable component, close sub_a and return to MAT native counter route."
+P1,stage272_sub_a_candidate_smoke,Only if Stage271 identifies a dominant safe subcomponent.,isolated equivalence plus full SAB T_bootstrap/r smoke.,conditional,Record neutral/negative; do not promote.

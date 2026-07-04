@@ -3731,3 +3731,14 @@ H10_stage269_backend_from_dft_add_repeated_noise_resource:
     Stage269 records NEUTRAL_STAGE269_BACKEND_FROM_DFT_ADD_REPEATED_NO_PROMOTION. It keeps the metric aligned with MAT-RLWE
     amortization by comparing `T_bootstrap/r` for backend FromDFT-add versus
     default PVW/MAT-SAB under the same backend.
+H10_stage270_candidate_closeout_next_selection:
+  status: PASS_STAGE270_FROM_DFT_ADD_CLOSED_SELECT_SUBA_SPLIT_PROFILE
+  evidence:
+    - repro/stage270_candidate_closeout_next_selection/candidate_closeout.csv
+    - repro/stage270_candidate_closeout_next_selection/next_candidate_selection.csv
+    - repro/stage270_candidate_closeout_next_selection/proof_gate.csv
+    - docs/stage270_candidate_closeout_next_selection.md
+  conclusion: >
+    Stage270 records PASS_STAGE270_FROM_DFT_ADD_CLOSED_SELECT_SUBA_SPLIT_PROFILE. It prevents Stage268 smoke overclaiming,
+    keeps MAT EP hardware-counter claims blocked, and selects a profile-only
+    non-binary sub_a split gate as the next local executable experiment.

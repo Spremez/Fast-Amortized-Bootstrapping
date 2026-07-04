@@ -1,0 +1,2 @@
+probe,status,returncode,stdout
+cb5_batchmode,auth_unavailable,255,

@@ -1,0 +1,6 @@
+check,status,needle,interpretation
+nonbinary_sub_a_include_zero_exists,PASS,void sab_pvw_sub_a_include_zero,Local sub_a profiling/preflight can be built from current sources.
+nonbinary_sub_a_ternary_exists,PASS,void sab_pvw_sub_a_ternary,Local sub_a profiling/preflight can be built from current sources.
+sub_a_body_profile_counter_exists,PASS,sub_a_us,Local sub_a profiling/preflight can be built from current sources.
+body_profile_flag_exists,PASS,SAB_PVW_BODY_PROFILE,Local sub_a profiling/preflight can be built from current sources.
+suba_output_fusion_flag_exists,PASS,SAB_PVW_SUBA_OUTPUT_FUSION,Local sub_a profiling/preflight can be built from current sources.

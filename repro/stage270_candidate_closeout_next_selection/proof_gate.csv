@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_from_dft_add_closeout,PASS,Stage269 repeated result,0.991473,repro/stage269_backend_from_dft_add_repeated_noise_resource/variant_compare.csv,The Stage268 smoke candidate did not survive repeated timing.
+G2_no_smoke_overclaim,PASS,claim boundary,smoke_not_promoted,repro/stage269_backend_from_dft_add_repeated_noise_resource/proof_gate.csv,"Stage268 may remain context only, not an optimization claim."
+G3_native_counter_route,BLOCKED,CB5 batchmode auth,auth_unavailable,auth_probe.csv; repro/stage266_current_head_nonbinary_native_counter/proof_gate.csv,MAT EP native counter route remains selected only when authenticated native execution is available.
+G4_stage266_boundary,PASS,native counter claim boundary,no_current_native_counter_rows,repro/stage266_current_head_nonbinary_native_counter/proof_gate.csv,No hardware-counter optimality wording is allowed.
+G5_next_candidate,PASS,selected local candidate,nonbinary_sub_a_split_profile,next_candidate_selection.csv,Select the next local executable gate rather than writing optimization code directly.
+G6_decision,PASS_STAGE270_FROM_DFT_ADD_CLOSED_SELECT_SUBA_SPLIT_PROFILE,stage decision,PASS_STAGE270_FROM_DFT_ADD_CLOSED_SELECT_SUBA_SPLIT_PROFILE,proof_gate.csv,Proceed to Stage271 sub_a split profile preflight.
