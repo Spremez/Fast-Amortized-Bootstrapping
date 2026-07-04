@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_stage328_input,PASS,Stage328 decision,PASS_STAGE328_ACTIVE_GOAL_AUDIT_GOAL_REMAINS_ACTIVE_SELECT_HIGHSTAT_OR_FORMAL_PROOF,Stage329 follows the formal compact proof-checker route admitted by Stage328.
+G2_equation_map_present,PASS,Stage203 equation map,repro/stage203_production_selector_equation_probe/equation_map.csv,Finite checker is anchored to the declared Stage203 equation map.
+G3_finite_checker,PASS,finite failures,0,Semantic-zero skip and negative controls pass in the finite ring model.
+G4_security_keygen_boundary,BLOCKED_NO_CODE,open obligations,"O2a,O2b,O2d,O2e",Finite algebra does not authorize compact SAB production code.
+G5_stage329_decision,PASS_STAGE329_COMPACT_SELECTOR_FINITE_CHECKER_PASS_SECURITY_KEYGEN_OPEN_NO_CODE,decision,no_code_permission,Proceed only to keygen/security proof or high-stat exact-route refresh.

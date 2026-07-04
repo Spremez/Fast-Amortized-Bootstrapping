@@ -497,3 +497,5 @@
 - [x] Stage327 records `PASS_STAGE327_FINAL_CLAIM_REPRO_REFRESH_SCOPED_READY` and refreshes the current-head scoped claim/repro package.
 <!-- stage328-active-goal-requirement-audit-checklist -->
 - [x] Stage328 records `PASS_STAGE328_ACTIVE_GOAL_AUDIT_GOAL_REMAINS_ACTIVE_SELECT_HIGHSTAT_OR_FORMAL_PROOF` and keeps the active goal open with explicit next routes.
+<!-- stage329-formal-compact-selector-checker-checklist -->
+- [x] Stage329 records `PASS_STAGE329_COMPACT_SELECTOR_FINITE_CHECKER_PASS_SECURITY_KEYGEN_OPEN_NO_CODE` and preserves no-code permission for compact SAB.

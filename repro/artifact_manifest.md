@@ -3273,3 +3273,7 @@ Repro artifacts:
   - `docs/stage328_active_goal_requirement_audit.md`
   - `scripts/build_stage328_active_goal_requirement_audit.py`
   - `repro/stage328_active_goal_requirement_audit/`
+- stage329_formal_compact_selector_checker:
+  - `docs/stage329_formal_compact_selector_checker.md`
+  - `scripts/build_stage329_formal_compact_selector_checker.py`
+  - `repro/stage329_formal_compact_selector_checker/`

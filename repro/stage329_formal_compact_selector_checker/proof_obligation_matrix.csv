@@ -1,0 +1,6 @@
+obligation,status,needed_before_code,current_checker_result
+O2a_equation_to_keygen,OPEN,Map declared Stage203 active/dummy equations to actual MAT_TRGSW key generation.,finite algebra only
+O2b_public_distribution,OPEN,Prove dummy/random padding leaks no selector structure beyond allowed public distribution.,not addressed by finite phase checker
+O2c_semantic_zero,FINITE_PASS,Lift finite dummy-zero semantics to ring/DFT production equations.,"semantic_zero_dummy_skip passes for r=2/4/6, 32 seeds each"
+O2d_noise_recurrence,OPEN,Derive noise recurrence for skipped dummy rows versus dense dummy evaluation.,resource/noise projection only
+O2e_complete_sab_gate,OPEN,"Run isolated equivalence, then full SAB correctness/noise/resource/T_bootstrap/r A/B.",no SAB code permission

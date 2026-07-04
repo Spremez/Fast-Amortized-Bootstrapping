@@ -1,0 +1,4 @@
+candidate,status,public_row_saving,current_evidence,missing_before_code
+delete_dummy_rows_publicly,REJECT_UNLESS_DISTRIBUTION_PROOF,positive_if_allowed,Stage249 rejects compact-saving public distributions,hybrid/security proof that public key distribution is unchanged
+dummy_zero_rows_public,REJECT_PUBLIC_PATTERN,0,deterministic zero padding is publicly distinguishable,do not use as production key
+dummy_random_padding,PROOF_ONLY_NO_SPEEDUP_CLAIM,0,Stage249 proof-only survivor keeps dense public shape,keygen/security/noise proof and complete-SAB T_bootstrap/r

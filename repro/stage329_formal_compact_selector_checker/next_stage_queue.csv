@@ -1,0 +1,3 @@
+priority,stage,entry_condition,task,gate,failure_action
+P0,stage330_compact_keygen_security_preflight,PASS_STAGE329_COMPACT_SELECTOR_FINITE_CHECKER_PASS_SECURITY_KEYGEN_OPEN_NO_CODE,Try to map declared equations to production MAT_TRGSW keygen and public distribution proof obligations.,No SAB hot-path code until keygen/security/noise obligations close.,Keep compact route proof-blocked.
+P1,stage330_highstat_complete_sab_refresh,paper-ready scoped performance result is prioritized,Rerun exact PVW/MAT-SAB complete-SAB T_bootstrap/r with >=10 samples.,"Correctness pass, CI reported, claim remains scoped.",Keep Stage327 engineering wording.

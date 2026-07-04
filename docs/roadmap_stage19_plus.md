@@ -7226,3 +7226,9 @@ Goal: audit the original PVW/MAT-SAB research objective requirement by
 requirement against current evidence.
 
 Status: `PASS_STAGE328_ACTIVE_GOAL_AUDIT_GOAL_REMAINS_ACTIVE_SELECT_HIGHSTAT_OR_FORMAL_PROOF`.
+## Stage 329: Formal Compact Selector Checker
+
+Goal: convert the compact selector proof route into an executable finite
+checker without touching SAB hot paths.
+
+Status: `PASS_STAGE329_COMPACT_SELECTOR_FINITE_CHECKER_PASS_SECURITY_KEYGEN_OPEN_NO_CODE`.

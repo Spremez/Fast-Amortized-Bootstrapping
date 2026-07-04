@@ -1210,3 +1210,9 @@ closed and compact route proof-blocked.
 `PASS_STAGE328_ACTIVE_GOAL_AUDIT_GOAL_REMAINS_ACTIVE_SELECT_HIGHSTAT_OR_FORMAL_PROOF` audits the original goal and records that it remains active: the
 exact dense branch is scoped-complete, but high-stat paper readiness and formal
 compact/optimality proof remain open.
+<!-- stage329-formal-compact-selector-checker -->
+### Stage329 formal compact selector checker
+
+`PASS_STAGE329_COMPACT_SELECTOR_FINITE_CHECKER_PASS_SECURITY_KEYGEN_OPEN_NO_CODE` runs an executable finite checker for the compact selector proof
+route. Finite algebra passes, but production keygen/security/noise and full SAB
+evidence remain open; no compact SAB code is admitted.

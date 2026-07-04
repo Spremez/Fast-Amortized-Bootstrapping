@@ -4349,3 +4349,14 @@ H328_active_goal_requirement_audit:
     Stage328 verifies that the current exact dense branch is scoped-complete
     but the original active research goal remains open because paper-level
     high-stat evidence and formal compact/optimality proof are not complete.
+H329_formal_compact_selector_checker:
+  status: PASS_STAGE329_COMPACT_SELECTOR_FINITE_CHECKER_PASS_SECURITY_KEYGEN_OPEN_NO_CODE
+  primary_metric: finite_semantic_zero_equivalence_and_negative_controls
+  evidence:
+    - repro/stage329_formal_compact_selector_checker/summary.csv
+    - repro/stage329_formal_compact_selector_checker/finite_equivalence_checker.csv
+    - repro/stage329_formal_compact_selector_checker/proof_obligation_matrix.csv
+    - repro/stage329_formal_compact_selector_checker/proof_gate.csv
+  conclusion: >
+    Stage329 passes finite compact-selector algebra checks but leaves
+    production keygen/security/noise and complete-SAB T_bootstrap/r gates open.
