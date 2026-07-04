@@ -1,0 +1,6 @@
+claim_area,risk_level,supporting_sources,decision,required_next
+complete SAB throughput engineering result,low,S333-001; S333-009,claim allowed only as scoped measured result,none for scoped systems result
+first/broad multi-message amortized bootstrapping,critical,S333-004; S333-005; S333-008; S333-010,do not claim,full-text audit and narrow contribution statement
+shared-mask or r-body ciphertext novelty,critical,S333-010; S333-008,novelty open,audit common-mask packed-message construction against PVW/MAT-SAB
+external-product count reduction,high,S333-006; S333-007,do not claim for current exact dense path,compact route proof and full SAB A/B
+AVX/backend optimality,high,S333-009,do not claim theoretical optimality,native counter/full-SAB backend audit per variant

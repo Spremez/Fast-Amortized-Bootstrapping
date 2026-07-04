@@ -3304,3 +3304,11 @@ Repro artifacts:
   - `experiments/stage333_literature_novelty_or_compact_security_plan.md`
   - `scripts/build_stage332_paper_result_pack.py`
   - `repro/stage332_paper_result_pack/`
+<!-- stage333-literature-novelty-manifest -->
+- stage333_literature_novelty_verification:
+  - `docs/stage333_literature_novelty_verification.md`
+  - `literature/related_literature_matrix.csv`
+  - `theory_checks/stage333_novelty_risk_model.md`
+  - `experiments/stage334_fulltext_claim_audit_or_compact_security_plan.md`
+  - `scripts/build_stage333_literature_novelty_verification.py`
+  - `repro/stage333_literature_novelty_verification/`

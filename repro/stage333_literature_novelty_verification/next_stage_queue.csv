@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage334_fulltext_claim_audit,PASS_STAGE333_REAL_SOURCE_MATRIX_NOVELTY_CLAIM_OPEN,download/read high-risk full texts and map exact claims to PVW/MAT-SAB contribution boundaries,Keep novelty wording out of the paper.
+P1,stage334_compact_keygen_security_preflight,algorithmic gain beyond scoped systems result is prioritized,"keygen distribution, semantic-zero security, noise recurrence",Keep compact production code blocked.

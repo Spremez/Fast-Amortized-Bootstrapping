@@ -1,0 +1,5 @@
+gate,status,metric,value,interpretation
+G1_real_sources,PASS,verified source rows,10,"Stage333 uses real URLs/metadata, not fabricated references."
+G2_high_risk_identified,PASS,critical/high risk claim areas,shared-mask; multi-message; external-product; backend optimality,Novelty is not claimed because direct adjacent work exists.
+G3_claim_boundary,PASS,novelty claim,OPEN,Stage333 permits scoped systems result only; novelty requires Stage334 full-text audit.
+G4_decision,PASS_STAGE333_REAL_SOURCE_MATRIX_NOVELTY_CLAIM_OPEN,stage decision,PASS_STAGE333_REAL_SOURCE_MATRIX_NOVELTY_CLAIM_OPEN,Controls Stage334 full-text claim audit or compact security preflight.

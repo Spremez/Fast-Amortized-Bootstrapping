@@ -1238,3 +1238,8 @@ the current scoped systems result: direct PVW/MAT-SAB speedup
 `1.747647x` by complete
 `T_bootstrap/r`, with correctness/noise/RSS evidence and explicit unsupported
 claim boundaries.
+<!-- stage333-literature-novelty-verification -->
+### Stage333 literature novelty verification
+
+`PASS_STAGE333_REAL_SOURCE_MATRIX_NOVELTY_CLAIM_OPEN` creates a real-source related-work matrix and keeps novelty open.
+The allowed claim remains the Stage332 scoped measured systems result only.

@@ -7253,3 +7253,9 @@ Goal: convert the Stage331 current-head high-stat experiment into a scoped
 paper/report result table and claim boundary.
 
 Status: `PASS_STAGE332_SCOPED_PAPER_RESULT_PACK`.
+<!-- stage333-literature-novelty-roadmap -->
+## Stage 333: Literature Novelty Verification
+
+Goal: build a verified related-work matrix and novelty-risk map for PVW/MAT-SAB.
+
+Status: `PASS_STAGE333_REAL_SOURCE_MATRIX_NOVELTY_CLAIM_OPEN`.

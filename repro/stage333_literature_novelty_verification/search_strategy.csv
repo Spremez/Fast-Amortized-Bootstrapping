@@ -1,0 +1,5 @@
+axis,query,source_used,result
+target_686_sab,ePrint 2025/686 sparse amortized bootstrapping,"ePrint search, GitHub repository metadata, ACM DOI page",target protocol/source identified
+amortized_fhew_tfhe,Ring packing amortized FHEW bootstrapping; amortized bootstrapping revisited; incomplete NTT amortized bootstrapping,"ePrint, DROPS, Springer/DBLP search results",prior and later amortized bootstrapping lines identified
+shared_mask_packed_tfhe,Sharing the Mask TFHE bootstrapping on packed messages; common mask GLWE GGSW,"DBLP, AskCryptography, ResearchGate text preview",direct high-risk adjacent work identified; full-text audit required
+tfhe_external_product_implementation,TFHE external product; MOSFHET optimized software; faster packed homomorphic operations TFHE,"ePrint, DOI/publisher metadata, GitHub",implementation/backend prior art identified
