@@ -3055,3 +3055,8 @@ Repro artifacts:
   - `scripts/run_stage291_sub_decomp_dft_direct_microbench.sh`
   - `scripts/build_stage291_sub_decomp_dft_direct_microbench.py`
   - `repro/stage291_sub_decomp_dft_direct_microbench/`
+- stage292_fullsab_direct_dft_ab:
+  - `docs/stage292_fullsab_direct_dft_ab.md`
+  - `scripts/run_stage292_fullsab_direct_dft_ab.sh`
+  - `scripts/build_stage292_fullsab_direct_dft_ab.py`
+  - `repro/stage292_fullsab_direct_dft_ab/`

@@ -1,0 +1,8 @@
+gate,status,metric,value,interpretation
+G1_stage291_input,PASS,Stage291 decision,positive_microbench,Stage292 is opened only as a full-SAB validation of Stage291.
+G2_correctness,PASS,both variants,Pass/Pass,No timing claim is made if scalar/PVW output equivalence fails.
+G3_samples,PASS,samples per variant,3/3,"This is a repeated local A/B, not a high-stat final campaign."
+G4_full_sab_increment,PASS,selected control T/r over direct T/r,1.082043,Measures the direct-DFT change inside complete SAB.
+G5_algorithm_endpoint,PASS,candidate vs repeated scalar T/r,1.732688,This is the main MAT-RLWE/PVW-SAB comparison dimension.
+G6_claim_boundary,PASS,claim scope,full_sab_local_ab_not_noise_resource,Noise/resource/high-stat/paper claims remain separate gates.
+G7_decision,PASS_STAGE292_DIRECT_DFT_FULLSAB_POSITIVE_NOISE_RESOURCE_REQUIRED,stage decision,PASS_STAGE292_DIRECT_DFT_FULLSAB_POSITIVE_NOISE_RESOURCE_REQUIRED,Positive result opens noise/resource; neutral result records an ablation.

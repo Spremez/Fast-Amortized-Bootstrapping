@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage293_direct_dft_noise_resource,PASS_STAGE292_DIRECT_DFT_FULLSAB_POSITIVE_NOISE_RESOURCE_REQUIRED,Only if Stage292 is positive: run correctness/noise/resource for direct DFT.,Do not promote direct DFT if noise/resource regresses or full-SAB effect vanishes.
+P1,stage293b_counter_attribution,optional after positive or neutral Stage292,Native counters/assembly to explain memory-op effect.,Keep as proxy if native counters are unavailable.

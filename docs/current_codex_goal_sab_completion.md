@@ -1023,3 +1023,9 @@ bootstrapping speed claim.
 for the dominant MAT-SAB sub-DTF calls. It records paired isolated microbench
 evidence and target correctness smoke; full SAB `T_bootstrap/r` claims remain
 gated behind Stage292.
+<!-- stage292-fullsab-direct-dft-ab -->
+### Stage292 full-SAB direct DFT A/B
+
+`PASS_STAGE292_DIRECT_DFT_FULLSAB_POSITIVE_NOISE_RESOURCE_REQUIRED` tests `MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true` inside complete
+SAB using `T_bootstrap/r`. The algorithm-level scalar comparison is recorded
+separately from the incremental selected-control comparison.

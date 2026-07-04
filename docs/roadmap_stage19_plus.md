@@ -7014,3 +7014,9 @@ and pair failures. Five stage-pair boundaries also record zero pair failures.
 Stage261 target `T_bootstrap/r` benchmarking is admitted, but speedup remains
 unproved.
 ```
+## Stage 292: Direct DFT Full-SAB A/B
+
+Goal: validate Stage291 direct sub-decompose-to-DFT under complete SAB
+`T_bootstrap/r`.
+
+Status: `PASS_STAGE292_DIRECT_DFT_FULLSAB_POSITIVE_NOISE_RESOURCE_REQUIRED`.

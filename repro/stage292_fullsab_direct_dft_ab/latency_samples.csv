@@ -1,0 +1,7 @@
+variant,outer_run,inner_rep,correctness,mode,r,h,r_prec,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup_vs_repeated_scalar,summary_pvw_over_r_us,summary_scalar_over_r_us,source_log
+selected_control,0,0,Pass,include_zero,4,39,7,26606119,6651529.750,42913165,10728291.250,1.613,6651529.750,10728291.250,repro/stage292_fullsab_direct_dft_ab/raw/selected_control/run_0.log
+selected_control,1,0,Pass,include_zero,4,39,7,26202321,6550580.250,42341135,10585283.750,1.616,6550580.250,10585283.750,repro/stage292_fullsab_direct_dft_ab/raw/selected_control/run_1.log
+selected_control,2,0,Pass,include_zero,4,39,7,25967928,6491982.000,42094224,10523556.000,1.621,6491982.000,10523556.000,repro/stage292_fullsab_direct_dft_ab/raw/selected_control/run_2.log
+direct_dft_candidate,0,0,Pass,include_zero,4,39,7,24412724,6103181.000,42310740,10577685.000,1.733,6103181.000,10577685.000,repro/stage292_fullsab_direct_dft_ab/raw/direct_dft_candidate/run_0.log
+direct_dft_candidate,1,0,Pass,include_zero,4,39,7,24204505,6051126.250,42347495,10586873.750,1.750,6051126.250,10586873.750,repro/stage292_fullsab_direct_dft_ab/raw/direct_dft_candidate/run_1.log
+direct_dft_candidate,2,0,Pass,include_zero,4,39,7,24186123,6046530.750,41487281,10371820.250,1.715,6046530.750,10371820.250,repro/stage292_fullsab_direct_dft_ab/raw/direct_dft_candidate/run_2.log

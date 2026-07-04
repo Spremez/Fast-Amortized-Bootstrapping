@@ -3952,3 +3952,15 @@ H10_stage291_sub_decomp_dft_direct_microbench:
     Stage291 implements and tests a default-off direct DFT path for
     sub-decompose MAT external products. It can only open a full-SAB A/B gate;
     it is not by itself a complete bootstrapping speedup claim.
+H292_direct_dft_fullsab_ab:
+  status: PASS_STAGE292_DIRECT_DFT_FULLSAB_POSITIVE_NOISE_RESOURCE_REQUIRED
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage292_fullsab_direct_dft_ab/latency_summary.csv
+    - repro/stage292_fullsab_direct_dft_ab/proof_gate.csv
+    - docs/stage292_fullsab_direct_dft_ab.md
+  conclusion: >
+    Stage292 evaluates whether direct sub-decompose-to-DFT survives as a
+    complete-SAB improvement. Algorithm-level speedup is reported as
+    T_bootstrap/r versus repeated scalar; direct-vs-control is only an
+    incremental implementation gate.
