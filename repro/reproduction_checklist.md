@@ -462,3 +462,5 @@
 - [x] Stage310 records `PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED` for SPQLIOS IFFT row scaling.
 <!-- stage311-digit-narrow32-microbench-checklist -->
 - [x] Stage311 records `PASS_STAGE311_DIGIT_NARROW32_MICRO_POSITIVE_FULLSAB_REQUIRED` for the narrow32 digit candidate.
+<!-- stage312-digit-narrow32-fullsab-ab-checklist -->
+- [x] Stage312 records `NEUTRAL_STAGE312_DIGIT_NARROW32_FULLSAB_NO_PROMOTION` for complete SAB narrow32 A/B.

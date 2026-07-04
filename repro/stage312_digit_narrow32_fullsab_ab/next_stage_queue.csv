@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage313_no_promotion_backend_or_other_digit,NEUTRAL_STAGE312_DIGIT_NARROW32_FULLSAB_NO_PROMOTION,Do not promote narrow32; keep current direct baseline.,noise/resource/high-stat before any final SAB acceleration claim

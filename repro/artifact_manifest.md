@@ -3168,3 +3168,11 @@ Repro artifacts:
   - `scripts/run_stage311_digit_narrow32_microbench.sh`
   - `scripts/build_stage311_digit_narrow32_microbench.py`
   - `repro/stage311_digit_narrow32_microbench/`
+- stage312_digit_narrow32_fullsab_ab:
+  - `docs/stage312_digit_narrow32_fullsab_ab.md`
+  - `theory_checks/stage312_digit_narrow32_fullsab_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage312_digit_narrow32_fullsab.md`
+  - `experiments/stage312_digit_narrow32_fullsab_ab_plan.md`
+  - `scripts/run_stage312_digit_narrow32_fullsab_ab.sh`
+  - `scripts/build_stage312_digit_narrow32_fullsab_ab.py`
+  - `repro/stage312_digit_narrow32_fullsab_ab/`

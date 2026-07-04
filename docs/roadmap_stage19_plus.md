@@ -7123,3 +7123,8 @@ Status: `PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED`.
 Goal: test an opt-in int64-to-int32-to-double digit materialization candidate before full-SAB promotion.
 
 Status: `PASS_STAGE311_DIGIT_NARROW32_MICRO_POSITIVE_FULLSAB_REQUIRED`.
+## Stage 312: Digit Narrow32 Full-SAB A/B
+
+Goal: test whether Stage311 narrow32 digit conversion improves complete SAB `T_bootstrap/r` against the current direct-DFT baseline.
+
+Status: `NEUTRAL_STAGE312_DIGIT_NARROW32_FULLSAB_NO_PROMOTION`.

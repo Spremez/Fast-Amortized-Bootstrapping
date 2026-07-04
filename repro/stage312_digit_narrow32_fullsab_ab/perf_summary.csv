@@ -1,0 +1,4 @@
+variant,samples,correctness,t_bootstrap_over_r_mean_us,t_bootstrap_over_r_stddev_us,t_bootstrap_over_r_ci95_low_us,t_bootstrap_over_r_ci95_high_us,t_bootstrap_over_r_min_us,t_bootstrap_over_r_max_us,scalar_t_bootstrap_over_r_mean_us,speedup_vs_repeated_scalar_mean,narrow32_vs_direct_baseline_mean,narrow32_ci_separated_from_baseline,conservative_baseline_min_over_narrow32_max
+direct_baseline,5,Pass,6208233.850,70223.927,6121053.306,6295414.394,6088742.000,6279910.500,10745678.650,1.730875,,,
+narrow32_digit,5,Pass,6226265.050,21801.367,6199199.417,6253330.683,6201158.000,6261581.750,10802395.650,1.734972,,,
+comparison,5,Pass,,,,,,,,,0.997104,false,0.972397

@@ -1126,3 +1126,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage311 digit narrow32 microbench
 
 `PASS_STAGE311_DIGIT_NARROW32_MICRO_POSITIVE_FULLSAB_REQUIRED` tests the default-off `MAT_TRGSW_DIRECT_DFT_DIGIT_NARROW32` candidate under isolated microbench gates.
+<!-- stage312-digit-narrow32-fullsab-ab -->
+### Stage312 digit narrow32 full-SAB A/B
+
+`NEUTRAL_STAGE312_DIGIT_NARROW32_FULLSAB_NO_PROMOTION` tests narrow32 at the complete SAB `T_bootstrap/r` endpoint; noise/resource/high-stat remain separate gates.

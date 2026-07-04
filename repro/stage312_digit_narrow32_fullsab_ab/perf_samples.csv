@@ -1,0 +1,11 @@
+variant,outer_run,inner_rep,correctness,mode,r,h,r_prec,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup_vs_repeated_scalar,source_log
+direct_baseline,0,0,Pass,include_zero,4,39,7,24354968,6088742.000,42976198,10744049.500,1.765,repro/stage312_digit_narrow32_fullsab_ab/raw/direct_baseline/run_0.log
+direct_baseline,1,0,Pass,include_zero,4,39,7,24772071,6193017.750,42312132,10578033.000,1.708,repro/stage312_digit_narrow32_fullsab_ab/raw/direct_baseline/run_1.log
+direct_baseline,2,0,Pass,include_zero,4,39,7,24803482,6200870.500,42827056,10706764.000,1.727,repro/stage312_digit_narrow32_fullsab_ab/raw/direct_baseline/run_2.log
+direct_baseline,3,0,Pass,include_zero,4,39,7,25114514,6278628.500,43313556,10828389.000,1.725,repro/stage312_digit_narrow32_fullsab_ab/raw/direct_baseline/run_3.log
+direct_baseline,4,0,Pass,include_zero,4,39,7,25119642,6279910.500,43484631,10871157.750,1.731,repro/stage312_digit_narrow32_fullsab_ab/raw/direct_baseline/run_4.log
+narrow32_digit,0,0,Pass,include_zero,4,39,7,25046327,6261581.750,42998432,10749608.000,1.717,repro/stage312_digit_narrow32_fullsab_ab/raw/narrow32_digit/run_0.log
+narrow32_digit,1,0,Pass,include_zero,4,39,7,24852073,6213018.250,43061586,10765396.500,1.733,repro/stage312_digit_narrow32_fullsab_ab/raw/narrow32_digit/run_1.log
+narrow32_digit,2,0,Pass,include_zero,4,39,7,24804632,6201158.000,43255012,10813753.000,1.744,repro/stage312_digit_narrow32_fullsab_ab/raw/narrow32_digit/run_2.log
+narrow32_digit,3,0,Pass,include_zero,4,39,7,24961634,6240408.500,43290236,10822559.000,1.734,repro/stage312_digit_narrow32_fullsab_ab/raw/narrow32_digit/run_3.log
+narrow32_digit,4,0,Pass,include_zero,4,39,7,24860635,6215158.750,43442647,10860661.750,1.747,repro/stage312_digit_narrow32_fullsab_ab/raw/narrow32_digit/run_4.log

@@ -4152,3 +4152,14 @@ H311_digit_narrow32_microbench:
     Stage311 tests an opt-in narrow32 digit materialization candidate. It can
     only open full-SAB A/B if both digit component time and sub-DTF microbench
     latency improve; otherwise it is a neutral/negative ablation.
+H312_digit_narrow32_fullsab_ab:
+  status: NEUTRAL_STAGE312_DIGIT_NARROW32_FULLSAB_NO_PROMOTION
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage312_digit_narrow32_fullsab_ab/perf_samples.csv
+    - repro/stage312_digit_narrow32_fullsab_ab/perf_summary.csv
+    - repro/stage312_digit_narrow32_fullsab_ab/proof_gate.csv
+  conclusion: >
+    Stage312 tests whether the Stage311 narrow32 digit microbench effect
+    survives complete SAB. A positive result is still a preflight until
+    noise/resource and high-stat gates pass.
