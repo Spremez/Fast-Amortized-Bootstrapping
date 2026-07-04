@@ -1,0 +1,6 @@
+run,status,rows,N,reps,max_abs_diff,diff_count,scalar_loop_avg_us,array_avg_us,scalar_per_row_us,array_per_row_us,speedup_vs_scalar_loop,checksum,source_log
+0,Pass,5,2048,20000,0,0,9.835,9.284,1.967,1.857,1.059,5.7650992862812076e+22,repro/stage290_dft_direct_output_microbench/raw/run_0.log
+1,Pass,5,2048,20000,0,0,8.554,8.731,1.711,1.746,0.980,-1.0517855220138041e+23,repro/stage290_dft_direct_output_microbench/raw/run_1.log
+2,Pass,5,2048,20000,0,0,8.733,9.488,1.747,1.898,0.920,6.0489845209019303e+22,repro/stage290_dft_direct_output_microbench/raw/run_2.log
+3,Pass,5,2048,20000,0,0,11.305,10.591,2.261,2.118,1.067,1.0191322141684045e+23,repro/stage290_dft_direct_output_microbench/raw/run_3.log
+4,Pass,5,2048,20000,0,0,10.335,10.437,2.067,2.087,0.990,-7.8345300055566808e+22,repro/stage290_dft_direct_output_microbench/raw/run_4.log

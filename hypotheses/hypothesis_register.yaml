@@ -3928,3 +3928,15 @@ H10_stage289_mat_dft_array_microbench:
     multi-row DFT wrapper is correctness-clean, but it is promoted only if the
     repeated isolated microbench clears the speedup gate; otherwise Stage290
     must target deeper DFT lifecycle reduction.
+
+H10_stage290_dft_direct_output_microbench:
+  status: NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION
+  evidence:
+    - repro/stage290_dft_direct_output_microbench/run_metrics.csv
+    - repro/stage290_dft_direct_output_microbench/bench_summary.csv
+    - repro/stage290_dft_direct_output_microbench/proof_gate.csv
+    - docs/stage290_dft_direct_output_microbench.md
+  conclusion: >
+    Stage290 implements a default-off direct-output DFT array path. It may
+    proceed to complete-SAB A/B only when the isolated repeated microbench is
+    positive; otherwise it remains a rejected DFT lifecycle candidate.

@@ -1,0 +1,2 @@
+decision,runs,correct_runs,rows,N,reps,scalar_loop_avg_us_mean,direct_array_avg_us_mean,speedup_vs_scalar_loop_mean,speedup_vs_scalar_loop_min,speedup_vs_scalar_loop_max,claim
+NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION,5,5,5,2048,20000,9.752400,9.706200,1.003200,0.920000,1.067000,microbench_only_full_sab_required

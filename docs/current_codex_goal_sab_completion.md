@@ -1007,3 +1007,11 @@ the next isolated microbench target; it is not final `T_bootstrap/r` evidence.
 existing multi-row DFT wrapper against the scalar per-row conversion loop.
 Correctness is separated from performance, and the result remains
 microbench-only. Complete-SAB `T_bootstrap/r` claims remain gated.
+
+<!-- stage290-dft-direct-output-microbench -->
+### Stage290 DFT direct-output microbench
+
+`NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION` tests direct-output torus-to-DFT conversion for the MAT-SAB r=4
+rows=5/N=2048 shape. The result is isolated microbench evidence only; a
+positive gate admits complete-SAB `T_bootstrap/r` A/B but is not itself a
+bootstrapping speed claim.

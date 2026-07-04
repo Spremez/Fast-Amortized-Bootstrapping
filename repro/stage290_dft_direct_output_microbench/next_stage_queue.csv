@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage291_direct_output_full_sab_ab,NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION,Return to DFT lifecycle design; do not run full-SAB A/B for this candidate.,"same-backend repeated full-SAB correctness/performance, then noise/resource if positive"

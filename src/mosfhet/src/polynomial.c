@@ -441,7 +441,16 @@ void polynomial_torus_to_DFT_array(DFT_Polynomial * out,
     assert(out[i]->N == N);
   }
   (void) N;
-#if defined(USE_SPQLIOS) && !defined(TORUS32) && defined(MAT_TRGSW_MULTIROW_DFT_WRAPPER)
+#if defined(USE_SPQLIOS) && !defined(TORUS32) && \
+    defined(MAT_TRGSW_DFT_ARRAY_DIRECT_OUTPUT)
+  init_fft(N);
+  FFT_Processor_Spqlios proc = fft_proc[N >> 10];
+  for (size_t i = 0; i < rows; i++){
+    polynomial_torus64_to_double_row(out[i]->coeffs,
+        (const uint64_t *) in[i]->coeffs, N);
+    ifft(proc->tables_reverse, out[i]->coeffs);
+  }
+#elif defined(USE_SPQLIOS) && !defined(TORUS32) && defined(MAT_TRGSW_MULTIROW_DFT_WRAPPER)
   init_fft(N);
   FFT_Processor_Spqlios proc = fft_proc[N >> 10];
   double ** scratch = polynomial_torus_to_DFT_array_scratch(N, rows);

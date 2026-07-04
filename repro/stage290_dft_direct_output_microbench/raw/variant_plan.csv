@@ -1,0 +1,2 @@
+variant,rows,N,reps,runs,fft_lib,flags
+direct_output_dft_array,5,2048,20000,5,spqlios_avx512,MAT_TRGSW_DFT_ARRAY_DIRECT_OUTPUT=true MAT_TRGSW_DFT_ARRAY_BENCH=true

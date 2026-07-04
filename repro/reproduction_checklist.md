@@ -418,3 +418,6 @@
 
 <!-- stage289-mat-dft-array-microbench-checklist -->
 - [x] Stage289 records `NEUTRAL_STAGE289_DFT_ARRAY_WRAPPER_NO_PROMOTION` for isolated torus-to-DFT array-wrapper microbench.
+
+<!-- stage290-dft-direct-output-microbench-checklist -->
+- [x] Stage290 records `NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION` for the direct-output DFT array microbench.

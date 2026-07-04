@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_logs,PASS,raw run logs,5,Repeated isolated logs exist.
+G2_correctness,PASS,all runs status,5/5,Direct-output array DFT must equal scalar-loop DFT output.
+G3_microbench,NO_PROMOTION,min speedup,0.920000,Every run must clear 1.02x before full-SAB A/B.
+G4_claim_boundary,PASS,claim scope,isolated direct-output DFT only,No complete-SAB speedup claim is made here.
+G5_decision,NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION,stage decision,NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION,Positive result admits full-SAB A/B only.
