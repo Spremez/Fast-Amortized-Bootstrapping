@@ -2807,3 +2807,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage248_structured_compact_finite_probe.md`
   - `scripts/build_stage248_structured_compact_finite_probe.py`
   - `repro/stage248_structured_compact_finite_probe/`
+- stage249_structured_compact_distribution_security:
+  - `docs/stage249_structured_compact_distribution_security.md`
+  - `experiments/stage249_structured_compact_distribution_security_plan.md`
+  - `theory_checks/stage249_structured_compact_security_boundary.md`
+  - `algorithm_variants/mat_rlwe_sab_stage249_structured_compact_security.md`
+  - `scripts/build_stage249_structured_compact_distribution_security.py`
+  - `repro/stage249_structured_compact_distribution_security/`

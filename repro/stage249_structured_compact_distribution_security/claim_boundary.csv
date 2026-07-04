@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+structured_compact_security,blocked,Finite algebra and toy semantic probes identify a constrained proof route.,The structured compact route is secure or ready for SAB integration.,repro/stage249_structured_compact_distribution_security/semantic_security_matrix.csv
+structured_compact_speedup,denied,No complete-SAB T_bootstrap/r speedup is claimed for compact routing.,Term-count or semantic-skip potential is a bootstrapping speedup.,repro/stage249_structured_compact_distribution_security/value_matrix.csv
+production_permission,freeze_compact_production_route,Compact production work is frozen until a formal distribution/keygen/security proof exists.,Implement compact SAB hot path now.,repro/stage249_structured_compact_distribution_security/distribution_security_matrix.csv
+next_research_route,route_to_exact_lower_bound_or_nonbinary_preflight,Proceed with exact dense lower-bound gap analysis or non-binary selector semantics.,Continue compact theory without a new proof artifact.,repro/stage249_structured_compact_distribution_security/next_stage_queue.csv

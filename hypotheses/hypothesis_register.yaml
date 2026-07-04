@@ -3460,8 +3460,21 @@ H10_stage248_structured_compact_finite_probe:
     - repro/stage248_structured_compact_finite_probe/proof_gate.csv
     - docs/stage248_structured_compact_finite_probe.md
   conclusion: >
-    Stage248 records FAIL_STAGE248_STRUCTURED_COMPACT_PROBE. A finite r=2 off-lane-zero structured compact
+    Stage248 records PASS_STAGE248_STRUCTURED_COMPACT_FINITE_ALGEBRA_PASS_SECURITY_BLOCKED. A finite r=2 off-lane-zero structured compact
     algebra probe passes positive and negative controls, and the toy noise
     bound mirrors the algebraic result. The route remains proof-only because
     selector distribution, keygen security, ring-level noise, and complete-SAB
     value are not proven.
+H10_stage249_structured_compact_distribution_security:
+  status: compact_production_route_frozen
+  evidence:
+    - repro/stage249_structured_compact_distribution_security/distribution_security_matrix.csv
+    - repro/stage249_structured_compact_distribution_security/semantic_security_matrix.csv
+    - repro/stage249_structured_compact_distribution_security/value_matrix.csv
+    - repro/stage249_structured_compact_distribution_security/proof_gate.csv
+    - docs/stage249_structured_compact_distribution_security.md
+  conclusion: >
+    Stage249 records PASS_STAGE249_COMPACT_SECURITY_PREFLIGHT_FREEZE_PRODUCTION_ROUTE. Direct compact-saving public distributions
+    are distinguishable, while dummy random padding remains proof-only, keeps
+    dense public size, and lacks keygen/security/ring-noise proofs. No compact
+    production SAB implementation or speedup claim is admitted.

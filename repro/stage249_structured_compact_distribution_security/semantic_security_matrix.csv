@@ -1,0 +1,4 @@
+check,status,meaning,production_permission,missing_before_code,evidence
+dummy_zero_semantics,PASS,Toy semantic-zero dummy rows preserve the structured finite function.,no,"ring-level SAB semantics, security proof, and keygen construction",repro/stage202_dummy_padding_semantic_probe/semantic_probe.csv
+resource_value,WEAK_PUBLIC_SIZE,"Dummy padding preserves dense public size, so public key-size saving is not demonstrated.",no,complete-SAB T_bootstrap/r value after a proof-backed implementation,repro/stage202_dummy_padding_semantic_probe/resource_model.csv
+production_proof_gate,PROOF_ONLY,Existing evidence is proof-only and does not authorize production compact SAB.,no,Proceed only with production selector equation probe or new exact mechanism.,repro/stage202_dummy_padding_semantic_probe/summary.csv

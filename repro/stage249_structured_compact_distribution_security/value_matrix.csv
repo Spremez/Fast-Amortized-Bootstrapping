@@ -1,0 +1,4 @@
+r,dense_public_rows_per_T,active_semantic_rows_per_T,inactive_dummy_rows_per_T,public_row_saving_vs_dense,semantic_skip_potential,stage249_interpretation,claim_permission
+2,9,8,1,0,0.111111111,"semantic skip potential exists, but public row count is dense and no production proof/benchmark exists",no_complete_sab_speedup_claim
+4,25,16,9,0,0.360000000,"semantic skip potential exists, but public row count is dense and no production proof/benchmark exists",no_complete_sab_speedup_claim
+6,49,24,25,0,0.510204082,"semantic skip potential exists, but public row count is dense and no production proof/benchmark exists",no_complete_sab_speedup_claim

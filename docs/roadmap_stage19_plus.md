@@ -6789,8 +6789,26 @@ Run the Stage246 structured compact proof prototype in a finite r=2 model.
 Status:
 
 ```text
-Generated from input head `74aaee0` with `FAIL_STAGE248_STRUCTURED_COMPACT_PROBE`. The off-lane-zero
+Generated from input head `74aaee0` with `PASS_STAGE248_STRUCTURED_COMPACT_FINITE_ALGEBRA_PASS_SECURITY_BLOCKED`. The off-lane-zero
 structured compact algebra and toy noise probes pass, but selector
 distribution, keygen security, ring-level noise, and complete-SAB value remain
 blocked. No production compact SAB implementation is admitted.
+```
+## Stage 249: Structured Compact Distribution/Security Preflight
+
+Goal:
+
+```text
+Decide whether Stage248's structured compact proof prototype can enter
+production SAB implementation.
+```
+
+Status:
+
+```text
+Generated from input head `1b904a7` with `PASS_STAGE249_COMPACT_SECURITY_PREFLIGHT_FREEZE_PRODUCTION_ROUTE`. Compact-saving public
+distributions are distinguishable, and the only public-pattern survivor uses
+dummy random padding with dense public size and proof-only semantics. Compact
+production integration is frozen until a formal distribution/keygen/security
+proof exists.
 ```

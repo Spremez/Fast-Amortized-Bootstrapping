@@ -763,7 +763,13 @@ non-binary selector semantics, lower-bound optimality, and final bibliography
 closure remain incomplete.
 ### Stage248 structured compact finite probe
 
-`FAIL_STAGE248_STRUCTURED_COMPACT_PROBE` records a proof-prototype pass for constrained compact algebra.
+`PASS_STAGE248_STRUCTURED_COMPACT_FINITE_ALGEBRA_PASS_SECURITY_BLOCKED` records a proof-prototype pass for constrained compact algebra.
 The active goal remains open because security/distribution proof, ring-level
 noise, complete-SAB implementation, non-binary support, lower-bound optimality,
 and final citation closure remain incomplete.
+### Stage249 structured compact distribution/security preflight
+
+`PASS_STAGE249_COMPACT_SECURITY_PREFLIGHT_FREEZE_PRODUCTION_ROUTE` freezes the compact production route until a formal selector
+distribution/keygen/security proof exists. The active goal remains open for
+exact dense lower-bound gap analysis, non-binary selector semantics, and final
+paper/citation closure.
