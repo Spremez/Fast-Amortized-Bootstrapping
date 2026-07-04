@@ -1,0 +1,2 @@
+r,seed,status,points,pvw_failures,scalar_failures,pair_failures,pvw_log2_sigma_torus,scalar_log2_sigma_torus,pair_log2_sigma_torus,pvw_minus_scalar_log2,max_allowed_log2_gap,source_log
+4,6863025,Pass,16384,0,0,0,-7.581,-7.870,-7.174,0.289,4.000,repro/stage231_current_head_added_param_smoke/noise_SET_2_3_4096_r4_seeds1/r4/seed_6863025.log

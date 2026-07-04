@@ -1,0 +1,5 @@
+param,r,observed_h,expected_h,observed_r_prec,expected_r_prec,correctness_status,shape_gate,source_log
+SET_2_3_4096,2,32,32,8,8,Pass,PASS,repro/stage231_current_head_added_param_smoke/perf_SET_2_3_4096_r2_runs1/run_0.log
+SET_2_3_4096,4,32,32,8,8,Pass,PASS,repro/stage231_current_head_added_param_smoke/perf_SET_2_3_4096_r4_runs1/run_0.log
+SET_4_5_2048,2,42,42,7,7,Pass,PASS,repro/stage231_current_head_added_param_smoke/perf_SET_4_5_2048_r2_runs1/run_0.log
+SET_4_5_2048,4,42,42,7,7,Pass,PASS,repro/stage231_current_head_added_param_smoke/perf_SET_4_5_2048_r4_runs1/run_0.log

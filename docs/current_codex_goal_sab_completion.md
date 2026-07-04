@@ -672,3 +672,6 @@ or security claims.
 ### Stage230 source-verified literature novelty audit
 
 `PASS_STAGE230_SOURCE_VERIFIED_SCOPED_NOVELTY_BOUNDARY` refreshes real-source related-work boundaries. Continue only with current-head parameter refresh, scoped manuscript skeleton, or separately gated non-binary/compact design.
+### Stage231 current-head added-parameter refresh
+
+`PASS_STAGE231_CURRENT_HEAD_ADDED_PARAM_SMOKE_FULL_STATS_RESOURCE_PENDING` records current-head added-parameter smoke continuity. Do not promote added parameters into a current-head paper table until Stage232 full-stat/resource gates run.

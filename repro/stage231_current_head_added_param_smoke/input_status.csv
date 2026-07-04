@@ -1,0 +1,7 @@
+input,status,role,bytes
+repro/stage230_source_verified_literature_novelty_audit/proof_gate.csv,present,Stage230 proof gate,1187
+repro/stage230_source_verified_literature_novelty_audit/next_stage_queue.csv,present,Stage230 next queue,1150
+repro/stage230_source_verified_literature_novelty_audit/claim_policy.csv,present,Stage230 claim policy,824
+repro/stage231_current_head_added_param_smoke/performance_summary.csv,present,Stage231 raw performance smoke summary,766
+repro/stage231_current_head_added_param_smoke/noise_summary.csv,present,Stage231 raw noise smoke summary,744
+stage230_next_contains_stage231,present,Stage230 routes current-head added-parameter refresh when a broader table is needed.,

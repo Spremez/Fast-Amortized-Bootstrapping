@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_required_inputs,PASS,inputs_present,true,repro/stage231_current_head_added_param_smoke/input_status.csv,Stage231 consumes Stage230 policy and raw current-head smoke logs.
+G2_shape_gate,PASS,shape_rows,4/4,repro/stage231_current_head_added_param_smoke/shape_gate.csv,PARAM selection changed the actual SAB target shape; this is not default SET_2_3_2048 fallback.
+G3_performance_smoke,PASS,positive_smoke_rows,4/4,repro/stage231_current_head_added_param_smoke/performance_smoke.csv,Every added param/r case has one passing complete-SAB T_bootstrap/r smoke run.
+G4_noise_smoke,PASS,zero_failure_rows,4/4,repro/stage231_current_head_added_param_smoke/noise_smoke.csv,Every added param/r case has one deterministic zero-failure final-output noise smoke.
+G5_promotion_boundary,PASS_SMOKE_ONLY_RESOURCE_AND_FULL_STATS_PENDING,pending_promotion_gates,2,repro/stage231_current_head_added_param_smoke/promotion_gate.csv,The current-head smoke refresh cannot be used as a paper-level added-parameter table.
+G6_stage231_decision,PASS_STAGE231_CURRENT_HEAD_ADDED_PARAM_SMOKE_FULL_STATS_RESOURCE_PENDING,decision,PASS_STAGE231_CURRENT_HEAD_ADDED_PARAM_SMOKE_FULL_STATS_RESOURCE_PENDING,repro/stage231_current_head_added_param_smoke/proof_gate.csv,Proceed to full-stat/resource refresh if added parameters are needed in the main claim.

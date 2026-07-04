@@ -1094,3 +1094,6 @@ Generated from input head `cf19098`, Stage229 records `PASS_STAGE229_SCOPED_BINA
 ## Stage230 source-verified literature novelty audit
 
 Generated from input head `4a6eda3`, Stage230 records `PASS_STAGE230_SOURCE_VERIFIED_SCOPED_NOVELTY_BOUNDARY`. Literature evidence permits only scoped systems/engineering wording for PVW/MAT-SAB and blocks broad novelty or optimality claims.
+## Stage231 current-head added-parameter refresh
+
+Generated from input head `a2b7c43`, Stage231 records `PASS_STAGE231_CURRENT_HEAD_ADDED_PARAM_SMOKE_FULL_STATS_RESOURCE_PENDING`. Added binary parameters pass current-head complete-SAB smoke under `T_bootstrap/r`, but resource and full-stat gates remain pending.

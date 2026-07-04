@@ -1,0 +1,5 @@
+param,r,seeds,points,pvw_failures,scalar_failures,pair_failures,avg_pvw_minus_scalar_log2,status,claim_level,source_csv
+SET_2_3_4096,2,1,8192,0,0,0,-0.015000,PASS,current-head noise smoke only,repro/stage231_current_head_added_param_smoke/noise_SET_2_3_4096_r2_seeds1/aggregate.csv
+SET_2_3_4096,4,1,16384,0,0,0,0.289000,PASS,current-head noise smoke only,repro/stage231_current_head_added_param_smoke/noise_SET_2_3_4096_r4_seeds1/aggregate.csv
+SET_4_5_2048,2,1,4096,0,0,0,-0.176000,PASS,current-head noise smoke only,repro/stage231_current_head_added_param_smoke/noise_SET_4_5_2048_r2_seeds1/aggregate.csv
+SET_4_5_2048,4,1,8192,0,0,0,0.049000,PASS,current-head noise smoke only,repro/stage231_current_head_added_param_smoke/noise_SET_4_5_2048_r4_seeds1/aggregate.csv

@@ -1,0 +1,6 @@
+gate,required,observed,status,claim_effect
+shape_gate,observed h/r_prec equals selected PARAM definition for all param/r cases,see shape_gate.csv,PASS,Allows current-head smoke interpretation only.
+performance_smoke,one complete-SAB A/B run per param/r with correctness Pass and speedup > 1,4/4,PASS,Does not provide CI; cannot replace 10-run Stage36 evidence.
+noise_smoke,one deterministic seed per param/r with zero PVW/scalar/pair failures,4/4,PASS,Noise sanity only; cannot replace 20-seed Stage36 evidence.
+resource_refresh,current-head resource/keygen/RSS for added parameters,not run in Stage231 smoke,PENDING,Blocks current-head paper-table promotion.
+full_statistics,at least 10 complete-SAB A/B runs and 20 noise seeds if added parameters enter a paper table,1 run and 1 seed,PENDING,Blocks statistical claim; current result is smoke only.

@@ -3250,3 +3250,13 @@ H10_stage230_source_verified_literature_novelty_audit:
     scoped systems/engineering PVW/MAT-SAB study under complete-SAB
     T_bootstrap/r. Broad shared-mask, batch, PVW-packing, non-binary, and
     theoretical-optimality claims remain blocked.
+H10_stage231_current_head_added_parameter_refresh:
+  status: current_head_smoke_passed_full_stats_pending
+  evidence:
+    - repro/stage231_current_head_added_param_smoke/performance_smoke.csv
+    - repro/stage231_current_head_added_param_smoke/noise_smoke.csv
+    - repro/stage231_current_head_added_param_smoke/shape_gate.csv
+  conclusion: >
+    Stage231 records PASS_STAGE231_CURRENT_HEAD_ADDED_PARAM_SMOKE_FULL_STATS_RESOURCE_PENDING. Added binary parameters pass current-head
+    shape, performance smoke, and one-seed noise smoke under complete-SAB
+    T_bootstrap/r, but resource and full-stat gates remain pending.

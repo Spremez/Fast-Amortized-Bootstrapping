@@ -6517,3 +6517,19 @@ remains scoped systems/engineering evidence under complete-SAB `T_bootstrap/r`;
 broad shared-mask, batch, PVW-packing, non-binary, and theoretical-optimality
 claims remain blocked.
 ```
+## Stage 231: Current-Head Added-Parameter Refresh
+
+Goal:
+
+```text
+Refresh added binary parameter evidence at current head without promoting
+single-run smoke into a paper-level statistical claim.
+```
+
+Status:
+
+```text
+Generated from input head `a2b7c43` with `PASS_STAGE231_CURRENT_HEAD_ADDED_PARAM_SMOKE_FULL_STATS_RESOURCE_PENDING`. `SET_4_5_2048` and
+`SET_2_3_4096` pass current-head shape, complete-SAB A/B smoke, and one-seed
+noise smoke for r=2/r=4. Full statistics and resource refresh remain pending.
+```

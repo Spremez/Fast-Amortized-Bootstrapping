@@ -1,0 +1,5 @@
+param,r,runs,status,metric,pvw_mean_us,scalar_repeated_mean_us,mean_speedup,min_speedup,max_speedup,decision,claim_level,source_csv
+SET_2_3_4096,2,1,PASS,T_bootstrap/r,29319069.000,36674366.000,1.251,1.251,1.251,PASS_SMOKE,current-head smoke only; no CI or promotion,repro/stage231_current_head_added_param_smoke/perf_SET_2_3_4096_r2_runs1/summary.csv
+SET_2_3_4096,4,1,PASS,T_bootstrap/r,54472629.000,72557447.000,1.332,1.332,1.332,PASS_SMOKE,current-head smoke only; no CI or promotion,repro/stage231_current_head_added_param_smoke/perf_SET_2_3_4096_r4_runs1/summary.csv
+SET_4_5_2048,2,1,PASS,T_bootstrap/r,16180790.000,21592995.000,1.334,1.334,1.334,PASS_SMOKE,current-head smoke only; no CI or promotion,repro/stage231_current_head_added_param_smoke/perf_SET_4_5_2048_r2_runs1/summary.csv
+SET_4_5_2048,4,1,PASS,T_bootstrap/r,32633770.000,42726514.000,1.309,1.309,1.309,PASS_SMOKE,current-head smoke only; no CI or promotion,repro/stage231_current_head_added_param_smoke/perf_SET_4_5_2048_r4_runs1/summary.csv
