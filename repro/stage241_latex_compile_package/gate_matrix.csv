@@ -1,0 +1,6 @@
+gate,required,observed,status,claim_effect
+G1_inputs,Stage240 TeX/table/BibTeX/proof and Stage239 TODOs exist,all present,PASS,compile package can only be built from verified prior-stage inputs
+G2_compile_chain,"pdflatex, bibtex, pdflatex, pdflatex all return zero",01_pdflatex_initial=0;02_bibtex=0;03_pdflatex_after_bibtex=0;04_pdflatex_final=0,PASS,draft is mechanically buildable on this host
+G3_compile_checks,PDF exists; no undefined citations/references/fatal errors; bbl count matches cites,all_commands_return_zero=PASS;pdf_exists=PASS;no_undefined_citations=PASS;no_undefined_references=PASS;no_fatal_latex_error=PASS;bbl_matches_cite_count=PASS;overclaim_guard=PASS,PASS,compiled PDF has resolved bibliography and table references
+G4_citation_resolution,every source cite key appears in aux and bbl,citation_rows=9,PASS,no invisible or unresolved citation gap in compiled package
+G5_stage241_decision,all compile/package gates pass,PASS_STAGE241_LATEX_COMPILE_PACKAGE_READY,PASS_STAGE241_LATEX_COMPILE_PACKAGE_READY,compiled package ready; final paper closure still requires TODO bibliography/template decisions

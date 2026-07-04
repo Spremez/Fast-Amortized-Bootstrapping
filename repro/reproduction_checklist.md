@@ -341,3 +341,4 @@
 - [x] Stage238 source-verified citation package records decision `PASS_STAGE238_SOURCE_VERIFIED_CITATION_PACKAGE_READY_NO_BIBTEX_HALLUCINATION`.
 - [x] Stage239 verified BibTeX retrieval and LaTeX stub records decision `PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN`.
 - [x] Stage240 scoped LaTeX draft records claim and citation gates `PASS_STAGE240_SCOPED_LATEX_DRAFT_READY_CLAIMS_AUDITED`.
+- [x] Stage241 LaTeX compile package records compile and citation gates `PASS_STAGE241_LATEX_COMPILE_PACKAGE_READY`.

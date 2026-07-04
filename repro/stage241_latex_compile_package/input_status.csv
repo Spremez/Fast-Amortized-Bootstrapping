@@ -1,0 +1,7 @@
+input,status,role,bytes
+repro/stage240_scoped_latex_draft/pvw_mat_sab_scoped_draft.tex,present,Stage240 scoped LaTeX source,5668
+repro/stage240_scoped_latex_draft/selected_binary_table.tex,present,Stage240 selected binary table,870
+repro/stage240_scoped_latex_draft/pvw_mat_sab_references.bib,present,Stage240 verified references,8603
+repro/stage240_scoped_latex_draft/proof_gate.csv,present,Stage240 proof gates,1351
+repro/stage240_scoped_latex_draft/claim_audit.csv,present,Stage240 claim audit,1643
+repro/stage239_bibtex_latex_stub/unresolved_bibtex_todo.csv,present,unresolved bibliography TODOs,611

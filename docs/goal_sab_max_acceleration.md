@@ -1153,3 +1153,6 @@ sources as explicit TODOs instead of fabricating references.
 - Stage240 scoped LaTeX draft records `PASS_STAGE240_SCOPED_LATEX_DRAFT_READY_CLAIMS_AUDITED`: a paper-facing draft now
   exists, but it is scoped to selected binary exact dense PVW/MAT-SAB and does
   not close novelty, non-binary, compact, or optimality gates.
+- Stage241 LaTeX compile package records `PASS_STAGE241_LATEX_COMPILE_PACKAGE_READY`: the scoped draft has a
+  reproducible PDF/log package, but this does not expand the selected-binary
+  claim boundary.

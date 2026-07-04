@@ -1,0 +1,8 @@
+check,observed,status,evidence
+all_commands_return_zero,01_pdflatex_initial=0;02_bibtex=0;03_pdflatex_after_bibtex=0;04_pdflatex_final=0,PASS,repro/stage241_latex_compile_package/command_log.csv
+pdf_exists,exists=True; bytes=178326,PASS,repro/stage241_latex_compile_package/build/pvw_mat_sab_scoped_draft.pdf
+no_undefined_citations,,PASS,repro/stage241_latex_compile_package/build/pvw_mat_sab_scoped_draft.log
+no_undefined_references,,PASS,repro/stage241_latex_compile_package/build/pvw_mat_sab_scoped_draft.log
+no_fatal_latex_error,fatal=False,PASS,repro/stage241_latex_compile_package/build/pvw_mat_sab_scoped_draft.log
+bbl_matches_cite_count,cite_keys=9; bibitems=9,PASS,repro/stage241_latex_compile_package/build/pvw_mat_sab_scoped_draft.bbl
+overclaim_guard,hits=,PASS,repro/stage241_latex_compile_package/build/pvw_mat_sab_scoped_draft.tex

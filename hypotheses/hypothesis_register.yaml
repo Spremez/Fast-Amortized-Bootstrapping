@@ -3377,3 +3377,16 @@ H10_stage240_scoped_latex_draft:
     PVW/MAT-SAB evidence and verified citations into a scoped LaTeX draft. The
     claim remains limited to complete-SAB T_bootstrap/r on the recorded binary
     rows; broader algorithmic and optimality claims remain gated.
+H10_stage241_latex_compile_package:
+  status: latex_compile_package_ready
+  evidence:
+    - repro/stage241_latex_compile_package/build/pvw_mat_sab_scoped_draft.pdf
+    - repro/stage241_latex_compile_package/build/pvw_mat_sab_scoped_draft.log
+    - repro/stage241_latex_compile_package/citation_resolution.csv
+    - repro/stage241_latex_compile_package/proof_gate.csv
+    - docs/stage241_latex_compile_package.md
+  conclusion: >
+    Stage241 records PASS_STAGE241_LATEX_COMPILE_PACKAGE_READY. It compiles the scoped Stage240 draft and
+    verifies resolved citations, references, PDF generation, and claim-guard
+    checks. The result remains a package gate for selected-binary evidence, not
+    a new algorithmic or optimality claim.

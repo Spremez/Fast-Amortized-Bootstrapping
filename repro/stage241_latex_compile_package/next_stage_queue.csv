@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage242_unresolved_bibtex_followup,Final bibliography closure is required.,Resolve BATCHBOOT26 and split LW23A_B from verified official routes.,selected,Keep TODO comments; do not submit as final paper.,repro/stage239_bibtex_latex_stub/unresolved_bibtex_todo.csv
+P1,stage243_native_counter_refresh_if_code_changes,Final implementation section needs current-head counter wording.,Native Linux perf counters or explicit reuse of Stage226 with code-change audit.,optional,Keep counter evidence out of the main claim.,repro/stage226_exact_mat_avx_counter_attribution/proof_gate.csv
+P2,stage244_nonbinary_or_compact_algorithm_gate,A broader algorithmic claim is proposed.,"Closed equations, correctness/noise proof obligations, full-SAB A/B and resource matrix.",blocked_until_new_design,Do not extend selected binary claim.,repro/stage240_scoped_latex_draft/claim_audit.csv

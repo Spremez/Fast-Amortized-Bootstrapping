@@ -6682,3 +6682,18 @@ compile/template pass, while unresolved BibTeX rows, current-head counter
 refresh, non-binary support, compact route, and theoretical optimality remain
 separate gates.
 ```
+## Stage 241: LaTeX Compile Package
+
+Goal:
+
+```text
+Compile the Stage240 scoped LaTeX draft with BibTeX and record PDF/log gates.
+```
+
+Status:
+
+```text
+Generated from input head `fe28338` with `PASS_STAGE241_LATEX_COMPILE_PACKAGE_READY`. The scoped draft now has
+resolved compile evidence. Remaining gates are bibliography TODO closure,
+optional current-head counter wording, and any broader algorithmic route.
+```

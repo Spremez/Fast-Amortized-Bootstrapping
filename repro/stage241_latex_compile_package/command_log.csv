@@ -1,0 +1,5 @@
+step,command,return_code,status,log
+01_pdflatex_initial,pdflatex -interaction=nonstopmode -halt-on-error pvw_mat_sab_scoped_draft.tex,0,PASS,repro/stage241_latex_compile_package/01_pdflatex_initial.log
+02_bibtex,bibtex pvw_mat_sab_scoped_draft,0,PASS,repro/stage241_latex_compile_package/02_bibtex.log
+03_pdflatex_after_bibtex,pdflatex -interaction=nonstopmode -halt-on-error pvw_mat_sab_scoped_draft.tex,0,PASS,repro/stage241_latex_compile_package/03_pdflatex_after_bibtex.log
+04_pdflatex_final,pdflatex -interaction=nonstopmode -halt-on-error pvw_mat_sab_scoped_draft.tex,0,PASS,repro/stage241_latex_compile_package/04_pdflatex_final.log

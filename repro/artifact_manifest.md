@@ -2757,3 +2757,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage240_scoped_draft.md`
   - `scripts/build_stage240_scoped_latex_draft.py`
   - `repro/stage240_scoped_latex_draft/`
+- stage241_latex_compile_package:
+  - `docs/stage241_latex_compile_package.md`
+  - `experiments/stage241_latex_compile_package_plan.md`
+  - `theory_checks/stage241_compile_claim_boundary.md`
+  - `algorithm_variants/mat_rlwe_sab_stage241_compile_package.md`
+  - `scripts/build_stage241_latex_compile_package.py`
+  - `repro/stage241_latex_compile_package/`

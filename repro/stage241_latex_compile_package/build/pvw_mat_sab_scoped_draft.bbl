@@ -1,0 +1,78 @@
+\begin{thebibliography}{1}
+
+\bibitem{DBLP:journals/tches/BergeratBCOPT25}
+Loris Bergerat, Charlotte Bonte, Benjamin~R. Curtis, Jean{-}Baptiste Orfila,
+  Pascal Paillier, and Samuel Tap.
+\newblock Sharing the mask: {TFHE} bootstrapping on packed messages.
+\newblock {\em {IACR} Trans. Cryptogr. Hardw. Embed. Syst.}, 2025(4):925--971,
+  2025.
+
+\bibitem{DBLP:conf/pkc/BrakerskiGH13}
+Zvika Brakerski, Craig Gentry, and Shai Halevi.
+\newblock Packed ciphertexts in lwe-based homomorphic encryption.
+\newblock In Kaoru Kurosawa and Goichiro Hanaoka, editors, {\em Public-Key
+  Cryptography - {PKC} 2013 - 16th International Conference on Practice and
+  Theory in Public-Key Cryptography, Nara, Japan, February 26 - March 1, 2013.
+  Proceedings}, volume 7778 of {\em Lecture Notes in Computer Science}, pages
+  1--13. Springer, 2013.
+
+\bibitem{DBLP:journals/joc/ChillottiGGI20}
+Ilaria Chillotti, Nicolas Gama, Mariya Georgieva, and Malika Izabach{\`{e}}ne.
+\newblock {TFHE:} fast fully homomorphic encryption over the torus.
+\newblock {\em J. Cryptol.}, 33(1):34--91, 2020.
+
+\bibitem{DBLP:conf/ccs/GuimaraesP25}
+Antonio Guimar{\~{a}}es and Hilder V.~L. Pereira.
+\newblock Fast amortized bootstrapping with small keys and polynomial noise
+  overhead.
+\newblock In Chun{-}Ying Huang, Jyh{-}Cheng Chen, Shiuh{-}Pyng Shieh, David
+  Lie, and V{\'{e}}ronique Cortier, editors, {\em Proceedings of the 2025 {ACM}
+  {SIGSAC} Conference on Computer and Communications Security, {CCS} 2025,
+  Taipei, Taiwan, October 13-17, 2025}, pages 2967--2981. {ACM}, 2025.
+
+\bibitem{DBLP:conf/asiacrypt/GuimaraesPL23}
+Antonio Guimar{\~{a}}es, Hilder V.~L. Pereira, and Barry~Van Leeuwen.
+\newblock Amortized bootstrapping revisited: Simpler, asymptotically-faster,
+  implemented.
+\newblock In Jian Guo and Ron Steinfeld, editors, {\em Advances in Cryptology -
+  {ASIACRYPT} 2023 - 29th International Conference on the Theory and
+  Application of Cryptology and Information Security, Guangzhou, China,
+  December 4-8, 2023, Proceedings, Part {VI}}, volume 14443 of {\em Lecture
+  Notes in Computer Science}, pages 3--35. Springer, 2023.
+
+\bibitem{DBLP:conf/asiacrypt/LiuW23}
+Zeyu Liu and Yunhao Wang.
+\newblock Amortized functional bootstrapping in less than 7 ms, with {\~{o}}(1)
+  polynomial multiplications.
+\newblock In Jian Guo and Ron Steinfeld, editors, {\em Advances in Cryptology -
+  {ASIACRYPT} 2023 - 29th International Conference on the Theory and
+  Application of Cryptology and Information Security, Guangzhou, China,
+  December 4-8, 2023, Proceedings, Part {VI}}, volume 14443 of {\em Lecture
+  Notes in Computer Science}, pages 101--132. Springer, 2023.
+
+\bibitem{DBLP:conf/icalp/MicciancoS18}
+Daniele Micciancio and Jessica Sorrell.
+\newblock Ring packing and amortized {FHEW} bootstrapping.
+\newblock In Ioannis Chatzigiannakis, Christos Kaklamanis, D{\'{a}}niel Marx,
+  and Donald Sannella, editors, {\em 45th International Colloquium on Automata,
+  Languages, and Programming, {ICALP} 2018, Prague, Czech Republic, July 9-13,
+  2018}, volume 107 of {\em LIPIcs}, pages 100:1--100:14. Schloss Dagstuhl -
+  Leibniz-Zentrum f{\"{u}}r Informatik, 2018.
+
+\bibitem{DBLP:conf/pkc/MicheliKMS24}
+Gabrielle~De Micheli, Duhyeong Kim, Daniele Micciancio, and Adam Suhl.
+\newblock Faster amortized {FHEW} bootstrapping using ring automorphisms.
+\newblock In Qiang Tang and Vanessa Teague, editors, {\em Public-Key
+  Cryptography - {PKC} 2024 - 27th {IACR} International Conference on Practice
+  and Theory of Public-Key Cryptography, Sydney, NSW, Australia, April 15-17,
+  2024, Proceedings, Part {IV}}, volume 14604 of {\em Lecture Notes in Computer
+  Science}, pages 322--353. Springer, 2024.
+
+\bibitem{DBLP:journals/tches/PaivaMHSY25}
+Thales~B. Paiva, Gabrielle~De Micheli, Syed~Mahbub Hafiz, Marcos
+  A.~Simpl{\'{\i}}cio Jr., and Bahattin Yildiz.
+\newblock Faster amortized bootstrapping using the incomplete {NTT} for free.
+\newblock {\em {IACR} Trans. Cryptogr. Hardw. Embed. Syst.}, 2025(4):520--543,
+  2025.
+
+\end{thebibliography}

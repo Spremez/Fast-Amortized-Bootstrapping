@@ -725,3 +725,9 @@ algorithmic gates remain incomplete.
 Stage239 verified citations. The active goal remains open because final paper
 compilation, unresolved BibTeX rows, optional counter refresh, non-binary
 support, compact route, and theoretical optimality remain incomplete.
+### Stage241 LaTeX compile package
+
+`PASS_STAGE241_LATEX_COMPILE_PACKAGE_READY` records successful compile/package evidence for the scoped draft.
+The active goal remains open because unresolved bibliography rows, optional
+current-head counter refresh, non-binary support, compact route, and theoretical
+optimality remain incomplete.
