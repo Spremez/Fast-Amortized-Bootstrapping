@@ -1,0 +1,2 @@
+variant,status,mode,r,trials,points,expected_model_pvw_failures,expected_model_scalar_failures,pair_failures,pair_log2_sigma_torus,pair_log2_max_abs_torus,gate,overall_gate,time_maxrss_kb,source_run_log,source_time_log
+noise_direct_dft,pass,include_zero,4,10,81920,30720,30720,0,-7.759,-5.372,Pass,Pass,2403508,repro/stage296_direct_dft_highstat/raw/noise_direct_dft/run.log,repro/stage296_direct_dft_highstat/raw/noise_direct_dft/time.log

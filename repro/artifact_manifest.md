@@ -3075,3 +3075,8 @@ Repro artifacts:
   - `scripts/run_stage295_direct_dft_stats_refresh.sh`
   - `scripts/build_stage295_direct_dft_stats_refresh.py`
   - `repro/stage295_direct_dft_stats_refresh/`
+- stage296_direct_dft_highstat:
+  - `docs/stage296_direct_dft_highstat.md`
+  - `scripts/run_stage296_direct_dft_highstat.sh`
+  - `scripts/build_stage296_direct_dft_highstat.py`
+  - `repro/stage296_direct_dft_highstat/`

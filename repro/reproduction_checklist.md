@@ -432,3 +432,5 @@
 - [x] Stage294 records `PASS_STAGE294_DIRECT_DFT_TARGET_NOISE_FINAL_OUTPUT` for direct DFT target final-output noise.
 <!-- stage295-direct-dft-stats-refresh-checklist -->
 - [x] Stage295 records `PASS_STAGE295_DIRECT_DFT_STATS_REFRESH_HIGHSTAT_PENDING` for direct DFT repeated performance plus target final-output noise refresh.
+<!-- stage296-direct-dft-highstat-checklist -->
+- [x] Stage296 records `PASS_STAGE296_DIRECT_DFT_HIGHSTAT_LOCAL` for direct DFT high-stat local complete-SAB evidence.

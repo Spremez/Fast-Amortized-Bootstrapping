@@ -1048,3 +1048,9 @@ stage-wise and high-stat noise are still later gates.
 `PASS_STAGE295_DIRECT_DFT_STATS_REFRESH_HIGHSTAT_PENDING` refreshes direct-DFT evidence with repeated complete-SAB
 `T_bootstrap/r` and target final-output noise trials. The result remains scoped
 to local `spqlios_avx512`, `SET_2_3_2048`, include-zero r=4.
+<!-- stage296-direct-dft-highstat -->
+### Stage296 direct DFT high-stat campaign
+
+`PASS_STAGE296_DIRECT_DFT_HIGHSTAT_LOCAL` expands the direct-DFT candidate to a local 10-run/10-trial
+complete-SAB campaign. The metric remains `T_bootstrap/r`; the result is local
+engineering evidence, not a final novelty or optimality claim.

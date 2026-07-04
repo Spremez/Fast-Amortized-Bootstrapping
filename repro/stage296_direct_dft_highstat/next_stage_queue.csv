@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage297_native_or_resource_matrix,PASS_STAGE296_DIRECT_DFT_HIGHSTAT_LOCAL,native counter/resource-backed attribution or 10+ run repeated on native Linux.,Keep Stage296 local only.
+P1,stage297_stagewise_noise,paper claim needs noise internalization,target-size per-stage PVW/scalar phase/noise equivalence.,Only claim final-output equivalence.

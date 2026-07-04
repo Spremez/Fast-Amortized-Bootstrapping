@@ -7037,3 +7037,9 @@ Goal: strengthen Stage292/294 evidence with repeated performance and noise
 refresh.
 
 Status: `PASS_STAGE295_DIRECT_DFT_STATS_REFRESH_HIGHSTAT_PENDING`.
+## Stage 296: Direct DFT High-Stat Campaign
+
+Goal: upgrade Stage295 evidence with a 10-run/10-trial same-backend complete
+SAB campaign.
+
+Status: `PASS_STAGE296_DIRECT_DFT_HIGHSTAT_LOCAL`.

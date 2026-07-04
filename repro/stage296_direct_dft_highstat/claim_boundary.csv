@@ -1,0 +1,4 @@
+claim,status,supported_statement,not_supported
+amortized_complete_sab_speedup,PASS_STAGE296_DIRECT_DFT_HIGHSTAT_LOCAL,direct DFT is compared by complete SAB T_bootstrap/r against repeated scalar and selected PVW control.,single-output latency or universal optimality.
+noise_correctness,PASS,target final-output PVW/scalar pair failures are zero for recorded trials.,stage-wise noise closure.
+paper_grade,not_yet,local high-stat evidence may justify next-stage native or multi-parameter expansion.,novelty or theorem-level optimality.
