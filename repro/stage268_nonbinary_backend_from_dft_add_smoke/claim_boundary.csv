@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+backend_from_dft_add_smoke,smoke_positive,Stage268 screens the existing explicit backend FromDFT-add flag against default PVW/MAT-SAB using T_bootstrap/r.,Stage268 proves final complete SAB speedup.,variant_compare.csv; proof_gate.csv
+algorithm_speedup_vs_scalar_sab,not_remeasured_here,Scalar-repeated numbers in each row remain context; the Stage268 primary comparison is backend PVW/MAT vs default PVW/MAT.,Mix backend flag deltas with historical scalar-repeated speedup as one claim.,bench_summary.csv
+hot_path_change,no_new_hot_path_code,Stage268 uses an existing explicit flag only.,Stage268 introduced a new SAB/MAT algorithm.,scripts/run_stage268_nonbinary_backend_from_dft_add_smoke.sh

@@ -888,3 +888,9 @@ remote execution rerun.
 `PASS_STAGE267_LOCAL_SPLIT_PROJECTION_SELECT_STAGE268_BACKEND_SMOKE` records a local profile-based projection after Stage266 handoff.
 It selects Stage268 backend FromDFT-add non-binary smoke using an existing
 explicit flag; it does not upgrade performance or hardware-counter claims.
+### Stage268 backend FromDFT-add smoke
+
+`PASS_STAGE268_BACKEND_FROM_DFT_ADD_SMOKE_POSITIVE_REPEAT_REQUIRED` records the r=4 include-zero/ternary smoke for the existing
+`SAB_PVW_BACKEND_FROM_DFT_ADD` flag. The primary metric is `T_bootstrap/r`.
+This stage is a screening gate and does not by itself create a final SAB
+speedup claim.

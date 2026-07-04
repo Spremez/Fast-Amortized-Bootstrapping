@@ -2927,3 +2927,8 @@ Repro artifacts:
   - `docs/stage267_local_split_projection.md`
   - `scripts/build_stage267_local_split_projection.py`
   - `repro/stage267_local_split_projection/`
+- stage268_nonbinary_backend_from_dft_add_smoke:
+  - `docs/stage268_nonbinary_backend_from_dft_add_smoke.md`
+  - `scripts/run_stage268_nonbinary_backend_from_dft_add_smoke.sh`
+  - `scripts/build_stage268_nonbinary_backend_from_dft_add_smoke.py`
+  - `repro/stage268_nonbinary_backend_from_dft_add_smoke/`

@@ -1,0 +1,3 @@
+mode,r,default_t_bootstrap_over_r_us,backend_t_bootstrap_over_r_us,backend_speedup_vs_default,backend_delta_pct,default_correctness,backend_correctness,status
+include_zero,4,7897620.750,7612585.750,1.037443,-3.609,Pass,Pass,positive
+ternary,4,7892451.500,7778112.750,1.014700,-1.449,Pass,Pass,positive

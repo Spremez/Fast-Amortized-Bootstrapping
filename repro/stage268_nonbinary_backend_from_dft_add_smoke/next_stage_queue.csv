@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,status,failure_action
+P0,stage269_backend_from_dft_add_repeated_noise_resource,Stage268 positive smoke for both non-binary modes.,"repeated T_bootstrap/r, noise/resource, same backend.",selected,"If repeated rows lose benefit, demote Stage268 to smoke-only."
+P1,stage270_counter_attribution,Repeated rows positive.,native counters or proxy-labeled assembly audit.,conditional,No hardware claim without counters.

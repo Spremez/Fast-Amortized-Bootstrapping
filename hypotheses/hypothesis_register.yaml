@@ -3709,3 +3709,15 @@ H10_stage267_local_split_projection:
     from_DFT/add/sub materialization lifecycle is large enough to justify a
     bounded smoke of the existing SAB_PVW_BACKEND_FROM_DFT_ADD path before any
     new hot-path code is written.
+H10_stage268_backend_from_dft_add_smoke:
+  status: PASS_STAGE268_BACKEND_FROM_DFT_ADD_SMOKE_POSITIVE_REPEAT_REQUIRED
+  evidence:
+    - repro/stage268_nonbinary_backend_from_dft_add_smoke/bench_summary.csv
+    - repro/stage268_nonbinary_backend_from_dft_add_smoke/variant_compare.csv
+    - repro/stage268_nonbinary_backend_from_dft_add_smoke/proof_gate.csv
+    - docs/stage268_nonbinary_backend_from_dft_add_smoke.md
+  conclusion: >
+    Stage268 records PASS_STAGE268_BACKEND_FROM_DFT_ADD_SMOKE_POSITIVE_REPEAT_REQUIRED. It compares the existing explicit backend
+    FromDFT-add route to default PVW/MAT-SAB on the requested amortized
+    `T_bootstrap/r` metric for r=4 include-zero and ternary. Promotion depends
+    on the smoke threshold and later repeated/noise/resource gates.

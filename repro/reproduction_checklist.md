@@ -377,3 +377,5 @@
 - [x] Stage265 current-head counter reuse audit records `PASS_STAGE265_CURRENT_HEAD_COUNTER_REUSE_AUDIT_REFRESH_REQUIRED` and selects fresh current-head non-binary native-counter attribution as the next executable route.
 - [x] Stage266 current-head non-binary native counter handoff records `PASS_STAGE266_NATIVE_COUNTER_HANDOFF_READY_AUTH_REQUIRED`.
 - [x] Stage267 local split projection records `PASS_STAGE267_LOCAL_SPLIT_PROJECTION_SELECT_STAGE268_BACKEND_SMOKE` and selects bounded Stage268 backend FromDFT-add smoke.
+<!-- stage268-backend-from-dft-add-smoke-checklist -->
+- [x] Stage268 backend FromDFT-add smoke records `PASS_STAGE268_BACKEND_FROM_DFT_ADD_SMOKE_POSITIVE_REPEAT_REQUIRED` with primary metric `T_bootstrap/r`.

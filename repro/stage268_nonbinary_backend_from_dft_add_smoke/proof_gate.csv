@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_coverage,PASS,variant/mode coverage,"backend_from_dft_add:include_zero,default:include_zero,backend_from_dft_add:ternary,default:ternary",bench_summary.csv,Covers default and backend FromDFT-add for r=4 include-zero and ternary.
+G2_correctness,PASS,PVW/scalar target correctness,4/4,bench_summary.csv,Correctness must pass before interpreting timing.
+G3_primary_metric,PASS,T_bootstrap/r,backend_vs_default_same_backend,variant_compare.csv,Smoke compares PVW/MAT variants on the requested amortized per-body metric.
+G4_smoke_threshold,PASS,minimum backend speedup vs default,1.014700x,variant_compare.csv,Single-run smoke requires both modes above 1.01x before repeated/noise/resource promotion.
+G5_claim_boundary,PASS_SMOKE_ONLY,no final speedup claim,single_run,claim_boundary.csv,"Stage268 is a screening gate, not final evidence."
+G6_decision,PASS_STAGE268_BACKEND_FROM_DFT_ADD_SMOKE_POSITIVE_REPEAT_REQUIRED,stage decision,PASS_STAGE268_BACKEND_FROM_DFT_ADD_SMOKE_POSITIVE_REPEAT_REQUIRED,proof_gate.csv,Promotion requires a positive smoke; neutral results close this local materialization candidate.
