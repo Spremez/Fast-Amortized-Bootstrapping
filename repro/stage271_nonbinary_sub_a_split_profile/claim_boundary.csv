@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+sub_a_split_attribution,profile_only,Stage271 identifies the internal sub_a component mix under profile instrumentation.,Stage271 proves a latency speedup.,sub_a_split.csv
+full_sab_speed,not_measured_for_claim,"Correctness is checked, but timing is instrumented and used only for attribution.",Use Stage271 profile timings as final T_bootstrap/r.,claim_boundary.csv
+next_optimization,gate_selected_only,The next route is selected by the dominant profiled subcomponent.,The selected route is already beneficial.,next_stage_queue.csv

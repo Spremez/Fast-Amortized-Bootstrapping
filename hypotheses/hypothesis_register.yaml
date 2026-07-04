@@ -3742,3 +3742,13 @@ H10_stage270_candidate_closeout_next_selection:
     Stage270 records PASS_STAGE270_FROM_DFT_ADD_CLOSED_SELECT_SUBA_SPLIT_PROFILE. It prevents Stage268 smoke overclaiming,
     keeps MAT EP hardware-counter claims blocked, and selects a profile-only
     non-binary sub_a split gate as the next local executable experiment.
+H10_stage271_nonbinary_sub_a_split_profile:
+  status: PASS_STAGE271_NONBINARY_SUB_A_SPLIT_PROFILE
+  evidence:
+    - repro/stage271_nonbinary_sub_a_split_profile/profile_summary.csv
+    - repro/stage271_nonbinary_sub_a_split_profile/sub_a_split.csv
+    - repro/stage271_nonbinary_sub_a_split_profile/proof_gate.csv
+    - docs/stage271_nonbinary_sub_a_split_profile.md
+  conclusion: >
+    Stage271 records PASS_STAGE271_NONBINARY_SUB_A_SPLIT_PROFILE. It adds profile-only sub_a split counters and
+    keeps timing claims bounded to attribution, not final latency.

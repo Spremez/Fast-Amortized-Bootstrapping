@@ -1,0 +1,2 @@
+priority,route,entry_condition,gate,status,failure_action
+P0,stage272_sub_a_selector_materialization_design_gate,dominant_component=selector_mat_ep share=0.526645,Design a selector materialization variant; do not code until complexity/noise and repeated-gate criteria are fixed.,selected,Record neutral/negative and do not promote without full SAB repeated T_bootstrap/r.

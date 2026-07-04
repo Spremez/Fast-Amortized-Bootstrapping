@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,interpretation
+G1_coverage,PASS,r=4 modes,"include_zero,ternary",profile_summary.csv,Covers include-zero and ternary non-binary sub_a.
+G2_correctness,PASS,PVW/scalar correctness,2/2,profile_summary.csv,Profile instrumentation must not break full target correctness.
+G3_split_call_counts,PASS,expected sub_a split calls,include_zero expected_idx=79872; ternary expected_idx=79872,profile_summary.csv,Split counters must match the non-binary SAB schedule.
+G4_profile_overhead_boundary,PASS_PROFILE_ONLY,max split_sum/sub_a,0.996812,sub_a_split.csv,Stage271 is attribution-only; timing overhead is not used as final latency evidence.
+G5_decision,PASS_STAGE271_NONBINARY_SUB_A_SPLIT_PROFILE,stage decision,PASS_STAGE271_NONBINARY_SUB_A_SPLIT_PROFILE,proof_gate.csv,Proceed only to the next gate selected from split attribution.

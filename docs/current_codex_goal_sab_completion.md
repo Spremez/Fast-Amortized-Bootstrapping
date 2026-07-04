@@ -905,3 +905,8 @@ the existing backend FromDFT-add route. The primary metric remains
 as neutral after repeated timing and selects local non-binary `sub_a` split
 profiling as the next executable gate. Native MAT EP counter claims remain
 blocked until authenticated/native counter evidence is recorded.
+### Stage271 non-binary sub_a split profile
+
+`PASS_STAGE271_NONBINARY_SUB_A_SPLIT_PROFILE` records profile-only split attribution for r=4 include-zero and
+ternary non-binary `sub_a`. It does not claim a latency improvement; it only
+selects the next falsifiable optimization gate.

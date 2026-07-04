@@ -383,3 +383,5 @@
 - [x] Stage269 backend FromDFT-add repeated/noise/resource records `NEUTRAL_STAGE269_BACKEND_FROM_DFT_ADD_REPEATED_NO_PROMOTION` with primary metric `T_bootstrap/r`.
 <!-- stage270-candidate-closeout-next-selection-checklist -->
 - [x] Stage270 closes backend FromDFT-add as neutral and records `PASS_STAGE270_FROM_DFT_ADD_CLOSED_SELECT_SUBA_SPLIT_PROFILE`.
+<!-- stage271-nonbinary-sub-a-split-profile-checklist -->
+- [x] Stage271 records `PASS_STAGE271_NONBINARY_SUB_A_SPLIT_PROFILE` as profile-only sub_a split attribution.

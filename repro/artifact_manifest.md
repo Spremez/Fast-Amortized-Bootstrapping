@@ -2941,3 +2941,8 @@ Repro artifacts:
   - `docs/stage270_candidate_closeout_next_selection.md`
   - `scripts/build_stage270_candidate_closeout_next_selection.py`
   - `repro/stage270_candidate_closeout_next_selection/`
+- stage271_nonbinary_sub_a_split_profile:
+  - `docs/stage271_nonbinary_sub_a_split_profile.md`
+  - `scripts/run_stage271_nonbinary_sub_a_split_profile.sh`
+  - `scripts/build_stage271_nonbinary_sub_a_split_profile.py`
+  - `repro/stage271_nonbinary_sub_a_split_profile/`

@@ -1,0 +1,15 @@
+mode,r,component,component_us,calls,share_of_sub_a,share_of_body,share_of_pvw,source_log
+include_zero,4,rotate,0.000,0,0.000000,0.000000,0.000000,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_include_zero_suba_profile_run.log
+include_zero,4,mul_minus_1,499873.000,79872,0.147483,0.016246,0.016092,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_include_zero_suba_profile_run.log
+include_zero,4,copy,0.000,0,0.000000,0.000000,0.000000,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_include_zero_suba_profile_run.log
+include_zero,4,selector_mat_ep,1784986.000,79872,0.526645,0.058014,0.057462,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_include_zero_suba_profile_run.log
+include_zero,4,from_dft,893478.000,79872,0.263613,0.029039,0.028763,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_include_zero_suba_profile_run.log
+include_zero,4,add,200212.000,79872,0.059071,0.006507,0.006445,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_include_zero_suba_profile_run.log
+include_zero,4,residual_or_timer_overhead,10804.000,,0.003188,0.000351,0.000348,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_include_zero_suba_profile_run.log
+ternary,4,rotate,560204.000,79872,0.147091,0.017778,0.017613,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_ternary_suba_profile_run.log
+ternary,4,mul_minus_1,162342.000,79872,0.042626,0.005152,0.005104,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_ternary_suba_profile_run.log
+ternary,4,copy,121180.000,79872,0.031818,0.003846,0.003810,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_ternary_suba_profile_run.log
+ternary,4,selector_mat_ep,1839120.000,79872,0.482893,0.058364,0.057822,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_ternary_suba_profile_run.log
+ternary,4,from_dft,897793.000,79872,0.235731,0.028491,0.028227,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_ternary_suba_profile_run.log
+ternary,4,add,213894.000,79872,0.056162,0.006788,0.006725,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_ternary_suba_profile_run.log
+ternary,4,residual_or_timer_overhead,14010.000,,0.003679,0.000445,0.000440,repro/stage271_nonbinary_sub_a_split_profile/raw/wsl_spqlios_avx512_r4_ternary_suba_profile_run.log

@@ -41,6 +41,12 @@ typedef struct {
   uint64_t mat_ep_us, mat_ep_calls;
   uint64_t sub_a_us, sub_a_calls;
   uint64_t sub_a_output_fusion_us, sub_a_output_fusion_calls;
+  uint64_t sub_a_rotate_us, sub_a_rotate_calls;
+  uint64_t sub_a_mul_minus_1_us, sub_a_mul_minus_1_calls;
+  uint64_t sub_a_copy_us, sub_a_copy_calls;
+  uint64_t sub_a_mat_ep_us, sub_a_mat_ep_calls;
+  uint64_t sub_a_from_dft_us, sub_a_from_dft_calls;
+  uint64_t sub_a_add_us, sub_a_add_calls;
   uint64_t dual_sub_pair_us, dual_sub_pair_calls;
   uint64_t schedule_fused_cmux_calls, schedule_fused_ncmux_calls;
   uint64_t copyback_us, copyback_calls;
@@ -95,6 +101,18 @@ static void sab_pvw_body_profile_print(SAB_PVW_Key sab, uint64_t full_us){
          " sub_a_us=%" PRIu64
          " sub_a_output_fusion_calls=%" PRIu64
          " sub_a_output_fusion_us=%" PRIu64
+         " sub_a_rotate_calls=%" PRIu64
+         " sub_a_rotate_us=%" PRIu64
+         " sub_a_mul_minus_1_calls=%" PRIu64
+         " sub_a_mul_minus_1_us=%" PRIu64
+         " sub_a_copy_calls=%" PRIu64
+         " sub_a_copy_us=%" PRIu64
+         " sub_a_mat_ep_calls=%" PRIu64
+         " sub_a_mat_ep_us=%" PRIu64
+         " sub_a_from_dft_calls=%" PRIu64
+         " sub_a_from_dft_us=%" PRIu64
+         " sub_a_add_calls=%" PRIu64
+         " sub_a_add_us=%" PRIu64
          " dual_sub_pair_calls=%" PRIu64
          " dual_sub_pair_us=%" PRIu64
          " schedule_fused_cmux_calls=%" PRIu64
@@ -129,6 +147,18 @@ static void sab_pvw_body_profile_print(SAB_PVW_Key sab, uint64_t full_us){
          sab_pvw_body_profile.sub_a_us,
          sab_pvw_body_profile.sub_a_output_fusion_calls,
          sab_pvw_body_profile.sub_a_output_fusion_us,
+         sab_pvw_body_profile.sub_a_rotate_calls,
+         sab_pvw_body_profile.sub_a_rotate_us,
+         sab_pvw_body_profile.sub_a_mul_minus_1_calls,
+         sab_pvw_body_profile.sub_a_mul_minus_1_us,
+         sab_pvw_body_profile.sub_a_copy_calls,
+         sab_pvw_body_profile.sub_a_copy_us,
+         sab_pvw_body_profile.sub_a_mat_ep_calls,
+         sab_pvw_body_profile.sub_a_mat_ep_us,
+         sab_pvw_body_profile.sub_a_from_dft_calls,
+         sab_pvw_body_profile.sub_a_from_dft_us,
+         sab_pvw_body_profile.sub_a_add_calls,
+         sab_pvw_body_profile.sub_a_add_us,
          sab_pvw_body_profile.dual_sub_pair_calls,
          sab_pvw_body_profile.dual_sub_pair_us,
          sab_pvw_body_profile.schedule_fused_cmux_calls,
@@ -933,8 +963,20 @@ void sab_pvw_sub_a_binary(PVW_TMLWE * p, const uint64_t * a, SAB_PVW_Key sab){
   const uint64_t sub_a_begin = sab_pvw_now_us();
 #endif
   for (size_t idx = 0; idx < sab->in_N; idx++){
+#ifdef SAB_PVW_BODY_PROFILE
+    const uint64_t rotate_begin = sab_pvw_now_us();
+#endif
     pvmtmlwe_mul_by_xai(sab->tmp->tmlwe, p[idx], a[idx]);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_rotate_us,
+        &sab_pvw_body_profile.sub_a_rotate_calls, rotate_begin);
+    const uint64_t copy_begin = sab_pvw_now_us();
+#endif
     pvmtmlwe_copy(p[idx], sab->tmp->tmlwe);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_copy_us,
+        &sab_pvw_body_profile.sub_a_copy_calls, copy_begin);
+#endif
   }
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_us,
@@ -948,11 +990,33 @@ void sab_pvw_sub_a_include_zero(PVW_TMLWE * p, const uint64_t * a,
   const uint64_t sub_a_begin = sab_pvw_now_us();
 #endif
   for (size_t idx = 0; idx < sab->in_N; idx++){
+#ifdef SAB_PVW_BODY_PROFILE
+    const uint64_t mul_minus_1_begin = sab_pvw_now_us();
+#endif
     pvmtmlwe_mul_by_xai_minus_1(sab->tmp->tmlwe, p[idx], a[idx]);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_mul_minus_1_us,
+        &sab_pvw_body_profile.sub_a_mul_minus_1_calls, mul_minus_1_begin);
+    const uint64_t mat_ep_begin = sab_pvw_now_us();
+#endif
     mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft, sab->tmp->tmlwe,
         selector, sab->tmp->scratch);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_mat_ep_us,
+        &sab_pvw_body_profile.sub_a_mat_ep_calls, mat_ep_begin);
+    const uint64_t from_dft_begin = sab_pvw_now_us();
+#endif
     pvmtmlwe_from_DFT(sab->tmp->tmlwe, sab->tmp->tmlwe_dft);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_from_dft_us,
+        &sab_pvw_body_profile.sub_a_from_dft_calls, from_dft_begin);
+    const uint64_t add_begin = sab_pvw_now_us();
+#endif
     pvmtmlwe_addto(p[idx], sab->tmp->tmlwe);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_add_us,
+        &sab_pvw_body_profile.sub_a_add_calls, add_begin);
+#endif
   }
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_us,
@@ -966,14 +1030,46 @@ void sab_pvw_sub_a_ternary(PVW_TMLWE * p, const uint64_t * a,
   const uint64_t sub_a_begin = sab_pvw_now_us();
 #endif
   for (size_t idx = 0; idx < sab->in_N; idx++){
+#ifdef SAB_PVW_BODY_PROFILE
+    const uint64_t rotate_begin = sab_pvw_now_us();
+#endif
     pvmtmlwe_mul_by_xai(sab->tmp->rotated, p[idx], a[idx]);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_rotate_us,
+        &sab_pvw_body_profile.sub_a_rotate_calls, rotate_begin);
+    const uint64_t copy_begin = sab_pvw_now_us();
+#endif
     pvmtmlwe_copy(p[idx], sab->tmp->rotated);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_copy_us,
+        &sab_pvw_body_profile.sub_a_copy_calls, copy_begin);
+    const uint64_t mul_minus_1_begin = sab_pvw_now_us();
+#endif
     pvmtmlwe_mul_by_xai_minus_1(sab->tmp->tmlwe, p[idx],
         -2 * (int64_t) a[idx]);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_mul_minus_1_us,
+        &sab_pvw_body_profile.sub_a_mul_minus_1_calls, mul_minus_1_begin);
+    const uint64_t mat_ep_begin = sab_pvw_now_us();
+#endif
     mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft, sab->tmp->tmlwe,
         selector, sab->tmp->scratch);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_mat_ep_us,
+        &sab_pvw_body_profile.sub_a_mat_ep_calls, mat_ep_begin);
+    const uint64_t from_dft_begin = sab_pvw_now_us();
+#endif
     pvmtmlwe_from_DFT(sab->tmp->tmlwe, sab->tmp->tmlwe_dft);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_from_dft_us,
+        &sab_pvw_body_profile.sub_a_from_dft_calls, from_dft_begin);
+    const uint64_t add_begin = sab_pvw_now_us();
+#endif
     pvmtmlwe_addto(p[idx], sab->tmp->tmlwe);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_add_us,
+        &sab_pvw_body_profile.sub_a_add_calls, add_begin);
+#endif
   }
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_us,
@@ -987,7 +1083,14 @@ static void sab_pvw_sub_a_binary_to(PVW_TMLWE * out, PVW_TMLWE * in,
   const uint64_t sub_a_begin = sab_pvw_now_us();
 #endif
   for (size_t idx = 0; idx < sab->in_N; idx++){
+#ifdef SAB_PVW_BODY_PROFILE
+    const uint64_t rotate_begin = sab_pvw_now_us();
+#endif
     pvmtmlwe_mul_by_xai(out[idx], in[idx], a[idx]);
+#ifdef SAB_PVW_BODY_PROFILE
+    sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_rotate_us,
+        &sab_pvw_body_profile.sub_a_rotate_calls, rotate_begin);
+#endif
   }
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t elapsed = sab_pvw_now_us() - sub_a_begin;
