@@ -3046,3 +3046,12 @@ Repro artifacts:
   - `scripts/run_stage290_dft_direct_output_microbench.sh`
   - `scripts/build_stage290_dft_direct_output_microbench.py`
   - `repro/stage290_dft_direct_output_microbench/`
+
+- stage291_sub_decomp_dft_direct_microbench:
+  - `docs/stage291_sub_decomp_dft_direct_microbench.md`
+  - `theory_checks/stage291_sub_decomp_dft_direct_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage291_sub_decomp_dft_direct.md`
+  - `experiments/stage291_sub_decomp_dft_direct_plan.md`
+  - `scripts/run_stage291_sub_decomp_dft_direct_microbench.sh`
+  - `scripts/build_stage291_sub_decomp_dft_direct_microbench.py`
+  - `repro/stage291_sub_decomp_dft_direct_microbench/`

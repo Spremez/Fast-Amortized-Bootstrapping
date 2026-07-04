@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage292_sub_decomp_dft_direct_full_sab_ab,PASS_STAGE291_SUB_DECOMP_DFT_DIRECT_MICRO_POSITIVE_FULL_SAB_REQUIRED,Run repeated complete-SAB T_bootstrap/r A/B with MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true.,same-backend repeated full-SAB correctness/performance; then noise/resource if positive

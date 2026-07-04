@@ -1,5 +1,11 @@
 #include "mosfhet.h"
 
+#if defined(USE_SPQLIOS) && !defined(TORUS32) && \
+    defined(MAT_TRGSW_SUB_DECOMP_DFT_DIRECT)
+#include "./fft/spqlios/spqlios-fft.h"
+extern __thread FFT_Processor_Spqlios fft_proc[32];
+#endif
+
 #ifdef MAT_TRGSW_SPLIT_PROFILE
 #include <inttypes.h>
 #include <stdio.h>
@@ -873,6 +879,82 @@ static void mat_trgsw_sub_decompose_poly_avx512(TorusPolynomial out,
 }
 #endif
 
+#if defined(USE_SPQLIOS) && !defined(TORUS32) && \
+    defined(MAT_TRGSW_SUB_DECOMP_DFT_DIRECT)
+static void mat_trgsw_sub_decompose_poly_to_double(double * out,
+    TorusPolynomial lhs, TorusPolynomial rhs, uint64_t offset,
+    uint64_t h_bit, uint64_t h_mask, uint64_t half_Bg){
+  const int N = lhs->N;
+#ifdef AVX512_OPT
+  const __m512i v_offset = _mm512_set1_epi64((long long) offset);
+  const __m512i v_shift = _mm512_set1_epi64((long long) h_bit);
+  const __m512i v_mask = _mm512_set1_epi64((long long) h_mask);
+  const __m512i v_half = _mm512_set1_epi64((long long) half_Bg);
+  __m512d * out_v = (__m512d *) out;
+  const __m512i * lhs_v = (const __m512i *) lhs->coeffs;
+  const __m512i * rhs_v = (const __m512i *) rhs->coeffs;
+  int c = 0;
+  for (; c + 8 <= N; c += 8){
+    const __m512i v_diff =
+        _mm512_sub_epi64(rhs_v[c >> 3], lhs_v[c >> 3]);
+    const __m512i v_coeff_off = _mm512_add_epi64(v_diff, v_offset);
+    const __m512i v_digits = _mm512_and_si512(
+        _mm512_srlv_epi64(v_coeff_off, v_shift), v_mask);
+    const __m512i v_signed = _mm512_sub_epi64(v_digits, v_half);
+    out_v[c >> 3] = _mm512_cvtepi64_pd(v_signed);
+  }
+  for (; c < N; c++){
+    const uint64_t diff = rhs->coeffs[c] - lhs->coeffs[c];
+    const uint64_t coeff_off = diff + offset;
+    const uint64_t digit = ((coeff_off >> h_bit) & h_mask) - half_Bg;
+    out[c] = (double) ((int64_t) digit);
+  }
+#else
+  for (size_t c = 0; c < (size_t) N; c++){
+    const uint64_t diff = rhs->coeffs[c] - lhs->coeffs[c];
+    const uint64_t coeff_off = diff + offset;
+    const uint64_t digit = ((coeff_off >> h_bit) & h_mask) - half_Bg;
+    out[c] = (double) ((int64_t) digit);
+  }
+#endif
+}
+
+static void mat_trgsw_sub_decompose_DFT_direct(PVW_TMLWE in1,
+    PVW_TMLWE in2, DFT_Polynomial * out, int Bg_bit, int l){
+  const int k = in1->k, r = in1->r, N = in1->b[0]->N;
+  const uint64_t half_Bg = (1ULL << (Bg_bit - 1));
+  const uint64_t h_mask = (1ULL << Bg_bit) - 1;
+  const uint64_t word_size = sizeof(Torus)*8;
+  init_fft(N);
+  FFT_Processor_Spqlios proc = fft_proc[N >> 10];
+
+  assert(in2->k == k);
+  assert(in2->r == r);
+  assert(in2->b[0]->N == N);
+
+  uint64_t offset = 0;
+  for (size_t i = 0; i < (size_t) l; i++){
+    offset += (1ULL << (word_size - i * Bg_bit - 1));
+  }
+
+  for (size_t i = 0; i < (size_t) l; i++) {
+    const uint64_t h_bit = word_size - (i + 1) * Bg_bit;
+    for (size_t j = 0; j < (size_t) k; j++){
+      DFT_Polynomial row = out[j*l + i];
+      mat_trgsw_sub_decompose_poly_to_double(row->coeffs, in1->a[j],
+          in2->a[j], offset, h_bit, h_mask, half_Bg);
+      ifft(proc->tables_reverse, row->coeffs);
+    }
+    for (size_t j = 0; j < (size_t) r; j++){
+      DFT_Polynomial row = out[k*l + j*l + i];
+      mat_trgsw_sub_decompose_poly_to_double(row->coeffs, in1->b[j],
+          in2->b[j], offset, h_bit, h_mask, half_Bg);
+      ifft(proc->tables_reverse, row->coeffs);
+    }
+  }
+}
+#endif
+
 static void mat_trgsw_sub_decompose(PVW_TMLWE in1, PVW_TMLWE in2,
     TorusPolynomial * out, int Bg_bit, int l){
   const int k = in1->k, r = in1->r, N = in1->b[0]->N;
@@ -939,6 +1021,13 @@ void mat_trgsw_mul_pvmtmlwe_sub_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in1,
 
   mat_trgsw_split_profile_start_call(1, rows, k, r, l, N);
   MAT_TRGSW_SPLIT_BEGIN(total_begin);
+#if defined(USE_SPQLIOS) && !defined(TORUS32) && \
+    defined(MAT_TRGSW_SUB_DECOMP_DFT_DIRECT)
+  MAT_TRGSW_SPLIT_BEGIN(dft_direct_begin);
+  mat_trgsw_sub_decompose_DFT_direct(in1, in2, scratch->dec_dft,
+      selector->Q, l);
+  MAT_TRGSW_SPLIT_ACC(dft_us, dft_direct_begin);
+#else
   MAT_TRGSW_SPLIT_BEGIN(decompose_begin);
   mat_trgsw_sub_decompose(in1, in2, scratch->dec, selector->Q, l);
   MAT_TRGSW_SPLIT_ACC(decompose_us, decompose_begin);
@@ -951,6 +1040,7 @@ void mat_trgsw_mul_pvmtmlwe_sub_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in1,
   }
 #endif
   MAT_TRGSW_SPLIT_ACC(dft_us, dft_begin);
+#endif
   MAT_TRGSW_SPLIT_BEGIN(dense_begin);
   mat_trgsw_mul_pvmtmlwe_DFT_from_dec(out, selector, scratch->dec_dft);
   MAT_TRGSW_SPLIT_ACC(dense_us, dense_begin);

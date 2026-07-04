@@ -1,0 +1,2 @@
+MAT_SUB_DFT correctness r=4 N=2048 max_abs_diff=0 status=Pass
+MAT_SUB_DFT bench r=4 N=2048 reps=5000 separate_avg_us=22.970 sub_avg_us=17.291 speedup_vs_separate=1.328x checksum=-1.9213242372027367e+31

@@ -3940,3 +3940,15 @@ H10_stage290_dft_direct_output_microbench:
     Stage290 implements a default-off direct-output DFT array path. It may
     proceed to complete-SAB A/B only when the isolated repeated microbench is
     positive; otherwise it remains a rejected DFT lifecycle candidate.
+
+H10_stage291_sub_decomp_dft_direct_microbench:
+  status: PASS_STAGE291_SUB_DECOMP_DFT_DIRECT_MICRO_POSITIVE_FULL_SAB_REQUIRED
+  evidence:
+    - repro/stage291_sub_decomp_dft_direct_microbench/run_metrics.csv
+    - repro/stage291_sub_decomp_dft_direct_microbench/bench_summary.csv
+    - repro/stage291_sub_decomp_dft_direct_microbench/proof_gate.csv
+    - docs/stage291_sub_decomp_dft_direct_microbench.md
+  conclusion: >
+    Stage291 implements and tests a default-off direct DFT path for
+    sub-decompose MAT external products. It can only open a full-SAB A/B gate;
+    it is not by itself a complete bootstrapping speedup claim.

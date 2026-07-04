@@ -4825,6 +4825,117 @@ void test_sab_pvw_include_zero_fast_resource(){
 }
 #endif
 
+#if defined(MAT_TRGSW_SUB_DFT_BENCH)
+#ifndef MAT_TRGSW_SUB_DFT_BENCH_N
+#define MAT_TRGSW_SUB_DFT_BENCH_N 2048
+#endif
+#ifndef MAT_TRGSW_SUB_DFT_BENCH_R
+#define MAT_TRGSW_SUB_DFT_BENCH_R 4
+#endif
+#ifndef MAT_TRGSW_SUB_DFT_BENCH_REPS
+#define MAT_TRGSW_SUB_DFT_BENCH_REPS 2000
+#endif
+
+static double mat_sub_dft_max_abs_diff(PVW_TMLWE_DFT lhs, PVW_TMLWE_DFT rhs){
+  const int N = lhs->a[0]->N;
+  double max_diff = 0.0;
+  for (size_t j = 0; j < (size_t) lhs->k; j++){
+    for (size_t i = 0; i < (size_t) N; i++){
+      double diff = lhs->a[j]->coeffs[i] - rhs->a[j]->coeffs[i];
+      if(diff < 0.0) diff = -diff;
+      if(diff > max_diff) max_diff = diff;
+    }
+  }
+  for (size_t j = 0; j < (size_t) lhs->r; j++){
+    for (size_t i = 0; i < (size_t) N; i++){
+      double diff = lhs->b[j]->coeffs[i] - rhs->b[j]->coeffs[i];
+      if(diff < 0.0) diff = -diff;
+      if(diff > max_diff) max_diff = diff;
+    }
+  }
+  return max_diff;
+}
+
+void test_mat_trgsw_sub_dft_bench(){
+  const int N = MAT_TRGSW_SUB_DFT_BENCH_N;
+  const int r = MAT_TRGSW_SUB_DFT_BENCH_R;
+  const int k = 1, l = 1, bg_bit = 23;
+  const int rows = (k + r) * l;
+  const uint64_t reps = MAT_TRGSW_SUB_DFT_BENCH_REPS;
+  if(N <= 0 || r <= 0 || reps == 0){
+    printf("MAT_SUB_DFT invalid config r=%d N=%d reps=%" PRIu64 "\n",
+           r, N, reps);
+    exit(1);
+  }
+
+  PVW_TMLWE_Key key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -50));
+  MAT_TRGSW_Key mat_key = mat_trgsw_new_key(key, l, bg_bit);
+  MAT_TRGSW_DFT selector = mat_trgsw_alloc_new_DFT_sample(l, bg_bit, k, r, N);
+  MAT_TRGSW_MUL_SCRATCH scratch = mat_trgsw_alloc_mul_scratch(rows, N);
+  PVW_TMLWE in1 = pvmtmlwe_new_sample(NULL, key);
+  PVW_TMLWE in2 = pvmtmlwe_new_sample(NULL, key);
+  PVW_TMLWE diff = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE_DFT separate_out = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
+  PVW_TMLWE_DFT sub_out = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
+
+  mat_trgsw_monomial_DFT_sample(selector, 1, 0, mat_key);
+  for (size_t warm = 0; warm < 10; warm++){
+    pvmtmlwe_sub(diff, in2, in1);
+    mat_trgsw_mul_pvmtmlwe_DFT(separate_out, diff, selector, scratch);
+    mat_trgsw_mul_pvmtmlwe_sub_DFT(sub_out, in1, in2, selector, scratch);
+  }
+
+  pvmtmlwe_sub(diff, in2, in1);
+  mat_trgsw_mul_pvmtmlwe_DFT(separate_out, diff, selector, scratch);
+  mat_trgsw_mul_pvmtmlwe_sub_DFT(sub_out, in1, in2, selector, scratch);
+  const double max_abs_diff = mat_sub_dft_max_abs_diff(separate_out, sub_out);
+  const int pass = max_abs_diff <= 1e-9;
+  printf("MAT_SUB_DFT correctness r=%d N=%d max_abs_diff=%.17g status=%s\n",
+         r, N, max_abs_diff, pass ? "Pass" : "Fail");
+  if(!pass) exit(1);
+
+  uint64_t separate_total_us = 0;
+  volatile double separate_sink = 0.0;
+  for (size_t rep = 0; rep < (size_t) reps; rep++){
+    const uint64_t start = get_time();
+    pvmtmlwe_sub(diff, in2, in1);
+    mat_trgsw_mul_pvmtmlwe_DFT(separate_out, diff, selector, scratch);
+    separate_total_us += get_time() - start;
+    separate_sink += separate_out->b[rep % (size_t) r]->coeffs[rep % (size_t) N];
+  }
+
+  uint64_t sub_total_us = 0;
+  volatile double sub_sink = 0.0;
+  for (size_t rep = 0; rep < (size_t) reps; rep++){
+    const uint64_t start = get_time();
+    mat_trgsw_mul_pvmtmlwe_sub_DFT(sub_out, in1, in2, selector, scratch);
+    sub_total_us += get_time() - start;
+    sub_sink += sub_out->b[rep % (size_t) r]->coeffs[rep % (size_t) N];
+  }
+
+  const double separate_avg_us =
+      ((double) separate_total_us) / ((double) reps);
+  const double sub_avg_us = ((double) sub_total_us) / ((double) reps);
+  const double speedup =
+      sub_total_us == 0 ? 0.0 : ((double) separate_total_us) / ((double) sub_total_us);
+  printf("MAT_SUB_DFT bench r=%d N=%d reps=%" PRIu64
+         " separate_avg_us=%.3f sub_avg_us=%.3f"
+         " speedup_vs_separate=%.3fx checksum=%.17g\n",
+         r, N, reps, separate_avg_us, sub_avg_us, speedup,
+         (double) (separate_sink + sub_sink));
+
+  free_pvmtmlwe_DFT(sub_out);
+  free_pvmtmlwe_DFT(separate_out);
+  free_pvmtmlwe(diff);
+  free_pvmtmlwe(in2);
+  free_pvmtmlwe(in1);
+  free_mat_trgsw_mul_scratch(scratch);
+  free_mat_trgsw_DFT(selector);
+  free_mat_trgsw_key(mat_key);
+  free_pvmtmlwe_key(key);
+}
+#endif
+
 #if defined(MAT_TRGSW_DFT_ARRAY_BENCH)
 #ifndef MAT_TRGSW_DFT_ARRAY_BENCH_N
 #define MAT_TRGSW_DFT_ARRAY_BENCH_N 2048
@@ -4928,7 +5039,9 @@ void test_mat_trgsw_dft_array_bench(){
 
 int main(int argc, char const *argv[])
 {
-#if defined(MAT_TRGSW_DFT_ARRAY_BENCH)
+#if defined(MAT_TRGSW_SUB_DFT_BENCH)
+  test_mat_trgsw_sub_dft_bench();
+#elif defined(MAT_TRGSW_DFT_ARRAY_BENCH)
   test_mat_trgsw_dft_array_bench();
 #elif defined(SAB_PVW_TARGET_TEST)
   test_sab_pvw_target_full();

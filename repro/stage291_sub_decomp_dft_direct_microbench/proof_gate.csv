@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_runs,PASS,paired runs,5/5,Both variants need paired repeated runs.
+G2_micro_correctness,PASS,all MAT_SUB_DFT runs,baseline=5 direct=5,Sub-DTF output must equal separate sub+MAT-EP reference.
+G3_target_correctness,PASS,SAB_PVW target smoke,PASS,Direct fused path must preserve target full bootstrap correctness before full-SAB A/B.
+G4_microbench,PASS,paired min direct/baseline speedup,1.109962,Every paired run must clear 1.02x before full-SAB A/B.
+G5_claim_boundary,PASS,claim scope,microbench only,Positive Stage291 admits full-SAB A/B; it is not a bootstrap speed claim.
+G6_decision,PASS_STAGE291_SUB_DECOMP_DFT_DIRECT_MICRO_POSITIVE_FULL_SAB_REQUIRED,stage decision,PASS_STAGE291_SUB_DECOMP_DFT_DIRECT_MICRO_POSITIVE_FULL_SAB_REQUIRED,Controls whether Stage292 full-SAB A/B is opened.

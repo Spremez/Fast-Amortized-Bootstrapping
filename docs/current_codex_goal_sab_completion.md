@@ -1015,3 +1015,11 @@ microbench-only. Complete-SAB `T_bootstrap/r` claims remain gated.
 rows=5/N=2048 shape. The result is isolated microbench evidence only; a
 positive gate admits complete-SAB `T_bootstrap/r` A/B but is not itself a
 bootstrapping speed claim.
+
+<!-- stage291-sub-decomp-dft-direct-microbench -->
+### Stage291 sub-decompose direct-DFT microbench
+
+`PASS_STAGE291_SUB_DECOMP_DFT_DIRECT_MICRO_POSITIVE_FULL_SAB_REQUIRED` tests a default-off fused `sub_decompose_to_double -> ifft` path
+for the dominant MAT-SAB sub-DTF calls. It records paired isolated microbench
+evidence and target correctness smoke; full SAB `T_bootstrap/r` claims remain
+gated behind Stage292.

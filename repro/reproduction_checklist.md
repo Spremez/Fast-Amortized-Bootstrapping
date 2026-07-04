@@ -421,3 +421,6 @@
 
 <!-- stage290-dft-direct-output-microbench-checklist -->
 - [x] Stage290 records `NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION` for the direct-output DFT array microbench.
+
+<!-- stage291-sub-decomp-dft-direct-microbench-checklist -->
+- [x] Stage291 records `PASS_STAGE291_SUB_DECOMP_DFT_DIRECT_MICRO_POSITIVE_FULL_SAB_REQUIRED` for the sub-decompose direct-DFT candidate.
