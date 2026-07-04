@@ -4062,3 +4062,15 @@ H302_direct_dft_memory_instruction_mechanism:
   status: PASS_STAGE302_COUNTER_SUPPORTS_MEMORY_INSTRUCTION_MECHANISM
   evidence: repro/stage302_counter_interpretation/mechanism_interpretation.csv
   next_gate: Stage303 parameter matrix high-stat and residual materialization split probe.
+H303_param_matrix_highstat:
+  status: PASS_STAGE303_PARAM_MATRIX_HIGHSTAT_LOCAL
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage303_param_matrix_highstat/perf_summary.csv
+    - repro/stage303_param_matrix_highstat/noise_summary.csv
+    - repro/stage303_param_matrix_highstat/proof_gate.csv
+    - docs/stage303_param_matrix_highstat.md
+  conclusion: >
+    Stage303 tests whether direct-DFT complete-SAB throughput persists on
+    SET_4_5_2048 under a 10-run/10-trial local campaign. It strengthens but
+    does not complete broad parameter generalization.

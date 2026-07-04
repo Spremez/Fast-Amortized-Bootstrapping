@@ -483,9 +483,6 @@ def write_remote_env(local: Dict[str, str], rcs: Dict[str, int]) -> None:
 
 def append_run_log(decision: str) -> None:
     run_id = "stage301-current-head-direct-dft-native-counter-001"
-    text = read_text(RUN_LOG)
-    if run_id in text:
-        return
     fields = []
     if RUN_LOG.exists():
         with RUN_LOG.open(newline="", encoding="utf-8-sig") as f:
@@ -512,6 +509,18 @@ def append_run_log(decision: str) -> None:
     for key, value in values.items():
         if key in row:
             row[key] = value
+    rows = read_csv(RUN_LOG)
+    updated = False
+    for existing in rows:
+        if existing.get("run_id") == run_id:
+            for key, value in row.items():
+                if key in existing:
+                    existing[key] = value
+            updated = True
+            break
+    if updated:
+        write_csv(RUN_LOG, rows, fields)
+        return
     with RUN_LOG.open("a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fields, lineterminator="\n")
         writer.writerow(row)

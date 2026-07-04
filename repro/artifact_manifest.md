@@ -3110,3 +3110,8 @@ Repro artifacts:
   - `docs/stage302_counter_interpretation.md`
   - `repro/stage302_counter_interpretation/mechanism_interpretation.csv`
   - `repro/stage302_counter_interpretation/proof_gate.csv`
+- stage303_param_matrix_highstat:
+  - `docs/stage303_param_matrix_highstat.md`
+  - `scripts/run_stage303_param_matrix_highstat.sh`
+  - `scripts/build_stage303_param_matrix_highstat.py`
+  - `repro/stage303_param_matrix_highstat/`

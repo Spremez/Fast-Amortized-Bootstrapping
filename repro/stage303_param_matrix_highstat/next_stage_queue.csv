@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage304_parameter_claim_update,PASS_STAGE303_PARAM_MATRIX_HIGHSTAT_LOCAL,Integrate SET_4_5_2048 high-stat result with Stage296 target and Stage301 counters.,Keep broad parameter claim blocked.
+P1,stage304_materialization_split_probe,need more kernel guidance after parameter matrix,Split residual materialization/copy/sub-decomposition cost.,Do not write a new AVX kernel without a measured component target.

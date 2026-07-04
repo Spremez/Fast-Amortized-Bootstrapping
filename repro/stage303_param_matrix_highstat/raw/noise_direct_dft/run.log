@@ -1,0 +1,17 @@
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=0 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=1 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=2 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=3 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=4 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=5 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=6 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=7 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=8 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=9 complete
+SAB_PVW_NONBINARY_TARGET_NOISE lane target_full mode=include_zero r=4 lane=0 trials=10 expected_model_pvw_failures=9600 expected_model_scalar_failures=9600 pair_failures=0 expected_model_pvw_log2_sigma_torus=-2.287 expected_model_scalar_log2_sigma_torus=-2.287 pair_log2_sigma_torus=-9.820
+SAB_PVW_NONBINARY_TARGET_NOISE lane target_full mode=include_zero r=4 lane=1 trials=10 expected_model_pvw_failures=9600 expected_model_scalar_failures=9600 pair_failures=0 expected_model_pvw_log2_sigma_torus=-2.287 expected_model_scalar_log2_sigma_torus=-2.287 pair_log2_sigma_torus=-9.094
+SAB_PVW_NONBINARY_TARGET_NOISE lane target_full mode=include_zero r=4 lane=2 trials=10 expected_model_pvw_failures=9600 expected_model_scalar_failures=9600 pair_failures=0 expected_model_pvw_log2_sigma_torus=-2.287 expected_model_scalar_log2_sigma_torus=-2.287 pair_log2_sigma_torus=-9.726
+SAB_PVW_NONBINARY_TARGET_NOISE lane target_full mode=include_zero r=4 lane=3 trials=10 expected_model_pvw_failures=9600 expected_model_scalar_failures=9600 pair_failures=0 expected_model_pvw_log2_sigma_torus=-2.287 expected_model_scalar_log2_sigma_torus=-2.287 pair_log2_sigma_torus=-9.710
+SAB_PVW_NONBINARY_TARGET_NOISE summary target_full mode=include_zero r=4 trials=10 points=81920 expected_model_pvw_failures=38400 expected_model_scalar_failures=38400 pair_failures=0 expected_model_pvw_log2_sigma_torus=-2.287 expected_model_scalar_log2_sigma_torus=-2.287 pair_log2_sigma_torus=-9.523 pair_log2_max_abs_torus=-7.317 gate=Pass
+SAB_PVW_NONBINARY_TARGET_NOISE target full bootstrap gate mode=include_zero: Pass
+SAB_PVW_NONBINARY_TARGET_NOISE target full final-output gate: Pass

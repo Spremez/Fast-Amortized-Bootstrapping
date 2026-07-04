@@ -1088,3 +1088,9 @@ context-only until a current-head direct-DFT counter refresh is recorded.
 ### Stage302 counter interpretation
 
 `PASS_STAGE302_COUNTER_SUPPORTS_MEMORY_INSTRUCTION_MECHANISM` supports the mechanism that direct DFT reduces memory/instruction overhead while leaving dense AVX512 FP arithmetic nearly neutral. The next selected route is parameter-matrix high-stat, not an unconstrained AVX rewrite.
+<!-- stage303-param-matrix-highstat -->
+### Stage303 parameter matrix high-stat campaign
+
+`PASS_STAGE303_PARAM_MATRIX_HIGHSTAT_LOCAL` expands `SET_4_5_2048` from Stage299 preflight to a local
+10-run/10-trial complete-SAB campaign. The metric remains `T_bootstrap/r`; the
+result strengthens parameter evidence but does not establish universal coverage.
