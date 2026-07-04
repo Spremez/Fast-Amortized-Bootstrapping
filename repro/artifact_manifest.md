@@ -3191,3 +3191,10 @@ Repro artifacts:
   - `experiments/stage314_next_candidate_gate_plan.md`
   - `scripts/build_stage314_local_digit_closeout.py`
   - `repro/stage314_local_digit_closeout/`
+- stage315_backend_ifft_admission:
+  - `docs/stage315_backend_ifft_admission.md`
+  - `theory_checks/stage315_backend_ifft_budget.md`
+  - `algorithm_variants/mat_rlwe_sab_stage315_backend_ifft_candidate.md`
+  - `experiments/stage315_backend_ifft_validation_plan.md`
+  - `scripts/build_stage315_backend_ifft_admission.py`
+  - `repro/stage315_backend_ifft_admission/`

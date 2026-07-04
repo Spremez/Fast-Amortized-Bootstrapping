@@ -7138,3 +7138,8 @@ Status: `PASS_STAGE313_NARROW32_PROFILE_ATTRIBUTION_RECORDED`.
 Goal: close unsupported local digit microvariants and set a full-SAB budget gate for future candidates.
 
 Status: `PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT`.
+## Stage 315: Backend IFFT Admission
+
+Goal: select the next non-duplicate route after local digit closeout.
+
+Status: `PASS_STAGE315_BACKEND_IFFT_ADMISSION_SELECT_STAGE316_ABI_PREFLIGHT`.

@@ -4185,3 +4185,15 @@ H314_local_digit_closeout:
     Stage314 closes local digit microvariants unless a future candidate has a
     projected full-SAB budget >=1.02 before implementation. Next work should
     target backend IFFT or schedule-level SAB reductions.
+H315_backend_ifft_admission:
+  status: PASS_STAGE315_BACKEND_IFFT_ADMISSION_SELECT_STAGE316_ABI_PREFLIGHT
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage315_backend_ifft_admission/admission_summary.csv
+    - repro/stage315_backend_ifft_admission/component_thresholds.csv
+    - repro/stage315_backend_ifft_admission/candidate_cards.csv
+    - repro/stage315_backend_ifft_admission/proof_gate.csv
+  conclusion: >
+    Stage315 selects a backend-IFFT ABI preflight as the next executable
+    route and blocks duplicate local digit/materialization wrapper work
+    without a projected full-SAB budget above 1.02.

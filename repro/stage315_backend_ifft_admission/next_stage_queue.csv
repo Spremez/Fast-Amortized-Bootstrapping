@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage316_spqlios_ifft_batch_abi_preflight,PASS_STAGE315_BACKEND_IFFT_ADMISSION_SELECT_STAGE316_ABI_PREFLIGHT,"Prototype or statically reject a backend batch-IFFT ABI for the rows=k+r=5 direct sub-DTF path, outside full SAB first.","isolated correctness plus >= 0.107769 IFFT component reduction, then complete SAB T_bootstrap/r A/B"

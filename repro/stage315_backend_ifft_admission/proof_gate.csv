@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_stage314_route,PASS,Stage314 decision,PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT,Local digit variants must be closed before choosing Stage315.
+G2_stage310_backend_requirement,PASS,Stage310 decision,PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED,C-wrapper IFFT is insufficient; backend ABI preflight is required.
+G3_budget_materiality,PASS,required IFFT component reduction for 1.02 body,0.107769,Stage316 must show at least this isolated IFFT reduction before SAB integration.
+G4_duplicate_route_blocked,PASS,backend from_DFT_add,already in Stage312/313 common flags,Do not claim an old materialization flag as new work.
+G5_primary_metric,PASS,metric,T_bootstrap/r,All future comparisons must be amortized per processed body/lane.
+G6_decision,PASS_STAGE315_BACKEND_IFFT_ADMISSION_SELECT_STAGE316_ABI_PREFLIGHT,stage decision,PASS_STAGE315_BACKEND_IFFT_ADMISSION_SELECT_STAGE316_ABI_PREFLIGHT,Controls Stage316.

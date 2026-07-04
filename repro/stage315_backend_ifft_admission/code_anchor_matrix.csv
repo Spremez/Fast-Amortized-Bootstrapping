@@ -1,0 +1,6 @@
+anchor,file,lines,fact,stage315_use
+direct_sub_dft_ifft_loop,src/mosfhet/src/mattrgsw.c,1110-1163,direct sub-DTF materialization converts each gadget row to double and calls `ifft` per row.,Stage316 target implementation boundary.
+r4_rowbatch_digit_existing,src/mosfhet/src/mattrgsw.c,1039-1107,"r=4 row-batched digit conversion already exists, but still loops `ifft` per row.",Shows remaining non-digit backend work.
+pvw_cmux_materialization,src/sab_pvw.c,615-655,CMUX materializes MAT EP output and may use backend from_DFT_add.,"This path is already in the current direct baseline, not the new target."
+pvm_from_dft_add_backend_flag,src/mosfhet/src/pvwtmlwe.c,763-781,`SAB_PVW_BACKEND_FROM_DFT_ADD` calls `polynomial_DFT_to_torus_add`.,Records why wrapper materialization is not selected again.
+spqlios_reverse_transform_api,src/mosfhet/src/polynomial.c,"373-379,435-465",current torus-to-DFT array wrapper still iterates per row; no real batch IFFT API is exposed.,Stage316 must operate at backend ABI/prototype level.

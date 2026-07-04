@@ -1138,3 +1138,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage314 local digit closeout
 
 `PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT` closes local digit microvariants without a new full-SAB budget and routes future work to backend IFFT or schedule-level SAB changes.
+<!-- stage315-backend-ifft-admission -->
+### Stage315 backend IFFT admission
+
+`PASS_STAGE315_BACKEND_IFFT_ADMISSION_SELECT_STAGE316_ABI_PREFLIGHT` selects Stage316 SPQLIOS batch-IFFT ABI preflight and keeps the primary metric as complete SAB `T_bootstrap/r`.

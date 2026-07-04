@@ -1,0 +1,5 @@
+component,share_of_body_profile,component_reduction_required_for_1p02_body,projected_speedup_if_10pct_reduction,projected_speedup_if_25pct_reduction,stage315_interpretation
+digit_to_double,0.172510,0.113662,1.017554,1.045071,admit only with concrete implementation budget
+spqlios_ifft,0.181943,0.107769,1.018531,1.047653,admit only with concrete implementation budget
+dense_mat_addmul,0.215408,0.091026,1.022015,1.056917,admit only with concrete implementation budget
+mat_ep_lifecycle,0.585042,0.033515,1.062140,1.171317,"large enough only if candidate affects lifecycle, not one small subcomponent"
