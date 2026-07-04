@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+nonbinary_sparsemul_implementation,supported_staged,An explicit non-binary PVW/MAT sparse_mul path is implemented and passes staged lane equivalence for include-zero and ternary r=1/2/4.,Full non-binary PVW/MAT-SAB bootstrapping is complete.,repro/stage257_nonbinary_sparsemul_implementation/runtime_equivalence.csv
+full_sab_speedup,unsupported,No non-binary complete-SAB speedup is claimed at Stage257.,Stage257 accelerates complete SAB bootstrapping.,repro/stage257_nonbinary_sparsemul_implementation/implementation_admission.csv
+amortized_time_per_plaintext_bit,unsupported_for_nonbinary,T_bootstrap/r remains the final metric for complete-SAB evaluation.,Non-binary T_bootstrap/r improved.,repro/stage257_nonbinary_sparsemul_implementation/claim_boundary.csv

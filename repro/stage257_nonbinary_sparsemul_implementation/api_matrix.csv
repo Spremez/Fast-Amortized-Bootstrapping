@@ -1,0 +1,5 @@
+api,declared,defined,notes
+sab_pvw_new_nonbinary_key,yes,yes,explicit non-binary PVW sparse_mul path only
+sab_pvw_sub_a_include_zero,yes,yes,explicit non-binary PVW sparse_mul path only
+sab_pvw_sub_a_ternary,yes,yes,explicit non-binary PVW sparse_mul path only
+sab_pvw_sparse_mul_nonbinary,yes,yes,explicit non-binary PVW sparse_mul path only

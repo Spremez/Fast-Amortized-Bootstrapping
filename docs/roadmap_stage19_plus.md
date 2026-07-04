@@ -6939,3 +6939,23 @@ final RGSW step. Finite multi-round lifecycle probes pass for r=1/2/4. Stage257
 may implement an explicit non-binary sparse_mul path only; full SAB speedup
 remains blocked.
 ```
+
+## Stage 257: Non-Binary Sparse_Mul Implementation
+
+Goal:
+
+```text
+Add an explicit production-code PVW/MAT sparse_mul path for include-zero and
+ternary selector families without replacing scalar SAB or binary PVW defaults.
+```
+
+Status:
+
+```text
+Generated from input head `c919276` with `PASS_STAGE257_NONBINARY_SPARSEMUL_IMPLEMENTED_STAGED`. The new
+`sab_pvw_new_nonbinary_key`, `sab_pvw_sub_a_include_zero`,
+`sab_pvw_sub_a_ternary`, and `sab_pvw_sparse_mul_nonbinary` APIs compile and
+pass staged lane equivalence for include-zero and ternary at r=1/2/4. Full SAB
+speedup and T_bootstrap/r claims remain blocked pending correctness/noise and
+complete bootstrapping A/B.
+```

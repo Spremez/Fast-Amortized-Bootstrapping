@@ -3568,3 +3568,16 @@ H10_stage256_nonbinary_sparsemul_preflight:
     Stage256 records PASS_STAGE256_NONBINARY_SPARSEMUL_PREFLIGHT_READY_EXPLICIT_IMPLEMENTATION. It admits only an explicit non-binary
     sparse_mul implementation path; binary default behavior, full SAB speedup,
     and non-binary bootstrapping claims remain blocked.
+
+H10_stage257_nonbinary_sparsemul_implementation:
+  status: explicit_nonbinary_sparsemul_staged_implemented
+  evidence:
+    - repro/stage257_nonbinary_sparsemul_implementation/runtime_equivalence.csv
+    - repro/stage257_nonbinary_sparsemul_implementation/api_matrix.csv
+    - repro/stage257_nonbinary_sparsemul_implementation/proof_gate.csv
+    - docs/stage257_nonbinary_sparsemul_implementation.md
+  conclusion: >
+    Stage257 records PASS_STAGE257_NONBINARY_SPARSEMUL_IMPLEMENTED_STAGED. It implements explicit include-zero and
+    ternary PVW/MAT sparse_mul APIs and passes staged lane equivalence for
+    r=1/2/4. Complete non-binary SAB bootstrapping speedup and T_bootstrap/r
+    claims remain blocked.

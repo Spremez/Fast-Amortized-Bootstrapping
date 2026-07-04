@@ -2863,3 +2863,11 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage256_nonbinary_sparsemul_preflight.md`
   - `scripts/build_stage256_nonbinary_sparsemul_preflight.py`
   - `repro/stage256_nonbinary_sparsemul_preflight/`
+
+- stage257_nonbinary_sparsemul_implementation:
+  - `docs/stage257_nonbinary_sparsemul_implementation.md`
+  - `experiments/stage257_nonbinary_sparsemul_implementation_plan.md`
+  - `theory_checks/stage257_nonbinary_sparsemul_implementation_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage257_nonbinary_sparsemul.md`
+  - `scripts/build_stage257_nonbinary_sparsemul_implementation.py`
+  - `repro/stage257_nonbinary_sparsemul_implementation/`

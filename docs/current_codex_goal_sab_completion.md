@@ -810,3 +810,10 @@ closure.
 `PASS_STAGE256_NONBINARY_SPARSEMUL_PREFLIGHT_READY_EXPLICIT_IMPLEMENTATION` advances the route from isolated selector updates to sparse_mul
 integration readiness. The active goal remains open for explicit implementation,
 actual sparse_mul correctness/noise, complete SAB A/B, and final claim closure.
+
+### Stage257 non-binary sparse_mul implementation
+
+`PASS_STAGE257_NONBINARY_SPARSEMUL_IMPLEMENTED_STAGED` records an explicit non-binary PVW sparse_mul implementation.
+The active goal remains open for deterministic/multi-seed sparse_mul
+noise/correctness, full SAB integration, T_bootstrap/r benchmark, parameter
+generalization, and final paper claim closure.

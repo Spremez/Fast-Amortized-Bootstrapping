@@ -1,0 +1,7 @@
+mode,r,h,r_prec,status,evidence
+include_zero,1,2,3,PASS,repro/stage257_nonbinary_sparsemul_implementation/run_ffnt_nonbinary_test.log
+include_zero,2,2,3,PASS,repro/stage257_nonbinary_sparsemul_implementation/run_ffnt_nonbinary_test.log
+include_zero,4,2,3,PASS,repro/stage257_nonbinary_sparsemul_implementation/run_ffnt_nonbinary_test.log
+ternary,1,2,3,PASS,repro/stage257_nonbinary_sparsemul_implementation/run_ffnt_nonbinary_test.log
+ternary,2,2,3,PASS,repro/stage257_nonbinary_sparsemul_implementation/run_ffnt_nonbinary_test.log
+ternary,4,2,3,PASS,repro/stage257_nonbinary_sparsemul_implementation/run_ffnt_nonbinary_test.log

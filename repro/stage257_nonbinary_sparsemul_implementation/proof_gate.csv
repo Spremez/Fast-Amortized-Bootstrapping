@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_build,PASS,ffnt build,compiled,repro/stage257_nonbinary_sparsemul_implementation/build_ffnt_nonbinary_test.log,"Portable build smoke gate only, not performance evidence."
+G2_api_surface,PASS,declared;defined,all,repro/stage257_nonbinary_sparsemul_implementation/api_matrix.csv,Explicit non-binary API is present without replacing binary API.
+G3_runtime_equivalence,PASS,mode/r pass rows,6/6,repro/stage257_nonbinary_sparsemul_implementation/runtime_equivalence.csv,include-zero and ternary sparse_mul staged lane equivalence pass for r=1/2/4.
+G4_source_isolation,PASS,default path isolation,preserved,repro/stage257_nonbinary_sparsemul_implementation/source_change_matrix.csv,Scalar SAB and binary PVW default route remain reference paths.
+G5_admission,PASS_STAGED_ONLY,next route,explicit_nonbinary_path_only,repro/stage257_nonbinary_sparsemul_implementation/implementation_admission.csv,"Next work is correctness/noise, not full-SAB speedup claim."
+G6_stage257_decision,PASS_STAGE257_NONBINARY_SPARSEMUL_IMPLEMENTED_STAGED,decision,PASS_STAGE257_NONBINARY_SPARSEMUL_IMPLEMENTED_STAGED,repro/stage257_nonbinary_sparsemul_implementation/proof_gate.csv,Proceed to Stage258 sparse_mul correctness/noise and then full SAB integration.

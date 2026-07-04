@@ -3,7 +3,7 @@
 #include <benchmark_util.h>
 #include <sab_profile.h>
 #include <inttypes.h>
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 #include <sab_pvw.h>
 #endif
 
@@ -551,7 +551,7 @@ void test_sab_microbench(){
   );
 }
 
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
   const int N = in->s[0][lane]->N;
   TRLWE_Key out = trlwe_alloc_key(N, in->k, in->sigma);
@@ -892,6 +892,33 @@ static TRLWE_Key test_binary_key_from_distances(int N, int k,
       }
       previous -= distance;
       out->s[key_idx]->coeffs[previous] = 1;
+    }
+    polynomial_torus_to_DFT(out->s_dft[key_idx], out->s[key_idx]);
+  }
+  return out;
+}
+
+static TRLWE_Key test_sparse_key_from_distances_coeffs(int N, int k,
+    const uint64_t * distances, const int64_t * coeffs, int h,
+    double sigma){
+  TRLWE_Key out = trlwe_alloc_key(N, k, sigma);
+  for (size_t key_idx = 0; key_idx < (size_t) k; key_idx++){
+    memset(out->s[key_idx]->coeffs, 0, sizeof(Torus) * N);
+    uint64_t previous = N;
+    for (size_t step = 0; step < (size_t) h; step++){
+      const uint64_t distance = distances[step];
+      if(distance == 0 || distance > previous){
+        printf("Invalid test sparse distance step=%" PRIu64 " distance=%" PRIu64
+               " previous=%" PRIu64 "\n", (uint64_t) step, distance, previous);
+        exit(1);
+      }
+      if(coeffs[step] != 1 && coeffs[step] != -1){
+        printf("Invalid test sparse coeff step=%" PRIu64 " coeff=%" PRId64 "\n",
+               (uint64_t) step, coeffs[step]);
+        exit(1);
+      }
+      previous -= distance;
+      out->s[key_idx]->coeffs[previous] = (Torus) coeffs[step];
     }
     polynomial_torus_to_DFT(out->s_dft[key_idx], out->s[key_idx]);
   }
@@ -2231,6 +2258,28 @@ static void isolated_scalar_sub_a_binary(TRLWE * p, const uint64_t * a,
   }
 }
 
+static void isolated_scalar_sub_a_include_zero(TRLWE * p, const uint64_t * a,
+    int in_N, TRGSW_DFT selector, TRLWE tmp, TRLWE_DFT tmp_dft){
+  for (size_t idx = 0; idx < (size_t) in_N; idx++){
+    trlwe_mul_by_xai_minus_1(tmp, p[idx], a[idx]);
+    trgsw_mul_trlwe_DFT(tmp_dft, tmp, selector);
+    trlwe_from_DFT(tmp, tmp_dft);
+    trlwe_addto(p[idx], tmp);
+  }
+}
+
+static void isolated_scalar_sub_a_ternary(TRLWE * p, const uint64_t * a,
+    int in_N, TRGSW_DFT selector, TRLWE tmp, TRLWE_DFT tmp_dft){
+  for (size_t idx = 0; idx < (size_t) in_N; idx++){
+    trlwe_mul_by_xai(tmp, p[idx], a[idx]);
+    trlwe_copy(p[idx], tmp);
+    trlwe_mul_by_xai_minus_1(tmp, p[idx], -2 * (int64_t) a[idx]);
+    trgsw_mul_trlwe_DFT(tmp_dft, tmp, selector);
+    trlwe_from_DFT(tmp, tmp_dft);
+    trlwe_addto(p[idx], tmp);
+  }
+}
+
 static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
   const int N = 1024, k = 1, l = 1, bg_bit = 23, prec = 3;
   const int r_prec = 3, in_N = 16, h = 2;
@@ -2372,6 +2421,165 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
   free(scalar_rotated);
   free(scalar_tmp_poly);
   free(scalar_acc);
+  free(scalar_selectors);
+  free(scalar_trgsw_keys);
+  free(scalar_aut_minus1);
+  free(scalar_keys);
+
+  free_sab_pvw_key(pvw_sab);
+  free_pvmtmlwe_key(pvw_key);
+  free_trlwe_key(input_key);
+  return pass;
+}
+
+static bool check_pvw_sparse_mul_nonbinary_lane_equivalence(int r,
+    bool include_zeros){
+  const int N = 1024, k = 1, l = 1, bg_bit = 23, prec = 3;
+  const int r_prec = 3, in_N = 16, h = 2;
+  const uint64_t selector_values[3] = {5, 4, 7};
+  const int64_t include_zero_coeffs[2] = {1, 1};
+  const int64_t ternary_coeffs[2] = {1, -1};
+  const int64_t * key_coeffs = include_zeros ?
+      include_zero_coeffs : ternary_coeffs;
+  const uint64_t a[16] = {
+    1, 3, 5, 7, 9, 11, 13, 15,
+    17, 19, 21, 23, 25, 27, 29, 31
+  };
+  const uint64_t gen_minus1 = 2 * N - 1;
+  const int total_selectors = (h + 1) * r_prec;
+  const char * mode = include_zeros ? "include_zero" : "ternary";
+  bool pass = true;
+
+  printf("SAB_PVW_NONBINARY_TEST sparse_mul mode=%s r=%d step=input_key\n",
+         mode, r);
+  TRLWE_Key input_key = test_sparse_key_from_distances_coeffs(in_N, k,
+      selector_values, key_coeffs, h, pow(2, -15));
+  PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -70));
+  SAB_PVW_Key pvw_sab = sab_pvw_new_nonbinary_key(input_key, pvw_key,
+      prec, h, r_prec, l, bg_bit, include_zeros, !include_zeros);
+
+  TRLWE_Key * scalar_keys = (TRLWE_Key *) safe_malloc(sizeof(TRLWE_Key) * r);
+  TRLWE_KS_Key * scalar_aut_minus1 = (TRLWE_KS_Key *) safe_malloc(sizeof(TRLWE_KS_Key) * r);
+  TRGSW_Key * scalar_trgsw_keys = (TRGSW_Key *) safe_malloc(sizeof(TRGSW_Key) * r);
+  TRGSW_DFT ** scalar_selectors = (TRGSW_DFT **) safe_malloc(sizeof(TRGSW_DFT *) * r);
+  TRGSW_DFT ** scalar_sub_selectors = (TRGSW_DFT **) safe_malloc(sizeof(TRGSW_DFT *) * r);
+  TRLWE ** scalar_acc = (TRLWE **) safe_malloc(sizeof(TRLWE *) * r);
+  TRLWE ** scalar_tmp_poly = (TRLWE **) safe_malloc(sizeof(TRLWE *) * r);
+  TRLWE * scalar_rotated = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE * scalar_tmp = (TRLWE *) safe_malloc(sizeof(TRLWE) * r);
+  TRLWE_DFT * scalar_tmp_dft = (TRLWE_DFT *) safe_malloc(sizeof(TRLWE_DFT) * r);
+  PVW_TMLWE * pvw_acc = alloc_pvw_sample_array_local(in_N, k, r, N);
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    scalar_keys[lane] = trlwe_key_from_pvmtmlwe_lane(pvw_key, lane);
+    uint64_t scalar_aut_gens[1] = {gen_minus1};
+    TRLWE_KS_Key * aut_set = trlwe_new_automorphism_KS_keyset_2(scalar_keys[lane],
+        scalar_aut_gens, 1, l, bg_bit);
+    scalar_aut_minus1[lane] = aut_set[0];
+    free(aut_set);
+
+    scalar_trgsw_keys[lane] = trgsw_new_key(scalar_keys[lane], l, bg_bit);
+    scalar_selectors[lane] = (TRGSW_DFT *) safe_malloc(sizeof(TRGSW_DFT) * total_selectors);
+    scalar_sub_selectors[lane] = (TRGSW_DFT *) safe_malloc(sizeof(TRGSW_DFT) * h);
+    scalar_acc[lane] = trlwe_alloc_new_sample_array(in_N, k, N);
+    scalar_tmp_poly[lane] = trlwe_alloc_new_sample_array(in_N, k, N);
+    scalar_rotated[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_tmp[lane] = trlwe_alloc_new_sample(k, N);
+    scalar_tmp_dft[lane] = trlwe_alloc_new_DFT_sample(k, N);
+    for (size_t round = 0; round < (size_t) (h + 1); round++){
+      for (size_t bit = 0; bit < (size_t) r_prec; bit++){
+        const size_t idx = round * r_prec + bit;
+        scalar_selectors[lane][idx] = trgsw_alloc_new_DFT_sample(l, bg_bit, k, N);
+        trgsw_monomial_DFT_sample(scalar_selectors[lane][idx],
+            (selector_values[round] >> bit) & 1, 0, scalar_trgsw_keys[lane]);
+      }
+    }
+    for (size_t round = 0; round < (size_t) h; round++){
+      const int64_t selector_value = include_zeros ?
+          1 : (key_coeffs[round] == -1 ? 1 : 0);
+      scalar_sub_selectors[lane][round] =
+          trgsw_alloc_new_DFT_sample(l, bg_bit, k, N);
+      trgsw_monomial_DFT_sample(scalar_sub_selectors[lane][round],
+          selector_value, 0, scalar_trgsw_keys[lane]);
+    }
+  }
+
+  TorusPolynomial * msg = polynomial_new_array_of_torus_polynomials(N, r);
+  for (size_t idx = 0; idx < (size_t) in_N; idx++){
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      for (size_t coeff = 0; coeff < (size_t) N; coeff++){
+        msg[lane]->coeffs[coeff] = int2torus((5 * idx + 3 * lane + coeff) & 7, prec);
+      }
+    }
+    pvmtmlwe_sample(pvw_acc[idx], msg, pvw_key);
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      copy_pvw_lane_to_trlwe(scalar_acc[lane][idx], pvw_acc[idx], lane);
+    }
+  }
+
+  printf("SAB_PVW_NONBINARY_TEST sparse_mul mode=%s r=%d step=pvw_api\n",
+         mode, r);
+  sab_pvw_sparse_mul_nonbinary(pvw_acc, a, 0, pvw_sab);
+
+  for (size_t round = 0; round < (size_t) h; round++){
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      isolated_scalar_RGSW_monomial_mul_auto(scalar_acc[lane],
+          scalar_tmp_poly[lane], &scalar_selectors[lane][round * r_prec],
+          r_prec, in_N, scalar_aut_minus1[lane], scalar_rotated[lane],
+          scalar_tmp[lane], scalar_tmp_dft[lane]);
+      if(include_zeros){
+        isolated_scalar_sub_a_include_zero(scalar_acc[lane], a, in_N,
+            scalar_sub_selectors[lane][round], scalar_tmp[lane],
+            scalar_tmp_dft[lane]);
+      }else{
+        isolated_scalar_sub_a_ternary(scalar_acc[lane], a, in_N,
+            scalar_sub_selectors[lane][round], scalar_tmp[lane],
+            scalar_tmp_dft[lane]);
+      }
+    }
+  }
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    isolated_scalar_RGSW_monomial_mul_auto(scalar_acc[lane],
+        scalar_tmp_poly[lane], &scalar_selectors[lane][h * r_prec],
+        r_prec, in_N, scalar_aut_minus1[lane], scalar_rotated[lane],
+        scalar_tmp[lane], scalar_tmp_dft[lane]);
+  }
+
+  char label[128];
+  snprintf(label, sizeof(label), "nonbinary %s sparse after final RGSW", mode);
+  pass &= compare_pvw_scalar_array_phases(label, r, in_N, prec,
+      pvw_acc, pvw_key, scalar_acc, scalar_keys);
+
+  printf("SAB_PVW API nonbinary sparse_mul lane equivalence mode=%s r=%d h=%d r_prec=%d: %s\n",
+         mode, r, h, r_prec, pass ? "Pass" : "Fail");
+
+  free_array_of_polynomials(msg, r);
+  free_pvw_sample_array_local(pvw_acc, in_N);
+
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    for (size_t idx = 0; idx < (size_t) total_selectors; idx++){
+      free_trgsw(scalar_selectors[lane][idx]);
+    }
+    for (size_t round = 0; round < (size_t) h; round++){
+      free_trgsw(scalar_sub_selectors[lane][round]);
+    }
+    free(scalar_sub_selectors[lane]);
+    free(scalar_selectors[lane]);
+    free_trlwe(scalar_tmp_dft[lane]);
+    free_trlwe(scalar_tmp[lane]);
+    free_trlwe(scalar_rotated[lane]);
+    free_trlwe_array(scalar_tmp_poly[lane], in_N);
+    free_trlwe_array(scalar_acc[lane], in_N);
+    free_trgsw_key(scalar_trgsw_keys[lane]);
+    free_trlwe_ks_key(scalar_aut_minus1[lane]);
+    free_trlwe_key(scalar_keys[lane]);
+  }
+  free(scalar_tmp_dft);
+  free(scalar_tmp);
+  free(scalar_rotated);
+  free(scalar_tmp_poly);
+  free(scalar_acc);
+  free(scalar_sub_selectors);
   free(scalar_selectors);
   free(scalar_trgsw_keys);
   free(scalar_aut_minus1);
@@ -3486,10 +3694,27 @@ void test_mat_trgsw_rgt4_kernel(){
 }
 #endif
 
+#if defined(SAB_PVW_NONBINARY_TEST)
+void test_sab_pvw_nonbinary_sparsemul(){
+  bool pass = true;
+  pass &= check_pvw_sparse_mul_nonbinary_lane_equivalence(1, true);
+  pass &= check_pvw_sparse_mul_nonbinary_lane_equivalence(2, true);
+  pass &= check_pvw_sparse_mul_nonbinary_lane_equivalence(4, true);
+  pass &= check_pvw_sparse_mul_nonbinary_lane_equivalence(1, false);
+  pass &= check_pvw_sparse_mul_nonbinary_lane_equivalence(2, false);
+  pass &= check_pvw_sparse_mul_nonbinary_lane_equivalence(4, false);
+  printf("SAB_PVW nonbinary sparse_mul staged test: %s\n",
+         pass ? "Pass" : "Fail");
+  if(!pass) exit(1);
+}
+#endif
+
 int main(int argc, char const *argv[])
 {
 #if defined(SAB_PVW_TARGET_TEST)
   test_sab_pvw_target_full();
+#elif defined(SAB_PVW_NONBINARY_TEST)
+  test_sab_pvw_nonbinary_sparsemul();
 #elif defined(SAB_PVW_RESOURCE_TEST)
   test_sab_pvw_resource();
 #elif defined(SAB_PVW_NOISE_TEST)

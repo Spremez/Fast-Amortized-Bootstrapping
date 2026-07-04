@@ -1,0 +1,4 @@
+route,decision,production_permission,reason,next_gate
+stage258_nonbinary_sparsemul_correctness_noise,ADMIT_STAGED_CORRECTNESS_NOISE,explicit_nonbinary_path_only,r=1/2/4 include-zero and ternary sparse_mul lane equivalence pass,deterministic and multi-seed sparse_mul correctness/noise before full SAB
+default_binary_sab,NO_CHANGE,no_default_change,binary blind rotate and bootstrap path still call sab_pvw_sparse_mul_binary,binary regression build/run after each promoted change
+nonbinary_full_sab_speedup,BLOCKED,no,no non-binary blind_rotate/bootstrap/full extract integration or T_bootstrap/r benchmark yet,Stage258+Stage259

@@ -215,6 +215,10 @@ static void sab_pvw_encrypt_bits(MAT_TRGSW_DFT * out, MAT_TRGSW tmp,
   }
 }
 
+static inline int sab_pvw_coeff_is_minus_one(uint64_t coeff){
+  return coeff == (uint64_t) -1;
+}
+
 static MAT_TRGSW_DFT * sab_pvw_alloc_selector_bits(uint64_t r_prec,
     uint64_t l, uint64_t bg_bit, uint64_t out_k, uint64_t lanes,
     uint64_t out_N){
@@ -317,6 +321,10 @@ SAB_PVW_Key sab_pvw_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key
       2 * out_N - 1, l, bg_bit);
   res->packing_keys = NULL;
   res->hw_reducing_key = NULL;
+  res->include_zeros = false;
+  res->ternary_secret = false;
+  res->s_coff = NULL;
+  res->s_sign = NULL;
 
   MAT_TRGSW tmp = mat_trgsw_alloc_new_sample(l, bg_bit, out_k, lanes, out_N);
   res->s = (MAT_TRGSW_DFT ***) safe_malloc(sizeof(MAT_TRGSW_DFT **) * in_k);
@@ -336,6 +344,122 @@ SAB_PVW_Key sab_pvw_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key
           bg_bit, out_k, lanes, out_N);
       sab_pvw_encrypt_bits(res->s[key_idx][cnt_h], tmp, res->mat_key,
           r_diff, r_prec);
+      previous = current;
+      cnt_h++;
+    }
+    if(cnt_h != h) sab_pvw_die("input key has fewer non-zero coefficients than h");
+    if(previous >= r_max) sab_pvw_die("final monomial gap exceeds r_prec");
+    res->s[key_idx][cnt_h] = sab_pvw_alloc_selector_bits(r_prec, l,
+        bg_bit, out_k, lanes, out_N);
+    sab_pvw_encrypt_bits(res->s[key_idx][cnt_h], tmp, res->mat_key,
+        previous, r_prec);
+  }
+  free_mat_trgsw(tmp);
+
+  res->in_N = in_N;
+  res->in_k = in_k;
+  res->out_N = out_N;
+  res->out_k = out_k;
+  res->lanes = lanes;
+  res->h = h;
+  res->r_prec = r_prec;
+  res->b_prec = b_prec;
+
+  res->tmp = (sab_pvw_tmp_pool) safe_malloc(sizeof(*res->tmp));
+  res->tmp->tmlwe_dft = pvmtmlwe_alloc_new_DFT_sample(out_k, lanes, out_N);
+  res->tmp->tmlwe = pvmtmlwe_alloc_new_sample(out_k, lanes, out_N);
+  res->tmp->rotated = pvmtmlwe_alloc_new_sample(out_k, lanes, out_N);
+  res->tmp->tmlwe_poly2 = pvmtmlwe_alloc_new_sample_array(in_N, out_k, lanes, out_N);
+  res->tmp->acc = NULL;
+  res->tmp->extracted = NULL;
+  res->tmp->lane_extracted = NULL;
+  res->tmp->packed = NULL;
+  res->tmp->scratch = mat_trgsw_alloc_mul_scratch((out_k + lanes) * l, out_N);
+  res->tmp->a_mod = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
+  return res;
+}
+
+SAB_PVW_Key sab_pvw_new_nonbinary_key(TRLWE_Key input_key,
+    PVW_TMLWE_Key output_key, uint64_t b_prec, uint64_t h,
+    uint64_t r_prec, uint64_t l, uint64_t bg_bit, bool include_zeros,
+    bool ternary){
+  if(input_key == NULL) sab_pvw_die("input key is NULL");
+  if(output_key == NULL) sab_pvw_die("output key is NULL");
+  if(r_prec == 0) sab_pvw_die("r_prec must be non-zero");
+  if(include_zeros && ternary){
+    sab_pvw_die("include-zero and ternary PVW modes must be tested separately");
+  }
+  if(!include_zeros && !ternary){
+    return sab_pvw_new_binary_key(input_key, output_key, b_prec, h,
+        r_prec, l, bg_bit);
+  }
+
+  SAB_PVW_Key res = (SAB_PVW_Key) safe_malloc(sizeof(*res));
+  const uint64_t in_N = input_key->s[0]->N;
+  const uint64_t in_k = input_key->k;
+  const uint64_t out_N = output_key->s[0][0]->N;
+  const uint64_t out_k = output_key->k;
+  const uint64_t lanes = output_key->r;
+  const uint64_t r_max = 1ULL << r_prec;
+
+  res->output_key = output_key;
+  res->mat_key = mat_trgsw_new_key(output_key, l, bg_bit);
+  res->aut_minus1 = pvmtmlwe_new_automorphism_KS_key(output_key,
+      2 * out_N - 1, l, bg_bit);
+  res->packing_keys = NULL;
+  res->hw_reducing_key = NULL;
+  res->include_zeros = include_zeros;
+  res->ternary_secret = ternary;
+  res->s_coff = include_zeros ?
+      (MAT_TRGSW_DFT **) safe_malloc(sizeof(MAT_TRGSW_DFT *) * in_k) :
+      NULL;
+  res->s_sign = ternary ?
+      (MAT_TRGSW_DFT **) safe_malloc(sizeof(MAT_TRGSW_DFT *) * in_k) :
+      NULL;
+
+  MAT_TRGSW tmp = mat_trgsw_alloc_new_sample(l, bg_bit, out_k, lanes, out_N);
+  res->s = (MAT_TRGSW_DFT ***) safe_malloc(sizeof(MAT_TRGSW_DFT **) * in_k);
+  for (size_t key_idx = 0; key_idx < in_k; key_idx++){
+    res->s[key_idx] = (MAT_TRGSW_DFT **) safe_malloc(sizeof(MAT_TRGSW_DFT *) * (h + 1));
+    if(include_zeros){
+      res->s_coff[key_idx] = (MAT_TRGSW_DFT *) safe_malloc(sizeof(MAT_TRGSW_DFT) * h);
+    }
+    if(ternary){
+      res->s_sign[key_idx] = (MAT_TRGSW_DFT *) safe_malloc(sizeof(MAT_TRGSW_DFT) * h);
+    }
+    uint64_t cnt_h = 0;
+    uint64_t previous = in_N;
+    for (size_t scan = 0; scan < in_N; scan++){
+      const uint64_t current = in_N - scan - 1;
+      const uint64_t coeff = input_key->s[key_idx]->coeffs[current];
+      if(coeff == 0) continue;
+      if(include_zeros && coeff != 1){
+        sab_pvw_die("include-zero PVW sparse input expects coefficient one");
+      }
+      if(ternary && coeff != 1 && !sab_pvw_coeff_is_minus_one(coeff)){
+        sab_pvw_die("ternary PVW sparse input expects +/-1 coefficients");
+      }
+      if(cnt_h >= h) sab_pvw_die("input key has more non-zero coefficients than h");
+      const uint64_t r_diff = previous - current;
+      if(r_diff >= r_max){
+        sab_pvw_die("input key monomial gap exceeds r_prec");
+      }
+      res->s[key_idx][cnt_h] = sab_pvw_alloc_selector_bits(r_prec, l,
+          bg_bit, out_k, lanes, out_N);
+      sab_pvw_encrypt_bits(res->s[key_idx][cnt_h], tmp, res->mat_key,
+          r_diff, r_prec);
+      if(include_zeros){
+        res->s_coff[key_idx][cnt_h] =
+            mat_trgsw_alloc_new_DFT_sample(l, bg_bit, out_k, lanes, out_N);
+        mat_trgsw_monomial_DFT_sample(res->s_coff[key_idx][cnt_h],
+            1, 0, res->mat_key);
+      }
+      if(ternary){
+        res->s_sign[key_idx][cnt_h] =
+            mat_trgsw_alloc_new_DFT_sample(l, bg_bit, out_k, lanes, out_N);
+        mat_trgsw_monomial_DFT_sample(res->s_sign[key_idx][cnt_h],
+            sab_pvw_coeff_is_minus_one(coeff) ? 1 : 0, 0, res->mat_key);
+      }
       previous = current;
       cnt_h++;
     }
@@ -395,6 +519,24 @@ void free_sab_pvw_key(SAB_PVW_Key sab){
     free(sab->s[key_idx]);
   }
   free(sab->s);
+  if(sab->s_coff != NULL){
+    for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
+      for (size_t step = 0; step < sab->h; step++){
+        free_mat_trgsw_DFT(sab->s_coff[key_idx][step]);
+      }
+      free(sab->s_coff[key_idx]);
+    }
+    free(sab->s_coff);
+  }
+  if(sab->s_sign != NULL){
+    for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
+      for (size_t step = 0; step < sab->h; step++){
+        free_mat_trgsw_DFT(sab->s_sign[key_idx][step]);
+      }
+      free(sab->s_sign[key_idx]);
+    }
+    free(sab->s_sign);
+  }
   free_mat_trgsw_mul_scratch(sab->tmp->scratch);
   free(sab->tmp->a_mod);
   if(sab->tmp->packed != NULL) free_trlwe(sab->tmp->packed);
@@ -787,6 +929,45 @@ void sab_pvw_sub_a_binary(PVW_TMLWE * p, const uint64_t * a, SAB_PVW_Key sab){
 #endif
 }
 
+void sab_pvw_sub_a_include_zero(PVW_TMLWE * p, const uint64_t * a,
+    MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+#ifdef SAB_PVW_BODY_PROFILE
+  const uint64_t sub_a_begin = sab_pvw_now_us();
+#endif
+  for (size_t idx = 0; idx < sab->in_N; idx++){
+    pvmtmlwe_mul_by_xai_minus_1(sab->tmp->tmlwe, p[idx], a[idx]);
+    mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft, sab->tmp->tmlwe,
+        selector, sab->tmp->scratch);
+    pvmtmlwe_from_DFT(sab->tmp->tmlwe, sab->tmp->tmlwe_dft);
+    pvmtmlwe_addto(p[idx], sab->tmp->tmlwe);
+  }
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_us,
+      &sab_pvw_body_profile.sub_a_calls, sub_a_begin);
+#endif
+}
+
+void sab_pvw_sub_a_ternary(PVW_TMLWE * p, const uint64_t * a,
+    MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+#ifdef SAB_PVW_BODY_PROFILE
+  const uint64_t sub_a_begin = sab_pvw_now_us();
+#endif
+  for (size_t idx = 0; idx < sab->in_N; idx++){
+    pvmtmlwe_mul_by_xai(sab->tmp->rotated, p[idx], a[idx]);
+    pvmtmlwe_copy(p[idx], sab->tmp->rotated);
+    pvmtmlwe_mul_by_xai_minus_1(sab->tmp->tmlwe, p[idx],
+        -2 * (int64_t) a[idx]);
+    mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft, sab->tmp->tmlwe,
+        selector, sab->tmp->scratch);
+    pvmtmlwe_from_DFT(sab->tmp->tmlwe, sab->tmp->tmlwe_dft);
+    pvmtmlwe_addto(p[idx], sab->tmp->tmlwe);
+  }
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.sub_a_us,
+      &sab_pvw_body_profile.sub_a_calls, sub_a_begin);
+#endif
+}
+
 static void sab_pvw_sub_a_binary_to(PVW_TMLWE * out, PVW_TMLWE * in,
     const uint64_t * a, SAB_PVW_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
@@ -835,6 +1016,43 @@ void sab_pvw_sparse_mul_binary(PVW_TMLWE * p, const uint64_t * a,
   }
   sab_pvw_RGSW_monomial_mul(p, sab->s[a_idx][sab->h], sab);
 #endif
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.sparse_mul_us,
+      &sab_pvw_body_profile.sparse_mul_calls, sparse_mul_begin);
+#endif
+}
+
+void sab_pvw_sparse_mul_nonbinary(PVW_TMLWE * p, const uint64_t * a,
+    uint64_t a_idx, SAB_PVW_Key sab){
+#ifdef SAB_PVW_BODY_PROFILE
+  const uint64_t sparse_mul_begin = sab_pvw_now_us();
+#endif
+  if(a_idx >= sab->in_k) sab_pvw_die("sparse_mul a_idx out of range");
+  if(sab->include_zeros && sab->s_coff == NULL){
+    sab_pvw_die("include-zero sparse_mul selector family is missing");
+  }
+  if(sab->ternary_secret && sab->s_sign == NULL){
+    sab_pvw_die("ternary sparse_mul selector family is missing");
+  }
+  if(!sab->include_zeros && !sab->ternary_secret){
+    sab_pvw_die("nonbinary sparse_mul requires include-zero or ternary mode");
+  }
+
+  SAB_PVW_Accumulator_State state = sab_pvw_accumulator_state(p, sab);
+  for (size_t step = 0; step < sab->h; step++){
+    state.active = sab_pvw_RGSW_monomial_mul_state(state.buffers,
+        state.active, sab->s[a_idx][step], sab);
+    if(sab->include_zeros){
+      sab_pvw_sub_a_include_zero(sab_pvw_accumulator_active(&state),
+          a, sab->s_coff[a_idx][step], sab);
+    }else{
+      sab_pvw_sub_a_ternary(sab_pvw_accumulator_active(&state),
+          a, sab->s_sign[a_idx][step], sab);
+    }
+  }
+  state.active = sab_pvw_RGSW_monomial_mul_state(state.buffers,
+      state.active, sab->s[a_idx][sab->h], sab);
+  sab_pvw_accumulator_normalize(&state, sab);
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.sparse_mul_us,
       &sab_pvw_body_profile.sparse_mul_calls, sparse_mul_begin);

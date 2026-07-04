@@ -1,0 +1,6 @@
+file,change,observed,gate
+include/sab_pvw.h,optional s_coff/s_sign fields and explicit non-binary API declarations,changed,PASS
+src/sab_pvw.c,"explicit non-binary keygen, sub_a, and sparse_mul implementation",changed,PASS
+src/sparse_amortized_bootstrap.c,scalar SAB reference remains untouched,not_changed,PASS
+src/sab_pvw.c,binary blind rotate continues to call sab_pvw_sparse_mul_binary,yes,PASS
+Makefile/src,default binary FFNT build still compiles,compiled,PASS
