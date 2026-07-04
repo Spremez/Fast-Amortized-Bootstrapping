@@ -3817,3 +3817,14 @@ H10_stage277_include_zero_fast_repeated_resource:
   conclusion: >
     Stage277 records PASS_STAGE277_INCLUDE_ZERO_FAST_REPEATED_RESOURCE_PROMOTE_NATIVE_STATS_REQUIRED. It promotes the guarded include-zero fast path
     only to a native/larger-stat follow-up gate, not to a final paper claim.
+H10_stage278_native_larger_stats_include_zero_fast:
+  status: PASS_STAGE278_LOCAL_LARGER_STATS_NATIVE_REQUIRED
+  evidence:
+    - repro/stage278_native_larger_stats_include_zero_fast/bench_summary.csv
+    - repro/stage278_native_larger_stats_include_zero_fast/variant_compare.csv
+    - repro/stage278_native_larger_stats_include_zero_fast/proof_gate.csv
+    - docs/stage278_native_larger_stats_include_zero_fast.md
+  conclusion: >
+    Stage278 records PASS_STAGE278_LOCAL_LARGER_STATS_NATIVE_REQUIRED. It strengthens local repeated evidence for
+    the guarded include-zero fast path while keeping native paper-grade
+    performance as a separate gate.

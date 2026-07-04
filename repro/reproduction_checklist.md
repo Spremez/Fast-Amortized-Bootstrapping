@@ -397,3 +397,5 @@
 - [x] Stage276 include-zero coeff-one fast-path smoke records `PASS_STAGE276_INCLUDE_ZERO_FAST_SMOKE_POSITIVE_REPEAT_REQUIRED` with primary metric `T_bootstrap/r`.
 <!-- stage277-include-zero-fast-repeated-resource-checklist -->
 - [x] Stage277 include-zero fast repeated/resource records `PASS_STAGE277_INCLUDE_ZERO_FAST_REPEATED_RESOURCE_PROMOTE_NATIVE_STATS_REQUIRED` and keeps final claims gated.
+<!-- stage278-native-larger-stats-include-zero-fast-checklist -->
+- [x] Stage278 records `PASS_STAGE278_LOCAL_LARGER_STATS_NATIVE_REQUIRED` with reps>=5 local timing, resource/noise proxy, and native status separated.

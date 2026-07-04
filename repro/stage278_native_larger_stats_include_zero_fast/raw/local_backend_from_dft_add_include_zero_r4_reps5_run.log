@@ -1,0 +1,8 @@
+SAB_PVW_NONBINARY_BENCH correctness target_full mode=include_zero r=4 h=39 r_prec=7: Pass
+SAB_PVW_NONBINARY_BENCH sample target_full mode=include_zero r=4 rep=0 pvw_us=30913333 pvw_lane_us=7728333.250 scalar_repeated_us=43010935 scalar_lane_us=10752733.750 speedup=1.391x
+SAB_PVW_NONBINARY_BENCH sample target_full mode=include_zero r=4 rep=1 pvw_us=30969376 pvw_lane_us=7742344.000 scalar_repeated_us=42393802 scalar_lane_us=10598450.500 speedup=1.369x
+SAB_PVW_NONBINARY_BENCH sample target_full mode=include_zero r=4 rep=2 pvw_us=30747441 pvw_lane_us=7686860.250 scalar_repeated_us=42095688 scalar_lane_us=10523922.000 speedup=1.369x
+SAB_PVW_NONBINARY_BENCH sample target_full mode=include_zero r=4 rep=3 pvw_us=30566809 pvw_lane_us=7641702.250 scalar_repeated_us=42040914 scalar_lane_us=10510228.500 speedup=1.375x
+SAB_PVW_NONBINARY_BENCH sample target_full mode=include_zero r=4 rep=4 pvw_us=30453329 pvw_lane_us=7613332.250 scalar_repeated_us=41841476 scalar_lane_us=10460369.000 speedup=1.374x
+SAB_PVW_NONBINARY_BENCH summary target_full mode=include_zero r=4 reps=5 pvw_avg_us=30730057.600 pvw_stddev_us=220450.774 pvw_lane_avg_us=7682514.400 scalar_repeated_avg_us=42276563.000 scalar_stddev_us=455684.686 scalar_lane_avg_us=10569140.750 speedup_vs_scalar_repeated=1.376x speedup_stddev=0.009 t_bootstrap_over_r_pvw_us=7682514.400 t_bootstrap_over_r_scalar_us=10569140.750
+SAB_PVW_NONBINARY_BENCH target full nonbinary T_bootstrap_over_r gate: Pass

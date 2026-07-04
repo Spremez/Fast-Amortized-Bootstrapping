@@ -942,3 +942,8 @@ scope is include-zero only.
 `PASS_STAGE277_INCLUDE_ZERO_FAST_REPEATED_RESOURCE_PROMOTE_NATIVE_STATS_REQUIRED` records local repeated timing plus r=4 include-zero fast-path
 noise/resource evidence. It remains WSL/local evidence and requires native or
 larger-stat promotion before paper-grade speed claims.
+### Stage278 native/larger stats include-zero fast
+
+`PASS_STAGE278_LOCAL_LARGER_STATS_NATIVE_REQUIRED` records reps>=5 local larger-stat evidence for the guarded
+include-zero fast path and records native evidence status separately. It does
+not convert WSL results into a paper-grade native claim.

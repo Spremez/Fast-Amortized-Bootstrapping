@@ -1,0 +1,2 @@
+variant,platform,backend,mode,r,pvw_estimated_key_bytes,scalar_one_estimated_key_bytes,scalar_repeated_estimated_key_bytes,pvw_vs_scalar_repeated_ratio,source_log
+include_zero_coeff_one_fast,WSL2/Linux-FFNT-resource,ffnt,include_zero,4,5026608,1062880,4251520,1.182308,repro/stage278_native_larger_stats_include_zero_fast/raw/local_include_zero_coeff_one_fast_resource_trials3_run.log

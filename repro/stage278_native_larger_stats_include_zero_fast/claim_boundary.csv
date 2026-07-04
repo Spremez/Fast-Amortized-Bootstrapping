@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+include_zero_fast_local_larger_stats,supported_local,Stage278 local reps>=5 evidence supports the guarded include-zero fast path on WSL/spqlios_avx512.,This is final native paper-grade evidence.,variant_compare.csv; proof_gate.csv
+backend_separation,explicit,Timing uses spqlios_avx512; resource/noise uses FFNT proxy evidence.,FFNT resource/noise is an AVX512 performance result.,resource_summary.csv; raw/*_build.log
+native_status,required,Native performance claim remains gated unless native rows are present.,Local WSL reps>=5 alone proves paper-grade performance.,native_status.csv
+scope,guarded_include_zero_only,The algorithmic claim is limited to current PVW include-zero coefficient-one semantics.,This covers ternary or general scalar include-zero zero-gap semantics.,claim_boundary.csv

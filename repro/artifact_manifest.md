@@ -2976,3 +2976,9 @@ Repro artifacts:
   - `scripts/run_stage277_include_zero_fast_repeated_resource.sh`
   - `scripts/build_stage277_include_zero_fast_repeated_resource.py`
   - `repro/stage277_include_zero_fast_repeated_resource/`
+- stage278_native_larger_stats_include_zero_fast:
+  - `docs/stage278_native_larger_stats_include_zero_fast.md`
+  - `scripts/run_stage278_include_zero_fast_local_larger_stats.sh`
+  - `scripts/run_stage278_native_include_zero_fast_handoff.sh`
+  - `scripts/build_stage278_native_larger_stats_include_zero_fast.py`
+  - `repro/stage278_native_larger_stats_include_zero_fast/`

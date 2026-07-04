@@ -1,0 +1,2 @@
+scope,mode,r,reps,default_t_bootstrap_over_r_us,backend_t_bootstrap_over_r_us,fast_t_bootstrap_over_r_us,fast_speedup_vs_default,fast_speedup_vs_backend,fast_stddev_us,default_correctness,backend_correctness,fast_correctness,status
+local,include_zero,4,5,7749136.150,7682514.400,7099655.250,1.091481,1.082097,123285.176,Pass,Pass,Pass,positive

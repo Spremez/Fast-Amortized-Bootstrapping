@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,status,failure_action
+P0,stage279_native_execution_or_access_probe,Stage278 local larger-stat pass but native rows missing.,Run Stage278 handoff on native Linux/authenticated host or record explicit access result without credentials.,selected,Keep as local-only evidence if native remains unavailable.
+P1,stage280_residual_profile_under_fast_flag,Local larger-stat fast path remains positive.,Profile residual hot path under fast flag before selector MAT-EP work.,conditional,Do not optimize without residual attribution.

@@ -1,0 +1,9 @@
+gate,status,metric,value,evidence,interpretation
+G1_local_reps5_coverage,PASS,variant coverage,"backend_from_dft_add:include_zero:reps5,default:include_zero:reps5,include_zero_coeff_one_fast:include_zero:reps5",bench_summary.csv,"Local larger-stat timing covers default, backend, and fast include-zero variants with reps>=5."
+G2_local_correctness,PASS,PVW/scalar correctness,3/3,bench_summary.csv,Timing is interpreted only after correctness passes.
+G3_local_speed,PASS,fast speedup vs backend,1.082097x,variant_compare.csv,Fast path must beat default and same-backend baseline on T_bootstrap/r.
+G4_local_noise,PASS,noise gate,Pass,noise_summary.csv,"Resource/noise run is FFNT proxy evidence, separated from timing."
+G5_local_resource,PASS,key size ratio vs scalar repeated,1.182308,resource_summary.csv,Compute-only fast path does not reduce key size; key size is still reported.
+G6_native_status,MISSING_NATIVE,native evidence,not_run,native_status.csv,Native evidence is required before paper-grade performance claim.
+G7_claim_boundary,PASS_NOT_FINAL,claim scope,PASS_STAGE278_LOCAL_LARGER_STATS_NATIVE_REQUIRED,claim_boundary.csv,"Local larger-stat pass can promote the candidate, but final paper-grade speed still needs native/larger-seed evidence unless native rows are present."
+G8_decision,PASS_STAGE278_LOCAL_LARGER_STATS_NATIVE_REQUIRED,stage decision,PASS_STAGE278_LOCAL_LARGER_STATS_NATIVE_REQUIRED,proof_gate.csv,Proceed according to native availability and residual-profile queue.
