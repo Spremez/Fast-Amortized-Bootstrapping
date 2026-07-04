@@ -1,0 +1,1 @@
+mode,correctness,r,h,r_prec,reps,pvw_avg_us,scalar_repeated_avg_us,speedup_vs_scalar_repeated,t_bootstrap_over_r_pvw_us,t_bootstrap_over_r_scalar_us,evidence

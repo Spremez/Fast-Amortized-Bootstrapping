@@ -2919,3 +2919,7 @@ Repro artifacts:
   - `docs/stage265_current_head_counter_reuse_audit.md`
   - `scripts/build_stage265_current_head_counter_reuse_audit.py`
   - `repro/stage265_current_head_counter_reuse_audit/`
+- stage266_current_head_nonbinary_native_counter:
+  - `docs/stage266_current_head_nonbinary_native_counter.md`
+  - `scripts/build_stage266_current_head_nonbinary_native_counter.py`
+  - `repro/stage266_current_head_nonbinary_native_counter/`

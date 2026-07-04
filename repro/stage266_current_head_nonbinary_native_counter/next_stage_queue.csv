@@ -1,0 +1,3 @@
+priority,route,entry_condition,status,gate
+P0,stage267_counter_interpretation_or_local_fallback,"Stage266 native counters recorded, or handoff remains auth-required.",fallback_or_wait_runtime_secret,Do not implement hot-path code until counter/profile evidence identifies a concrete mechanism.
+P1,stage267_local_split_projection,"No native counters, local WSL only.",available,"Projection only, no hardware-counter claim."

@@ -877,3 +877,9 @@ current non-binary PVW/MAT-SAB path. The active research goal remains open:
 the selected next executable route is a fresh current-head non-binary native
 counter run or a local split-projection fallback that cannot upgrade hardware
 counter claims.
+### Stage266 current-head non-binary native counter handoff
+
+`PASS_STAGE266_NATIVE_COUNTER_HANDOFF_READY_AUTH_REQUIRED` records the current-head non-binary native-counter execution gate.
+If native counters are not recorded, stronger hardware-counter claims remain
+blocked and the next executable path is local split projection or a runtime
+remote execution rerun.

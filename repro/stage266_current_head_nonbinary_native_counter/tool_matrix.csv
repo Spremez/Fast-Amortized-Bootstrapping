@@ -1,0 +1,6 @@
+tool_or_route,status,evidence,claim_effect
+stage265_precondition,present,repro/stage265_current_head_counter_reuse_audit/proof_gate.csv,Stage266 starts only after Stage265 selected fresh current-head counters.
+local_perf,missing,repro/stage266_current_head_nonbinary_native_counter/local_probe.log,Local WSL can run smoke but cannot provide native counter attribution when perf is missing.
+local_auth_helper,available,repro/stage266_current_head_nonbinary_native_counter/local_probe.log,Runtime remote execution is possible only if a secret is supplied externally.
+remote_batch_auth,auth_required,repro/stage266_current_head_nonbinary_native_counter/batch_ssh_probe.log,"If batch auth is unavailable and no runtime secret is provided, Stage266 remains a handoff gate."
+runtime_secret,not_provided,environment_only,No secret is written to repo artifacts.

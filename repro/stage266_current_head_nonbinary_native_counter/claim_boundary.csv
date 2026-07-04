@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+current_nonbinary_native_counter_attribution,not_yet_supported,Use Stage266 counters only if G6 records native counters.,Use the handoff-only gate as counter evidence.,repro/stage266_current_head_nonbinary_native_counter/proof_gate.csv
+current_nonbinary_t_bootstrap_over_r,unchanged_stage262_263,Stage262/263 remain the current WSL timing/profile evidence.,Treat Stage266 handoff as a new speedup measurement.,docs/stage262_nonbinary_target_repeated_stats.md; docs/stage263_nonbinary_profile_attribution.md
+secret_handling,no_secret_stored,"Runtime secret, if used, is supplied via environment and scrubbed from logs.",Commit credentials or secret-bearing command lines.,repro/stage266_current_head_nonbinary_native_counter/proof_gate.csv

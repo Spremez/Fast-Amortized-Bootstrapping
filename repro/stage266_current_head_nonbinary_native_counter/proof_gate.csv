@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_stage265_precondition,PASS,stage265 proof,present,repro/stage265_current_head_counter_reuse_audit/proof_gate.csv,Stage266 follows Stage265 refresh-required decision.
+G2_local_probe,RECORDED,local_perf,missing,repro/stage266_current_head_nonbinary_native_counter/local_probe.log,Current WSL probe records whether local hardware counters are usable.
+G3_remote_auth_probe,RECORDED,remote_batch_auth,auth_required,repro/stage266_current_head_nonbinary_native_counter/batch_ssh_probe.log,Batch auth probe uses no stored secret.
+G4_runtime_secret_policy,PASS_NO_SECRET_STORED,runtime_secret,not_provided,environment_only,Remote execution uses runtime env only; no secret is committed.
+G5_native_results,HANDOFF_ONLY,run_rows/counter_rows,0/0,repro/stage266_current_head_nonbinary_native_counter/run_metrics.csv; repro/stage266_current_head_nonbinary_native_counter/counter_metrics.csv,Native results are required before hardware-counter claims can be upgraded.
+G6_decision,PASS_STAGE266_NATIVE_COUNTER_HANDOFF_READY_AUTH_REQUIRED,stage decision,PASS_STAGE266_NATIVE_COUNTER_HANDOFF_READY_AUTH_REQUIRED,repro/stage266_current_head_nonbinary_native_counter/proof_gate.csv,Stage266 either records native counters or a reproducible handoff gate.
