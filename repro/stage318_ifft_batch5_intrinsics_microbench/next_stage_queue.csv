@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage319_handwritten_ifft_batch5_tile32_asm_or_close_backend,FAIL_STAGE318_INTRINSIC_BATCH5_CORRECT_BUT_SLOW_BLOCK_SAB_INTEGRATION,Either implement a hand-written SPQLIOS AVX512 tile3+tile2 ifft_batch5 assembly microbench or close the backend IFFT direction.,bit-identical rows and >= 0.107769 isolated IFFT reduction before any SAB integration

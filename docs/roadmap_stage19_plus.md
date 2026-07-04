@@ -7153,3 +7153,10 @@ Status: `PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH`.
 Goal: select or reject a concrete backend skeleton before implementation.
 
 Status: `PASS_STAGE317_IFFT_BATCH5_TILE32_SKELETON_STAGE318_MICRO_REQUIRED`.
+<!-- stage318-ifft-batch5-intrinsics-roadmap -->
+## Stage 318: IFFT Batch5 Intrinsics Microbench
+
+Goal: test the Stage317 tile3+tile2 candidate as an isolated AVX512 intrinsics
+implementation.
+
+Status: `FAIL_STAGE318_INTRINSIC_BATCH5_CORRECT_BUT_SLOW_BLOCK_SAB_INTEGRATION`.

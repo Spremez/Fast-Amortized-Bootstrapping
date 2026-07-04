@@ -1,0 +1,2 @@
+decision,samples,max_bit_mismatches,max_abs,mean_speedup,min_speedup,max_speedup,mean_reduction,required_reduction,next_stage
+FAIL_STAGE318_INTRINSIC_BATCH5_CORRECT_BUT_SLOW_BLOCK_SAB_INTEGRATION,3,0,0,0.657067,0.574557,0.707941,-0.535009,0.107769,stage319_handwritten_ifft_batch5_tile32_asm_or_close_backend

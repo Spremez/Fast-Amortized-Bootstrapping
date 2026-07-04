@@ -4219,3 +4219,16 @@ H317_spqlios_ifft_batch5_tile32:
   conclusion: >
     Stage317 admits only a tile3+tile2 isolated batch5 IFFT skeleton for
     Stage318 measurement; it makes no complete-SAB speed claim.
+H318_ifft_batch5_intrinsics_microbench:
+H318_ifft_batch5_intrinsics_microbench:
+  status: FAIL_STAGE318_INTRINSIC_BATCH5_CORRECT_BUT_SLOW_BLOCK_SAB_INTEGRATION
+  primary_metric: isolated_ifft_component_reduction
+  evidence:
+    - repro/stage318_ifft_batch5_intrinsics_microbench/stage318_summary.csv
+    - repro/stage318_ifft_batch5_intrinsics_microbench/bench_runs.csv
+    - repro/stage318_ifft_batch5_intrinsics_microbench/equivalence.csv
+    - repro/stage318_ifft_batch5_intrinsics_microbench/asm_audit.csv
+  conclusion: >
+    The intrinsics implementation is bit-identical but slower than the
+    existing hand-written scalar-row SPQLIOS AVX512 IFFT, so it is not
+    integrated into MAT/SAB.

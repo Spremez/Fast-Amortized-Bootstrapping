@@ -1,0 +1,2 @@
+artifact,line_count,rsp_or_rbp_refs,high_zmm16_31_refs,vzeroall_refs,vzeroupper_refs,call_refs,interpretation
+repro/stage318_ifft_batch5_intrinsics_microbench/ifft_batch5_tile32_objdump.txt,492,37,0,1,1,0,"Compiler-generated intrinsics code is long, uses stack loop state, and does not use zmm16-zmm31; hand assembly remains required for the Stage317 tile32 model."

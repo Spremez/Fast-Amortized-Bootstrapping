@@ -4,7 +4,7 @@
 #include <sab_profile.h>
 #include <inttypes.h>
 #include <string.h>
-#if defined(MAT_TRGSW_IFFT_ROWS_BENCH) && defined(USE_SPQLIOS) && !defined(TORUS32)
+#if (defined(MAT_TRGSW_IFFT_ROWS_BENCH) || defined(MAT_TRGSW_IFFT_BATCH5_BENCH)) && defined(USE_SPQLIOS) && !defined(TORUS32)
 #include "src/mosfhet/src/fft/spqlios/spqlios-fft.h"
 extern __thread FFT_Processor_Spqlios fft_proc[32];
 #endif
@@ -5606,9 +5606,173 @@ void test_mat_trgsw_ifft_rows_bench(){
 #endif
 #endif
 
+#if defined(MAT_TRGSW_IFFT_BATCH5_BENCH)
+#ifndef MAT_TRGSW_IFFT_BATCH5_BENCH_N
+#define MAT_TRGSW_IFFT_BATCH5_BENCH_N 2048
+#endif
+#ifndef MAT_TRGSW_IFFT_BATCH5_BENCH_REPS
+#define MAT_TRGSW_IFFT_BATCH5_BENCH_REPS 5000
+#endif
+
+#if defined(USE_SPQLIOS) && defined(AVX512_OPT) && !defined(TORUS32)
+static void fill_ifft_batch5_seed_rows(DFT_Polynomial * seed, int N){
+  for (size_t row = 0; row < 5; row++){
+    for (size_t idx = 0; idx < (size_t) N; idx++){
+      uint64_t x = ((uint64_t) (row + 19) * 11400714819323198485ULL) ^
+          ((uint64_t) (idx + 23) * 14029467366897019727ULL);
+      seed[row]->coeffs[idx] = (double) ((int64_t) (x & 4095ULL) - 2048);
+    }
+  }
+}
+
+static void copy_ifft_batch5_rows(DFT_Polynomial * dst,
+    DFT_Polynomial * src, int N){
+  for (size_t row = 0; row < 5; row++){
+    memcpy(dst[row]->coeffs, src[row]->coeffs, sizeof(double) * (size_t) N);
+  }
+}
+
+static void run_scalar_ifft5(void *tables, DFT_Polynomial * rows){
+  for (size_t row = 0; row < 5; row++){
+    ifft(tables, rows[row]->coeffs);
+  }
+}
+
+static void run_batch5_tile32(void *tables, DFT_Polynomial * rows){
+  ifft_batch5_tile32(tables, rows[0]->coeffs, rows[1]->coeffs,
+      rows[2]->coeffs, rows[3]->coeffs, rows[4]->coeffs);
+}
+
+static uint64_t count_ifft_batch5_bit_mismatches(DFT_Polynomial * lhs,
+    DFT_Polynomial * rhs, int N, double * max_abs){
+  uint64_t mismatches = 0;
+  double local_max_abs = 0.0;
+  for (size_t row = 0; row < 5; row++){
+    for (size_t idx = 0; idx < (size_t) N; idx++){
+      uint64_t lhs_bits;
+      uint64_t rhs_bits;
+      memcpy(&lhs_bits, &lhs[row]->coeffs[idx], sizeof(lhs_bits));
+      memcpy(&rhs_bits, &rhs[row]->coeffs[idx], sizeof(rhs_bits));
+      if(lhs_bits != rhs_bits){
+        mismatches++;
+      }
+      const double diff = fabs(lhs[row]->coeffs[idx] - rhs[row]->coeffs[idx]);
+      if(diff > local_max_abs){
+        local_max_abs = diff;
+      }
+    }
+  }
+  *max_abs = local_max_abs;
+  return mismatches;
+}
+
+void test_mat_trgsw_ifft_batch5_bench(){
+  const int N = MAT_TRGSW_IFFT_BATCH5_BENCH_N;
+  const uint64_t reps = MAT_TRGSW_IFFT_BATCH5_BENCH_REPS;
+  if(N <= 0 || reps == 0){
+    printf("MAT_IFFT_BATCH5 invalid config N=%d reps=%" PRIu64 "\n", N, reps);
+    exit(1);
+  }
+
+  DFT_Polynomial * seed = polynomial_new_array_of_polynomials_DFT(N, 5);
+  DFT_Polynomial * scalar = polynomial_new_array_of_polynomials_DFT(N, 5);
+  DFT_Polynomial * batch = polynomial_new_array_of_polynomials_DFT(N, 5);
+  fill_ifft_batch5_seed_rows(seed, N);
+  init_fft(N);
+  FFT_Processor_Spqlios proc = fft_proc[N >> 10];
+  void *tables = proc->tables_reverse;
+
+  copy_ifft_batch5_rows(scalar, seed, N);
+  run_scalar_ifft5(tables, scalar);
+  copy_ifft_batch5_rows(batch, seed, N);
+  run_batch5_tile32(tables, batch);
+
+  double max_abs = 0.0;
+  const uint64_t mismatches =
+      count_ifft_batch5_bit_mismatches(scalar, batch, N, &max_abs);
+  printf("MAT_IFFT_BATCH5 equivalence rows=5 N=%d"
+         " bit_mismatches=%" PRIu64 " max_abs=%.17g\n",
+         N, mismatches, max_abs);
+  if(mismatches != 0){
+    exit(1);
+  }
+
+  for (size_t warm = 0; warm < 10; warm++){
+    copy_ifft_batch5_rows(scalar, seed, N);
+    run_scalar_ifft5(tables, scalar);
+    copy_ifft_batch5_rows(batch, seed, N);
+    run_batch5_tile32(tables, batch);
+  }
+
+  uint64_t copy_total_us = 0;
+  volatile double copy_sink = 0.0;
+  for (size_t rep = 0; rep < (size_t) reps; rep++){
+    const uint64_t start = get_time();
+    copy_ifft_batch5_rows(batch, seed, N);
+    copy_total_us += get_time() - start;
+    copy_sink += batch[rep % 5]->coeffs[rep % (size_t) N];
+  }
+
+  uint64_t scalar_total_us = 0;
+  volatile double scalar_sink = 0.0;
+  for (size_t rep = 0; rep < (size_t) reps; rep++){
+    const uint64_t start = get_time();
+    copy_ifft_batch5_rows(scalar, seed, N);
+    run_scalar_ifft5(tables, scalar);
+    scalar_total_us += get_time() - start;
+    scalar_sink += scalar[rep % 5]->coeffs[rep % (size_t) N];
+  }
+
+  uint64_t batch_total_us = 0;
+  volatile double batch_sink = 0.0;
+  for (size_t rep = 0; rep < (size_t) reps; rep++){
+    const uint64_t start = get_time();
+    copy_ifft_batch5_rows(batch, seed, N);
+    run_batch5_tile32(tables, batch);
+    batch_total_us += get_time() - start;
+    batch_sink += batch[rep % 5]->coeffs[rep % (size_t) N];
+  }
+
+  const uint64_t scalar_ifft_us =
+      scalar_total_us > copy_total_us ? scalar_total_us - copy_total_us : 0;
+  const uint64_t batch_ifft_us =
+      batch_total_us > copy_total_us ? batch_total_us - copy_total_us : 0;
+  const double scalar_avg_us = ((double) scalar_ifft_us) / ((double) reps);
+  const double batch_avg_us = ((double) batch_ifft_us) / ((double) reps);
+  const double speedup = batch_avg_us > 0.0 ? scalar_avg_us / batch_avg_us : 0.0;
+  const double reduction =
+      scalar_avg_us > 0.0 ? 1.0 - (batch_avg_us / scalar_avg_us) : 0.0;
+
+  printf("MAT_IFFT_BATCH5 bench rows=5 N=%d reps=%" PRIu64
+         " copy_avg_us=%.3f scalar_ifft_est_avg_us=%.3f"
+         " batch_ifft_est_avg_us=%.3f speedup=%.6f reduction=%.6f"
+         " checksum=%.17g\n",
+         N, reps, ((double) copy_total_us) / ((double) reps),
+         scalar_avg_us, batch_avg_us, speedup, reduction,
+         (double) (copy_sink + scalar_sink + batch_sink));
+
+  for (size_t row = 0; row < 5; row++){
+    free_DFT_polynomial(batch[row]);
+    free_DFT_polynomial(scalar[row]);
+    free_DFT_polynomial(seed[row]);
+  }
+  free(batch);
+  free(scalar);
+  free(seed);
+}
+#else
+void test_mat_trgsw_ifft_batch5_bench(){
+  printf("MAT_IFFT_BATCH5 unsupported backend: requires spqlios_avx512 without TORUS32\n");
+  exit(1);
+}
+#endif
+#endif
+
 int main(int argc, char const *argv[])
 {
-#if defined(MAT_TRGSW_IFFT_ROWS_BENCH)
+#if defined(MAT_TRGSW_IFFT_BATCH5_BENCH)
+  test_mat_trgsw_ifft_batch5_bench();
+#elif defined(MAT_TRGSW_IFFT_ROWS_BENCH)
   test_mat_trgsw_ifft_rows_bench();
 #elif defined(MAT_TRGSW_SUB_DFT_BENCH)
   test_mat_trgsw_sub_dft_bench();

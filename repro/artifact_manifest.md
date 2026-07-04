@@ -3212,3 +3212,11 @@ Repro artifacts:
   - `experiments/stage317_ifft_batch5_tile32_plan.md`
   - `scripts/build_stage317_spqlios_ifft_batch5_skeleton.py`
   - `repro/stage317_spqlios_ifft_batch5_skeleton/`
+<!-- stage318-ifft-batch5-intrinsics-manifest -->
+- stage318_ifft_batch5_intrinsics_microbench:
+  - `docs/stage318_ifft_batch5_intrinsics_microbench.md`
+  - `theory_checks/stage318_ifft_batch5_intrinsics_gap.md`
+  - `algorithm_variants/mat_rlwe_sab_stage318_ifft_batch5_intrinsics.md`
+  - `experiments/stage318_ifft_batch5_intrinsics_plan.md`
+  - `scripts/build_stage318_ifft_batch5_intrinsics_report.py`
+  - `repro/stage318_ifft_batch5_intrinsics_microbench/`

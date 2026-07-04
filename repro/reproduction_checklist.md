@@ -474,3 +474,6 @@
 - [x] Stage316 records `PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH` and Stage317 isolated batch5 gate.
 <!-- stage317-spqlios-ifft-batch5-skeleton-checklist -->
 - [x] Stage317 records `PASS_STAGE317_IFFT_BATCH5_TILE32_SKELETON_STAGE318_MICRO_REQUIRED` and the Stage318 isolated gate.
+<!-- stage318-ifft-batch5-intrinsics-checklist -->
+- [x] Stage318 records `FAIL_STAGE318_INTRINSIC_BATCH5_CORRECT_BUT_SLOW_BLOCK_SAB_INTEGRATION` and blocks SAB integration for the
+  intrinsics candidate.

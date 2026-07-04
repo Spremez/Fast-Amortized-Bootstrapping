@@ -1150,3 +1150,9 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage317 SPQLIOS IFFT batch5 skeleton
 
 `PASS_STAGE317_IFFT_BATCH5_TILE32_SKELETON_STAGE318_MICRO_REQUIRED` rejects full5 no-spill fusion and selects tile3+tile2 as the isolated Stage318 candidate.
+<!-- stage318-ifft-batch5-intrinsics-microbench -->
+### Stage318 IFFT batch5 intrinsics microbench
+
+`FAIL_STAGE318_INTRINSIC_BATCH5_CORRECT_BUT_SLOW_BLOCK_SAB_INTEGRATION`: the isolated intrinsics batch5 IFFT is bit-identical but slower
+than five existing SPQLIOS AVX512 `ifft` calls, so SAB integration remains
+blocked.

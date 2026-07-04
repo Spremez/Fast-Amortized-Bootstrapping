@@ -1,0 +1,13 @@
+artifact,role
+repro/stage318_ifft_batch5_intrinsics_microbench/stage318_summary.csv,decision summary
+repro/stage318_ifft_batch5_intrinsics_microbench/bench_runs.csv,parsed repeated bench runs
+repro/stage318_ifft_batch5_intrinsics_microbench/equivalence.csv,bit-equivalence results
+repro/stage318_ifft_batch5_intrinsics_microbench/asm_audit.csv,assembly audit counters
+repro/stage318_ifft_batch5_intrinsics_microbench/proof_gate.csv,stage gate
+repro/stage318_ifft_batch5_intrinsics_microbench/next_stage_queue.csv,next-stage queue
+repro/stage318_ifft_batch5_intrinsics_microbench/batch5_run_5000_001.log,raw bench log
+repro/stage318_ifft_batch5_intrinsics_microbench/ifft_batch5_tile32_objdump.txt,raw objdump
+docs/stage318_ifft_batch5_intrinsics_microbench.md,human-readable stage report
+theory_checks/stage318_ifft_batch5_intrinsics_gap.md,theory gap note
+algorithm_variants/mat_rlwe_sab_stage318_ifft_batch5_intrinsics.md,algorithm variant card
+experiments/stage318_ifft_batch5_intrinsics_plan.md,next experiment plan

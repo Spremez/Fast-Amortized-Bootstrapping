@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_build,PASS,WSL spqlios_avx512 build,make succeeded,The isolated candidate is buildable on the Linux performance platform.
+G2_equivalence,PASS,max bit mismatches,0,Batch5 output is bit-identical to five existing IFFT calls.
+G3_performance,FAIL,mean isolated IFFT reduction vs required,-0.535009;0.107769,The intrinsics implementation is slower than the scalar assembly baseline.
+G4_no_sab_integration,PASS_BLOCKED,policy,no SAB hot path integration,The candidate is not promoted to MAT/SAB.
+G5_next,FAIL_STAGE318_INTRINSIC_BATCH5_CORRECT_BUT_SLOW_BLOCK_SAB_INTEGRATION,stage decision,stage319_handwritten_ifft_batch5_tile32_asm_or_close_backend,Only a hand-written tile32 assembly attempt remains admissible for this backend direction.

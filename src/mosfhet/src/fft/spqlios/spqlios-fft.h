@@ -22,6 +22,10 @@ void fft_model(const void *tables);
 void ifft_model(void *tables);
 void fft(const void *tables, double *data);
 void ifft(const void *tables, double *data);
+#ifdef AVX512_OPT
+void ifft_batch5_tile32(const void *tables, double *row0, double *row1,
+    double *row2, double *row3, double *row4);
+#endif
 
 
 typedef struct _FFT_Processor_Spqlios {
