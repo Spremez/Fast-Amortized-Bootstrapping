@@ -1110,3 +1110,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage307 direct IFFT lifecycle split profile
 
 `PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED` records `ifft` as the dominant direct DFT subcomponent under profile-only instrumentation.
+<!-- stage308-spqlios-ifft-feasibility-audit -->
+### Stage308 SPQLIOS IFFT feasibility audit
+
+`FAIL_STAGE308_IFFT_FEASIBILITY_AUDIT_INCOMPLETE` routes near-term work to digit-to-double AVX512 and reserves batched IFFT for backend-level research.

@@ -7103,3 +7103,8 @@ Status: `PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED`.
 Goal: split the direct sub-DTF materialization profile into digit-to-double and reverse-FFT subcomponents.
 
 Status: `PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED`.
+## Stage 308: SPQLIOS IFFT Feasibility Audit
+
+Goal: decide whether Stage307's IFFT residual has a low-risk existing batching route or must become backend work.
+
+Status: `FAIL_STAGE308_IFFT_FEASIBILITY_AUDIT_INCOMPLETE`.

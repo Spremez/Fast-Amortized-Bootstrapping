@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_stage307_input,PASS,Stage307 decision,PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED,Stage308 must be grounded in the direct lifecycle split.
+G2_no_existing_batch_ifft_api,PASS,source search,absent,No low-risk batch IFFT call can be wired directly.
+G3_existing_wrappers_filtered,PASS,Stage289/290,NEUTRAL_STAGE289_DFT_ARRAY_WRAPPER_NO_PROMOTION;NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION,Previously tested DFT wrappers should not be repeated.
+G4_digit_substantial,PASS,digit share,0.481687,A local digit materialization candidate is justified even though ifft is slightly larger.
+G5_claim_boundary,PASS,scope,route audit,Stage308 is not a performance or novelty claim.
+G6_decision,PASS_STAGE308_IFFT_BACKEND_LOWLEVEL_REQUIRED_DIGIT_PATH_NEXT,stage decision,PASS_STAGE308_IFFT_BACKEND_LOWLEVEL_REQUIRED_DIGIT_PATH_NEXT,Controls Stage309/310 split between local C optimization and backend FFT research.

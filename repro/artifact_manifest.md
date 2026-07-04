@@ -3137,3 +3137,10 @@ Repro artifacts:
   - `scripts/run_stage307_direct_ifft_lifecycle_split_profile.sh`
   - `scripts/build_stage307_direct_ifft_lifecycle_split_profile.py`
   - `repro/stage307_direct_ifft_lifecycle_split_profile/`
+- stage308_spqlios_ifft_feasibility_audit:
+  - `docs/stage308_spqlios_ifft_feasibility_audit.md`
+  - `theory_checks/stage308_spqlios_ifft_feasibility_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage308_ifft_digit_routes.md`
+  - `experiments/stage308_spqlios_ifft_feasibility_audit_plan.md`
+  - `scripts/build_stage308_spqlios_ifft_feasibility_audit.py`
+  - `repro/stage308_spqlios_ifft_feasibility_audit/`

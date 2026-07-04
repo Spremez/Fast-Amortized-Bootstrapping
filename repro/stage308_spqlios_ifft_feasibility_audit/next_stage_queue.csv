@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage309_digit_to_double_avx512_candidate,PASS_STAGE308_IFFT_BACKEND_LOWLEVEL_REQUIRED_DIGIT_PATH_NEXT,Implement an opt-in r=4 row-batched or constant-hoisted digit materialization candidate; verify phase/correctness and Stage307-style digit_us reduction.,Mark neutral and keep current direct-DFT path.
+P1,stage310_spqlios_batched_ifft_design,backend effort approved or Stage309 neutral,Design a real batch IFFT API/model and isolated correctness/performance test before touching SAB.,Keep SPQLIOS single-row ifft and report backend limit.

@@ -1,0 +1,4 @@
+route,priority,evidence,risk,gate
+stage309_digit_to_double_avx512_candidate,P0,digit share 0.481687; local `_mm512_cvtepi64_pd` path,medium,profile flag shows lower digit_us; correctness passes; full SAB A/B required before promotion
+stage310_spqlios_batched_ifft_design,P1,ifft share 0.504577; no existing batch API,high,"new API/model/assembly or C fallback, isolated FFT correctness, then complete-SAB A/B"
+dense_mat_avx512_rewrite,defer,Stage301/302 counters and Stage305/307 route do not select dense as the current residual target,medium,return only after DFT lifecycle stops dominating

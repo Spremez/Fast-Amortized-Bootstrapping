@@ -4107,3 +4107,15 @@ H307_direct_ifft_lifecycle_split_profile:
     Stage307 separates the direct sub-DTF DFT residual into digit-to-double and
     ifft subcomponents. It is profile-only and routes the next implementation
     target without creating a new full-SAB speed claim.
+H308_spqlios_ifft_feasibility_audit:
+  status: FAIL_STAGE308_IFFT_FEASIBILITY_AUDIT_INCOMPLETE
+  primary_metric: source_interface_audit_plus_stage307_profile
+  evidence:
+    - repro/stage308_spqlios_ifft_feasibility_audit/stage308_summary.csv
+    - repro/stage308_spqlios_ifft_feasibility_audit/source_interface_audit.csv
+    - repro/stage308_spqlios_ifft_feasibility_audit/implementation_route_matrix.csv
+    - repro/stage308_spqlios_ifft_feasibility_audit/proof_gate.csv
+  conclusion: >
+    Stage308 finds no existing low-risk batch IFFT interface. The next local
+    implementation target is digit-to-double AVX512 materialization; true IFFT
+    batching remains a separate backend research track.

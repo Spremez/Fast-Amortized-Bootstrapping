@@ -454,3 +454,5 @@
 - [x] Stage306 records `PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED` and routes Stage307 to direct-path lifecycle split profiling.
 <!-- stage307-direct-ifft-lifecycle-split-profile-checklist -->
 - [x] Stage307 records `PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED` and routes Stage308 to `ifft`.
+<!-- stage308-spqlios-ifft-feasibility-audit-checklist -->
+- [x] Stage308 records `FAIL_STAGE308_IFFT_FEASIBILITY_AUDIT_INCOMPLETE` and routes Stage309/310.

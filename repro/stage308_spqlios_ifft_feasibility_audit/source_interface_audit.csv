@@ -1,0 +1,6 @@
+source,evidence,status,location,interpretation
+src/mosfhet/src/fft/spqlios/spqlios-fft.h,ifft signature,SINGLE_BUFFER_API,src/mosfhet/src/fft/spqlios/spqlios-fft.h:24,The public SPQLIOS API exposes one input/output buffer per call.
+spqlios source set,batch ifft API search,ABSENT,"regex ifft_(array|batch|many), batch_*ifft, ifft*rows",No ready batch reverse-FFT API is available for a low-risk C-level optimization.
+src/mosfhet/src/polynomial.c,polynomial_torus_to_DFT_array,PER_ROW_IFFT_LOOP,src/mosfhet/src/polynomial.c:435,"The existing multi-row wrapper still calls `ifft` once per row, matching Stage289/290 neutral outcomes."
+src/mosfhet/src/fft/spqlios/spqlios-ifft-avx512.s,assembly entry,SINGLE_DATA_POINTER_ENTRY,src/mosfhet/src/fft/spqlios/spqlios-ifft-avx512.s:18,The AVX512 assembly entry takes one real-data pointer; batching would be a backend ABI/assembly project.
+src/mosfhet/src/mattrgsw.c,digit-to-double AVX512 path,LOCAL_C_AVX512_CANDIDATE,src/mosfhet/src/mattrgsw.c:979,Digit materialization is local to this project and can be specialized without changing SPQLIOS ABI.
