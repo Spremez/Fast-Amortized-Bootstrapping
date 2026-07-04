@@ -2923,3 +2923,7 @@ Repro artifacts:
   - `docs/stage266_current_head_nonbinary_native_counter.md`
   - `scripts/build_stage266_current_head_nonbinary_native_counter.py`
   - `repro/stage266_current_head_nonbinary_native_counter/`
+- stage267_local_split_projection:
+  - `docs/stage267_local_split_projection.md`
+  - `scripts/build_stage267_local_split_projection.py`
+  - `repro/stage267_local_split_projection/`

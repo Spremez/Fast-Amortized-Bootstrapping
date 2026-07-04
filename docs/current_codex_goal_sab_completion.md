@@ -883,3 +883,8 @@ counter claims.
 If native counters are not recorded, stronger hardware-counter claims remain
 blocked and the next executable path is local split projection or a runtime
 remote execution rerun.
+### Stage267 local split projection
+
+`PASS_STAGE267_LOCAL_SPLIT_PROJECTION_SELECT_STAGE268_BACKEND_SMOKE` records a local profile-based projection after Stage266 handoff.
+It selects Stage268 backend FromDFT-add non-binary smoke using an existing
+explicit flag; it does not upgrade performance or hardware-counter claims.

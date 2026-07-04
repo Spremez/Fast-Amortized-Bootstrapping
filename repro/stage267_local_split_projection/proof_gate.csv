@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs,PASS,Stage263 profile and Stage266 handoff,profile_rows=4,repro/stage263_nonbinary_profile_attribution/profile_metrics.csv; repro/stage266_current_head_nonbinary_native_counter/proof_gate.csv,Projection starts from current profile and no-native-counter boundary.
+G2_materialization_share,PASS,r4 materialization_lifecycle share_pvw_max,0.460938,component_aggregate.csv,from_DFT+add+sub is large enough to screen an existing backend materialization flag.
+G3_mat_ep_share,PASS,r4 mat_ep share_pvw_max,0.414869,component_aggregate.csv,MAT EP remains important but source-only AVX tuning needs native counters or a new mechanism.
+G4_candidate_selection,selected,selected candidate,stage268_nonbinary_backend_from_dft_add_smoke,candidate_selection.csv,Select an existing explicit flag before writing new hot-path code.
+G5_claim_boundary,PASS_PROJECTION_ONLY,no speedup claim,projection_not_measurement,claim_boundary.csv,Stage267 does not itself prove performance.
+G6_decision,PASS_STAGE267_LOCAL_SPLIT_PROJECTION_SELECT_STAGE268_BACKEND_SMOKE,stage decision,PASS_STAGE267_LOCAL_SPLIT_PROJECTION_SELECT_STAGE268_BACKEND_SMOKE,proof_gate.csv,Proceed to bounded Stage268 smoke only.

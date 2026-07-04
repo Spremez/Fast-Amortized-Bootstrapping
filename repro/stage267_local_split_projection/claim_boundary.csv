@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+component_priority,supported_projection,Current profile selects materialization_lifecycle as the first local smoke candidate.,Projection proves the candidate is faster.,component_aggregate.csv; amdahl_projection.csv
+hardware_counter_attribution,not_supported,Stage266 remains handoff-only without native counters.,Stage267 supplies native load/store/FMA attribution.,docs/stage266_current_head_nonbinary_native_counter.md
+stage268_code_policy,no_new_hotpath_code,Stage268 may test an existing explicit flag.,Implement a new MAT/SAB hot-path variant before the smoke gate.,source_capability.csv; candidate_selection.csv

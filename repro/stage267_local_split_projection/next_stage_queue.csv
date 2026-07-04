@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,status,failure_action
+P0,stage268_nonbinary_backend_from_dft_add_smoke,Stage267 selected existing explicit backend FromDFT-add flag.,r=4 include-zero/ternary correctness and one-run T_bootstrap/r backend-vs-default smoke.,selected,Record neutral/negative; no promotion.
+P1,stage268_repeated_noise_resource,Only if Stage268 smoke is positive for both modes.,"repeated T_bootstrap/r, final noise/resource, same backend.",conditional,Do not claim full SAB speedup from smoke.

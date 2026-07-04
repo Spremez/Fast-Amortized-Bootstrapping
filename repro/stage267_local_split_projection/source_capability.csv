@@ -1,0 +1,6 @@
+check,status,needle,interpretation
+backend_from_dft_add_flag,PASS,SAB_PVW_BACKEND_FROM_DFT_ADD,Existing explicit flag can be tested without new hot-path code.
+backend_flag_enables_fused_wrapper,PASS,FLAGS += -DSAB_PVW_FUSED_FROM_DFT_ADD,Existing explicit flag can be tested without new hot-path code.
+pvw_cmux_uses_from_dft_add,PASS,pvmtmlwe_from_DFT_add,Existing explicit flag can be tested without new hot-path code.
+backend_impl_guard,PASS,#ifdef SAB_PVW_BACKEND_FROM_DFT_ADD,Existing explicit flag can be tested without new hot-path code.
+nonbinary_bench_flag,PASS,SAB_PVW_NONBINARY_BENCH,Existing explicit flag can be tested without new hot-path code.

@@ -376,3 +376,4 @@
 - [ ] Run native/perf-backed MAT-AVX512 retired load/store/FMA attribution before any theoretical-optimality claim
 - [x] Stage265 current-head counter reuse audit records `PASS_STAGE265_CURRENT_HEAD_COUNTER_REUSE_AUDIT_REFRESH_REQUIRED` and selects fresh current-head non-binary native-counter attribution as the next executable route.
 - [x] Stage266 current-head non-binary native counter handoff records `PASS_STAGE266_NATIVE_COUNTER_HANDOFF_READY_AUTH_REQUIRED`.
+- [x] Stage267 local split projection records `PASS_STAGE267_LOCAL_SPLIT_PROJECTION_SELECT_STAGE268_BACKEND_SMOKE` and selects bounded Stage268 backend FromDFT-add smoke.
