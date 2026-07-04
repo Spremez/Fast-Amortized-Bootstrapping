@@ -2800,3 +2800,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage246_broader_algorithm_gate.md`
   - `scripts/build_stage246_broader_algorithm_admission_gate.py`
   - `repro/stage246_broader_algorithm_admission_gate/`
+- stage248_structured_compact_finite_probe:
+  - `docs/stage248_structured_compact_finite_probe.md`
+  - `experiments/stage248_structured_compact_finite_probe_plan.md`
+  - `theory_checks/stage248_structured_compact_finite_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage248_structured_compact_finite_probe.md`
+  - `scripts/build_stage248_structured_compact_finite_probe.py`
+  - `repro/stage248_structured_compact_finite_probe/`

@@ -761,3 +761,9 @@ remain incomplete.
 The active goal remains open because structured compact proof prototypes,
 non-binary selector semantics, lower-bound optimality, and final bibliography
 closure remain incomplete.
+### Stage248 structured compact finite probe
+
+`FAIL_STAGE248_STRUCTURED_COMPACT_PROBE` records a proof-prototype pass for constrained compact algebra.
+The active goal remains open because security/distribution proof, ring-level
+noise, complete-SAB implementation, non-binary support, lower-bound optimality,
+and final citation closure remain incomplete.

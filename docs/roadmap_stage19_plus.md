@@ -6778,3 +6778,19 @@ claim is promoted. Generic compact is rejected under existing counterexamples;
 structured compact is admitted only to a finite/proof prototype; non-binary
 PVW remains blocked until selector semantics are defined.
 ```
+## Stage 248: Structured Compact Finite Probe
+
+Goal:
+
+```text
+Run the Stage246 structured compact proof prototype in a finite r=2 model.
+```
+
+Status:
+
+```text
+Generated from input head `74aaee0` with `FAIL_STAGE248_STRUCTURED_COMPACT_PROBE`. The off-lane-zero
+structured compact algebra and toy noise probes pass, but selector
+distribution, keygen security, ring-level noise, and complete-SAB value remain
+blocked. No production compact SAB implementation is admitted.
+```

@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs,PASS,required inputs,all present,repro/stage248_structured_compact_finite_probe/input_status.csv,Stage248 starts from Stage246 admission and prior compact counterexamples.
+G2_structured_algebra_positive,PASS,structured off-lane-zero mismatches,0 for all seeds,repro/stage248_structured_compact_finite_probe/structured_matrix_probe.csv,Compact omission is algebraically exact for the constrained off-lane-zero class.
+G3_negative_controls,PASS_COUNTEREXAMPLES,random/single-offlane dense mismatches,positive mismatches,repro/stage248_structured_compact_finite_probe/structured_matrix_probe.csv,The probe still rejects generic dense selectors and single off-lane nonzero terms.
+G4_toy_noise,PASS_TOY_ONLY,toy bound equivalence/counterexample,structured equal; random dense differs,repro/stage248_structured_compact_finite_probe/toy_noise_probe.csv,Toy noise follows algebraic structure only; ring-level SAB noise remains open.
+G5_security_boundary,PASS_SECURITY_BLOCKED_RECORDED,production permissions,all no,repro/stage248_structured_compact_finite_probe/security_gap_matrix.csv,Algebra pass does not permit production compact SAB implementation.
+G6_stage248_decision,PASS_STAGE248_STRUCTURED_COMPACT_FINITE_ALGEBRA_PASS_SECURITY_BLOCKED,decision,PASS_STAGE248_STRUCTURED_COMPACT_FINITE_ALGEBRA_PASS_SECURITY_BLOCKED,repro/stage248_structured_compact_finite_probe/proof_gate.csv,Proceed to distribution/security preflight; no hot-path SAB edits yet.

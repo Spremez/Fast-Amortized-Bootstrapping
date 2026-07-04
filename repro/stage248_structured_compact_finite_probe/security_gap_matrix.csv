@@ -1,0 +1,5 @@
+gap_id,topic,current_status,gap,required_next_evidence,production_permission
+SEC248-1,selector_distribution,blocked,Off-lane-zero public pattern may distinguish the structured selector distribution.,"hybrid or simulation argument, or dummy/padding scheme with semantic-zero proof",no
+SEC248-2,keygen_security,blocked,No proof that constrained selector/keygen preserves the original security assumptions.,formal key distribution and reduction/simulation argument,no
+SEC248-3,noise_recurrence,toy_only,Toy coefficient bound equality is not a ring-LWE noise proof under SAB rotations and CMUX schedule.,ring-level noise recurrence plus multi-seed full-SAB noise if implemented,no
+SEC248-4,complete_sab_value,unmeasured,Term-count reduction is not complete-SAB T_bootstrap/r improvement.,"after proof gates, implement behind flag and run same-backend complete-SAB A/B",no

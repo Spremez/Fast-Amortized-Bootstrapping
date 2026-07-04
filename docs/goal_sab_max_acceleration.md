@@ -1173,3 +1173,7 @@ sources as explicit TODOs instead of fabricating references.
   selected-binary PVW/MAT-SAB remains the supported baseline, while generic
   compact and non-binary claims are not promoted. The next executable route is
   a structured-compact proof prototype, not production SAB integration.
+- Stage248 structured compact finite probe records `FAIL_STAGE248_STRUCTURED_COMPACT_PROBE`: the constrained
+  off-lane-zero compact algebra passes finite r=2 positive and negative
+  controls, but the route remains blocked before production SAB integration by
+  distribution/security/ring-noise/full-SAB value gates.

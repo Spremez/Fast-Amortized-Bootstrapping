@@ -3451,3 +3451,17 @@ H10_stage246_broader_algorithm_admission_gate:
     shared-output MAT under existing counterexamples, blocks non-binary PVW
     until selector semantics are defined, and admits only a structured compact
     keygen/noise proof prototype as the next executable route.
+H10_stage248_structured_compact_finite_probe:
+  status: structured_compact_algebra_pass_security_blocked
+  evidence:
+    - repro/stage248_structured_compact_finite_probe/structured_matrix_probe.csv
+    - repro/stage248_structured_compact_finite_probe/toy_noise_probe.csv
+    - repro/stage248_structured_compact_finite_probe/security_gap_matrix.csv
+    - repro/stage248_structured_compact_finite_probe/proof_gate.csv
+    - docs/stage248_structured_compact_finite_probe.md
+  conclusion: >
+    Stage248 records FAIL_STAGE248_STRUCTURED_COMPACT_PROBE. A finite r=2 off-lane-zero structured compact
+    algebra probe passes positive and negative controls, and the toy noise
+    bound mirrors the algebraic result. The route remains proof-only because
+    selector distribution, keygen security, ring-level noise, and complete-SAB
+    value are not proven.

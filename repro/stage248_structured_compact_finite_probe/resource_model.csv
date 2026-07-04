@@ -1,0 +1,3 @@
+row_id,r,state_size,dense_terms,compact_terms_if_offlane_zero,removed_terms,dense_over_compact,interpretation
+term_count,2,3,9,7,2,1.285714,Term saving is algebraic only; it is not a complete-SAB speedup or security proof.
+claim_boundary,2,3,9,7,2,1.285714,Any real value must survive keygen/security/noise and full-SAB T_bootstrap/r gates.
