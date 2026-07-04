@@ -1,0 +1,7 @@
+tool_or_signal,status,evidence,detail,claim_effect
+cpu_avx512_flags,PASS_AVX512_EXPOSED,raw/environment.log,11th Gen Intel(R) Core(TM) i7-11700 @ 2.50GHz,"AVX512 code paths can be built/run, but this is not a performance-counter claim."
+perf,MISSING,raw/perf_probe.log,bash: line 15: perf: command not found perf_rc=127 ,Hardware-counter-backed MAT-AVX512 optimality remains blocked if perf is missing.
+perf_event_paranoid,RECORDED,raw/environment.log,2,Permission context only; perf is absent in this WSL probe.
+objdump,AVAILABLE,raw/tool_probe.log; raw/mattrgsw_objdump.log,/usr/bin/objdump,"Assembly proxy can check expected AVX512/FMA presence, not retired counters."
+nm,AVAILABLE,raw/tool_probe.log; raw/mattrgsw_nm.log,/usr/bin/nm,Symbol-level dispatch audit available.
+build/mattrgsw.o,PRESENT,raw/tool_probe.log,present,Object-level proxy audit can be built from current artifact.

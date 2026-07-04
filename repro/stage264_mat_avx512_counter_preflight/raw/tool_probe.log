@@ -1,0 +1,6 @@
+objdump_path=/usr/bin/objdump
+nm_path=/usr/bin/nm
+awk_path=/usr/bin/awk
+python3_path=/usr/bin/python3
+mattrgsw_o=present
+-rwxrwxrwx 1 root root 144520 Jul  4 16:55 build/mattrgsw.o

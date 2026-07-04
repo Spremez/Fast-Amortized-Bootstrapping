@@ -1,0 +1,2 @@
+bash: line 15: perf: command not found
+perf_rc=127

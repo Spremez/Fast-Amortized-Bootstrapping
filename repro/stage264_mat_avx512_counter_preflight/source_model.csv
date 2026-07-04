@@ -1,0 +1,3 @@
+scope,r,m_rows_outputs,repeated_scalar_complex_products,dense_mat_complex_products,dense_mat_over_repeated_scalar,generic_vector_memory_ops,mat_aware_vector_memory_ops,predicted_memory_op_reduction,mat_aware_dec_vector_loads,mat_aware_selector_vector_loads,mat_aware_output_vector_stores,mat_aware_output_vector_loads,source_model_vmulpd_like_ops,source_model_fma_like_ops,interpretation
+"k=1,l=1,one_avx512_complex_coeff_block",2,3,8,9,1.125000,66,30,2.200000,6,18,6,0,6,30,r=2 is the easiest register-resident small-r case
+"k=1,l=1,one_avx512_complex_coeff_block",4,5,16,25,1.562500,190,70,2.714286,10,50,10,0,10,90,r=4 keeps a larger memory-op reduction but also has 25 dense MAT complex products versus 16 scalar-repeated products

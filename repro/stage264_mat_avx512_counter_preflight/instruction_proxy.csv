@@ -1,0 +1,3 @@
+scope,instruction_lines,zmm_lines,ymm_lines,xmm_lines,stack_memory_reference_lines,vmulpd,vfmadd_prefix,vfmsub_prefix,vfnmadd_prefix,vfnmsub_prefix,vmovapd,vmovupd,call,jmp,note
+mat_trgsw_mul_pvmtmlwe_DFT_from_dec_whole_dispatch_proxy,832,239,0,0,59,16,60,60,0,0,103,0,30,5,objdump proxy; static small-r helpers may be inlined into dispatch
+mat_trgsw_mul_pvmtmlwe_DFT_public_entry_proxy,85,0,0,0,5,0,0,0,0,0,0,0,8,1,objdump proxy; static small-r helpers may be inlined into dispatch

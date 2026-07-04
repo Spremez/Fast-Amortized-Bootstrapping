@@ -364,3 +364,13 @@
 - [x] Stage259 non-binary full SAB smoke
 
 - [x] Stage260 non-binary full SAB noise/resource
+
+- [x] Stage261 non-binary target `T_bootstrap/r` performance preflight
+
+- [x] Stage262 non-binary target repeated `T_bootstrap/r` statistics
+
+- [x] Stage263 non-binary target profile attribution
+
+- [x] Stage264 MAT-AVX512 counter/assembly preflight proxy-only audit
+
+- [ ] Run native/perf-backed MAT-AVX512 retired load/store/FMA attribution before any theoretical-optimality claim

@@ -3617,3 +3617,59 @@ H10_stage260_nonbinary_full_sab_noise_resource:
     Stage260 records PASS_STAGE260_NONBINARY_FULL_SAB_NOISE_RESOURCE. The explicit non-binary PVW/MAT full SAB path
     passes small include-zero and ternary r=1/2/4 multi-trial noise/resource
     gates. Target T_bootstrap/r speedup and paper-grade claims remain blocked.
+
+H10_stage261_nonbinary_target_perf_preflight:
+  status: target_t_bootstrap_over_r_preflight_passed_repeated_stats_required
+  evidence:
+    - repro/stage261_nonbinary_target_perf_preflight/bench_summary.csv
+    - repro/stage261_nonbinary_target_perf_preflight/proof_gate.csv
+    - docs/stage261_nonbinary_target_perf_preflight.md
+  conclusion: >
+    Stage261 records PASS_STAGE261_NONBINARY_TARGET_PER_BIT_PREFLIGHT. The explicit non-binary
+    PVW/MAT-SAB path passes target SET_2_3 include-zero and ternary full SAB
+    correctness for r=2/r=4 and reports same-backend T_bootstrap/r preflight
+    speedups. Because each row has one repetition, statistical and profile
+    claims remain blocked until Stage262+.
+
+H10_stage262_nonbinary_target_repeated_stats:
+  status: repeated_target_t_bootstrap_over_r_stats_passed_profile_required
+  evidence:
+    - repro/stage262_nonbinary_target_repeated_stats/bench_summary.csv
+    - repro/stage262_nonbinary_target_repeated_stats/proof_gate.csv
+    - docs/stage262_nonbinary_target_repeated_stats.md
+  conclusion: >
+    Stage262 records PASS_STAGE262_NONBINARY_TARGET_REPEATED_STATS. On WSL2/Linux
+    spqlios_avx512, target non-binary include-zero and ternary runs pass
+    complete SAB correctness for r=1/2/4. The r=1 negative control remains
+    near parity, while r=2 and r=4 show stable T_bootstrap/r improvement over
+    repeated scalar SAB. Native/paper-grade attribution remains blocked.
+
+H10_stage263_nonbinary_profile_attribution:
+  status: target_profile_attribution_passed_mat_ep_first_counter_target
+  evidence:
+    - repro/stage263_nonbinary_profile_attribution/profile_metrics.csv
+    - repro/stage263_nonbinary_profile_attribution/proof_gate.csv
+    - docs/stage263_nonbinary_profile_attribution.md
+  conclusion: >
+    Stage263 records PASS_STAGE263_NONBINARY_PROFILE_ATTRIBUTION. The target
+    non-binary profile preserves exact SAB schedule counts for r=2/r=4
+    include-zero and ternary: 573440 CMUX/MAT external products, 5080 NCMUX,
+    39 sub_a calls, and zero copyback calls. MAT EP is the largest single body
+    component but non-MAT body work remains large, so kernel-only evidence
+    cannot be presented as full SAB acceleration.
+
+H10_stage264_mat_avx512_counter_preflight:
+  status: mat_avx512_proxy_preflight_passed_native_counter_optimality_blocked
+  evidence:
+    - repro/stage264_mat_avx512_counter_preflight/source_model.csv
+    - repro/stage264_mat_avx512_counter_preflight/instruction_proxy.csv
+    - repro/stage264_mat_avx512_counter_preflight/proof_gate.csv
+    - docs/stage264_mat_avx512_counter_preflight.md
+  conclusion: >
+    Stage264 records PASS_STAGE264_MAT_AVX512_COUNTER_PREFLIGHT_PROXY_ONLY. The
+    source model supports a MAT-aware AVX512 memory-traffic advantage over a
+    generic single-poly style loop for k=1,l=1,r=2/4, and objdump proxy shows
+    AVX512/FMA instructions in the MAT dispatch object. However, perf is
+    missing in the current WSL probe, so hardware-counter-backed retired
+    load/store/FMA attribution and MAT-AVX512 theoretical-optimality wording
+    remain blocked.

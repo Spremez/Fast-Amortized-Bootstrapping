@@ -837,3 +837,36 @@ multi-seed, noise/resource, or performance evidence.
 active research goal remains open because target-parameter `T_bootstrap/r`,
 backend-fair performance, statistical intervals, and literature-backed paper
 claims are still missing.
+
+### Stage261 non-binary target performance preflight
+
+`PASS_STAGE261_NONBINARY_TARGET_PER_BIT_PREFLIGHT` records target SET_2_3
+include-zero and ternary full-SAB correctness plus one-run WSL2/Linux
+spqlios_avx512 `T_bootstrap/r` preflight for r=2/r=4. The active research goal
+remains open because one-run rows do not provide statistical or profile
+attribution evidence.
+
+### Stage262 non-binary target repeated statistics
+
+`PASS_STAGE262_NONBINARY_TARGET_REPEATED_STATS` records repeated WSL2/Linux
+spqlios_avx512 target `T_bootstrap/r` evidence for include-zero and ternary
+r=1/2/4. The r=1 negative control stays near parity, while r=2/r=4 show stable
+amortized improvement over repeated scalar SAB. Native/paper-grade
+performance attribution remains missing.
+
+### Stage263 non-binary profile attribution
+
+`PASS_STAGE263_NONBINARY_PROFILE_ATTRIBUTION` records target schedule/profile
+attribution for include-zero and ternary r=2/r=4. The expected 573440
+CMUX/MAT-EP calls, 5080 NCMUX calls, 39 sub_a calls, and zero copyback calls
+are preserved. MAT EP is the largest single measured body component, but
+non-MAT body work remains large, so kernel-only evidence cannot be presented
+as complete SAB acceleration.
+
+### Stage264 MAT-AVX512 counter preflight
+
+`PASS_STAGE264_MAT_AVX512_COUNTER_PREFLIGHT_PROXY_ONLY` records a proxy-only
+MAT-AVX512 audit. The source model supports the MAT-aware memory-traffic
+hypothesis and objdump confirms AVX512/FMA instructions in the MAT dispatch
+object, but current WSL lacks `perf`. Hardware-counter-backed load/store/FMA
+attribution and MAT-AVX512 theoretical-optimality wording remain blocked.

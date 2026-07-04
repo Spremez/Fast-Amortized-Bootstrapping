@@ -1,0 +1,16 @@
+path,bytes
+repro/stage264_mat_avx512_counter_preflight/artifact_index.csv,1015
+repro/stage264_mat_avx512_counter_preflight/claim_boundary.csv,1226
+repro/stage264_mat_avx512_counter_preflight/instruction_proxy.csv,483
+repro/stage264_mat_avx512_counter_preflight/proof_gate.csv,1421
+repro/stage264_mat_avx512_counter_preflight/reproduction_commands.md,789
+repro/stage264_mat_avx512_counter_preflight/source_model.csv,735
+repro/stage264_mat_avx512_counter_preflight/stage264_report.md,6523
+repro/stage264_mat_avx512_counter_preflight/symbol_matrix.csv,1124
+repro/stage264_mat_avx512_counter_preflight/tool_matrix.csv,889
+repro/stage264_mat_avx512_counter_preflight/raw/environment.log,1112
+repro/stage264_mat_avx512_counter_preflight/raw/mattrgsw_nm.log,1910
+repro/stage264_mat_avx512_counter_preflight/raw/mattrgsw_objdump.log,234739
+repro/stage264_mat_avx512_counter_preflight/raw/perf_probe.log,51
+repro/stage264_mat_avx512_counter_preflight/raw/tool_probe.log,181
+docs/stage264_mat_avx512_counter_preflight.md,6523

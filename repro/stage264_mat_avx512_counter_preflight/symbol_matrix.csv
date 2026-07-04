@@ -1,0 +1,10 @@
+check,pattern,source,status,interpretation
+public_mat_ep_entry,mat_trgsw_mul_pvmtmlwe_DFT,nm,PASS,entry/symbol reference found
+dispatch_from_dec,mat_trgsw_mul_pvmtmlwe_DFT_from_dec,nm,PASS,entry/symbol reference found
+generic_poly_mul_ref,polynomial_mul_DFT,nm,PASS,entry/symbol reference found
+generic_poly_addmul_ref,polynomial_mul_addto_DFT,nm,PASS,entry/symbol reference found
+r2_smallr_source,mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r2_avx512,source,PASS,r=2/r=4 source specializations are present; object symbols may be inlined
+r4_smallr_source,mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_avx512,source,PASS,r=2/r=4 source specializations are present; object symbols may be inlined
+r4_unrolled_experimental_source,mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_unrolled_avx512,source,PASS,r=2/r=4 source specializations are present; object symbols may be inlined
+smallr_dispatch_macro,MAT_TRGSW_AVX512_SMALLR_SPECIALIZED,source,PASS,r=2/r=4 source specializations are present; object symbols may be inlined
+r4_unrolled_flag,MAT_TRGSW_AVX512_R4_UNROLLED_ROWS,source,PASS,r=2/r=4 source specializations are present; object symbols may be inlined

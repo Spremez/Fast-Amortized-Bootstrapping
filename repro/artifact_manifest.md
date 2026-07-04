@@ -2895,3 +2895,23 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage260_nonbinary_full_sab_noise_resource.md`
   - `scripts/build_stage260_nonbinary_full_sab_noise_resource.py`
   - `repro/stage260_nonbinary_full_sab_noise_resource/`
+
+- stage261_nonbinary_target_perf_preflight:
+  - `docs/stage261_nonbinary_target_perf_preflight.md`
+  - `scripts/build_stage261_nonbinary_target_perf_preflight.py`
+  - `repro/stage261_nonbinary_target_perf_preflight/`
+
+- stage262_nonbinary_target_repeated_stats:
+  - `docs/stage262_nonbinary_target_repeated_stats.md`
+  - `scripts/build_stage262_nonbinary_target_repeated_stats.py`
+  - `repro/stage262_nonbinary_target_repeated_stats/`
+
+- stage263_nonbinary_profile_attribution:
+  - `docs/stage263_nonbinary_profile_attribution.md`
+  - `scripts/build_stage263_nonbinary_profile_attribution.py`
+  - `repro/stage263_nonbinary_profile_attribution/`
+
+- stage264_mat_avx512_counter_preflight:
+  - `docs/stage264_mat_avx512_counter_preflight.md`
+  - `scripts/build_stage264_mat_avx512_counter_preflight.py`
+  - `repro/stage264_mat_avx512_counter_preflight/`

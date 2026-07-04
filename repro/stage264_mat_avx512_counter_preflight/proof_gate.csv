@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_tooling,PASS_PROXY_TOOLS,objdump/nm availability,objdump=AVAILABLE; nm=AVAILABLE,tool_matrix.csv,Object-level assembly proxy can be generated.
+G2_native_perf,BLOCKED_PERF_MISSING,perf counter availability,bash: line 15: perf: command not found perf_rc=127 ,raw/perf_probe.log,No retired load/store/FMA counter claim is allowed from this environment.
+G3_source_memory_model,PASS,predicted MAT-aware memory-op reduction,2.200x..2.714x,source_model.csv,The memory model supports the MAT-aware AVX hypothesis while also exposing dense r=4 arithmetic cost.
+G4_assembly_proxy,PASS_AVX512_FMA_PROXY,zmm/FMA mnemonics in dispatch object,"mat_trgsw_mul_pvmtmlwe_DFT_from_dec_whole_dispatch_proxy:zmm=239,fma=120;mat_trgsw_mul_pvmtmlwe_DFT_public_entry_proxy:zmm=0,fma=0",instruction_proxy.csv; raw/mattrgsw_objdump.log,"Expected AVX512/FMA instructions are present, but this is not a retired-counter or optimality proof."
+G5_symbol_source_guard,PASS,small-r source and dispatch presence,9/9,symbol_matrix.csv,"Stage264 audits the intended MAT external-product implementation, not an unrelated object."
+G6_decision,PASS_STAGE264_MAT_AVX512_COUNTER_PREFLIGHT_PROXY_ONLY,stage decision,PASS_STAGE264_MAT_AVX512_COUNTER_PREFLIGHT_PROXY_ONLY,proof_gate.csv,Proceed to native perf if available; otherwise use this as a claim guard and move to full-SAB A/B only for concrete variants.
