@@ -1042,3 +1042,9 @@ noise claim.
 `PASS_STAGE294_DIRECT_DFT_TARGET_NOISE_FINAL_OUTPUT` adds a target-size include-zero final-output noise gate for the
 Stage292 direct-DFT candidate. The claim remains scoped to target final output;
 stage-wise and high-stat noise are still later gates.
+<!-- stage295-direct-dft-stats-refresh -->
+### Stage295 direct DFT stats refresh
+
+`PASS_STAGE295_DIRECT_DFT_STATS_REFRESH_HIGHSTAT_PENDING` refreshes direct-DFT evidence with repeated complete-SAB
+`T_bootstrap/r` and target final-output noise trials. The result remains scoped
+to local `spqlios_avx512`, `SET_2_3_2048`, include-zero r=4.

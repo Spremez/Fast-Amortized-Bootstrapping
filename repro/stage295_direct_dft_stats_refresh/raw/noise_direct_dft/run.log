@@ -1,0 +1,12 @@
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=0 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=1 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=2 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=3 complete
+SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=include_zero r=4 trial=4 complete
+SAB_PVW_NONBINARY_TARGET_NOISE lane target_full mode=include_zero r=4 lane=0 trials=5 expected_model_pvw_failures=3840 expected_model_scalar_failures=3840 pair_failures=0 expected_model_pvw_log2_sigma_torus=-2.212 expected_model_scalar_log2_sigma_torus=-2.212 pair_log2_sigma_torus=-7.930
+SAB_PVW_NONBINARY_TARGET_NOISE lane target_full mode=include_zero r=4 lane=1 trials=5 expected_model_pvw_failures=3840 expected_model_scalar_failures=3840 pair_failures=0 expected_model_pvw_log2_sigma_torus=-2.212 expected_model_scalar_log2_sigma_torus=-2.215 pair_log2_sigma_torus=-7.688
+SAB_PVW_NONBINARY_TARGET_NOISE lane target_full mode=include_zero r=4 lane=2 trials=5 expected_model_pvw_failures=3840 expected_model_scalar_failures=3840 pair_failures=0 expected_model_pvw_log2_sigma_torus=-2.212 expected_model_scalar_log2_sigma_torus=-2.212 pair_log2_sigma_torus=-7.999
+SAB_PVW_NONBINARY_TARGET_NOISE lane target_full mode=include_zero r=4 lane=3 trials=5 expected_model_pvw_failures=3840 expected_model_scalar_failures=3840 pair_failures=0 expected_model_pvw_log2_sigma_torus=-2.212 expected_model_scalar_log2_sigma_torus=-2.214 pair_log2_sigma_torus=-7.693
+SAB_PVW_NONBINARY_TARGET_NOISE summary target_full mode=include_zero r=4 trials=5 points=40960 expected_model_pvw_failures=15360 expected_model_scalar_failures=15360 pair_failures=0 expected_model_pvw_log2_sigma_torus=-2.212 expected_model_scalar_log2_sigma_torus=-2.213 pair_log2_sigma_torus=-7.814 pair_log2_max_abs_torus=-5.751 gate=Pass
+SAB_PVW_NONBINARY_TARGET_NOISE target full bootstrap gate mode=include_zero: Pass
+SAB_PVW_NONBINARY_TARGET_NOISE target full final-output gate: Pass

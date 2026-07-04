@@ -3986,3 +3986,15 @@ H294_direct_dft_target_noise:
   conclusion: >
     Direct DFT has target final-output noise evidence for include-zero r=4 if
     Stage294 passes. Stage-wise and high-stat claims remain separate.
+H295_direct_dft_stats_refresh:
+  status: PASS_STAGE295_DIRECT_DFT_STATS_REFRESH_HIGHSTAT_PENDING
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage295_direct_dft_stats_refresh/perf_summary.csv
+    - repro/stage295_direct_dft_stats_refresh/noise_summary.csv
+    - repro/stage295_direct_dft_stats_refresh/proof_gate.csv
+    - docs/stage295_direct_dft_stats_refresh.md
+  conclusion: >
+    Stage295 refreshes direct-DFT complete-SAB throughput and target
+    final-output noise. It remains scoped and below final paper-grade matrix
+    unless Stage296 expands it.

@@ -578,6 +578,14 @@ static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
 #define SAB_PVW_NONBINARY_BENCH_REPS 1
 #endif
 
+#ifndef SAB_PVW_NONBINARY_TARGET_NOISE_R
+#define SAB_PVW_NONBINARY_TARGET_NOISE_R 4
+#endif
+
+#ifndef SAB_PVW_NONBINARY_TARGET_NOISE_TRIALS
+#define SAB_PVW_NONBINARY_TARGET_NOISE_TRIALS 3
+#endif
+
 #ifndef SAB_PVW_NOISE_R
 #define SAB_PVW_NOISE_R 2
 #endif

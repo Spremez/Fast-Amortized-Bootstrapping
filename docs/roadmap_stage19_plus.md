@@ -7031,3 +7031,9 @@ Goal: replace the old N=16 SPQLIOS noise fixture with a target-size
 include-zero final-output noise gate for direct DFT.
 
 Status: `PASS_STAGE294_DIRECT_DFT_TARGET_NOISE_FINAL_OUTPUT`.
+## Stage 295: Direct DFT Stats Refresh
+
+Goal: strengthen Stage292/294 evidence with repeated performance and noise
+refresh.
+
+Status: `PASS_STAGE295_DIRECT_DFT_STATS_REFRESH_HIGHSTAT_PENDING`.

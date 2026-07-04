@@ -3070,3 +3070,8 @@ Repro artifacts:
   - `scripts/run_stage294_direct_dft_target_noise.sh`
   - `scripts/build_stage294_direct_dft_target_noise.py`
   - `repro/stage294_direct_dft_target_noise/`
+- stage295_direct_dft_stats_refresh:
+  - `docs/stage295_direct_dft_stats_refresh.md`
+  - `scripts/run_stage295_direct_dft_stats_refresh.sh`
+  - `scripts/build_stage295_direct_dft_stats_refresh.py`
+  - `repro/stage295_direct_dft_stats_refresh/`

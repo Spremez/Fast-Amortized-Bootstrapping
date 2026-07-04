@@ -430,3 +430,5 @@
 - [x] Stage293 records `PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING` for direct DFT target correctness/resource smoke; high-stat noise remains pending.
 <!-- stage294-direct-dft-target-noise-checklist -->
 - [x] Stage294 records `PASS_STAGE294_DIRECT_DFT_TARGET_NOISE_FINAL_OUTPUT` for direct DFT target final-output noise.
+<!-- stage295-direct-dft-stats-refresh-checklist -->
+- [x] Stage295 records `PASS_STAGE295_DIRECT_DFT_STATS_REFRESH_HIGHSTAT_PENDING` for direct DFT repeated performance plus target final-output noise refresh.

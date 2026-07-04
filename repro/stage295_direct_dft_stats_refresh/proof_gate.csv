@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_prior_full_sab,PASS,Stage292,positive,Stage295 refreshes a previously positive full-SAB candidate.
+G2_prior_noise,PASS,Stage294,target final-output noise,"Stage295 extends, not replaces, the target final-output noise gate."
+G3_repeated_perf,PASS,direct/control mean T/r,1.043711,Same-backend repeated complete SAB endpoint.
+G4_noise_trials,PASS,pair failures/trials,0/5,Direct DFT final output must remain scalar-equivalent over more trials.
+G5_claim_boundary,PASS,scope,5-run/5-trial refresh,"This is stronger than smoke, but still below final paper-grade 10+ run/multi-seed matrix."
+G6_decision,PASS_STAGE295_DIRECT_DFT_STATS_REFRESH_HIGHSTAT_PENDING,stage decision,PASS_STAGE295_DIRECT_DFT_STATS_REFRESH_HIGHSTAT_PENDING,Controls whether Stage296 high-stat expansion is justified.

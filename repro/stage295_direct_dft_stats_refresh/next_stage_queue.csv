@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage296_direct_dft_10run_10noise_or_native,PASS_STAGE295_DIRECT_DFT_STATS_REFRESH_HIGHSTAT_PENDING,Upgrade to 10-run/10+ trial or native counter-supported campaign.,Keep Stage295 as scoped local refresh.
+P1,stage296_stagewise_noise,paper claim needs stage-wise noise,Target-size stage-wise nonbinary pair noise.,Limit claims to final-output equivalence/noise.
