@@ -3269,3 +3269,7 @@ Repro artifacts:
   - `docs/current_pvw_mat_sab_result.md`
   - `scripts/build_stage327_final_claim_repro_refresh.py`
   - `repro/stage327_final_claim_repro_refresh/`
+- stage328_active_goal_requirement_audit:
+  - `docs/stage328_active_goal_requirement_audit.md`
+  - `scripts/build_stage328_active_goal_requirement_audit.py`
+  - `repro/stage328_active_goal_requirement_audit/`

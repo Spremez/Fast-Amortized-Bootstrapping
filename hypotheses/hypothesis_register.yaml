@@ -4337,3 +4337,15 @@ H327_final_claim_repro_refresh:
     Stage327 packages the current-head scoped complete-SAB throughput result
     and blocks unsupported theoretical-optimality, compact, all-parameter, or
     kernel-only speedup claims.
+H328_active_goal_requirement_audit:
+  status: PASS_STAGE328_ACTIVE_GOAL_AUDIT_GOAL_REMAINS_ACTIVE_SELECT_HIGHSTAT_OR_FORMAL_PROOF
+  primary_metric: requirement_level_completion_audit
+  evidence:
+    - repro/stage328_active_goal_requirement_audit/summary.csv
+    - repro/stage328_active_goal_requirement_audit/requirement_matrix.csv
+    - repro/stage328_active_goal_requirement_audit/evidence_grade.csv
+    - repro/stage328_active_goal_requirement_audit/proof_gate.csv
+  conclusion: >
+    Stage328 verifies that the current exact dense branch is scoped-complete
+    but the original active research goal remains open because paper-level
+    high-stat evidence and formal compact/optimality proof are not complete.

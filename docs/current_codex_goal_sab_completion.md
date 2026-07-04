@@ -1204,3 +1204,9 @@ frontier and selects final claim/repro refresh.
 `PASS_STAGE327_FINAL_CLAIM_REPRO_REFRESH_SCOPED_READY` records the current-head scoped result: complete-SAB
 `T_bootstrap/r` speedup `1.748`, with exact dense/local-layout frontier
 closed and compact route proof-blocked.
+<!-- stage328-active-goal-requirement-audit -->
+### Stage328 active goal requirement audit
+
+`PASS_STAGE328_ACTIVE_GOAL_AUDIT_GOAL_REMAINS_ACTIVE_SELECT_HIGHSTAT_OR_FORMAL_PROOF` audits the original goal and records that it remains active: the
+exact dense branch is scoped-complete, but high-stat paper readiness and formal
+compact/optimality proof remain open.

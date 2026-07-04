@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_stage106_research_loop,PASS,algorithm object and endpoint,PASS_STAGE106_RESEARCH_LOOP_FIXED_OPTIMALITY_OPEN,The research loop is framed around r-body MAT-RLWE and T_bootstrap/r.
+G2_stage200_lower_bound,PASS_SCOPED,lower-bound model,PASS_STAGE200_FORMAL_GAP_MODEL_WITH_PROBE_RECORDED_GOAL_ACTIVE,Lower-bound evidence is scoped to same-format dense representation.
+G3_stage327_final_claim,PASS_SCOPED,current complete-SAB claim,1.745361,Current implementation has scoped complete-SAB speedup evidence.
+G4_completion_audit,GOAL_ACTIVE_NOT_COMPLETE,open gaps,"O2_selector_structure,O4_source_anchor",The full active goal is not proven complete.
+G5_stage328_decision,PASS_STAGE328_ACTIVE_GOAL_AUDIT_GOAL_REMAINS_ACTIVE_SELECT_HIGHSTAT_OR_FORMAL_PROOF,next route,stage329_highstat_or_formal_proof,Concrete next work must either strengthen the scoped result statistically or open a formal compact proof checker.

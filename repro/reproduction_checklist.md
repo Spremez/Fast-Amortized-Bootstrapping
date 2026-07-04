@@ -495,3 +495,5 @@
 - [x] Stage326 records `PASS_STAGE326_EXACT_DENSE_FRONTIER_CLOSED_CLAIM_REFRESH_SELECTED` and selects Stage327 final claim/repro refresh.
 <!-- stage327-final-claim-repro-refresh-checklist -->
 - [x] Stage327 records `PASS_STAGE327_FINAL_CLAIM_REPRO_REFRESH_SCOPED_READY` and refreshes the current-head scoped claim/repro package.
+<!-- stage328-active-goal-requirement-audit-checklist -->
+- [x] Stage328 records `PASS_STAGE328_ACTIVE_GOAL_AUDIT_GOAL_REMAINS_ACTIVE_SELECT_HIGHSTAT_OR_FORMAL_PROOF` and keeps the active goal open with explicit next routes.

@@ -7220,3 +7220,9 @@ Goal: package the current-head PVW/MAT-SAB result and claim boundaries after
 exact dense frontier closeout.
 
 Status: `PASS_STAGE327_FINAL_CLAIM_REPRO_REFRESH_SCOPED_READY`.
+## Stage 328: Active Goal Requirement Audit
+
+Goal: audit the original PVW/MAT-SAB research objective requirement by
+requirement against current evidence.
+
+Status: `PASS_STAGE328_ACTIVE_GOAL_AUDIT_GOAL_REMAINS_ACTIVE_SELECT_HIGHSTAT_OR_FORMAL_PROOF`.

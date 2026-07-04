@@ -1,0 +1,5 @@
+evidence_class,status,primary_value,paper_readiness,why
+complete_sab_timing,SUPPORTED_SCOPED,speedup=1.745361; T/r_us=6118505.950; samples=5,needs_highstat_refresh,"Complete-SAB endpoint is correct, but sample count is scoped engineering rather than paper-level high-stat."
+isolated_microbench,NEGATIVE_ABLATION_RECORDED,selector_transpose_projected_fullsab=1.006006,usable_as_negative_ablation,"Useful to reject a candidate, not to support bootstrapping speedup."
+lower_bound_model,SCOPED_MODEL_RECORDED,PASS_STAGE200_FORMAL_GAP_MODEL_WITH_PROBE_RECORDED_GOAL_ACTIVE,allowed_as_assumption-scoped_model,Same-format lower bound exists; global optimality remains open.
+formal_compact_route,PROOF_REQUIRED,"O2_selector_structure,O4_source_anchor",future_work_only,"No production proof, no full SAB timing, no compact claim."
