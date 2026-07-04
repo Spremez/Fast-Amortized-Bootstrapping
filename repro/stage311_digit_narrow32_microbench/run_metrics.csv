@@ -1,0 +1,11 @@
+variant,run,status,r,N,reps,max_abs_diff,sub_avg_us,speedup_vs_separate,checksum,profile_calls,profile_rows_sum,digit_us,ifft_us,profile_total_us,digit_avg_us_per_call,source_log
+direct_baseline,0,Pass,4,2048,5000,0,21.620,1.386,1.2764227285987324e+31,5011,25055,17702,43251,62151,3.532628,repro/stage311_digit_narrow32_microbench/raw/direct_baseline/run_0.log
+direct_baseline,1,Pass,4,2048,5000,0,19.759,1.417,-1.0092588499194191e+31,5011,25055,16090,39341,56415,3.210936,repro/stage311_digit_narrow32_microbench/raw/direct_baseline/run_1.log
+direct_baseline,2,Pass,4,2048,5000,0,20.001,1.270,-1.9442980404637752e+30,5011,25055,16692,40036,57720,3.331072,repro/stage311_digit_narrow32_microbench/raw/direct_baseline/run_2.log
+direct_baseline,3,Pass,4,2048,5000,0,22.499,1.230,1.1787542442549494e+31,5011,25055,17991,44685,63850,3.590301,repro/stage311_digit_narrow32_microbench/raw/direct_baseline/run_3.log
+direct_baseline,4,Pass,4,2048,5000,0,19.731,1.396,6.4080533027687033e+30,5011,25055,15666,38978,55671,3.126322,repro/stage311_digit_narrow32_microbench/raw/direct_baseline/run_4.log
+narrow32_digit,0,Pass,4,2048,5000,0,20.895,1.329,-5.3488293860345683e+30,5011,25055,16554,41192,58886,3.303532,repro/stage311_digit_narrow32_microbench/raw/narrow32_digit/run_0.log
+narrow32_digit,1,Pass,4,2048,5000,0,18.332,1.430,7.0430536142458495e+30,5011,25055,15369,36400,52607,3.067052,repro/stage311_digit_narrow32_microbench/raw/narrow32_digit/run_1.log
+narrow32_digit,2,Pass,4,2048,5000,0,17.603,1.336,1.0278441120385574e+31,5011,25055,13806,35857,50568,2.755139,repro/stage311_digit_narrow32_microbench/raw/narrow32_digit/run_2.log
+narrow32_digit,3,Pass,4,2048,5000,0,19.338,1.257,1.3124017122735422e+31,5011,25055,15705,39095,55713,3.134105,repro/stage311_digit_narrow32_microbench/raw/narrow32_digit/run_3.log
+narrow32_digit,4,Pass,4,2048,5000,0,18.200,1.366,4.9805734340243859e+30,5011,25055,14297,36125,51343,2.853123,repro/stage311_digit_narrow32_microbench/raw/narrow32_digit/run_4.log

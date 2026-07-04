@@ -7118,3 +7118,8 @@ Status: `NEUTRAL_STAGE309_DIGIT_ROWBATCH_NO_PROMOTION`.
 Goal: measure whether existing single-row SPQLIOS IFFT loops show enough row-scaling to justify C-level wrapper work.
 
 Status: `PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED`.
+## Stage 311: Digit Narrow32 Microbench
+
+Goal: test an opt-in int64-to-int32-to-double digit materialization candidate before full-SAB promotion.
+
+Status: `PASS_STAGE311_DIGIT_NARROW32_MICRO_POSITIVE_FULLSAB_REQUIRED`.

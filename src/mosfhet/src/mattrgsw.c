@@ -968,15 +968,34 @@ static void mat_trgsw_sub_decompose_poly_to_double(double * out,
   __m512d * out_v = (__m512d *) out;
   const __m512i * lhs_v = (const __m512i *) lhs->coeffs;
   const __m512i * rhs_v = (const __m512i *) rhs->coeffs;
+  const int use_narrow32 =
+#ifdef MAT_TRGSW_DIRECT_DFT_DIGIT_NARROW32
+      half_Bg <= (1ULL << 31);
+#else
+      0;
+#endif
   int c = 0;
-  for (; c + 8 <= N; c += 8){
-    const __m512i v_diff =
-        _mm512_sub_epi64(rhs_v[c >> 3], lhs_v[c >> 3]);
-    const __m512i v_coeff_off = _mm512_add_epi64(v_diff, v_offset);
-    const __m512i v_digits = _mm512_and_si512(
-        _mm512_srlv_epi64(v_coeff_off, v_shift), v_mask);
-    const __m512i v_signed = _mm512_sub_epi64(v_digits, v_half);
-    out_v[c >> 3] = _mm512_cvtepi64_pd(v_signed);
+  if(use_narrow32){
+    for (; c + 8 <= N; c += 8){
+      const __m512i v_diff =
+          _mm512_sub_epi64(rhs_v[c >> 3], lhs_v[c >> 3]);
+      const __m512i v_coeff_off = _mm512_add_epi64(v_diff, v_offset);
+      const __m512i v_digits = _mm512_and_si512(
+          _mm512_srlv_epi64(v_coeff_off, v_shift), v_mask);
+      const __m512i v_signed = _mm512_sub_epi64(v_digits, v_half);
+      const __m256i v_signed32 = _mm512_cvtepi64_epi32(v_signed);
+      out_v[c >> 3] = _mm512_cvtepi32_pd(v_signed32);
+    }
+  }else{
+    for (; c + 8 <= N; c += 8){
+      const __m512i v_diff =
+          _mm512_sub_epi64(rhs_v[c >> 3], lhs_v[c >> 3]);
+      const __m512i v_coeff_off = _mm512_add_epi64(v_diff, v_offset);
+      const __m512i v_digits = _mm512_and_si512(
+          _mm512_srlv_epi64(v_coeff_off, v_shift), v_mask);
+      const __m512i v_signed = _mm512_sub_epi64(v_digits, v_half);
+      out_v[c >> 3] = _mm512_cvtepi64_pd(v_signed);
+    }
   }
   for (; c < N; c++){
     const uint64_t diff = rhs->coeffs[c] - lhs->coeffs[c];

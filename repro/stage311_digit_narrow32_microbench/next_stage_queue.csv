@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage312_digit_narrow32_full_sab_ab,PASS_STAGE311_DIGIT_NARROW32_MICRO_POSITIVE_FULLSAB_REQUIRED,Run complete-SAB T_bootstrap/r A/B with narrow32 digit flag enabled.,same-backend full-SAB correctness/performance if positive; otherwise no full-SAB A/B

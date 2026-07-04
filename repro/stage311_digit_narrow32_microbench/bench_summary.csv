@@ -1,0 +1,2 @@
+decision,runs_per_variant,correctness,baseline_digit_us_mean,narrow32_digit_us_mean,digit_speedup_mean,digit_speedup_min,baseline_sub_avg_us_mean,narrow32_sub_avg_us_mean,sub_speedup_mean,sub_speedup_min,claim
+PASS_STAGE311_DIGIT_NARROW32_MICRO_POSITIVE_FULLSAB_REQUIRED,5,PASS,16828.200000,15146.200000,1.113323,1.046913,20.722000,18.873600,1.099270,1.034697,microbench_only_full_sab_required

@@ -4141,3 +4141,14 @@ H310_ifft_rows_scaling_bench:
     Stage310 measures whether existing per-row SPQLIOS IFFT loops have strong
     row scaling. It is not a SAB speed claim; it determines whether future IFFT
     work must be backend-level.
+H311_digit_narrow32_microbench:
+  status: PASS_STAGE311_DIGIT_NARROW32_MICRO_POSITIVE_FULLSAB_REQUIRED
+  primary_metric: direct_sub_dft_digit_us_and_microbench_latency
+  evidence:
+    - repro/stage311_digit_narrow32_microbench/run_metrics.csv
+    - repro/stage311_digit_narrow32_microbench/bench_summary.csv
+    - repro/stage311_digit_narrow32_microbench/proof_gate.csv
+  conclusion: >
+    Stage311 tests an opt-in narrow32 digit materialization candidate. It can
+    only open full-SAB A/B if both digit component time and sub-DTF microbench
+    latency improve; otherwise it is a neutral/negative ablation.

@@ -1122,3 +1122,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage310 IFFT rows scaling bench
 
 `PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED` records rows=1/5/10 SPQLIOS IFFT scaling and routes any future IFFT acceleration to backend-level work.
+<!-- stage311-digit-narrow32-microbench -->
+### Stage311 digit narrow32 microbench
+
+`PASS_STAGE311_DIGIT_NARROW32_MICRO_POSITIVE_FULLSAB_REQUIRED` tests the default-off `MAT_TRGSW_DIRECT_DFT_DIGIT_NARROW32` candidate under isolated microbench gates.
