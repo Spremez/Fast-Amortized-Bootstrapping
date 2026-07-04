@@ -1,0 +1,4 @@
+route,decision,production_permission,reason,next_gate
+stage261_nonbinary_target_perf_t_bootstrap_per_bit,ADMIT_TARGET_PERF_PREFLIGHT,explicit_nonbinary_path_only,small full-path non-binary multi-trial noise/resource gate passes,same-backend complete SAB A/B with T_bootstrap/r
+nonbinary_full_sab_speedup,BLOCKED,no,no target-parameter full SAB benchmark and no T_bootstrap/r result yet,Stage261 target performance
+paper_claim,WAIT_STAGE261_AND_LITERATURE,no_novelty_claim,small FFNT correctness/resource evidence is not a paper-grade performance or novelty claim,"target benchmark, statistics, and citation-safe related work"

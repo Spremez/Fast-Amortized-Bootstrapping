@@ -1,0 +1,7 @@
+mode,r,trials,points,pvw_failures,scalar_failures,pair_failures,pvw_log2_sigma_torus,scalar_log2_sigma_torus,pair_log2_sigma_torus,pair_log2_max_abs_torus,gate,evidence
+include_zero,1,3,48,0,0,0,-11.561,-11.409,-11.094,-9.751,PASS,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log
+include_zero,2,3,96,0,0,0,-11.441,-11.556,-10.954,-9.638,PASS,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log
+include_zero,4,3,192,0,0,0,-12.050,-11.550,-11.484,-9.909,PASS,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log
+ternary,1,3,48,0,0,0,-12.038,-11.794,-11.457,-10.212,PASS,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log
+ternary,2,3,96,0,0,0,-11.547,-11.766,-11.232,-9.770,PASS,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log
+ternary,4,3,192,0,0,0,-11.427,-11.607,-10.923,-9.503,PASS,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log

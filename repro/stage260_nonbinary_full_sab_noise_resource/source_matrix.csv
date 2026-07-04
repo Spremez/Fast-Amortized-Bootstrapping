@@ -1,0 +1,7 @@
+check,path,observed,gate,notes
+test_flag,src/mosfhet/Makefile.def,present,PASS,isolated Stage260 flag
+test_harness,main.c,present,PASS,multi-trial full-path noise/resource harness
+nonbinary_key_estimate_scalar,main.c,present,PASS,resource estimate includes extra scalar selector family
+nonbinary_key_estimate_pvw,main.c,present,PASS,resource estimate includes extra MAT selector family
+scalar_sab_unchanged,src/sparse_amortized_bootstrap.c,not_changed,PASS,scalar baseline remains the oracle
+default_binary_build,repro/stage260_nonbinary_full_sab_noise_resource/build_ffnt_default_binary.log,compiled,PASS,default binary build still compiles

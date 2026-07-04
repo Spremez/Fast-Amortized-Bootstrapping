@@ -1,0 +1,7 @@
+mode,r,pvw_estimated_key_bytes,scalar_one_estimated_key_bytes,scalar_repeated_estimated_key_bytes,pvw_vs_scalar_repeated_ratio,pvw_sab_keygen_us,scalar_repeated_sab_keygen_us,scalar_lane_avg_keygen_us,evidence
+include_zero,1,1063104,1062880,1062880,1.000211,43183,44201,44201.000,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log
+include_zero,2,2203520,1062880,2125760,1.036580,89962,78942,39471.000,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log
+include_zero,4,5026608,1062880,4251520,1.182308,247262,162537,40634.250,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log
+ternary,1,1063104,1062880,1062880,1.000211,35589,36505,36505.000,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log
+ternary,2,2203520,1062880,2125760,1.036580,81998,74403,37201.500,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log
+ternary,4,5026608,1062880,4251520,1.182308,219689,155879,38969.750,repro/stage260_nonbinary_full_sab_noise_resource/run_ffnt_nonbinary_full_noise.log

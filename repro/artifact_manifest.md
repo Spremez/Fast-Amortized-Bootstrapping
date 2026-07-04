@@ -2887,3 +2887,11 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage259_nonbinary_full_sab.md`
   - `scripts/build_stage259_nonbinary_full_sab_smoke.py`
   - `repro/stage259_nonbinary_full_sab_smoke/`
+
+- stage260_nonbinary_full_sab_noise_resource:
+  - `docs/stage260_nonbinary_full_sab_noise_resource.md`
+  - `experiments/stage260_nonbinary_full_sab_noise_resource_plan.md`
+  - `theory_checks/stage260_nonbinary_full_sab_noise_resource_scope.md`
+  - `algorithm_variants/mat_rlwe_sab_stage260_nonbinary_full_sab_noise_resource.md`
+  - `scripts/build_stage260_nonbinary_full_sab_noise_resource.py`
+  - `repro/stage260_nonbinary_full_sab_noise_resource/`

@@ -3605,3 +3605,15 @@ H10_stage259_nonbinary_full_sab_smoke:
     Stage259 records PASS_STAGE259_NONBINARY_FULL_SAB_SMOKE. The explicit non-binary PVW/MAT full SAB path
     passes small include-zero and ternary r=1/2/4 full-pipeline equivalence.
     Target correctness/noise/resource and T_bootstrap/r speedup remain blocked.
+
+H10_stage260_nonbinary_full_sab_noise_resource:
+  status: small_full_path_noise_resource_passed_speedup_blocked
+  evidence:
+    - repro/stage260_nonbinary_full_sab_noise_resource/final_noise_summary.csv
+    - repro/stage260_nonbinary_full_sab_noise_resource/stage_noise_summary.csv
+    - repro/stage260_nonbinary_full_sab_noise_resource/resource_summary.csv
+    - repro/stage260_nonbinary_full_sab_noise_resource/proof_gate.csv
+  conclusion: >
+    Stage260 records PASS_STAGE260_NONBINARY_FULL_SAB_NOISE_RESOURCE. The explicit non-binary PVW/MAT full SAB path
+    passes small include-zero and ternary r=1/2/4 multi-trial noise/resource
+    gates. Target T_bootstrap/r speedup and paper-grade claims remain blocked.

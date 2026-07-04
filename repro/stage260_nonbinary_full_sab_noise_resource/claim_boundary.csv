@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+nonbinary_full_sab_small_noise_resource,supported_small_gate,The explicit non-binary PVW/MAT full SAB path passes a 3-trial small FFNT noise/resource gate for include-zero and ternary r=1/2/4.,The target 686 non-binary full SAB path has validated noise/resource behavior.,repro/stage260_nonbinary_full_sab_noise_resource/final_noise_summary.csv
+stage_pair_equivalence,supported_small_gate,"The recorded blind-rotate, extract, materialize, packing-KS, and HW-KS stage pair failures are zero for the small gate.",All target-parameter stages have zero failure probability.,repro/stage260_nonbinary_full_sab_noise_resource/stage_noise_summary.csv
+full_sab_speedup,unsupported,Stage260 does not measure complete SAB speedup.,Stage260 proves bootstrapping acceleration.,repro/stage260_nonbinary_full_sab_noise_resource/implementation_admission.csv
+amortized_time_per_plaintext_bit,unsupported_for_nonbinary,T_bootstrap/r remains the primary metric for Stage261+.,Non-binary T_bootstrap/r improved.,repro/stage260_nonbinary_full_sab_noise_resource/claim_boundary.csv

@@ -6995,3 +6995,22 @@ non-binary full SAB API passes small FFNT full-pipeline equivalence for
 include-zero and ternary r=1/2/4. Target-parameter noise, resource, and
 T_bootstrap/r speedup remain blocked until Stage260+.
 ```
+
+## Stage 260: Non-Binary Full SAB Noise/Resource
+
+Goal:
+
+```text
+Upgrade the explicit non-binary PVW/MAT full SAB path from deterministic smoke
+to a small multi-trial correctness/noise/resource gate.
+```
+
+Status:
+
+```text
+Generated from input head `cc6067f` with `PASS_STAGE260_NONBINARY_FULL_SAB_NOISE_RESOURCE`. include-zero and ternary
+r=1/2/4 pass the small FFNT full-path final-noise gate with zero PVW, scalar,
+and pair failures. Five stage-pair boundaries also record zero pair failures.
+Stage261 target `T_bootstrap/r` benchmarking is admitted, but speedup remains
+unproved.
+```

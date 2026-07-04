@@ -830,3 +830,10 @@ integrate non-binary blind rotation/bootstrap, then measure full-SAB
 `PASS_STAGE259_NONBINARY_FULL_SAB_SMOKE` records the first complete non-binary PVW/MAT-SAB path smoke. The
 active research goal remains open because this is not yet target-parameter,
 multi-seed, noise/resource, or performance evidence.
+
+### Stage260 non-binary full SAB noise/resource
+
+`PASS_STAGE260_NONBINARY_FULL_SAB_NOISE_RESOURCE` records small full-path non-binary noise/resource evidence. The
+active research goal remains open because target-parameter `T_bootstrap/r`,
+backend-fair performance, statistical intervals, and literature-backed paper
+claims are still missing.

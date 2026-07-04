@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,interpretation
+G1_build,PASS,ffnt nonbinary full noise/resource build,compiled,repro/stage260_nonbinary_full_sab_noise_resource/build_ffnt_nonbinary_full_noise.log,Portable small full-path gate; no performance claim.
+G2_final_noise,PASS,mode/r final rows,6/6,repro/stage260_nonbinary_full_sab_noise_resource/final_noise_summary.csv,Final output PVW/scalar/paired failures are zero for all small-gate rows.
+G3_stage_noise,PASS,stage summary rows,30/30,repro/stage260_nonbinary_full_sab_noise_resource/stage_noise_summary.csv,All recorded intermediate pair-noise summaries have zero pair failures.
+G4_resource,PASS,resource rows,6/6,repro/stage260_nonbinary_full_sab_noise_resource/resource_summary.csv,Small-gate key-size and keygen resource estimates are recorded.
+G5_source_isolation,PASS,explicit path and scalar isolation,preserved,repro/stage260_nonbinary_full_sab_noise_resource/source_matrix.csv,Stage260 adds an explicit measurement flag; scalar SAB source is unchanged.
+G6_stage261_admission,PASS_STAGED_ONLY,next route,ADMIT_TARGET_PERF_PREFLIGHT,repro/stage260_nonbinary_full_sab_noise_resource/implementation_admission.csv,"Proceed to target performance preflight, but speedup remains blocked."
+G7_stage260_decision,PASS_STAGE260_NONBINARY_FULL_SAB_NOISE_RESOURCE,decision,PASS_STAGE260_NONBINARY_FULL_SAB_NOISE_RESOURCE,repro/stage260_nonbinary_full_sab_noise_resource/proof_gate.csv,Small non-binary full-path noise/resource gate is complete.
