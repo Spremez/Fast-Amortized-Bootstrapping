@@ -739,7 +739,13 @@ counter refresh, non-binary support, compact route, and theoretical optimality
 remain incomplete.
 ### Stage243 apply LW citations and recompile
 
-`FAIL_STAGE243_PATCH_RECOMPILE` records a patched, recompiled scoped draft with 11 resolved
+`PASS_STAGE243_LW_CITATIONS_APPLIED_RECOMPILED_BATCHBOOT_TODO` records a patched, recompiled scoped draft with 11 resolved
 citations. The active goal remains open because BatchBoot final citation
 closure, optional current-head counter refresh, non-binary support, compact
 route, and theoretical optimality remain incomplete.
+### Stage244 BatchBoot BibTeX monitor
+
+`PASS_STAGE244_BATCHBOOT_MONITOR_RECORDED_NO_VERIFIED_BIBTEX` records a current external-source monitor for BatchBoot. The active
+goal remains open because optional current-head counter refresh, non-binary
+support, compact route, theoretical optimality, and final BatchBoot citation
+closure remain incomplete.

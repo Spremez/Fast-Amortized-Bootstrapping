@@ -2779,3 +2779,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage243_draft_patch.md`
   - `scripts/build_stage243_apply_lw_citations_recompile.py`
   - `repro/stage243_apply_lw_citations_recompile/`
+- stage244_batchboot_bibtex_monitor:
+  - `docs/stage244_batchboot_bibtex_monitor.md`
+  - `experiments/stage244_batchboot_bibtex_monitor_plan.md`
+  - `theory_checks/stage244_batchboot_citation_boundary.md`
+  - `algorithm_variants/mat_rlwe_sab_stage244_batchboot_monitor.md`
+  - `scripts/build_stage244_batchboot_bibtex_monitor.py`
+  - `repro/stage244_batchboot_bibtex_monitor/`

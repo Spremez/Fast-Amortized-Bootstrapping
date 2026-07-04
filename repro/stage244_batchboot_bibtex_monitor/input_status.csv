@@ -1,0 +1,4 @@
+input,status,role,bytes
+repro/stage242_unresolved_bibtex_followup/remaining_unresolved_bibtex_todo.csv,present,Stage242 remaining BatchBoot TODO,662
+repro/stage243_apply_lw_citations_recompile/proof_gate.csv,present,Stage243 patched draft compile proof,2068
+repro/stage243_apply_lw_citations_recompile/todo_visibility.csv,present,Stage243 TODO visibility proof,254

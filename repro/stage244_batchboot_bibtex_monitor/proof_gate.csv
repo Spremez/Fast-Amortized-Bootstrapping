@@ -1,0 +1,5 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs,PASS,Stage242 remaining TODO and Stage243 compile proof exist,all present,repro/stage244_batchboot_bibtex_monitor/gate_matrix.csv,monitor starts from current paper package state
+G2_official_routes_reachable,PASS,USENIX page and PDF are reachable for monitoring,page=yes; pdf=yes,repro/stage244_batchboot_bibtex_monitor/gate_matrix.csv,external source was checked at current date
+G3_no_verified_bibtex,PASS_TODO_RETAINED,do not write a BatchBoot BibTeX entry unless verified source exists,available=no; dblp_hits=0; crossref_exact_hits=0,repro/stage244_batchboot_bibtex_monitor/gate_matrix.csv,prevents fabricated BatchBoot citation
+G4_stage244_decision,PASS_STAGE244_BATCHBOOT_MONITOR_RECORDED_NO_VERIFIED_BIBTEX,monitor recorded and TODO state explicit,PASS_STAGE244_BATCHBOOT_MONITOR_RECORDED_NO_VERIFIED_BIBTEX,repro/stage244_batchboot_bibtex_monitor/gate_matrix.csv,proceed to optional counter or broader algorithm gates; final bibliography still has BatchBoot TODO

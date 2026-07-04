@@ -1159,9 +1159,9 @@ sources as explicit TODOs instead of fabricating references.
 - Stage242 unresolved BibTeX follow-up records `PASS_STAGE242_BIBTEX_TODO_REDUCED_BATCHBOOT_REMAINS`: Batch
   Bootstrapping I/II now have verified separate citations, while BatchBoot is
   kept out of the bibliography until an official BibTeX route is available.
-- Stage243 apply-LW-citations/recompile records `FAIL_STAGE243_PATCH_RECOMPILE`: the scoped draft
-  now cites Batch Bootstrapping I/II as separate verified entries and still
-  keeps BatchBoot out of the bibliography.
 - Stage243 apply-LW-citations/recompile records `PASS_STAGE243_LW_CITATIONS_APPLIED_RECOMPILED_BATCHBOOT_TODO`: the scoped draft
   now cites Batch Bootstrapping I/II as separate verified entries and still
   keeps BatchBoot out of the bibliography.
+- Stage244 BatchBoot BibTeX monitor records `PASS_STAGE244_BATCHBOOT_MONITOR_RECORDED_NO_VERIFIED_BIBTEX`: external sources were
+  rechecked and BatchBoot remains a TODO, with no fabricated bibliography
+  entry.

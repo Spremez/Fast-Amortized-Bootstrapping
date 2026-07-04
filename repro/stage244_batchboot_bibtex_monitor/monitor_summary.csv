@@ -1,0 +1,9 @@
+metric,value,interpretation
+official_page_ok,yes,Official USENIX source is reachable.
+official_pdf_ok,yes,Official USENIX source is reachable.
+page_has_citation_meta,no,Monitor signal only; not a bibliography entry.
+page_has_bibtex_entry,no,Monitor signal only; not a bibliography entry.
+candidate_citation_links,0,Monitor signal only; not a bibliography entry.
+dblp_hits,0,Monitor signal only; not a bibliography entry.
+crossref_exact_hits,0,Monitor signal only; not a bibliography entry.
+verified_bibtex_available,no,No accepted BibTeX entry is written unless this becomes yes through a verified source route.

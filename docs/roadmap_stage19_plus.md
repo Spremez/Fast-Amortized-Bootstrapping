@@ -6725,7 +6725,23 @@ gates while keeping BatchBoot as TODO.
 Status:
 
 ```text
-Generated from input head `e049e91` with `FAIL_STAGE243_PATCH_RECOMPILE`. The scoped draft now
+Generated from input head `e049e91` with `PASS_STAGE243_LW_CITATIONS_APPLIED_RECOMPILED_BATCHBOOT_TODO`. The scoped draft now
 compiles with 11 resolved citation keys, including Batch Bootstrapping I/II.
 `BATCHBOOT26` remains a visible TODO until official BibTeX is available.
+```
+## Stage 244: BatchBoot BibTeX Monitor
+
+Goal:
+
+```text
+Reprobe official BatchBoot citation routes and preserve no-hallucination
+bibliography policy.
+```
+
+Status:
+
+```text
+Generated from input head `b5c7cda` with `PASS_STAGE244_BATCHBOOT_MONITOR_RECORDED_NO_VERIFIED_BIBTEX`. No verified BatchBoot
+BibTeX export was found through USENIX, DBLP, or Crossref probes. BatchBoot
+remains an explicit TODO.
 ```

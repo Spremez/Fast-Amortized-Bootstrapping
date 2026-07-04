@@ -1,0 +1,2 @@
+source_id,title,todo_status,needed_action,route_attempted,route_url
+BATCHBOOT26,BatchBoot: Fast Batched Bootstrapping for TFHE scheme and Practical Applications,TODO_OFFICIAL_BIBTEX_NOT_AVAILABLE,Wait for official USENIX/DBLP/Crossref BibTeX route; do not generate from memory.,usenix_page;usenix_pdf;dblp_title_search;crossref_title_search,https://www.usenix.org/conference/usenixsecurity26/presentation/li-zhihao

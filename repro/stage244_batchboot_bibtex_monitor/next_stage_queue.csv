@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage245_native_counter_refresh_if_code_changes,Final implementation section needs current-head counter wording.,Native Linux perf counters or explicit reuse of Stage226 with code-change audit.,selected_optional,Keep counter evidence out of the main claim.,repro/stage226_exact_mat_avx_counter_attribution/proof_gate.csv
+P1,stage246_nonbinary_or_compact_algorithm_gate,A broader algorithmic claim is proposed.,"Closed equations, correctness/noise proof obligations, full-SAB A/B and resource matrix.",blocked_until_new_design,Do not extend selected binary claim.,repro/stage240_scoped_latex_draft/claim_audit.csv
+P2,stage247_batchboot_monitor_rerun,Before final submission or after USENIX metadata changes.,Official source route only; no generated BibTeX.,future_monitor,Leave BatchBoot TODO.,repro/stage244_batchboot_bibtex_monitor/remaining_todo.csv

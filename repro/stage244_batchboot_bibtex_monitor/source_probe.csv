@@ -1,0 +1,5 @@
+route,url,http_status,final_url,finding,error
+usenix_page,https://www.usenix.org/conference/usenixsecurity26/presentation/li-zhihao,200,https://www.usenix.org/conference/usenixsecurity26/presentation/li-zhihao,citation_meta=False; bibtex_entry=False; candidate_links=0,
+usenix_pdf,https://www.usenix.org/system/files/conference/usenixsecurity26/sec26_prepub_li-zhihao.pdf,200,https://www.usenix.org/system/files/conference/usenixsecurity26/sec26_prepub_li-zhihao.pdf,bytes_or_text_head=390968,
+dblp_title_search,https://dblp.org/search/publ/api?format=json&q=BatchBoot%3A%20Fast%20Batched%20Bootstrapping%20for%20TFHE%20scheme%20and%20Practical%20Applications,200,https://dblp.org/search/publ/api?format=json&q=BatchBoot%3A%20Fast%20Batched%20Bootstrapping%20for%20TFHE%20scheme%20and%20Practical%20Applications,hits=0,
+crossref_title_search,https://api.crossref.org/works?rows=5&query.title=BatchBoot%3A%20Fast%20Batched%20Bootstrapping%20for%20TFHE%20scheme%20and%20Practical%20Applications,200,https://api.crossref.org/works?rows=5&query.title=BatchBoot%3A%20Fast%20Batched%20Bootstrapping%20for%20TFHE%20scheme%20and%20Practical%20Applications,exact_title_hits=0,
