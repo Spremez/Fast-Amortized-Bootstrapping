@@ -3264,3 +3264,8 @@ Repro artifacts:
   - `docs/stage326_exact_dense_route_closeout.md`
   - `scripts/build_stage326_exact_dense_route_closeout.py`
   - `repro/stage326_exact_dense_route_closeout/`
+- stage327_final_claim_repro_refresh:
+  - `docs/stage327_final_claim_repro_refresh.md`
+  - `docs/current_pvw_mat_sab_result.md`
+  - `scripts/build_stage327_final_claim_repro_refresh.py`
+  - `repro/stage327_final_claim_repro_refresh/`

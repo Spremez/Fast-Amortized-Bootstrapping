@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_stage326_input,PASS,Stage326 decision,PASS_STAGE326_EXACT_DENSE_FRONTIER_CLOSED_CLAIM_REFRESH_SELECTED,Final refresh requires exact dense frontier closeout.
+G2_fullsab_claim,PASS_SCOPED,supported speedup,1.745361,Claim uses complete-SAB T_bootstrap/r evidence only.
+G3_negative_ablation,PASS_RECORDED,selector transpose projection,1.006006,Neutral/negative results are preserved and not promoted.
+G4_limitations,PASS_RECORDED,limitations,parameter;metric;optimality;compact,Unsupported stronger claims are explicitly blocked.
+G5_stage327_decision,PASS_STAGE327_FINAL_CLAIM_REPRO_REFRESH_SCOPED_READY,final current-head package,scoped ready,Current research loop is closed until a new proof-backed or measured mechanism is supplied.

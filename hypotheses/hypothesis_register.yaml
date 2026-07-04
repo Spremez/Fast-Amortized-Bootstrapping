@@ -4325,3 +4325,15 @@ H326_exact_dense_route_closeout:
   conclusion: >
     Stage326 closes current exact dense/local-layout implementation routes
     under current evidence and routes to a final scoped claim/repro refresh.
+H327_final_claim_repro_refresh:
+  status: PASS_STAGE327_FINAL_CLAIM_REPRO_REFRESH_SCOPED_READY
+  primary_metric: complete_sab_T_bootstrap_over_r_vs_repeated_scalar
+  evidence:
+    - repro/stage327_final_claim_repro_refresh/summary.csv
+    - repro/stage327_final_claim_repro_refresh/claim_matrix.csv
+    - repro/stage327_final_claim_repro_refresh/limitations.csv
+    - docs/current_pvw_mat_sab_result.md
+  conclusion: >
+    Stage327 packages the current-head scoped complete-SAB throughput result
+    and blocks unsupported theoretical-optimality, compact, all-parameter, or
+    kernel-only speedup claims.

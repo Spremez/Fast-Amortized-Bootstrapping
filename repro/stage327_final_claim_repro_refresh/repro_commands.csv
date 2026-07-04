@@ -1,0 +1,5 @@
+stage,purpose,command,artifacts
+Stage321,complete SAB A/B for current direct baseline versus r4-unrolled,bash scripts/run_stage321_r4_unrolled_fullsab_ab.sh && python3 scripts/build_stage321_r4_unrolled_fullsab_ab.py,repro/stage321_r4_unrolled_fullsab_ab/perf_summary.csv
+Stage322,profile attribution for current direct baseline,bash scripts/run_stage322_schedule_profile_attribution.sh && python3 scripts/build_stage322_schedule_profile_attribution.py,repro/stage322_schedule_profile_attribution/profile_summary.csv
+Stage325,selector-transpose isolated AVX512 microbench,STAGE325_RUNS=15 STAGE325_REPS=100000 bash scripts/run_stage325_selector_transpose_resource_probe.sh && python3 scripts/build_stage325_selector_transpose_resource_probe.py,repro/stage325_selector_transpose_resource_probe/summary.csv
+Stage326-327,claim boundary and final repro refresh,python3 scripts/build_stage326_exact_dense_route_closeout.py && python3 scripts/build_stage327_final_claim_repro_refresh.py,repro/stage326_exact_dense_route_closeout/summary.csv; repro/stage327_final_claim_repro_refresh/summary.csv

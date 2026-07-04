@@ -493,3 +493,5 @@
 - [x] Stage325 records `NEUTRAL_STAGE325_SELECTOR_TRANSPOSE_MICRO_NO_PROMOTION` from isolated selector-transpose dense-addmul microbench.
 <!-- stage326-exact-dense-route-closeout-checklist -->
 - [x] Stage326 records `PASS_STAGE326_EXACT_DENSE_FRONTIER_CLOSED_CLAIM_REFRESH_SELECTED` and selects Stage327 final claim/repro refresh.
+<!-- stage327-final-claim-repro-refresh-checklist -->
+- [x] Stage327 records `PASS_STAGE327_FINAL_CLAIM_REPRO_REFRESH_SCOPED_READY` and refreshes the current-head scoped claim/repro package.

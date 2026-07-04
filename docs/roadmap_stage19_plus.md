@@ -7214,3 +7214,9 @@ Goal: close exact dense/local-layout optimization under current evidence after
 Stage325 selector-transpose neutral result.
 
 Status: `PASS_STAGE326_EXACT_DENSE_FRONTIER_CLOSED_CLAIM_REFRESH_SELECTED`.
+## Stage 327: Final Claim/Repro Refresh
+
+Goal: package the current-head PVW/MAT-SAB result and claim boundaries after
+exact dense frontier closeout.
+
+Status: `PASS_STAGE327_FINAL_CLAIM_REPRO_REFRESH_SCOPED_READY`.

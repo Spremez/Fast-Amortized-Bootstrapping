@@ -1198,3 +1198,9 @@ speedup mean `1.026188`, projected complete-SAB speedup
 
 `PASS_STAGE326_EXACT_DENSE_FRONTIER_CLOSED_CLAIM_REFRESH_SELECTED` closes the current exact dense/local-layout implementation
 frontier and selects final claim/repro refresh.
+<!-- stage327-final-claim-repro-refresh -->
+### Stage327 final claim/repro refresh
+
+`PASS_STAGE327_FINAL_CLAIM_REPRO_REFRESH_SCOPED_READY` records the current-head scoped result: complete-SAB
+`T_bootstrap/r` speedup `1.748`, with exact dense/local-layout frontier
+closed and compact route proof-blocked.

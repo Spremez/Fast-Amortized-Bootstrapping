@@ -1,0 +1,6 @@
+limitation,status,detail
+parameter_scope,scoped,Primary current-head claim is for the recorded r=4 BINARY SET_2_3_2048 path and backend evidence.
+metric_scope,scoped,"Speedup dimension is T_bootstrap/r versus repeated scalar SAB, not single-lane latency versus one scalar bootstrap."
+exact_dense_frontier,closed_current_evidence,"Current local exact dense AVX/layout routes are closed, but new mechanisms may reopen with gates."
+compact_route,blocked,Structured/compact product-count reduction requires formal proof and full SAB evidence.
+theoretical_optimality,not_proven,No global theoretical optimality claim is supported.

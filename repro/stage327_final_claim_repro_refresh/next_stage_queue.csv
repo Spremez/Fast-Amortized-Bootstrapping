@@ -1,0 +1,4 @@
+priority,stage,entry_condition,task,gate
+P0,stop_current_exact_dense_loop,PASS_STAGE327_FINAL_CLAIM_REPRO_REFRESH_SCOPED_READY,Do not continue speculative exact dense AVX/layout rewrites.,Reopen only with a new mechanism that beats Stage324 threshold and has full-SAB A/B plan.
+P1,formal_compact_selector_research,user supplies or requests formal proof branch,Work on distribution/keygen/security proof before code.,No production SAB code before proof/noise/resource/equivalence/full-SAB gates.
+P2,paper_writeup,PASS_STAGE327_FINAL_CLAIM_REPRO_REFRESH_SCOPED_READY,Write scoped systems paper/report with supported claims and negative ablations.,Every novelty sentence maps to reviewed sources and local evidence.
