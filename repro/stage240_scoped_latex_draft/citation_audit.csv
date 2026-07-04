@@ -1,0 +1,12 @@
+source_id,status,citation_key,draft_role,claim_boundary
+BGH2012_565,READY_FOR_LATEX,DBLP:conf/pkc/BrakerskiGH13,PVW/packed-ciphertext background,background or scoped positioning only
+CGGI2018_421,READY_FOR_LATEX,DBLP:journals/joc/ChillottiGGI20,TFHE/external-product background,background or scoped positioning only
+DKMS2024_112,READY_FOR_LATEX,DBLP:conf/pkc/MicheliKMS24,ring-automorphism amortized bootstrapping related work,background or scoped positioning only
+FAB686_2025,READY_FOR_LATEX,DBLP:conf/ccs/GuimaraesP25,target baseline identity,background or scoped positioning only
+GPVL2023_014,READY_FOR_LATEX,DBLP:conf/asiacrypt/GuimaraesPL23,amortized bootstrapping related work,background or scoped positioning only
+INCNTT25_696,READY_FOR_LATEX,DBLP:journals/tches/PaivaMHSY25,adjacent post-686 transform/backend work,background or scoped positioning only
+LW2023_910,READY_FOR_LATEX,DBLP:conf/asiacrypt/LiuW23,amortized functional bootstrapping related work,background or scoped positioning only
+MS2018_532,READY_FOR_LATEX,DBLP:conf/icalp/MicciancoS18,amortized FHEW/ring packing related work,background or scoped positioning only
+SHAREMASK25_2112,READY_FOR_LATEX,DBLP:journals/tches/BergeratBCOPT25,shared-mask prior-art boundary,background or scoped positioning only
+BATCHBOOT26,TODO_NO_VERIFIED_BIBTEX_ROUTE,,TODO comment only,no_hits
+LW23A_B,TODO_COMPOSITE_SOURCE_SPLIT_REQUIRED,,TODO comment only,Stage230 source row combines Batch Bootstrapping I and II; split into two verified BibTeX entries before LaTeX.

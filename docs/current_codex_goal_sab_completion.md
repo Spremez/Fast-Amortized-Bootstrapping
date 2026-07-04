@@ -719,3 +719,9 @@ remain incomplete.
 stub. The active goal remains open because final bibliography closure,
 venue-specific paper assembly, optional native-counter attribution, and broader
 algorithmic gates remain incomplete.
+### Stage240 scoped LaTeX draft
+
+`PASS_STAGE240_SCOPED_LATEX_DRAFT_READY_CLAIMS_AUDITED` records a scoped LaTeX draft using Stage236 experiments and
+Stage239 verified citations. The active goal remains open because final paper
+compilation, unresolved BibTeX rows, optional counter refresh, non-binary
+support, compact route, and theoretical optimality remain incomplete.

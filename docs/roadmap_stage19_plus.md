@@ -6665,3 +6665,20 @@ Status:
 Generated from input head `2b4fa33` with `PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN`. Retrieved 9
 verified BibTeX entries and recorded 2 unresolved TODOs.
 ```
+## Stage 240: Scoped LaTeX Draft
+
+Goal:
+
+```text
+Convert verified Stage239 citations and Stage236 selected binary complete-SAB
+evidence into a scoped LaTeX draft with claim/citation gates.
+```
+
+Status:
+
+```text
+Generated from input head `2e3f230` with `PASS_STAGE240_SCOPED_LATEX_DRAFT_READY_CLAIMS_AUDITED`. The draft is ready for a
+compile/template pass, while unresolved BibTeX rows, current-head counter
+refresh, non-binary support, compact route, and theoretical optimality remain
+separate gates.
+```

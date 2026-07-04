@@ -3364,3 +3364,16 @@ H10_stage239_verified_bibtex_latex_stub:
     Stage239 records PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN. It retrieved 9 BibTeX entries from
     verified routes, generated a minimal LaTeX stub, and left 2
     unresolved sources as TODOs. No BibTeX entry was generated from memory.
+H10_stage240_scoped_latex_draft:
+  status: scoped_latex_draft_ready_claims_audited
+  evidence:
+    - repro/stage240_scoped_latex_draft/pvw_mat_sab_scoped_draft.tex
+    - repro/stage240_scoped_latex_draft/claim_audit.csv
+    - repro/stage240_scoped_latex_draft/citation_audit.csv
+    - repro/stage240_scoped_latex_draft/proof_gate.csv
+    - docs/stage240_scoped_latex_draft.md
+  conclusion: >
+    Stage240 records PASS_STAGE240_SCOPED_LATEX_DRAFT_READY_CLAIMS_AUDITED. It converts the selected binary exact dense
+    PVW/MAT-SAB evidence and verified citations into a scoped LaTeX draft. The
+    claim remains limited to complete-SAB T_bootstrap/r on the recorded binary
+    rows; broader algorithmic and optimality claims remain gated.

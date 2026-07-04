@@ -1150,3 +1150,6 @@ generated from memory.
 Generated from input head `2b4fa33`, Stage239 records `PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN`. Retrieved
 9 verified BibTeX entries, wrote a LaTeX stub, and left 2
 sources as explicit TODOs instead of fabricating references.
+- Stage240 scoped LaTeX draft records `PASS_STAGE240_SCOPED_LATEX_DRAFT_READY_CLAIMS_AUDITED`: a paper-facing draft now
+  exists, but it is scoped to selected binary exact dense PVW/MAT-SAB and does
+  not close novelty, non-binary, compact, or optimality gates.

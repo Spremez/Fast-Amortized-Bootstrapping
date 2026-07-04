@@ -2750,3 +2750,10 @@ Repro artifacts:
   - `scripts/build_stage239_bibtex_latex_stub.py`
   - `references/stage239_pvw_mat_sab.bib`
   - `repro/stage239_bibtex_latex_stub/`
+- stage240_scoped_latex_draft:
+  - `docs/stage240_scoped_latex_draft.md`
+  - `experiments/stage240_scoped_latex_draft_plan.md`
+  - `theory_checks/stage240_claim_boundary_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage240_scoped_draft.md`
+  - `scripts/build_stage240_scoped_latex_draft.py`
+  - `repro/stage240_scoped_latex_draft/`

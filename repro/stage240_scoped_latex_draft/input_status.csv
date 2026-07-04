@@ -1,0 +1,7 @@
+input,status,role,bytes
+repro/stage236_set_2_3_4096_r4_highstat_slice/selected_binary_matrix_summary.csv,present,selected binary high-stat local result,899
+repro/stage237_scoped_manuscript_package/contribution_claims.csv,present,claim ledger,2398
+repro/stage237_scoped_manuscript_package/manuscript_skeleton.md,present,manuscript skeleton,8976
+repro/stage239_bibtex_latex_stub/citation_key_map.csv,present,verified citation keys,1141
+repro/stage239_bibtex_latex_stub/unresolved_bibtex_todo.csv,present,unresolved citation TODOs,611
+references/stage239_pvw_mat_sab.bib,present,verified BibTeX file,8603

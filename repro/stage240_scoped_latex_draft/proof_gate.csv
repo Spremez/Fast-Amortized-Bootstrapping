@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs,PASS,"Stage236 results, Stage237 claims, Stage239 keymap/BibTeX exist",all present,repro/stage240_scoped_latex_draft/gate_matrix.csv,draft can be generated only from verified local inputs
+G2_experiment_rows,PASS,four selected binary high-stat rows,"rows=4; params=SET_4_5_2048:r4,SET_4_5_2048:r2,SET_2_3_4096:r2,SET_2_3_4096:r4",repro/stage240_scoped_latex_draft/gate_matrix.csv,bounds throughput claim to selected binary matrix
+G3_citations_subset,PASS,all LaTeX cite keys appear in Stage239 keymap,used=9; missing=[]; todos=2,repro/stage240_scoped_latex_draft/gate_matrix.csv,prevents unverified citations in draft body
+G4_todo_visibility,PASS_TODOS_VISIBLE,unresolved Stage239 sources remain visible TODO comments,todos=2,repro/stage240_scoped_latex_draft/gate_matrix.csv,prevents silent bibliography gaps
+G5_overclaim_guard,PASS_NO_FORBIDDEN_STRONG_CLAIM,no broad novelty/non-binary/all-parameter/optimality wording,hits=,repro/stage240_scoped_latex_draft/gate_matrix.csv,allows scoped draft only
+G6_stage240_decision,PASS_STAGE240_SCOPED_LATEX_DRAFT_READY_CLAIMS_AUDITED,all gates pass or explicit TODO visibility gate passes,PASS_STAGE240_SCOPED_LATEX_DRAFT_READY_CLAIMS_AUDITED,repro/stage240_scoped_latex_draft/gate_matrix.csv,"draft ready for compile/template pass, not final paper"
