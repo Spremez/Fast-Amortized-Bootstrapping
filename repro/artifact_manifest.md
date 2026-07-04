@@ -3118,3 +3118,6 @@ Repro artifacts:
 - stage304_parameter_claim_matrix:
   - `docs/stage304_parameter_claim_matrix.md`
   - `repro/stage304_parameter_claim_matrix/`
+- stage305_materialization_split_probe:
+  - `docs/stage305_materialization_split_probe.md`
+  - `repro/stage305_materialization_split_probe/`

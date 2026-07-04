@@ -1098,3 +1098,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage304 parameter claim matrix
 
 `PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM` supports a scoped two-parameter local engineering claim for direct-DFT PVW/MAT-SAB. The next route is residual materialization split before any new AVX rewrite.
+<!-- stage305-materialization-split-probe -->
+### Stage305 materialization split probe
+
+`PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED` records split-profile attribution and selects `torus_to_dft` as the next measured component target.

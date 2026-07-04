@@ -4079,3 +4079,7 @@ H304_two_parameter_local_generalization:
   primary_metric: complete_sab_T_bootstrap_over_r
   evidence: repro/stage304_parameter_claim_matrix/parameter_evidence_matrix.csv
   claim_scope: two local binary include-zero 2048-output parameter sets
+H305_materialization_split_probe:
+  status: PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED
+  dominant_direct_component: torus_to_dft
+  evidence: repro/stage305_materialization_split_probe/split_components.csv

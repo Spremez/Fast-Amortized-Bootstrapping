@@ -1,0 +1,3 @@
+claim,status,allowed,not_allowed
+residual_component_target,recorded,Use `torus_to_dft` as the next measured component target.,Do not start a broad AVX rewrite without a component-specific hypothesis.
+performance,profile_only,Use Stage296/303 for performance claims.,Do not use instrumented Stage305 timings as final latency claims.

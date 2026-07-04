@@ -7088,3 +7088,8 @@ Status: `PASS_STAGE303_PARAM_MATRIX_HIGHSTAT_LOCAL`.
 Goal: merge two-parameter high-stat evidence with native counter mechanism evidence.
 
 Status: `PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM`.
+## Stage 305: Materialization Split Probe
+
+Goal: profile selected-control vs direct-DFT split components before new AVX work.
+
+Status: `PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED`.

@@ -448,3 +448,5 @@
 - [x] Stage303 records `PASS_STAGE303_PARAM_MATRIX_HIGHSTAT_LOCAL` for SET_4_5_2048 direct DFT high-stat local complete-SAB evidence.
 <!-- stage304-parameter-claim-matrix-checklist -->
 - [x] Stage304 records `PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM` and claim boundaries.
+<!-- stage305-materialization-split-probe-checklist -->
+- [x] Stage305 records `PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED` and a component-specific next target.

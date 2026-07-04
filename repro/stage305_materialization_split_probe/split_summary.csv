@@ -1,0 +1,3 @@
+variant,correctness,mode,r,h,r_prec,reps,t_bootstrap_over_r_pvw_us,speedup_vs_scalar,body_profile_rows,body_full_us_sum,body_mat_ep_calls,body_mat_ep_us_sum,split_normal_calls,split_sub_calls,split_total_calls,split_rows_sum,split_expected_rows,split_total_us,split_vs_body_mat_ep_ratio,source_log
+selected_control,Pass,include_zero,4,39,7,1,6687778.750,1.619,2,52931724.000,1146880,32237088.000,20320,1126560,1146880,5734400,5734400,32140708.000,0.997010,repro/stage305_materialization_split_probe/raw/selected_control/run.log
+direct_dft,Pass,include_zero,4,39,7,1,6259014.000,1.721,2,49700212.000,1146880,28544941.000,20320,1126560,1146880,5734400,5734400,28455839.000,0.996879,repro/stage305_materialization_split_probe/raw/direct_dft/run.log

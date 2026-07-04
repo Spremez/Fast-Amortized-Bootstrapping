@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_correctness,PASS,variants,selected_control;direct_dft,Both profiled variants must pass target correctness.
+G2_profile_consistency,PASS,calls/rows,matched,Split calls and rows must match body-profile MAT EP calls.
+G3_dominant_direct_component,RECORDED,component,torus_to_dft,Dominant direct residual component selects the next micro-hypothesis.
+G4_claim_boundary,PASS_PROFILE_ONLY,scope,instrumented one-run profile,Do not use instrumented latency as final speed claim.
+G5_decision,PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED,stage decision,PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED,Controls Stage306 route.
