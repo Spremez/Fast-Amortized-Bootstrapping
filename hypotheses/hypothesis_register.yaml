@@ -3544,3 +3544,15 @@ H10_stage254_nonbinary_keygen_noise_preflight:
     selector keygen/noise prototyping for s_coff/s_sign. Production
     non-binary SAB integration, complete-SAB speedup, and noise/security
     claims remain blocked.
+H10_stage255_mosfhet_nonbinary_selector_keygen_noise:
+  status: actual_isolated_selector_keygen_noise_passed_sparsemul_preflight_next
+  evidence:
+    - repro/stage255_mosfhet_nonbinary_selector_keygen_noise/selector_noise_probe.csv
+    - repro/stage255_mosfhet_nonbinary_selector_keygen_noise/selector_noise_aggregate.csv
+    - repro/stage255_mosfhet_nonbinary_selector_keygen_noise/proof_gate.csv
+    - docs/stage255_mosfhet_nonbinary_selector_keygen_noise.md
+  conclusion: >
+    Stage255 records PASS_STAGE255_MOSFHET_SELECTOR_KEYGEN_NOISE_READY_NONBINARY_SPARSEMUL_PREFLIGHT. Actual MOSFHET MAT 0/1 selector encryption
+    and external products pass isolated include-zero and ternary sub_a phase
+    gates for r=1/2/4. This admits sparse_mul integration preflight only; full
+    SAB and T_bootstrap/r speedup claims remain blocked.

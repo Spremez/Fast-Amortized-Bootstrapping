@@ -1,0 +1,3 @@
+route,decision,production_permission,reason,next_gate
+stage256_nonbinary_sparsemul_preflight,ADMIT_PREFLIGHT,no,actual isolated selector keygen/external-product phase gate passed,design sparse_mul integration boundary and noise/resource recurrence before production code
+nonbinary_full_sab,BLOCKED,no,"no sparse_mul integration, full SAB correctness, multi-seed noise, resource, or T_bootstrap/r benchmark yet",Stage256+

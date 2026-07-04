@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+actual_isolated_selector_keygen,supported_isolated,Actual MOSFHET MAT 0/1 selectors for s_coff/s_sign pass isolated sub_a phase gates.,Non-binary PVW/MAT-SAB production keygen is implemented.,repro/stage255_mosfhet_nonbinary_selector_keygen_noise/selector_noise_probe.csv
+noise,rounding_phase_gap_only,Stage255 records phase gap statistics under an isolated prototype.,Full non-binary SAB noise is proven acceptable.,repro/stage255_mosfhet_nonbinary_selector_keygen_noise/selector_noise_aggregate.csv
+speedup,unsupported,No complete-SAB non-binary speedup is claimed.,Non-binary PVW/MAT-SAB accelerates bootstrapping.,repro/stage255_mosfhet_nonbinary_selector_keygen_noise/implementation_admission.csv

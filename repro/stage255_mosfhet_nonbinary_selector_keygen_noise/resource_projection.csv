@@ -1,0 +1,4 @@
+r,N,mat_rows,dft_polys_per_selector,double_slots_per_selector,estimated_bytes_per_selector,single_family_target_count_h39,estimated_target_family_bytes_h39,interpretation
+1,1024,2,4,4096,32768,39,1277952,isolated selector DFT storage estimate only
+2,1024,3,9,9216,73728,39,2875392,isolated selector DFT storage estimate only
+4,1024,5,25,25600,204800,39,7987200,isolated selector DFT storage estimate only

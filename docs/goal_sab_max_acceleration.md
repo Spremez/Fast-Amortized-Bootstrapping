@@ -1196,3 +1196,6 @@ sources as explicit TODOs instead of fabricating references.
 - Stage254 non-binary keygen/noise preflight records `PASS_STAGE254_NONBINARY_KEYGEN_NOISE_PREFLIGHT_READY_MOSFHET_ISOLATED_PROTOTYPE`: isolated
   MAT `s_coff/s_sign` keygen/noise prototyping is admitted, but production
   non-binary SAB and speedup claims remain blocked.
+- Stage255 MOSFHET non-binary selector keygen/noise records `PASS_STAGE255_MOSFHET_SELECTOR_KEYGEN_NOISE_READY_NONBINARY_SPARSEMUL_PREFLIGHT`:
+  actual production-library MAT selector encryption passes isolated sub_a
+  phase gates, but non-binary full SAB and speedup claims remain blocked.

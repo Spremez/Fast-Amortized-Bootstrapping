@@ -799,3 +799,9 @@ closure.
 `PASS_STAGE254_NONBINARY_KEYGEN_NOISE_PREFLIGHT_READY_MOSFHET_ISOLATED_PROTOTYPE` moves the route to actual MOSFHET-adjacent selector keygen/noise
 prototype readiness. The active goal remains open for measured noise/resource,
 production integration, full SAB A/B, and final claim closure.
+### Stage255 MOSFHET non-binary selector keygen/noise
+
+`PASS_STAGE255_MOSFHET_SELECTOR_KEYGEN_NOISE_READY_NONBINARY_SPARSEMUL_PREFLIGHT` advances non-binary PVW/MAT-SAB from finite equivalence to actual
+MOSFHET isolated selector evidence. The active goal remains open for sparse
+schedule integration, full SAB A/B, multi-seed noise/resource, and paper claim
+closure.

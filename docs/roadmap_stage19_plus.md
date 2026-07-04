@@ -6903,3 +6903,20 @@ encryption and DFT conversion primitives can support an isolated `s_coff`/
 block isolated prototyping, but production full SAB remains blocked until
 actual keygen, noise/resource, and integration gates pass.
 ```
+## Stage 255: MOSFHET Non-Binary Selector Keygen/Noise
+
+Goal:
+
+```text
+Run actual MOSFHET-adjacent MAT s_coff/s_sign selector encryption and isolated
+sub_a external-product phase/noise checks.
+```
+
+Status:
+
+```text
+Generated from input head `167c2ef` with `PASS_STAGE255_MOSFHET_SELECTOR_KEYGEN_NOISE_READY_NONBINARY_SPARSEMUL_PREFLIGHT`. Production MOSFHET MAT
+0/1 selector encryption and external products pass isolated include-zero and
+ternary sub_a phase gates for r=1/2/4. Production SAB/PVW source remains
+unchanged; next selected route is non-binary sparse_mul integration preflight.
+```

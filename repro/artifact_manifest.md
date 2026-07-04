@@ -2849,3 +2849,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage254_nonbinary_keygen_noise_preflight.md`
   - `scripts/build_stage254_nonbinary_keygen_noise_preflight.py`
   - `repro/stage254_nonbinary_keygen_noise_preflight/`
+- stage255_mosfhet_nonbinary_selector_keygen_noise:
+  - `docs/stage255_mosfhet_nonbinary_selector_keygen_noise.md`
+  - `experiments/stage255_mosfhet_nonbinary_selector_keygen_noise_plan.md`
+  - `theory_checks/stage255_mosfhet_nonbinary_selector_keygen_noise_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage255_mosfhet_nonbinary_selector_keygen_noise.md`
+  - `scripts/build_stage255_mosfhet_nonbinary_selector_keygen_noise.py`
+  - `repro/stage255_mosfhet_nonbinary_selector_keygen_noise/`
