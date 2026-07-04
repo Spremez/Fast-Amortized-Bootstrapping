@@ -1,0 +1,5 @@
+obligation,status,required_evidence,failure_action
+selector_encryption_noise,pending_stage255,encrypt MAT s_coff/s_sign selectors and record initial noise distribution,do not integrate non-binary sparse_mul
+suba_external_product_noise,pending_stage255,isolated sub_a with encrypted selector DFT and scalar/PVW noise comparison,keep Stage253 finite-only
+full_sparse_schedule_noise,blocked_until_isolated_passes,multi-step sparse_mul noise recurrence and multi-seed final-output noise,no complete-SAB claim
+parameter_resource_tradeoff,pending,"key size, keygen time, scratch/RSS for non-binary selector families",scope or reject non-binary branch

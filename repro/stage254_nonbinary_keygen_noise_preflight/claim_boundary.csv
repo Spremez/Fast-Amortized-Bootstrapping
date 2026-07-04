@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+keygen_preflight,supported_preflight,MAT primitives needed for 0/1 selector encryption exist and counts are projected.,Non-binary MAT selector keygen is implemented.,repro/stage254_nonbinary_keygen_noise_preflight/selector_keygen_design.csv
+nonbinary_cost,count_model_only,Single-family non-binary sub_a adds h*in_N MAT external-product-class updates in the model.,This model proves non-binary speedup or slowdown.,repro/stage254_nonbinary_keygen_noise_preflight/cost_projection.csv
+noise_security,unsupported_pending,Noise/security remains a required Stage255+ gate.,Non-binary PVW noise is acceptable.,repro/stage254_nonbinary_keygen_noise_preflight/noise_obligation_matrix.csv

@@ -3531,3 +3531,16 @@ H10_stage253_isolated_nonbinary_suba_equivalence:
     finite negacyclic lane equivalence for r=1/2/4, and binary naive controls
     fail as expected. This is not production keygen, noise, full SAB, or
     speedup evidence.
+H10_stage254_nonbinary_keygen_noise_preflight:
+  status: isolated_selector_keygen_noise_prototype_admitted
+  evidence:
+    - repro/stage254_nonbinary_keygen_noise_preflight/source_capability_matrix.csv
+    - repro/stage254_nonbinary_keygen_noise_preflight/cost_projection.csv
+    - repro/stage254_nonbinary_keygen_noise_preflight/noise_obligation_matrix.csv
+    - repro/stage254_nonbinary_keygen_noise_preflight/proof_gate.csv
+    - docs/stage254_nonbinary_keygen_noise_preflight.md
+  conclusion: >
+    Stage254 records PASS_STAGE254_NONBINARY_KEYGEN_NOISE_PREFLIGHT_READY_MOSFHET_ISOLATED_PROTOTYPE. It admits only MOSFHET-adjacent isolated
+    selector keygen/noise prototyping for s_coff/s_sign. Production
+    non-binary SAB integration, complete-SAB speedup, and noise/security
+    claims remain blocked.

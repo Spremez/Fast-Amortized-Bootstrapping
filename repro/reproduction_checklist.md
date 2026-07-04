@@ -353,3 +353,4 @@
 - [x] Stage251 non-binary selector semantics blocks production implementation `PASS_STAGE251_NONBINARY_SELECTOR_SEMANTICS_PREFLIGHT_BLOCKS_IMPLEMENTATION`.
 - [x] Stage252 non-binary MAT selector key skeleton ready for isolated equivalence `PASS_STAGE252_NONBINARY_MAT_SELECTOR_KEY_SKELETON_READY_ISOLATED_EQUIVALENCE`.
 - [x] Stage253 isolated non-binary sub_a equivalence ready for keygen/noise preflight `PASS_STAGE253_ISOLATED_NONBINARY_SUBA_EQUIVALENCE_READY_KEYGEN_NOISE_PREFLIGHT`.
+- [x] Stage254 non-binary keygen/noise preflight admits isolated prototype `PASS_STAGE254_NONBINARY_KEYGEN_NOISE_PREFLIGHT_READY_MOSFHET_ISOLATED_PROTOTYPE`.

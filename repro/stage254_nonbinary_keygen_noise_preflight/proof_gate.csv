@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs_and_stage253,PASS,inputs;stage253,true;true,repro/stage254_nonbinary_keygen_noise_preflight/input_status.csv; repro/stage253_isolated_nonbinary_suba_equivalence/proof_gate.csv,Stage254 is valid only after isolated non-binary equivalence passes.
+G2_source_capability,PASS,source primitives,present_or_blocked_as_expected,repro/stage254_nonbinary_keygen_noise_preflight/source_capability_matrix.csv,MAT monomial encryption/DFT primitives exist; production non-binary keygen remains absent.
+G3_cost_pressure,PASS_PREFLIGHT,single-family extra EP ratio,below_0.20,repro/stage254_nonbinary_keygen_noise_preflight/cost_projection.csv,Single-family non-binary branches are not ruled out by first-order count pressure.
+G4_noise_obligations,PASS_OBLIGATIONS_RECORDED,noise obligations,pending,repro/stage254_nonbinary_keygen_noise_preflight/noise_obligation_matrix.csv,Noise is not proven; obligations are explicit before any production claim.
+G5_admission_boundary,PASS_NO_PRODUCTION,production permission,no,repro/stage254_nonbinary_keygen_noise_preflight/implementation_admission.csv,Only MOSFHET-adjacent isolated prototype is admitted.
+G6_stage254_decision,PASS_STAGE254_NONBINARY_KEYGEN_NOISE_PREFLIGHT_READY_MOSFHET_ISOLATED_PROTOTYPE,decision,PASS_STAGE254_NONBINARY_KEYGEN_NOISE_PREFLIGHT_READY_MOSFHET_ISOLATED_PROTOTYPE,repro/stage254_nonbinary_keygen_noise_preflight/proof_gate.csv,"Proceed to actual isolated selector keygen/noise prototype, not full SAB."

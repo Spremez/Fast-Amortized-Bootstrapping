@@ -1,0 +1,4 @@
+selector_family,plaintext,monomial_exponent,count_per_key,existing_pattern,needed_for_stage255
+distance_bits,bit_j(r_diff),0,(h + 1) * r_prec,sab_pvw_encrypt_bits,reuse current binary pattern as reference
+s_coff,"c in {0,1}",0,h when include_zero,"same MAT monomial encryption primitive, new family",allocate/encrypt DFT selector family and verify include-zero sub_a
+s_sign,"s in {0,1}",0,h when ternary,"same MAT monomial encryption primitive, new family",allocate/encrypt DFT selector family and verify ternary sub_a

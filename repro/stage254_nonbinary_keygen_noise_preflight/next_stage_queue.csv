@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage255_mosfhet_isolated_selector_keygen_noise,Stage254 preflight admits isolated prototype only.,"actual MAT s_coff/s_sign encryption, isolated sub_a equivalence, noise/resource",selected_next,keep non-binary PVW unsupported,repro/stage254_nonbinary_keygen_noise_preflight/implementation_admission.csv
+P1,stage256_nonbinary_sparse_mul_integration,Stage255 passes actual selector keygen/noise/resource,integrate selector families into sparse_mul outside default path,conditional,no production integration,repro/stage254_nonbinary_keygen_noise_preflight/noise_obligation_matrix.csv
+P2,stage257_nonbinary_full_sab_ab,Stage256 integration passes correctness and noise,"complete-SAB T_bootstrap/r, multi-seed noise/resource, scalar default isolation",future_gated,no non-binary speedup claim,repro/stage254_nonbinary_keygen_noise_preflight/claim_boundary.csv

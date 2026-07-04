@@ -1,0 +1,5 @@
+capability,source,observed,status,interpretation
+mat_monomial_encrypt_zero_one,src/mosfhet/src/mattrgsw.c; src/mosfhet/include/mosfhet.h,yes,PRESENT,The primitive needed for 0/1 MAT selector encryption exists.
+mat_to_dft_conversion,src/mosfhet/src/mattrgsw.c; src/mosfhet/include/mosfhet.h,yes,PRESENT,The primitive needed to store selector rows in DFT form exists.
+current_binary_encrypt_bits_pattern,src/sab_pvw.c,yes,PRESENT,Current binary keygen already loops over MAT monomial bit encryption.
+production_nonbinary_keygen,src/sab_pvw.c,no,MISSING_BLOCKED,Production non-binary keygen remains absent by design.

@@ -6885,3 +6885,21 @@ binary naive update fails the negative controls. Production SAB/PVW source
 files remain unchanged. Next selected route: encrypted selector keygen/noise
 preflight.
 ```
+## Stage 254: Non-Binary Keygen/Noise Preflight
+
+Goal:
+
+```text
+Record selector keygen, noise, resource, and count obligations before actual
+non-binary PVW/MAT selector implementation.
+```
+
+Status:
+
+```text
+Generated from input head `26bc1c4` with `PASS_STAGE254_NONBINARY_KEYGEN_NOISE_PREFLIGHT_READY_MOSFHET_ISOLATED_PROTOTYPE`. Existing MAT monomial
+encryption and DFT conversion primitives can support an isolated `s_coff`/
+`s_sign` prototype. Single-family count pressure is recorded and does not
+block isolated prototyping, but production full SAB remains blocked until
+actual keygen, noise/resource, and integration gates pass.
+```

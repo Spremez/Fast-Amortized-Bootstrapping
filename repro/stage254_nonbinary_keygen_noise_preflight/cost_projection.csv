@@ -1,0 +1,10 @@
+param,branch,in_N,h,r_prec,binary_main_ep_calls,extra_suba_ep_calls,extra_ep_over_binary_main,binary_selector_objects,extra_selector_objects,selector_count_ratio,admission
+SET_2_3_2048,include_zero,2048,39,7,573440,79872,0.139286,280,39,1.139286,single_family_admitted_to_isolated_prototype
+SET_2_3_2048,ternary,2048,39,7,573440,79872,0.139286,280,39,1.139286,single_family_admitted_to_isolated_prototype
+SET_2_3_2048,include_zero_plus_ternary_stress,2048,39,7,573440,159744,0.278571,280,78,1.278571,stress_only_not_claimed
+SET_4_5_2048,include_zero,2048,42,7,616448,86016,0.139535,301,42,1.139535,single_family_admitted_to_isolated_prototype
+SET_4_5_2048,ternary,2048,42,7,616448,86016,0.139535,301,42,1.139535,single_family_admitted_to_isolated_prototype
+SET_4_5_2048,include_zero_plus_ternary_stress,2048,42,7,616448,172032,0.279070,301,84,1.279070,stress_only_not_claimed
+SET_2_3_4096,include_zero,4096,32,8,1081344,131072,0.121212,264,32,1.121212,single_family_admitted_to_isolated_prototype
+SET_2_3_4096,ternary,4096,32,8,1081344,131072,0.121212,264,32,1.121212,single_family_admitted_to_isolated_prototype
+SET_2_3_4096,include_zero_plus_ternary_stress,4096,32,8,1081344,262144,0.242424,264,64,1.242424,stress_only_not_claimed

@@ -794,3 +794,8 @@ keygen/noise/resource, full SAB A/B, and paper claim closure.
 equation evidence. The active goal remains open for encrypted selector keygen,
 noise/resource, MOSFHET-adjacent equivalence, full SAB A/B, and paper claim
 closure.
+### Stage254 non-binary keygen/noise preflight
+
+`PASS_STAGE254_NONBINARY_KEYGEN_NOISE_PREFLIGHT_READY_MOSFHET_ISOLATED_PROTOTYPE` moves the route to actual MOSFHET-adjacent selector keygen/noise
+prototype readiness. The active goal remains open for measured noise/resource,
+production integration, full SAB A/B, and final claim closure.

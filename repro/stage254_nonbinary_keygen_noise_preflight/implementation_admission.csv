@@ -1,0 +1,4 @@
+route,decision,production_permission,reason,next_gate
+stage255_mosfhet_isolated_selector_keygen,ADMIT_ISOLATED_PROTOTYPE,no,single-family extra EP ratio max=0.139535; source primitives present=true,"actual MAT selector encryption, isolated sub_a equivalence, noise/resource"
+nonbinary_full_sab,BLOCKED,no,"no encrypted selector keygen, noise recurrence, sparse_mul integration, or full SAB A/B yet",Stage255 and later
+include_zero_plus_ternary_stress,STRESS_ONLY_NOT_CLAIMED,no,scalar code prioritizes include_zero branch before ternary; both-family row is only layout pressure,separate branch semantics if ever claimed

@@ -1,0 +1,10 @@
+param,branch,selector_count_ratio,extra_ep_over_binary_main,status,interpretation
+SET_2_3_2048,include_zero,1.139286,0.139286,preflight_only,Counts show cost pressure; actual bytes/time/noise require Stage255+ measurement.
+SET_2_3_2048,ternary,1.139286,0.139286,preflight_only,Counts show cost pressure; actual bytes/time/noise require Stage255+ measurement.
+SET_2_3_2048,include_zero_plus_ternary_stress,1.278571,0.278571,preflight_only,Counts show cost pressure; actual bytes/time/noise require Stage255+ measurement.
+SET_4_5_2048,include_zero,1.139535,0.139535,preflight_only,Counts show cost pressure; actual bytes/time/noise require Stage255+ measurement.
+SET_4_5_2048,ternary,1.139535,0.139535,preflight_only,Counts show cost pressure; actual bytes/time/noise require Stage255+ measurement.
+SET_4_5_2048,include_zero_plus_ternary_stress,1.279070,0.279070,preflight_only,Counts show cost pressure; actual bytes/time/noise require Stage255+ measurement.
+SET_2_3_4096,include_zero,1.121212,0.121212,preflight_only,Counts show cost pressure; actual bytes/time/noise require Stage255+ measurement.
+SET_2_3_4096,ternary,1.121212,0.121212,preflight_only,Counts show cost pressure; actual bytes/time/noise require Stage255+ measurement.
+SET_2_3_4096,include_zero_plus_ternary_stress,1.242424,0.242424,preflight_only,Counts show cost pressure; actual bytes/time/noise require Stage255+ measurement.

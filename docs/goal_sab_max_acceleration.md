@@ -1193,3 +1193,6 @@ sources as explicit TODOs instead of fabricating references.
 - Stage253 isolated non-binary sub_a equivalence records `PASS_STAGE253_ISOLATED_NONBINARY_SUBA_EQUIVALENCE_READY_KEYGEN_NOISE_PREFLIGHT`: finite
   lane equivalence for include-zero and ternary selector equations passes, but
   production non-binary PVW/MAT-SAB remains unimplemented.
+- Stage254 non-binary keygen/noise preflight records `PASS_STAGE254_NONBINARY_KEYGEN_NOISE_PREFLIGHT_READY_MOSFHET_ISOLATED_PROTOTYPE`: isolated
+  MAT `s_coff/s_sign` keygen/noise prototyping is admitted, but production
+  non-binary SAB and speedup claims remain blocked.

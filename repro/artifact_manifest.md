@@ -2842,3 +2842,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage253_isolated_nonbinary_suba_equivalence.md`
   - `scripts/build_stage253_isolated_nonbinary_suba_equivalence.py`
   - `repro/stage253_isolated_nonbinary_suba_equivalence/`
+- stage254_nonbinary_keygen_noise_preflight:
+  - `docs/stage254_nonbinary_keygen_noise_preflight.md`
+  - `experiments/stage254_nonbinary_keygen_noise_preflight_plan.md`
+  - `theory_checks/stage254_nonbinary_keygen_noise_preflight_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage254_nonbinary_keygen_noise_preflight.md`
+  - `scripts/build_stage254_nonbinary_keygen_noise_preflight.py`
+  - `repro/stage254_nonbinary_keygen_noise_preflight/`
