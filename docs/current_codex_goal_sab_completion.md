@@ -964,3 +964,9 @@ requires repeated full-SAB A/B before any promotion.
 `PASS_STAGE281_REPEATED_POSITIVE_NOISE_RESOURCE_REQUIRED` repeats the Stage280 selected `backend_sub_decomp_dual` candidate
 against fast control using unprofiled complete SAB `T_bootstrap/r`. Noise,
 resource, and native gates remain open.
+<!-- stage282-cmux-residual-noise-resource -->
+### Stage282 CMUX residual noise/resource
+
+`PASS_STAGE282_NOISE_RESOURCE_LOCAL_PASS_NATIVE_REQUIRED` runs the selected `backend_sub_decomp_dual` candidate and fast
+control through the include-zero full-smoke noise/resource proxy. Native
+target-parameter evidence remains open.

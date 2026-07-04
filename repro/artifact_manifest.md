@@ -2997,3 +2997,8 @@ Repro artifacts:
   - `scripts/run_stage281_cmux_residual_repeated_gate.sh`
   - `scripts/build_stage281_cmux_residual_repeated_gate.py`
   - `repro/stage281_cmux_residual_repeated_gate/`
+- stage282_cmux_residual_noise_resource:
+  - `docs/stage282_cmux_residual_noise_resource.md`
+  - `scripts/run_stage282_cmux_residual_noise_resource.sh`
+  - `scripts/build_stage282_cmux_residual_noise_resource.py`
+  - `repro/stage282_cmux_residual_noise_resource/`

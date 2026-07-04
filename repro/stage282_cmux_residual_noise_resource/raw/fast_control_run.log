@@ -1,0 +1,41 @@
+SAB_PVW_NONBINARY_RESOURCE config full_smoke mode=include_zero r=4 trials=3 in_N=16 out_N=1024 h=2 r_prec=3 ell_packing=2 b_packing=14 ell_hw=12 b_hw=1
+SAB_PVW_NONBINARY_RESOURCE base_keygen full_smoke mode=include_zero r=4 input_keygen_us=2776 packing_keygen_us=1 pvw_secret_keygen_us=6054
+SAB_PVW_NONBINARY_RESOURCE key_bytes full_smoke mode=include_zero r=4 pvw_estimated_key_bytes=5026608 scalar_one_estimated_key_bytes=1062880 scalar_repeated_estimated_key_bytes=4251520 pvw_vs_scalar_repeated_ratio=1.182308 estimate_scope=public_bootstrap_key_includes_nonbinary_selector_family
+SAB_PVW_NONBINARY_RESOURCE keygen full_smoke mode=include_zero r=4 pvw_sab_keygen_us=108945
+SAB_PVW_NONBINARY_RESOURCE rss full_smoke mode=include_zero r=4 label=after_pvw_sab_keygen vmrss_kb=10188 vmhwm_kb=10188
+SAB_PVW_NONBINARY_RESOURCE keygen full_smoke mode=include_zero r=4 scalar_repeated_sab_keygen_us=80101 scalar_lane_avg_keygen_us=20025.250
+SAB_PVW_NONBINARY_RESOURCE rss full_smoke mode=include_zero r=4 label=after_scalar_repeated_sab_keygen vmrss_kb=17432 vmhwm_kb=17432
+SAB_PVW_NONBINARY_FULL_NOISE trial mode=include_zero r=4 trial=0 complete
+SAB_PVW_NONBINARY_FULL_NOISE trial mode=include_zero r=4 trial=1 complete
+SAB_PVW_NONBINARY_FULL_NOISE trial mode=include_zero r=4 trial=2 complete
+SAB_PVW_NONBINARY_FULL_NOISE lane mode=include_zero r=4 lane=0 trials=3 points=48 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-11.700 scalar_log2_sigma_torus=-11.812 pair_log2_sigma_torus=-11.270 pair_log2_max_abs_torus=-9.961
+SAB_PVW_NONBINARY_FULL_NOISE lane mode=include_zero r=4 lane=1 trials=3 points=48 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-11.755 scalar_log2_sigma_torus=-12.144 pair_log2_sigma_torus=-11.179 pair_log2_max_abs_torus=-10.201
+SAB_PVW_NONBINARY_FULL_NOISE lane mode=include_zero r=4 lane=2 trials=3 points=48 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-11.652 scalar_log2_sigma_torus=-11.528 pair_log2_sigma_torus=-10.869 pair_log2_max_abs_torus=-9.970
+SAB_PVW_NONBINARY_FULL_NOISE lane mode=include_zero r=4 lane=3 trials=3 points=48 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-11.748 scalar_log2_sigma_torus=-11.409 pair_log2_sigma_torus=-11.535 pair_log2_max_abs_torus=-10.228
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=blind_rotate_coeff0 r=4 lane=0 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.316 pair_log2_max_abs_torus=-12.735
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=blind_rotate_coeff0 r=4 lane=1 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.315 pair_log2_max_abs_torus=-12.716
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=blind_rotate_coeff0 r=4 lane=2 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.248 pair_log2_max_abs_torus=-12.641
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=blind_rotate_coeff0 r=4 lane=3 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.320 pair_log2_max_abs_torus=-12.743
+SAB_PVW_NONBINARY_STAGE_NOISE summary mode=include_zero stage=blind_rotate_coeff0 r=4 trials=3 points=192 pair_failures=0 pair_log2_sigma_torus=-13.299 pair_log2_max_abs_torus=-12.641
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=extract r=4 lane=0 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.316 pair_log2_max_abs_torus=-12.735
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=extract r=4 lane=1 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.315 pair_log2_max_abs_torus=-12.716
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=extract r=4 lane=2 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.248 pair_log2_max_abs_torus=-12.641
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=extract r=4 lane=3 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.320 pair_log2_max_abs_torus=-12.743
+SAB_PVW_NONBINARY_STAGE_NOISE summary mode=include_zero stage=extract r=4 trials=3 points=192 pair_failures=0 pair_log2_sigma_torus=-13.299 pair_log2_max_abs_torus=-12.641
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=materialize_tlwe r=4 lane=0 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.316 pair_log2_max_abs_torus=-12.735
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=materialize_tlwe r=4 lane=1 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.315 pair_log2_max_abs_torus=-12.716
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=materialize_tlwe r=4 lane=2 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.248 pair_log2_max_abs_torus=-12.641
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=materialize_tlwe r=4 lane=3 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.320 pair_log2_max_abs_torus=-12.743
+SAB_PVW_NONBINARY_STAGE_NOISE summary mode=include_zero stage=materialize_tlwe r=4 trials=3 points=192 pair_failures=0 pair_log2_sigma_torus=-13.299 pair_log2_max_abs_torus=-12.641
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=packing_ks r=4 lane=0 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.316 pair_log2_max_abs_torus=-12.734
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=packing_ks r=4 lane=1 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.314 pair_log2_max_abs_torus=-12.715
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=packing_ks r=4 lane=2 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.247 pair_log2_max_abs_torus=-12.640
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=packing_ks r=4 lane=3 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-13.319 pair_log2_max_abs_torus=-12.743
+SAB_PVW_NONBINARY_STAGE_NOISE summary mode=include_zero stage=packing_ks r=4 trials=3 points=192 pair_failures=0 pair_log2_sigma_torus=-13.298 pair_log2_max_abs_torus=-12.640
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=hw_ks r=4 lane=0 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-11.720 pair_log2_max_abs_torus=-10.325
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=hw_ks r=4 lane=1 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-11.574 pair_log2_max_abs_torus=-10.478
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=hw_ks r=4 lane=2 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-11.482 pair_log2_max_abs_torus=-10.076
+SAB_PVW_NONBINARY_STAGE_NOISE lane mode=include_zero stage=hw_ks r=4 lane=3 trials=3 points=48 pair_failures=0 pair_log2_sigma_torus=-11.334 pair_log2_max_abs_torus=-10.149
+SAB_PVW_NONBINARY_STAGE_NOISE summary mode=include_zero stage=hw_ks r=4 trials=3 points=192 pair_failures=0 pair_log2_sigma_torus=-11.514 pair_log2_max_abs_torus=-10.076
+SAB_PVW_NONBINARY_FULL_NOISE summary mode=include_zero r=4 trials=3 points=192 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-11.713 scalar_log2_sigma_torus=-11.671 pair_log2_sigma_torus=-11.174 pair_log2_max_abs_torus=-9.961 gate=Pass
+SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE full bootstrap gate: Pass

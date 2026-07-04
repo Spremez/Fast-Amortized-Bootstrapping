@@ -3859,3 +3859,12 @@ H10_stage281_cmux_residual_repeated_gate:
   conclusion: >
     Stage281 repeated the selected CMUX residual candidate against the guarded
     include-zero fast control. Noise/resource and native gates remain required.
+H10_stage282_cmux_residual_noise_resource:
+  status: PASS_STAGE282_NOISE_RESOURCE_LOCAL_PASS_NATIVE_REQUIRED
+  evidence:
+    - repro/stage282_cmux_residual_noise_resource/noise_resource_summary.csv
+    - repro/stage282_cmux_residual_noise_resource/proof_gate.csv
+    - docs/stage282_cmux_residual_noise_resource.md
+  conclusion: >
+    Stage282 checks selected candidate correctness/noise/resource on the
+    include-zero full-smoke proxy harness. Native target-parameter evidence remains required.

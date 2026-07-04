@@ -405,3 +405,5 @@
 - [x] Stage280 records `PASS_STAGE280_RESIDUAL_CANDIDATE_SELECTED_REPEAT_REQUIRED` with unprofiled T_bootstrap/r and separate profile attribution.
 <!-- stage281-cmux-residual-repeated-gate-checklist -->
 - [x] Stage281 records `PASS_STAGE281_REPEATED_POSITIVE_NOISE_RESOURCE_REQUIRED` for the selected CMUX residual candidate with repeated unprofiled T_bootstrap/r.
+<!-- stage282-cmux-residual-noise-resource-checklist -->
+- [x] Stage282 records `PASS_STAGE282_NOISE_RESOURCE_LOCAL_PASS_NATIVE_REQUIRED` for selected CMUX residual candidate noise/resource smoke.

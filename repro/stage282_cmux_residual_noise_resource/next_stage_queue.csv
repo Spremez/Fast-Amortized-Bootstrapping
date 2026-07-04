@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage283_native_target_repeated_gate,PASS_STAGE282_NOISE_RESOURCE_LOCAL_PASS_NATIVE_REQUIRED,Run selected candidate on native target platform with target parameters.,Keep local-only claim if native access remains unavailable.
+P1,stage284_target_resource_refresh,native or local target run available,Refresh target-size resource/keygen impact.,Report resource caveat with speedup.

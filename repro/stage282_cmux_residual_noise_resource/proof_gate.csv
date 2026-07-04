@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_input,PASS,input commit,6646ba0,Stage282 starts after Stage281 repeated positive gate.
+G2_noise_resource,PASS,variant pass count,2/2,Both fast control and selected candidate must pass.
+G3_failures,PASS,failures,0 required,No PVW/scalar/pair failures accepted.
+G4_resource_reporting,PASS,key/RSS rows,present,"Resource costs are reported, not hidden."
+G5_decision,PASS_STAGE282_NOISE_RESOURCE_LOCAL_PASS_NATIVE_REQUIRED,stage decision,PASS_STAGE282_NOISE_RESOURCE_LOCAL_PASS_NATIVE_REQUIRED,Native target-parameter confirmation remains separate.
