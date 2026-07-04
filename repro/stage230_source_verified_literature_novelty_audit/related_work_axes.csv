@@ -1,0 +1,6 @@
+axis,sources,relation,stage230_boundary
+target_sab,FAB686_2025,Target sparse amortized bootstrapping baseline.,"PVW/MAT-SAB is a scoped r-body implementation path over this target, not a replacement theorem."
+post_686_acceleration,INCNTT25_696,Direct post-686 transform/backend acceleration.,Separate algorithmic MAT lane batching from NTT/backend improvements.
+common_mask_packed_tfhe,SHAREMASK25_2112,Common-mask/shared-mask packed-message TFHE work.,Reject broad shared-mask novelty; allow only 686-specific PVW/MAT-SAB integration wording.
+batch_simd_bootstrapping,MS2018_532; GPVL2023_014; DKMS2024_112; LW2023_910; LW23A_B; BATCHBOOT26,"Amortized, batch, SIMD, and systems-level bootstrapping prior art.",Report per-lane T_bootstrap/r evidence; do not claim amortization/batching itself is new.
+packing_external_product_background,BGH2012_565; CGGI2018_421,PVW/LWE packing and TFHE external-product background.,Do not claim PVW packing or external products as new; claim only local MAT/PVW-SAB adaptation evidence.

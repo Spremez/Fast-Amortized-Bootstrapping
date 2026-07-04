@@ -669,3 +669,6 @@ or security claims.
 ### Stage229 parameter generalization matrix
 
 `PASS_STAGE229_SCOPED_BINARY_MATRIX_RECORDED_NONBINARY_BLOCKED` fixes the exact-route parameter matrix and keeps non-binary, all-parameter, novelty, and theoretical-optimality claims out of scope until their gates run.
+### Stage230 source-verified literature novelty audit
+
+`PASS_STAGE230_SOURCE_VERIFIED_SCOPED_NOVELTY_BOUNDARY` refreshes real-source related-work boundaries. Continue only with current-head parameter refresh, scoped manuscript skeleton, or separately gated non-binary/compact design.

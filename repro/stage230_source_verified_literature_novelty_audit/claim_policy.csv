@@ -1,0 +1,5 @@
+scope,allowed,forbidden
+paper_title_or_abstract,A systems/engineering study of PVW/MAT r-body batching for 2025/686-style sparse amortized bootstrapping.,A new universally optimal MAT-RLWE SAB algorithm.
+performance,Complete-SAB `T_bootstrap/r` speedup over repeated scalar SAB under same backend and recorded parameters.,Kernel-only speedup or backend-only speedup described as final bootstrapping acceleration.
+novelty,"Scoped candidate contribution after acknowledging common-mask, batch/SIMD, PVW packing, and amortized bootstrapping prior art.","First shared-mask, first batch bootstrapping, first PVW packing, or first TFHE external-product claim."
+future work,"Non-binary PVW-SAB, all-parameter support, compact selector route, and theoretical optimality remain open gates.",Treating open gates as already completed.

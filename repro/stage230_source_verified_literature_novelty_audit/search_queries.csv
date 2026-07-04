@@ -1,0 +1,8 @@
+axis,query,purpose
+target_baseline,IACR ePrint 2025/686 Fast amortized bootstrapping with small keys and polynomial noise overhead,Verify target 2025/686 identity and source route.
+post_686_transform,IACR ePrint 2025/696 Faster amortized bootstrapping using the incomplete NTT for free,Find direct post-686 amortized bootstrapping acceleration work.
+common_mask,Sharing the Mask TFHE bootstrapping on Packed Messages TCHES 2025 common mask,Check shared/common-mask packed-message prior art.
+batch_systems,BatchBoot Fast Batched Bootstrapping for TFHE Scheme USENIX Security 2026,Check later systems-level batched TFHE work.
+simd_batch_bootstrapping,Batch Bootstrapping I SIMD bootstrapping polynomial modulus EUROCRYPT 2023,Check batch/SIMD bootstrapping prior art.
+packing_background,Packed Ciphertexts in LWE-based Homomorphic Encryption ePrint 2012/565 PVW,Check PVW/LWE packing background.
+external_product_background,TFHE Fast Fully Homomorphic Encryption over the Torus ePrint 2018/421 external product,Check TFHE/external-product background.

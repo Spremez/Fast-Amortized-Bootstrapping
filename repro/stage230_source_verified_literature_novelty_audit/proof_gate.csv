@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,interpretation
+G1_required_inputs,PASS,inputs_present,true,repro/stage230_source_verified_literature_novelty_audit/input_status.csv,Stage230 starts from Stage229 claim boundaries and prior verified matrices.
+G2_source_verification_refresh,PASS,verified_sources,11/11,repro/stage230_source_verified_literature_novelty_audit/source_verification_refresh.csv,All Stage230 rows use primary or official metadata URLs; no fabricated references.
+G3_related_axes,PASS,axes,5,repro/stage230_source_verified_literature_novelty_audit/related_work_axes.csv,"The audit is targeted to the PVW/MAT-SAB delta, not a broad FHE survey."
+G4_novelty_policy,PASS_SCOPED_BOUNDARY,allow_or_reject,allow=2;reject=3,repro/stage230_source_verified_literature_novelty_audit/novelty_risk_map.csv,Scoped systems claim is allowed; broad novelty and optimality claims are rejected.
+G5_stage230_decision,PASS_STAGE230_SOURCE_VERIFIED_SCOPED_NOVELTY_BOUNDARY,decision,PASS_STAGE230_SOURCE_VERIFIED_SCOPED_NOVELTY_BOUNDARY,repro/stage230_source_verified_literature_novelty_audit/proof_gate.csv,Proceed to current-head parameter refresh or manuscript skeleton only under the claim policy.

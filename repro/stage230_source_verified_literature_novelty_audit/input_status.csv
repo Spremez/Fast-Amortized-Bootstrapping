@@ -1,0 +1,10 @@
+input,status,role,bytes
+repro/stage229_parameter_generalization_matrix/proof_gate.csv,present,Stage229 proof gate,1675
+repro/stage229_parameter_generalization_matrix/next_stage_queue.csv,present,Stage229 next queue selecting source-verified novelty audit,1061
+repro/stage229_parameter_generalization_matrix/claim_scope.csv,present,Stage229 scoped claim policy,1783
+repro/stage103_related_work_novelty_review/source_verification.csv,present,Prior source verification matrix,3140
+repro/stage103_related_work_novelty_review/related_work_matrix.csv,present,Prior related-work axes,1159
+repro/stage103_related_work_novelty_review/novelty_claim_matrix.csv,present,Prior novelty claim policy,2072
+docs/stage177_verified_literature_novelty_gate.md,present,Prior bounded literature novelty gate,13444
+docs/stage204_source_anchor_intake.md,present,Source anchor intake and metadata boundaries,9329
+stage229_next_selects_stage230,present,Keeps literature work on the registered P0 route.,

@@ -2679,3 +2679,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage229_parameter_scope.md`
   - `scripts/build_stage229_parameter_generalization_matrix.py`
   - `repro/stage229_parameter_generalization_matrix/`
+- stage230_source_verified_literature_novelty_audit:
+  - `docs/stage230_source_verified_literature_novelty_audit.md`
+  - `experiments/stage230_source_verified_literature_novelty_audit_plan.md`
+  - `theory_checks/stage230_novelty_claim_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage230_literature_boundary.md`
+  - `scripts/build_stage230_source_verified_literature_novelty_audit.py`
+  - `repro/stage230_source_verified_literature_novelty_audit/`
