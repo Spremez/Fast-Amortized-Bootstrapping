@@ -1,0 +1,6 @@
+anchor,file,lines,fact
+single_row_ifft_header,src/mosfhet/src/fft/spqlios/spqlios-fft.h,17-24,"Header declares `ifft(const void*, double*)`; no batch rows variant."
+avx512_ifft_symbol,src/mosfhet/src/fft/spqlios/spqlios-ifft-avx512.s,1-18,Assembly exports only `ifft`/`_ifft` and takes one data pointer.
+avx512_ifft_dataflow,src/mosfhet/src/fft/spqlios/spqlios-ifft-avx512.s,64-158,Main loops load one real/imag row and shared trig tables per transform.
+array_wrapper,src/mosfhet/src/polynomial.c,435-465,Array conversion loops over rows; Stage310 rejected wrapper-only work.
+direct_sub_dtf_rows,src/mosfhet/src/mattrgsw.c,1110-1163,Direct sub-DTF calls `ifft` once for each of rows=k+r.

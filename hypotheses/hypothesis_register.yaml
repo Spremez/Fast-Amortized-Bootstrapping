@@ -4197,3 +4197,14 @@ H315_backend_ifft_admission:
     Stage315 selects a backend-IFFT ABI preflight as the next executable
     route and blocks duplicate local digit/materialization wrapper work
     without a projected full-SAB budget above 1.02.
+H316_spqlios_ifft_abi_preflight:
+  status: PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH
+  primary_metric: isolated_ifft_component_reduction_before_full_sab
+  evidence:
+    - repro/stage316_spqlios_ifft_abi_preflight/stage316_summary.csv
+    - repro/stage316_spqlios_ifft_abi_preflight/abi_symbol_audit.csv
+    - repro/stage316_spqlios_ifft_abi_preflight/implementation_routes.csv
+    - repro/stage316_spqlios_ifft_abi_preflight/proof_gate.csv
+  conclusion: >
+    Stage316 finds no existing batch IFFT ABI, rejects C-wrapper-only
+    work, and admits only an isolated AVX512 ifft_batch5 skeleton gate.

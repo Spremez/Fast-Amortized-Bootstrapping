@@ -1,0 +1,7 @@
+artifact,evidence,count,interpretation
+src/mosfhet/src/fft/spqlios/spqlios-fft.h,single-row ifft declaration,1,"public ABI exposes `ifft(tables, data)` only"
+src/mosfhet/src/fft/spqlios/spqlios-fft.h,batch ifft declaration,0,no batch ABI is currently declared
+src/mosfhet/src/fft/spqlios/spqlios-ifft-avx512.s,single-row ifft symbol,2,AVX512 backend exports only the single-row ifft symbol
+src/mosfhet/src/fft/spqlios/spqlios-ifft-avx512.s,batch ifft symbol,0,no AVX512 batch ifft symbol exists
+src/mosfhet/src/polynomial.c,array wrapper loop,1,high-level array conversion remains a per-row wrapper
+src/mosfhet/src/mattrgsw.c,direct sub-DTF ifft calls,3,MAT direct sub-DTF still calls single-row ifft per row

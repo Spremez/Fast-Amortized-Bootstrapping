@@ -470,3 +470,5 @@
 - [x] Stage314 records `PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT` and next-candidate admission rules.
 <!-- stage315-backend-ifft-admission-checklist -->
 - [x] Stage315 records `PASS_STAGE315_BACKEND_IFFT_ADMISSION_SELECT_STAGE316_ABI_PREFLIGHT` and Stage316 admission gate.
+<!-- stage316-spqlios-ifft-abi-preflight-checklist -->
+- [x] Stage316 records `PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH` and Stage317 isolated batch5 gate.

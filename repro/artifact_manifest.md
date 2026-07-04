@@ -3198,3 +3198,10 @@ Repro artifacts:
   - `experiments/stage315_backend_ifft_validation_plan.md`
   - `scripts/build_stage315_backend_ifft_admission.py`
   - `repro/stage315_backend_ifft_admission/`
+- stage316_spqlios_ifft_abi_preflight:
+  - `docs/stage316_spqlios_ifft_abi_preflight.md`
+  - `theory_checks/stage316_spqlios_ifft_abi_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage316_spqlios_ifft_batch5.md`
+  - `experiments/stage316_spqlios_ifft_batch5_plan.md`
+  - `scripts/build_stage316_spqlios_ifft_abi_preflight.py`
+  - `repro/stage316_spqlios_ifft_abi_preflight/`

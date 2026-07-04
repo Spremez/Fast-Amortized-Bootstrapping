@@ -7143,3 +7143,8 @@ Status: `PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT
 Goal: select the next non-duplicate route after local digit closeout.
 
 Status: `PASS_STAGE315_BACKEND_IFFT_ADMISSION_SELECT_STAGE316_ABI_PREFLIGHT`.
+## Stage 316: SPQLIOS IFFT ABI Preflight
+
+Goal: decide whether backend IFFT work has a concrete ABI route.
+
+Status: `PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH`.

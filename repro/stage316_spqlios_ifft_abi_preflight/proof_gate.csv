@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_stage315_input,PASS,Stage315 decision,PASS_STAGE315_BACKEND_IFFT_ADMISSION_SELECT_STAGE316_ABI_PREFLIGHT,Stage316 is valid only after Stage315 selects backend IFFT.
+G2_no_existing_batch_abi,PASS,header_batch;asm_batch,0;0,No existing batch ABI can be reused.
+G3_c_wrapper_rejected,PASS,Stage310 rows5/rows1;rows10/rows1,0.961223;1.131833,Wrapper-only batching remains rejected.
+G4_selected_route,PASS_HIGH_RISK,route,R3-avx512-ifft-batch5-symbol,Only a new isolated assembly/backend symbol is admitted.
+G5_sab_integration_block,PASS,policy,no full SAB changes before isolated gate,Avoids theoretical drift and protects scalar/PVW baseline.
+G6_decision,PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH,stage decision,PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH,Controls Stage317.

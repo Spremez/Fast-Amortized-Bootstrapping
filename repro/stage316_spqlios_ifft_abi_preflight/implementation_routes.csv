@@ -1,0 +1,5 @@
+route_id,status,required_change,why,next_action
+R1-c-wrapper-loop,REJECT_DUPLICATE_STAGE310,Wrap five calls to existing `ifft` in C.,Stage310 already shows rows=5 per-row speedup below 1 and no true ABI change.,Do not implement.
+R2-c-model-batch,REJECT_FOR_PERFORMANCE_CLAIM,Port `ifft_model` to a rows=5 C model loop.,Useful for correctness documentation but cannot justify AVX512 performance claims.,Only use as a reference if an assembly prototype is implemented.
+R3-avx512-ifft-batch5-symbol,SELECT_HIGH_RISK_STAGE317,"Add isolated `ifft_batch5(tables,row0,row1,row2,row3,row4)` symbol and benchmark outside SAB.",Only route that can share trig-table loads/schedule across the rows=k+r=5 direct sub-DTF case.,Stage317 assembly skeleton or explicit stop if register pressure/ABI is too large.
+R4-full-sab-integration,BLOCK_UNTIL_ISOLATED_PASS,Call batch5 inside `mat_trgsw_sub_decompose_DFT_direct`.,No SAB integration before isolated correctness and IFFT reduction pass.,Only after Stage317 isolated gates.

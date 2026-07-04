@@ -1142,3 +1142,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage315 backend IFFT admission
 
 `PASS_STAGE315_BACKEND_IFFT_ADMISSION_SELECT_STAGE316_ABI_PREFLIGHT` selects Stage316 SPQLIOS batch-IFFT ABI preflight and keeps the primary metric as complete SAB `T_bootstrap/r`.
+<!-- stage316-spqlios-ifft-abi-preflight -->
+### Stage316 SPQLIOS IFFT ABI preflight
+
+`PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH` rejects C-wrapper IFFT batching and selects an isolated AVX512 `ifft_batch5` sketch gate for Stage317.

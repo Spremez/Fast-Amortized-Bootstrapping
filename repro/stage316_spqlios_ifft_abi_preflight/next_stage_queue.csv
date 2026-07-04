@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage317_spqlios_ifft_batch5_asm_skeleton_or_stop,PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH,Add an isolated AVX512 batch5 IFFT symbol or record a concrete register/ABI impossibility.,bit/float-equivalence vs five single-row ifft calls plus >= 0.107769 IFFT component reduction before SAB integration
