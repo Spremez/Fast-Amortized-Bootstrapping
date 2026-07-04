@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_stage330_input,PASS,Stage330 decision,PASS_STAGE330_HIGHSTAT_RECONCILIATION_HISTORICAL_10RUN_CURRENT_HOTCODE_5RUN,Stage331 is opened by Stage330's high-stat reconciliation.
+G2_sample_count,PASS,complete-SAB samples,10,Paper-grade scoped current-head table requires at least ten samples.
+G3_correctness,PASS,full SAB correctness,Pass,No performance claim is allowed if correctness fails.
+G4_noise_trials,PASS,pair failures/trials,0/10,Final-output PVW/scalar pair equivalence should pass over at least ten trials.
+G5_resource_recorded,PASS,max RSS,2415796,Resource side condition must be recorded with the current-head run.
+G6_decision,PASS_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH,stage decision,PASS_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH,Controls whether Stage332 may package the scoped paper result or must rerun.

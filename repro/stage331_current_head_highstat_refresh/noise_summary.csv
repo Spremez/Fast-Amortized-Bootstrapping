@@ -1,0 +1,2 @@
+variant,status,mode,r,trials,points,expected_model_pvw_failures,expected_model_scalar_failures,pair_failures,pair_log2_sigma_torus,pair_log2_max_abs_torus,gate,overall_gate,time_maxrss_kb,source_run_log,source_time_log
+noise_direct_current_head,pass,include_zero,4,10,81920,30720,30720,0,-7.664,-5.548,Pass,Pass,2415796,repro/stage331_current_head_highstat_refresh/raw/noise_direct_current_head/run.log,repro/stage331_current_head_highstat_refresh/raw/noise_direct_current_head/time.log

@@ -1,0 +1,11 @@
+variant,outer_run,inner_rep,correctness,mode,r,h,r_prec,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup_vs_repeated_scalar,source_log
+perf_direct_current_head,0,0,Pass,include_zero,4,39,7,24226148,6056537.000,43926866,10981716.500,1.813,repro/stage331_current_head_highstat_refresh/raw/perf_direct_current_head/run_0.log
+perf_direct_current_head,1,0,Pass,include_zero,4,39,7,24306398,6076599.500,42896947,10724236.750,1.765,repro/stage331_current_head_highstat_refresh/raw/perf_direct_current_head/run_1.log
+perf_direct_current_head,2,0,Pass,include_zero,4,39,7,24387284,6096821.000,43229689,10807422.250,1.773,repro/stage331_current_head_highstat_refresh/raw/perf_direct_current_head/run_2.log
+perf_direct_current_head,3,0,Pass,include_zero,4,39,7,24902444,6225611.000,42890664,10722666.000,1.722,repro/stage331_current_head_highstat_refresh/raw/perf_direct_current_head/run_3.log
+perf_direct_current_head,4,0,Pass,include_zero,4,39,7,24300125,6075031.250,41988621,10497155.250,1.728,repro/stage331_current_head_highstat_refresh/raw/perf_direct_current_head/run_4.log
+perf_direct_current_head,5,0,Pass,include_zero,4,39,7,24504589,6126147.250,42553851,10638462.750,1.737,repro/stage331_current_head_highstat_refresh/raw/perf_direct_current_head/run_5.log
+perf_direct_current_head,6,0,Pass,include_zero,4,39,7,24695744,6173936.000,42177121,10544280.250,1.708,repro/stage331_current_head_highstat_refresh/raw/perf_direct_current_head/run_6.log
+perf_direct_current_head,7,0,Pass,include_zero,4,39,7,24829129,6207282.250,42811873,10702968.250,1.724,repro/stage331_current_head_highstat_refresh/raw/perf_direct_current_head/run_7.log
+perf_direct_current_head,8,0,Pass,include_zero,4,39,7,24352932,6088233.000,42638371,10659592.750,1.751,repro/stage331_current_head_highstat_refresh/raw/perf_direct_current_head/run_8.log
+perf_direct_current_head,9,0,Pass,include_zero,4,39,7,24178544,6044636.000,42506125,10626531.250,1.758,repro/stage331_current_head_highstat_refresh/raw/perf_direct_current_head/run_9.log

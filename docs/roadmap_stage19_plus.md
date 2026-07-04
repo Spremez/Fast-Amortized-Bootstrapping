@@ -7239,3 +7239,10 @@ Goal: reconcile historical high-stat direct-DFT evidence with the current
 PVW/MAT-SAB `T_bootstrap/r` claim boundary.
 
 Status: `PASS_STAGE330_HIGHSTAT_RECONCILIATION_HISTORICAL_10RUN_CURRENT_HOTCODE_5RUN`.
+<!-- stage331-current-head-highstat-roadmap -->
+## Stage 331: Current-Head High-Stat Refresh
+
+Goal: rerun the selected direct PVW/MAT-SAB path on the current hot-code head
+with at least ten complete-SAB samples and refreshed noise/resource evidence.
+
+Status: `PARTIAL_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH`.

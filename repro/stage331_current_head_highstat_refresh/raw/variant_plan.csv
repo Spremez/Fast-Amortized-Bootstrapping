@@ -1,0 +1,3 @@
+case,param,fft_lib,r,runs_or_trials,reps,extra_flags
+perf_direct_current_head,SET_2_3_2048,spqlios_avx512,4,10,1,selected_direct_dft_current_head
+noise_direct_current_head,SET_2_3_2048,spqlios_avx512,4,10,,selected_direct_dft_current_head

@@ -502,3 +502,6 @@
 <!-- stage330-highstat-reconciliation-checklist -->
 - [x] Stage330 records `PASS_STAGE330_HIGHSTAT_RECONCILIATION_HISTORICAL_10RUN_CURRENT_HOTCODE_5RUN` and separates high-stat historical mechanism
   evidence from strict current-head paper-table requirements.
+<!-- stage331-current-head-highstat-checklist -->
+- [x] Stage331 records `PARTIAL_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH` for the current-head selected direct
+  PVW/MAT-SAB complete `T_bootstrap/r` refresh.

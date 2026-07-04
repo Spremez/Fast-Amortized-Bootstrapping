@@ -1,0 +1,4 @@
+claim,status,supported_statement,not_supported
+current_head_complete_sab_t_over_r,PASS,Current head direct PVW/MAT-SAB has speedup 1.747647x by complete SAB T_bootstrap/r for BINARY SET_2_3_2048 r=4 include-zero.,"All-parameter, compact, or theoretical-optimality claims."
+noise_resource_side_condition,PASS,Final-output pair failures=0/10; maxrss=2415796 KB.,Full native memory profiling or security proof for compact selector variants.
+paper_grade_scope,PASS_SCOPED,The result can be written as a scoped systems result for this parameter/backend/path if decision is PASS.,Novelty or optimality without literature/proof closeout.

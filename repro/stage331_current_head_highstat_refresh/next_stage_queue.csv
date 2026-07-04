@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage332_paper_result_pack,PASS_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH,"write scoped result table, figures, limitations, and reproducibility pack","If Stage331 is partial/fail, do not claim paper-grade current-head performance."
+P1,stage332_compact_keygen_security_preflight,compact route is prioritized over paper packing,keygen distribution and noise/security proof obligations,Keep compact production code blocked.

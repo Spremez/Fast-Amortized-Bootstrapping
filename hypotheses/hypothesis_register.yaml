@@ -4372,3 +4372,14 @@ H330_highstat_reconciliation:
     Stage330 reconciles same-flag Stage296 high-stat direct-DFT evidence with
     Stage321 current-hot-code engineering evidence. It preserves the strict
     boundary that current-head paper-grade >=10-sample evidence needs a rerun.
+H331_current_head_highstat_refresh:
+  status: PARTIAL_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH
+  primary_metric: complete_sab_T_bootstrap_over_r_vs_repeated_scalar
+  evidence:
+    - repro/stage331_current_head_highstat_refresh/summary.csv
+    - repro/stage331_current_head_highstat_refresh/perf_summary.csv
+    - repro/stage331_current_head_highstat_refresh/noise_summary.csv
+    - repro/stage331_current_head_highstat_refresh/proof_gate.csv
+  conclusion: >
+    Stage331 refreshes the current-head direct PVW/MAT-SAB evidence for the
+    scoped complete-SAB amortized metric.

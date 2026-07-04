@@ -1223,3 +1223,10 @@ evidence remain open; no compact SAB code is admitted.
 mechanism evidence, while Stage321 remains the current-hot-code complete-SAB
 engineering claim with 5 samples. Strict current-head paper tables still require
 a fresh >=10-sample run.
+<!-- stage331-current-head-highstat-refresh -->
+### Stage331 current-head high-stat refresh
+
+`PARTIAL_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH` records current-head direct PVW/MAT-SAB complete `T_bootstrap/r`
+performance, final-output noise, and RSS evidence. It remains scoped to the
+tested parameter/backend/path and does not prove compact security or global
+optimality.

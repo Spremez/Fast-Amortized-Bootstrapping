@@ -3285,3 +3285,12 @@ Repro artifacts:
   - `experiments/stage331_current_head_highstat_or_compact_plan.md`
   - `scripts/build_stage330_highstat_reconciliation.py`
   - `repro/stage330_highstat_reconciliation/`
+<!-- stage331-current-head-highstat-manifest -->
+- stage331_current_head_highstat_refresh:
+  - `docs/stage331_current_head_highstat_refresh.md`
+  - `theory_checks/stage331_current_head_highstat_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage331_current_head_highstat.md`
+  - `experiments/stage332_compact_keygen_security_or_paper_pack_plan.md`
+  - `scripts/run_stage331_current_head_highstat_refresh.sh`
+  - `scripts/build_stage331_current_head_highstat_refresh.py`
+  - `repro/stage331_current_head_highstat_refresh/`
