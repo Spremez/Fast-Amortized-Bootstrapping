@@ -3260,3 +3260,7 @@ Repro artifacts:
   - `scripts/run_stage325_selector_transpose_resource_probe.sh`
   - `scripts/build_stage325_selector_transpose_resource_probe.py`
   - `repro/stage325_selector_transpose_resource_probe/`
+- stage326_exact_dense_route_closeout:
+  - `docs/stage326_exact_dense_route_closeout.md`
+  - `scripts/build_stage326_exact_dense_route_closeout.py`
+  - `repro/stage326_exact_dense_route_closeout/`

@@ -1,0 +1,9 @@
+evidence,status,metric,value,source,interpretation
+current_complete_sab_direct_baseline,SUPPORTED,T_bootstrap/r speedup versus repeated scalar,1.748,repro/stage321_r4_unrolled_fullsab_ab/perf_summary.csv,Current exact PVW/MAT-SAB result remains the supported throughput baseline.
+r4_unrolled_fullsab_ab,CLOSED_NEUTRAL,decision,NEUTRAL_STAGE321_R4_UNROLLED_DIRECT_FULLSAB_NO_PROMOTION,repro/stage321_r4_unrolled_fullsab_ab/proof_gate.csv,Pointer-hoist/r4-unrolled local AVX512 variant does not improve complete SAB.
+dense_mat_profile_budget,MEASURED_RESIDUAL,dense_share;mat_ep_share,0.212353;0.576230,repro/stage323_dense_mat_counter_preflight/summary.csv,"Dense MAT remains a residual budget, but local exact loop changes need a new mechanism."
+selector_transpose_microbench,CLOSED_NEUTRAL,isolated_dense_speedup;required;fullsab_projection,1.028925;1.048905;1.006006,repro/stage325_selector_transpose_resource_probe/summary.csv,Selector-transpose locality is correct but below the threshold needed to justify integration.
+direct_digit,CLOSED_STAGE314,share,0.170493,repro/stage322_schedule_profile_attribution/component_budget.csv,Local digit variants did not move complete SAB enough.
+direct_ifft,CLOSED_STAGE319,share,0.178357,repro/stage322_schedule_profile_attribution/component_budget.csv,Batch5 IFFT intrinsics and assembly failed isolated gates.
+sub_a_and_copyback,DEFER_LOW_BUDGET,sub_a_share;copyback_share,0.026891;0.000000,repro/stage322_schedule_profile_attribution/component_budget.csv,Current profile does not select sub_a/copyback as first-order optimization targets.
+compact_structured_route,FROZEN_PROOF_REQUIRED,Stage324 selected route boundary,PASS_STAGE324_SELECT_SELECTOR_TRANSPOSE_RESOURCE_PREFLIGHT_COMPACT_REMAINS_FROZEN,repro/stage324_selector_layout_mechanism_preflight/summary.csv,Compact/structured selector is not production-admitted without formal proof and full SAB evidence.

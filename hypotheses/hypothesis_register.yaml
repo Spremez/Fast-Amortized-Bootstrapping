@@ -4314,3 +4314,14 @@ H325_selector_transpose_resource_probe:
     Stage325 tests coefficient-blocked selector-transposed storage as an
     isolated exact dense-addmul locality mechanism. It does not alter scalar
     SAB or default sab_pvw_* behavior.
+H326_exact_dense_route_closeout:
+  status: PASS_STAGE326_EXACT_DENSE_FRONTIER_CLOSED_CLAIM_REFRESH_SELECTED
+  primary_metric: complete_sab_T_bootstrap_over_r_claim_boundary
+  evidence:
+    - repro/stage326_exact_dense_route_closeout/summary.csv
+    - repro/stage326_exact_dense_route_closeout/evidence_matrix.csv
+    - repro/stage326_exact_dense_route_closeout/frontier_status.csv
+    - repro/stage326_exact_dense_route_closeout/proof_gate.csv
+  conclusion: >
+    Stage326 closes current exact dense/local-layout implementation routes
+    under current evidence and routes to a final scoped claim/repro refresh.

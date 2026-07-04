@@ -1,0 +1,5 @@
+gate,status,metric,value,interpretation
+G1_stage325_input,PASS,Stage325 decision,NEUTRAL_STAGE325_SELECTOR_TRANSPOSE_MICRO_NO_PROMOTION,Stage326 closeout requires the selected Stage325 route to be resolved.
+G2_exact_dense_routes,PASS_CLOSED,closed routes,r4_unrolled;selector_transpose;digit;ifft,Current exact dense/local implementation routes are closed or deferred by measured gates.
+G3_claim_boundary,PASS_SCOPED,allowed claim,complete-SAB T_bootstrap/r throughput evidence,"Do not upgrade to theoretical optimality, compact algorithm, or all-parameter claims."
+G4_next_stage,PASS_STAGE326_EXACT_DENSE_FRONTIER_CLOSED_CLAIM_REFRESH_SELECTED,selected next,stage327_final_claim_repro_refresh,Refresh final package instead of starting another low-mechanism AVX rewrite.

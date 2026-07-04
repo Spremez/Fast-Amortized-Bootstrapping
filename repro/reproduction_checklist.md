@@ -491,3 +491,5 @@
 - [x] Stage324 records `PASS_STAGE324_SELECT_SELECTOR_TRANSPOSE_RESOURCE_PREFLIGHT_COMPACT_REMAINS_FROZEN` and selects Stage325 selector-transpose resource probe without granting SAB hot-path code permission.
 <!-- stage325-selector-transpose-resource-probe-checklist -->
 - [x] Stage325 records `NEUTRAL_STAGE325_SELECTOR_TRANSPOSE_MICRO_NO_PROMOTION` from isolated selector-transpose dense-addmul microbench.
+<!-- stage326-exact-dense-route-closeout-checklist -->
+- [x] Stage326 records `PASS_STAGE326_EXACT_DENSE_FRONTIER_CLOSED_CLAIM_REFRESH_SELECTED` and selects Stage327 final claim/repro refresh.

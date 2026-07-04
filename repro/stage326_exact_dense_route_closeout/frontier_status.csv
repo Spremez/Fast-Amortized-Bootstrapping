@@ -1,0 +1,5 @@
+frontier,status,why,allowed_reopen_condition
+exact_dense_current_key_format,CLOSED_UNDER_CURRENT_EVIDENCE,r4 unrolled and selector-transpose both failed full-SAB or projected full-SAB gates.,new load/store/count mechanism with microbench threshold and full-SAB A/B plan
+current_supported_claim,KEEP_SCOPED_T_BOOTSTRAP_OVER_R,"Current complete SAB evidence supports amortized throughput versus repeated scalar, not theoretical optimality.",Stage327 final claim refresh may package this as scoped systems evidence.
+structured_compact_algorithmic_route,BLOCKED_PROOF_REQUIRED,Potential product-count reduction changes selector semantics and remains proof-only.,"formal distribution/keygen/security proof, noise recurrence, isolated equivalence, and full SAB A/B"
+native_counter_refresh,OPTIONAL_ATTRIBUTION_ONLY,Native counters can improve attribution but cannot rescue a neutral isolated microbench by themselves.,"use to support final wording or a new mechanism, not to claim unmeasured speedup"

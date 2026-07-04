@@ -1,0 +1,3 @@
+priority,stage,entry_condition,task,gate,failure_action
+P0,stage327_final_claim_repro_refresh,PASS_STAGE326_EXACT_DENSE_FRONTIER_CLOSED_CLAIM_REFRESH_SELECTED,Refresh final evidence package with Stage320-326 results and scoped claim wording.,"Every claim must map to complete-SAB timing, microbench-only evidence, or blocked/frozen route status.",Keep active goal open only for a new formal proof or new measured mechanism.
+P1,formal_compact_selector_reopen,new proof artifact,Reopen algorithmic product-count reduction only after a real distribution/keygen/security proof.,"Proof, noise recurrence, isolated equivalence, resource, and full-SAB A/B.",Do not implement compact SAB hot path.

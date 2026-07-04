@@ -1193,3 +1193,8 @@ exists.
 `NEUTRAL_STAGE325_SELECTOR_TRANSPOSE_MICRO_NO_PROMOTION` records isolated selector-transpose dense-addmul evidence:
 speedup mean `1.026188`, projected complete-SAB speedup
 `1.005449`.
+<!-- stage326-exact-dense-route-closeout -->
+### Stage326 exact dense route closeout
+
+`PASS_STAGE326_EXACT_DENSE_FRONTIER_CLOSED_CLAIM_REFRESH_SELECTED` closes the current exact dense/local-layout implementation
+frontier and selects final claim/repro refresh.

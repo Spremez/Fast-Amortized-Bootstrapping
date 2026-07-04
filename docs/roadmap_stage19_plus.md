@@ -7208,3 +7208,9 @@ Goal: run a concrete isolated r=4 selector-transpose dense-addmul experiment
 before any SAB hot-path code.
 
 Status: `NEUTRAL_STAGE325_SELECTOR_TRANSPOSE_MICRO_NO_PROMOTION`.
+## Stage 326: Exact Dense Route Closeout
+
+Goal: close exact dense/local-layout optimization under current evidence after
+Stage325 selector-transpose neutral result.
+
+Status: `PASS_STAGE326_EXACT_DENSE_FRONTIER_CLOSED_CLAIM_REFRESH_SELECTED`.
