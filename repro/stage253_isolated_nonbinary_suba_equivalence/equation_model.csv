@@ -1,0 +1,3 @@
+branch,selector_family,scalar_equation,lane_equation,selector_values,negative_control
+include_zero,s_coff,p' = p + c((X^a - 1)p),body[q]' = body[q] + c((X^a - 1)body[q]),c=0 identity; c=1 X^a,binary X^a must fail on c=0 nonfixed states
+ternary,s_sign,p1=X^a p; p'=p1 + s((X^{-2a}-1)p1),body[q]' equals X^a body[q] when s=0 and X^-a body[q] when s=1,s=0 positive; s=1 negative,binary X^a must fail on s=1 nonfixed states

@@ -2835,3 +2835,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage252_nonbinary_mat_selector_key_skeleton.md`
   - `scripts/build_stage252_nonbinary_mat_selector_key_skeleton.py`
   - `repro/stage252_nonbinary_mat_selector_key_skeleton/`
+- stage253_isolated_nonbinary_suba_equivalence:
+  - `docs/stage253_isolated_nonbinary_suba_equivalence.md`
+  - `experiments/stage253_isolated_nonbinary_suba_equivalence_plan.md`
+  - `theory_checks/stage253_isolated_nonbinary_suba_equivalence_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage253_isolated_nonbinary_suba_equivalence.md`
+  - `scripts/build_stage253_isolated_nonbinary_suba_equivalence.py`
+  - `repro/stage253_isolated_nonbinary_suba_equivalence/`

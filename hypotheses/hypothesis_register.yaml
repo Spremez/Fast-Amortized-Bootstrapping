@@ -3519,3 +3519,15 @@ H10_stage252_nonbinary_mat_selector_key_skeleton:
     key/storage skeleton for distance bits plus optional s_coff and s_sign,
     compile-probes layout/guard/hot-scan invariants, and keeps production
     SAB/PVW source unchanged. Only isolated equivalence is admitted next.
+H10_stage253_isolated_nonbinary_suba_equivalence:
+  status: isolated_finite_lane_equivalence_ready_keygen_noise_preflight
+  evidence:
+    - repro/stage253_isolated_nonbinary_suba_equivalence/lane_equivalence_probe.csv
+    - repro/stage253_isolated_nonbinary_suba_equivalence/negative_control_matrix.csv
+    - repro/stage253_isolated_nonbinary_suba_equivalence/proof_gate.csv
+    - docs/stage253_isolated_nonbinary_suba_equivalence.md
+  conclusion: >
+    Stage253 records PASS_STAGE253_ISOLATED_NONBINARY_SUBA_EQUIVALENCE_READY_KEYGEN_NOISE_PREFLIGHT. Include-zero and ternary sub_a equations pass
+    finite negacyclic lane equivalence for r=1/2/4, and binary naive controls
+    fail as expected. This is not production keygen, noise, full SAB, or
+    speedup evidence.

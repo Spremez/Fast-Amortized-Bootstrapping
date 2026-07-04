@@ -788,3 +788,9 @@ is a separate MAT selector/key skeleton for `s_sign` and `s_coff`.
 `PASS_STAGE252_NONBINARY_MAT_SELECTOR_KEY_SKELETON_READY_ISOLATED_EQUIVALENCE` advances non-binary support from semantics to a compile-probed
 selector/key skeleton. The active goal remains open for isolated equivalence,
 keygen/noise/resource, full SAB A/B, and paper claim closure.
+### Stage253 isolated non-binary sub_a equivalence
+
+`PASS_STAGE253_ISOLATED_NONBINARY_SUBA_EQUIVALENCE_READY_KEYGEN_NOISE_PREFLIGHT` moves non-binary support from skeleton topology to isolated
+equation evidence. The active goal remains open for encrypted selector keygen,
+noise/resource, MOSFHET-adjacent equivalence, full SAB A/B, and paper claim
+closure.

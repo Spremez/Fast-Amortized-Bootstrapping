@@ -1190,3 +1190,6 @@ sources as explicit TODOs instead of fabricating references.
 - Stage252 non-binary MAT selector key skeleton records `PASS_STAGE252_NONBINARY_MAT_SELECTOR_KEY_SKELETON_READY_ISOLATED_EQUIVALENCE`: the
   required `s_coff/s_sign` MAT selector storage is now defined as a
   non-production skeleton, but non-binary PVW/MAT-SAB remains unimplemented.
+- Stage253 isolated non-binary sub_a equivalence records `PASS_STAGE253_ISOLATED_NONBINARY_SUBA_EQUIVALENCE_READY_KEYGEN_NOISE_PREFLIGHT`: finite
+  lane equivalence for include-zero and ternary selector equations passes, but
+  production non-binary PVW/MAT-SAB remains unimplemented.

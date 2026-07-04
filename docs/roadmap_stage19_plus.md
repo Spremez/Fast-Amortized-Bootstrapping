@@ -6867,3 +6867,21 @@ optional `s_coff` and `s_sign` MAT selector families. Production SAB/PVW source
 files remain unchanged; Stage253 isolated sub_a equivalence is the only
 admitted next step.
 ```
+## Stage 253: Isolated Non-Binary Sub_A Equivalence
+
+Goal:
+
+```text
+Validate include-zero and ternary sub_a equations per PVW body lane using the
+Stage252 selector-key skeleton.
+```
+
+Status:
+
+```text
+Generated from input head `3dac5c7` with `PASS_STAGE253_ISOLATED_NONBINARY_SUBA_EQUIVALENCE_READY_KEYGEN_NOISE_PREFLIGHT`. The finite negacyclic
+lane model passes for include-zero and ternary branches at r=1/2/4, while the
+binary naive update fails the negative controls. Production SAB/PVW source
+files remain unchanged. Next selected route: encrypted selector keygen/noise
+preflight.
+```

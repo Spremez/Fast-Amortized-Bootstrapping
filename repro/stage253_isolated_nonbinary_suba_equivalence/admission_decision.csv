@@ -1,0 +1,4 @@
+route,decision,production_permission,allowed_next_step,blocked_before
+isolated_suba_equivalence,PASSED_FINITE_MODEL,no,Stage254 encrypted selector keygen/noise/resource preflight,production keygen; full sparse_mul; full SAB; speed claim
+include_zero_pvw,EQUIVALENCE_MODEL_ONLY,no,MAT s_coff keygen/noise design,MOSFHET encrypted keygen and complete SAB
+ternary_pvw,EQUIVALENCE_MODEL_ONLY,no,MAT s_sign keygen/noise design,MOSFHET encrypted keygen and complete SAB

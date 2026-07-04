@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage254_nonbinary_selector_keygen_noise_preflight,Stage253 finite lane equivalence and negative controls pass.,"define encrypted MAT s_coff/s_sign keygen, noise/resource model, and source admission policy",selected_next,keep non-binary PVW unsupported,repro/stage253_isolated_nonbinary_suba_equivalence/lane_equivalence_probe.csv
+P1,stage255_nonbinary_mosfhet_isolated_suba,Stage254 keygen/noise preflight admits production-adjacent code,MOSFHET-adjacent isolated sub_a with actual MAT_TRGSW selectors,conditional,no full SAB integration,repro/stage253_isolated_nonbinary_suba_equivalence/admission_decision.csv
+P2,stage256_nonbinary_full_sab,actual selector keygen and isolated MOSFHET equivalence pass,"complete-SAB T_bootstrap/r, multi-seed correctness/noise, resource",future_gated,no non-binary speedup claim,repro/stage253_isolated_nonbinary_suba_equivalence/claim_boundary.csv

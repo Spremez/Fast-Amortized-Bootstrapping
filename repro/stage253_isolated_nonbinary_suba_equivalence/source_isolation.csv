@@ -1,0 +1,5 @@
+path,modified_in_stage253,status,interpretation
+include/sab_pvw.h,no,PASS_UNCHANGED,Stage253 must remain an isolated equivalence model.
+src/sab_pvw.c,no,PASS_UNCHANGED,Stage253 must remain an isolated equivalence model.
+include/sab.h,no,PASS_UNCHANGED,Stage253 must remain an isolated equivalence model.
+src/sparse_amortized_bootstrap.c,no,PASS_UNCHANGED,Stage253 must remain an isolated equivalence model.

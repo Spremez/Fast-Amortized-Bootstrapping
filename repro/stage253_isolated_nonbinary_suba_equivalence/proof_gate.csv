@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs_and_stage252,PASS,inputs;stage252,true;true,repro/stage253_isolated_nonbinary_suba_equivalence/input_status.csv; repro/stage252_nonbinary_mat_selector_key_skeleton/proof_gate.csv,Stage253 is valid only after Stage252 selector/key skeleton passes.
+G2_lane_equivalence,PASS,probe_rows,60,repro/stage253_isolated_nonbinary_suba_equivalence/lane_equivalence_probe.csv,Every include-zero/ternary lane-state row matches scalar reference.
+G3_negative_controls,PASS,negative_rows,60,repro/stage253_isolated_nonbinary_suba_equivalence/negative_control_matrix.csv,Naive binary update fails where non-binary selectors require identity or inverse rotation.
+G4_source_isolation,PASS,production_source_modified,no,repro/stage253_isolated_nonbinary_suba_equivalence/source_isolation.csv,No production SAB/PVW source changes are made.
+G5_admission_boundary,PASS_NO_PRODUCTION,production_permission,no,repro/stage253_isolated_nonbinary_suba_equivalence/admission_decision.csv,Equivalence model admits keygen/noise preflight only.
+G6_stage253_decision,PASS_STAGE253_ISOLATED_NONBINARY_SUBA_EQUIVALENCE_READY_KEYGEN_NOISE_PREFLIGHT,decision,PASS_STAGE253_ISOLATED_NONBINARY_SUBA_EQUIVALENCE_READY_KEYGEN_NOISE_PREFLIGHT,repro/stage253_isolated_nonbinary_suba_equivalence/proof_gate.csv,"Proceed to encrypted selector keygen/noise preflight, not full SAB implementation."

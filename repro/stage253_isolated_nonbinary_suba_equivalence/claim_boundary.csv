@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+isolated_sub_a_equivalence,supported_finite_model,Finite negacyclic lane model matches scalar include-zero and ternary sub_a equations for r=1/2/4.,Full non-binary PVW-SAB correctness is proven.,repro/stage253_isolated_nonbinary_suba_equivalence/lane_equivalence_probe.csv
+binary_negative_control,supported,Naive binary X^a update fails on required c=0/sign=1 controls.,Binary sab_pvw_sub_a can be reused unchanged for non-binary branches.,repro/stage253_isolated_nonbinary_suba_equivalence/negative_control_matrix.csv
+nonbinary_speedup,unsupported,No non-binary speedup is claimed.,Non-binary PVW/MAT-SAB accelerates complete bootstrapping.,repro/stage253_isolated_nonbinary_suba_equivalence/admission_decision.csv
