@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_stage271_input,PASS,Stage271 profile rows,2,repro/stage271_nonbinary_sub_a_split_profile/profile_summary.csv,Design is grounded in measured sub_a split profile.
+G2_amdahl_bound,PASS,component ceilings,selector_mat_ep=1.061371x; from_dft_plus_add=1.036794x; rotation_copy_minus_1=1.038977x,component_model.csv,Any next claim must respect full-PVW Amdahl ceilings.
+G3_alias_safety,BLOCKED_MICROTEST_REQUIRED,out==addend source proof,not_source_proven,source_risk.csv,Do not implement sub_a fused materialization before alias equivalence is tested.
+G4_candidate_selection,PASS,selected candidate,S272-A-sub_a_alias_safe_from_DFT_add,candidate_design.csv,Select the smallest falsifiable preimplementation gate.
+G5_claim_boundary,PASS_DESIGN_ONLY,no speed claim,design_gate,claim_boundary.csv,Stage272 does not change code or measure speed.
+G6_decision,PASS_STAGE272_SUB_A_SELECTOR_MATERIALIZATION_DESIGN_GATE,stage decision,PASS_STAGE272_SUB_A_SELECTOR_MATERIALIZATION_DESIGN_GATE,proof_gate.csv,Proceed to Stage273 alias-safety microtest.

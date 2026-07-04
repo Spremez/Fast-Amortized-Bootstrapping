@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,status,failure_action
+P0,stage273_sub_a_from_DFT_add_alias_microtest,Stage272 selects S272-A and records alias-safety risk.,Isolated deterministic PVW_TMLWE equivalence for out==addend/out!=addend and include-zero/ternary sub_a phase equivalence.,selected,"If alias fails, do not implement in-place fused sub_a materialization."
+P1,stage274_sub_a_fused_materialization_smoke,Only if Stage273 alias/equivalence passes.,"Explicit flag, correctness, r=4 include-zero/ternary T_bootstrap/r smoke.",conditional,Record neutral/negative and close candidate.

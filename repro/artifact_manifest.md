@@ -2946,3 +2946,9 @@ Repro artifacts:
   - `scripts/run_stage271_nonbinary_sub_a_split_profile.sh`
   - `scripts/build_stage271_nonbinary_sub_a_split_profile.py`
   - `repro/stage271_nonbinary_sub_a_split_profile/`
+- stage272_sub_a_selector_materialization_design_gate:
+  - `docs/stage272_sub_a_selector_materialization_design_gate.md`
+  - `algorithm_variants/stage272_sub_a_selector_materialization.md`
+  - `theory_checks/stage272_sub_a_selector_materialization.md`
+  - `scripts/build_stage272_sub_a_selector_materialization_design_gate.py`
+  - `repro/stage272_sub_a_selector_materialization_design_gate/`

@@ -910,3 +910,8 @@ blocked until authenticated/native counter evidence is recorded.
 `PASS_STAGE271_NONBINARY_SUB_A_SPLIT_PROFILE` records profile-only split attribution for r=4 include-zero and
 ternary non-binary `sub_a`. It does not claim a latency improvement; it only
 selects the next falsifiable optimization gate.
+### Stage272 sub_a selector materialization design gate
+
+`PASS_STAGE272_SUB_A_SELECTOR_MATERIALIZATION_DESIGN_GATE` records a design-only gate for non-binary `sub_a` selector
+materialization. It selects alias-safety/equivalence testing before any fused
+implementation and keeps all speedup claims bounded by Stage271 Amdahl shares.

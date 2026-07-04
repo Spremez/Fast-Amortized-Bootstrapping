@@ -1,0 +1,6 @@
+check,status,risk
+sub_a_current_from_dft_then_add,PASS,Current sub_a materializes to tmp then addto; a fused variant must preserve p[idx] alias semantics.
+pvmtmlwe_from_DFT_add_exists,PASS,"The helper exists, but out/addend alias safety is not specified by its interface."
+backend_add_guard_exists,PASS,Backend-specific direct add exists; portable fallback differs.
+portable_fallback_alias_risk,RISK,"Fallback writes out before adding addend, so out==addend is not source-proven safe."
+polynomial_direct_add_backend,PASS,Even backend direct-add alias behavior needs an isolated equivalence test before use in sub_a.

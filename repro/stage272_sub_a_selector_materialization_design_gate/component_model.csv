@@ -1,0 +1,4 @@
+target,stage271_pvw_share_max,full_elimination_ceiling,mode_basis,interpretation
+selector_mat_ep,0.057822,1.061371,include_zero=0.057462; ternary=0.057822,"Largest sub_a subcomponent, but reducing it likely requires MAT selector-kernel or schedule changes."
+from_dft_plus_add,0.035488,1.036794,from_dft: include_zero=0.028763; ternary=0.028227; add: include_zero=0.006445; ternary=0.006725,"Potential fused materialization target, but alias safety is unresolved."
+rotation_copy_minus_1,0.037515,1.038977,rotate: include_zero=0.000000; ternary=0.017613; copy: include_zero=0.000000; ternary=0.003810; minus_1: include_zero=0.016092; ternary=0.005104,"Ternary has visible rotation/copy, but selector materialization dominates both modes."

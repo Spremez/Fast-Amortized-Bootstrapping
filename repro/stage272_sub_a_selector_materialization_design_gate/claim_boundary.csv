@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+sub_a_selector_materialization_candidate,design_only,Stage272 defines a falsifiable sub_a materialization candidate and gates.,Stage272 implements or proves a speedup.,candidate_design.csv
+amdahl_bound,supported_by_stage271_profile,Full-PVW speedup ceilings are bounded by measured component shares.,A sub_a-local change can create multi-x full SAB speedup by itself.,component_model.csv
+alias_safety,unproven,out==addend alias safety must be tested before use.,Existing from_DFT_add can be safely reused in-place in sub_a.,source_risk.csv

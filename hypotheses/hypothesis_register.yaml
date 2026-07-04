@@ -3752,3 +3752,14 @@ H10_stage271_nonbinary_sub_a_split_profile:
   conclusion: >
     Stage271 records PASS_STAGE271_NONBINARY_SUB_A_SPLIT_PROFILE. It adds profile-only sub_a split counters and
     keeps timing claims bounded to attribution, not final latency.
+H10_stage272_sub_a_selector_materialization_design_gate:
+  status: PASS_STAGE272_SUB_A_SELECTOR_MATERIALIZATION_DESIGN_GATE
+  evidence:
+    - repro/stage272_sub_a_selector_materialization_design_gate/component_model.csv
+    - repro/stage272_sub_a_selector_materialization_design_gate/source_risk.csv
+    - repro/stage272_sub_a_selector_materialization_design_gate/candidate_design.csv
+    - docs/stage272_sub_a_selector_materialization_design_gate.md
+  conclusion: >
+    Stage272 records PASS_STAGE272_SUB_A_SELECTOR_MATERIALIZATION_DESIGN_GATE. It identifies alias safety as the first
+    falsifiable gate for sub_a fused materialization and forbids speedup claims
+    until isolated equivalence and full SAB A/B gates pass.
