@@ -1,0 +1,2 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage322_schedule_attribution_after_r4_unrolled_neutral,NEUTRAL_STAGE321_R4_UNROLLED_DIRECT_FULLSAB_NO_PROMOTION,Close r4-unrolled current-head refresh and return to SAB schedule/profile attribution.,Do not claim r4-unrolled as a complete-SAB improvement without passing this gate.

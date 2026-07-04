@@ -7174,3 +7174,9 @@ Goal: close failed IFFT-only work and select the next full-SAB candidate from
 the current measured budget.
 
 Status: `PASS_STAGE320_RETURN_TO_MAT_EP_SELECT_R4_UNROLLED_REFRESH`.
+## Stage 321: r4-Unrolled Direct Full-SAB A/B
+
+Goal: test the old r=4 unrolled MAT EP candidate under the current selected
+direct PVW/MAT-SAB baseline.
+
+Status: `NEUTRAL_STAGE321_R4_UNROLLED_DIRECT_FULLSAB_NO_PROMOTION`.

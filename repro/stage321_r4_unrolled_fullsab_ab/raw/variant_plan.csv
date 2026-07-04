@@ -1,0 +1,3 @@
+variant,param,fft_lib,r,runs,reps,extra_flags
+direct_baseline,SET_2_3_2048,spqlios_avx512,4,5,1,MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true
+r4_unrolled_direct,SET_2_3_2048,spqlios_avx512,4,5,1,MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true MAT_TRGSW_AVX512_R4_UNROLLED_ROWS=true

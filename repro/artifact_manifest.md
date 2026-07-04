@@ -3236,3 +3236,8 @@ Repro artifacts:
   - `experiments/stage321_r4_unrolled_fullsab_ab_plan.md`
   - `scripts/build_stage320_sab_budget_return.py`
   - `repro/stage320_sab_budget_return/`
+- stage321_r4_unrolled_fullsab_ab:
+  - `docs/stage321_r4_unrolled_fullsab_ab.md`
+  - `scripts/run_stage321_r4_unrolled_fullsab_ab.sh`
+  - `scripts/build_stage321_r4_unrolled_fullsab_ab.py`
+  - `repro/stage321_r4_unrolled_fullsab_ab/`

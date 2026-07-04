@@ -1166,3 +1166,8 @@ existing SPQLIOS AVX512 `ifft` calls, closing the backend IFFT batch5 route.
 
 `PASS_STAGE320_RETURN_TO_MAT_EP_SELECT_R4_UNROLLED_REFRESH` selects a current-head full-SAB A/B refresh of
 `MAT_TRGSW_AVX512_R4_UNROLLED_ROWS=true` and keeps IFFT batch5 closed.
+<!-- stage321-r4-unrolled-fullsab-ab -->
+### Stage321 r4-unrolled direct full-SAB A/B
+
+`NEUTRAL_STAGE321_R4_UNROLLED_DIRECT_FULLSAB_NO_PROMOTION` refreshes `MAT_TRGSW_AVX512_R4_UNROLLED_ROWS=true` under the
+current direct PVW/MAT-SAB baseline using complete `T_bootstrap/r`.

@@ -1,0 +1,11 @@
+variant,outer_run,inner_rep,correctness,mode,r,h,r_prec,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup_vs_repeated_scalar,source_log
+direct_baseline,0,0,Pass,include_zero,4,39,7,24178689,6044672.250,43284379,10821094.750,1.790,repro/stage321_r4_unrolled_fullsab_ab/raw/direct_baseline/run_0.log
+direct_baseline,1,0,Pass,include_zero,4,39,7,24494345,6123586.250,42423097,10605774.250,1.732,repro/stage321_r4_unrolled_fullsab_ab/raw/direct_baseline/run_1.log
+direct_baseline,2,0,Pass,include_zero,4,39,7,24389987,6097496.750,43628144,10907036.000,1.789,repro/stage321_r4_unrolled_fullsab_ab/raw/direct_baseline/run_2.log
+direct_baseline,3,0,Pass,include_zero,4,39,7,24782988,6195747.000,42074077,10518519.250,1.698,repro/stage321_r4_unrolled_fullsab_ab/raw/direct_baseline/run_3.log
+direct_baseline,4,0,Pass,include_zero,4,39,7,24524110,6131027.500,42170395,10542598.750,1.720,repro/stage321_r4_unrolled_fullsab_ab/raw/direct_baseline/run_4.log
+r4_unrolled_direct,0,0,Pass,include_zero,4,39,7,24801764,6200441.000,42441094,10610273.500,1.711,repro/stage321_r4_unrolled_fullsab_ab/raw/r4_unrolled_direct/run_0.log
+r4_unrolled_direct,1,0,Pass,include_zero,4,39,7,24463468,6115867.000,42561300,10640325.000,1.740,repro/stage321_r4_unrolled_fullsab_ab/raw/r4_unrolled_direct/run_1.log
+r4_unrolled_direct,2,0,Pass,include_zero,4,39,7,24227925,6056981.250,42336678,10584169.500,1.747,repro/stage321_r4_unrolled_fullsab_ab/raw/r4_unrolled_direct/run_2.log
+r4_unrolled_direct,3,0,Pass,include_zero,4,39,7,24331004,6082751.000,42247035,10561758.750,1.736,repro/stage321_r4_unrolled_fullsab_ab/raw/r4_unrolled_direct/run_3.log
+r4_unrolled_direct,4,0,Pass,include_zero,4,39,7,24721083,6180270.750,42343195,10585798.750,1.713,repro/stage321_r4_unrolled_fullsab_ab/raw/r4_unrolled_direct/run_4.log

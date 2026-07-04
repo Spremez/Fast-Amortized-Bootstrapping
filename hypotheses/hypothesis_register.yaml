@@ -4254,3 +4254,15 @@ H320_sab_budget_return_r4_unrolled_refresh:
   conclusion: >
     Stage320 closes IFFT batch5 and selects current-head r=4 unrolled MAT EP
     full-SAB A/B as the next executable candidate.
+H321_r4_unrolled_direct_fullsab_ab:
+  status: NEUTRAL_STAGE321_R4_UNROLLED_DIRECT_FULLSAB_NO_PROMOTION
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage321_r4_unrolled_fullsab_ab/perf_summary.csv
+    - repro/stage321_r4_unrolled_fullsab_ab/proof_gate.csv
+    - docs/stage321_r4_unrolled_fullsab_ab.md
+  conclusion: >
+    Stage321 evaluates whether r4-unrolled MAT EP still improves complete
+    SAB after the direct baseline changes. Algorithm-level speedup is reported
+    as T_bootstrap/r versus repeated scalar; r4/direct is only an incremental
+    implementation gate.
