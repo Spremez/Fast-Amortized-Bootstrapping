@@ -1,0 +1,8 @@
+item,status,required_before_claim,next_action
+related_work_novelty,OPEN,"Build verified related-work matrix for SAB, PVW/MAT external product, multi-output bootstrapping, and SIMD FHE kernels.",Stage333 literature/novelty verification.
+compact_keygen_security,OPEN,"Close production keygen distribution, semantic-zero security, and noise recurrence obligations.",Stage333 compact keygen/security preflight if algorithmic improvement is prioritized.
+all_parameter_generality,OPEN,Repeat high-stat evidence over additional branches/parameter sets.,Extend Stage304 matrix only after related-work/paper scope is chosen.
+O2a_equation_to_keygen,OPEN,Map declared Stage203 active/dummy equations to actual MAT_TRGSW key generation.,compact route remains blocked
+O2b_public_distribution,OPEN,Prove dummy/random padding leaks no selector structure beyond allowed public distribution.,compact route remains blocked
+O2d_noise_recurrence,OPEN,Derive noise recurrence for skipped dummy rows versus dense dummy evaluation.,compact route remains blocked
+O2e_complete_sab_gate,OPEN,"Run isolated equivalence, then full SAB correctness/noise/resource/T_bootstrap/r A/B.",compact route remains blocked

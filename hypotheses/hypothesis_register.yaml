@@ -4383,3 +4383,14 @@ H331_current_head_highstat_refresh:
   conclusion: >
     Stage331 refreshes the current-head direct PVW/MAT-SAB evidence for the
     scoped complete-SAB amortized metric.
+H332_paper_result_pack:
+  status: PASS_STAGE332_SCOPED_PAPER_RESULT_PACK
+  primary_metric: complete_sab_T_bootstrap_over_r_vs_repeated_scalar
+  evidence:
+    - repro/stage332_paper_result_pack/summary.csv
+    - repro/stage332_paper_result_pack/paper_result_table.csv
+    - repro/stage332_paper_result_pack/claim_boundary.csv
+    - doc/pvw_mat_sab_scoped_result_table_stage332.md
+  conclusion: >
+    Stage332 packages the current scoped systems result and keeps novelty,
+    theoretical optimality, all-parameter generality, and compact security open.

@@ -3294,3 +3294,13 @@ Repro artifacts:
   - `scripts/run_stage331_current_head_highstat_refresh.sh`
   - `scripts/build_stage331_current_head_highstat_refresh.py`
   - `repro/stage331_current_head_highstat_refresh/`
+<!-- stage332-paper-result-pack-manifest -->
+- stage332_paper_result_pack:
+  - `docs/stage332_paper_result_pack.md`
+  - `docs/current_pvw_mat_sab_result.md`
+  - `doc/pvw_mat_sab_scoped_result_table_stage332.md`
+  - `theory_checks/stage332_claim_boundary_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage332_paper_claim_card.md`
+  - `experiments/stage333_literature_novelty_or_compact_security_plan.md`
+  - `scripts/build_stage332_paper_result_pack.py`
+  - `repro/stage332_paper_result_pack/`

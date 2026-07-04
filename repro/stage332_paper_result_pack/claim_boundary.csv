@@ -1,0 +1,6 @@
+claim,status,paper_safe_text,boundary
+main_scoped_systems_result,PASS,"For BINARY SET_2_3_2048 include-zero on spqlios_avx512, r=4 direct PVW/MAT-SAB achieves 1.747647x amortized complete-SAB throughput over repeated scalar SAB, measured by T_bootstrap/r.",Only this parameter/backend/path; this is not a global optimality claim.
+metric_definition,PASS,The metric is per plaintext bit/lane: complete bootstrapping wall time divided by r MAT/RLWE body lanes.,Do not describe the result as single-lane bootstrap latency speedup.
+correctness_noise_resource,PASS,Final-output PVW/scalar pair check has 0/10 failures; max RSS is 2415796 KB.,"This is an implementation resource record, not a compact-selector security proof."
+novelty,OPEN_LITERATURE_REQUIRED,Do not claim novelty until Stage333 related-work verification is complete.,Related papers must be real and cited with checked support.
+compact_structured_route,OPEN_PROOF_REQUIRED,"Compact selector finite algebra passed earlier, but production keygen/security/noise/full-SAB gates remain open.",No compact SAB acceleration claim.

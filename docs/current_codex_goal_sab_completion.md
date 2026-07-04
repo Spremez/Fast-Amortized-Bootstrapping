@@ -1230,3 +1230,11 @@ a fresh >=10-sample run.
 performance, final-output noise, and RSS evidence. It remains scoped to the
 tested parameter/backend/path and does not prove compact security or global
 optimality.
+<!-- stage332-paper-result-pack -->
+### Stage332 paper result pack
+
+`PASS_STAGE332_SCOPED_PAPER_RESULT_PACK` packages
+the current scoped systems result: direct PVW/MAT-SAB speedup
+`1.747647x` by complete
+`T_bootstrap/r`, with correctness/noise/RSS evidence and explicit unsupported
+claim boundaries.

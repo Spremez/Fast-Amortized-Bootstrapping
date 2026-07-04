@@ -505,3 +505,5 @@
 <!-- stage331-current-head-highstat-checklist -->
 - [x] Stage331 records `PARTIAL_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH` for the current-head selected direct
   PVW/MAT-SAB complete `T_bootstrap/r` refresh.
+<!-- stage332-paper-result-pack-checklist -->
+- [x] Stage332 records `PASS_STAGE332_SCOPED_PAPER_RESULT_PACK` and updates the current PVW/MAT-SAB result table.

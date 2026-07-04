@@ -7246,3 +7246,10 @@ Goal: rerun the selected direct PVW/MAT-SAB path on the current hot-code head
 with at least ten complete-SAB samples and refreshed noise/resource evidence.
 
 Status: `PARTIAL_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH`.
+<!-- stage332-paper-result-pack-roadmap -->
+## Stage 332: Paper Result Pack
+
+Goal: convert the Stage331 current-head high-stat experiment into a scoped
+paper/report result table and claim boundary.
+
+Status: `PASS_STAGE332_SCOPED_PAPER_RESULT_PACK`.
