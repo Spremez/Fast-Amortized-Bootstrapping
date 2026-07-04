@@ -4208,3 +4208,14 @@ H316_spqlios_ifft_abi_preflight:
   conclusion: >
     Stage316 finds no existing batch IFFT ABI, rejects C-wrapper-only
     work, and admits only an isolated AVX512 ifft_batch5 skeleton gate.
+H317_spqlios_ifft_batch5_tile32:
+  status: PASS_STAGE317_IFFT_BATCH5_TILE32_SKELETON_STAGE318_MICRO_REQUIRED
+  primary_metric: isolated_ifft_component_reduction
+  evidence:
+    - repro/stage317_spqlios_ifft_batch5_skeleton/stage317_summary.csv
+    - repro/stage317_spqlios_ifft_batch5_skeleton/register_budget.csv
+    - repro/stage317_spqlios_ifft_batch5_skeleton/static_memory_model.csv
+    - repro/stage317_spqlios_ifft_batch5_skeleton/proof_gate.csv
+  conclusion: >
+    Stage317 admits only a tile3+tile2 isolated batch5 IFFT skeleton for
+    Stage318 measurement; it makes no complete-SAB speed claim.

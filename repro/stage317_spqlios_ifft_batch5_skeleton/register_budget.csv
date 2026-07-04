@@ -1,0 +1,6 @@
+case,zmm_total_avx512,observed_max_zmm_index,required_zmm,status,interpretation
+current_single_row_assembly,32,15,16,BASELINE,Current assembly uses zmm0-zmm15 even though AVX512 has zmm0-zmm31.
+full5_offloop_no_spill,32,15,42,REJECT_SPILLS,Processing all five rows simultaneously needs too many live vectors in the offloop.
+tile3_offloop,32,15,26,PASS_NO_ZMM_SPILL,First tile can share trig loads across three rows without zmm spills.
+tile2_offloop,32,15,18,PASS_NO_ZMM_SPILL,Second tile handles the remaining two rows.
+max_rows_per_tile_no_spill,32,15,3,TILE3_SELECTED,Static model selects tile3+tile2 for rows=5.

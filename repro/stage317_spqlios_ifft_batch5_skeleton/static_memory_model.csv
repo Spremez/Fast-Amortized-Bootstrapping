@@ -1,0 +1,4 @@
+loop_region,single_row_vector_mem_ops,five_single_rows_vector_mem_ops,tile32_vector_mem_ops,static_memop_reduction,notes
+firstloop_with_trig,6,30,24,0.200000,Shares trig loads once per tile; data loads/stores unchanged.
+nnloop_offloop_with_trig,10,50,44,0.120000,Dominant butterfly region; tile3+tile2 shares trig loads twice instead of five times.
+size4_size2_no_trig,4,20,20,0.000000,No trig-table load sharing opportunity.

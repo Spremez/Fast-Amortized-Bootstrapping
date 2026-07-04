@@ -3205,3 +3205,10 @@ Repro artifacts:
   - `experiments/stage316_spqlios_ifft_batch5_plan.md`
   - `scripts/build_stage316_spqlios_ifft_abi_preflight.py`
   - `repro/stage316_spqlios_ifft_abi_preflight/`
+- stage317_spqlios_ifft_batch5_skeleton:
+  - `docs/stage317_spqlios_ifft_batch5_skeleton.md`
+  - `theory_checks/stage317_ifft_batch5_static_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage317_ifft_batch5_tile32.md`
+  - `experiments/stage317_ifft_batch5_tile32_plan.md`
+  - `scripts/build_stage317_spqlios_ifft_batch5_skeleton.py`
+  - `repro/stage317_spqlios_ifft_batch5_skeleton/`

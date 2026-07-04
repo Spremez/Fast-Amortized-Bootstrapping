@@ -1,0 +1,4 @@
+route_id,status,mechanism,reason
+R317-1-full5-single-tile,REJECT_ZMM_SPILL_RISK,Fuse all five rows in one AVX512 loop body.,"Requires 42 zmm registers in offloop, above 32."
+R317-2-tile3-plus-tile2,SELECT_FOR_STAGE318_ISOLATED_MICROBENCH,Run shared-trig row tiles of 3 then 2 rows for each IFFT loop region.,Tile3 requires 26 zmm registers; tile2 requires 18.
+R317-3-sab-integration,BLOCKED_UNTIL_ISOLATED_PASS,Wire batch5 into MAT direct sub-DTF.,Needs bit/float equivalence and isolated IFFT reduction before touching SAB.

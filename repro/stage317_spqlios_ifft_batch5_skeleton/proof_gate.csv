@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_stage316_input,PASS,Stage316 decision,PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH,Stage317 follows the selected isolated batch5 route.
+G2_full5_rejected,PASS,full5 required zmm vs available,42;32,Reject all-five-row single tile to avoid zmm spilling.
+G3_tile32_register_budget,PASS,tile3;tile2 required zmm,26;18,Tile3+tile2 is the only admitted register-feasible skeleton.
+G4_static_potential,BORDERLINE_MEASURE,nnloop static memop reduction vs required IFFT component reduction,0.120000;0.107769,"Static opportunity is close enough to require measurement, not promotion."
+G5_no_sab_integration,PASS,policy,isolated microbench first,No full SAB code path may depend on this until Stage318 passes.
+G6_decision,PASS_STAGE317_IFFT_BATCH5_TILE32_SKELETON_STAGE318_MICRO_REQUIRED,stage decision,PASS_STAGE317_IFFT_BATCH5_TILE32_SKELETON_STAGE318_MICRO_REQUIRED,Controls Stage318.

@@ -1146,3 +1146,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage316 SPQLIOS IFFT ABI preflight
 
 `PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH` rejects C-wrapper IFFT batching and selects an isolated AVX512 `ifft_batch5` sketch gate for Stage317.
+<!-- stage317-spqlios-ifft-batch5-skeleton -->
+### Stage317 SPQLIOS IFFT batch5 skeleton
+
+`PASS_STAGE317_IFFT_BATCH5_TILE32_SKELETON_STAGE318_MICRO_REQUIRED` rejects full5 no-spill fusion and selects tile3+tile2 as the isolated Stage318 candidate.

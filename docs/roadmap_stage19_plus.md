@@ -7148,3 +7148,8 @@ Status: `PASS_STAGE315_BACKEND_IFFT_ADMISSION_SELECT_STAGE316_ABI_PREFLIGHT`.
 Goal: decide whether backend IFFT work has a concrete ABI route.
 
 Status: `PASS_STAGE316_BACKEND_IFFT_ABI_PREFLIGHT_SELECT_ASM_BATCH5_SKETCH`.
+## Stage 317: SPQLIOS IFFT Batch5 Skeleton
+
+Goal: select or reject a concrete backend skeleton before implementation.
+
+Status: `PASS_STAGE317_IFFT_BATCH5_TILE32_SKELETON_STAGE318_MICRO_REQUIRED`.

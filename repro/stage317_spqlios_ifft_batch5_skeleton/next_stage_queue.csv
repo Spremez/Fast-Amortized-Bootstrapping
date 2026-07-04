@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage318_isolated_ifft_batch5_tile32_microbench_or_stop,PASS_STAGE317_IFFT_BATCH5_TILE32_SKELETON_STAGE318_MICRO_REQUIRED,Implement an isolated tile3+tile2 AVX512 batch5 IFFT microbench or stop with concrete assembly constraints.,row-wise equivalence against five `ifft` calls and >= 0.107769 isolated IFFT component reduction before SAB integration
