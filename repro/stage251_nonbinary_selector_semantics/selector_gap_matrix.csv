@@ -1,0 +1,5 @@
+gap,required_for,current_scalar,current_pvw,blocking_fact,required_next_evidence,production_permission
+ternary_sign_selector_key_material,ternary negative coefficient support,s_sign TRGSW_DFT family exists,no s_sign equivalent in SAB_PVW_Key,missing,"PVW/MAT sign selector key skeleton, isolated phase equivalence, full-SAB A/B, noise/resource",no
+include_zero_coefficient_selector_key_material,include-zero sparse secret support,s_coff TRGSW_DFT family exists,no s_coff equivalent in SAB_PVW_Key,missing,"PVW/MAT coefficient selector key skeleton, isolated phase equivalence, full-SAB A/B, noise/resource",no
+constructor_and_harness_admission,any non-binary PVW benchmark or target gate,scalar ternary build is preserved by Stage26,constructor rejects coeff != 1 and target harness requires BINARY,binary guard present,explicit non-binary PVW harness after selector semantics are implemented,no
+gaussian_general_coefficient_semantics,gaussian/general secret branches,sub_a_ga uses coefficient monomial semantics,no general coefficient selector design,out_of_scope,separate general coefficient MAT selector design and noise proof,no

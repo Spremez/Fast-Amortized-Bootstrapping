@@ -1,0 +1,12 @@
+fact_id,source,expected,observed,status,pass_meaning,evidence
+scalar_has_coff_selector,include/sab.h; src/sparse_amortized_bootstrap.c,TRGSW_DFT ** s_coff and scalar include-zero/gaussian use,yes,present,present,include/sab.h; src/sparse_amortized_bootstrap.c
+scalar_has_sign_selector,include/sab.h; src/sparse_amortized_bootstrap.c,TRGSW_DFT ** s_sign and scalar ternary use,yes,present,present,include/sab.h; src/sparse_amortized_bootstrap.c
+scalar_records_branch_flags,include/sab.h; src/sparse_amortized_bootstrap.c,"include_zeros, gaussian_secret, ternary_secret branch flags",yes,present,present,include/sab.h; src/sparse_amortized_bootstrap.c
+scalar_ternary_sign_equation_source,src/sparse_amortized_bootstrap.c,s_sign encrypts coeff == -1 and sub_a consumes s_sign,yes,present,present,src/sparse_amortized_bootstrap.c
+scalar_include_zero_equation_source,src/sparse_amortized_bootstrap.c,s_coff controls identity versus X^a rotation,yes,present,present,src/sparse_amortized_bootstrap.c
+pvw_has_binary_selector_matrix,include/sab_pvw.h,MAT_TRGSW_DFT *** s,yes,present,present,include/sab_pvw.h
+pvw_has_sign_selector,include/sab_pvw.h; src/sab_pvw.c,MAT selector equivalent of s_sign,no,missing,missing,include/sab_pvw.h; src/sab_pvw.c
+pvw_has_coff_selector,include/sab_pvw.h; src/sab_pvw.c,MAT selector equivalent of s_coff,no,missing,missing,include/sab_pvw.h; src/sab_pvw.c
+pvw_constructor_rejects_nonbinary_coeff,src/sab_pvw.c,if(coeff != 1) reject,yes,present,present,src/sab_pvw.c
+pvw_target_harness_binary_guard,main.c,#if !defined(BINARY) guard for SAB_PVW target harness,yes,present,present,main.c
+pvw_binary_sub_a_only,src/sab_pvw.c; include/sab_pvw.h,sab_pvw_sub_a_binary rotates by X^a without sign/presence selector,yes,present,present,src/sab_pvw.c; include/sab_pvw.h

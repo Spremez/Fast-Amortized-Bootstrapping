@@ -2821,3 +2821,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage250_exact_dense_lower_bound_gap.md`
   - `scripts/build_stage250_exact_dense_lower_bound_gap.py`
   - `repro/stage250_exact_dense_lower_bound_gap/`
+- stage251_nonbinary_selector_semantics:
+  - `docs/stage251_nonbinary_selector_semantics.md`
+  - `experiments/stage251_nonbinary_selector_semantics_plan.md`
+  - `theory_checks/stage251_nonbinary_selector_semantics_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage251_nonbinary_selector_semantics.md`
+  - `scripts/build_stage251_nonbinary_selector_semantics.py`
+  - `repro/stage251_nonbinary_selector_semantics/`

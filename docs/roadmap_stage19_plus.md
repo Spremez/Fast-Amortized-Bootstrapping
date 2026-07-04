@@ -6830,3 +6830,22 @@ optimality is still open. Compact/body-linear term models are not admissible
 lower bounds, and no speculative hot-path code is permitted without a new
 counter-backed mechanism.
 ```
+## Stage 251: Non-Binary Selector Semantics
+
+Goal:
+
+```text
+Audit scalar ternary/include-zero selector equations and decide whether current
+PVW/MAT-SAB can implement non-binary branches.
+```
+
+Status:
+
+```text
+Generated from input head `727e736` with `PASS_STAGE251_NONBINARY_SELECTOR_SEMANTICS_PREFLIGHT_BLOCKS_IMPLEMENTATION`. Scalar `s_sign/s_coff`
+semantics are identified and finite rotation equations pass, but current
+PVW/MAT-SAB has no MAT sign/coefficient selector families, rejects
+`coeff != 1`, and guards the target harness to `BINARY`. Production
+implementation is blocked; Stage252 must design a non-production selector/key
+skeleton first.
+```

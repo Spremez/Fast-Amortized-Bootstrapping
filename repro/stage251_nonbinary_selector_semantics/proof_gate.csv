@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs,PASS,required inputs,all present,repro/stage251_nonbinary_selector_semantics/input_status.csv,Stage251 consumes Stage26/229/250 branch and claim ledgers plus source files.
+G2_scalar_semantics,PASS,s_coff/s_sign equations,identified,repro/stage251_nonbinary_selector_semantics/semantic_equation_matrix.csv,Scalar include-zero and ternary semantics are concrete enough for a PVW design target.
+G3_finite_semantics_probe,PASS,finite rotation rows,96,repro/stage251_nonbinary_selector_semantics/finite_semantics_probe.csv,Positive equations pass and binary negative-control fails as expected.
+G4_pvw_source_gap,PASS_BLOCKED,PVW selector/key gap,"no s_sign/s_coff, binary guard present",repro/stage251_nonbinary_selector_semantics/source_fact_matrix.csv,Current PVW code cannot implement non-binary semantics without a new key format.
+G5_production_admission,PASS_NO_IMPLEMENTATION,production permission,denied,repro/stage251_nonbinary_selector_semantics/admission_decision.csv,Do not remove binary guards or map non-binary into the binary PVW path.
+G6_stage251_decision,PASS_STAGE251_NONBINARY_SELECTOR_SEMANTICS_PREFLIGHT_BLOCKS_IMPLEMENTATION,decision,PASS_STAGE251_NONBINARY_SELECTOR_SEMANTICS_PREFLIGHT_BLOCKS_IMPLEMENTATION,repro/stage251_nonbinary_selector_semantics/proof_gate.csv,Proceed only to a non-production selector/key skeleton stage.

@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+scalar_nonbinary_semantics_identified,supported_preflight,Scalar SAB has identifiable ternary and include-zero selector semantics through s_sign and s_coff.,Scalar equations alone prove PVW non-binary correctness.,repro/stage251_nonbinary_selector_semantics/semantic_equation_matrix.csv
+pvw_nonbinary_support,unsupported_blocked,PVW/MAT-SAB non-binary support is not implemented; current target harness is binary-only.,PVW/MAT-SAB supports ternary or include-zero branches.,repro/stage251_nonbinary_selector_semantics/selector_gap_matrix.csv
+finite_probe_result,toy_semantics_only,Finite rotation probes confirm the selector equations and the binary negative-control failure.,Toy finite equations prove full SAB correctness or security.,repro/stage251_nonbinary_selector_semantics/finite_semantics_probe.csv
+implementation_permission,denied_for_production,Only non-production selector/key skeleton design is admitted next.,Remove binary guards or route non-binary inputs through sab_pvw_sub_a_binary.,repro/stage251_nonbinary_selector_semantics/admission_decision.csv

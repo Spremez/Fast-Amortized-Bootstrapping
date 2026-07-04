@@ -1,0 +1,6 @@
+branch,selector,scalar_update,pvw_required_update,existing_pvw_support,extra_key_material,risk
+binary,implicit nonzero coefficient +1,p' = X^a p,body[q]' = X^a body[q] for every lane q,yes_binary_only,none beyond binary MAT_TRGSW selector s,covered by existing binary equivalence gates
+include_zero,"s_coff in {0,1}",p' = p + s_coff * ((X^a - 1)p),body[q]' = body[q] + s_coff * ((X^a - 1)body[q]),no,MAT_TRGSW_DFT selector family for s_coff,"missing selector storage, keygen, noise recurrence, and equivalence tests"
+ternary_positive,s_sign = 0,p' = X^a p,body[q]' = X^a body[q],only when sign is known positive; harness disallows ternary,MAT_TRGSW_DFT selector family for sign bits,cannot claim branch support without sign selector and negative case
+ternary_negative,s_sign = 1,p' = X^a p + s_sign * ((X^{-2a} - 1)X^a p) = X^{-a}p,body[q]' = X^{-a} body[q],no,MAT_TRGSW_DFT sign selector and negative-rotation CMUX composition,binary PVW X^a path is wrong for negative coefficients
+gaussian_or_general,coefficient monomial selector,"p' depends on encrypted coefficient monomial, not just sign/presence",general MAT selector/key-format design,no,beyond Stage251 scope,more complex than ternary/include-zero and not admitted

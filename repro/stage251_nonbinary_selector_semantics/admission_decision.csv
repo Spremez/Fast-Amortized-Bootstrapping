@@ -1,0 +1,5 @@
+route,decision,production_permission,allowed_next_step,required_before_speed_claim
+binary_exact_dense_pvw,already_supported_scoped,yes_existing_explicit_path,continue scoped exact dense binary reporting or counter-backed exact improvements,"same-backend complete-SAB T_bootstrap/r, noise, resource"
+ternary_pvw,BLOCKED_KEY_FORMAT_AND_SELECTOR_GAP,no,Stage252 non-production MAT sign-selector key skeleton,"selector keygen, isolated equivalence, full-SAB A/B, noise/resource"
+include_zero_pvw,BLOCKED_KEY_FORMAT_AND_SELECTOR_GAP,no,Stage252 non-production MAT coefficient-selector key skeleton,"selector keygen, isolated equivalence, full-SAB A/B, noise/resource"
+gaussian_or_general_pvw,OUT_OF_SCOPE_MORE_COMPLEX_COEFFICIENT_MONOMIAL,no,separate theory/design stage only after ternary/include-zero,"general coefficient equations, key format, noise recurrence, full-SAB evidence"

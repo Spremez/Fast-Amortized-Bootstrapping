@@ -3492,3 +3492,17 @@ H10_stage250_exact_dense_lower_bound_gap:
     numeric lower-bound denominator exists, compact/body-linear proxies are not
     admissible after Stage249, and new hot-path code requires a concrete
     counter-backed mechanism.
+H10_stage251_nonbinary_selector_semantics:
+  status: nonbinary_semantics_identified_current_pvw_blocked
+  evidence:
+    - repro/stage251_nonbinary_selector_semantics/source_fact_matrix.csv
+    - repro/stage251_nonbinary_selector_semantics/semantic_equation_matrix.csv
+    - repro/stage251_nonbinary_selector_semantics/finite_semantics_probe.csv
+    - repro/stage251_nonbinary_selector_semantics/proof_gate.csv
+    - docs/stage251_nonbinary_selector_semantics.md
+  conclusion: >
+    Stage251 records PASS_STAGE251_NONBINARY_SELECTOR_SEMANTICS_PREFLIGHT_BLOCKS_IMPLEMENTATION. Scalar include-zero and ternary selector
+    semantics are identified, finite rotation probes pass, and the binary
+    negative-control fails as expected. Current PVW/MAT-SAB lacks MAT
+    s_sign/s_coff selector families and remains binary-only; production
+    implementation is denied pending a separate selector/key skeleton.

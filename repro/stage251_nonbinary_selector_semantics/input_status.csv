@@ -1,0 +1,11 @@
+input_id,path,status,bytes
+stage26_branch_log,docs/stage26_parameter_branch_log.md,present,3165
+stage26_branch_summary,repro/stage26_parameter_branch_smoke_avx512/branch_summary.csv,present,489
+stage229_coverage_gaps,repro/stage229_parameter_generalization_matrix/coverage_gaps.csv,present,1641
+stage229_claim_scope,repro/stage229_parameter_generalization_matrix/claim_scope.csv,present,1783
+stage250_proof_gate,repro/stage250_exact_dense_lower_bound_gap/proof_gate.csv,present,1363
+sab_header,include/sab.h,present,2367
+sab_pvw_header,include/sab_pvw.h,present,2005
+scalar_sab_source,src/sparse_amortized_bootstrap.c,present,17019
+pvw_sab_source,src/sab_pvw.c,present,34966
+main_harness,main.c,present,152574

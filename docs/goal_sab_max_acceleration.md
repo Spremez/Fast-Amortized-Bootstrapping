@@ -1184,3 +1184,6 @@ sources as explicit TODOs instead of fabricating references.
 - Stage250 exact dense lower-bound gap records `PASS_STAGE250_EXACT_DENSE_GAP_REFRESH_OPTIMALITY_OPEN`: exact dense
   PVW/MAT-SAB keeps scoped complete-SAB `T_bootstrap/r` evidence, but the
   numeric lower-bound gap and theoretical optimality remain open.
+- Stage251 non-binary selector semantics records `PASS_STAGE251_NONBINARY_SELECTOR_SEMANTICS_PREFLIGHT_BLOCKS_IMPLEMENTATION`: scalar
+  ternary/include-zero equations are identified, but current PVW/MAT-SAB
+  remains binary-only and no non-binary production implementation is admitted.

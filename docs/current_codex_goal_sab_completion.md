@@ -778,3 +778,8 @@ paper/citation closure.
 `PASS_STAGE250_EXACT_DENSE_GAP_REFRESH_OPTIMALITY_OPEN` records that exact dense optimality is not proven. The active goal
 remains open for non-binary selector semantics, any future counter-backed exact
 mechanism, and final paper/citation closure.
+### Stage251 non-binary selector semantics
+
+`PASS_STAGE251_NONBINARY_SELECTOR_SEMANTICS_PREFLIGHT_BLOCKS_IMPLEMENTATION` keeps the active research goal disciplined. Non-binary PVW/MAT-SAB
+cannot be claimed or implemented by removing binary guards; the next valid work
+is a separate MAT selector/key skeleton for `s_sign` and `s_coff`.
