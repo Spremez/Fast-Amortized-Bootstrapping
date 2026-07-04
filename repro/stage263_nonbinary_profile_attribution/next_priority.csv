@@ -1,0 +1,5 @@
+priority,target,profile_basis,candidate,stop_rule
+P1,MAT external product body,mat_ep/body=0.357..0.419,native perf/assembly audit for load/store/FMA pressure; compare generic vs small-r MAT AVX512; only then implement layout/tiling changes,do not claim theoretical optimum without counters and same-backend full SAB A/B
+P2,from_DFT/add materialization,from_DFT+add is material but below MAT EP,revisit backend from_DFT_add only if MAT counter audit shows kernel headroom is exhausted,avoid repeating prior neutral H14 work unless current profile changes the share materially
+P3,non-binary sub_a,sub_a/body max=0.121,design a mode-specific sub_a selector/rotation profile before code changes,must beat full SAB A/B; sub_a-only speedup has limited Amdahl ceiling
+P4,post-processing/extract/KS,postproc residual/PVW max=0.010,defer unless body optimizations increase the residual share,do not add high-risk tail optimizations for low single-digit share

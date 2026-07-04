@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_correctness,PASS,PVW/scalar target correctness,4/4,profile_metrics.csv,Profile rows retain full target phase equivalence.
+G2_schedule_counts,PASS,CMUX/MAT/NCMUX/sub_a/copyback counts,include_zero:r2 cmux=573440 mat_ep=573440 ncmux=5080 sub_a=39 copyback=0;ternary:r2 cmux=573440 mat_ep=573440 ncmux=5080 sub_a=39 copyback=0;include_zero:r4 cmux=573440 mat_ep=573440 ncmux=5080 sub_a=39 copyback=0;ternary:r4 cmux=573440 mat_ep=573440 ncmux=5080 sub_a=39 copyback=0,profile_metrics.csv,"Non-binary profile preserves target SAB schedule: 573440 MAT EP/CMUX, 5080 NCMUX, 39 sub_a, zero copyback."
+G3_component_attribution,PASS,MAT EP body share,0.357..0.419,profile_metrics.csv,MAT EP remains the largest single measured body component but not the whole bottleneck.
+G4_non_mat_bound,PASS,non-MAT body share,0.581..0.643,profile_metrics.csv,Amdahl bound prevents kernel-only changes from explaining all remaining SAB cost.
+G5_tail_bound,PASS,max postproc residual/PVW,0.010,profile_metrics.csv,Post-processing residual is visible but below the body-dominant region.
+G6_decision,PASS_STAGE263_NONBINARY_PROFILE_ATTRIBUTION,stage decision,PASS_STAGE263_NONBINARY_PROFILE_ATTRIBUTION,proof_gate.csv,Proceed to MAT AVX512 memory/FMA counter audit and sub_a/materialization secondary hypotheses.

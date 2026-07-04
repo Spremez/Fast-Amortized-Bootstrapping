@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+nonbinary_schedule_invariant,supported_profile,The target non-binary PVW/MAT-SAB profile preserves the expected SAB schedule counts for r=2/r=4 include-zero and ternary.,The profile proves native paper-grade performance.,profile_metrics.csv
+dominant_component,supported_profile,"MAT EP is the largest single measured body component at 0.357-0.419 of body time, while non-MAT body work remains 0.581-0.643.",Only the MAT kernel matters for final SAB speed.,profile_metrics.csv
+mat_avx512_theoretical_optimum,unsupported,Stage263 identifies MAT EP as the first counter-audit target.,The current MAT AVX512 implementation is theoretically optimal.,no hardware counter or assembly-bound proof in Stage263
