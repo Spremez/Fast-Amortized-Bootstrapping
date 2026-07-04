@@ -1,0 +1,17 @@
+input,status,role,bytes
+repro/stage227_exact_route_claim_boundary_update/proof_gate.csv,present,Stage227 fixed T_bootstrap/r claim boundary,1368
+repro/stage227_exact_route_claim_boundary_update/next_stage_queue.csv,present,Stage227 selected Stage228,962
+repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv,present,Stage226 native counter attribution,1607
+repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv,present,Stage226 counter ratios,1354
+repro/stage183_addmul_dataflow_screen/summary.csv,present,Prior addmul dataflow screen,1161
+repro/stage183_addmul_dataflow_screen/mechanism_screen.csv,present,Prior exact addmul mechanism screen,1702
+repro/stage183_addmul_dataflow_screen/projection.csv,present,Prior addmul projection threshold,521
+repro/stage184_exact_route_closeout_claim_refresh/open_routes.csv,present,Prior exact-route closeout,626
+repro/stage155_same_format_frontier_refresh/component_shares.csv,present,Prior component share frontier,997
+repro/stage159_sub_decomp_fusion_repeated_gate/perf_comparison.csv,present,Prior sub-decomp fusion full-SAB gate,473
+repro/stage181_sub_decomp_avx512_gate/comparison.csv,present,Prior AVX512 sub-decompose negative gate,253
+src/mosfhet/src/mattrgsw.c,present,Current MAT external product source,38109
+src/mosfhet/src/pvwtmlwe.c,present,Current PVW TMLWE materialization source,33910
+src/mosfhet/src/polynomial.c,present,Current polynomial backend source,19130
+src/mosfhet/Makefile.def,present,Current explicit build flags,6791
+stage227_next_selects_stage228,present,Prevents off-road kernel search.,

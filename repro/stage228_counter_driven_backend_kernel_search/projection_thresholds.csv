@@ -1,0 +1,4 @@
+component,share,required_local_speedup_for_3pct_full_sab,current_signal,evidence
+addmul_from_dec_dft,0.221723249,1.151228774,Stage183 denies layout-only code; Stage226 shows only backend materialization counter deltas.,repro/stage183_addmul_dataflow_screen/projection.csv; repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv
+from_dft_materialization,0.326046000,1.098094553,Stage226 backend direct add is positive but already implemented; no new backend primitive exists.,repro/stage155_same_format_frontier_refresh/component_shares.csv; src/mosfhet/src/polynomial.c
+sub_or_sub_decompose,0.153191000,1.234766161,Stage159 full-SAB fusion positive but Stage181 vectorizing sub-decompose itself is negative.,repro/stage159_sub_decomp_fusion_repeated_gate/perf_comparison.csv; repro/stage181_sub_decomp_avx512_gate/comparison.csv

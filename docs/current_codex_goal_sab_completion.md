@@ -663,3 +663,6 @@ or security claims.
 ### Stage227 exact route claim boundary
 
 `PASS_STAGE227_EXACT_ROUTE_CLAIM_BOUNDARY_FIXED` separates supported exact-route results from blocked optimality, compact-route and novelty claims.
+### Stage228 counter-driven backend kernel search
+
+`PASS_STAGE228_NO_NEW_HOTPATH_CODE_SELECT_PARAMETER_MATRIX` prevents blind exact-path retuning and routes to parameter generalization.

@@ -1,0 +1,7 @@
+fact,status,evidence,interpretation
+rgt4_tiled_avx512_present,present,src/mosfhet/src/mattrgsw.c,Current r=6/r=8 exact route already has MAT-aware tiled AVX512.
+r6_fulltile_present,present,src/mosfhet/src/mattrgsw.c,Full-output r=6 layout exists and was previously screened.
+r6_bodymajor_present,present,src/mosfhet/src/mattrgsw.c,Body-major r=6 layout exists and was previously screened.
+backend_from_dft_add_present,present,src/mosfhet/src/pvwtmlwe.c,Current preferred path uses backend direct FromDFT+add.
+backend_direct_add_primitive_present,present,src/mosfhet/src/polynomial.c,SPQLIOS backend has direct IFFT+add primitive already wired.
+sub_decomp_fusion_present,present,src/mosfhet/Makefile.def; src/mosfhet/src/mattrgsw.c,Sub-decompose fusion path exists as an explicit flag.

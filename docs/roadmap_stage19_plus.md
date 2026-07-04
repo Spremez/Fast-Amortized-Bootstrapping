@@ -6469,3 +6469,18 @@ Status:
 Completed at `df8db1f` with `PASS_STAGE227_EXACT_ROUTE_CLAIM_BOUNDARY_FIXED`. The primary metric is complete-SAB
 `T_bootstrap/r`; theoretical optimality and compact-route claims remain blocked.
 ```
+## Stage 228: Counter-Driven Backend Kernel Search
+
+Goal:
+
+```text
+Use Stage226 native counters and prior frontier gates to decide whether any
+new exact MAT/PVW hot-path code is justified.
+```
+
+Status:
+
+```text
+Completed at `f2b753f` with `PASS_STAGE228_NO_NEW_HOTPATH_CODE_SELECT_PARAMETER_MATRIX`. No speculative hot-path edit is
+permitted; next selected work is parameter generalization.
+```

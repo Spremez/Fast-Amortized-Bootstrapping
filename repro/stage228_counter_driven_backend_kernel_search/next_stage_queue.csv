@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage229_parameter_generalization_matrix,Stage228 denies new exact hot-path code and Stage227 fixes T_bootstrap/r claim scope.,Run a parameter/branch matrix before broadening exact-route claims.,selected,Keep claims scoped to BINARY SET_2_3_2048 r=6.,repro/stage228_counter_driven_backend_kernel_search/proof_gate.csv
+P1,stage230_literature_novelty_audit,Before any paper novelty claim.,Source-verified related work; no fabricated references.,future,Engineering-only report.,repro/stage228_counter_driven_backend_kernel_search/candidate_cards.csv
+P2,stage231_new_backend_or_compact_proof_unlock,A new backend primitive or closed compact-state proof is supplied.,"Proof or primitive first, then isolated tests, then full SAB.",blocked_until_new_evidence,Do not modify SAB hot path.,repro/stage228_counter_driven_backend_kernel_search/candidate_gates.csv

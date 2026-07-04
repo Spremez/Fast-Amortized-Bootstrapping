@@ -1085,3 +1085,6 @@ At commit `8e28f16`, Stage226 records `PASS_STAGE226_COUNTERS_RECORDED_TIMING_NE
 ## Stage227 exact route claim boundary
 
 At commit `df8db1f`, Stage227 records `PASS_STAGE227_EXACT_ROUTE_CLAIM_BOUNDARY_FIXED` and fixes complete-SAB `T_bootstrap/r` as the comparison metric.
+## Stage228 counter-driven backend kernel search
+
+At commit `f2b753f`, Stage228 records `PASS_STAGE228_NO_NEW_HOTPATH_CODE_SELECT_PARAMETER_MATRIX`. Exact same-format kernel work remains gated by projected complete-SAB `T_bootstrap/r` gain.

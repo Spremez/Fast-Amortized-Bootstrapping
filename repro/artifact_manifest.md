@@ -2665,3 +2665,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage227_claim_boundary.md`
   - `scripts/build_stage227_exact_route_claim_boundary_update.py`
   - `repro/stage227_exact_route_claim_boundary_update/`
+- stage228_counter_driven_backend_kernel_search:
+  - `docs/stage228_counter_driven_backend_kernel_search.md`
+  - `experiments/stage228_counter_driven_backend_kernel_search_plan.md`
+  - `theory_checks/stage228_counter_driven_kernel_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage228_counter_driven_candidates.md`
+  - `scripts/build_stage228_counter_driven_backend_kernel_search.py`
+  - `repro/stage228_counter_driven_backend_kernel_search/`

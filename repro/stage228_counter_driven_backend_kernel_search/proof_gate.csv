@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,interpretation
+G1_required_inputs,PASS,inputs_present,true,repro/stage228_counter_driven_backend_kernel_search/input_status.csv,"Stage228 consumes Stage227, Stage226, prior frontier gates, and current source."
+G2_source_fact_check,PASS,facts_present,true,repro/stage228_counter_driven_backend_kernel_search/source_facts.csv,The project already has MAT-aware AVX512 and backend direct add paths.
+G3_projection_gate,PASS,candidate_count,3,repro/stage228_counter_driven_backend_kernel_search/projection_thresholds.csv,Every code idea must clear a local speedup threshold before full-SAB work.
+G4_code_permission,DENY_NEW_HOTPATH_CODE,allow_hotpath_edit_count,0,repro/stage228_counter_driven_backend_kernel_search/candidate_cards.csv,Stage228 does not permit speculative hot-path edits from the current evidence.
+G5_stage228_decision,PASS_STAGE228_NO_NEW_HOTPATH_CODE_SELECT_PARAMETER_MATRIX,decision,PASS_STAGE228_NO_NEW_HOTPATH_CODE_SELECT_PARAMETER_MATRIX,repro/stage228_counter_driven_backend_kernel_search/proof_gate.csv,Move to parameter generalization unless a new counter-backed mechanism appears.
