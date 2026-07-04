@@ -3673,3 +3673,16 @@ H10_stage264_mat_avx512_counter_preflight:
     missing in the current WSL probe, so hardware-counter-backed retired
     load/store/FMA attribution and MAT-AVX512 theoretical-optimality wording
     remain blocked.
+H10_stage265_current_head_counter_reuse_audit:
+  status: current_head_counter_reuse_refresh_required
+  evidence:
+    - repro/stage265_current_head_counter_reuse_audit/code_delta_hotpath.csv
+    - repro/stage265_current_head_counter_reuse_audit/evidence_reuse_matrix.csv
+    - repro/stage265_current_head_counter_reuse_audit/proof_gate.csv
+    - docs/stage265_current_head_counter_reuse_audit.md
+  conclusion: >
+    Stage265 records PASS_STAGE265_CURRENT_HEAD_COUNTER_REUSE_AUDIT_REFRESH_REQUIRED. Stage101/226 native counters remain historical
+    context, while current non-binary include-zero/ternary native-counter
+    attribution requires a fresh current-head run because PVW/SAB hot-path and
+    benchmark sources changed after the Stage245 bridge. The MAT EP source is
+    unchanged, so source-structure context remains valid.

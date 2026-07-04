@@ -1,0 +1,5 @@
+base,head,path,status,classification,claim_effect
+0888285,6f04818,include/sab_pvw.h,M,pvw_sab_hot_path,Complete-SAB counter attribution for PVW/MAT path requires fresh current-head native run
+0888285,6f04818,main.c,M,benchmark_and_protocol_harness,Benchmark semantics and current target claims require fresh current-head evidence
+0888285,6f04818,src/mosfhet/Makefile.def,M,build_flags,Backend/flag build semantics require current-binary verification
+0888285,6f04818,src/sab_pvw.c,M,pvw_sab_hot_path,Complete-SAB counter attribution for PVW/MAT path requires fresh current-head native run

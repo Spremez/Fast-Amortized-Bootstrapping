@@ -1,0 +1,8 @@
+evidence,artifact,input_status,reuse_for_current_nonbinary_claim,reason
+Stage101 CB5 native r=4 binary counters,docs/stage101_cb5_remote_native_perf_log.md,present,historical_context_only,Stage101 predates the current non-binary SAB path and does not measure include-zero/ternary target T_bootstrap/r.
+Stage226 exact backend-vs-wrapper native counters,repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv,present,not_directly_reusable,PVW/SAB hot-path and benchmark code changed after the Stage245 bridge; Stage226 remains exact-route mechanism context only.
+Stage245 current-head counter bridge,repro/stage245_current_head_counter_bridge/proof_gate.csv,present,expired_by_current_hotpath_delta,"Stage245 bridged only through commit 0888285; current HEAD changes include main.c, sab_pvw.c, sab_pvw.h, and Makefile.def."
+Stage263 current non-binary profile,repro/stage263_nonbinary_profile_attribution/proof_gate.csv,present,current_profile_evidence,Stage263 measures current non-binary schedule/profile but not native hardware counters.
+Stage264 current MAT-AVX512 proxy,repro/stage264_mat_avx512_counter_preflight/proof_gate.csv,present,current_proxy_only,"Stage264 audits the current object/source proxy; WSL perf is missing, so it is not native counter evidence."
+MAT external-product kernel source,src/mosfhet/src/mattrgsw.c,unchanged_since_stage245,kernel_structure_context,"The MAT EP source is unchanged, but complete-SAB native counters still require fresh measurement after wrapper/protocol deltas."
+Stage226 attribution ratios,repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv,present,context_only,"Prior exact-route ratios: cycles=1.017861569, loads=1.011560486, stores=1.009880546."

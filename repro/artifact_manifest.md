@@ -2915,3 +2915,7 @@ Repro artifacts:
   - `docs/stage264_mat_avx512_counter_preflight.md`
   - `scripts/build_stage264_mat_avx512_counter_preflight.py`
   - `repro/stage264_mat_avx512_counter_preflight/`
+- stage265_current_head_counter_reuse_audit:
+  - `docs/stage265_current_head_counter_reuse_audit.md`
+  - `scripts/build_stage265_current_head_counter_reuse_audit.py`
+  - `repro/stage265_current_head_counter_reuse_audit/`

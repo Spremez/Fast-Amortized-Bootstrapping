@@ -374,3 +374,4 @@
 - [x] Stage264 MAT-AVX512 counter/assembly preflight proxy-only audit
 
 - [ ] Run native/perf-backed MAT-AVX512 retired load/store/FMA attribution before any theoretical-optimality claim
+- [x] Stage265 current-head counter reuse audit records `PASS_STAGE265_CURRENT_HEAD_COUNTER_REUSE_AUDIT_REFRESH_REQUIRED` and selects fresh current-head non-binary native-counter attribution as the next executable route.

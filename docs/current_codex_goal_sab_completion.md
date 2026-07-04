@@ -870,3 +870,10 @@ MAT-AVX512 audit. The source model supports the MAT-aware memory-traffic
 hypothesis and objdump confirms AVX512/FMA instructions in the MAT dispatch
 object, but current WSL lacks `perf`. Hardware-counter-backed load/store/FMA
 attribution and MAT-AVX512 theoretical-optimality wording remain blocked.
+### Stage265 current-head counter reuse audit
+
+`PASS_STAGE265_CURRENT_HEAD_COUNTER_REUSE_AUDIT_REFRESH_REQUIRED` records that historical native counters are context-only for the
+current non-binary PVW/MAT-SAB path. The active research goal remains open:
+the selected next executable route is a fresh current-head non-binary native
+counter run or a local split-projection fallback that cannot upgrade hardware
+counter claims.
