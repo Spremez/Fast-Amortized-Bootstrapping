@@ -1,0 +1,6 @@
+variant,t_bootstrap_over_r_pvw_us,speedup_vs_fast_control,speedup_vs_scalar_repeated,status,extra_flags
+fast_control,7077472.750,1.000000,1.475,control,
+backend_from_dft_add,6906473.000,1.024759,1.533,positive_screen,SAB_PVW_BACKEND_FROM_DFT_ADD=true
+sub_decomp_avx,6944666.500,1.019123,1.512,positive_screen,SAB_PVW_SUB_DECOMP_FUSION=true MAT_TRGSW_AVX512_SUB_DECOMP=true
+backend_sub_decomp_avx,6721373.250,1.052980,1.581,positive_screen,SAB_PVW_BACKEND_FROM_DFT_ADD=true SAB_PVW_SUB_DECOMP_FUSION=true MAT_TRGSW_AVX512_SUB_DECOMP=true
+backend_sub_decomp_dual,6625352.500,1.068241,1.594,positive_screen,SAB_PVW_BACKEND_FROM_DFT_ADD=true SAB_PVW_SUB_DECOMP_FUSION=true MAT_TRGSW_AVX512_SUB_DECOMP=true SAB_PVW_DUAL_SUB_CMUX=true

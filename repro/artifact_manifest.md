@@ -2987,3 +2987,8 @@ Repro artifacts:
   - `scripts/run_stage279_native_access_residual_profile.sh`
   - `scripts/build_stage279_native_access_residual_profile.py`
   - `repro/stage279_native_access_residual_profile/`
+- stage280_cmux_mat_ep_residual_screen:
+  - `docs/stage280_cmux_mat_ep_residual_screen.md`
+  - `scripts/run_stage280_cmux_mat_ep_residual_screen.sh`
+  - `scripts/build_stage280_cmux_mat_ep_residual_screen.py`
+  - `repro/stage280_cmux_mat_ep_residual_screen/`

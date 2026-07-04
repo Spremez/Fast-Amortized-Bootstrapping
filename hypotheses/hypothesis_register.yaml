@@ -3838,3 +3838,14 @@ H10_stage279_native_access_residual_profile:
   conclusion: >
     Stage279 records PASS_STAGE279_NATIVE_ACCESS_MISSING_PROFILE_SELECT_RESIDUAL. It keeps native performance gated and selects
     the next candidate from the measured fast-path residual profile.
+H10_stage280_cmux_mat_ep_residual_screen:
+  status: PASS_STAGE280_RESIDUAL_CANDIDATE_SELECTED_REPEAT_REQUIRED
+  evidence:
+    - repro/stage280_cmux_mat_ep_residual_screen/performance_results.csv
+    - repro/stage280_cmux_mat_ep_residual_screen/candidate_comparison.csv
+    - repro/stage280_cmux_mat_ep_residual_screen/profile_components.csv
+    - docs/stage280_cmux_mat_ep_residual_screen.md
+  conclusion: >
+    Stage280 screens CMUX/MAT-EP residual candidates under the current
+    include-zero fast path. Selected candidate: backend_sub_decomp_dual. Repeated full-SAB
+    A/B remains required before promotion.

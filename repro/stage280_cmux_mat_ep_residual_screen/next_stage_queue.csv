@@ -1,0 +1,3 @@
+priority,route,entry_condition,candidate,gate,failure_action
+P0,stage281_cmux_residual_repeated_gate,True,backend_sub_decomp_dual,Run reps>=3 unprofiled full SAB A/B plus one body-profile refresh.,Mark candidate neutral if repeated mean/min do not beat fast_control.
+P1,stage282_native_execution_resolution,native BatchMode access still missing,native_handoff,Use key-based native access or keep claims local-only.,Do not write native or paper-grade performance claims.

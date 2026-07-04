@@ -952,3 +952,9 @@ not convert WSL results into a paper-grade native claim.
 `PASS_STAGE279_NATIVE_ACCESS_MISSING_PROFILE_SELECT_RESIDUAL` records no-credential native access status and measures the
 fast-path residual profile. The next optimization is selected from the measured
 residual components rather than pre-fast bottleneck assumptions.
+<!-- stage280-cmux-mat-ep-residual-screen -->
+### Stage280 CMUX/MAT-EP residual screen
+
+`PASS_STAGE280_RESIDUAL_CANDIDATE_SELECTED_REPEAT_REQUIRED` screens existing explicit CMUX/MAT-EP residual candidates under the
+guarded include-zero fast path. The selected next candidate is `backend_sub_decomp_dual` and
+requires repeated full-SAB A/B before any promotion.

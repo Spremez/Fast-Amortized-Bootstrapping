@@ -401,3 +401,5 @@
 - [x] Stage278 records `PASS_STAGE278_LOCAL_LARGER_STATS_NATIVE_REQUIRED` with reps>=5 local timing, resource/noise proxy, and native status separated.
 <!-- stage279-native-access-residual-profile-checklist -->
 - [x] Stage279 records `PASS_STAGE279_NATIVE_ACCESS_MISSING_PROFILE_SELECT_RESIDUAL` with native access status and fast-path residual profile.
+<!-- stage280-cmux-mat-ep-residual-screen-checklist -->
+- [x] Stage280 records `PASS_STAGE280_RESIDUAL_CANDIDATE_SELECTED_REPEAT_REQUIRED` with unprofiled T_bootstrap/r and separate profile attribution.
