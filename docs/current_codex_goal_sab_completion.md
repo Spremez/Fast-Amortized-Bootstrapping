@@ -1029,3 +1029,10 @@ gated behind Stage292.
 `PASS_STAGE292_DIRECT_DFT_FULLSAB_POSITIVE_NOISE_RESOURCE_REQUIRED` tests `MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true` inside complete
 SAB using `T_bootstrap/r`. The algorithm-level scalar comparison is recorded
 separately from the incremental selected-control comparison.
+<!-- stage293-direct-dft-noise-resource -->
+### Stage293 direct DFT target correctness/resource smoke
+
+`PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING` records target correctness and resource side conditions for the
+Stage292 direct-DFT candidate. High-stat noise remains pending because the
+SPQLIOS full-noise harness needs repair or replacement before it can support a
+noise claim.

@@ -1,0 +1,2 @@
+case,status,source_time_log,source_run_log
+unstable_noise_attempt_selected_control,segfault_signal_11,repro/stage293_direct_dft_noise_resource/raw/unstable_noise_attempt_selected_control/time.log,repro/stage293_direct_dft_noise_resource/raw/unstable_noise_attempt_selected_control/run.log

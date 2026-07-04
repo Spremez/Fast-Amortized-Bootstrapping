@@ -7020,3 +7020,8 @@ Goal: validate Stage291 direct sub-decompose-to-DFT under complete SAB
 `T_bootstrap/r`.
 
 Status: `PASS_STAGE292_DIRECT_DFT_FULLSAB_POSITIVE_NOISE_RESOURCE_REQUIRED`.
+## Stage 293: Direct DFT Target Correctness/Resource Smoke
+
+Goal: validate Stage292 direct DFT target correctness and resource reporting.
+
+Status: `PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING`. High-stat noise remains pending.

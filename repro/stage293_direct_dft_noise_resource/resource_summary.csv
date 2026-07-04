@@ -1,0 +1,2 @@
+case,status,r,pvw_key_bytes,scalar_repeated_key_bytes,key_ratio,pvw_keygen_us,pvw_keygen_lane_us,scalar_keygen_us,scalar_lane_keygen_us,keygen_lane_ratio,pvw_after_pvw_sab_keygen_vmhwm_kb,scalar_after_scalar_repeated_sab_keygen_vmhwm_kb,time_maxrss_kb,source_log,source_time_log
+target_resource,pass,4,653500448,613414432,1.065349,2659776,664944.000,2521987,630496.750,1.054635,769204,1537844,1538040,repro/stage293_direct_dft_noise_resource/raw/target_resource/run.log,repro/stage293_direct_dft_noise_resource/raw/target_resource/time.log

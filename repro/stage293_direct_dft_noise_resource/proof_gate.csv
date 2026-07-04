@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_stage292_input,PASS,Stage292 decision,positive_full_sab_ab,Side-condition smoke follows only after full-SAB T/r improvement.
+G2_target_correctness,PASS,target full bootstrap gate,Pass,Direct DFT candidate must preserve target lane equivalence.
+G3_target_resource,PASS,key/RSS resource,key_ratio=1.065349;rss=1538040,Key size/keygen/RSS are recorded for the target parameter.
+G4_noise_boundary,PENDING,full-noise high-stat,not_claimed,SPQLIOS full-noise harness is not used as a pass gate until repaired; no high-stat noise claim is made.
+G5_decision,PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING,stage decision,PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING,Positive smoke supports continued work; final noise closure remains open.

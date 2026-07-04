@@ -3060,3 +3060,8 @@ Repro artifacts:
   - `scripts/run_stage292_fullsab_direct_dft_ab.sh`
   - `scripts/build_stage292_fullsab_direct_dft_ab.py`
   - `repro/stage292_fullsab_direct_dft_ab/`
+- stage293_direct_dft_noise_resource:
+  - `docs/stage293_direct_dft_noise_resource.md`
+  - `scripts/run_stage293_direct_dft_noise_resource.sh`
+  - `scripts/build_stage293_direct_dft_noise_resource.py`
+  - `repro/stage293_direct_dft_noise_resource/`

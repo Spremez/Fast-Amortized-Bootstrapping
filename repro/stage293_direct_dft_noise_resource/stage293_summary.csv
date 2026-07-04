@@ -1,0 +1,6 @@
+case,status,value
+stage292_input,pass,positive_full_sab_ab
+target_correctness,pass,Pass
+target_resource,pass,Pass
+full_noise_highstat,pending,spqlios full-noise harness requires repair or native alternative
+decision,PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING,PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING

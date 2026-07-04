@@ -1,0 +1,4 @@
+case,param,fft_lib,flags
+target_correctness,SET_2_3_2048,spqlios_avx512,SAB_PVW_TARGET_TEST=true plus selected direct-DFT flags
+target_resource,SET_2_3_2048,spqlios_avx512,SAB_PVW_RESOURCE_TEST=true SAB_PVW_RESOURCE_R=4 plus selected direct-DFT flags
+unstable_noise_attempt,SET_2_3_2048,spqlios_avx512,optional previous/explicit SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST attempt; not a pass gate

@@ -3964,3 +3964,14 @@ H292_direct_dft_fullsab_ab:
     complete-SAB improvement. Algorithm-level speedup is reported as
     T_bootstrap/r versus repeated scalar; direct-vs-control is only an
     incremental implementation gate.
+H293_direct_dft_noise_resource:
+  status: PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING
+  primary_metric: target_correctness_resource_smoke
+  evidence:
+    - repro/stage293_direct_dft_noise_resource/stage293_summary.csv
+    - repro/stage293_direct_dft_noise_resource/resource_summary.csv
+    - repro/stage293_direct_dft_noise_resource/proof_gate.csv
+    - docs/stage293_direct_dft_noise_resource.md
+  conclusion: >
+    Stage293 records target correctness/resource smoke for the direct-DFT
+    candidate. Noise high-stat closure is pending and must not be inferred.

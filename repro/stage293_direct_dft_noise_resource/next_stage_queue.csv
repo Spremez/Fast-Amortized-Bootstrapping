@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage294_spqlios_noise_harness_repair,PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING,Repair or replace full-noise harness under SPQLIOS for direct DFT.,Keep noise claim pending.
+P1,stage294_direct_dft_highstat_perf,PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING,Run 10-run T/r refresh for direct DFT if time/platform budget allows.,Keep Stage292 as 3-run local evidence.
