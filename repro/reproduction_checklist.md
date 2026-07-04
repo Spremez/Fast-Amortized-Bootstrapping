@@ -391,3 +391,5 @@
 - [x] Stage273 records `PASS_STAGE273_SUB_A_ALIAS_MICROTEST_ENABLES_FLAGGED_SMOKE` with raw logs, parsed gates, and claim boundaries.
 <!-- stage274-sub-a-fused-materialization-smoke-checklist -->
 - [x] Stage274 fused sub_a smoke records `NEUTRAL_STAGE274_SUB_A_FUSED_SMOKE_NO_PROMOTION` with primary metric `T_bootstrap/r`.
+<!-- stage275-close-s272a-select-next-candidate-checklist -->
+- [x] Stage275 records `PASS_STAGE275_CLOSE_S272A_SELECT_INCLUDE_ZERO_COEFF_ONE_FAST_PATH` and selects Stage276 guarded include-zero coeff-one fast path.

@@ -1,0 +1,5 @@
+fact,status,evidence,interpretation
+pvw_include_zero_rejects_negative_coeff,PASS,src/sab_pvw.c,Current PVW include-zero keygen admits only coefficient-one nonzero entries.
+pvw_s_coff_encrypts_one,PASS,src/sab_pvw.c,Current PVW include-zero selector family materializes encrypted one for scanned nonzero entries.
+scalar_include_zero_has_zero_gap_semantics,PASS,src/sparse_amortized_bootstrap.c,"Scalar include-zero has a broader zero-selector branch, so a fast path must be guarded to current PVW semantics only."
+stage274_fused_neutral,PASS,repro/stage274_sub_a_fused_materialization_smoke/proof_gate.csv,The in-place from_DFT_add fused materialization candidate is closed as non-promoted.

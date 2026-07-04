@@ -2962,3 +2962,7 @@ Repro artifacts:
   - `scripts/run_stage274_sub_a_fused_materialization_smoke.sh`
   - `scripts/build_stage274_sub_a_fused_materialization_smoke.py`
   - `repro/stage274_sub_a_fused_materialization_smoke/`
+- stage275_close_s272a_select_next_candidate:
+  - `docs/stage275_close_s272a_select_next_candidate.md`
+  - `scripts/build_stage275_close_s272a_select_next_candidate.py`
+  - `repro/stage275_close_s272a_select_next_candidate/`

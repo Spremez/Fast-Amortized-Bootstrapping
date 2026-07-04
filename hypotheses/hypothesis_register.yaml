@@ -3785,3 +3785,14 @@ H10_stage274_sub_a_fused_materialization_smoke:
     Stage274 records NEUTRAL_STAGE274_SUB_A_FUSED_SMOKE_NO_PROMOTION. It keeps the result scoped to an explicit
     fused sub_a smoke and measures incremental benefit as fused-vs-backend,
     not only fused-vs-default.
+H10_stage275_close_s272a_select_next_candidate:
+  status: PASS_STAGE275_CLOSE_S272A_SELECT_INCLUDE_ZERO_COEFF_ONE_FAST_PATH
+  evidence:
+    - repro/stage275_close_s272a_select_next_candidate/closed_candidate.csv
+    - repro/stage275_close_s272a_select_next_candidate/source_guard.csv
+    - repro/stage275_close_s272a_select_next_candidate/candidate_ranking.csv
+    - docs/stage275_close_s272a_select_next_candidate.md
+  conclusion: >
+    Stage275 records PASS_STAGE275_CLOSE_S272A_SELECT_INCLUDE_ZERO_COEFF_ONE_FAST_PATH. It closes the fused from_DFT_add sub_a
+    candidate and selects a guarded include-zero coeff-one fast-path experiment
+    as Stage276.

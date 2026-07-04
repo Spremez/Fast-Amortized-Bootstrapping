@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,interpretation
+G1_stage274_closeout,PASS,S272-A closeout rows,2,closed_candidate.csv,The fused materialization candidate is closed without promotion.
+G2_source_guard,PASS,current PVW include-zero source facts,4/4,source_guard.csv,The next candidate is allowed only as a guarded current-PVW semantic fast path.
+G3_candidate_selection,PASS,selected candidate,S275-A-include_zero_coeff_one_fast_path,candidate_ranking.csv,Select an executable correctness-first include-zero fast path before lower-ceiling selector-kernel work.
+G4_claim_boundary,PASS_DESIGN_ONLY,no speed claim,selection_gate,claim_boundary.csv,Stage275 selects the next experiment; it implements no hot-path optimization.
+G5_decision,PASS_STAGE275_CLOSE_S272A_SELECT_INCLUDE_ZERO_COEFF_ONE_FAST_PATH,stage decision,PASS_STAGE275_CLOSE_S272A_SELECT_INCLUDE_ZERO_COEFF_ONE_FAST_PATH,proof_gate.csv,Proceed to Stage276 only if the closeout inputs and source guard are complete.

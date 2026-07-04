@@ -1,0 +1,3 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+fused_materialization_candidate,closed_neutral,Stage274 found the fused from_DFT_add sub_a path correct but slower in full SAB smoke.,Fused from_DFT_add accelerates SAB.,closed_candidate.csv
+include_zero_coeff_one_fast_path,selected_unimplemented,Current PVW source supports a guarded include-zero coeff-one fast-path hypothesis.,All include-zero SAB instances can drop s_coff.,source_guard.csv; candidate_ranking.csv

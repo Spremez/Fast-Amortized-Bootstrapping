@@ -927,3 +927,8 @@ as a negative control.
 smoke. The primary metric is `T_bootstrap/r`, and the incremental local
 comparison is fused vs backend direct-add under the same `spqlios_avx512`
 backend.
+### Stage275 close S272-A and select next candidate
+
+`PASS_STAGE275_CLOSE_S272A_SELECT_INCLUDE_ZERO_COEFF_ONE_FAST_PATH` closes the in-place `sub_a` fused materialization candidate after
+the Stage274 neutral smoke and selects a guarded include-zero coeff-one fast
+path as the next executable experiment. No speed claim is made at this stage.

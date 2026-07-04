@@ -1,0 +1,3 @@
+candidate,mode,fused_speedup_vs_backend,stage274_status,decision,interpretation
+S272-A-sub_a_fused_from_DFT_add,include_zero,0.751103,neutral_or_negative,close_no_promotion,Correct but slower than backend direct-add; do not default-enable and do not spend repeated/noise budget.
+S272-A-sub_a_fused_from_DFT_add,ternary,0.804529,neutral_or_negative,close_no_promotion,Correct but slower than backend direct-add; do not default-enable and do not spend repeated/noise budget.
