@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage246_nonbinary_or_compact_algorithm_gate,A broader-than-selected-binary algorithmic claim is proposed.,"closed equations, invariant proof obligations, correctness/noise/resource matrix, full-SAB A/B",blocked_until_new_design,Do not extend selected binary exact dense claim.,repro/stage240_scoped_latex_draft/claim_audit.csv
+P1,stage247_batchboot_monitor_rerun,Before final submission or after USENIX/DBLP/Crossref metadata changes.,official source route only; no generated BibTeX,future_monitor,Leave BatchBoot TODO.,repro/stage244_batchboot_bibtex_monitor/remaining_todo.csv
+P2,fresh_native_counter_rerun,"Any future change touches main.c, Makefile, include/, src/, benchmark command semantics, or backend flags.",native perf counters on the changed binary,conditional,Mark Stage226 counters historical only.,repro/stage245_current_head_counter_bridge/code_delta.csv

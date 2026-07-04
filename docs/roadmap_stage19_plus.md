@@ -6745,3 +6745,19 @@ Generated from input head `b5c7cda` with `PASS_STAGE244_BATCHBOOT_MONITOR_RECORD
 BibTeX export was found through USENIX, DBLP, or Crossref probes. BatchBoot
 remains an explicit TODO.
 ```
+## Stage 245: Current-Head Counter Bridge
+
+Goal:
+
+```text
+Audit whether Stage226 native counter attribution remains valid for the current
+head by checking executable MAT/PVW-SAB hot-path deltas.
+```
+
+Status:
+
+```text
+Generated from input head `0888285` with `PASS_STAGE245_COUNTER_REUSE_BRIDGED_NO_HOTPATH_DELTA`. The Stage226 native
+counter evidence is bridged as attribution-only because no tracked hot-path
+source delta exists after Stage226. It is not a new timing or optimality claim.
+```

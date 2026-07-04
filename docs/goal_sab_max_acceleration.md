@@ -1165,3 +1165,7 @@ sources as explicit TODOs instead of fabricating references.
 - Stage244 BatchBoot BibTeX monitor records `PASS_STAGE244_BATCHBOOT_MONITOR_RECORDED_NO_VERIFIED_BIBTEX`: external sources were
   rechecked and BatchBoot remains a TODO, with no fabricated bibliography
   entry.
+- Stage245 current-head counter bridge records `PASS_STAGE245_COUNTER_REUSE_BRIDGED_NO_HOTPATH_DELTA`: Stage226 native
+  counters remain usable as attribution-only evidence for the unchanged exact
+  dense MAT/PVW-SAB route, but do not prove theoretical optimality or a new
+  speedup.

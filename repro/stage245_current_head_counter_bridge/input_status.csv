@@ -1,0 +1,5 @@
+input,status,role,bytes
+repro/stage226_exact_mat_avx_counter_attribution/proof_gate.csv,present,Stage226 native counter proof gates,1697
+repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv,present,Stage226 attribution summary,1607
+repro/stage226_exact_mat_avx_counter_attribution/counter_summary.csv,present,Stage226 native counter summary,493
+repro/stage226_exact_mat_avx_counter_attribution/remote_environment.csv,present,Stage226 native host/environment record,2068

@@ -749,3 +749,9 @@ route, and theoretical optimality remain incomplete.
 goal remains open because optional current-head counter refresh, non-binary
 support, compact route, theoretical optimality, and final BatchBoot citation
 closure remain incomplete.
+### Stage245 current-head counter bridge
+
+`PASS_STAGE245_COUNTER_REUSE_BRIDGED_NO_HOTPATH_DELTA` records a current-head provenance bridge for Stage226 native
+counter attribution. The active goal remains open because broader algorithmic
+routes, theoretical optimality, non-binary support, and final citation closure
+remain incomplete.

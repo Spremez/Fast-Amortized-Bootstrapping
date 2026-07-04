@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs,PASS,stage226 inputs,all present,repro/stage245_current_head_counter_bridge/input_status.csv,Counter bridge starts only from recorded Stage226 native evidence.
+G2_hotpath_delta,PASS_NO_HOTPATH_DELTA,git diff main.c Makefile include src,no diff,repro/stage245_current_head_counter_bridge/code_delta.csv,No source delta permits reuse of Stage226 attribution; source delta requires a fresh native run.
+G3_stage226_counter_gate,PASS,Stage226 decision,PASS_STAGE226_EXACT_COUNTER_ATTRIBUTION_POSITIVE,repro/stage226_exact_mat_avx_counter_attribution/proof_gate.csv,Stage226 itself must have passed before reuse.
+G4_claim_boundary,PASS_ATTRIBUTION_ONLY,no new optimality/performance claim,enforced,repro/stage245_current_head_counter_bridge/claim_boundary.csv,"Stage245 is a bridge, not a new benchmark or theorem."
+G5_stage245_decision,PASS_STAGE245_COUNTER_REUSE_BRIDGED_NO_HOTPATH_DELTA,decision,PASS_STAGE245_COUNTER_REUSE_BRIDGED_NO_HOTPATH_DELTA,repro/stage245_current_head_counter_bridge/proof_gate.csv,Proceed to broader algorithm/proof gates only after respecting this boundary.

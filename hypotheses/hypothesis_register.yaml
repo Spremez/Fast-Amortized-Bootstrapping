@@ -3425,3 +3425,15 @@ H10_stage244_batchboot_bibtex_monitor:
     Stage244 records PASS_STAGE244_BATCHBOOT_MONITOR_RECORDED_NO_VERIFIED_BIBTEX. It reprobes USENIX, DBLP, and Crossref routes
     for BatchBoot and keeps the source as a TODO because no verified BibTeX
     entry is available. No bibliography entry was generated from memory.
+H10_stage245_current_head_counter_bridge:
+  status: current_head_counter_bridge_attribution_only
+  evidence:
+    - repro/stage245_current_head_counter_bridge/code_delta.csv
+    - repro/stage245_current_head_counter_bridge/evidence_bridge.csv
+    - repro/stage245_current_head_counter_bridge/proof_gate.csv
+    - docs/stage245_current_head_counter_bridge.md
+  conclusion: >
+    Stage245 records PASS_STAGE245_COUNTER_REUSE_BRIDGED_NO_HOTPATH_DELTA. It checks the current head against Stage226
+    and finds no tracked executable MAT/PVW-SAB hot-path delta. Stage226 native
+    counters can be cited as attribution-only evidence for the unchanged exact
+    route, not as a new speedup, novelty, or theoretical-optimality proof.

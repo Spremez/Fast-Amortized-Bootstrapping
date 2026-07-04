@@ -2786,3 +2786,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage244_batchboot_monitor.md`
   - `scripts/build_stage244_batchboot_bibtex_monitor.py`
   - `repro/stage244_batchboot_bibtex_monitor/`
+- stage245_current_head_counter_bridge:
+  - `docs/stage245_current_head_counter_bridge.md`
+  - `experiments/stage245_current_head_counter_bridge_plan.md`
+  - `theory_checks/stage245_counter_reuse_boundary.md`
+  - `algorithm_variants/mat_rlwe_sab_stage245_counter_bridge.md`
+  - `scripts/build_stage245_current_head_counter_bridge.py`
+  - `repro/stage245_current_head_counter_bridge/`

@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+complete_sab_timing,unchanged_prior_evidence,Use Stage224/Stage233-236 repeated complete-SAB timing as timing evidence.,Treat Stage245 as a new speedup measurement.,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv; repro/stage236_set_2_3_4096_r4_highstat_slice/performance_stats.csv
+native_counter_attribution,reusable_attribution_only,Stage226 counters explain the same unchanged exact backend-vs-wrapper hot path.,Claim theoretical optimality or universal AVX512 optimality from these counters.,repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv
+theoretical_optimality,blocked,Keep optimality as an open theory/model/assembly gate.,State that MAT-aware AVX512 reached the theoretical optimum.,theory_checks/stage245_counter_reuse_boundary.md
+new_algorithm_scope,unchanged,Selected binary exact dense PVW/MAT-SAB claim only.,"Extend to compact route, non-binary branches, or all parameters.",repro/stage240_scoped_latex_draft/claim_audit.csv

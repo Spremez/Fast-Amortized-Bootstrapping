@@ -1,0 +1,9 @@
+metric,value,source,reuse_status,claim_effect
+current_head,0888285,git rev-parse HEAD,reusable,current head bridge only; no new benchmark
+stage226_decision,PASS_STAGE226_EXACT_COUNTER_ATTRIBUTION_POSITIVE,repro/stage226_exact_mat_avx_counter_attribution/proof_gate.csv,reusable,native counter attribution gate
+stage224_backend_vs_wrapper_mean_speedup,1.024015000,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv,reusable_prior_timing_not_stage245_claim,Fresh Stage224 complete-SAB per-lane timing; primary performance evidence.
+stage226_perf_run_backend_vs_wrapper_lane_speedup,1.033292122,repro/stage226_exact_mat_avx_counter_attribution/run_metrics.csv,reusable_attribution_only,"Single native perf-stat run; mechanism evidence only, not a replacement for Stage224 repeated timing."
+stage226_cycles_wrapper_over_backend,1.017861569,repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv,reusable_attribution_only,Values above 1 mean backend used fewer recorded cycles than wrapper.
+stage226_loads_wrapper_over_backend,1.011560486,repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv,reusable_attribution_only,Values above 1 mean backend reduced retired loads.
+stage226_stores_wrapper_over_backend,1.009880546,repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv,reusable_attribution_only,Values above 1 mean backend reduced retired stores.
+attribution_label,COUNTER_SUPPORTS_STAGE224_DIRECTION,repro/stage226_exact_mat_avx_counter_attribution/proof_gate.csv,reusable_attribution_only,Mechanism label is bounded to this exact-route native counter run.

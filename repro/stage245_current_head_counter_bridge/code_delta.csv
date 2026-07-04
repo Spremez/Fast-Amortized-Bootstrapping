@@ -1,0 +1,2 @@
+base,head,path,status,hot_path_effect,interpretation
+f2b753f,0888285,main.c;Makefile;include;src,NO_DIFF,stage226_counter_attribution_reusable,No tracked MAT/PVW-SAB executable hot-path delta after Stage226.
