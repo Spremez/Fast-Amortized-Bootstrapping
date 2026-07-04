@@ -6959,3 +6959,21 @@ pass staged lane equivalence for include-zero and ternary at r=1/2/4. Full SAB
 speedup and T_bootstrap/r claims remain blocked pending correctness/noise and
 complete bootstrapping A/B.
 ```
+
+## Stage 258: Non-Binary Sparse_Mul Correctness/Noise
+
+Goal:
+
+```text
+Convert the Stage257 explicit non-binary PVW/MAT sparse_mul implementation into
+a multi-trial correctness/noise gate before admitting full SAB integration.
+```
+
+Status:
+
+```text
+Generated from input head `1d69fa5` with `PASS_STAGE258_NONBINARY_SPARSEMUL_CORRECTNESS_NOISE`. include-zero and ternary
+sparse_mul pass r=1/2/4, trials=3, with zero scalar/PVW pair failures across
+all recorded body-lane coefficients. Stage259 full-SAB integration preflight is
+admitted, but full bootstrapping acceleration and T_bootstrap/r remain blocked.
+```

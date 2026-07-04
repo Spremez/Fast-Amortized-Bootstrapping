@@ -2871,3 +2871,11 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage257_nonbinary_sparsemul.md`
   - `scripts/build_stage257_nonbinary_sparsemul_implementation.py`
   - `repro/stage257_nonbinary_sparsemul_implementation/`
+
+- stage258_nonbinary_sparsemul_correctness_noise:
+  - `docs/stage258_nonbinary_sparsemul_correctness_noise.md`
+  - `experiments/stage258_nonbinary_sparsemul_correctness_noise_plan.md`
+  - `theory_checks/stage258_nonbinary_sparsemul_noise_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage258_nonbinary_sparsemul_noise.md`
+  - `scripts/build_stage258_nonbinary_sparsemul_correctness_noise.py`
+  - `repro/stage258_nonbinary_sparsemul_correctness_noise/`

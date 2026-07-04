@@ -1,0 +1,15 @@
+mode,r,lane,trials,points,pair_failures,pair_log2_sigma_torus,pair_log2_max_abs_torus,evidence
+include_zero,1,0,3,49152,0,-13.014,-11.968,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+include_zero,2,0,3,49152,0,-13.024,-11.953,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+include_zero,2,1,3,49152,0,-13.026,-11.942,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+include_zero,4,0,3,49152,0,-13.010,-11.984,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+include_zero,4,1,3,49152,0,-13.011,-11.989,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+include_zero,4,2,3,49152,0,-13.009,-11.973,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+include_zero,4,3,3,49152,0,-13.008,-11.971,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+ternary,1,0,3,49152,0,-13.276,-12.057,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+ternary,2,0,3,49152,0,-13.238,-11.990,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+ternary,2,1,3,49152,0,-13.236,-11.992,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+ternary,4,0,3,49152,0,-13.271,-12.006,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+ternary,4,1,3,49152,0,-13.270,-12.009,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+ternary,4,2,3,49152,0,-13.268,-11.991,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log
+ternary,4,3,3,49152,0,-13.270,-12.006,repro/stage258_nonbinary_sparsemul_correctness_noise/run_ffnt_nonbinary_noise.log

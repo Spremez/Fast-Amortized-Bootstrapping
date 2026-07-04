@@ -3,7 +3,7 @@
 #include <benchmark_util.h>
 #include <sab_profile.h>
 #include <inttypes.h>
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 #include <sab_pvw.h>
 #endif
 
@@ -551,7 +551,7 @@ void test_sab_microbench(){
   );
 }
 
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
   const int N = in->s[0][lane]->N;
   TRLWE_Key out = trlwe_alloc_key(N, in->k, in->sigma);
@@ -2280,6 +2280,10 @@ static void isolated_scalar_sub_a_ternary(TRLWE * p, const uint64_t * a,
   }
 }
 
+static void add_sparse_noise_pvmtmlwe_all_coeffs(TorusNoiseStats * lanes,
+    int r, int count, int prec, PVW_TMLWE * pvw_arr, PVW_TMLWE_Key pvw_key,
+    TRLWE ** scalar_arr, TRLWE_Key * scalar_keys);
+
 static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
   const int N = 1024, k = 1, l = 1, bg_bit = 23, prec = 3;
   const int r_prec = 3, in_N = 16, h = 2;
@@ -2432,26 +2436,31 @@ static bool check_pvw_sparse_mul_binary_lane_equivalence(int r){
   return pass;
 }
 
-static bool check_pvw_sparse_mul_nonbinary_lane_equivalence(int r,
-    bool include_zeros){
+static bool check_pvw_sparse_mul_nonbinary_lane_equivalence_trial(int r,
+    bool include_zeros, int trial_seed, TorusNoiseStats * pair_lanes){
   const int N = 1024, k = 1, l = 1, bg_bit = 23, prec = 3;
   const int r_prec = 3, in_N = 16, h = 2;
   const uint64_t selector_values[3] = {5, 4, 7};
   const int64_t include_zero_coeffs[2] = {1, 1};
-  const int64_t ternary_coeffs[2] = {1, -1};
+  const int64_t ternary_coeffs[2] = {
+    (trial_seed & 1) ? -1 : 1,
+    (trial_seed & 2) ? 1 : -1,
+  };
   const int64_t * key_coeffs = include_zeros ?
       include_zero_coeffs : ternary_coeffs;
-  const uint64_t a[16] = {
-    1, 3, 5, 7, 9, 11, 13, 15,
-    17, 19, 21, 23, 25, 27, 29, 31
-  };
+  uint64_t a[16];
   const uint64_t gen_minus1 = 2 * N - 1;
   const int total_selectors = (h + 1) * r_prec;
   const char * mode = include_zeros ? "include_zero" : "ternary";
   bool pass = true;
 
-  printf("SAB_PVW_NONBINARY_TEST sparse_mul mode=%s r=%d step=input_key\n",
-         mode, r);
+  for (size_t idx = 0; idx < (size_t) in_N; idx++){
+    a[idx] = ((uint64_t) (2 * idx + 1 + 6 * trial_seed)) % (2 * N);
+    if(a[idx] == 0) a[idx] = 1;
+  }
+
+  printf("SAB_PVW_NONBINARY_TEST sparse_mul mode=%s r=%d trial=%d step=input_key\n",
+         mode, r, trial_seed);
   TRLWE_Key input_key = test_sparse_key_from_distances_coeffs(in_N, k,
       selector_values, key_coeffs, h, pow(2, -15));
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -70));
@@ -2508,7 +2517,8 @@ static bool check_pvw_sparse_mul_nonbinary_lane_equivalence(int r,
   for (size_t idx = 0; idx < (size_t) in_N; idx++){
     for (size_t lane = 0; lane < (size_t) r; lane++){
       for (size_t coeff = 0; coeff < (size_t) N; coeff++){
-        msg[lane]->coeffs[coeff] = int2torus((5 * idx + 3 * lane + coeff) & 7, prec);
+        msg[lane]->coeffs[coeff] = int2torus(
+            (5 * idx + 3 * lane + coeff + 7 * trial_seed) & 7, prec);
       }
     }
     pvmtmlwe_sample(pvw_acc[idx], msg, pvw_key);
@@ -2517,8 +2527,8 @@ static bool check_pvw_sparse_mul_nonbinary_lane_equivalence(int r,
     }
   }
 
-  printf("SAB_PVW_NONBINARY_TEST sparse_mul mode=%s r=%d step=pvw_api\n",
-         mode, r);
+  printf("SAB_PVW_NONBINARY_TEST sparse_mul mode=%s r=%d trial=%d step=pvw_api\n",
+         mode, r, trial_seed);
   sab_pvw_sparse_mul_nonbinary(pvw_acc, a, 0, pvw_sab);
 
   for (size_t round = 0; round < (size_t) h; round++){
@@ -2549,9 +2559,18 @@ static bool check_pvw_sparse_mul_nonbinary_lane_equivalence(int r,
   snprintf(label, sizeof(label), "nonbinary %s sparse after final RGSW", mode);
   pass &= compare_pvw_scalar_array_phases(label, r, in_N, prec,
       pvw_acc, pvw_key, scalar_acc, scalar_keys);
+  if(pair_lanes != NULL){
+    add_sparse_noise_pvmtmlwe_all_coeffs(pair_lanes, r, in_N, prec,
+        pvw_acc, pvw_key, scalar_acc, scalar_keys);
+  }
 
-  printf("SAB_PVW API nonbinary sparse_mul lane equivalence mode=%s r=%d h=%d r_prec=%d: %s\n",
-         mode, r, h, r_prec, pass ? "Pass" : "Fail");
+  if(trial_seed == 0){
+    printf("SAB_PVW API nonbinary sparse_mul lane equivalence mode=%s r=%d h=%d r_prec=%d: %s\n",
+           mode, r, h, r_prec, pass ? "Pass" : "Fail");
+  }else{
+    printf("SAB_PVW API nonbinary sparse_mul lane equivalence mode=%s r=%d h=%d r_prec=%d trial=%d: %s\n",
+           mode, r, h, r_prec, trial_seed, pass ? "Pass" : "Fail");
+  }
 
   free_array_of_polynomials(msg, r);
   free_pvw_sample_array_local(pvw_acc, in_N);
@@ -2588,6 +2607,49 @@ static bool check_pvw_sparse_mul_nonbinary_lane_equivalence(int r,
   free_sab_pvw_key(pvw_sab);
   free_pvmtmlwe_key(pvw_key);
   free_trlwe_key(input_key);
+  return pass;
+}
+
+static bool check_pvw_sparse_mul_nonbinary_lane_equivalence(int r,
+    bool include_zeros){
+  return check_pvw_sparse_mul_nonbinary_lane_equivalence_trial(r,
+      include_zeros, 0, NULL);
+}
+
+static bool check_pvw_sparse_mul_nonbinary_noise(int r, bool include_zeros,
+    int trials){
+  const char * mode = include_zeros ? "include_zero" : "ternary";
+  bool pass = true;
+  TorusNoiseStats * pair_lanes = (TorusNoiseStats *) safe_malloc(
+      sizeof(TorusNoiseStats) * r);
+  memset(pair_lanes, 0, sizeof(TorusNoiseStats) * r);
+
+  for (size_t trial = 0; trial < (size_t) trials; trial++){
+    pass &= check_pvw_sparse_mul_nonbinary_lane_equivalence_trial(r,
+        include_zeros, (int) trial, pair_lanes);
+  }
+
+  TorusNoiseStats total = {0, 0, 0, 0};
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    torus_noise_stats_merge(&total, pair_lanes[lane]);
+    printf("SAB_PVW_NONBINARY_NOISE lane sparse_mul mode=%s r=%d lane=%" PRIu64
+           " trials=%d points=%" PRIu64 " pair_failures=%" PRIu64
+           " pair_log2_sigma_torus=%.3f pair_log2_max_abs_torus=%.3f\n",
+           mode, r, (uint64_t) lane, trials, pair_lanes[lane].count,
+           pair_lanes[lane].failures,
+           torus_noise_log2_sigma(pair_lanes[lane]),
+           torus_noise_log2_max_abs(pair_lanes[lane]));
+  }
+
+  pass &= total.failures == 0 && total.count > 0;
+  printf("SAB_PVW_NONBINARY_NOISE summary sparse_mul mode=%s r=%d trials=%d"
+         " points=%" PRIu64 " pair_failures=%" PRIu64
+         " pair_log2_sigma_torus=%.3f pair_log2_max_abs_torus=%.3f gate=%s\n",
+         mode, r, trials, total.count, total.failures,
+         torus_noise_log2_sigma(total), torus_noise_log2_max_abs(total),
+         pass ? "Pass" : "Fail");
+
+  free(pair_lanes);
   return pass;
 }
 
@@ -3395,6 +3457,28 @@ static void add_stage_noise_pvmtmlwe_coeff0(TorusNoiseStats * lanes, int r,
   free_array_of_polynomials(pvw_phase, r);
 }
 
+static void add_sparse_noise_pvmtmlwe_all_coeffs(TorusNoiseStats * lanes,
+    int r, int count, int prec, PVW_TMLWE * pvw_arr, PVW_TMLWE_Key pvw_key,
+    TRLWE ** scalar_arr, TRLWE_Key * scalar_keys){
+  const int N = pvw_arr[0]->b[0]->N;
+  TorusPolynomial * pvw_phase = polynomial_new_array_of_torus_polynomials(N, r);
+  TorusPolynomial scalar_phase = polynomial_new_torus_polynomial(N);
+  for (size_t idx = 0; idx < (size_t) count; idx++){
+    pvmtmlwe_phase(pvw_phase, pvw_arr[idx], pvw_key);
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      trlwe_phase(scalar_phase, scalar_arr[lane][idx], scalar_keys[lane]);
+      for (size_t coeff = 0; coeff < (size_t) N; coeff++){
+        const Torus lhs = pvw_phase[lane]->coeffs[coeff];
+        const Torus rhs = scalar_phase->coeffs[coeff];
+        torus_noise_stats_add(&lanes[lane], lhs, rhs,
+            torus2int(lhs, prec), torus2int(rhs, prec));
+      }
+    }
+  }
+  free_polynomial(scalar_phase);
+  free_array_of_polynomials(pvw_phase, r);
+}
+
 static void add_stage_noise_pvwtlwe(TorusNoiseStats * lanes, int r,
     int count, int prec, PVW_TLWE * pvw_arr, PVW_TLWE_Key pvw_key,
     TLWE ** scalar_arr, TLWE_Key * scalar_keys){
@@ -3709,10 +3793,35 @@ void test_sab_pvw_nonbinary_sparsemul(){
 }
 #endif
 
+#if defined(SAB_PVW_NONBINARY_NOISE_TEST)
+#ifndef SAB_PVW_NONBINARY_NOISE_TRIALS
+#define SAB_PVW_NONBINARY_NOISE_TRIALS 3
+#endif
+void test_sab_pvw_nonbinary_sparsemul_noise(){
+  const int trials = SAB_PVW_NONBINARY_NOISE_TRIALS;
+  bool pass = true;
+  if(trials < 1){
+    printf("SAB_PVW_NONBINARY_NOISE invalid trials=%d\n", trials);
+    exit(1);
+  }
+  pass &= check_pvw_sparse_mul_nonbinary_noise(1, true, trials);
+  pass &= check_pvw_sparse_mul_nonbinary_noise(2, true, trials);
+  pass &= check_pvw_sparse_mul_nonbinary_noise(4, true, trials);
+  pass &= check_pvw_sparse_mul_nonbinary_noise(1, false, trials);
+  pass &= check_pvw_sparse_mul_nonbinary_noise(2, false, trials);
+  pass &= check_pvw_sparse_mul_nonbinary_noise(4, false, trials);
+  printf("SAB_PVW nonbinary sparse_mul correctness/noise gate: %s\n",
+         pass ? "Pass" : "Fail");
+  if(!pass) exit(1);
+}
+#endif
+
 int main(int argc, char const *argv[])
 {
 #if defined(SAB_PVW_TARGET_TEST)
   test_sab_pvw_target_full();
+#elif defined(SAB_PVW_NONBINARY_NOISE_TEST)
+  test_sab_pvw_nonbinary_sparsemul_noise();
 #elif defined(SAB_PVW_NONBINARY_TEST)
   test_sab_pvw_nonbinary_sparsemul();
 #elif defined(SAB_PVW_RESOURCE_TEST)

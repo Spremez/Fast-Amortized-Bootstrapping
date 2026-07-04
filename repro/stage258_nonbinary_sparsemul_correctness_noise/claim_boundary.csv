@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+nonbinary_sparsemul_correctness_noise,supported_staged,The explicit non-binary PVW/MAT sparse_mul path passes a 3-trial staged equivalence/noise gate for include-zero and ternary r=1/2/4.,The non-binary full SAB bootstrap is correct.,repro/stage258_nonbinary_sparsemul_correctness_noise/runtime_summary.csv
+nonbinary_noise_vs_scalar_pair,supported_staged,PVW body lanes match scalar-lane references with zero pair failures over all recorded Stage258 sparse_mul coefficients.,Complete SAB failure rate is unchanged.,repro/stage258_nonbinary_sparsemul_correctness_noise/noise_lane.csv
+full_sab_speedup,unsupported,Stage258 does not measure complete SAB speedup.,Stage258 proves bootstrapping acceleration.,repro/stage258_nonbinary_sparsemul_correctness_noise/implementation_admission.csv
+amortized_time_per_plaintext_bit,unsupported_for_nonbinary,T_bootstrap/r remains the primary metric for Stage259+ complete-SAB evaluation.,Non-binary T_bootstrap/r improved.,repro/stage258_nonbinary_sparsemul_correctness_noise/claim_boundary.csv

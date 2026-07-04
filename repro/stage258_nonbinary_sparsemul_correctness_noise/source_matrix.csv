@@ -1,0 +1,7 @@
+check,path,observed,gate,notes
+noise_flag,src/mosfhet/Makefile.def,present,PASS,explicit correctness/noise smoke flag only
+noise_harness,main.c,present,PASS,multi-trial sparse_mul lane/noise gate
+pair_noise_all_coeffs,main.c,present,PASS,phase-pair noise measured over all coefficients and lanes
+scalar_sab_unchanged,src/sparse_amortized_bootstrap.c,not_changed,PASS,scalar baseline remains the comparison reference
+noise_build,repro/stage258_nonbinary_sparsemul_correctness_noise/build_ffnt_nonbinary_noise.log,compiled,PASS,"portable FFNT correctness smoke, not performance"
+default_binary_build,repro/stage258_nonbinary_sparsemul_correctness_noise/build_ffnt_default_binary.log,compiled,PASS,default binary build still compiles

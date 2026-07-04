@@ -817,3 +817,10 @@ actual sparse_mul correctness/noise, complete SAB A/B, and final claim closure.
 The active goal remains open for deterministic/multi-seed sparse_mul
 noise/correctness, full SAB integration, T_bootstrap/r benchmark, parameter
 generalization, and final paper claim closure.
+
+### Stage258 non-binary sparse_mul correctness/noise
+
+`PASS_STAGE258_NONBINARY_SPARSEMUL_CORRECTNESS_NOISE` records a sparse_mul-layer correctness/noise gate for the
+non-binary PVW/MAT path. The active research goal remains open: Stage259 must
+integrate non-binary blind rotation/bootstrap, then measure full-SAB
+`T_bootstrap/r` under scalar baseline isolation.

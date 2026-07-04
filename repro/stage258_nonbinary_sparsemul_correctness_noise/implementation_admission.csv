@@ -1,0 +1,4 @@
+route,decision,production_permission,reason,next_gate
+stage259_nonbinary_full_sab_integration_preflight,ADMIT_FULL_SAB_PREFLIGHT,explicit_nonbinary_path_only,sparse_mul include-zero/ternary r=1/2/4 multi-trial equivalence and pair-noise gate pass,wire non-binary path into blind_rotate/bootstrap and test full SAB T_bootstrap/r
+nonbinary_full_sab_speedup,BLOCKED,no,"no complete non-binary SAB route, no full extract/KS path, and no T_bootstrap/r benchmark yet",Stage259 full-SAB preflight then deterministic full-SAB correctness
+default_binary_sab,NO_CHANGE,no_default_change,Stage258 adds a gated test harness only and default FFNT binary build passes,keep scalar/binary regression for every promoted change

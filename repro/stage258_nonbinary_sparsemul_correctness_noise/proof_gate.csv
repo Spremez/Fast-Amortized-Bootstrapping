@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_build,PASS,ffnt nonbinary noise build,compiled,repro/stage258_nonbinary_sparsemul_correctness_noise/build_ffnt_nonbinary_noise.log,Portable correctness smoke only; no performance claim.
+G2_runtime_summary,PASS,mode/r summary rows,6/6,repro/stage258_nonbinary_sparsemul_correctness_noise/runtime_summary.csv,include-zero and ternary r=1/2/4 pass with zero pair failures.
+G3_lane_noise,PASS,lane rows,14/14,repro/stage258_nonbinary_sparsemul_correctness_noise/noise_lane.csv,All body lanes are checked against scalar-lane references over all coefficients.
+G4_source_isolation,PASS,test harness and default isolation,preserved,repro/stage258_nonbinary_sparsemul_correctness_noise/source_matrix.csv,The scalar/default path remains isolated; Stage258 adds only gated measurement code.
+G5_stage259_admission,PASS_STAGED_ONLY,next route,ADMIT_FULL_SAB_PREFLIGHT,repro/stage258_nonbinary_sparsemul_correctness_noise/implementation_admission.csv,"Full-SAB integration may start, but speedup claims remain blocked."
+G6_stage258_decision,PASS_STAGE258_NONBINARY_SPARSEMUL_CORRECTNESS_NOISE,decision,PASS_STAGE258_NONBINARY_SPARSEMUL_CORRECTNESS_NOISE,repro/stage258_nonbinary_sparsemul_correctness_noise/proof_gate.csv,Proceed to Stage259 full non-binary SAB integration preflight.

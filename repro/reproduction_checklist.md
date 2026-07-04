@@ -358,3 +358,5 @@
 - [x] Stage256 non-binary sparse_mul preflight admits explicit implementation `PASS_STAGE256_NONBINARY_SPARSEMUL_PREFLIGHT_READY_EXPLICIT_IMPLEMENTATION`.
 
 - [x] Stage257 non-binary sparse_mul implementation
+
+- [x] Stage258 non-binary sparse_mul correctness/noise

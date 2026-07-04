@@ -3581,3 +3581,16 @@ H10_stage257_nonbinary_sparsemul_implementation:
     ternary PVW/MAT sparse_mul APIs and passes staged lane equivalence for
     r=1/2/4. Complete non-binary SAB bootstrapping speedup and T_bootstrap/r
     claims remain blocked.
+
+H10_stage258_nonbinary_sparsemul_correctness_noise:
+  status: sparsemul_correctness_noise_passed_full_sab_blocked
+  evidence:
+    - repro/stage258_nonbinary_sparsemul_correctness_noise/runtime_summary.csv
+    - repro/stage258_nonbinary_sparsemul_correctness_noise/noise_lane.csv
+    - repro/stage258_nonbinary_sparsemul_correctness_noise/proof_gate.csv
+    - docs/stage258_nonbinary_sparsemul_correctness_noise.md
+  conclusion: >
+    Stage258 records PASS_STAGE258_NONBINARY_SPARSEMUL_CORRECTNESS_NOISE. The explicit non-binary PVW/MAT sparse_mul
+    path passes include-zero and ternary r=1/2/4 multi-trial pair-noise gates.
+    Complete SAB correctness, complete SAB failure rate, and T_bootstrap/r
+    speedup claims remain blocked until Stage259+.
