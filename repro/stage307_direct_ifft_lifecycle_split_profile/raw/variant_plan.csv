@@ -1,0 +1,2 @@
+variant,param,fft_lib,r,reps,extra_flags
+direct_dft_profile,SET_2_3_2048,spqlios_avx512,4,1,MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true MAT_TRGSW_DIRECT_DFT_PROFILE=true

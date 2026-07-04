@@ -1,0 +1,4 @@
+component,us,share_of_direct_profile_total,share_of_accounted_digit_plus_ifft,avg_us_per_direct_call,avg_us_per_row
+digit_to_double,8487031.000,0.481687,0.488395,7.533581,1.506716
+ifft,8890344.000,0.504577,0.511605,7.891585,1.578317
+accounting_gap,242030.000,0.013737,,,

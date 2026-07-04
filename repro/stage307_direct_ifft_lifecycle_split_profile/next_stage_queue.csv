@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage308_spqlios_ifft_lifecycle_candidate,PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED,"Inspect whether per-row reverse FFT calls can be batched, fused, or reduced without changing DFT semantics.",Keep direct-DFT path; do not rewrite dense AVX until split changes.
+P1,stage308_confirm_profile_on_SET_4_5_2048,parameter-generalization claim needed,Repeat Stage307 profile on SET_4_5_2048 before broad parameter wording.,Scope lifecycle split to SET_2_3_2048 only.

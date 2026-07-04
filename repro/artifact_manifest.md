@@ -3129,3 +3129,11 @@ Repro artifacts:
   - `scripts/run_stage306_torus_to_dft_micro_hypothesis.sh`
   - `scripts/build_stage306_torus_to_dft_micro_hypothesis.py`
   - `repro/stage306_torus_to_dft_micro_hypothesis/`
+- stage307_direct_ifft_lifecycle_split_profile:
+  - `docs/stage307_direct_ifft_lifecycle_split_profile.md`
+  - `theory_checks/stage307_direct_ifft_lifecycle_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage307_direct_ifft_lifecycle.md`
+  - `experiments/stage307_direct_ifft_lifecycle_split_profile_plan.md`
+  - `scripts/run_stage307_direct_ifft_lifecycle_split_profile.sh`
+  - `scripts/build_stage307_direct_ifft_lifecycle_split_profile.py`
+  - `repro/stage307_direct_ifft_lifecycle_split_profile/`

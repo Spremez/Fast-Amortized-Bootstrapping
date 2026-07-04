@@ -1106,3 +1106,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage306 torus-to-DFT micro-hypothesis
 
 `PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED` filters prior DFT candidates and admits a direct-path lifecycle split before any new AVX512 rewrite.
+<!-- stage307-direct-ifft-lifecycle-split-profile -->
+### Stage307 direct IFFT lifecycle split profile
+
+`PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED` records `ifft` as the dominant direct DFT subcomponent under profile-only instrumentation.

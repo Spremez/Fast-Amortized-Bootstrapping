@@ -7098,3 +7098,8 @@ Status: `PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED`.
 Goal: bind Stage305 residual attribution to current-head microbench evidence and admit only a component-specific direct-DFT lifecycle target.
 
 Status: `PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED`.
+## Stage 307: Direct IFFT Lifecycle Split Profile
+
+Goal: split the direct sub-DTF materialization profile into digit-to-double and reverse-FFT subcomponents.
+
+Status: `PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED`.

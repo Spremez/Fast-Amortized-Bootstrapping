@@ -1,0 +1,2 @@
+decision,correctness,mode,r,h,r_prec,reps,t_bootstrap_over_r_pvw_us,speedup_vs_scalar,body_profile_rows,split_normal_calls,split_sub_calls,direct_profile_calls,direct_rows_sum,expected_direct_rows,direct_total_us,split_dft_us,direct_profile_vs_split_dft_ratio,dominant_direct_subcomponent,claim
+PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED,Pass,include_zero,4,39,7,1,6231227.250,1.736,2,20320,1126560,1126560,5632800,5632800,17619405,17888749,0.984943,ifft,profile_only_not_latency_claim

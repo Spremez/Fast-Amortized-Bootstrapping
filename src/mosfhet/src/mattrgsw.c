@@ -6,12 +6,14 @@
 extern __thread FFT_Processor_Spqlios fft_proc[32];
 #endif
 
-#ifdef MAT_TRGSW_SPLIT_PROFILE
+#if defined(MAT_TRGSW_SPLIT_PROFILE) || defined(MAT_TRGSW_DIRECT_DFT_PROFILE)
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#endif
 
+#ifdef MAT_TRGSW_SPLIT_PROFILE
 typedef struct {
   uint64_t normal_calls;
   uint64_t sub_calls;
@@ -90,6 +92,79 @@ static void mat_trgsw_split_profile_start_call(int is_sub, int rows,
 #define MAT_TRGSW_SPLIT_BEGIN(NAME) ((void) 0)
 #define MAT_TRGSW_SPLIT_ACC(FIELD, BEGIN) ((void) 0)
 #define mat_trgsw_split_profile_start_call(IS_SUB, ROWS, K, R, L, N) ((void) 0)
+#endif
+
+#ifdef MAT_TRGSW_DIRECT_DFT_PROFILE
+typedef struct {
+  uint64_t calls;
+  uint64_t rows_sum;
+  uint64_t digit_us;
+  uint64_t ifft_us;
+  uint64_t total_us;
+  int last_k;
+  int last_r;
+  int last_l;
+  int last_N;
+} MAT_TRGSW_Direct_DFT_Profile;
+
+static MAT_TRGSW_Direct_DFT_Profile mat_trgsw_direct_dft_profile = {0};
+static int mat_trgsw_direct_dft_profile_registered = 0;
+
+static uint64_t mat_trgsw_direct_dft_now_us(void){
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return (uint64_t) tv.tv_usec + (uint64_t) tv.tv_sec * 1000000ULL;
+}
+
+static void mat_trgsw_direct_dft_profile_print(void){
+  if(mat_trgsw_direct_dft_profile.calls == 0){
+    return;
+  }
+  printf("MAT_TRGSW_DIRECT_DFT_PROFILE sample calls=%" PRIu64
+         " rows_sum=%" PRIu64
+         " digit_us=%" PRIu64
+         " ifft_us=%" PRIu64
+         " total_us=%" PRIu64
+         " last_k=%d"
+         " last_r=%d"
+         " last_l=%d"
+         " last_N=%d\n",
+         mat_trgsw_direct_dft_profile.calls,
+         mat_trgsw_direct_dft_profile.rows_sum,
+         mat_trgsw_direct_dft_profile.digit_us,
+         mat_trgsw_direct_dft_profile.ifft_us,
+         mat_trgsw_direct_dft_profile.total_us,
+         mat_trgsw_direct_dft_profile.last_k,
+         mat_trgsw_direct_dft_profile.last_r,
+         mat_trgsw_direct_dft_profile.last_l,
+         mat_trgsw_direct_dft_profile.last_N);
+}
+
+static void mat_trgsw_direct_dft_profile_register(void){
+  if(!mat_trgsw_direct_dft_profile_registered){
+    atexit(mat_trgsw_direct_dft_profile_print);
+    mat_trgsw_direct_dft_profile_registered = 1;
+  }
+}
+
+static void mat_trgsw_direct_dft_profile_start_call(int rows,
+    int k, int r, int l, int N){
+  mat_trgsw_direct_dft_profile_register();
+  mat_trgsw_direct_dft_profile.calls++;
+  mat_trgsw_direct_dft_profile.rows_sum += (uint64_t) rows;
+  mat_trgsw_direct_dft_profile.last_k = k;
+  mat_trgsw_direct_dft_profile.last_r = r;
+  mat_trgsw_direct_dft_profile.last_l = l;
+  mat_trgsw_direct_dft_profile.last_N = N;
+}
+
+#define MAT_TRGSW_DIRECT_DFT_BEGIN(NAME) const uint64_t NAME = mat_trgsw_direct_dft_now_us()
+#define MAT_TRGSW_DIRECT_DFT_ACC(FIELD, BEGIN) \
+  do { mat_trgsw_direct_dft_profile.FIELD += mat_trgsw_direct_dft_now_us() - (BEGIN); } while (0)
+#else
+#define MAT_TRGSW_DIRECT_DFT_BEGIN(NAME) ((void) 0)
+#define MAT_TRGSW_DIRECT_DFT_ACC(FIELD, BEGIN) ((void) 0)
+#define mat_trgsw_direct_dft_profile_start_call(ROWS, K, R, L, N) ((void) 0)
 #endif
 
 static int mat_trgsw_rows(int l, int k, int r){
@@ -922,6 +997,7 @@ static void mat_trgsw_sub_decompose_poly_to_double(double * out,
 static void mat_trgsw_sub_decompose_DFT_direct(PVW_TMLWE in1,
     PVW_TMLWE in2, DFT_Polynomial * out, int Bg_bit, int l){
   const int k = in1->k, r = in1->r, N = in1->b[0]->N;
+  const int rows = mat_trgsw_rows(l, k, r);
   const uint64_t half_Bg = (1ULL << (Bg_bit - 1));
   const uint64_t h_mask = (1ULL << Bg_bit) - 1;
   const uint64_t word_size = sizeof(Torus)*8;
@@ -937,21 +1013,32 @@ static void mat_trgsw_sub_decompose_DFT_direct(PVW_TMLWE in1,
     offset += (1ULL << (word_size - i * Bg_bit - 1));
   }
 
+  mat_trgsw_direct_dft_profile_start_call(rows, k, r, l, N);
+  MAT_TRGSW_DIRECT_DFT_BEGIN(total_begin);
   for (size_t i = 0; i < (size_t) l; i++) {
     const uint64_t h_bit = word_size - (i + 1) * Bg_bit;
     for (size_t j = 0; j < (size_t) k; j++){
       DFT_Polynomial row = out[j*l + i];
+      MAT_TRGSW_DIRECT_DFT_BEGIN(digit_begin);
       mat_trgsw_sub_decompose_poly_to_double(row->coeffs, in1->a[j],
           in2->a[j], offset, h_bit, h_mask, half_Bg);
+      MAT_TRGSW_DIRECT_DFT_ACC(digit_us, digit_begin);
+      MAT_TRGSW_DIRECT_DFT_BEGIN(ifft_begin);
       ifft(proc->tables_reverse, row->coeffs);
+      MAT_TRGSW_DIRECT_DFT_ACC(ifft_us, ifft_begin);
     }
     for (size_t j = 0; j < (size_t) r; j++){
       DFT_Polynomial row = out[k*l + j*l + i];
+      MAT_TRGSW_DIRECT_DFT_BEGIN(digit_begin);
       mat_trgsw_sub_decompose_poly_to_double(row->coeffs, in1->b[j],
           in2->b[j], offset, h_bit, h_mask, half_Bg);
+      MAT_TRGSW_DIRECT_DFT_ACC(digit_us, digit_begin);
+      MAT_TRGSW_DIRECT_DFT_BEGIN(ifft_begin);
       ifft(proc->tables_reverse, row->coeffs);
+      MAT_TRGSW_DIRECT_DFT_ACC(ifft_us, ifft_begin);
     }
   }
+  MAT_TRGSW_DIRECT_DFT_ACC(total_us, total_begin);
 }
 #endif
 

@@ -1,0 +1,8 @@
+gate,status,metric,value,interpretation
+G1_correctness,PASS,target_full correctness,Pass,Profile-only instrumentation must preserve complete SAB correctness.
+G2_row_consistency,PASS,direct rows vs split sub rows,5632800/5632800,"Direct profile covers only sub-DTF direct calls, not normal calls."
+G3_profile_coverage,PASS,direct profile total / split dft_us,0.984943,Direct profile should explain most split dft_us; the remainder includes normal-call DFT and timer overhead.
+G4_internal_accounting,PASS,(digit+ifft)/direct_total,0.986263,Digit and ifft timers should account for the direct profile block.
+G5_dominant_subcomponent,RECORDED,dominant,ifft,Selects the next candidate family.
+G6_claim_boundary,PASS_PROFILE_ONLY,scope,instrumented one-run profile,Do not use Stage307 latency as final speed evidence.
+G7_decision,PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED,stage decision,PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED,Controls Stage308 route.
