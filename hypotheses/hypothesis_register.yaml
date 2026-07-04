@@ -4022,3 +4022,15 @@ H297_direct_dft_resource_sidecondition:
     Stage297 links the direct-DFT high-stat speedup to local key/RSS side
     conditions. It does not close native counter, stage-wise noise, or
     parameter-generalization gates.
+H298_direct_dft_target_stage_noise:
+  status: PASS_STAGE298_DIRECT_DFT_TARGET_STAGE_NOISE_LOCAL
+  primary_metric: target_stagewise_pair_failures
+  evidence:
+    - repro/stage298_direct_dft_target_stage_noise/stage_summary.csv
+    - repro/stage298_direct_dft_target_stage_noise/lane_summary.csv
+    - repro/stage298_direct_dft_target_stage_noise/proof_gate.csv
+    - docs/stage298_direct_dft_target_stage_noise.md
+  conclusion: >
+    Stage298 records target include-zero r=4 stage-wise pair-equivalence for
+    the direct-DFT candidate. It remains local until native counter and
+    parameter-generalization gates run.

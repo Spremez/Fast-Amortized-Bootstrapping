@@ -1060,3 +1060,10 @@ engineering evidence, not a final novelty or optimality claim.
 `PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL` binds Stage296 high-stat speed evidence to target resource side
 conditions. Direct DFT remains a no-new-key-format implementation variant; the
 claim is local and still needs native/stage-wise expansion.
+<!-- stage298-direct-dft-target-stage-noise -->
+### Stage298 direct DFT target stage-wise noise
+
+`PASS_STAGE298_DIRECT_DFT_TARGET_STAGE_NOISE_LOCAL` adds target-size include-zero r=4 stage-wise PVW/scalar phase
+equivalence for the direct-DFT candidate. The result supports Stage296 as a
+local correctness/noise side condition, not as native attribution or
+parameter-generalized evidence.

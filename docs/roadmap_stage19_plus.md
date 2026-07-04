@@ -7049,3 +7049,9 @@ Goal: ensure direct-DFT speed evidence is not hiding unacceptable key/RSS
 growth.
 
 Status: `PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL`.
+## Stage 298: Direct DFT Target Stage-Wise Noise
+
+Goal: close the target include-zero stage-wise noise side condition for the
+direct-DFT candidate.
+
+Status: `PASS_STAGE298_DIRECT_DFT_TARGET_STAGE_NOISE_LOCAL`.

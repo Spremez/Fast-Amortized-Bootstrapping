@@ -3085,3 +3085,8 @@ Repro artifacts:
   - `scripts/run_stage297_direct_dft_resource_sidecondition.sh`
   - `scripts/build_stage297_direct_dft_resource_sidecondition.py`
   - `repro/stage297_direct_dft_resource_sidecondition/`
+- stage298_direct_dft_target_stage_noise:
+  - `docs/stage298_direct_dft_target_stage_noise.md`
+  - `scripts/run_stage298_direct_dft_target_stage_noise.sh`
+  - `scripts/build_stage298_direct_dft_target_stage_noise.py`
+  - `repro/stage298_direct_dft_target_stage_noise/`

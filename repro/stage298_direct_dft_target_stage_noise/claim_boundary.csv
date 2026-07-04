@@ -1,0 +1,4 @@
+claim,status,supported_statement,not_supported
+target_stagewise_noise,PASS_STAGE298_DIRECT_DFT_TARGET_STAGE_NOISE_LOCAL,Direct-DFT include-zero r=4 has zero pair failures at every recorded target stage boundary.,multi-parameter or native-counter claim.
+complete_sab_speedup_context,linked,Stage296 remains the throughput evidence; Stage298 is only a correctness/noise side condition.,new speedup result.
+paper_grade,not_yet,Stage-wise local evidence is positive.,"literature novelty, parameter generalization, or hardware-counter attribution."

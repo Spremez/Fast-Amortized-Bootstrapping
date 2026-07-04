@@ -1,0 +1,9 @@
+gate,status,metric,value,interpretation
+G1_prior_stage296,PASS,Stage296 decision,positive,Stage-wise noise is tied to high-stat direct-DFT throughput.
+G2_prior_stage297,PASS,Stage297 decision,positive,Stage-wise noise is interpreted with resource side conditions present.
+G3_stage_coverage,PASS,stages,"blind_rotate_coeff0,extract,hw_ks,materialize_tlwe,packing_ks",All blind/extract/materialize/packing/HW-KS boundaries must be present.
+G4_pair_failures,PASS,summary pair failures,0,Every stage summary must have zero PVW/scalar decoded pair failures.
+G5_trials,PASS,trials,3,Stage298 is a local 3-trial target stage-wise gate.
+G6_mode_gate,PASS,program gate,Pass,The executable harness must report Pass.
+G7_claim_boundary,PASS,scope,local target include-zero r=4,This is not native counter attribution or parameter generalization.
+G8_decision,PASS_STAGE298_DIRECT_DFT_TARGET_STAGE_NOISE_LOCAL,stage decision,PASS_STAGE298_DIRECT_DFT_TARGET_STAGE_NOISE_LOCAL,Controls Stage299 route.

@@ -436,3 +436,5 @@
 - [x] Stage296 records `PASS_STAGE296_DIRECT_DFT_HIGHSTAT_LOCAL` for direct DFT high-stat local complete-SAB evidence.
 <!-- stage297-direct-dft-resource-sidecondition-checklist -->
 - [x] Stage297 records `PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL` for direct DFT local resource side conditions.
+<!-- stage298-direct-dft-target-stage-noise-checklist -->
+- [x] Stage298 records `PASS_STAGE298_DIRECT_DFT_TARGET_STAGE_NOISE_LOCAL` for direct DFT target include-zero stage-wise noise.

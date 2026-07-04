@@ -1,0 +1,6 @@
+variant,status,mode,stage,r,trials,points,pair_failures,pair_log2_sigma_torus,pair_log2_max_abs_torus,time_maxrss_kb,source_run_log
+direct_dft,pass,include_zero,blind_rotate_coeff0,4,3,24576,0,-15.090,-13.030,2460184,repro/stage298_direct_dft_target_stage_noise/raw/direct_dft/run.log
+direct_dft,pass,include_zero,extract,4,3,24576,0,-15.090,-13.030,2460184,repro/stage298_direct_dft_target_stage_noise/raw/direct_dft/run.log
+direct_dft,pass,include_zero,materialize_tlwe,4,3,24576,0,-15.090,-13.030,2460184,repro/stage298_direct_dft_target_stage_noise/raw/direct_dft/run.log
+direct_dft,pass,include_zero,packing_ks,4,3,24576,0,-15.089,-13.014,2460184,repro/stage298_direct_dft_target_stage_noise/raw/direct_dft/run.log
+direct_dft,pass,include_zero,hw_ks,4,3,24576,0,-8.076,-6.003,2460184,repro/stage298_direct_dft_target_stage_noise/raw/direct_dft/run.log
