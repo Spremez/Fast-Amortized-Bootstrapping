@@ -1,0 +1,17 @@
+component,route_family,share_of_body_profile,hypothetical_component_reduction,projected_body_profile_speedup,gate_interpretation
+digit_to_double,local digit microvariant,0.172510,0.05,1.008701,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+digit_to_double,local digit microvariant,0.172510,0.10,1.017554,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+digit_to_double,local digit microvariant,0.172510,0.25,1.045071,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+digit_to_double,local digit microvariant,0.172510,0.50,1.094397,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+ifft,backend IFFT,0.181943,0.05,1.009181,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+ifft,backend IFFT,0.181943,0.10,1.018531,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+ifft,backend IFFT,0.181943,0.25,1.047653,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+ifft,backend IFFT,0.181943,0.50,1.100075,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+dense_from_dec,dense MAT AVX,0.215408,0.05,1.010888,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+dense_from_dec,dense MAT AVX,0.215408,0.10,1.022015,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+dense_from_dec,dense MAT AVX,0.215408,0.25,1.056917,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+dense_from_dec,dense MAT AVX,0.215408,0.50,1.120704,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+mat_ep_total,MAT EP lifecycle,0.585042,0.05,1.030134,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+mat_ep_total,MAT EP lifecycle,0.585042,0.10,1.062140,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+mat_ep_total,MAT EP lifecycle,0.585042,0.25,1.171317,must exceed full-SAB variance and then pass T_bootstrap/r A/B
+mat_ep_total,MAT EP lifecycle,0.585042,0.50,1.413469,must exceed full-SAB variance and then pass T_bootstrap/r A/B

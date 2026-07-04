@@ -466,3 +466,5 @@
 - [x] Stage312 records `NEUTRAL_STAGE312_DIGIT_NARROW32_FULLSAB_NO_PROMOTION` for complete SAB narrow32 A/B.
 <!-- stage313-narrow32-profile-attribution-checklist -->
 - [x] Stage313 records `PASS_STAGE313_NARROW32_PROFILE_ATTRIBUTION_RECORDED` for narrow32 no-promotion attribution.
+<!-- stage314-local-digit-closeout-checklist -->
+- [x] Stage314 records `PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT` and next-candidate admission rules.

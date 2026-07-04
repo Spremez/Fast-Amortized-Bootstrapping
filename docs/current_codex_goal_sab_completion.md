@@ -1134,3 +1134,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage313 narrow32 profile attribution
 
 `PASS_STAGE313_NARROW32_PROFILE_ATTRIBUTION_RECORDED` records component-level attribution for the narrow32 no-promotion result and routes future work away from unsupported local digit microvariants.
+<!-- stage314-local-digit-closeout -->
+### Stage314 local digit closeout
+
+`PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT` closes local digit microvariants without a new full-SAB budget and routes future work to backend IFFT or schedule-level SAB changes.

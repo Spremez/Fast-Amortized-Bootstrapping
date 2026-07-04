@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage315_backend_ifft_candidate_spec_or_schedule_level_candidate,PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT,"Choose either a true backend IFFT candidate with correctness model, or a higher-level SAB schedule candidate that reduces materialization/call count.",candidate card plus projected full-SAB budget >=1.02 before implementation

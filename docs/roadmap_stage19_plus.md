@@ -7133,3 +7133,8 @@ Status: `NEUTRAL_STAGE312_DIGIT_NARROW32_FULLSAB_NO_PROMOTION`.
 Goal: attribute why Stage311 narrow32 microbench did not promote in complete SAB Stage312.
 
 Status: `PASS_STAGE313_NARROW32_PROFILE_ATTRIBUTION_RECORDED`.
+## Stage 314: Local Digit Closeout
+
+Goal: close unsupported local digit microvariants and set a full-SAB budget gate for future candidates.
+
+Status: `PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT`.

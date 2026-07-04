@@ -3184,3 +3184,10 @@ Repro artifacts:
   - `scripts/run_stage313_narrow32_profile_attribution.sh`
   - `scripts/build_stage313_narrow32_profile_attribution.py`
   - `repro/stage313_narrow32_profile_attribution/`
+- stage314_local_digit_closeout:
+  - `docs/stage314_local_digit_closeout.md`
+  - `theory_checks/stage314_local_digit_budget_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage314_next_candidate_rules.md`
+  - `experiments/stage314_next_candidate_gate_plan.md`
+  - `scripts/build_stage314_local_digit_closeout.py`
+  - `repro/stage314_local_digit_closeout/`

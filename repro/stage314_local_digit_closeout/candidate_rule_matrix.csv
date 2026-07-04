@@ -1,0 +1,5 @@
+candidate_family,status,evidence,admission_rule
+local_digit_microvariants,CLOSED_WITHOUT_NEW_BUDGET,rowbatch=NEUTRAL_STAGE309_DIGIT_ROWBATCH_NO_PROMOTION; narrow32_full=0.997104; attribution_digit=1.044719,Only reopen if projected full-SAB T/r speedup is >=1.02 before implementation.
+backend_ifft_batch_or_fusion,OPEN_HIGH_RISK,ifft body share 0.181943; Stage310 requires backend-level work,Requires new backend API/model/assembly correctness before SAB integration.
+schedule_level_reduction,OPEN_ALGORITHMIC,single component microvariants are diluted by full SAB schedule,"Must reduce call count, materialization count, or schedule lifecycle at SAB level, not only one conversion instruction."
+dense_mat_avx_rewrite,DEFER,Stage301/302 FMA counters near-neutral; Stage313 route does not select dense,Reopen only if DFT lifecycle ceases to dominate or a concrete assembly/counter hypothesis exists.

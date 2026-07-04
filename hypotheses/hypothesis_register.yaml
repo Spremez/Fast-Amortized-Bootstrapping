@@ -4173,3 +4173,15 @@ H313_narrow32_profile_attribution:
   conclusion: >
     Stage313 attributes the gap between Stage311 microbench gain and Stage312
     full-SAB neutral result. It is profile-only and does not promote narrow32.
+H314_local_digit_closeout:
+  status: PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT
+  primary_metric: evidence_synthesis_and_component_budget
+  evidence:
+    - repro/stage314_local_digit_closeout/stage314_summary.csv
+    - repro/stage314_local_digit_closeout/component_budget.csv
+    - repro/stage314_local_digit_closeout/candidate_rule_matrix.csv
+    - repro/stage314_local_digit_closeout/proof_gate.csv
+  conclusion: >
+    Stage314 closes local digit microvariants unless a future candidate has a
+    projected full-SAB budget >=1.02 before implementation. Next work should
+    target backend IFFT or schedule-level SAB reductions.

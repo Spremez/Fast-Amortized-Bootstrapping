@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_evidence_present,PASS,Stage309-313 files,present,Closeout must be based on recorded experiments.
+G2_micro_to_full_alignment,PASS,micro positive but full neutral,digit=1.044719; full=0.997104,Local digit changes are diluted and should not continue without stronger budget.
+G3_budget_rule,PASS,minimum pre-implementation projected T/r,>=1.02,New candidates need a predicted full-SAB effect above profile noise.
+G4_claim_boundary,PASS,scope,route gate only,This is not a new speed claim.
+G5_decision,PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT,stage decision,PASS_STAGE314_LOCAL_DIGIT_MICROVARIANTS_CLOSED_BACKEND_OR_SCHEDULE_NEXT,Controls Stage315 route.
