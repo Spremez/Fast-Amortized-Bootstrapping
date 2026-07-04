@@ -507,6 +507,19 @@ SAB_PVW_Key sab_pvw_new_binary_full_key(TRLWE_Key input_key,
   return res;
 }
 
+SAB_PVW_Key sab_pvw_new_nonbinary_full_key(TRLWE_Key input_key,
+    TRLWE_Key repacking_key, PVW_TMLWE_Key output_key, uint64_t b_prec,
+    uint64_t b_packing, uint64_t ell_packing, uint64_t t_ks, uint64_t b_ks,
+    uint64_t h, uint64_t r_prec, uint64_t l, uint64_t bg_bit,
+    bool include_zeros, bool ternary){
+  if(repacking_key == NULL) sab_pvw_die("repacking key is NULL");
+  SAB_PVW_Key res = sab_pvw_new_nonbinary_key(input_key, output_key, b_prec,
+      h, r_prec, l, bg_bit, include_zeros, ternary);
+  sab_pvw_init_full_postproc(res, input_key, repacking_key, b_packing,
+      ell_packing, t_ks, b_ks);
+  return res;
+}
+
 void free_sab_pvw_key(SAB_PVW_Key sab){
   if(sab == NULL) return;
   for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
@@ -1079,6 +1092,22 @@ void sab_pvw_blind_rotate_binary(PVW_TMLWE * out, TRLWE in, SAB_PVW_Key sab){
   }
 }
 
+void sab_pvw_blind_rotate_nonbinary(PVW_TMLWE * out, TRLWE in,
+    SAB_PVW_Key sab){
+  if(sab->in_k != 1) sab_pvw_die("only in_k=1 is supported");
+  if(!sab->include_zeros && !sab->ternary_secret){
+    sab_pvw_die("nonbinary blind rotate requires include-zero or ternary mode");
+  }
+  const uint64_t log_N2 = (uint64_t) log2(2 * sab->out_N);
+  for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
+    for (size_t idx = 0; idx < sab->in_N; idx++){
+      sab->tmp->a_mod[idx] = torus2int(in->a[key_idx]->coeffs[idx],
+          log_N2);
+    }
+    sab_pvw_sparse_mul_nonbinary(out, sab->tmp->a_mod, key_idx, sab);
+  }
+}
+
 void sab_pvw_bootstrap_wo_extract_binary(PVW_TMLWE * out, TRLWE in,
     PVW_TMLWE tv, SAB_PVW_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
@@ -1093,6 +1122,27 @@ void sab_pvw_bootstrap_wo_extract_binary(PVW_TMLWE * out, TRLWE in,
   const uint64_t blind_rotate_begin = sab_pvw_now_us();
 #endif
   sab_pvw_blind_rotate_binary(out, in, sab);
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.blind_rotate_us,
+      &sab_pvw_body_profile.blind_rotate_calls, blind_rotate_begin);
+  sab_pvw_body_profile_print(sab, sab_pvw_now_us() - full_begin);
+#endif
+}
+
+void sab_pvw_bootstrap_wo_extract_nonbinary(PVW_TMLWE * out, TRLWE in,
+    PVW_TMLWE tv, SAB_PVW_Key sab){
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_reset();
+  const uint64_t full_begin = sab_pvw_now_us();
+  const uint64_t setup_begin = sab_pvw_now_us();
+#endif
+  sab_pvw_setup_tv_xb(out, in->b->coeffs, tv, sab);
+#ifdef SAB_PVW_BODY_PROFILE
+  sab_pvw_body_profile_acc(&sab_pvw_body_profile.setup_tv_xb_us,
+      &sab_pvw_body_profile.setup_tv_xb_calls, setup_begin);
+  const uint64_t blind_rotate_begin = sab_pvw_now_us();
+#endif
+  sab_pvw_blind_rotate_nonbinary(out, in, sab);
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_body_profile_acc(&sab_pvw_body_profile.blind_rotate_us,
       &sab_pvw_body_profile.blind_rotate_calls, blind_rotate_begin);
@@ -1120,6 +1170,48 @@ void sab_pvw_bootstrap_binary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
 #endif
   SAB_PVW_POSTPROC_TIME_ACC(bootstrap_wo_extract_us,
       sab_pvw_bootstrap_wo_extract_binary(sab->tmp->acc, in, tv, sab));
+  for (size_t lane = 0; lane < sab->lanes; lane++){
+    SAB_PVW_POSTPROC_TIME_ACC(direct_extract_us,
+        sab_pvw_extract_tlwe_lane_array(sab->tmp->lane_extracted[lane],
+            sab->tmp->acc, lane, sab));
+    SAB_PVW_POSTPROC_TIME_ACC(packing_ks_us,
+        trlwe_full_packing_keyswitch(sab->tmp->packed,
+            sab->tmp->lane_extracted[lane], sab->in_N,
+            sab->packing_keys[lane]));
+    SAB_PVW_POSTPROC_TIME_ACC(hw_ks_us,
+        trlwe_keyswitch(out[lane], sab->tmp->packed,
+            sab->hw_reducing_key));
+  }
+#ifdef SAB_PVW_POSTPROC_PROFILE
+  const uint64_t full_us = sab_pvw_now_us() - full_begin;
+  printf("SAB_PVW_POSTPROC_PROFILE sample lanes=%" PRIu64
+         " bootstrap_wo_extract_us=%" PRIu64
+         " direct_extract_us=%" PRIu64
+         " packing_ks_us=%" PRIu64
+         " hw_ks_us=%" PRIu64
+         " full_us=%" PRIu64 "\n",
+         sab->lanes, bootstrap_wo_extract_us, direct_extract_us,
+         packing_ks_us, hw_ks_us, full_us);
+#endif
+}
+
+void sab_pvw_bootstrap_nonbinary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
+    SAB_PVW_Key sab){
+  if(sab->packing_keys == NULL || sab->hw_reducing_key == NULL){
+    sab_pvw_die("full nonbinary bootstrap requires sab_pvw_new_nonbinary_full_key");
+  }
+  if(!sab->include_zeros && !sab->ternary_secret){
+    sab_pvw_die("nonbinary bootstrap requires include-zero or ternary mode");
+  }
+#ifdef SAB_PVW_POSTPROC_PROFILE
+  uint64_t bootstrap_wo_extract_us = 0;
+  uint64_t direct_extract_us = 0;
+  uint64_t packing_ks_us = 0;
+  uint64_t hw_ks_us = 0;
+  const uint64_t full_begin = sab_pvw_now_us();
+#endif
+  SAB_PVW_POSTPROC_TIME_ACC(bootstrap_wo_extract_us,
+      sab_pvw_bootstrap_wo_extract_nonbinary(sab->tmp->acc, in, tv, sab));
   for (size_t lane = 0; lane < sab->lanes; lane++){
     SAB_PVW_POSTPROC_TIME_ACC(direct_extract_us,
         sab_pvw_extract_tlwe_lane_array(sab->tmp->lane_extracted[lane],

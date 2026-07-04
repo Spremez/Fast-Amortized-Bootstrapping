@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,interpretation
+G1_build,PASS,ffnt nonbinary full build,compiled,repro/stage259_nonbinary_full_sab_smoke/build_ffnt_nonbinary_full.log,Portable full-pipeline smoke build; no performance claim.
+G2_runtime_full_pipeline,PASS,mode/r pass rows,6/6,repro/stage259_nonbinary_full_sab_smoke/runtime_summary.csv,include-zero and ternary r=1/2/4 full-SAB smoke outputs match scalar references.
+G3_source_isolation,PASS,explicit path and scalar isolation,preserved,repro/stage259_nonbinary_full_sab_smoke/source_matrix.csv,New code is an explicit non-binary path; scalar SAB source is unchanged.
+G4_stage260_admission,PASS_STAGED_ONLY,next route,ADMIT_NOISE_RESOURCE,repro/stage259_nonbinary_full_sab_smoke/implementation_admission.csv,"Proceed to multi-seed noise/resource, not performance claims."
+G5_stage259_decision,PASS_STAGE259_NONBINARY_FULL_SAB_SMOKE,decision,PASS_STAGE259_NONBINARY_FULL_SAB_SMOKE,repro/stage259_nonbinary_full_sab_smoke/proof_gate.csv,Full non-binary path exists and passes small deterministic smoke.

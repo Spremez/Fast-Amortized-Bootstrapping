@@ -360,3 +360,5 @@
 - [x] Stage257 non-binary sparse_mul implementation
 
 - [x] Stage258 non-binary sparse_mul correctness/noise
+
+- [x] Stage259 non-binary full SAB smoke

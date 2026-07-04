@@ -1,0 +1,7 @@
+mode,r,h,r_prec,status,scope,evidence
+include_zero,1,2,3,PASS,small_full_pipeline_ffnt_smoke,repro/stage259_nonbinary_full_sab_smoke/run_ffnt_nonbinary_full.log
+include_zero,2,2,3,PASS,small_full_pipeline_ffnt_smoke,repro/stage259_nonbinary_full_sab_smoke/run_ffnt_nonbinary_full.log
+include_zero,4,2,3,PASS,small_full_pipeline_ffnt_smoke,repro/stage259_nonbinary_full_sab_smoke/run_ffnt_nonbinary_full.log
+ternary,1,2,3,PASS,small_full_pipeline_ffnt_smoke,repro/stage259_nonbinary_full_sab_smoke/run_ffnt_nonbinary_full.log
+ternary,2,2,3,PASS,small_full_pipeline_ffnt_smoke,repro/stage259_nonbinary_full_sab_smoke/run_ffnt_nonbinary_full.log
+ternary,4,2,3,PASS,small_full_pipeline_ffnt_smoke,repro/stage259_nonbinary_full_sab_smoke/run_ffnt_nonbinary_full.log

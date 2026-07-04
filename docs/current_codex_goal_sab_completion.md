@@ -824,3 +824,9 @@ generalization, and final paper claim closure.
 non-binary PVW/MAT path. The active research goal remains open: Stage259 must
 integrate non-binary blind rotation/bootstrap, then measure full-SAB
 `T_bootstrap/r` under scalar baseline isolation.
+
+### Stage259 non-binary full SAB smoke
+
+`PASS_STAGE259_NONBINARY_FULL_SAB_SMOKE` records the first complete non-binary PVW/MAT-SAB path smoke. The
+active research goal remains open because this is not yet target-parameter,
+multi-seed, noise/resource, or performance evidence.

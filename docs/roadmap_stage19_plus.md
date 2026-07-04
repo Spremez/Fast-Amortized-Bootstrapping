@@ -6977,3 +6977,21 @@ sparse_mul pass r=1/2/4, trials=3, with zero scalar/PVW pair failures across
 all recorded body-lane coefficients. Stage259 full-SAB integration preflight is
 admitted, but full bootstrapping acceleration and T_bootstrap/r remain blocked.
 ```
+
+## Stage 259: Non-Binary Full SAB Smoke
+
+Goal:
+
+```text
+Wire the explicit non-binary PVW/MAT sparse_mul route into complete SAB
+bootstrapping without changing scalar SAB or binary PVW defaults.
+```
+
+Status:
+
+```text
+Generated from input head `16a18c1` with `PASS_STAGE259_NONBINARY_FULL_SAB_SMOKE`. The new explicit
+non-binary full SAB API passes small FFNT full-pipeline equivalence for
+include-zero and ternary r=1/2/4. Target-parameter noise, resource, and
+T_bootstrap/r speedup remain blocked until Stage260+.
+```

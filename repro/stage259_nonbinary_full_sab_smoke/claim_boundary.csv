@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+nonbinary_full_sab_small_correctness,supported_smoke,The explicit non-binary PVW/MAT full SAB path passes small-parameter FFNT full-pipeline equivalence for include-zero and ternary r=1/2/4.,The target 686 non-binary full SAB path is fully validated.,repro/stage259_nonbinary_full_sab_smoke/runtime_summary.csv
+default_scalar_baseline,preserved_build_gate,The scalar SAB source remains unchanged and the default binary FFNT build compiles.,Scalar SAB performance is unchanged.,repro/stage259_nonbinary_full_sab_smoke/source_matrix.csv
+full_sab_speedup,unsupported,Stage259 does not measure complete SAB speedup.,Stage259 proves bootstrapping acceleration.,repro/stage259_nonbinary_full_sab_smoke/implementation_admission.csv
+amortized_time_per_plaintext_bit,unsupported_for_nonbinary,T_bootstrap/r remains the primary metric for Stage261+.,Non-binary T_bootstrap/r improved.,repro/stage259_nonbinary_full_sab_smoke/claim_boundary.csv

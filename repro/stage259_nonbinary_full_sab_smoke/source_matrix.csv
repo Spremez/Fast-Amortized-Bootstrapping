@@ -1,0 +1,10 @@
+check,path,observed,gate,notes
+api_decl_new_nonbinary_full_key,include/sab_pvw.h,present,PASS,explicit full-key constructor declaration
+api_decl_bootstrap_nonbinary,include/sab_pvw.h,present,PASS,explicit non-binary full bootstrap declaration
+api_def_new_nonbinary_full_key,src/sab_pvw.c,present,PASS,constructor reuses non-binary keygen plus full postproc
+api_def_blind_rotate_nonbinary,src/sab_pvw.c,present,PASS,blind rotate calls sparse_mul_nonbinary
+api_def_bootstrap_nonbinary,src/sab_pvw.c,present,PASS,full path uses non-binary wo_extract and existing postproc
+test_flag,src/mosfhet/Makefile.def,present,PASS,isolated FFNT smoke flag
+test_harness,main.c,present,PASS,small full-pipeline scalar/PVW equivalence test
+scalar_sab_unchanged,src/sparse_amortized_bootstrap.c,not_changed,PASS,scalar baseline remains the oracle
+default_binary_build,repro/stage259_nonbinary_full_sab_smoke/build_ffnt_default_binary.log,compiled,PASS,default binary build still compiles

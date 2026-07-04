@@ -1,0 +1,4 @@
+route,decision,production_permission,reason,next_gate
+stage260_nonbinary_full_sab_noise_resource,ADMIT_NOISE_RESOURCE,explicit_nonbinary_path_only,small full-pipeline non-binary PVW/MAT SAB smoke passes for include-zero and ternary r=1/2/4,multi-seed correctness/noise/resource for the non-binary full path
+stage261_nonbinary_target_perf_t_bootstrap_per_bit,WAIT_STAGE260,no_speedup_claim,target parameter performance requires noise/resource gate first,same-backend complete SAB A/B using T_bootstrap/r
+nonbinary_full_sab_speedup,BLOCKED,no,"no target-parameter benchmark, no multi-seed failure-rate gate, and no T_bootstrap/r result yet",Stage260 then Stage261

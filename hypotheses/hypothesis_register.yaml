@@ -3594,3 +3594,14 @@ H10_stage258_nonbinary_sparsemul_correctness_noise:
     path passes include-zero and ternary r=1/2/4 multi-trial pair-noise gates.
     Complete SAB correctness, complete SAB failure rate, and T_bootstrap/r
     speedup claims remain blocked until Stage259+.
+
+H10_stage259_nonbinary_full_sab_smoke:
+  status: full_pipeline_smoke_passed_speedup_blocked
+  evidence:
+    - repro/stage259_nonbinary_full_sab_smoke/runtime_summary.csv
+    - repro/stage259_nonbinary_full_sab_smoke/proof_gate.csv
+    - docs/stage259_nonbinary_full_sab_smoke.md
+  conclusion: >
+    Stage259 records PASS_STAGE259_NONBINARY_FULL_SAB_SMOKE. The explicit non-binary PVW/MAT full SAB path
+    passes small include-zero and ternary r=1/2/4 full-pipeline equivalence.
+    Target correctness/noise/resource and T_bootstrap/r speedup remain blocked.
