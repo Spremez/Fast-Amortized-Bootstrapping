@@ -4034,3 +4034,15 @@ H298_direct_dft_target_stage_noise:
     Stage298 records target include-zero r=4 stage-wise pair-equivalence for
     the direct-DFT candidate. It remains local until native counter and
     parameter-generalization gates run.
+H299_direct_dft_param_preflight:
+  status: PASS_STAGE299_DIRECT_DFT_PARAM_PREFLIGHT_LOCAL
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage299_direct_dft_param_preflight/perf_summary.csv
+    - repro/stage299_direct_dft_param_preflight/noise_summary.csv
+    - repro/stage299_direct_dft_param_preflight/proof_gate.csv
+    - docs/stage299_direct_dft_param_preflight.md
+  conclusion: >
+    Stage299 records an added-parameter preflight for the direct-DFT candidate.
+    It may broaden evidence if positive but cannot replace a full parameter
+    matrix or native attribution.

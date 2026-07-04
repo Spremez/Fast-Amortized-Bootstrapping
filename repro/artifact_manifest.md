@@ -3090,3 +3090,8 @@ Repro artifacts:
   - `scripts/run_stage298_direct_dft_target_stage_noise.sh`
   - `scripts/build_stage298_direct_dft_target_stage_noise.py`
   - `repro/stage298_direct_dft_target_stage_noise/`
+- stage299_direct_dft_param_preflight:
+  - `docs/stage299_direct_dft_param_preflight.md`
+  - `scripts/run_stage299_direct_dft_param_preflight.sh`
+  - `scripts/build_stage299_direct_dft_param_preflight.py`
+  - `repro/stage299_direct_dft_param_preflight/`

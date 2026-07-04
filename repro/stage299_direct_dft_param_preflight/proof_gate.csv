@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_prior_stage298,PASS,Stage298 decision,positive,Added-parameter preflight follows target stage-wise evidence.
+G2_perf_samples,PASS,samples,3/3,At least three complete-SAB samples per variant.
+G3_direct_effect,PASS,direct/control mean T/r,1.063481,Preflight effect threshold is 1.01x over selected control.
+G4_noise,PASS,pair failures/trials,0/3,Final-output pair equivalence for the added parameter.
+G5_claim_boundary,PASS,scope,SET_4_5_2048 preflight,"This is a preflight, not a full parameter-generalization matrix."
+G6_decision,PASS_STAGE299_DIRECT_DFT_PARAM_PREFLIGHT_LOCAL,stage decision,PASS_STAGE299_DIRECT_DFT_PARAM_PREFLIGHT_LOCAL,Controls Stage300 route.

@@ -1,0 +1,3 @@
+claim,status,supported_statement,not_supported
+added_parameter_preflight,PASS_STAGE299_DIRECT_DFT_PARAM_PREFLIGHT_LOCAL,Direct-DFT was tested on SET_4_5_2048 with complete-SAB T/r and final-output noise.,full all-parameter generalization.
+direct_dft_universal_gain,not_yet,A positive preflight broadens evidence beyond SET_2_3_2048.,universal optimality or all branch coverage.

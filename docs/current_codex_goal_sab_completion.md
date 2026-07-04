@@ -1067,3 +1067,9 @@ claim is local and still needs native/stage-wise expansion.
 equivalence for the direct-DFT candidate. The result supports Stage296 as a
 local correctness/noise side condition, not as native attribution or
 parameter-generalized evidence.
+<!-- stage299-direct-dft-param-preflight -->
+### Stage299 direct DFT parameter preflight
+
+`PASS_STAGE299_DIRECT_DFT_PARAM_PREFLIGHT_LOCAL` tests the direct-DFT candidate on `SET_4_5_2048` with complete-SAB
+`T_bootstrap/r` and final-output noise. The result is a preflight only; broad
+parameter-generalization still needs a larger matrix.

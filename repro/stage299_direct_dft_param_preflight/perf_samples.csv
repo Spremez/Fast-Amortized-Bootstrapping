@@ -1,0 +1,7 @@
+variant,outer_run,correctness,mode,r,h,r_prec,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup_vs_repeated_scalar,source_log
+perf_selected_control,0,Pass,include_zero,4,42,7,28254729,7063682.250,46089193,11522298.250,1.631,repro/stage299_direct_dft_param_preflight/raw/perf_selected_control/run_0.log
+perf_selected_control,1,Pass,include_zero,4,42,7,27994675,6998668.750,46170861,11542715.250,1.649,repro/stage299_direct_dft_param_preflight/raw/perf_selected_control/run_1.log
+perf_selected_control,2,Pass,include_zero,4,42,7,28790899,7197724.750,46279544,11569886.000,1.607,repro/stage299_direct_dft_param_preflight/raw/perf_selected_control/run_2.log
+perf_direct_dft,0,Pass,include_zero,4,42,7,26620109,6655027.250,46098721,11524680.250,1.732,repro/stage299_direct_dft_param_preflight/raw/perf_direct_dft/run_0.log
+perf_direct_dft,1,Pass,include_zero,4,42,7,26561744,6640436.000,47215687,11803921.750,1.778,repro/stage299_direct_dft_param_preflight/raw/perf_direct_dft/run_1.log
+perf_direct_dft,2,Pass,include_zero,4,42,7,26782274,6695568.500,46446516,11611629.000,1.734,repro/stage299_direct_dft_param_preflight/raw/perf_direct_dft/run_2.log

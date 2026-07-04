@@ -1,0 +1,4 @@
+case,param,fft_lib,r,runs_or_trials,reps,extra_flags
+perf_selected_control,SET_4_5_2048,spqlios_avx512,4,3,1,
+perf_direct_dft,SET_4_5_2048,spqlios_avx512,4,3,1,MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true
+noise_direct_dft,SET_4_5_2048,spqlios_avx512,4,3,,MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true

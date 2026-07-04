@@ -438,3 +438,5 @@
 - [x] Stage297 records `PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL` for direct DFT local resource side conditions.
 <!-- stage298-direct-dft-target-stage-noise-checklist -->
 - [x] Stage298 records `PASS_STAGE298_DIRECT_DFT_TARGET_STAGE_NOISE_LOCAL` for direct DFT target include-zero stage-wise noise.
+<!-- stage299-direct-dft-param-preflight-checklist -->
+- [x] Stage299 records `PASS_STAGE299_DIRECT_DFT_PARAM_PREFLIGHT_LOCAL` for direct DFT added-parameter preflight.

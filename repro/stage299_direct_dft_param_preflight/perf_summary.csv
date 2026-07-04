@@ -1,0 +1,4 @@
+variant,samples,correctness,t_bootstrap_over_r_mean_us,t_bootstrap_over_r_ci95_low_us,t_bootstrap_over_r_ci95_high_us,t_bootstrap_over_r_min_us,t_bootstrap_over_r_max_us,scalar_t_bootstrap_over_r_mean_us,speedup_vs_repeated_scalar_mean,direct_dft_vs_selected_control_mean
+perf_selected_control,3,Pass,7086691.917,6880797.312,7292586.521,6998668.750,7197724.750,11544966.500,1.629105,
+perf_direct_dft,3,Pass,6663677.250,6605732.491,6721622.009,6640436.000,6695568.500,11646743.667,1.747795,
+comparison,3,Pass,,,,,,,,1.063481

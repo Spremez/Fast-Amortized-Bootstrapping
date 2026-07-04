@@ -7055,3 +7055,8 @@ Goal: close the target include-zero stage-wise noise side condition for the
 direct-DFT candidate.
 
 Status: `PASS_STAGE298_DIRECT_DFT_TARGET_STAGE_NOISE_LOCAL`.
+## Stage 299: Direct DFT Parameter Preflight
+
+Goal: test direct-DFT viability beyond `SET_2_3_2048` on one added parameter.
+
+Status: `PASS_STAGE299_DIRECT_DFT_PARAM_PREFLIGHT_LOCAL`.
