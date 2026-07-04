@@ -456,3 +456,5 @@
 - [x] Stage307 records `PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED` and routes Stage308 to `ifft`.
 <!-- stage308-spqlios-ifft-feasibility-audit-checklist -->
 - [x] Stage308 records `FAIL_STAGE308_IFFT_FEASIBILITY_AUDIT_INCOMPLETE` and routes Stage309/310.
+<!-- stage309-digit-rowbatch-microbench-checklist -->
+- [x] Stage309 records `NEUTRAL_STAGE309_DIGIT_ROWBATCH_NO_PROMOTION` for the rowbatch digit candidate.

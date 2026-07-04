@@ -1,0 +1,11 @@
+variant,run,status,r,N,reps,max_abs_diff,sub_avg_us,speedup_vs_separate,checksum,profile_calls,profile_rows_sum,digit_us,ifft_us,profile_total_us,digit_avg_us_per_call,ifft_avg_us_per_call,source_log
+direct_baseline,0,Pass,4,2048,5000,0,20.508,1.353,2.5375449751392904e+30,5011,25055,17002,41153,59138,3.392936,8.212532,repro/stage309_digit_rowbatch_microbench/raw/direct_baseline/run_0.log
+direct_baseline,1,Pass,4,2048,5000,0,21.038,1.183,5.0757702211663884e+30,5011,25055,17023,42172,60340,3.397126,8.415885,repro/stage309_digit_rowbatch_microbench/raw/direct_baseline/run_1.log
+direct_baseline,2,Pass,4,2048,5000,0,19.653,1.409,-3.8683430992113527e+30,5011,25055,15924,38661,55564,3.177809,7.715227,repro/stage309_digit_rowbatch_microbench/raw/direct_baseline/run_2.log
+direct_baseline,3,Pass,4,2048,5000,0,19.373,1.303,-1.1951848602303415e+31,5011,25055,15507,38955,55470,3.094592,7.773897,repro/stage309_digit_rowbatch_microbench/raw/direct_baseline/run_3.log
+direct_baseline,4,Pass,4,2048,5000,0,18.604,1.209,-1.3567613756696614e+31,5011,25055,14779,37180,52951,2.949312,7.419677,repro/stage309_digit_rowbatch_microbench/raw/direct_baseline/run_4.log
+rowbatch_digit,0,Pass,4,2048,5000,0,20.289,1.416,8.3439459319849089e+30,5011,25055,15394,41686,57450,3.072042,8.318898,repro/stage309_digit_rowbatch_microbench/raw/rowbatch_digit/run_0.log
+rowbatch_digit,1,Pass,4,2048,5000,0,19.222,1.290,-1.0049391661770726e+31,5011,25055,13190,40096,53657,2.632209,8.001596,repro/stage309_digit_rowbatch_microbench/raw/rowbatch_digit/run_1.log
+rowbatch_digit,2,Pass,4,2048,5000,0,22.584,1.140,-4.1230367056985433e+29,5011,25055,17697,45941,64146,3.531630,9.168030,repro/stage309_digit_rowbatch_microbench/raw/rowbatch_digit/run_2.log
+rowbatch_digit,3,Pass,4,2048,5000,0,20.242,1.369,8.4626152341817399e+30,5011,25055,15603,42433,58523,3.113750,8.467970,repro/stage309_digit_rowbatch_microbench/raw/rowbatch_digit/run_3.log
+rowbatch_digit,4,Pass,4,2048,5000,0,19.355,1.301,-2.1340709229096925e+29,5011,25055,14763,40558,55760,2.946119,8.093794,repro/stage309_digit_rowbatch_microbench/raw/rowbatch_digit/run_4.log

@@ -1114,3 +1114,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage308 SPQLIOS IFFT feasibility audit
 
 `FAIL_STAGE308_IFFT_FEASIBILITY_AUDIT_INCOMPLETE` routes near-term work to digit-to-double AVX512 and reserves batched IFFT for backend-level research.
+<!-- stage309-digit-rowbatch-microbench -->
+### Stage309 digit rowbatch microbench
+
+`NEUTRAL_STAGE309_DIGIT_ROWBATCH_NO_PROMOTION` tests the default-off `MAT_TRGSW_DIRECT_DFT_R4_ROWBATCH_DIGIT` candidate under isolated microbench gates.

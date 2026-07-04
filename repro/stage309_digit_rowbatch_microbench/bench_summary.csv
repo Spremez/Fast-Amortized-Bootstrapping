@@ -1,0 +1,2 @@
+decision,runs_per_variant,correctness,baseline_digit_us_mean,rowbatch_digit_us_mean,digit_speedup_mean,digit_speedup_min,baseline_sub_avg_us_mean,rowbatch_sub_avg_us_mean,sub_speedup_mean,sub_speedup_min,profile_total_speedup_mean,profile_total_speedup_min,claim
+NEUTRAL_STAGE309_DIGIT_ROWBATCH_NO_PROMOTION,5,PASS,16047.000000,15329.400000,1.057960,0.899814,19.835200,20.338400,0.978751,0.870218,0.983520,0.866211,microbench_only_full_sab_required

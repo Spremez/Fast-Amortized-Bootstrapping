@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage310_spqlios_batched_ifft_design_or_alt_digit,NEUTRAL_STAGE309_DIGIT_ROWBATCH_NO_PROMOTION,Do not promote rowbatch digit; keep direct-DFT path and move to backend IFFT or alternate digit design.,same-backend full-SAB correctness/performance if positive; otherwise backend/alternate design audit

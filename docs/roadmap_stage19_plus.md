@@ -7108,3 +7108,8 @@ Status: `PASS_STAGE307_DIRECT_IFFT_LIFECYCLE_PROFILE_RECORDED`.
 Goal: decide whether Stage307's IFFT residual has a low-risk existing batching route or must become backend work.
 
 Status: `FAIL_STAGE308_IFFT_FEASIBILITY_AUDIT_INCOMPLETE`.
+## Stage 309: Digit Rowbatch Microbench
+
+Goal: test a default-off r=4/k=1/l=1 row-batched digit materialization candidate before full-SAB promotion.
+
+Status: `NEUTRAL_STAGE309_DIGIT_ROWBATCH_NO_PROMOTION`.

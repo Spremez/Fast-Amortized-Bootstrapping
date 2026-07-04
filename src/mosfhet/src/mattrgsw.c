@@ -994,6 +994,100 @@ static void mat_trgsw_sub_decompose_poly_to_double(double * out,
 #endif
 }
 
+#if defined(AVX512_OPT) && defined(MAT_TRGSW_DIRECT_DFT_R4_ROWBATCH_DIGIT)
+static inline __m512d mat_trgsw_sub_decompose_block_to_pd(
+    const Torus * lhs, const Torus * rhs, int c,
+    __m512i v_offset, __m512i v_shift, __m512i v_mask, __m512i v_half){
+  const __m512i v_rhs = _mm512_loadu_si512((const void *) &rhs[c]);
+  const __m512i v_lhs = _mm512_loadu_si512((const void *) &lhs[c]);
+  const __m512i v_diff = _mm512_sub_epi64(v_rhs, v_lhs);
+  const __m512i v_coeff_off = _mm512_add_epi64(v_diff, v_offset);
+  const __m512i v_digits = _mm512_and_si512(
+      _mm512_srlv_epi64(v_coeff_off, v_shift), v_mask);
+  const __m512i v_signed = _mm512_sub_epi64(v_digits, v_half);
+  return _mm512_cvtepi64_pd(v_signed);
+}
+
+static inline double mat_trgsw_sub_decompose_coeff_to_double(
+    Torus lhs, Torus rhs, uint64_t offset, uint64_t h_bit,
+    uint64_t h_mask, uint64_t half_Bg){
+  const uint64_t diff = rhs - lhs;
+  const uint64_t coeff_off = diff + offset;
+  const uint64_t digit = ((coeff_off >> h_bit) & h_mask) - half_Bg;
+  return (double) ((int64_t) digit);
+}
+
+static void mat_trgsw_sub_decompose_DFT_direct_k1_l1_r4_rowbatch(
+    PVW_TMLWE in1, PVW_TMLWE in2, DFT_Polynomial * out, int Bg_bit){
+  const int k = 1, r = 4, l = 1, N = in1->b[0]->N;
+  const int rows = 5;
+  const uint64_t half_Bg = (1ULL << (Bg_bit - 1));
+  const uint64_t h_mask = (1ULL << Bg_bit) - 1;
+  const uint64_t word_size = sizeof(Torus)*8;
+  const uint64_t offset = (1ULL << (word_size - 1));
+  const uint64_t h_bit = word_size - Bg_bit;
+  const __m512i v_offset = _mm512_set1_epi64((long long) offset);
+  const __m512i v_shift = _mm512_set1_epi64((long long) h_bit);
+  const __m512i v_mask = _mm512_set1_epi64((long long) h_mask);
+  const __m512i v_half = _mm512_set1_epi64((long long) half_Bg);
+  __m512d * out0 = (__m512d *) out[0]->coeffs;
+  __m512d * out1 = (__m512d *) out[1]->coeffs;
+  __m512d * out2 = (__m512d *) out[2]->coeffs;
+  __m512d * out3 = (__m512d *) out[3]->coeffs;
+  __m512d * out4 = (__m512d *) out[4]->coeffs;
+  const Torus * lhs0 = in1->a[0]->coeffs;
+  const Torus * rhs0 = in2->a[0]->coeffs;
+  const Torus * lhs1 = in1->b[0]->coeffs;
+  const Torus * rhs1 = in2->b[0]->coeffs;
+  const Torus * lhs2 = in1->b[1]->coeffs;
+  const Torus * rhs2 = in2->b[1]->coeffs;
+  const Torus * lhs3 = in1->b[2]->coeffs;
+  const Torus * rhs3 = in2->b[2]->coeffs;
+  const Torus * lhs4 = in1->b[3]->coeffs;
+  const Torus * rhs4 = in2->b[3]->coeffs;
+
+  init_fft(N);
+  FFT_Processor_Spqlios proc = fft_proc[N >> 10];
+  mat_trgsw_direct_dft_profile_start_call(rows, k, r, l, N);
+  MAT_TRGSW_DIRECT_DFT_BEGIN(total_begin);
+
+  MAT_TRGSW_DIRECT_DFT_BEGIN(digit_begin);
+  int c = 0;
+  for (; c + 8 <= N; c += 8){
+    out0[c >> 3] = mat_trgsw_sub_decompose_block_to_pd(lhs0, rhs0, c,
+        v_offset, v_shift, v_mask, v_half);
+    out1[c >> 3] = mat_trgsw_sub_decompose_block_to_pd(lhs1, rhs1, c,
+        v_offset, v_shift, v_mask, v_half);
+    out2[c >> 3] = mat_trgsw_sub_decompose_block_to_pd(lhs2, rhs2, c,
+        v_offset, v_shift, v_mask, v_half);
+    out3[c >> 3] = mat_trgsw_sub_decompose_block_to_pd(lhs3, rhs3, c,
+        v_offset, v_shift, v_mask, v_half);
+    out4[c >> 3] = mat_trgsw_sub_decompose_block_to_pd(lhs4, rhs4, c,
+        v_offset, v_shift, v_mask, v_half);
+  }
+  for (; c < N; c++){
+    out[0]->coeffs[c] = mat_trgsw_sub_decompose_coeff_to_double(
+        lhs0[c], rhs0[c], offset, h_bit, h_mask, half_Bg);
+    out[1]->coeffs[c] = mat_trgsw_sub_decompose_coeff_to_double(
+        lhs1[c], rhs1[c], offset, h_bit, h_mask, half_Bg);
+    out[2]->coeffs[c] = mat_trgsw_sub_decompose_coeff_to_double(
+        lhs2[c], rhs2[c], offset, h_bit, h_mask, half_Bg);
+    out[3]->coeffs[c] = mat_trgsw_sub_decompose_coeff_to_double(
+        lhs3[c], rhs3[c], offset, h_bit, h_mask, half_Bg);
+    out[4]->coeffs[c] = mat_trgsw_sub_decompose_coeff_to_double(
+        lhs4[c], rhs4[c], offset, h_bit, h_mask, half_Bg);
+  }
+  MAT_TRGSW_DIRECT_DFT_ACC(digit_us, digit_begin);
+
+  MAT_TRGSW_DIRECT_DFT_BEGIN(ifft_begin);
+  for (size_t row = 0; row < (size_t) rows; row++){
+    ifft(proc->tables_reverse, out[row]->coeffs);
+  }
+  MAT_TRGSW_DIRECT_DFT_ACC(ifft_us, ifft_begin);
+  MAT_TRGSW_DIRECT_DFT_ACC(total_us, total_begin);
+}
+#endif
+
 static void mat_trgsw_sub_decompose_DFT_direct(PVW_TMLWE in1,
     PVW_TMLWE in2, DFT_Polynomial * out, int Bg_bit, int l){
   const int k = in1->k, r = in1->r, N = in1->b[0]->N;
@@ -1007,6 +1101,14 @@ static void mat_trgsw_sub_decompose_DFT_direct(PVW_TMLWE in1,
   assert(in2->k == k);
   assert(in2->r == r);
   assert(in2->b[0]->N == N);
+
+#if defined(AVX512_OPT) && defined(MAT_TRGSW_DIRECT_DFT_R4_ROWBATCH_DIGIT)
+  if(k == 1 && r == 4 && l == 1){
+    mat_trgsw_sub_decompose_DFT_direct_k1_l1_r4_rowbatch(in1, in2,
+        out, Bg_bit);
+    return;
+  }
+#endif
 
   uint64_t offset = 0;
   for (size_t i = 0; i < (size_t) l; i++){

@@ -1,0 +1,3 @@
+variant,r,N,reps,runs,fft_lib,flags
+direct_baseline,4,2048,5000,5,spqlios_avx512,MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true MAT_TRGSW_DIRECT_DFT_PROFILE=true
+rowbatch_digit,4,2048,5000,5,spqlios_avx512,MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true MAT_TRGSW_DIRECT_DFT_PROFILE=true MAT_TRGSW_DIRECT_DFT_R4_ROWBATCH_DIGIT=true

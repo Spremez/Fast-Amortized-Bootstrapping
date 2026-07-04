@@ -3144,3 +3144,11 @@ Repro artifacts:
   - `experiments/stage308_spqlios_ifft_feasibility_audit_plan.md`
   - `scripts/build_stage308_spqlios_ifft_feasibility_audit.py`
   - `repro/stage308_spqlios_ifft_feasibility_audit/`
+- stage309_digit_rowbatch_microbench:
+  - `docs/stage309_digit_rowbatch_microbench.md`
+  - `theory_checks/stage309_digit_rowbatch_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage309_digit_rowbatch.md`
+  - `experiments/stage309_digit_rowbatch_microbench_plan.md`
+  - `scripts/run_stage309_digit_rowbatch_microbench.sh`
+  - `scripts/build_stage309_digit_rowbatch_microbench.py`
+  - `repro/stage309_digit_rowbatch_microbench/`

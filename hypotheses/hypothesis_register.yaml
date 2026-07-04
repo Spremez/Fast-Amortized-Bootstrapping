@@ -4119,3 +4119,14 @@ H308_spqlios_ifft_feasibility_audit:
     Stage308 finds no existing low-risk batch IFFT interface. The next local
     implementation target is digit-to-double AVX512 materialization; true IFFT
     batching remains a separate backend research track.
+H309_digit_rowbatch_microbench:
+  status: NEUTRAL_STAGE309_DIGIT_ROWBATCH_NO_PROMOTION
+  primary_metric: direct_sub_dft_digit_us_and_microbench_latency
+  evidence:
+    - repro/stage309_digit_rowbatch_microbench/run_metrics.csv
+    - repro/stage309_digit_rowbatch_microbench/bench_summary.csv
+    - repro/stage309_digit_rowbatch_microbench/proof_gate.csv
+  conclusion: >
+    Stage309 tests an opt-in r=4 row-batched digit materialization candidate.
+    It can only open full-SAB A/B if both digit component time and sub-DTF
+    microbench latency improve; otherwise it is kept as a neutral ablation.
