@@ -446,3 +446,5 @@
 - [x] Stage302 counter interpretation recorded.
 <!-- stage303-param-matrix-highstat-checklist -->
 - [x] Stage303 records `PASS_STAGE303_PARAM_MATRIX_HIGHSTAT_LOCAL` for SET_4_5_2048 direct DFT high-stat local complete-SAB evidence.
+<!-- stage304-parameter-claim-matrix-checklist -->
+- [x] Stage304 records `PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM` and claim boundaries.

@@ -1094,3 +1094,7 @@ context-only until a current-head direct-DFT counter refresh is recorded.
 `PASS_STAGE303_PARAM_MATRIX_HIGHSTAT_LOCAL` expands `SET_4_5_2048` from Stage299 preflight to a local
 10-run/10-trial complete-SAB campaign. The metric remains `T_bootstrap/r`; the
 result strengthens parameter evidence but does not establish universal coverage.
+<!-- stage304-parameter-claim-matrix -->
+### Stage304 parameter claim matrix
+
+`PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM` supports a scoped two-parameter local engineering claim for direct-DFT PVW/MAT-SAB. The next route is residual materialization split before any new AVX rewrite.

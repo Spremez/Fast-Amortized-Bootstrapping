@@ -3115,3 +3115,6 @@ Repro artifacts:
   - `scripts/run_stage303_param_matrix_highstat.sh`
   - `scripts/build_stage303_param_matrix_highstat.py`
   - `repro/stage303_param_matrix_highstat/`
+- stage304_parameter_claim_matrix:
+  - `docs/stage304_parameter_claim_matrix.md`
+  - `repro/stage304_parameter_claim_matrix/`

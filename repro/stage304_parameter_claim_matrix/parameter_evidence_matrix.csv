@@ -1,0 +1,3 @@
+param,samples,correctness,direct_t_over_r_mean_us,direct_t_over_r_ci95_low_us,direct_t_over_r_ci95_high_us,direct_over_repeated_scalar,direct_over_selected_control,ci_separated,noise_trials,pair_failures,noise_gate,evidence
+SET_2_3_2048,10,Pass,6116156.050,6056324.250,6175987.850,1.735849,1.075398,true,10,0,Pass,repro/stage296_direct_dft_highstat/perf_summary.csv; repro/stage296_direct_dft_highstat/noise_summary.csv
+SET_4_5_2048,10,Pass,6700655.425,6690636.005,6710674.845,1.731986,1.070458,true,10,0,Pass,repro/stage303_param_matrix_highstat/perf_summary.csv; repro/stage303_param_matrix_highstat/noise_summary.csv

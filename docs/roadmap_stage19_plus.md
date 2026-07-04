@@ -7083,3 +7083,8 @@ Goal: upgrade Stage299 `SET_4_5_2048` evidence with a 10-run/10-trial
 same-backend complete SAB campaign.
 
 Status: `PASS_STAGE303_PARAM_MATRIX_HIGHSTAT_LOCAL`.
+## Stage 304: Parameter Claim Matrix
+
+Goal: merge two-parameter high-stat evidence with native counter mechanism evidence.
+
+Status: `PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM`.

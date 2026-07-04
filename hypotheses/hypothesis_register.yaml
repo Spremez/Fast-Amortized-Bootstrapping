@@ -4074,3 +4074,8 @@ H303_param_matrix_highstat:
     Stage303 tests whether direct-DFT complete-SAB throughput persists on
     SET_4_5_2048 under a 10-run/10-trial local campaign. It strengthens but
     does not complete broad parameter generalization.
+H304_two_parameter_local_generalization:
+  status: PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence: repro/stage304_parameter_claim_matrix/parameter_evidence_matrix.csv
+  claim_scope: two local binary include-zero 2048-output parameter sets

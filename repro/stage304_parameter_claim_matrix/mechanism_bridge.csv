@@ -1,0 +1,8 @@
+metric,value,interpretation
+native_t_over_r_selected_over_direct,1.134934244,Stage301 one-run native latency direction agrees with local high-stat direction.
+cycles_selected_over_direct,1.045496632,Direct DFT records fewer cycles than selected-control in Stage301.
+instructions_selected_over_direct,1.024950663,"Direct DFT records fewer instructions, supporting materialization-wrapper removal."
+loads_selected_over_direct,1.038873490,Direct DFT records fewer loads.
+stores_selected_over_direct,1.019831601,Direct DFT records fewer stores.
+fp512_selected_over_direct,1.000243246,AVX512 FP arithmetic is neutral; this is not an arithmetic-volume reduction claim.
+stage302_decision,PASS_STAGE302_COUNTER_SUPPORTS_MEMORY_INSTRUCTION_MECHANISM,Stage302 classifies the mechanism boundary.

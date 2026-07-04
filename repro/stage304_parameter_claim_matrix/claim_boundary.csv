@@ -1,0 +1,4 @@
+claim,status,allowed,not_allowed
+two_parameter_local_complete_sab_speedup,supported,"For SET_2_3_2048 and SET_4_5_2048, direct DFT improves complete-SAB T_bootstrap/r over selected-control under the recorded local protocol.","Do not claim all parameter sets, all branches, or single-output latency improvement."
+mechanism,counter_supported,Stage301/302 support memory/instruction overhead reduction as the mechanism.,Do not claim fewer dense AVX512 FMA operations or theoretical optimality.
+paper_grade_generalization,not_yet,Use as strong engineering evidence for two tested parameters.,Do not write broad novelty or theorem-level claims without literature/proof/branch coverage.

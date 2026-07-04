@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage305_materialization_split_probe,PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM,Measure residual direct-DFT materialization/copy/sub-decomposition split before new AVX work.,Keep direct-DFT as promoted engineering path without new kernel rewrite.
+P1,stage305_branch_coverage,paper claim needs more branch coverage,Repeat include-zero/ternary or other supported branches if claiming beyond binary include-zero.,Scope final claim to tested branch.

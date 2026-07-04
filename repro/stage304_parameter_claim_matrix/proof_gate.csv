@@ -1,0 +1,5 @@
+gate,status,metric,value,interpretation
+G1_two_parameter_highstat,PASS,params,SET_2_3_2048;SET_4_5_2048,Both tested parameters need 10-run/10-trial local complete-SAB evidence.
+G2_counter_mechanism,PASS,cycles/loads,1.045496632/1.038873490,Native counters must support the memory/instruction mechanism direction.
+G3_claim_boundary,PASS_SCOPED_ONLY,scope,two local binary include-zero 2048-output parameter sets,This is not universal parameter coverage or theoretical optimality.
+G4_decision,PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM,stage decision,PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM,Controls Stage305 route.
