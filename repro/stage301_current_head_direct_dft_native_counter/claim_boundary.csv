@@ -1,0 +1,3 @@
+claim,status,allowed,not_allowed
+current_direct_dft_counter_attribution,supported,Use Stage301 counters for mechanism attribution on the current direct-DFT path.,Do not claim theoretical optimality or statistical latency from one counter run.
+complete_sab_speed,unchanged_stage296_299,Use repeated T_bootstrap/r evidence from Stage296 and scoped preflight from Stage299.,Use perf counter elapsed time as the final SAB speed claim.

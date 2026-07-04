@@ -3101,3 +3101,8 @@ Repro artifacts:
   - `repro/stage300_current_head_counter_route/summary.csv`
   - `repro/stage300_current_head_counter_route/evidence_matrix.csv`
   - `repro/stage300_current_head_counter_route/proof_gate.csv`
+- stage301_current_head_direct_dft_native_counter:
+  - `docs/stage301_current_head_direct_dft_native_counter.md`
+  - `repro/stage301_current_head_direct_dft_native_counter/run_metrics.csv`
+  - `repro/stage301_current_head_direct_dft_native_counter/counter_summary.csv`
+  - `repro/stage301_current_head_direct_dft_native_counter/counter_comparison.csv`

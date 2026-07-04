@@ -442,3 +442,4 @@
 - [x] Stage299 records `PASS_STAGE299_DIRECT_DFT_PARAM_PREFLIGHT_LOCAL` for direct DFT added-parameter preflight.
 
 - [x] Stage300 current-head counter route audit recorded with local perf probe and claim boundary.
+- [x] Stage301 current-head direct-DFT native counter refresh recorded without storing secrets.

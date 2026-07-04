@@ -1,0 +1,12 @@
+# started on Sun Jul  5 01:27:22 2026
+
+577942108123,,cycles,64689529234,39.00,,
+1118421167650,,instructions,80861106376,49.00,1.94,insn per cycle
+13255467841,,cache-references,80865120189,50.00,,
+8463019919,,cache-misses,80864034732,49.00,63.85,of all cache refs
+67002277716,,branches,80862704816,49.00,,
+345187253,,branch-misses,80868125976,50.00,0.52,of all branches
+255713356630,,mem_inst_retired.all_loads,64690889427,39.00,,
+144318786919,,mem_inst_retired.all_stores,64691013962,39.00,,
+254957531078,,fp_arith_inst_retired.512b_packed_double,64694507558,40.00,,
+50378295926,,fp_arith_inst_retired.256b_packed_double,64690924578,39.00,,

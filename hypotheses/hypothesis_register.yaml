@@ -4052,3 +4052,8 @@ H300_current_head_counter_refresh:
   status: PASS_STAGE300_COUNTER_CONTEXT_CURRENT_HEAD_REFRESH_REQUIRED
   evidence: repro/stage300_current_head_counter_route/proof_gate.csv
   next_gate: Stage301 current-head native counter refresh or parameter matrix high-stat.
+H301_current_direct_dft_counter_attribution:
+  claim: Current direct-DFT should reduce selected MAT/PVW backend work visible in native counters.
+  status: FAIL_STAGE301_CURRENT_HEAD_DIRECT_DFT_NATIVE_COUNTER_REFRESH
+  evidence: repro/stage301_current_head_direct_dft_native_counter/proof_gate.csv
+  next_gate: Stage302 counter interpretation and parameter high-stat matrix.

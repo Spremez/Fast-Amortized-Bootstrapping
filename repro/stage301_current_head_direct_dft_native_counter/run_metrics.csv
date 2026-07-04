@@ -1,0 +1,3 @@
+variant,correctness,mode,r,h,r_prec,reps,pvw_avg_us,scalar_repeated_avg_us,speedup_vs_scalar_repeated,t_bootstrap_over_r_pvw_us,t_bootstrap_over_r_scalar_us,evidence
+direct_dft,Pass,include_zero,4,39,7,1,27683410.000,50663092.000,1.830,6920852.500,12665773.000,repro/stage301_current_head_direct_dft_native_counter/native_perf_raw/run_direct_dft.log
+selected_control,Pass,include_zero,4,39,7,1,31418850.000,50636577.000,1.612,7854712.500,12659144.250,repro/stage301_current_head_direct_dft_native_counter/native_perf_raw/run_selected_control.log

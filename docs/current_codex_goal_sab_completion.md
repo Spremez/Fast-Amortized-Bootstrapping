@@ -1080,3 +1080,7 @@ parameter-generalization still needs a larger matrix.
 `PASS_STAGE300_COUNTER_CONTEXT_CURRENT_HEAD_REFRESH_REQUIRED` records that Stage296/Stage299 support scoped current-head
 complete-SAB `T_bootstrap/r`, while historical native counters remain
 context-only until a current-head direct-DFT counter refresh is recorded.
+<!-- stage301-current-head-direct-dft-native-counter -->
+### Stage301 current-head direct-DFT native counter refresh
+
+`FAIL_STAGE301_CURRENT_HEAD_DIRECT_DFT_NATIVE_COUNTER_REFRESH` records native counter attribution status for the current direct-DFT candidate. The result is mechanism evidence only; complete-SAB performance claims remain tied to `T_bootstrap/r` campaigns.

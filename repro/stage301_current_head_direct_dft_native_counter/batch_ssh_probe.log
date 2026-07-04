@@ -1,0 +1,9 @@
+returncode=255
+--- stdout ---
+
+--- stderr ---
+wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
+N/e?c localhost ?N?t?0
+
+Warning: Permanently added '<remote_host>' (ED25519) to the list of known hosts.
+delld@<remote_host>: Permission denied (publickey,interactive-auth).

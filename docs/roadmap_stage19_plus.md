@@ -7067,3 +7067,8 @@ Goal: separate current direct-DFT complete-SAB evidence from historical native
 counter context, and route the next executable Stage301 experiment.
 
 Status: `PASS_STAGE300_COUNTER_CONTEXT_CURRENT_HEAD_REFRESH_REQUIRED`.
+## Stage 301: Current-Head Direct-DFT Native Counter Refresh
+
+Goal: record native hardware counters for selected-control vs direct-DFT current-head complete SAB.
+
+Status: `FAIL_STAGE301_CURRENT_HEAD_DIRECT_DFT_NATIVE_COUNTER_REFRESH`.

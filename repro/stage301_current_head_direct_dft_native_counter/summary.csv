@@ -1,0 +1,2 @@
+decision,remote_execution,correctness,counter_capture,claim_scope
+PASS_STAGE301_CURRENT_HEAD_DIRECT_DFT_NATIVE_COUNTER_REFRESH,pass,pass,pass,counter_attribution_only

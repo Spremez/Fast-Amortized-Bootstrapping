@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_runtime_secret_policy,PASS_NO_SECRET_STORED,runtime_secret,provided,Secret is consumed only from runtime environment and scrubbed from logs.
+G2_remote_execution,PASS,remote_rcs,"{'remote_unpack': 0, 'remote_install_runner': 0, 'remote_run': 0, 'remote_pull': 0}","Remote archive, runner execution, and pull must pass before interpreting counters."
+G3_full_sab_correctness,PASS,variant_rows,2,Both selected-control and direct-DFT complete SAB runs must pass correctness.
+G4_counter_capture,PASS,counter_rows,20,"Required native counters include cycles, loads, stores and AVX512 FP arithmetic."
+G5_claim_boundary,PASS_COUNTER_ATTRIBUTION_ONLY,scope,current_head_direct_dft,Counters support mechanism attribution only; timing claims need repeated complete-SAB runs.
+G6_decision,PASS_STAGE301_CURRENT_HEAD_DIRECT_DFT_NATIVE_COUNTER_REFRESH,stage decision,PASS_STAGE301_CURRENT_HEAD_DIRECT_DFT_NATIVE_COUNTER_REFRESH,Controls Stage302 route.

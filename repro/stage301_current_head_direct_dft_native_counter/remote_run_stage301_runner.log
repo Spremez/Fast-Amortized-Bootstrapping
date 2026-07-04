@@ -1,0 +1,7 @@
+returncode=0
+--- stdout ---
+Stage301 native direct-DFT counter logs written to repro/stage301_current_head_direct_dft_native_counter/native_perf_raw
+
+--- stderr ---
+wsl: ?hKm0R localhost ?N?tM?n???FO*g\??P0R WSL?0NAT !j?_?N?v WSL
+N/e?c localhost ?N?t?0

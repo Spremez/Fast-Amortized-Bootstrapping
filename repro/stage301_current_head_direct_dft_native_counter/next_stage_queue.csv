@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage302_counter_interpretation,PASS_STAGE301_CURRENT_HEAD_DIRECT_DFT_NATIVE_COUNTER_REFRESH,Interpret direct/control counters against Stage296/299 timing and MAT AVX memory model.,Keep counter evidence as raw attribution only.
+P1,stage302_parameter_matrix_highstat,counter interpretation does not identify a new kernel target,Promote SET_4_5_2048 to repeated performance/noise/resource matrix.,Restrict generalization wording.
