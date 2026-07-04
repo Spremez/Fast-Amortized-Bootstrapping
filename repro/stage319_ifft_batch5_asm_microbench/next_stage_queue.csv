@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage320_return_to_sab_schedule_or_mat_ep_budget,FAIL_STAGE319_HAND_ASM_BATCH5_CORRECT_BUT_SLOW_CLOSE_BACKEND_IFFT_BATCH5,Return to complete-SAB T_bootstrap/r budget and choose a non-IFFT schedule/MAT-EP optimization candidate.,no SAB integration from IFFT batch5; next candidate must have pre-implementation full-SAB budget evidence

@@ -25,6 +25,8 @@ void ifft(const void *tables, double *data);
 #ifdef AVX512_OPT
 void ifft_batch5_tile32(const void *tables, double *row0, double *row1,
     double *row2, double *row3, double *row4);
+void ifft_batch5_tile32_asm(const void *tables, double *row0, double *row1,
+    double *row2, double *row3, double *row4);
 #endif
 
 

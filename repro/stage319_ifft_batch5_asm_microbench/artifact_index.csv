@@ -1,0 +1,13 @@
+artifact,role
+repro/stage319_ifft_batch5_asm_microbench/stage319_summary.csv,decision summary
+repro/stage319_ifft_batch5_asm_microbench/bench_runs.csv,parsed repeated bench runs
+repro/stage319_ifft_batch5_asm_microbench/equivalence.csv,bit-equivalence results
+repro/stage319_ifft_batch5_asm_microbench/asm_audit.csv,assembly audit counters
+repro/stage319_ifft_batch5_asm_microbench/proof_gate.csv,stage gate
+repro/stage319_ifft_batch5_asm_microbench/next_stage_queue.csv,next-stage queue
+repro/stage319_ifft_batch5_asm_microbench/batch5_asm_run_5000_001.log,raw bench log
+repro/stage319_ifft_batch5_asm_microbench/ifft_batch5_tile32_asm_objdump.txt,raw objdump
+docs/stage319_ifft_batch5_asm_microbench.md,human-readable report
+theory_checks/stage319_ifft_batch5_asm_closeout.md,closeout theory note
+algorithm_variants/mat_rlwe_sab_stage319_ifft_batch5_asm.md,algorithm variant card
+experiments/stage320_return_to_sab_schedule_plan.md,next experiment plan

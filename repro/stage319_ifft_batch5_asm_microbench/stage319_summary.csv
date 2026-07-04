@@ -1,0 +1,2 @@
+decision,samples,max_bit_mismatches,max_abs,mean_speedup,min_speedup,max_speedup,mean_reduction,required_reduction,next_stage
+FAIL_STAGE319_HAND_ASM_BATCH5_CORRECT_BUT_SLOW_CLOSE_BACKEND_IFFT_BATCH5,3,0,0,0.619179,0.569705,0.710383,-0.631581,0.107769,stage320_return_to_sab_schedule_or_mat_ep_budget

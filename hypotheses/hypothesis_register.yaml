@@ -4232,3 +4232,15 @@ H318_ifft_batch5_intrinsics_microbench:
     The intrinsics implementation is bit-identical but slower than the
     existing hand-written scalar-row SPQLIOS AVX512 IFFT, so it is not
     integrated into MAT/SAB.
+H319_ifft_batch5_hand_asm_microbench:
+H319_ifft_batch5_hand_asm_microbench:
+  status: FAIL_STAGE319_HAND_ASM_BATCH5_CORRECT_BUT_SLOW_CLOSE_BACKEND_IFFT_BATCH5
+  primary_metric: isolated_ifft_component_reduction
+  evidence:
+    - repro/stage319_ifft_batch5_asm_microbench/stage319_summary.csv
+    - repro/stage319_ifft_batch5_asm_microbench/bench_runs.csv
+    - repro/stage319_ifft_batch5_asm_microbench/equivalence.csv
+    - repro/stage319_ifft_batch5_asm_microbench/asm_audit.csv
+  conclusion: >
+    Hand-written batch5 IFFT is correct but slower than five scalar-row
+    SPQLIOS AVX512 IFFT calls, so the backend batch5 IFFT direction is closed.

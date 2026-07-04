@@ -1,0 +1,5 @@
+gate,status,metric,value,interpretation
+G1_build,PASS,WSL spqlios_avx512 build,make succeeded,The hand-written assembly candidate is buildable.
+G2_equivalence,PASS,max bit mismatches,0,Assembly batch5 output is bit-identical to five existing IFFT calls.
+G3_performance,FAIL,mean isolated IFFT reduction vs required,-0.631581;0.107769,The hand-written batch5 assembly is slower than the scalar assembly baseline.
+G4_close_backend_ifft_batch5,PASS_CLOSE,backend direction,closed,Batch5 IFFT is not an admissible path to SAB acceleration.

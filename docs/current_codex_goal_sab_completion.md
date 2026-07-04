@@ -1156,3 +1156,8 @@ result strengthens parameter evidence but does not establish universal coverage.
 `FAIL_STAGE318_INTRINSIC_BATCH5_CORRECT_BUT_SLOW_BLOCK_SAB_INTEGRATION`: the isolated intrinsics batch5 IFFT is bit-identical but slower
 than five existing SPQLIOS AVX512 `ifft` calls, so SAB integration remains
 blocked.
+<!-- stage319-ifft-batch5-asm-microbench -->
+### Stage319 IFFT batch5 hand assembly microbench
+
+`FAIL_STAGE319_HAND_ASM_BATCH5_CORRECT_BUT_SLOW_CLOSE_BACKEND_IFFT_BATCH5`: hand-written batch5 IFFT is bit-identical but slower than five
+existing SPQLIOS AVX512 `ifft` calls, closing the backend IFFT batch5 route.

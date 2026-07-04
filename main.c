@@ -4,7 +4,7 @@
 #include <sab_profile.h>
 #include <inttypes.h>
 #include <string.h>
-#if (defined(MAT_TRGSW_IFFT_ROWS_BENCH) || defined(MAT_TRGSW_IFFT_BATCH5_BENCH)) && defined(USE_SPQLIOS) && !defined(TORUS32)
+#if (defined(MAT_TRGSW_IFFT_ROWS_BENCH) || defined(MAT_TRGSW_IFFT_BATCH5_BENCH) || defined(MAT_TRGSW_IFFT_BATCH5_ASM_BENCH)) && defined(USE_SPQLIOS) && !defined(TORUS32)
 #include "src/mosfhet/src/fft/spqlios/spqlios-fft.h"
 extern __thread FFT_Processor_Spqlios fft_proc[32];
 #endif
@@ -5606,7 +5606,7 @@ void test_mat_trgsw_ifft_rows_bench(){
 #endif
 #endif
 
-#if defined(MAT_TRGSW_IFFT_BATCH5_BENCH)
+#if defined(MAT_TRGSW_IFFT_BATCH5_BENCH) || defined(MAT_TRGSW_IFFT_BATCH5_ASM_BENCH)
 #ifndef MAT_TRGSW_IFFT_BATCH5_BENCH_N
 #define MAT_TRGSW_IFFT_BATCH5_BENCH_N 2048
 #endif
@@ -5639,8 +5639,13 @@ static void run_scalar_ifft5(void *tables, DFT_Polynomial * rows){
 }
 
 static void run_batch5_tile32(void *tables, DFT_Polynomial * rows){
+#if defined(MAT_TRGSW_IFFT_BATCH5_ASM_BENCH)
+  ifft_batch5_tile32_asm(tables, rows[0]->coeffs, rows[1]->coeffs,
+      rows[2]->coeffs, rows[3]->coeffs, rows[4]->coeffs);
+#else
   ifft_batch5_tile32(tables, rows[0]->coeffs, rows[1]->coeffs,
       rows[2]->coeffs, rows[3]->coeffs, rows[4]->coeffs);
+#endif
 }
 
 static uint64_t count_ifft_batch5_bit_mismatches(DFT_Polynomial * lhs,
@@ -5677,6 +5682,12 @@ void test_mat_trgsw_ifft_batch5_bench(){
   DFT_Polynomial * seed = polynomial_new_array_of_polynomials_DFT(N, 5);
   DFT_Polynomial * scalar = polynomial_new_array_of_polynomials_DFT(N, 5);
   DFT_Polynomial * batch = polynomial_new_array_of_polynomials_DFT(N, 5);
+  const char * variant =
+#if defined(MAT_TRGSW_IFFT_BATCH5_ASM_BENCH)
+      "asm";
+#else
+      "intrinsics";
+#endif
   fill_ifft_batch5_seed_rows(seed, N);
   init_fft(N);
   FFT_Processor_Spqlios proc = fft_proc[N >> 10];
@@ -5690,9 +5701,9 @@ void test_mat_trgsw_ifft_batch5_bench(){
   double max_abs = 0.0;
   const uint64_t mismatches =
       count_ifft_batch5_bit_mismatches(scalar, batch, N, &max_abs);
-  printf("MAT_IFFT_BATCH5 equivalence rows=5 N=%d"
+  printf("MAT_IFFT_BATCH5 equivalence variant=%s rows=5 N=%d"
          " bit_mismatches=%" PRIu64 " max_abs=%.17g\n",
-         N, mismatches, max_abs);
+         variant, N, mismatches, max_abs);
   if(mismatches != 0){
     exit(1);
   }
@@ -5743,11 +5754,11 @@ void test_mat_trgsw_ifft_batch5_bench(){
   const double reduction =
       scalar_avg_us > 0.0 ? 1.0 - (batch_avg_us / scalar_avg_us) : 0.0;
 
-  printf("MAT_IFFT_BATCH5 bench rows=5 N=%d reps=%" PRIu64
+  printf("MAT_IFFT_BATCH5 bench variant=%s rows=5 N=%d reps=%" PRIu64
          " copy_avg_us=%.3f scalar_ifft_est_avg_us=%.3f"
          " batch_ifft_est_avg_us=%.3f speedup=%.6f reduction=%.6f"
          " checksum=%.17g\n",
-         N, reps, ((double) copy_total_us) / ((double) reps),
+         variant, N, reps, ((double) copy_total_us) / ((double) reps),
          scalar_avg_us, batch_avg_us, speedup, reduction,
          (double) (copy_sink + scalar_sink + batch_sink));
 
@@ -5770,7 +5781,7 @@ void test_mat_trgsw_ifft_batch5_bench(){
 
 int main(int argc, char const *argv[])
 {
-#if defined(MAT_TRGSW_IFFT_BATCH5_BENCH)
+#if defined(MAT_TRGSW_IFFT_BATCH5_BENCH) || defined(MAT_TRGSW_IFFT_BATCH5_ASM_BENCH)
   test_mat_trgsw_ifft_batch5_bench();
 #elif defined(MAT_TRGSW_IFFT_ROWS_BENCH)
   test_mat_trgsw_ifft_rows_bench();

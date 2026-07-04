@@ -339,3 +339,218 @@ permutex2: .quad 2, 3, 2, 8+3, 6, 7, 6, 8+7 /* zmm10 */
 	.size	ifft, .-ifft
 #endif
 
+	.macro BATCH5_FIRST_ROW base
+	leaq	(\base,%r11), %rdx
+	vmovapd	(\base,%rcx,8), %zmm2
+	vmovapd	(%rdx,%rcx,8), %zmm3
+	vmulpd	%zmm2, %zmm0, %zmm4
+	vmulpd	%zmm2, %zmm1, %zmm5
+	vfnmadd231pd	%zmm3, %zmm1, %zmm4
+	vfmadd231pd	%zmm3, %zmm0, %zmm5
+	vmovapd	%zmm4, (\base,%rcx,8)
+	vmovapd	%zmm5, (%rdx,%rcx,8)
+	.endm
+
+	.macro BATCH5_OFF_ROW base
+	leaq	(%rax,%rcx), %rsi
+	leaq	(%rsi,%r9), %rdi
+	leaq	(\base,%r11), %rdx
+	vmovapd	(\base,%rsi,8), %zmm2
+	vmovapd	(%rdx,%rsi,8), %zmm3
+	vmovapd	(\base,%rdi,8), %zmm4
+	vmovapd	(%rdx,%rdi,8), %zmm5
+	vaddpd	%zmm2, %zmm4, %zmm6
+	vaddpd	%zmm3, %zmm5, %zmm7
+	vsubpd	%zmm4, %zmm2, %zmm8
+	vsubpd	%zmm5, %zmm3, %zmm9
+	vmovapd	%zmm6, (\base,%rsi,8)
+	vmovapd	%zmm7, (%rdx,%rsi,8)
+	vmulpd	%zmm8, %zmm0, %zmm10
+	vfnmadd231pd	%zmm9, %zmm1, %zmm10
+	vmulpd	%zmm8, %zmm1, %zmm11
+	vfmadd231pd	%zmm9, %zmm0, %zmm11
+	vmovapd	%zmm10, (\base,%rdi,8)
+	vmovapd	%zmm11, (%rdx,%rdi,8)
+	.endm
+
+	.macro BATCH5_LAST_ROW base
+	leaq	(%rax,%r9), %rsi
+	leaq	(\base,%r11), %rdx
+	vmovapd	(\base,%rax,8), %ymm2
+	vmovapd	(%rdx,%rax,8), %ymm3
+	vmovapd	(\base,%rsi,8), %ymm4
+	vmovapd	(%rdx,%rsi,8), %ymm5
+	vaddpd	%ymm2, %ymm4, %ymm6
+	vaddpd	%ymm3, %ymm5, %ymm7
+	vsubpd	%ymm4, %ymm2, %ymm8
+	vsubpd	%ymm5, %ymm3, %ymm9
+	vmovapd	%ymm6, (\base,%rax,8)
+	vmovapd	%ymm7, (%rdx,%rax,8)
+	vmulpd	%ymm8, %ymm0, %ymm10
+	vfnmadd231pd	%ymm9, %ymm1, %ymm10
+	vmulpd	%ymm8, %ymm1, %ymm11
+	vfmadd231pd	%ymm9, %ymm0, %ymm11
+	vmovapd	%ymm10, (\base,%rsi,8)
+	vmovapd	%ymm11, (%rdx,%rsi,8)
+	.endm
+
+	.macro BATCH5_SIZE4_ROW base
+	leaq	(\base,%r11), %rdx
+	vmovapd	(\base,%rax,8), %zmm0
+	vmovapd	(%rdx,%rax,8), %zmm1
+	vmovapd	%zmm11, %zmm4
+	vmovapd	%zmm11, %zmm6
+	vmovapd	%zmm10, %zmm5
+	vmovapd	%zmm10, %zmm7
+	vpermi2pd	%zmm1, %zmm0, %zmm4
+	vpermi2pd	%zmm0, %zmm1, %zmm6
+	vpermi2pd	%zmm1, %zmm0, %zmm5
+	vpermi2pd	%zmm0, %zmm1, %zmm7
+	vmulpd	%zmm4, %zmm15, %zmm4
+	vfmadd231pd	%zmm5, %zmm14, %zmm4
+	vfmadd231pd	%zmm7, %zmm13, %zmm6
+	vmovapd	%zmm4, (\base,%rax,8)
+	vmovapd	%zmm6, (%rdx,%rax,8)
+	.endm
+
+	.macro BATCH5_SIZE2_ROW base
+	leaq	(\base,%r11), %rdx
+	vmovapd	(\base,%rax,8), %zmm0
+	vmovapd	(%rdx,%rax,8), %zmm1
+	vshufpd	$0, %zmm0, %zmm0, %zmm2
+	vshufpd	$255, %zmm0, %zmm0, %zmm3
+	vshufpd	$0, %zmm1, %zmm1, %zmm4
+	vshufpd	$255, %zmm1, %zmm1, %zmm5
+	vfmadd231pd	%zmm3, %zmm12, %zmm2
+	vfmadd231pd	%zmm5, %zmm12, %zmm4
+	vmovapd	%zmm2, (\base,%rax,8)
+	vmovapd	%zmm4, (%rdx,%rax,8)
+	.endm
+
+#if !__APPLE__
+	.globl	ifft_batch5_tile32_asm
+	.type	ifft_batch5_tile32_asm, @function
+ifft_batch5_tile32_asm:
+#else
+	.globl	_ifft_batch5_tile32_asm
+_ifft_batch5_tile32_asm:
+#endif
+	pushq	%rbp
+	pushq	%rbx
+	pushq	%r12
+	pushq	%r13
+	pushq	%r14
+	pushq	%r15
+
+	movq	%rsi, %rbp
+	movq	%rdx, %r12
+	movq	%rcx, %r13
+	movq	%r8, %r14
+	movq	%r9, %r15
+	movq	0(%rdi), %r10
+	movq	8(%rdi), %rbx
+	movq	%r10, %r11
+	shlq	$1, %r11
+	shrq	$2, %r10
+
+	xorq	%rcx, %rcx
+.Lbatch5_firstloop:
+	leaq	(%rcx,%rcx), %rdx
+	vmovapd	(%rbx,%rdx,8), %zmm0
+	vmovapd	64(%rbx,%rdx,8), %zmm1
+	BATCH5_FIRST_ROW %rbp
+	BATCH5_FIRST_ROW %r12
+	BATCH5_FIRST_ROW %r13
+	BATCH5_FIRST_ROW %r14
+	BATCH5_FIRST_ROW %r15
+	addq	$8, %rcx
+	cmpq	%r10, %rcx
+	jb	.Lbatch5_firstloop
+
+	movq	%r10, %rdx
+	shlq	$4, %rdx
+	addq	%rdx, %rbx
+	movq	%r10, %r8
+.Lbatch5_nnloop:
+	movq	%r8, %r9
+	shrq	$1, %r9
+	xorq	%rax, %rax
+.Lbatch5_blockloop:
+	xorq	%rcx, %rcx
+.Lbatch5_offloop:
+	leaq	(%rcx,%rcx), %rdx
+	vmovapd	(%rbx,%rdx,8), %zmm0
+	vmovapd	64(%rbx,%rdx,8), %zmm1
+	BATCH5_OFF_ROW %rbp
+	BATCH5_OFF_ROW %r12
+	BATCH5_OFF_ROW %r13
+	BATCH5_OFF_ROW %r14
+	BATCH5_OFF_ROW %r15
+	addq	$8, %rcx
+	cmpq	%r9, %rcx
+	jb	.Lbatch5_offloop
+	addq	%r8, %rax
+	cmpq	%r10, %rax
+	jb	.Lbatch5_blockloop
+	shrq	$1, %r8
+	movq	%r8, %rdx
+	shlq	$4, %rdx
+	addq	%rdx, %rbx
+	cmpq	$16, %r8
+	jae	.Lbatch5_nnloop
+
+	movq	%r8, %r9
+	shrq	$1, %r9
+	vmovapd	(%rbx), %ymm0
+	vmovapd	32(%rbx), %ymm1
+	xorq	%rax, %rax
+.Lbatch5_lastloop:
+	BATCH5_LAST_ROW %rbp
+	BATCH5_LAST_ROW %r12
+	BATCH5_LAST_ROW %r13
+	BATCH5_LAST_ROW %r14
+	BATCH5_LAST_ROW %r15
+	addq	%r8, %rax
+	cmpq	%r10, %rax
+	jb	.Lbatch5_lastloop
+
+	vmovapd	size4negation0(%rip), %zmm15
+	vmovapd	size4negation1(%rip), %zmm14
+	vmovapd	size4negation2(%rip), %zmm13
+	vmovapd	size4negation3(%rip), %zmm12
+	vmovapd	permutex1(%rip), %zmm11
+	vmovapd	permutex2(%rip), %zmm10
+	xorq	%rax, %rax
+.Lbatch5_size4loop:
+	BATCH5_SIZE4_ROW %rbp
+	BATCH5_SIZE4_ROW %r12
+	BATCH5_SIZE4_ROW %r13
+	BATCH5_SIZE4_ROW %r14
+	BATCH5_SIZE4_ROW %r15
+	addq	$8, %rax
+	cmpq	%r10, %rax
+	jb	.Lbatch5_size4loop
+
+	xorq	%rax, %rax
+.Lbatch5_size2loop:
+	BATCH5_SIZE2_ROW %rbp
+	BATCH5_SIZE2_ROW %r12
+	BATCH5_SIZE2_ROW %r13
+	BATCH5_SIZE2_ROW %r14
+	BATCH5_SIZE2_ROW %r15
+	addq	$8, %rax
+	cmpq	%r10, %rax
+	jb	.Lbatch5_size2loop
+
+	vzeroall
+	popq	%r15
+	popq	%r14
+	popq	%r13
+	popq	%r12
+	popq	%rbx
+	popq	%rbp
+	retq
+
+#if !__APPLE__
+	.size	ifft_batch5_tile32_asm, .-ifft_batch5_tile32_asm
+#endif

@@ -1,0 +1,4 @@
+sample,variant,rows,N,reps,copy_avg_us,scalar_ifft_est_avg_us,batch_ifft_est_avg_us,speedup,reduction
+1,asm,5,2048,5000,1.666,9.366,13.185,0.710383,-0.407691
+2,asm,5,2048,5000,1.417,7.783,13.479,0.577449,-0.731756
+3,asm,5,2048,5000,1.613,9.226,16.194,0.569705,-0.755295

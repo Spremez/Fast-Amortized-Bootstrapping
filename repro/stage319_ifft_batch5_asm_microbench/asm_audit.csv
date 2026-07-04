@@ -1,0 +1,2 @@
+artifact,line_count,rsp_or_rbp_refs,high_zmm16_31_refs,vzeroall_refs,call_refs,interpretation
+repro/stage319_ifft_batch5_asm_microbench/ifft_batch5_tile32_asm_objdump.txt,476,19,0,1,0,The handwritten batch5 assembly is correct but still too long relative to five compact single-row IFFT calls; saved trig loads do not pay for row-batched address and butterfly work.

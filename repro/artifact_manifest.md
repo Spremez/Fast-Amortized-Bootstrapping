@@ -3220,3 +3220,11 @@ Repro artifacts:
   - `experiments/stage318_ifft_batch5_intrinsics_plan.md`
   - `scripts/build_stage318_ifft_batch5_intrinsics_report.py`
   - `repro/stage318_ifft_batch5_intrinsics_microbench/`
+<!-- stage319-ifft-batch5-asm-manifest -->
+- stage319_ifft_batch5_asm_microbench:
+  - `docs/stage319_ifft_batch5_asm_microbench.md`
+  - `theory_checks/stage319_ifft_batch5_asm_closeout.md`
+  - `algorithm_variants/mat_rlwe_sab_stage319_ifft_batch5_asm.md`
+  - `experiments/stage320_return_to_sab_schedule_plan.md`
+  - `scripts/build_stage319_ifft_batch5_asm_report.py`
+  - `repro/stage319_ifft_batch5_asm_microbench/`

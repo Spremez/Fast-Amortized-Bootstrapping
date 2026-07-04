@@ -7160,3 +7160,10 @@ Goal: test the Stage317 tile3+tile2 candidate as an isolated AVX512 intrinsics
 implementation.
 
 Status: `FAIL_STAGE318_INTRINSIC_BATCH5_CORRECT_BUT_SLOW_BLOCK_SAB_INTEGRATION`.
+<!-- stage319-ifft-batch5-asm-roadmap -->
+## Stage 319: IFFT Batch5 Hand Assembly Microbench
+
+Goal: test whether hand-written assembly can rescue the Stage317 IFFT batch5
+candidate after the Stage318 intrinsics failure.
+
+Status: `FAIL_STAGE319_HAND_ASM_BATCH5_CORRECT_BUT_SLOW_CLOSE_BACKEND_IFFT_BATCH5`.

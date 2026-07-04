@@ -477,3 +477,5 @@
 <!-- stage318-ifft-batch5-intrinsics-checklist -->
 - [x] Stage318 records `FAIL_STAGE318_INTRINSIC_BATCH5_CORRECT_BUT_SLOW_BLOCK_SAB_INTEGRATION` and blocks SAB integration for the
   intrinsics candidate.
+<!-- stage319-ifft-batch5-asm-checklist -->
+- [x] Stage319 records `FAIL_STAGE319_HAND_ASM_BATCH5_CORRECT_BUT_SLOW_CLOSE_BACKEND_IFFT_BATCH5` and closes IFFT batch5 before SAB integration.

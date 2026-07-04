@@ -1,0 +1,4 @@
+sample,variant,rows,N,bit_mismatches,max_abs
+1,asm,5,2048,0,0.0
+2,asm,5,2048,0,0.0
+3,asm,5,2048,0,0.0
