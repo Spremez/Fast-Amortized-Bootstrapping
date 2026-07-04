@@ -485,3 +485,5 @@
 - [x] Stage321 records `NEUTRAL_STAGE321_R4_UNROLLED_DIRECT_FULLSAB_NO_PROMOTION` for r4-unrolled MAT EP under current direct complete SAB `T_bootstrap/r`.
 <!-- stage322-schedule-profile-attribution-checklist -->
 - [x] Stage322 records `PASS_STAGE322_PROFILE_SELECT_DENSE_MAT_LAYOUT_COUNTER_PREFLIGHT` and selects `stage323_dense_mat_layout_counter_preflight` from current direct profile budget.
+<!-- stage323-dense-mat-counter-preflight-checklist -->
+- [x] Stage323 records `PASS_STAGE323_DENSE_MAT_PREFLIGHT_DENY_LOOP_CODE_ROUTE_SELECTOR_FORMAT_REQUIRED` and blocks speculative exact dense loop rewrites.

@@ -1,0 +1,6 @@
+fact,status,line,evidence,implication
+complex_addmul_uses_avx512_fma,yes,313,src/mosfhet/src/mattrgsw.c,Current dense addmul already uses AVX512 FMA intrinsics.
+r4_dense_kernel_exists,yes,393,src/mosfhet/src/mattrgsw.c,The target r=4 dense kernel is already specialized.
+r4_unrolled_kernel_exists,yes,464,src/mosfhet/src/mattrgsw.c,The obvious pointer-hoist/unroll route exists and was closed by Stage321.
+rgt4_fulltile_exists,yes,686,src/mosfhet/src/mattrgsw.c,"Fulltile/bodymajor families are r>4 prior ablations, not a new r=4 route."
+selector_samples_dense_rows,yes,434,src/mosfhet/src/mattrgsw.c,Selector rows are dense public-key material under the current key format.

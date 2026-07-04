@@ -7186,3 +7186,9 @@ Goal: profile the current direct PVW/MAT-SAB path after r4-unrolled neutral and
 select the next route by measured component budget.
 
 Status: `PASS_STAGE322_PROFILE_SELECT_DENSE_MAT_LAYOUT_COUNTER_PREFLIGHT`.
+## Stage 323: Dense MAT Counter Preflight
+
+Goal: determine whether Stage322's dense MAT residual admits another local
+exact-loop optimization.
+
+Status: `PASS_STAGE323_DENSE_MAT_PREFLIGHT_DENY_LOOP_CODE_ROUTE_SELECTOR_FORMAT_REQUIRED`.

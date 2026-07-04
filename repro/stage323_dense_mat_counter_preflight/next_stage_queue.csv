@@ -1,0 +1,2 @@
+priority,stage,input_decision,task,gate
+P0,stage324_selector_layout_or_structured_mechanism_preflight,PASS_STAGE323_DENSE_MAT_PREFLIGHT_DENY_LOOP_CODE_ROUTE_SELECTOR_FORMAT_REQUIRED,Choose between selector-transposed key layout and structured/compact selector mechanism with explicit keygen/resource/noise gates.,"No hot-path SAB code until key format, correctness, resource, noise, and full-SAB A/B gates are specified."

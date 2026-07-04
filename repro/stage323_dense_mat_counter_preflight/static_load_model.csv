@@ -1,0 +1,2 @@
+model,rows,outputs,vec_blocks,complex_products_per_block,dec_zmm_loads_per_block,selector_zmm_loads_per_block,output_zmm_stores_per_block,total_zmm_memops_per_block,zmm_fma_per_block,zmm_mul_per_block,estimated_mem_bytes_per_call,dec_reuse_status,store_status
+r4_k1_l1_dense_current,5,5,128,25,10,50,10,70,90,10,573440,optimal_for_dense_r4_loop,one_store_per_output_component

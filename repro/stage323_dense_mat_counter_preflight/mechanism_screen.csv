@@ -1,0 +1,7 @@
+candidate,status,new_mechanism,static_or_empirical_result,code_permission
+r4_pointer_hoist_unrolled_rows,CLOSED_STAGE321_NEUTRAL,no,Stage321 r4/direct complete-SAB ratio=0.998571,DENY_PRIOR_FULLSAB_NEUTRAL
+dec_row_cache_across_outputs,DENY_NO_DUPLICATE_DEC_LOADS,no,r=4 current loop loads each dec row once per coefficient block and reuses it across all five outputs,DENY_NO_LOAD_REDUCTION
+more_output_register_tiling,DENY_ALREADY_REGISTER_RESIDENT_R4,no,r=4 current loop accumulates all five outputs in registers and stores once,DENY_NO_STORE_REDUCTION
+prefetch_only_selector_rows,DENY_COUNTER_UNAVAILABLE_AND_NO_COUNT_REDUCTION,weak,perf unavailable in current WSL environment,DENY_UNTIL_COUNTER_BACKED
+selector_transposed_key_layout,ROUTE_STAGE324_KEY_FORMAT_PREFLIGHT,yes,"Could change selector locality, but changes key layout/resource/noise surface.",NO_HOT_PATH_CODE_BEFORE_KEYGEN_RESOURCE_NOISE_GATE
+structured_or_compact_selector,ROUTE_STAGE324_PROOF_BRANCH_ONLY,yes,"Could reduce dense (r+1)^2 selector products, but requires distribution/security proof.",NO_HOT_PATH_CODE_BEFORE_PROOF_AND_RESOURCE_GATE

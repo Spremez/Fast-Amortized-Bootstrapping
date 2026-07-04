@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_stage322_input,PASS,Stage322 decision,dense selected,Stage323 opens only because dense MAT was the selected unclosed residual.
+G2_perf_counter_probe,PROXY_ONLY,perf availability,no,No hardware-counter claim is made when perf is unavailable.
+G3_static_load_model,PASS,r4 dec/output reuse,dec_once;store_once,Current r=4 dense loop already reuses each dec row across all outputs and stores each output once.
+G4_existing_route_closure,PASS,r4_unrolled,Stage321 neutral,The only local r=4 loop variant already failed complete-SAB A/B.
+G5_code_permission,PASS_STAGE323_DENSE_MAT_PREFLIGHT_DENY_LOOP_CODE_ROUTE_SELECTOR_FORMAT_REQUIRED,exact dense loop code,denied,"Further gains require selector/key-format or structured mechanism gates, not another local loop rewrite."

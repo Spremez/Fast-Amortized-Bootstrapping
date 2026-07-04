@@ -1176,3 +1176,8 @@ current direct PVW/MAT-SAB baseline using complete `T_bootstrap/r`.
 
 `PASS_STAGE322_PROFILE_SELECT_DENSE_MAT_LAYOUT_COUNTER_PREFLIGHT` profiles the current direct PVW/MAT-SAB path and selects
 `stage323_dense_mat_layout_counter_preflight` as the next preflight route.
+<!-- stage323-dense-mat-counter-preflight -->
+### Stage323 dense MAT counter preflight
+
+`PASS_STAGE323_DENSE_MAT_PREFLIGHT_DENY_LOOP_CODE_ROUTE_SELECTOR_FORMAT_REQUIRED` denies new exact dense loop code and routes to selector-layout or
+structured mechanism preflight.

@@ -4278,3 +4278,15 @@ H322_schedule_profile_attribution:
     Stage322 closes copyback/sub_a as immediate next targets under the current
     profile and selects dense MAT layout/counter preflight as the next
     executable route.
+H323_dense_mat_counter_preflight:
+  status: PASS_STAGE323_DENSE_MAT_PREFLIGHT_DENY_LOOP_CODE_ROUTE_SELECTOR_FORMAT_REQUIRED
+  primary_metric: code_permission_for_complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage323_dense_mat_counter_preflight/summary.csv
+    - repro/stage323_dense_mat_counter_preflight/static_load_model.csv
+    - repro/stage323_dense_mat_counter_preflight/mechanism_screen.csv
+    - repro/stage323_dense_mat_counter_preflight/proof_gate.csv
+  conclusion: >
+    Stage323 denies another local exact dense addmul rewrite: current r=4
+    dense MAT already has dec-row reuse and single output stores, while
+    r4-unrolled was neutral in complete SAB.

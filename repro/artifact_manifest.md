@@ -3246,3 +3246,7 @@ Repro artifacts:
   - `scripts/run_stage322_schedule_profile_attribution.sh`
   - `scripts/build_stage322_schedule_profile_attribution.py`
   - `repro/stage322_schedule_profile_attribution/`
+- stage323_dense_mat_counter_preflight:
+  - `docs/stage323_dense_mat_counter_preflight.md`
+  - `scripts/build_stage323_dense_mat_counter_preflight.py`
+  - `repro/stage323_dense_mat_counter_preflight/`
