@@ -1,0 +1,7 @@
+component,meaning,profile_share,component_us_profile_total,calls,candidate_t_over_r_us,projected_t_over_r_if_zero_us,zero_component_upper_bound_vs_candidate,claim_status,next_gate
+mat_ep,MAT external product and sub-decomposition hot term,0.604066,15691590.000,573440,6584179.750,2606900.625,2.525673,projection_only_not_speed_claim,P1 native counter plus split microbench before new AVX/layout code
+cmux_from_dft,inverse DFT/materialization term,0.358366,9309145.000,573440,6584179.750,4224633.590,1.558521,projection_only_not_speed_claim,P2 only with a new mechanism; prior direct-add alone was neutral
+cmux_sub,subtraction term after dual-sub fusion,0.002268,58925.000,573440,6584179.750,6569246.830,1.002273,projection_only_not_speed_claim,low unless a paired schedule fusion changes its share
+ncmux_total,NCMUX residual,0.017172,446063.000,5080,6584179.750,6471116.215,1.017472,projection_only_not_speed_claim,low priority after dual-sub unless profile changes
+sub_a_total,sub_a/rotation term,0.024975,648760.000,39,6584179.750,6419739.861,1.025615,projection_only_not_speed_claim,defer unless a combined schedule variant can move full SAB
+outside_rgsw_tail,extract/post-schedule residual inferred from profile,0.025648,666244.000,n/a,6584179.750,6415308.708,1.026323,projection_only_not_speed_claim,defer while share is small

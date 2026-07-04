@@ -1,0 +1,9 @@
+item,value,status,evidence,interpretation
+primary_endpoint,T_bootstrap/r,fixed,repro/stage281_cmux_residual_repeated_gate/latency_summary.csv,All current speed comparisons are amortized per processed lane/bit.
+fast_control_t_over_r_mean_us,7058774.917,Pass,repro/stage281_cmux_residual_repeated_gate/latency_summary.csv,Current same-backend control after include-zero fast path.
+candidate_t_over_r_mean_us,6584179.750,Pass,repro/stage281_cmux_residual_repeated_gate/latency_summary.csv,Current selected backend_sub_decomp_dual path.
+candidate_vs_fast_control_mean,1.072081,local_repeated_positive,repro/stage281_cmux_residual_repeated_gate/latency_summary.csv,Incremental local repeated improvement over the current fast control.
+candidate_vs_fast_control_conservative,1.063396,positive,repro/stage281_cmux_residual_repeated_gate/latency_summary.csv,Conservative min/control over max/candidate guard.
+candidate_vs_repeated_scalar_mean,1.596038,local_repeated_positive,repro/stage281_cmux_residual_repeated_gate/latency_summary.csv,Amortized MAT-RLWE/r-body gain over repeated scalar SAB.
+noise_resource_gate,pass,pass,repro/stage282_cmux_residual_noise_resource/noise_resource_summary.csv,Local ffnt proxy; not target AVX512 performance evidence.
+native_target_gate,native_access_failed_or_missing_auth,failed,repro/stage283_native_target_repeated_gate/native_access_probe.csv,Paper-grade native target timing remains disallowed until access succeeds.

@@ -1,0 +1,13 @@
+component,profile_share,assumed_component_reduction,projected_t_over_r_us,projected_speedup_vs_candidate,status
+mat_ep,0.604066,0.10,6186451.838,1.064290,what_if_projection_only
+mat_ep,0.604066,0.25,5589859.969,1.177879,what_if_projection_only
+mat_ep,0.604066,0.50,4595540.188,1.432732,what_if_projection_only
+cmux_from_dft,0.358366,0.10,6348225.134,1.037169,what_if_projection_only
+cmux_from_dft,0.358366,0.25,5994293.210,1.098408,what_if_projection_only
+cmux_from_dft,0.358366,0.50,5404406.670,1.218298,what_if_projection_only
+sub_a_total,0.024975,0.10,6567735.761,1.002504,what_if_projection_only
+sub_a_total,0.024975,0.25,6543069.778,1.006283,what_if_projection_only
+sub_a_total,0.024975,0.50,6501959.805,1.012645,what_if_projection_only
+ncmux_total,0.017172,0.10,6572873.397,1.001720,what_if_projection_only
+ncmux_total,0.017172,0.25,6555913.866,1.004312,what_if_projection_only
+ncmux_total,0.017172,0.50,6527647.983,1.008660,what_if_projection_only

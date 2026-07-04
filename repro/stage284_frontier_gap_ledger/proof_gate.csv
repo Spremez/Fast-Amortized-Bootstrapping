@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_inputs,PASS,required inputs,all present,Stage284 must be derived from current measured evidence.
+G2_primary_metric,PASS,endpoint,T_bootstrap/r,This stage preserves the r-body per-lane comparison requested for MAT-RLWE SAB.
+G3_local_repeated_candidate,PASS,candidate/control speedup,mean=1.072081; conservative=1.063396,Local repeated speed is positive but remains platform-scoped.
+G4_residual_frontier,PASS,selected candidate MAT EP share,0.604066,"Next code work must target measured residual share, not an abstract bottleneck."
+G5_native_boundary,PASS_BOUNDARY_RECORDED,native access,failed,No native/paper-grade target claim is allowed while access is missing.
+G6_decision,PASS_STAGE284_FRONTIER_GAP_LEDGER_READY_NATIVE_OR_MAT_EP_SPLIT_NEXT,stage decision,PASS_STAGE284_FRONTIER_GAP_LEDGER_READY_NATIVE_OR_MAT_EP_SPLIT_NEXT,Proceed to native rerun or MAT EP split/counter gate; do not claim optimality.

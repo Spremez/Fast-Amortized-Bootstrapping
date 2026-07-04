@@ -3006,3 +3006,10 @@ Repro artifacts:
   - `docs/stage283_native_target_repeated_gate.md`
   - `scripts/build_stage283_native_target_repeated_gate.py`
   - `repro/stage283_native_target_repeated_gate/`
+- stage284_frontier_gap_ledger:
+  - `docs/stage284_frontier_gap_ledger.md`
+  - `theory_checks/stage284_frontier_gap_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage284_frontier_candidates.md`
+  - `experiments/stage284_frontier_validation_plan.md`
+  - `scripts/build_stage284_frontier_gap_ledger.py`
+  - `repro/stage284_frontier_gap_ledger/`

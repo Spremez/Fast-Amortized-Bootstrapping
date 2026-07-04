@@ -409,3 +409,5 @@
 - [x] Stage282 records `PASS_STAGE282_NOISE_RESOURCE_LOCAL_PASS_NATIVE_REQUIRED` for selected CMUX residual candidate noise/resource smoke.
 <!-- stage283-native-target-repeated-gate-checklist -->
 - [x] Stage283 records `PASS_STAGE283_NATIVE_ACCESS_MISSING_HANDOFF_READY` for native target repeated-gate status.
+<!-- stage284-frontier-gap-ledger-checklist -->
+- [x] Stage284 records `PASS_STAGE284_FRONTIER_GAP_LEDGER_READY_NATIVE_OR_MAT_EP_SPLIT_NEXT` for the current T_bootstrap/r frontier gap ledger.

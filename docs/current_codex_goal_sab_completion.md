@@ -976,3 +976,12 @@ target-parameter evidence remains open.
 `PASS_STAGE283_NATIVE_ACCESS_MISSING_HANDOFF_READY` records the native target-parameter repeated gate status for the
 selected `backend_sub_decomp_dual` path. Native performance claims remain
 disallowed unless this stage records native access and repeated target results.
+<!-- stage284-frontier-gap-ledger -->
+### Stage284 frontier gap ledger
+
+`PASS_STAGE284_FRONTIER_GAP_LEDGER_READY_NATIVE_OR_MAT_EP_SPLIT_NEXT` records the current MAT-RLWE/r-body SAB frontier under the
+`T_bootstrap/r` endpoint. The selected `backend_sub_decomp_dual` path is
+local repeated-positive and local noise/resource-clean, but native target
+evidence and theoretical optimality remain open. The next executable routes
+are native rerun first, then MAT EP split/counter attribution, then new
+from_DFT lifecycle or body-linear selector proof gates.

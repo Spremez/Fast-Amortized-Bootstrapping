@@ -3879,3 +3879,16 @@ H10_stage283_native_target_repeated_gate:
     Stage283 records native target repeated-gate status for the selected
     CMUX residual candidate. Native claims are allowed only if access and
     repeated target runs are present.
+H10_stage284_frontier_gap_ledger:
+  status: PASS_STAGE284_FRONTIER_GAP_LEDGER_READY_NATIVE_OR_MAT_EP_SPLIT_NEXT
+  evidence:
+    - repro/stage284_frontier_gap_ledger/frontier_summary.csv
+    - repro/stage284_frontier_gap_ledger/residual_gap_ledger.csv
+    - repro/stage284_frontier_gap_ledger/algorithm_frontier.csv
+    - docs/stage284_frontier_gap_ledger.md
+  conclusion: >
+    Stage284 fixes the current frontier around complete-SAB T_bootstrap/r:
+    the selected CMUX residual candidate is local repeated-positive, MAT EP is
+    the largest measured residual component, native evidence remains missing,
+    and theoretical optimality remains blocked pending lower-bound and
+    counter-backed gates.
