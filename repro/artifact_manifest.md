@@ -2693,3 +2693,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage231_current_head_added_params.md`
   - `scripts/build_stage231_current_head_added_param_refresh.py`
   - `repro/stage231_current_head_added_param_smoke/`
+- stage232_selected_subset_fullstat_resource:
+  - `docs/stage232_selected_subset_fullstat_resource.md`
+  - `experiments/stage232_selected_subset_fullstat_resource_plan.md`
+  - `theory_checks/stage232_subset_stats_resource_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage232_selected_subset.md`
+  - `scripts/build_stage232_selected_subset_fullstat_resource.py`
+  - `repro/stage232_selected_subset_fullstat_resource/`

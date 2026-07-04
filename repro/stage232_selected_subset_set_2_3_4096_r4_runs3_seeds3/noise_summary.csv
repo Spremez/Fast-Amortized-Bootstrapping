@@ -1,0 +1,2 @@
+param,r,seeds,points,pvw_failures,scalar_failures,pair_failures,min_pvw_minus_scalar_log2,max_pvw_minus_scalar_log2,avg_pvw_minus_scalar_log2,status,source_csv
+SET_2_3_4096,4,3,49152,0,0,0,-0.125,0.289,0.083667,PASS,repro/stage232_selected_subset_set_2_3_4096_r4_runs3_seeds3/noise_SET_2_3_4096_r4_seeds3/aggregate.csv

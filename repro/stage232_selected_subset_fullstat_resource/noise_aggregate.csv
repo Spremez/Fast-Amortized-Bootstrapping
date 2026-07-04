@@ -1,0 +1,2 @@
+param,r,seeds,points,pvw_failures,scalar_failures,pair_failures,avg_pvw_minus_scalar_log2,min_pvw_minus_scalar_log2,max_pvw_minus_scalar_log2,status,stats_label
+SET_2_3_4096,4,3,49152,0,0,0,0.083667,-0.125000,0.289000,PASS_PREFLIGHT,preflight seeds=3; insufficient for final noise claim

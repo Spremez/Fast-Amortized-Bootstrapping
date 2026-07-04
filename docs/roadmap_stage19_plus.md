@@ -6533,3 +6533,20 @@ Generated from input head `a2b7c43` with `PASS_STAGE231_CURRENT_HEAD_ADDED_PARAM
 `SET_2_3_4096` pass current-head shape, complete-SAB A/B smoke, and one-seed
 noise smoke for r=2/r=4. Full statistics and resource refresh remain pending.
 ```
+## Stage 232: Selected Current-Head Full-Stat/Resource Preflight
+
+Goal:
+
+```text
+Run a representative current-head added-parameter preflight with complete-SAB
+`T_bootstrap/r`, noise, and resource side conditions without promoting it to a
+full parameter-matrix claim.
+```
+
+Status:
+
+```text
+Generated from input head `db72720` with `PASS_STAGE232_SELECTED_SUBSET_PREFLIGHT_RESOURCE_RECORDED_FULL_MATRIX_PENDING`. `SET_2_3_4096`, r=4
+passes selected-subset 3-run complete-SAB A/B, 3-seed noise, and resource
+recording. Full added-parameter matrix statistics remain pending.
+```

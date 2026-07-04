@@ -1,0 +1,2 @@
+param,r,runs,pass_runs,metric,pvw_mean_us,pvw_stdev_us,scalar_repeated_mean_us,scalar_repeated_stdev_us,mean_of_speedups,speedup_stdev,speedup_ci95_low,speedup_ci95_high,ratio_of_means_speedup,min_speedup,max_speedup,stats_label,decision
+SET_2_3_4096,4,3,3,T_bootstrap/r,53741356.000,391662.884,71936960.000,176325.494,1.338667,0.006658,1.322125,1.355208,1.338577,1.333000,1.346000,preflight n=3; insufficient for final paper table,PASS_SELECTED_SUBSET_PREFLIGHT

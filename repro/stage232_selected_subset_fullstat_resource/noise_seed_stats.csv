@@ -1,0 +1,4 @@
+param,r,seed,status,points,pvw_failures,scalar_failures,pair_failures,pvw_minus_scalar_log2,max_allowed_log2_gap,source_log
+SET_2_3_4096,4,6863025,Pass,16384,0,0,0,0.289,4.000,repro/stage232_selected_subset_set_2_3_4096_r4_runs3_seeds3/noise_SET_2_3_4096_r4_seeds3/r4/seed_6863025.log
+SET_2_3_4096,4,6863026,Pass,16384,0,0,0,-0.125,4.000,repro/stage232_selected_subset_set_2_3_4096_r4_runs3_seeds3/noise_SET_2_3_4096_r4_seeds3/r4/seed_6863026.log
+SET_2_3_4096,4,6863027,Pass,16384,0,0,0,0.087,4.000,repro/stage232_selected_subset_set_2_3_4096_r4_runs3_seeds3/noise_SET_2_3_4096_r4_seeds3/r4/seed_6863027.log

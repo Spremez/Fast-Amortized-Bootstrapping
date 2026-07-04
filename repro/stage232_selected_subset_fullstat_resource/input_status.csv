@@ -1,0 +1,8 @@
+input,status,role,bytes
+repro/stage231_current_head_added_param_smoke/proof_gate.csv,present,Stage231 proof gate,1373
+repro/stage231_current_head_added_param_smoke/next_stage_queue.csv,present,Stage231 next queue selecting Stage232,1100
+repro/stage232_selected_subset_set_2_3_4096_r4_runs3_seeds3/performance_summary.csv,present,Stage232 selected subset performance aggregate,300
+repro/stage232_selected_subset_set_2_3_4096_r4_runs3_seeds3/perf_SET_2_3_4096_r4_runs3/summary.csv,present,Stage232 selected subset per-run performance,402
+repro/stage232_selected_subset_set_2_3_4096_r4_runs3_seeds3/noise_summary.csv,present,Stage232 selected subset noise aggregate summary,321
+repro/stage232_selected_subset_set_2_3_4096_r4_runs3_seeds3/noise_SET_2_3_4096_r4_seeds3/summary.csv,present,Stage232 selected subset per-seed noise,693
+repro/stage232_selected_subset_set_2_3_4096_r4_resource/summary.csv,present,Stage232 selected subset resource/keygen/RSS,744

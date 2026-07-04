@@ -675,3 +675,8 @@ or security claims.
 ### Stage231 current-head added-parameter refresh
 
 `PASS_STAGE231_CURRENT_HEAD_ADDED_PARAM_SMOKE_FULL_STATS_RESOURCE_PENDING` records current-head added-parameter smoke continuity. Do not promote added parameters into a current-head paper table until Stage232 full-stat/resource gates run.
+### Stage232 selected current-head preflight
+
+`PASS_STAGE232_SELECTED_SUBSET_PREFLIGHT_RESOURCE_RECORDED_FULL_MATRIX_PENDING` records a bounded executable step after Stage231. The goal remains
+active: Stage232 is selected-subset preflight evidence only; full matrix
+high-statistics and manuscript packaging remain open.

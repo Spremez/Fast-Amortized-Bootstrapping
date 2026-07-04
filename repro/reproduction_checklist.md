@@ -331,3 +331,4 @@
 - [x] Stage229 parameter generalization matrix records decision `PASS_STAGE229_SCOPED_BINARY_MATRIX_RECORDED_NONBINARY_BLOCKED`.
 - [x] Stage230 source-verified literature novelty audit records decision `PASS_STAGE230_SOURCE_VERIFIED_SCOPED_NOVELTY_BOUNDARY`.
 - [x] Stage231 current-head added-parameter refresh records decision `PASS_STAGE231_CURRENT_HEAD_ADDED_PARAM_SMOKE_FULL_STATS_RESOURCE_PENDING`.
+- [x] Stage232 selected-subset full-stat/resource preflight records decision `PASS_STAGE232_SELECTED_SUBSET_PREFLIGHT_RESOURCE_RECORDED_FULL_MATRIX_PENDING`.

@@ -1,0 +1,4 @@
+run,status,param,r,metric,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup_vs_scalar_repeated,source_log
+0,Pass,SET_2_3_4096,4,T_bootstrap/r,53299569.000,13324892.250,71733422.000,17933355.500,1.346,repro/stage232_selected_subset_set_2_3_4096_r4_runs3_seeds3/perf_SET_2_3_4096_r4_runs3/run_0.log
+1,Pass,SET_2_3_4096,4,T_bootstrap/r,53878476.000,13469619.000,72043189.000,18010797.250,1.337,repro/stage232_selected_subset_set_2_3_4096_r4_runs3_seeds3/perf_SET_2_3_4096_r4_runs3/run_1.log
+2,Pass,SET_2_3_4096,4,T_bootstrap/r,54046023.000,13511505.750,72034269.000,18008567.250,1.333,repro/stage232_selected_subset_set_2_3_4096_r4_runs3_seeds3/perf_SET_2_3_4096_r4_runs3/run_2.log

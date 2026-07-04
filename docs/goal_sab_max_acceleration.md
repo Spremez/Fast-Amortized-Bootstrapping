@@ -1097,3 +1097,10 @@ Generated from input head `4a6eda3`, Stage230 records `PASS_STAGE230_SOURCE_VERI
 ## Stage231 current-head added-parameter refresh
 
 Generated from input head `a2b7c43`, Stage231 records `PASS_STAGE231_CURRENT_HEAD_ADDED_PARAM_SMOKE_FULL_STATS_RESOURCE_PENDING`. Added binary parameters pass current-head complete-SAB smoke under `T_bootstrap/r`, but resource and full-stat gates remain pending.
+## Stage232 selected-subset preflight
+
+Generated from input head `db72720`, Stage232 records `PASS_STAGE232_SELECTED_SUBSET_PREFLIGHT_RESOURCE_RECORDED_FULL_MATRIX_PENDING`. The selected
+current-head `SET_2_3_4096`, r=4 preflight is positive under complete-SAB
+`T_bootstrap/r` and includes resource/keygen/RSS side conditions. This does not
+close all-parameter, non-binary, final-paper statistics, or theoretical
+optimality gates.

@@ -3260,3 +3260,15 @@ H10_stage231_current_head_added_parameter_refresh:
     Stage231 records PASS_STAGE231_CURRENT_HEAD_ADDED_PARAM_SMOKE_FULL_STATS_RESOURCE_PENDING. Added binary parameters pass current-head
     shape, performance smoke, and one-seed noise smoke under complete-SAB
     T_bootstrap/r, but resource and full-stat gates remain pending.
+H10_stage232_selected_subset_fullstat_resource:
+  status: selected_subset_preflight_passed_full_matrix_pending
+  evidence:
+    - repro/stage232_selected_subset_fullstat_resource/performance_stats.csv
+    - repro/stage232_selected_subset_fullstat_resource/noise_aggregate.csv
+    - repro/stage232_selected_subset_fullstat_resource/resource_comparison.csv
+    - docs/stage232_selected_subset_fullstat_resource.md
+  conclusion: >
+    Stage232 records PASS_STAGE232_SELECTED_SUBSET_PREFLIGHT_RESOURCE_RECORDED_FULL_MATRIX_PENDING. The selected current-head binary SET_2_3_4096, r=4
+    preflight passes 3-run complete-SAB T_bootstrap/r, 3-seed noise, and
+    resource gates, but full added-parameter matrix statistics, non-binary
+    support, and theoretical optimality remain pending.
