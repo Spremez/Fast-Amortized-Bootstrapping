@@ -479,3 +479,5 @@
   intrinsics candidate.
 <!-- stage319-ifft-batch5-asm-checklist -->
 - [x] Stage319 records `FAIL_STAGE319_HAND_ASM_BATCH5_CORRECT_BUT_SLOW_CLOSE_BACKEND_IFFT_BATCH5` and closes IFFT batch5 before SAB integration.
+<!-- stage320-sab-budget-return-checklist -->
+- [x] Stage320 records `PASS_STAGE320_RETURN_TO_MAT_EP_SELECT_R4_UNROLLED_REFRESH` and selects Stage321 full-SAB A/B.

@@ -3228,3 +3228,11 @@ Repro artifacts:
   - `experiments/stage320_return_to_sab_schedule_plan.md`
   - `scripts/build_stage319_ifft_batch5_asm_report.py`
   - `repro/stage319_ifft_batch5_asm_microbench/`
+<!-- stage320-sab-budget-return-manifest -->
+- stage320_sab_budget_return:
+  - `docs/stage320_sab_budget_return.md`
+  - `theory_checks/stage320_candidate_budget_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage320_r4_unrolled_refresh.md`
+  - `experiments/stage321_r4_unrolled_fullsab_ab_plan.md`
+  - `scripts/build_stage320_sab_budget_return.py`
+  - `repro/stage320_sab_budget_return/`

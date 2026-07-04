@@ -1,0 +1,9 @@
+artifact,role
+repro/stage320_sab_budget_return/stage320_summary.csv,decision summary
+repro/stage320_sab_budget_return/candidate_rank.csv,candidate ranking
+repro/stage320_sab_budget_return/proof_gate.csv,stage gate
+repro/stage320_sab_budget_return/next_stage_queue.csv,next-stage queue
+docs/stage320_sab_budget_return.md,human-readable report
+theory_checks/stage320_candidate_budget_model.md,candidate budget model
+algorithm_variants/mat_rlwe_sab_stage320_r4_unrolled_refresh.md,selected variant card
+experiments/stage321_r4_unrolled_fullsab_ab_plan.md,Stage321 experiment plan

@@ -7167,3 +7167,10 @@ Goal: test whether hand-written assembly can rescue the Stage317 IFFT batch5
 candidate after the Stage318 intrinsics failure.
 
 Status: `FAIL_STAGE319_HAND_ASM_BATCH5_CORRECT_BUT_SLOW_CLOSE_BACKEND_IFFT_BATCH5`.
+<!-- stage320-sab-budget-return-roadmap -->
+## Stage 320: SAB Budget Return
+
+Goal: close failed IFFT-only work and select the next full-SAB candidate from
+the current measured budget.
+
+Status: `PASS_STAGE320_RETURN_TO_MAT_EP_SELECT_R4_UNROLLED_REFRESH`.

@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage321_current_head_r4_unrolled_fullsab_ab,PASS_STAGE320_RETURN_TO_MAT_EP_SELECT_R4_UNROLLED_REFRESH,Run current-head same-backend full-SAB A/B: selected direct MAT path versus MAT_TRGSW_AVX512_R4_UNROLLED_ROWS=true.,"correctness pass and repeated T_bootstrap/r speedup; if positive, run noise/resource before promotion"

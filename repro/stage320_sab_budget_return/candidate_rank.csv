@@ -1,0 +1,6 @@
+rank,candidate,route_family,body_share,prior,projected_fullsab_speedup_at_5pct_component_reduction,status,reason
+P0,r4_unrolled_mat_ep_current_head_refresh,MAT EP inner-loop/layout,0.585042,"Stage142-144 weak positive, current-head refresh required",1.030134,SELECT_STAGE321,"Targets the dominant MAT EP share, already implemented behind an explicit flag, and has prior full-SAB signal."
+P1,schedule_level_cmux_copy_sub_fusion_refresh,SAB schedule,unknown_current,defer until r4-unrolled refresh is neutral or negative,needs profile,DEFER,Potentially valid but needs fresh body attribution before code changes.
+REJECT,ifft_batch5_backend,backend IFFT,0.181943,Stage318/319 correct but slower,0.619179_observed_isolated_speedup,CLOSED,Both intrinsics and hand assembly failed the isolated component gate.
+REJECT,local_digit_microvariant,digit conversion,0.172510,Stage314 closes local digit variants,1.008701,CLOSED,Observed digit-only projection is below full-SAB budget.
+REJECT,dense_from_dec_local_only_without_fullsab_budget,dense MAT AVX subcomponent,0.215408,subcomponent-only budget is smaller than full MAT EP lifecycle,1.010888,NEEDS_STRONGER_PREFLIGHT,Do not write new local kernel unless a microbench projects >= 1.02 full-SAB movement.

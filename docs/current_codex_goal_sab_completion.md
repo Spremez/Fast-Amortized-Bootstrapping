@@ -1161,3 +1161,8 @@ blocked.
 
 `FAIL_STAGE319_HAND_ASM_BATCH5_CORRECT_BUT_SLOW_CLOSE_BACKEND_IFFT_BATCH5`: hand-written batch5 IFFT is bit-identical but slower than five
 existing SPQLIOS AVX512 `ifft` calls, closing the backend IFFT batch5 route.
+<!-- stage320-sab-budget-return -->
+### Stage320 SAB budget return
+
+`PASS_STAGE320_RETURN_TO_MAT_EP_SELECT_R4_UNROLLED_REFRESH` selects a current-head full-SAB A/B refresh of
+`MAT_TRGSW_AVX512_R4_UNROLLED_ROWS=true` and keeps IFFT batch5 closed.

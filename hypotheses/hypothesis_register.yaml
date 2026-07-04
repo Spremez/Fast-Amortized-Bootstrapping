@@ -4244,3 +4244,13 @@ H319_ifft_batch5_hand_asm_microbench:
   conclusion: >
     Hand-written batch5 IFFT is correct but slower than five scalar-row
     SPQLIOS AVX512 IFFT calls, so the backend batch5 IFFT direction is closed.
+H320_sab_budget_return_r4_unrolled_refresh:
+  status: PASS_STAGE320_RETURN_TO_MAT_EP_SELECT_R4_UNROLLED_REFRESH
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage320_sab_budget_return/stage320_summary.csv
+    - repro/stage320_sab_budget_return/candidate_rank.csv
+    - repro/stage320_sab_budget_return/proof_gate.csv
+  conclusion: >
+    Stage320 closes IFFT batch5 and selects current-head r=4 unrolled MAT EP
+    full-SAB A/B as the next executable candidate.

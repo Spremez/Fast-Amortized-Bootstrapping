@@ -1,0 +1,5 @@
+gate,status,metric,value,interpretation
+G1_primary_metric,PASS,primary endpoint,complete_sab_T_bootstrap_over_r,"Candidate selection is tied to amortized SAB throughput, not isolated kernel speed."
+G2_closed_routes,PASS,digit and IFFT,Stage314;Stage319,Local digit and batch5 IFFT are not reopened without new full-SAB budget evidence.
+G3_select_dominant_share,PASS,MAT EP body share,0.585042,MAT EP remains the largest actionable measured component.
+G4_next,PASS_STAGE320_RETURN_TO_MAT_EP_SELECT_R4_UNROLLED_REFRESH,selected route,stage321_current_head_r4_unrolled_fullsab_ab,Refresh current-head r=4 unrolled MAT EP as the lowest-risk next full-SAB A/B.
