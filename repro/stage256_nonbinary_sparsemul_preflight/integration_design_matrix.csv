@@ -1,0 +1,6 @@
+component,required_shape,consumer,invariant,stage257_task
+nonbinary_key_object,distance bit selectors plus optional MAT s_coff/s_sign families,nonbinary sparse_mul/sub_a only,binary SAB_PVW_Key and sab_pvw_sparse_mul_binary remain unchanged,define explicit sidecar or new key type
+rgsw_monomial_step,reuse existing sab_pvw_RGSW_monomial_mul_state for distance-bit schedule,same active buffer state as binary path,CMUX count remains (h+1)*r_prec*in_N,"call existing state primitive, no non-binary change"
+include_zero_sub_a,p <- p + s_coff*((X^a - 1)p),MAT s_coff selector for every sparse step,one extra selector external product per accumulator index per step,implement isolated function behind explicit flag/path
+ternary_sub_a,p1 <- X^a p; p <- p1 + s_sign*((X^-2a - 1)p1),MAT s_sign selector for every sparse step,one extra selector external product per accumulator index per step,implement isolated function behind explicit flag/path
+final_rgsw,same final RGSW monomial multiplication as binary path,distance-bit selectors only,no sub_a after final RGSW,preserve binary schedule order

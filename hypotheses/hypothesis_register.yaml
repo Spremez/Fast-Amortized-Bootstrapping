@@ -3556,3 +3556,15 @@ H10_stage255_mosfhet_nonbinary_selector_keygen_noise:
     and external products pass isolated include-zero and ternary sub_a phase
     gates for r=1/2/4. This admits sparse_mul integration preflight only; full
     SAB and T_bootstrap/r speedup claims remain blocked.
+H10_stage256_nonbinary_sparsemul_preflight:
+  status: explicit_nonbinary_sparsemul_implementation_admitted
+  evidence:
+    - repro/stage256_nonbinary_sparsemul_preflight/source_boundary_matrix.csv
+    - repro/stage256_nonbinary_sparsemul_preflight/finite_sparsemul_schedule_probe.csv
+    - repro/stage256_nonbinary_sparsemul_preflight/schedule_count_projection.csv
+    - repro/stage256_nonbinary_sparsemul_preflight/proof_gate.csv
+    - docs/stage256_nonbinary_sparsemul_preflight.md
+  conclusion: >
+    Stage256 records PASS_STAGE256_NONBINARY_SPARSEMUL_PREFLIGHT_READY_EXPLICIT_IMPLEMENTATION. It admits only an explicit non-binary
+    sparse_mul implementation path; binary default behavior, full SAB speedup,
+    and non-binary bootstrapping claims remain blocked.

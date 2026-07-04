@@ -355,3 +355,4 @@
 - [x] Stage253 isolated non-binary sub_a equivalence ready for keygen/noise preflight `PASS_STAGE253_ISOLATED_NONBINARY_SUBA_EQUIVALENCE_READY_KEYGEN_NOISE_PREFLIGHT`.
 - [x] Stage254 non-binary keygen/noise preflight admits isolated prototype `PASS_STAGE254_NONBINARY_KEYGEN_NOISE_PREFLIGHT_READY_MOSFHET_ISOLATED_PROTOTYPE`.
 - [x] Stage255 MOSFHET non-binary selector keygen/noise passes isolated gate `PASS_STAGE255_MOSFHET_SELECTOR_KEYGEN_NOISE_READY_NONBINARY_SPARSEMUL_PREFLIGHT`.
+- [x] Stage256 non-binary sparse_mul preflight admits explicit implementation `PASS_STAGE256_NONBINARY_SPARSEMUL_PREFLIGHT_READY_EXPLICIT_IMPLEMENTATION`.

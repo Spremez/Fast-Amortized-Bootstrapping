@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage257_explicit_nonbinary_sparsemul_implementation,Stage256 admits explicit implementation only.,add sidecar/new key object and sab_pvw_nonbinary_sparse_mul without changing binary default,selected_next,revert/disable explicit path; keep binary default,repro/stage256_nonbinary_sparsemul_preflight/implementation_admission.csv
+P1,stage258_nonbinary_sparsemul_correctness_noise,Stage257 explicit path compiles,"actual MOSFHET sparse_mul equivalence, selector noise/resource, binary regression",conditional,do not enter full SAB,repro/stage256_nonbinary_sparsemul_preflight/noise_resource_recurrence.csv
+P2,stage259_nonbinary_full_sab_ab,Stage258 sparse_mul gates pass,"complete-SAB T_bootstrap/r, multi-seed noise, resource, scalar/default isolation",future_gated,no non-binary bootstrapping speedup claim,repro/stage256_nonbinary_sparsemul_preflight/claim_boundary.csv

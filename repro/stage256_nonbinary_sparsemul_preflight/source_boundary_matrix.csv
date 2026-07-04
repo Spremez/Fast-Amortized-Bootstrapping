@@ -1,0 +1,8 @@
+boundary,source_fact,observed,required_delta,production_edit_allowed_now
+current_binary_key_object,SAB_PVW_Key contains only MAT_TRGSW_DFT *** s,yes,new explicit non-binary key object or sidecar with s_coff/s_sign,no
+current_sparse_mul,sab_pvw_sparse_mul_binary consumes sab->s and sab_pvw_sub_a_binary,yes,new sab_pvw_nonbinary_sparse_mul path consuming active state and selector families,only_after_stage257
+binary_guard,PVW constructor rejects coeff != 1,yes,do not remove guard; add explicit non-binary constructor,no
+scalar_reference,scalar sub_a has include_zero and ternary branches,yes,use scalar equations as reference for Stage257 tests,not_applicable
+source_isolation_sab_pvw.h,include/sab_pvw.h,unchanged,Stage256 must not modify production source,no
+source_isolation_sab_pvw.c,src/sab_pvw.c,unchanged,Stage256 must not modify production source,no
+source_isolation_sparse_amortized_bootstrap.c,src/sparse_amortized_bootstrap.c,unchanged,Stage256 must not modify production source,no

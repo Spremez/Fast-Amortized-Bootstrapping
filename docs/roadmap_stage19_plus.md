@@ -6920,3 +6920,22 @@ Generated from input head `167c2ef` with `PASS_STAGE255_MOSFHET_SELECTOR_KEYGEN_
 ternary sub_a phase gates for r=1/2/4. Production SAB/PVW source remains
 unchanged; next selected route is non-binary sparse_mul integration preflight.
 ```
+## Stage 256: Non-Binary Sparse_Mul Preflight
+
+Goal:
+
+```text
+Design and gate non-binary sparse_mul integration before writing an explicit
+implementation path.
+```
+
+Status:
+
+```text
+Generated from input head `0eecbc5` with `PASS_STAGE256_NONBINARY_SPARSEMUL_PREFLIGHT_READY_EXPLICIT_IMPLEMENTATION`. The integration boundary
+is explicit: reuse binary distance-bit RGSW steps, add one MAT selector EP per
+accumulator index per sparse step for either s_coff or s_sign, and preserve the
+final RGSW step. Finite multi-round lifecycle probes pass for r=1/2/4. Stage257
+may implement an explicit non-binary sparse_mul path only; full SAB speedup
+remains blocked.
+```

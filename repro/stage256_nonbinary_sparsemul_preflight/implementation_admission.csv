@@ -1,0 +1,4 @@
+route,decision,production_permission,reason,next_gate
+stage257_explicit_nonbinary_sparsemul_implementation,ADMIT_EXPLICIT_IMPLEMENTATION,explicit_new_path_only,"finite schedule lifecycle, negative controls, count pressure, and Stage255 actual selector gate pass",implement explicit sab_pvw_nonbinary_* path without changing binary default
+default_binary_sab,NO_CHANGE,no_default_change,binary path remains baseline and regression oracle,scalar/binary regression tests after any Stage257 code
+nonbinary_full_sab_speedup,BLOCKED,no,"no full sparse_mul implementation, full SAB correctness, multi-seed noise, or T_bootstrap/r benchmark yet",Stage257+Stage258

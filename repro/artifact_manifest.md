@@ -2856,3 +2856,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage255_mosfhet_nonbinary_selector_keygen_noise.md`
   - `scripts/build_stage255_mosfhet_nonbinary_selector_keygen_noise.py`
   - `repro/stage255_mosfhet_nonbinary_selector_keygen_noise/`
+- stage256_nonbinary_sparsemul_preflight:
+  - `docs/stage256_nonbinary_sparsemul_preflight.md`
+  - `experiments/stage256_nonbinary_sparsemul_preflight_plan.md`
+  - `theory_checks/stage256_nonbinary_sparsemul_preflight_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage256_nonbinary_sparsemul_preflight.md`
+  - `scripts/build_stage256_nonbinary_sparsemul_preflight.py`
+  - `repro/stage256_nonbinary_sparsemul_preflight/`

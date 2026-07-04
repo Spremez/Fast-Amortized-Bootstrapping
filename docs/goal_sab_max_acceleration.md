@@ -1199,3 +1199,6 @@ sources as explicit TODOs instead of fabricating references.
 - Stage255 MOSFHET non-binary selector keygen/noise records `PASS_STAGE255_MOSFHET_SELECTOR_KEYGEN_NOISE_READY_NONBINARY_SPARSEMUL_PREFLIGHT`:
   actual production-library MAT selector encryption passes isolated sub_a
   phase gates, but non-binary full SAB and speedup claims remain blocked.
+- Stage256 non-binary sparse_mul preflight records `PASS_STAGE256_NONBINARY_SPARSEMUL_PREFLIGHT_READY_EXPLICIT_IMPLEMENTATION`: explicit
+  non-binary sparse_mul implementation is now admitted as a separate path, but
+  full non-binary SAB and speedup claims remain blocked.

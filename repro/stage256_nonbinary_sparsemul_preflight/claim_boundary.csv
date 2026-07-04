@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+sparsemul_preflight,supported_preflight,A non-binary sparse_mul integration boundary and finite schedule preflight are ready for explicit implementation.,Non-binary sparse_mul is implemented.,repro/stage256_nonbinary_sparsemul_preflight/finite_sparsemul_schedule_probe.csv
+count_model,supported_model_only,Single non-binary branch adds h*in_N EP-class updates before measurement.,The count model proves speedup.,repro/stage256_nonbinary_sparsemul_preflight/schedule_count_projection.csv
+full_sab_speedup,unsupported,No non-binary full-SAB speedup is claimed.,Non-binary PVW/MAT-SAB accelerates bootstrapping.,repro/stage256_nonbinary_sparsemul_preflight/implementation_admission.csv

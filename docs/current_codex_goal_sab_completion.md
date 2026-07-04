@@ -805,3 +805,8 @@ production integration, full SAB A/B, and final claim closure.
 MOSFHET isolated selector evidence. The active goal remains open for sparse
 schedule integration, full SAB A/B, multi-seed noise/resource, and paper claim
 closure.
+### Stage256 non-binary sparse_mul preflight
+
+`PASS_STAGE256_NONBINARY_SPARSEMUL_PREFLIGHT_READY_EXPLICIT_IMPLEMENTATION` advances the route from isolated selector updates to sparse_mul
+integration readiness. The active goal remains open for explicit implementation,
+actual sparse_mul correctness/noise, complete SAB A/B, and final claim closure.

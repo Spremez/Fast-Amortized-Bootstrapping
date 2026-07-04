@@ -1,0 +1,10 @@
+param,branch,in_N,h,r_prec,binary_main_ep_calls,extra_suba_ep_calls,total_ep_class_calls,extra_over_binary_main,total_over_binary_main,claim_status
+SET_2_3_2048,include_zero,2048,39,7,573440,79872,653312,0.139286,1.139286,single_branch_preflight
+SET_2_3_2048,ternary,2048,39,7,573440,79872,653312,0.139286,1.139286,single_branch_preflight
+SET_2_3_2048,stress_both,2048,39,7,573440,159744,733184,0.278571,1.278571,stress_only
+SET_4_5_2048,include_zero,2048,42,7,616448,86016,702464,0.139535,1.139535,single_branch_preflight
+SET_4_5_2048,ternary,2048,42,7,616448,86016,702464,0.139535,1.139535,single_branch_preflight
+SET_4_5_2048,stress_both,2048,42,7,616448,172032,788480,0.279070,1.279070,stress_only
+SET_2_3_4096,include_zero,4096,32,8,1081344,131072,1212416,0.121212,1.121212,single_branch_preflight
+SET_2_3_4096,ternary,4096,32,8,1081344,131072,1212416,0.121212,1.121212,single_branch_preflight
+SET_2_3_4096,stress_both,4096,32,8,1081344,262144,1343488,0.242424,1.242424,stress_only

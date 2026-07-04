@@ -1,0 +1,6 @@
+item,model,target_value,status,failure_action
+selector_ep_noise,each non-binary sub_a consumes one additional MAT selector EP per accumulator index,h * in_N = 79872 for SET_2_3_2048,needs_stage257_measurement,do not integrate full SAB
+active_buffer_lifecycle,reuse existing active buffer state; normalize only at API boundary,no semantic copyback in finite preflight except final normalization,preflight_pass_required,disable active-buffer non-binary path
+key_size_growth,one additional MAT selector family adds h selector objects,39 extra selector objects at target h=39,needs_stage257_resource_measurement,scope or reject non-binary branch
+complete_sab_noise,not inferred from isolated or finite schedule probes,multi-seed final-output noise after full integration,blocked_until_stage258,no speedup/noise claim
+count_pressure_gate,single non-binary branch extra EP-class calls remain under 0.20 of binary main path,max_single_branch_extra=0.139535,pass_preflight,do not implement sparse_mul
