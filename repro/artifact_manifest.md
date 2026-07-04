@@ -2707,3 +2707,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage233_highstat_slice.md`
   - `scripts/build_stage233_highstat_slice.py`
   - `repro/stage233_set_4_5_2048_r4_highstat_slice/`
+- stage234_set_4_5_2048_r2_highstat_slice:
+  - `docs/stage234_set_4_5_2048_r2_highstat_slice.md`
+  - `experiments/stage234_set_4_5_2048_r2_highstat_slice_plan.md`
+  - `theory_checks/stage234_highstat_slice_stats_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage234_highstat_slice.md`
+  - `scripts/build_stage234_highstat_slice.py`
+  - `repro/stage234_set_4_5_2048_r2_highstat_slice/`

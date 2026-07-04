@@ -1,0 +1,11 @@
+run,status,param,r,metric,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup_vs_scalar_repeated,source_log
+0,Pass,SET_4_5_2048,2,T_bootstrap/r,16494285.000,8247142.500,20916679.000,10458339.500,1.268,repro/stage234_set_4_5_2048_r2_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/run_0.log
+1,Pass,SET_4_5_2048,2,T_bootstrap/r,16437060.000,8218530.000,20892855.000,10446427.500,1.271,repro/stage234_set_4_5_2048_r2_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/run_1.log
+2,Pass,SET_4_5_2048,2,T_bootstrap/r,16561307.000,8280653.500,21163918.000,10581959.000,1.278,repro/stage234_set_4_5_2048_r2_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/run_2.log
+3,Pass,SET_4_5_2048,2,T_bootstrap/r,16762402.000,8381201.000,20906015.000,10453007.500,1.247,repro/stage234_set_4_5_2048_r2_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/run_3.log
+4,Pass,SET_4_5_2048,2,T_bootstrap/r,16493423.000,8246711.500,20887525.000,10443762.500,1.266,repro/stage234_set_4_5_2048_r2_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/run_4.log
+5,Pass,SET_4_5_2048,2,T_bootstrap/r,16660889.000,8330444.500,20862584.000,10431292.000,1.252,repro/stage234_set_4_5_2048_r2_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/run_5.log
+6,Pass,SET_4_5_2048,2,T_bootstrap/r,16563845.000,8281922.500,20788389.000,10394194.500,1.255,repro/stage234_set_4_5_2048_r2_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/run_6.log
+7,Pass,SET_4_5_2048,2,T_bootstrap/r,16672364.000,8336182.000,21110147.000,10555073.500,1.266,repro/stage234_set_4_5_2048_r2_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/run_7.log
+8,Pass,SET_4_5_2048,2,T_bootstrap/r,16282042.000,8141021.000,20988507.000,10494253.500,1.289,repro/stage234_set_4_5_2048_r2_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/run_8.log
+9,Pass,SET_4_5_2048,2,T_bootstrap/r,16709191.000,8354595.500,20971594.000,10485797.000,1.255,repro/stage234_set_4_5_2048_r2_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/run_9.log

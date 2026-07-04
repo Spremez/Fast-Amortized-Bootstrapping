@@ -1110,3 +1110,10 @@ Generated from input head `b1064ed`, Stage233 records `PASS_STAGE233_FIRST_HIGHS
 current-head `SET_4_5_2048`, r=4 slice passes high-stat complete-SAB
 `T_bootstrap/r`, noise, and resource gates. This is a per-slice result, not a
 full-matrix, non-binary, compact, or theoretical-optimality closure.
+## Stage234 second high-stat added-parameter slice
+
+Generated from input head `4e7facc`, Stage234 records `PASS_STAGE234_SECOND_HIGHSTAT_SLICE_SET_4_5_2048_COMPLETE_MATRIX_PENDING`. The
+current-head `SET_4_5_2048`, r=2 slice passes high-stat complete-SAB
+`T_bootstrap/r`, noise, and resource gates. `SET_4_5_2048` r=2/r=4 is now
+covered, while `SET_2_3_4096`, non-binary, compact, and theoretical-optimality
+gates remain open.

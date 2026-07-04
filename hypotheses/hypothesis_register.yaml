@@ -3284,3 +3284,15 @@ H10_stage233_first_highstat_slice:
     slice passes 10-run complete-SAB T_bootstrap/r, 20-seed noise, and resource
     gates. Remaining added-parameter slices, non-binary support, compact route,
     and theoretical optimality remain pending.
+H10_stage234_second_highstat_slice:
+  status: second_added_parameter_highstat_slice_passed_set_4_5_2048_complete
+  evidence:
+    - repro/stage234_set_4_5_2048_r2_highstat_slice/performance_stats.csv
+    - repro/stage234_set_4_5_2048_r2_highstat_slice/noise_aggregate.csv
+    - repro/stage234_set_4_5_2048_r2_highstat_slice/resource_comparison.csv
+    - docs/stage234_set_4_5_2048_r2_highstat_slice.md
+  conclusion: >
+    Stage234 records PASS_STAGE234_SECOND_HIGHSTAT_SLICE_SET_4_5_2048_COMPLETE_MATRIX_PENDING. The current-head binary SET_4_5_2048, r=2
+    slice passes 10-run complete-SAB T_bootstrap/r, 20-seed noise, and resource
+    gates. SET_4_5_2048 r=2/r=4 is covered, but SET_2_3_4096, non-binary
+    support, compact route, and theoretical optimality remain pending.

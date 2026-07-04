@@ -1,0 +1,4 @@
+param,r,mode,backend,keygen_us,keygen_lane_avg_us,estimated_key_bytes,estimated_key_bytes_ratio_vs_scalar_repeated,internal_vmhwm_kb,time_max_rss_kb,source_log,time_log
+SET_4_5_2048,2,pvw,spqlios_avx512,1635265,817632.500,314053072,1.014389,386128,386328,repro/stage234_set_4_5_2048_r2_resource/r2/pvw.log,repro/stage234_set_4_5_2048_r2_resource/r2/pvw.time.log
+SET_4_5_2048,2,scalar,spqlios_avx512,1295062,647531.000,309598192,1.000000,389544,389812,repro/stage234_set_4_5_2048_r2_resource/r2/scalar.log,repro/stage234_set_4_5_2048_r2_resource/r2/scalar.time.log
+SET_4_5_2048,2,pvw_vs_scalar_ratio,spqlios_avx512,1.262692,1.262692,1.014389,1.014389,0.991231,0.991062,computed from resource pvw/scalar rows,computed from resource pvw/scalar rows

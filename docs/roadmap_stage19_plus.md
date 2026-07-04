@@ -6566,3 +6566,19 @@ Generated from input head `b1064ed` with `PASS_STAGE233_FIRST_HIGHSTAT_SLICE_RES
 passes 10-run complete-SAB A/B, 20-seed noise, and resource recording. The full
 added-parameter matrix remains pending.
 ```
+## Stage 234: Second High-Stat Added-Parameter Slice
+
+Goal:
+
+```text
+Promote SET_4_5_2048 r=2 from smoke/preflight to 10-run/20-seed/resource
+evidence under complete-SAB `T_bootstrap/r`.
+```
+
+Status:
+
+```text
+Generated from input head `4e7facc` with `PASS_STAGE234_SECOND_HIGHSTAT_SLICE_SET_4_5_2048_COMPLETE_MATRIX_PENDING`. `SET_4_5_2048`, r=2
+passes 10-run complete-SAB A/B, 20-seed noise, and resource recording. Together
+with Stage233, SET_4_5_2048 r=2/r=4 is covered; SET_2_3_4096 remains pending.
+```

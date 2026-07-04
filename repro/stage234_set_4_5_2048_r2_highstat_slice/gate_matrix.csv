@@ -1,0 +1,9 @@
+gate,required,observed,status,claim_effect
+G1_inputs,Stage233 route plus raw Stage234 logs exist,all present,PASS,allows Stage234 aggregation
+G2_shape,"SET_4_5_2048 selects h=42, r_prec=7","h=42, r_prec=7",PASS,prevents default-parameter fallback
+G3_performance_highstat_slice,"10 complete-SAB A/B runs, all correctness Pass, mean T_bootstrap/r speedup > 1","runs=10, speedup_mean=1.264700, CI95=1.255514..1.273886",PASS_HIGHSTAT_SLICE,supports this parameter/r slice only
+G4_noise_highstat_slice,"20 deterministic seeds, zero PVW/scalar/pair failures","seeds=20, failures=0/0/0",PASS_HIGHSTAT_SLICE,noise side condition supports this slice only
+G5_resource,pvw and scalar resource/keygen/RSS rows for this slice,pvw/scalar resource rows present,PASS,records key/RSS side cost beside throughput
+G6_param_progress,SET_4_5_2048 r=2 and r=4 both have high-stat slices,r=2 Stage234 and r=4 Stage233 recorded,PASS_PARAM_COMPLETE,supports SET_4_5_2048 binary r=2/r=4 matrix rows only
+G7_matrix_boundary,do not promote the whole added-parameter matrix from one parameter set,SET_2_3_4096 r=2/r=4 still pending,BOUNDARY_HELD,blocks full added-parameter matrix and all-parameter claims
+G8_stage234_decision,all Stage234 gates pass and matrix boundary stays explicit,PASS_STAGE234_SECOND_HIGHSTAT_SLICE_SET_4_5_2048_COMPLETE_MATRIX_PENDING,PASS_STAGE234_SECOND_HIGHSTAT_SLICE_SET_4_5_2048_COMPLETE_MATRIX_PENDING,continue remaining SET_2_3_4096 high-stat slices or manuscript skeleton

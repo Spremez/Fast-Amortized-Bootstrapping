@@ -1,0 +1,9 @@
+input,status,role,bytes
+repro/stage233_set_4_5_2048_r4_highstat_slice/proof_gate.csv,present,Stage233 proof gate selecting remaining matrix slices,1728
+repro/stage233_set_4_5_2048_r4_highstat_slice/next_stage_queue.csv,present,Stage233 next queue,1084
+repro/stage233_set_4_5_2048_r4_highstat_slice/performance_stats.csv,present,Stage233 sibling r=4 high-stat slice,448
+repro/stage234_set_4_5_2048_r2_runs10_seeds20/performance_summary.csv,present,Stage234 raw high-stat performance aggregate,286
+repro/stage234_set_4_5_2048_r2_runs10_seeds20/perf_SET_4_5_2048_r2_runs10/summary.csv,present,Stage234 per-run performance,973
+repro/stage234_set_4_5_2048_r2_runs10_seeds20/noise_summary.csv,present,Stage234 high-stat noise aggregate summary,308
+repro/stage234_set_4_5_2048_r2_runs10_seeds20/noise_SET_4_5_2048_r2_seeds20/summary.csv,present,Stage234 per-seed noise,3319
+repro/stage234_set_4_5_2048_r2_resource/summary.csv,present,Stage234 resource/keygen/RSS,672
