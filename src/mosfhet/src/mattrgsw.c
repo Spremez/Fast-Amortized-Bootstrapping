@@ -1,5 +1,91 @@
 #include "mosfhet.h"
 
+#ifdef MAT_TRGSW_SPLIT_PROFILE
+#include <inttypes.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
+
+typedef struct {
+  uint64_t normal_calls;
+  uint64_t sub_calls;
+  uint64_t rows_sum;
+  uint64_t decompose_us;
+  uint64_t dft_us;
+  uint64_t dense_us;
+  uint64_t total_us;
+  int last_k;
+  int last_r;
+  int last_l;
+  int last_N;
+} MAT_TRGSW_Split_Profile;
+
+static MAT_TRGSW_Split_Profile mat_trgsw_split_profile = {0};
+static int mat_trgsw_split_profile_registered = 0;
+
+static uint64_t mat_trgsw_split_now_us(void){
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return (uint64_t) tv.tv_usec + (uint64_t) tv.tv_sec * 1000000ULL;
+}
+
+static void mat_trgsw_split_profile_print(void){
+  if(mat_trgsw_split_profile.normal_calls == 0 &&
+      mat_trgsw_split_profile.sub_calls == 0){
+    return;
+  }
+  printf("MAT_TRGSW_SPLIT_PROFILE sample normal_calls=%" PRIu64
+         " sub_calls=%" PRIu64
+         " rows_sum=%" PRIu64
+         " decompose_us=%" PRIu64
+         " dft_us=%" PRIu64
+         " dense_us=%" PRIu64
+         " total_us=%" PRIu64
+         " last_k=%d"
+         " last_r=%d"
+         " last_l=%d"
+         " last_N=%d\n",
+         mat_trgsw_split_profile.normal_calls,
+         mat_trgsw_split_profile.sub_calls,
+         mat_trgsw_split_profile.rows_sum,
+         mat_trgsw_split_profile.decompose_us,
+         mat_trgsw_split_profile.dft_us,
+         mat_trgsw_split_profile.dense_us,
+         mat_trgsw_split_profile.total_us,
+         mat_trgsw_split_profile.last_k,
+         mat_trgsw_split_profile.last_r,
+         mat_trgsw_split_profile.last_l,
+         mat_trgsw_split_profile.last_N);
+}
+
+static void mat_trgsw_split_profile_register(void){
+  if(!mat_trgsw_split_profile_registered){
+    atexit(mat_trgsw_split_profile_print);
+    mat_trgsw_split_profile_registered = 1;
+  }
+}
+
+static void mat_trgsw_split_profile_start_call(int is_sub, int rows,
+    int k, int r, int l, int N){
+  mat_trgsw_split_profile_register();
+  if(is_sub) mat_trgsw_split_profile.sub_calls++;
+  else mat_trgsw_split_profile.normal_calls++;
+  mat_trgsw_split_profile.rows_sum += (uint64_t) rows;
+  mat_trgsw_split_profile.last_k = k;
+  mat_trgsw_split_profile.last_r = r;
+  mat_trgsw_split_profile.last_l = l;
+  mat_trgsw_split_profile.last_N = N;
+}
+
+#define MAT_TRGSW_SPLIT_BEGIN(NAME) const uint64_t NAME = mat_trgsw_split_now_us()
+#define MAT_TRGSW_SPLIT_ACC(FIELD, BEGIN) \
+  do { mat_trgsw_split_profile.FIELD += mat_trgsw_split_now_us() - (BEGIN); } while (0)
+#else
+#define MAT_TRGSW_SPLIT_BEGIN(NAME) ((void) 0)
+#define MAT_TRGSW_SPLIT_ACC(FIELD, BEGIN) ((void) 0)
+#define mat_trgsw_split_profile_start_call(IS_SUB, ROWS, K, R, L, N) ((void) 0)
+#endif
+
 static int mat_trgsw_rows(int l, int k, int r){
   return l * (k + r);
 }
@@ -728,6 +814,9 @@ void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT s
   const int r = in->r;
   const int l = selector->T;
   const int rows = mat_trgsw_rows(l, k, r);
+#ifdef MAT_TRGSW_SPLIT_PROFILE
+  const int N = in->b[0]->N;
+#endif
 
   assert(out->k == k);
   assert(out->r == r);
@@ -736,7 +825,12 @@ void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT s
   assert(scratch != NULL);
   assert(scratch->rows >= rows);
 
+  mat_trgsw_split_profile_start_call(0, rows, k, r, l, N);
+  MAT_TRGSW_SPLIT_BEGIN(total_begin);
+  MAT_TRGSW_SPLIT_BEGIN(decompose_begin);
   pvmtmlwe_decompose(scratch->dec, in, selector->Q, l);
+  MAT_TRGSW_SPLIT_ACC(decompose_us, decompose_begin);
+  MAT_TRGSW_SPLIT_BEGIN(dft_begin);
 #if defined(MAT_TRGSW_MULTIROW_DFT_WRAPPER)
   polynomial_torus_to_DFT_array(scratch->dec_dft, scratch->dec, rows);
 #else
@@ -744,7 +838,11 @@ void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT s
     polynomial_torus_to_DFT(scratch->dec_dft[i], scratch->dec[i]);
   }
 #endif
+  MAT_TRGSW_SPLIT_ACC(dft_us, dft_begin);
+  MAT_TRGSW_SPLIT_BEGIN(dense_begin);
   mat_trgsw_mul_pvmtmlwe_DFT_from_dec(out, selector, scratch->dec_dft);
+  MAT_TRGSW_SPLIT_ACC(dense_us, dense_begin);
+  MAT_TRGSW_SPLIT_ACC(total_us, total_begin);
 }
 
 #if defined(AVX512_OPT) && defined(MAT_TRGSW_AVX512_SUB_DECOMP)
@@ -826,6 +924,9 @@ void mat_trgsw_mul_pvmtmlwe_sub_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in1,
   const int r = in1->r;
   const int l = selector->T;
   const int rows = mat_trgsw_rows(l, k, r);
+#ifdef MAT_TRGSW_SPLIT_PROFILE
+  const int N = in1->b[0]->N;
+#endif
 
   assert(in2->k == k);
   assert(in2->r == r);
@@ -836,7 +937,12 @@ void mat_trgsw_mul_pvmtmlwe_sub_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in1,
   assert(scratch != NULL);
   assert(scratch->rows >= rows);
 
+  mat_trgsw_split_profile_start_call(1, rows, k, r, l, N);
+  MAT_TRGSW_SPLIT_BEGIN(total_begin);
+  MAT_TRGSW_SPLIT_BEGIN(decompose_begin);
   mat_trgsw_sub_decompose(in1, in2, scratch->dec, selector->Q, l);
+  MAT_TRGSW_SPLIT_ACC(decompose_us, decompose_begin);
+  MAT_TRGSW_SPLIT_BEGIN(dft_begin);
 #if defined(MAT_TRGSW_MULTIROW_DFT_WRAPPER)
   polynomial_torus_to_DFT_array(scratch->dec_dft, scratch->dec, rows);
 #else
@@ -844,7 +950,11 @@ void mat_trgsw_mul_pvmtmlwe_sub_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in1,
     polynomial_torus_to_DFT(scratch->dec_dft[i], scratch->dec[i]);
   }
 #endif
+  MAT_TRGSW_SPLIT_ACC(dft_us, dft_begin);
+  MAT_TRGSW_SPLIT_BEGIN(dense_begin);
   mat_trgsw_mul_pvmtmlwe_DFT_from_dec(out, selector, scratch->dec_dft);
+  MAT_TRGSW_SPLIT_ACC(dense_us, dense_begin);
+  MAT_TRGSW_SPLIT_ACC(total_us, total_begin);
 }
 
 static int mat_trgsw_compact_rows(MAT_TRGSW_COMPACT_DFT in){

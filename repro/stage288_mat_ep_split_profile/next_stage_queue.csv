@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage289_isolated_mat_ep_microbench_design,S288-next-torus_to_dft,Build an isolated correctness/microbench for the dominant split component.,Keep current selected exact path; do not rewrite hot path.
+P1,stage290_unprofiled_full_sab_ab,isolated candidate passes,Repeated unprofiled complete SAB T_bootstrap/r A/B plus noise/resource.,Record kernel-only result as neutral or negative.

@@ -1,0 +1,4 @@
+component,us,share_of_split_total,share_of_body_mat_ep,calls,avg_us_per_call,status
+decompose,8603592.000,0.271126,0.270330,1146880,7.501737,measured_profile_only
+torus_to_dft,12273122.000,0.386764,0.385629,1146880,10.701313,measured_profile_only
+dense_from_dec,10705708.000,0.337370,0.336380,1146880,9.334637,measured_profile_only

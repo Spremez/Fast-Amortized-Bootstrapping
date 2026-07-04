@@ -3892,3 +3892,26 @@ H10_stage284_frontier_gap_ledger:
     the largest measured residual component, native evidence remains missing,
     and theoretical optimality remains blocked pending lower-bound and
     counter-backed gates.
+H10_stage286_mat_ep_split_counter_gate:
+  status: PASS_STAGE286_MAT_EP_SPLIT_PROXY_READY_NATIVE_COUNTER_REQUIRED
+  evidence:
+    - repro/stage286_mat_ep_split_counter_gate/mat_ep_static_split_model.csv
+    - repro/stage286_mat_ep_split_counter_gate/improvement_targets.csv
+    - repro/stage286_mat_ep_split_counter_gate/code_admission_matrix.csv
+    - docs/stage286_mat_ep_split_counter_gate.md
+  conclusion: >
+    Stage286 converts the selected MAT EP residual into source/assembly/proxy
+    split evidence and admission rules. MAT EP remains the first target, but
+    native counters or optional split instrumentation are required before any
+    behavior-changing AVX hot-path rewrite.
+H10_stage288_mat_ep_split_profile:
+  status: PASS_STAGE288_MAT_EP_SPLIT_PROFILE_RECORDED_MICROBENCH_NEXT
+  evidence:
+    - repro/stage288_mat_ep_split_profile/split_profile_summary.csv
+    - repro/stage288_mat_ep_split_profile/split_component_shares.csv
+    - repro/stage288_mat_ep_split_profile/proof_gate.csv
+    - docs/stage288_mat_ep_split_profile.md
+  conclusion: >
+    Stage288 records instrumentation-only MAT EP split evidence for the
+    selected path. It selects the next isolated microbench target but does not
+    provide final latency or optimality evidence.

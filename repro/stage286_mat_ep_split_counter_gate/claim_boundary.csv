@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+mat_ep_is_current_first_target,allowed,MAT EP is the largest measured residual component in the selected candidate profile.,MAT EP is the only bottleneck or zeroing it is achievable.,repro/stage284_frontier_gap_ledger/residual_gap_ledger.csv; repro/stage286_mat_ep_split_counter_gate/mat_ep_static_split_model.csv
+avx512_instruction_presence,proxy_only,Current-head object/source exposes AVX512/FMA proxy evidence when objdump succeeds.,Retired load/store/FMA counters prove optimality.,repro/stage286_mat_ep_split_counter_gate/instruction_proxy.csv; repro/stage286_mat_ep_split_counter_gate/tool_matrix.csv
+required_component_reduction,projection_only,Improvement targets are Amdahl projections for experiment design.,The projected full-SAB improvement has been measured.,repro/stage286_mat_ep_split_counter_gate/improvement_targets.csv
+hot_path_edit_permission,denied_for_behavior_change,Instrumentation-only code is admissible; behavior-changing AVX work needs split evidence.,Stage286 authorizes a default hot-path rewrite.,repro/stage286_mat_ep_split_counter_gate/code_admission_matrix.csv

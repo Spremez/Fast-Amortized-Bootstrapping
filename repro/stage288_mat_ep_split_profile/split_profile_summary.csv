@@ -1,0 +1,2 @@
+variant,mode,r,reps,correctness,pvw_t_over_r_us,scalar_t_over_r_us,speedup_vs_scalar,body_profile_rows,body_full_us_sum,body_mat_ep_calls,body_mat_ep_us_sum,split_normal_calls,split_sub_calls,split_total_calls,split_rows_sum,split_total_us,split_vs_body_mat_ep_ratio,source_log
+backend_sub_decomp_dual,include_zero,4,1,Pass,6576151.500,10725769.750,1.631,2,52695392.000,1146880,31826225.000,20320,1126560,1146880,5734400,31732816.000,0.997065,repro/stage288_mat_ep_split_profile/raw/run.log

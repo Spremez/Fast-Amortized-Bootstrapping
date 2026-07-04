@@ -411,3 +411,7 @@
 - [x] Stage283 records `PASS_STAGE283_NATIVE_ACCESS_MISSING_HANDOFF_READY` for native target repeated-gate status.
 <!-- stage284-frontier-gap-ledger-checklist -->
 - [x] Stage284 records `PASS_STAGE284_FRONTIER_GAP_LEDGER_READY_NATIVE_OR_MAT_EP_SPLIT_NEXT` for the current T_bootstrap/r frontier gap ledger.
+<!-- stage286-mat-ep-split-counter-gate-checklist -->
+- [x] Stage286 records `PASS_STAGE286_MAT_EP_SPLIT_PROXY_READY_NATIVE_COUNTER_REQUIRED` for MAT EP split/counter admission.
+<!-- stage288-mat-ep-split-profile-checklist -->
+- [x] Stage288 records `PASS_STAGE288_MAT_EP_SPLIT_PROFILE_RECORDED_MICROBENCH_NEXT` for MAT EP split profiling.

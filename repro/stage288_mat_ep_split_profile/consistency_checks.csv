@@ -1,0 +1,7 @@
+check,status,value,interpretation
+correctness,PASS,Pass,Profile smoke must preserve target full-SAB correctness.
+split_profile_line,PASS,1146880,MAT_TRGSW_SPLIT_PROFILE line must be emitted.
+call_count_match,PASS,split=1146880; body=1146880,Split calls should match the sum of all SAB body-profile mat_ep calls in the process.
+rows_sum,PASS,rows_sum=5734400; expected=5734400,"r=4,k=1,l=1 uses five rows per MAT EP call."
+dominant_subcomponent,RECORDED,torus_to_dft,Dominant split component selects the next microbench candidate.
+decision,PASS_STAGE288_MAT_EP_SPLIT_PROFILE_RECORDED_MICROBENCH_NEXT,PASS_STAGE288_MAT_EP_SPLIT_PROFILE_RECORDED_MICROBENCH_NEXT,"Profile evidence is instrumentation-only, not final latency evidence."

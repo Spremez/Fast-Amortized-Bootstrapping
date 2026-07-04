@@ -1,0 +1,6 @@
+tool_or_signal,status,evidence,detail,claim_effect
+cpu_avx512f,PASS,repro/stage286_mat_ep_split_counter_gate/raw/environment.log,11th Gen Intel(R) Core(TM) i7-11700 @ 2.50GHz,AVX512 source/assembly proxy only; not retired counters.
+perf,MISSING_OR_PERMISSION_DENIED,repro/stage286_mat_ep_split_counter_gate/raw/perf_probe.log,rc=1,Hardware-counter claims require this to pass on native target.
+build_mattrgsw_object,PASS,repro/stage286_mat_ep_split_counter_gate/raw/mattrgsw_build.log,rc=0,Current-head assembly proxy is valid only when object rebuilds.
+objdump,PASS,repro/stage286_mat_ep_split_counter_gate/raw/mattrgsw_objdump.txt,rc=0,Static instruction proxy; not a runtime counter.
+nm,PASS,repro/stage286_mat_ep_split_counter_gate/raw/mattrgsw_nm.txt,rc=0,Symbol/source anchor check.

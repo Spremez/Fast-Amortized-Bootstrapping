@@ -1,0 +1,9 @@
+component,profile_share,target_full_sab_speedup_vs_candidate,required_component_reduction,projected_t_over_r_us,status,claim_boundary
+mat_ep,0.604066,1.03,0.048217,6392407.524,projection_feasible_if_mechanism_exists,projection_only_until_full_sab_ab
+mat_ep,0.604066,1.05,0.078831,6270647.381,projection_feasible_if_mechanism_exists,projection_only_until_full_sab_ab
+mat_ep,0.604066,1.10,0.150495,5985617.955,projection_feasible_if_mechanism_exists,projection_only_until_full_sab_ab
+mat_ep,0.604066,1.20,0.275908,5486816.458,projection_feasible_if_mechanism_exists,projection_only_until_full_sab_ab
+cmux_from_dft,0.358366,1.03,0.081275,6392407.524,projection_feasible_if_mechanism_exists,projection_only_until_full_sab_ab
+cmux_from_dft,0.358366,1.05,0.132878,6270647.381,projection_feasible_if_mechanism_exists,projection_only_until_full_sab_ab
+cmux_from_dft,0.358366,1.10,0.253677,5985617.955,projection_feasible_if_mechanism_exists,projection_only_until_full_sab_ab
+cmux_from_dft,0.358366,1.20,0.465074,5486816.458,projection_feasible_if_mechanism_exists,projection_only_until_full_sab_ab

@@ -1,0 +1,18 @@
+anchor,path,line,needle,status,interpretation
+mat_ep_public_entry,src/mosfhet/src/mattrgsw.c,812,void mat_trgsw_mul_pvmtmlwe_DFT(,PASS,current source anchor for Stage286 MAT EP split gate
+mat_ep_sub_public_entry,src/mosfhet/src/mattrgsw.c,921,void mat_trgsw_mul_pvmtmlwe_sub_DFT(,PASS,current source anchor for Stage286 MAT EP split gate
+sub_decompose_entry,src/mosfhet/src/mattrgsw.c,876,static void mat_trgsw_sub_decompose(,PASS,current source anchor for Stage286 MAT EP split gate
+sub_decompose_avx512_poly,src/mosfhet/src/mattrgsw.c,849,static void mat_trgsw_sub_decompose_poly_avx512(,PASS,current source anchor for Stage286 MAT EP split gate
+dispatch_from_dec,src/mosfhet/src/mattrgsw.c,746,static void mat_trgsw_mul_pvmtmlwe_DFT_from_dec(,PASS,current source anchor for Stage286 MAT EP split gate
+r4_smallr_kernel,src/mosfhet/src/mattrgsw.c,312,static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_avx512(,PASS,current source anchor for Stage286 MAT EP split gate
+r4_unrolled_kernel,src/mosfhet/src/mattrgsw.c,384,static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r4_unrolled_avx512(,PASS,current source anchor for Stage286 MAT EP split gate
+complex_mul_helper,src/mosfhet/src/mattrgsw.c,226,static inline void mat_avx512_complex_mul(,PASS,current source anchor for Stage286 MAT EP split gate
+complex_addmul_helper,src/mosfhet/src/mattrgsw.c,232,static inline void mat_avx512_complex_addmul(,PASS,current source anchor for Stage286 MAT EP split gate
+cmux_sub_decomp_callsite,src/sab_pvw.c,666,mat_trgsw_mul_pvmtmlwe_sub_DFT(,PASS,current source anchor for Stage286 MAT EP split gate
+cmux_plain_mat_ep_callsite,src/sab_pvw.c,648,mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft,PASS,current source anchor for Stage286 MAT EP split gate
+from_dft_add_callsite,src/sab_pvw.c,621,pvmtmlwe_from_DFT_add(,PASS,current source anchor for Stage286 MAT EP split gate
+macro_mat_trgsw_avx512_smallr_specialized,.,,MAT_TRGSW_AVX512_SMALLR_SPECIALIZED,PASS,compile-time gate must be explicit for candidate comparisons
+macro_mat_trgsw_avx512_sub_decomp,.,,MAT_TRGSW_AVX512_SUB_DECOMP,PASS,compile-time gate must be explicit for candidate comparisons
+macro_sab_pvw_sub_decomp_fusion,.,,SAB_PVW_SUB_DECOMP_FUSION,PASS,compile-time gate must be explicit for candidate comparisons
+macro_sab_pvw_backend_from_dft_add,.,,SAB_PVW_BACKEND_FROM_DFT_ADD,PASS,compile-time gate must be explicit for candidate comparisons
+macro_sab_pvw_dual_sub_cmux,.,,SAB_PVW_DUAL_SUB_CMUX,PASS,compile-time gate must be explicit for candidate comparisons

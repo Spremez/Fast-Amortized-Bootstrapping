@@ -1,0 +1,8 @@
+gate,status,metric,value,interpretation
+G1_inputs,PASS,required inputs,all present,Stage286 consumes the current Stage284 frontier and current source.
+G2_source_anchors,PASS,source anchors,all present,Split gate points at the actual MAT EP and CMUX call sites.
+G3_tooling,PASS_PROXY,build/objdump/nm,build=PASS; objdump=PASS; nm=PASS,Current-head assembly proxy can be generated if tools pass.
+G4_assembly_proxy,PASS_PROXY,zmm/fma proxy,zmm=239; fma_like=120,"Static proxy checks instruction presence only, not retired counters."
+G5_native_counter_boundary,BLOCKED_OR_MISSING,perf,MISSING_OR_PERMISSION_DENIED,No hardware-counter or optimality claim without native/perf rows.
+G6_code_admission,PASS_INSTRUMENTATION_ONLY,hot path permission,no behavior-changing hot-path edit admitted,Proceed to split instrumentation/native counters before AVX kernel rewrites.
+G7_decision,PASS_STAGE286_MAT_EP_SPLIT_PROXY_READY_NATIVE_COUNTER_REQUIRED,stage decision,PASS_STAGE286_MAT_EP_SPLIT_PROXY_READY_NATIVE_COUNTER_REQUIRED,"Proceed to native counter rerun or optional split instrumentation, not optimality claims."

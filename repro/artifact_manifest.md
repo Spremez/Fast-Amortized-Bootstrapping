@@ -3013,3 +3013,18 @@ Repro artifacts:
   - `experiments/stage284_frontier_validation_plan.md`
   - `scripts/build_stage284_frontier_gap_ledger.py`
   - `repro/stage284_frontier_gap_ledger/`
+- stage286_mat_ep_split_counter_gate:
+  - `docs/stage286_mat_ep_split_counter_gate.md`
+  - `theory_checks/stage286_mat_ep_split_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage286_mat_ep_split_candidates.md`
+  - `experiments/stage286_mat_ep_counter_validation_plan.md`
+  - `scripts/build_stage286_mat_ep_split_counter_gate.py`
+  - `repro/stage286_mat_ep_split_counter_gate/`
+- stage288_mat_ep_split_profile:
+  - `docs/stage288_mat_ep_split_profile.md`
+  - `theory_checks/stage288_mat_ep_split_profile_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage288_split_profile_result.md`
+  - `experiments/stage288_mat_ep_split_profile_plan.md`
+  - `scripts/run_stage288_mat_ep_split_profile.sh`
+  - `scripts/build_stage288_mat_ep_split_profile.py`
+  - `repro/stage288_mat_ep_split_profile/`

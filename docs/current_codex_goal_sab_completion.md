@@ -985,3 +985,17 @@ local repeated-positive and local noise/resource-clean, but native target
 evidence and theoretical optimality remain open. The next executable routes
 are native rerun first, then MAT EP split/counter attribution, then new
 from_DFT lifecycle or body-linear selector proof gates.
+<!-- stage286-mat-ep-split-counter-gate -->
+### Stage286 MAT EP split/counter gate
+
+`PASS_STAGE286_MAT_EP_SPLIT_PROXY_READY_NATIVE_COUNTER_REQUIRED` records a current-head source/assembly/projection gate for the
+Stage284 selected MAT EP residual. The stage admits native counters and
+optional split instrumentation, but denies behavior-changing AVX hot-path
+rewrites until split evidence plus repeated complete-SAB `T_bootstrap/r` A/B
+exists.
+<!-- stage288-mat-ep-split-profile -->
+### Stage288 MAT EP split profile
+
+`PASS_STAGE288_MAT_EP_SPLIT_PROFILE_RECORDED_MICROBENCH_NEXT` records a profiled split run for the current selected
+`backend_sub_decomp_dual` path. The result is instrumentation-only and selects
+the next isolated microbench target; it is not final `T_bootstrap/r` evidence.

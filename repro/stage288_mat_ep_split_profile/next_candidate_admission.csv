@@ -1,0 +1,2 @@
+candidate,status,measured_basis,allowed_next_action,blocked_action,required_gate
+S288-next-torus_to_dft,admitted_to_isolated_microbench_design,dominant split component=torus_to_dft; share=0.386764,Design isolated microbench/equivalence for the dominant subcomponent.,Promote based on profiled full-SAB timing or split share alone.,unprofiled repeated T_bootstrap/r A/B after implementation candidate

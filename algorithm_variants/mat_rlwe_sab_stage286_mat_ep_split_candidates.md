@@ -1,0 +1,15 @@
+# Stage286 MAT EP Split Candidates
+
+| route | status | allowed_action | blocked_action | entry_evidence | promotion_gate |
+| --- | --- | --- | --- | --- | --- |
+| S286-A-counter_only | admitted_now | Run native counters or local assembly proxy and update ledger. | Claim theoretical MAT AVX optimality. | repro/stage284_frontier_gap_ledger/residual_gap_ledger.csv | native/perf rows plus interpretation |
+| S286-B-sub_decompose_instrumentation | admitted_instrumentation_only | Add optional counters/timers around sub_decompose, torus_to_DFT, and dense addmul. | Enable new hot-path behavior by default. | mat_ep_share=0.604066 | instrumented split plus unprofiled T_bootstrap/r A/B |
+| S286-C-new_avx_kernel | blocked_until_split_identifies_target | Prepare isolated equivalence and microbench design. | Rewrite dense kernel based only on Stage284 Amdahl projection. | repro/stage286_mat_ep_split_counter_gate/mat_ep_static_split_model.csv | isolated correctness, microbench, full SAB repeated A/B, noise/resource |
+| S286-D-body_linear_selector_format | not_admitted_by_stage286 | Keep as separate proof route. | Treat dense-kernel split as body-linear optimality proof. | repro/stage284_frontier_gap_ledger/algorithm_frontier.csv | distribution/security/noise proof before hot-path code |
+
+## Candidate Rule
+
+Any future candidate must be compared against the current selected
+`backend_sub_decomp_dual` path using complete-SAB `T_bootstrap/r`. Isolated
+MAT EP microbenchmarks can only admit a candidate to full SAB A/B; they cannot
+establish final bootstrapping speedup alone.

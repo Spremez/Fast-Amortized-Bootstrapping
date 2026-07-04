@@ -1,0 +1,10 @@
+input_id,path,status,bytes
+stage284_frontier,repro/stage284_frontier_gap_ledger/frontier_summary.csv,present,1452
+stage284_residual,repro/stage284_frontier_gap_ledger/residual_gap_ledger.csv,present,1332
+stage284_algorithm,repro/stage284_frontier_gap_ledger/algorithm_frontier.csv,present,1969
+stage281_latency,repro/stage281_cmux_residual_repeated_gate/latency_summary.csv,present,513
+stage280_profile,repro/stage280_cmux_mat_ep_residual_screen/profile_components.csv,present,9096
+stage283_proof,repro/stage283_native_target_repeated_gate/proof_gate.csv,present,667
+stage264_source_model,repro/stage264_mat_avx512_counter_preflight/source_model.csv,present,735
+mattrgsw_source,src/mosfhet/src/mattrgsw.c,present,41716
+sab_pvw_source,src/sab_pvw.c,present,52874

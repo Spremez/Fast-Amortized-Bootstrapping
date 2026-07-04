@@ -1,0 +1,4 @@
+scope,instruction_lines,zmm_lines,stack_memory_reference_lines,vmulpd,vfmadd_prefix,vfmsub_prefix,vfnmadd_prefix,vfnmsub_prefix,vmovapd,vmovupd,call,jmp,claim_use
+mat_trgsw_mul_pvmtmlwe_DFT_from_dec,832,239,0,16,60,60,0,0,103,0,30,5,assembly_proxy_only_not_retired_counter
+mat_trgsw_mul_pvmtmlwe_DFT,85,0,0,0,0,0,0,0,0,0,8,1,assembly_proxy_only_not_retired_counter
+mat_trgsw_mul_pvmtmlwe_sub_DFT,461,0,0,0,0,0,0,0,0,0,21,1,assembly_proxy_only_not_retired_counter
