@@ -1,0 +1,4 @@
+rows,N,reps,fft_lib,flags
+1,2048,5000,spqlios_avx512,MAT_TRGSW_IFFT_ROWS_BENCH=true
+5,2048,5000,spqlios_avx512,MAT_TRGSW_IFFT_ROWS_BENCH=true
+10,2048,5000,spqlios_avx512,MAT_TRGSW_IFFT_ROWS_BENCH=true

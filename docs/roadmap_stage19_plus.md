@@ -7113,3 +7113,8 @@ Status: `FAIL_STAGE308_IFFT_FEASIBILITY_AUDIT_INCOMPLETE`.
 Goal: test a default-off r=4/k=1/l=1 row-batched digit materialization candidate before full-SAB promotion.
 
 Status: `NEUTRAL_STAGE309_DIGIT_ROWBATCH_NO_PROMOTION`.
+## Stage 310: IFFT Rows Scaling Bench
+
+Goal: measure whether existing single-row SPQLIOS IFFT loops show enough row-scaling to justify C-level wrapper work.
+
+Status: `PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED`.

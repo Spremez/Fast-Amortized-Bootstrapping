@@ -4130,3 +4130,14 @@ H309_digit_rowbatch_microbench:
     Stage309 tests an opt-in r=4 row-batched digit materialization candidate.
     It can only open full-SAB A/B if both digit component time and sub-DTF
     microbench latency improve; otherwise it is kept as a neutral ablation.
+H310_ifft_rows_scaling_bench:
+  status: PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED
+  primary_metric: isolated_spqlios_ifft_per_row_scaling
+  evidence:
+    - repro/stage310_ifft_rows_scaling_bench/run_metrics.csv
+    - repro/stage310_ifft_rows_scaling_bench/bench_summary.csv
+    - repro/stage310_ifft_rows_scaling_bench/proof_gate.csv
+  conclusion: >
+    Stage310 measures whether existing per-row SPQLIOS IFFT loops have strong
+    row scaling. It is not a SAB speed claim; it determines whether future IFFT
+    work must be backend-level.

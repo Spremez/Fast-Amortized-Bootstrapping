@@ -1,0 +1,1 @@
+MAT_IFFT_ROWS bench rows=1 N=2048 reps=5000 copy_avg_us=0.105 copy_ifft_avg_us=1.865 ifft_est_avg_us=1.760 ifft_est_per_row_us=1.760 checksum=-366051.79606736713

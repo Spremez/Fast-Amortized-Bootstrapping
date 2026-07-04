@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage311_ifft_backend_abi_design_or_stop,PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED,Design a true backend batch IFFT candidate; C-wrapper-only work is insufficient.,new backend API/model/assembly proof before SAB integration

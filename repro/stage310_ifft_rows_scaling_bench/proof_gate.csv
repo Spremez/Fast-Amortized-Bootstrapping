@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_runs,PASS,rows present,"1,5,10",Rows 1/5/10 must all produce bench output.
+G2_copy_subtraction,PASS,copy_ifft > copy,PASS,Subtracted IFFT estimate must be positive.
+G3_existing_loop_scaling,NO_STRONG_SCALING,per-row speedup rows5/rows1; rows10/rows1,0.961223;1.131833,Strong scaling would justify cache/layout investigation; otherwise C-level wrappers remain weak.
+G4_claim_boundary,PASS,scope,ifft microbench only,This does not change SAB and is not a complete bootstrapping speed claim.
+G5_decision,PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED,stage decision,PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED,Controls backend IFFT route.

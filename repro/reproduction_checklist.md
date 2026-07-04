@@ -458,3 +458,5 @@
 - [x] Stage308 records `FAIL_STAGE308_IFFT_FEASIBILITY_AUDIT_INCOMPLETE` and routes Stage309/310.
 <!-- stage309-digit-rowbatch-microbench-checklist -->
 - [x] Stage309 records `NEUTRAL_STAGE309_DIGIT_ROWBATCH_NO_PROMOTION` for the rowbatch digit candidate.
+<!-- stage310-ifft-rows-scaling-bench-checklist -->
+- [x] Stage310 records `PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED` for SPQLIOS IFFT row scaling.

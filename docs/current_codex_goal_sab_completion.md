@@ -1118,3 +1118,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage309 digit rowbatch microbench
 
 `NEUTRAL_STAGE309_DIGIT_ROWBATCH_NO_PROMOTION` tests the default-off `MAT_TRGSW_DIRECT_DFT_R4_ROWBATCH_DIGIT` candidate under isolated microbench gates.
+<!-- stage310-ifft-rows-scaling-bench -->
+### Stage310 IFFT rows scaling bench
+
+`PASS_STAGE310_IFFT_ROWS_SCALING_BACKEND_REQUIRED` records rows=1/5/10 SPQLIOS IFFT scaling and routes any future IFFT acceleration to backend-level work.

@@ -3152,3 +3152,11 @@ Repro artifacts:
   - `scripts/run_stage309_digit_rowbatch_microbench.sh`
   - `scripts/build_stage309_digit_rowbatch_microbench.py`
   - `repro/stage309_digit_rowbatch_microbench/`
+- stage310_ifft_rows_scaling_bench:
+  - `docs/stage310_ifft_rows_scaling_bench.md`
+  - `theory_checks/stage310_ifft_rows_scaling_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage310_batched_ifft_candidate.md`
+  - `experiments/stage310_ifft_rows_scaling_bench_plan.md`
+  - `scripts/run_stage310_ifft_rows_scaling_bench.sh`
+  - `scripts/build_stage310_ifft_rows_scaling_bench.py`
+  - `repro/stage310_ifft_rows_scaling_bench/`

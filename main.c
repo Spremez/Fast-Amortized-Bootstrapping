@@ -3,6 +3,11 @@
 #include <benchmark_util.h>
 #include <sab_profile.h>
 #include <inttypes.h>
+#include <string.h>
+#if defined(MAT_TRGSW_IFFT_ROWS_BENCH) && defined(USE_SPQLIOS) && !defined(TORUS32)
+#include "src/mosfhet/src/fft/spqlios/spqlios-fft.h"
+extern __thread FFT_Processor_Spqlios fft_proc[32];
+#endif
 #if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_NONBINARY_TARGET_NOISE_TEST) || defined(SAB_PVW_NONBINARY_TARGET_STAGE_NOISE_TEST) || defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 #include <sab_pvw.h>
 #endif
@@ -5498,9 +5503,114 @@ void test_mat_trgsw_dft_array_bench(){
 }
 #endif
 
+#if defined(MAT_TRGSW_IFFT_ROWS_BENCH)
+#ifndef MAT_TRGSW_IFFT_ROWS_BENCH_N
+#define MAT_TRGSW_IFFT_ROWS_BENCH_N 2048
+#endif
+#ifndef MAT_TRGSW_IFFT_ROWS_BENCH_ROWS
+#define MAT_TRGSW_IFFT_ROWS_BENCH_ROWS 5
+#endif
+#ifndef MAT_TRGSW_IFFT_ROWS_BENCH_REPS
+#define MAT_TRGSW_IFFT_ROWS_BENCH_REPS 5000
+#endif
+
+#if defined(USE_SPQLIOS) && !defined(TORUS32)
+static void fill_ifft_seed_rows(DFT_Polynomial * seed, int rows, int N){
+  for (size_t row = 0; row < (size_t) rows; row++){
+    for (size_t idx = 0; idx < (size_t) N; idx++){
+      uint64_t x = ((uint64_t) (row + 1) * 1315423911ULL) ^
+          ((uint64_t) (idx + 17) * 2654435761ULL);
+      seed[row]->coeffs[idx] = (double) ((int64_t) (x & 2047ULL) - 1024);
+    }
+  }
+}
+
+static void copy_ifft_rows(DFT_Polynomial * dst, DFT_Polynomial * src,
+    int rows, int N){
+  for (size_t row = 0; row < (size_t) rows; row++){
+    memcpy(dst[row]->coeffs, src[row]->coeffs, sizeof(double) * (size_t) N);
+  }
+}
+
+void test_mat_trgsw_ifft_rows_bench(){
+  const int N = MAT_TRGSW_IFFT_ROWS_BENCH_N;
+  const int rows = MAT_TRGSW_IFFT_ROWS_BENCH_ROWS;
+  const uint64_t reps = MAT_TRGSW_IFFT_ROWS_BENCH_REPS;
+  if(N <= 0 || rows <= 0 || reps == 0){
+    printf("MAT_IFFT_ROWS invalid config rows=%d N=%d reps=%" PRIu64 "\n",
+           rows, N, reps);
+    exit(1);
+  }
+
+  DFT_Polynomial * seed = polynomial_new_array_of_polynomials_DFT(N, rows);
+  DFT_Polynomial * work = polynomial_new_array_of_polynomials_DFT(N, rows);
+  fill_ifft_seed_rows(seed, rows, N);
+  init_fft(N);
+  FFT_Processor_Spqlios proc = fft_proc[N >> 10];
+
+  for (size_t warm = 0; warm < 10; warm++){
+    copy_ifft_rows(work, seed, rows, N);
+    for (size_t row = 0; row < (size_t) rows; row++){
+      ifft(proc->tables_reverse, work[row]->coeffs);
+    }
+  }
+
+  uint64_t copy_total_us = 0;
+  volatile double copy_sink = 0.0;
+  for (size_t rep = 0; rep < (size_t) reps; rep++){
+    const uint64_t start = get_time();
+    copy_ifft_rows(work, seed, rows, N);
+    copy_total_us += get_time() - start;
+    copy_sink += work[rep % (size_t) rows]->coeffs[rep % (size_t) N];
+  }
+
+  uint64_t copy_ifft_total_us = 0;
+  volatile double ifft_sink = 0.0;
+  for (size_t rep = 0; rep < (size_t) reps; rep++){
+    const uint64_t start = get_time();
+    copy_ifft_rows(work, seed, rows, N);
+    for (size_t row = 0; row < (size_t) rows; row++){
+      ifft(proc->tables_reverse, work[row]->coeffs);
+    }
+    copy_ifft_total_us += get_time() - start;
+    ifft_sink += work[rep % (size_t) rows]->coeffs[rep % (size_t) N];
+  }
+
+  const uint64_t ifft_est_total_us =
+      copy_ifft_total_us > copy_total_us ? copy_ifft_total_us - copy_total_us : 0;
+  const double copy_avg_us = ((double) copy_total_us) / ((double) reps);
+  const double copy_ifft_avg_us =
+      ((double) copy_ifft_total_us) / ((double) reps);
+  const double ifft_est_avg_us =
+      ((double) ifft_est_total_us) / ((double) reps);
+  const double ifft_est_per_row_us = ifft_est_avg_us / ((double) rows);
+  printf("MAT_IFFT_ROWS bench rows=%d N=%d reps=%" PRIu64
+         " copy_avg_us=%.3f copy_ifft_avg_us=%.3f"
+         " ifft_est_avg_us=%.3f ifft_est_per_row_us=%.3f"
+         " checksum=%.17g\n",
+         rows, N, reps, copy_avg_us, copy_ifft_avg_us, ifft_est_avg_us,
+         ifft_est_per_row_us, (double) (copy_sink + ifft_sink));
+
+  for (size_t row = 0; row < (size_t) rows; row++){
+    free_DFT_polynomial(work[row]);
+    free_DFT_polynomial(seed[row]);
+  }
+  free(work);
+  free(seed);
+}
+#else
+void test_mat_trgsw_ifft_rows_bench(){
+  printf("MAT_IFFT_ROWS unsupported backend: requires USE_SPQLIOS without TORUS32\n");
+  exit(1);
+}
+#endif
+#endif
+
 int main(int argc, char const *argv[])
 {
-#if defined(MAT_TRGSW_SUB_DFT_BENCH)
+#if defined(MAT_TRGSW_IFFT_ROWS_BENCH)
+  test_mat_trgsw_ifft_rows_bench();
+#elif defined(MAT_TRGSW_SUB_DFT_BENCH)
   test_mat_trgsw_sub_dft_bench();
 #elif defined(MAT_TRGSW_DFT_ARRAY_BENCH)
   test_mat_trgsw_dft_array_bench();
