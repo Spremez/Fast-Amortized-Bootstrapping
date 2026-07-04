@@ -14,6 +14,7 @@ R_VALUE="${STAGE331_R:-4}"
 
 mkdir -p "$RAW"
 cd "$ROOT"
+git rev-parse --short HEAD >"$RAW/run_git_head.txt" 2>/dev/null || printf 'unknown\n' >"$RAW/run_git_head.txt"
 
 direct_flags=(
   FFT_LIB="$FFT_LIB_VALUE"

@@ -6,6 +6,7 @@
 - Focused module: current-head complete SAB direct-DFT implementation.
 - Optimization target: complete `T_bootstrap/r`.
 - Status: `PASS_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH`.
+- Run head: `6a5f113`.
 
 ## Result
 

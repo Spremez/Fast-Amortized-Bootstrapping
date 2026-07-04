@@ -32,6 +32,7 @@ CHECKLIST = ROOT / "repro" / "reproduction_checklist.md"
 RUN_LOG = ROOT / "repro" / "run_log.csv"
 
 STAGE330_SUMMARY = ROOT / "repro" / "stage330_highstat_reconciliation" / "summary.csv"
+RUN_GIT_HEAD = RAW / "run_git_head.txt"
 
 PERF_SAMPLES = OUT / "perf_samples.csv"
 PERF_SUMMARY = OUT / "perf_summary.csv"
@@ -128,6 +129,14 @@ def git_head() -> str:
         return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, text=True).strip()
     except (subprocess.CalledProcessError, FileNotFoundError):
         return "unknown"
+
+
+def run_git_head() -> str:
+    env_head = subprocess.os.environ.get("STAGE331_RUN_GIT_HEAD", "").strip()
+    if env_head:
+        return env_head
+    file_head = read_text(RUN_GIT_HEAD).strip()
+    return file_head or git_head()
 
 
 def fnum(value: object) -> float:
@@ -335,7 +344,7 @@ def main() -> int:
 
     summary_rows = [{
         "decision": decision,
-        "git_head": git_head(),
+        "git_head": run_git_head(),
         "primary_metric": "complete_sab_T_bootstrap_over_r_vs_repeated_scalar",
         "samples": perf.get("samples", ""),
         "correctness": perf.get("correctness", ""),
@@ -473,7 +482,7 @@ plaintext bits.
 
 {md_table(proof_rows, ["gate", "status", "metric", "value"])}
 
-Generated from input head `{git_head()}`.
+Generated from input head `{run_git_head()}`.
 """)
 
     write_text(THEORY, """# Stage331 Current-Head High-Stat Model
@@ -503,6 +512,7 @@ all-parameter generality.
 - Focused module: current-head complete SAB direct-DFT implementation.
 - Optimization target: complete `T_bootstrap/r`.
 - Status: `{decision}`.
+- Run head: `{run_git_head()}`.
 
 ## Result
 
@@ -607,9 +617,23 @@ H331_current_head_highstat_refresh:
 
     append_run_log(decision)
 
+    raw_artifacts = [
+        RUN_GIT_HEAD,
+        RAW / "perf_direct_current_head" / "clean.log",
+        RAW / "perf_direct_current_head" / "build.log",
+        RAW / "noise_direct_current_head" / "clean.log",
+        RAW / "noise_direct_current_head" / "build.log",
+        RAW / "noise_direct_current_head" / "run.log",
+        RAW / "noise_direct_current_head" / "time.log",
+        OUT / "full_run_driver.stdout.log",
+        OUT / "full_run_driver.stderr.log",
+    ]
+    raw_artifacts.extend(sorted((RAW / "perf_direct_current_head").glob("run_*.log")))
+
     artifact_index([
         DOC, THEORY, VARIANT, PLAN, RUNNER, BUILDER, PERF_SAMPLES, PERF_SUMMARY,
         NOISE_SUMMARY, SUMMARY, CLAIMS, PROOF, NEXT, COMMANDS, REPORT,
+        *raw_artifacts,
     ])
     return 0 if decision != DECISION_FAIL else 1
 
