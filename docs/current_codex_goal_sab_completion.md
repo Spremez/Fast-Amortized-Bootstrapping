@@ -1181,3 +1181,9 @@ current direct PVW/MAT-SAB baseline using complete `T_bootstrap/r`.
 
 `PASS_STAGE323_DENSE_MAT_PREFLIGHT_DENY_LOOP_CODE_ROUTE_SELECTOR_FORMAT_REQUIRED` denies new exact dense loop code and routes to selector-layout or
 structured mechanism preflight.
+<!-- stage324-selector-layout-mechanism-preflight -->
+### Stage324 selector layout/mechanism preflight
+
+`PASS_STAGE324_SELECT_SELECTOR_TRANSPOSE_RESOURCE_PREFLIGHT_COMPACT_REMAINS_FROZEN` selects a bounded selector-transpose resource/microbench probe and
+keeps structured/compact production work frozen until a formal proof artifact
+exists.

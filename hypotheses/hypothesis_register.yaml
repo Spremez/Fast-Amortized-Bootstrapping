@@ -4290,3 +4290,15 @@ H323_dense_mat_counter_preflight:
     Stage323 denies another local exact dense addmul rewrite: current r=4
     dense MAT already has dec-row reuse and single output stores, while
     r4-unrolled was neutral in complete SAB.
+H324_selector_layout_mechanism_preflight:
+  status: PASS_STAGE324_SELECT_SELECTOR_TRANSPOSE_RESOURCE_PREFLIGHT_COMPACT_REMAINS_FROZEN
+  primary_metric: route_permission_for_complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage324_selector_layout_mechanism_preflight/summary.csv
+    - repro/stage324_selector_layout_mechanism_preflight/route_matrix.csv
+    - repro/stage324_selector_layout_mechanism_preflight/gate_matrix.csv
+    - repro/stage324_selector_layout_mechanism_preflight/value_projection.csv
+  conclusion: >
+    Stage324 selects only a selector-transpose resource/microbench preflight
+    for the exact dense route and freezes compact production code until a
+    formal distribution/keygen/security proof exists.

@@ -487,3 +487,5 @@
 - [x] Stage322 records `PASS_STAGE322_PROFILE_SELECT_DENSE_MAT_LAYOUT_COUNTER_PREFLIGHT` and selects `stage323_dense_mat_layout_counter_preflight` from current direct profile budget.
 <!-- stage323-dense-mat-counter-preflight-checklist -->
 - [x] Stage323 records `PASS_STAGE323_DENSE_MAT_PREFLIGHT_DENY_LOOP_CODE_ROUTE_SELECTOR_FORMAT_REQUIRED` and blocks speculative exact dense loop rewrites.
+<!-- stage324-selector-layout-mechanism-preflight-checklist -->
+- [x] Stage324 records `PASS_STAGE324_SELECT_SELECTOR_TRANSPOSE_RESOURCE_PREFLIGHT_COMPACT_REMAINS_FROZEN` and selects Stage325 selector-transpose resource probe without granting SAB hot-path code permission.

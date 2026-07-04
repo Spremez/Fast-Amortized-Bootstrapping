@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_stage323_input,PASS,Stage323 decision,PASS_STAGE323_DENSE_MAT_PREFLIGHT_DENY_LOOP_CODE_ROUTE_SELECTOR_FORMAT_REQUIRED,Stage324 is valid only after exact local dense-loop code is denied.
+G2_compact_production_boundary,PASS_FROZEN,Stage249 production permission,frozen,Structured/compact route cannot receive SAB hot-path code without a new proof artifact.
+G3_selector_transpose_semantics,PASS_PREFLIGHT_ONLY,semantic transform,storage/view only,Selector-transpose may be tested because it does not alter ciphertext equations if equality holds.
+G4_value_threshold,PASS_THRESHOLD_RECORDED,required dense speedup for 1% full SAB,1.048905,Stage325 must beat this threshold in isolated dense addmul to justify more code.
+G5_stage324_decision,PASS_STAGE324_SELECT_SELECTOR_TRANSPOSE_RESOURCE_PREFLIGHT_COMPACT_REMAINS_FROZEN,selected route,selector_transposed_key_layout,Proceed to a bounded resource/microbench probe; no full SAB code yet.

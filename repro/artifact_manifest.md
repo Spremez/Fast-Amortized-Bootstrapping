@@ -3250,3 +3250,7 @@ Repro artifacts:
   - `docs/stage323_dense_mat_counter_preflight.md`
   - `scripts/build_stage323_dense_mat_counter_preflight.py`
   - `repro/stage323_dense_mat_counter_preflight/`
+- stage324_selector_layout_mechanism_preflight:
+  - `docs/stage324_selector_layout_mechanism_preflight.md`
+  - `scripts/build_stage324_selector_layout_mechanism_preflight.py`
+  - `repro/stage324_selector_layout_mechanism_preflight/`

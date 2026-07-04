@@ -1,0 +1,3 @@
+priority,stage,entry_condition,task,promotion_gate,failure_action
+P0,stage325_selector_transpose_resource_probe,PASS_STAGE324_SELECT_SELECTOR_TRANSPOSE_RESOURCE_PREFLIGHT_COMPACT_REMAINS_FROZEN,Build an isolated selector-transpose resource/equality/microbench probe for r=4 dense MAT addmul.,candidate dense speedup must project at least 1% complete-SAB T_bootstrap/r improvement without unacceptable duplicate key-memory cost,close selector-layout route and update final claim boundary
+P1,compact_route_reopen,formal distribution/keygen/security proof artifact supplied,"Reopen structured/compact selector only with proof, noise recurrence, and full-SAB A/B plan.",proof plus complete-SAB correctness/noise/resource gates,keep compact route frozen
