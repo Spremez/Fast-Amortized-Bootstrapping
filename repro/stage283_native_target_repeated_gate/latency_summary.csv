@@ -1,0 +1,4 @@
+variant,reps,correctness,t_over_r_mean_us,t_over_r_stddev_us,t_over_r_min_us,t_over_r_max_us,scalar_t_over_r_mean_us,speedup_vs_scalar_mean,speedup_vs_fast_control_mean,conservative_control_min_over_candidate_max,decision
+fast_control,0,missing,,0.000,,,,,,,
+backend_sub_decomp_dual,0,missing,,0.000,,,,,,,
+comparison,0,missing_or_fail,,,,,,,,,PASS_STAGE283_NATIVE_ACCESS_MISSING_HANDOFF_READY

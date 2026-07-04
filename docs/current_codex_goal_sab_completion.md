@@ -970,3 +970,9 @@ resource, and native gates remain open.
 `PASS_STAGE282_NOISE_RESOURCE_LOCAL_PASS_NATIVE_REQUIRED` runs the selected `backend_sub_decomp_dual` candidate and fast
 control through the include-zero full-smoke noise/resource proxy. Native
 target-parameter evidence remains open.
+<!-- stage283-native-target-repeated-gate -->
+### Stage283 native target repeated gate
+
+`PASS_STAGE283_NATIVE_ACCESS_MISSING_HANDOFF_READY` records the native target-parameter repeated gate status for the
+selected `backend_sub_decomp_dual` path. Native performance claims remain
+disallowed unless this stage records native access and repeated target results.

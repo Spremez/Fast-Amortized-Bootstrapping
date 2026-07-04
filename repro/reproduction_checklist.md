@@ -407,3 +407,5 @@
 - [x] Stage281 records `PASS_STAGE281_REPEATED_POSITIVE_NOISE_RESOURCE_REQUIRED` for the selected CMUX residual candidate with repeated unprofiled T_bootstrap/r.
 <!-- stage282-cmux-residual-noise-resource-checklist -->
 - [x] Stage282 records `PASS_STAGE282_NOISE_RESOURCE_LOCAL_PASS_NATIVE_REQUIRED` for selected CMUX residual candidate noise/resource smoke.
+<!-- stage283-native-target-repeated-gate-checklist -->
+- [x] Stage283 records `PASS_STAGE283_NATIVE_ACCESS_MISSING_HANDOFF_READY` for native target repeated-gate status.

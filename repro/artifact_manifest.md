@@ -3002,3 +3002,7 @@ Repro artifacts:
   - `scripts/run_stage282_cmux_residual_noise_resource.sh`
   - `scripts/build_stage282_cmux_residual_noise_resource.py`
   - `repro/stage282_cmux_residual_noise_resource/`
+- stage283_native_target_repeated_gate:
+  - `docs/stage283_native_target_repeated_gate.md`
+  - `scripts/build_stage283_native_target_repeated_gate.py`
+  - `repro/stage283_native_target_repeated_gate/`

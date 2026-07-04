@@ -1,0 +1,7 @@
+command: ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/tmp/codex_stage283_known_hosts -o ConnectTimeout=12 delld@192.168.107.220 'printf '"'"'hostname,'"'"'; hostname; printf '"'"'whoami,'"'"'; whoami; printf '"'"'uname,'"'"'; uname -a; printf '"'"'remote_base,'"'"'; printf /home/delld/spz; printf '"'"'\n'"'"'; test -d /home/delld/spz'
+returncode: 255
+--- stdout ---
+
+
+--- stderr ---
+delld@192.168.107.220: Permission denied (publickey,auth-redacted).

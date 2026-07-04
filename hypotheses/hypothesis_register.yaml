@@ -3868,3 +3868,14 @@ H10_stage282_cmux_residual_noise_resource:
   conclusion: >
     Stage282 checks selected candidate correctness/noise/resource on the
     include-zero full-smoke proxy harness. Native target-parameter evidence remains required.
+H10_stage283_native_target_repeated_gate:
+  status: PASS_STAGE283_NATIVE_ACCESS_MISSING_HANDOFF_READY
+  evidence:
+    - repro/stage283_native_target_repeated_gate/native_access_probe.csv
+    - repro/stage283_native_target_repeated_gate/latency_summary.csv
+    - repro/stage283_native_target_repeated_gate/proof_gate.csv
+    - docs/stage283_native_target_repeated_gate.md
+  conclusion: >
+    Stage283 records native target repeated-gate status for the selected
+    CMUX residual candidate. Native claims are allowed only if access and
+    repeated target runs are present.

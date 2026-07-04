@@ -1,0 +1,2 @@
+status,host,user,auth_mode,exit_code,reason
+failed,192.168.107.220,delld,BatchMode,255,native_access_failed_or_missing_auth

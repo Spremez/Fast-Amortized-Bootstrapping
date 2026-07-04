@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_access,PASS_RECORDED_MISSING,native access,native_access_failed_or_missing_auth,Native evidence is allowed only when access succeeds.
+G2_remote_env,MISSING,remote env rows,0,CPU/backend provenance for native runs.
+G3_correctness,MISSING_OR_FAIL,correctness,missing/missing,Timing is interpreted only after both native variants pass.
+G4_repeated_speed,MISSING_OR_NEUTRAL,candidate/control mean,missing,Native target repeated T_bootstrap/r speedup.
+G5_decision,PASS_STAGE283_NATIVE_ACCESS_MISSING_HANDOFF_READY,stage decision,PASS_STAGE283_NATIVE_ACCESS_MISSING_HANDOFF_READY,No native performance claim if access is missing.
