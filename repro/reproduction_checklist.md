@@ -440,3 +440,5 @@
 - [x] Stage298 records `PASS_STAGE298_DIRECT_DFT_TARGET_STAGE_NOISE_LOCAL` for direct DFT target include-zero stage-wise noise.
 <!-- stage299-direct-dft-param-preflight-checklist -->
 - [x] Stage299 records `PASS_STAGE299_DIRECT_DFT_PARAM_PREFLIGHT_LOCAL` for direct DFT added-parameter preflight.
+
+- [x] Stage300 current-head counter route audit recorded with local perf probe and claim boundary.

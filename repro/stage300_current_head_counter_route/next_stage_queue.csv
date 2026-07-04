@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage301_current_head_native_counter_refresh,PASS_STAGE300_COUNTER_CONTEXT_CURRENT_HEAD_REFRESH_REQUIRED,Run current direct-DFT complete-SAB or focused MAT EP probe under native perf counters.,Keep counter claims context-only and continue parameter matrix.
+P1,stage301_parameter_matrix_highstat,native counter refresh not executable,Promote SET_4_5_2048 from preflight to repeated performance/noise/resource matrix.,Restrict parameter claim to SET_2_3_2048 plus one preflight.

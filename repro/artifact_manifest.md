@@ -3095,3 +3095,9 @@ Repro artifacts:
   - `scripts/run_stage299_direct_dft_param_preflight.sh`
   - `scripts/build_stage299_direct_dft_param_preflight.py`
   - `repro/stage299_direct_dft_param_preflight/`
+
+- stage300_current_head_counter_route:
+  - `docs/stage300_current_head_counter_route.md`
+  - `repro/stage300_current_head_counter_route/summary.csv`
+  - `repro/stage300_current_head_counter_route/evidence_matrix.csv`
+  - `repro/stage300_current_head_counter_route/proof_gate.csv`

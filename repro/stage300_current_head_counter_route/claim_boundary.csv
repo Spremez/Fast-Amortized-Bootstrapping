@@ -1,0 +1,4 @@
+claim,status,allowed,not_allowed
+complete_sab_t_over_r,supported_current_head,Use Stage296/Stage299 for scoped complete-SAB amortized performance.,Do not convert T/r evidence into theoretical AVX optimality.
+hardware_counter_attribution,context_only_until_refresh,Use Stage101/Stage226 as historical mechanism context.,Do not cite historical counters as current direct-DFT counter proof.
+mat_avx512_theoretical_optimality,not_supported,State that a current-head counter refresh is required.,Do not claim optimality from timing alone.

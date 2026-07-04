@@ -1,0 +1,6 @@
+item,status,evidence,interpretation
+current_direct_dft_target_highstat,PASS,repro/stage296_direct_dft_highstat/perf_summary.csv,SET_2_3_2048 direct/control=1.075398; direct/scalar=1.735849; samples=10.
+current_direct_dft_added_param_preflight,PASS,repro/stage299_direct_dft_param_preflight/perf_summary.csv,SET_4_5_2048 direct/control=1.063481; direct/scalar=1.747795; samples=3.
+local_counter_capability,BLOCKED,repro/stage300_current_head_counter_route/local_stage28_perf_probe/summary.csv,local perf_command=MISSING; current host route=BLOCKED.
+historical_native_counter_context_stage101,PASS_STAGE101_CB5_NATIVE_PERF_COUNTERS_RECORDED,repro/stage101_cb5_remote_native_perf/summary.csv,Native counter evidence exists for an earlier PVW/MAT-SAB path; use as context only.
+historical_exact_route_counter_context_stage226,PASS_STAGE226_EXACT_COUNTER_ATTRIBUTION_POSITIVE,repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv,Exact-route counters record small load/store/cycle direction; not current direct-DFT proof.

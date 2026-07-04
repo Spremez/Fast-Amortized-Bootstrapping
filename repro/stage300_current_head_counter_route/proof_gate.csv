@@ -1,0 +1,6 @@
+gate,status,value,interpretation
+G1_current_direct_perf,PASS,stage296+stage299,Current direct-DFT complete-SAB T/r evidence is available before counter routing.
+G2_local_counter_capability,BLOCKED,BLOCKED,Local WSL can run current-head counters only if this is PASS or READY_FOR_BENCH.
+G3_historical_counter_context,PASS,stage101=PASS_STAGE101_CB5_NATIVE_PERF_COUNTERS_RECORDED; stage226=PASS_STAGE226_EXACT_COUNTER_ATTRIBUTION_POSITIVE,Historical counters inform hypotheses but cannot replace current-head direct-DFT counters.
+G4_claim_boundary,PASS_NO_OPTIMALITY_CLAIM,counter_refresh_required,Do not claim theoretical MAT-AVX512 optimality for direct DFT until current-head counters are recorded.
+G5_decision,PASS_STAGE300_COUNTER_CONTEXT_CURRENT_HEAD_REFRESH_REQUIRED,PASS_STAGE300_COUNTER_CONTEXT_CURRENT_HEAD_REFRESH_REQUIRED,Controls Stage301 route.

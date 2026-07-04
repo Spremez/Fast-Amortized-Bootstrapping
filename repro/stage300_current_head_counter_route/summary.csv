@@ -1,0 +1,2 @@
+decision,local_counter_gate,historical_counter_context,current_direct_dft_perf,next_route
+PASS_STAGE300_COUNTER_CONTEXT_CURRENT_HEAD_REFRESH_REQUIRED,BLOCKED,present,present,current_head_native_counter_refresh

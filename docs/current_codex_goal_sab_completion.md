@@ -1073,3 +1073,10 @@ parameter-generalized evidence.
 `PASS_STAGE299_DIRECT_DFT_PARAM_PREFLIGHT_LOCAL` tests the direct-DFT candidate on `SET_4_5_2048` with complete-SAB
 `T_bootstrap/r` and final-output noise. The result is a preflight only; broad
 parameter-generalization still needs a larger matrix.
+
+<!-- stage300-current-head-counter-route -->
+### Stage300 current-head counter route audit
+
+`PASS_STAGE300_COUNTER_CONTEXT_CURRENT_HEAD_REFRESH_REQUIRED` records that Stage296/Stage299 support scoped current-head
+complete-SAB `T_bootstrap/r`, while historical native counters remain
+context-only until a current-head direct-DFT counter refresh is recorded.

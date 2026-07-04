@@ -7060,3 +7060,10 @@ Status: `PASS_STAGE298_DIRECT_DFT_TARGET_STAGE_NOISE_LOCAL`.
 Goal: test direct-DFT viability beyond `SET_2_3_2048` on one added parameter.
 
 Status: `PASS_STAGE299_DIRECT_DFT_PARAM_PREFLIGHT_LOCAL`.
+
+## Stage 300: Current-Head Counter Route Audit
+
+Goal: separate current direct-DFT complete-SAB evidence from historical native
+counter context, and route the next executable Stage301 experiment.
+
+Status: `PASS_STAGE300_COUNTER_CONTEXT_CURRENT_HEAD_REFRESH_REQUIRED`.
