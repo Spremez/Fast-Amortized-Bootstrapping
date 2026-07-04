@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,status,failure_action
+P0,stage280_cmux_mat_ep_residual_optimization_design,Top residual component is rgsw_monomial.,Design a falsifiable CMUX/MAT-EP residual candidate under fast flag; require microbench and full SAB A/B.,selected,No next optimization without full SAB A/B.
+P1,stage281_native_execution_resolution,Native probe status is failed.,Resolve key-based native access or keep claim local-only.,conditional,Do not claim native performance.

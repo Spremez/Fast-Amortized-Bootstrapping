@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+native_access,recorded,Stage279 records BatchMode native access status without storing credentials.,Native performance evidence exists if only the access probe failed.,native_access_probe.csv
+residual_profile,measured,Stage279 selects next candidates from the measured fast-path residual profile.,Stage279 proves final algorithm optimality.,residual_top_components.csv
+include_zero_fast,still_guarded,Fast path remains scoped to current PVW include-zero coefficient-one semantics.,The optimization covers ternary or general scalar include-zero.,claim_boundary.csv

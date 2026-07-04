@@ -1,0 +1,3 @@
+variant,mode,r,reps,correctness_gate,pvw_avg_us,t_bootstrap_over_r_pvw_us,speedup_vs_scalar_repeated,full_us,sparse_mul_us,rgsw_monomial_us,cmux_us,mat_ep_us,sub_a_us,source_log
+default,include_zero,4,1,Pass,31058055.000,7764513.750,1.375,30795860,30781010,27416704,27221720,12840056,3364257,repro/stage279_native_access_residual_profile/raw/local_default_include_zero_body_profile_run.log
+include_zero_coeff_one_fast,include_zero,4,1,Pass,28353320.000,7088330.000,1.497,28082666,28067650,27413204,27214770,12827058,654392,repro/stage279_native_access_residual_profile/raw/local_include_zero_coeff_one_fast_include_zero_body_profile_run.log

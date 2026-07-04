@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,interpretation
+G1_native_probe,PASS_RECORDED,BatchMode access,failed,native_access_probe.csv,Native access status is recorded without credentials.
+G2_profile_coverage,PASS,profile variants,"default,include_zero_coeff_one_fast",profile_summary.csv,Residual profile compares default and fast include-zero variants.
+G3_correctness,PASS,profile correctness,2/2,profile_summary.csv,Profile timing is interpreted only after correctness passes.
+G4_local_speed,PASS,profile fast speedup,1.095394,profile_compare.csv,Body-profile run should still show fast path benefit.
+G5_residual_selection,PASS,top residual component,rgsw_monomial:0.966843,residual_top_components.csv,"Next algorithm candidate must target the measured residual, not pre-fast assumptions."
+G6_claim_boundary,PASS_NOT_FINAL,claim scope,PASS_STAGE279_NATIVE_ACCESS_MISSING_PROFILE_SELECT_RESIDUAL,claim_boundary.csv,Native paper-grade claim remains gated; residual profile selects next engineering candidate.
+G7_decision,PASS_STAGE279_NATIVE_ACCESS_MISSING_PROFILE_SELECT_RESIDUAL,stage decision,PASS_STAGE279_NATIVE_ACCESS_MISSING_PROFILE_SELECT_RESIDUAL,proof_gate.csv,Proceed to residual-driven next candidate and/or native access resolution.

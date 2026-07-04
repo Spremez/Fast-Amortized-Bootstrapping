@@ -2982,3 +2982,8 @@ Repro artifacts:
   - `scripts/run_stage278_native_include_zero_fast_handoff.sh`
   - `scripts/build_stage278_native_larger_stats_include_zero_fast.py`
   - `repro/stage278_native_larger_stats_include_zero_fast/`
+- stage279_native_access_residual_profile:
+  - `docs/stage279_native_access_residual_profile.md`
+  - `scripts/run_stage279_native_access_residual_profile.sh`
+  - `scripts/build_stage279_native_access_residual_profile.py`
+  - `repro/stage279_native_access_residual_profile/`

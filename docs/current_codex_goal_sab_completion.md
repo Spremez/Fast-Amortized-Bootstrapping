@@ -947,3 +947,8 @@ larger-stat promotion before paper-grade speed claims.
 `PASS_STAGE278_LOCAL_LARGER_STATS_NATIVE_REQUIRED` records reps>=5 local larger-stat evidence for the guarded
 include-zero fast path and records native evidence status separately. It does
 not convert WSL results into a paper-grade native claim.
+### Stage279 native access and residual profile
+
+`PASS_STAGE279_NATIVE_ACCESS_MISSING_PROFILE_SELECT_RESIDUAL` records no-credential native access status and measures the
+fast-path residual profile. The next optimization is selected from the measured
+residual components rather than pre-fast bottleneck assumptions.

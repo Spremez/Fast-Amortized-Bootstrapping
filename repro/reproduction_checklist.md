@@ -399,3 +399,5 @@
 - [x] Stage277 include-zero fast repeated/resource records `PASS_STAGE277_INCLUDE_ZERO_FAST_REPEATED_RESOURCE_PROMOTE_NATIVE_STATS_REQUIRED` and keeps final claims gated.
 <!-- stage278-native-larger-stats-include-zero-fast-checklist -->
 - [x] Stage278 records `PASS_STAGE278_LOCAL_LARGER_STATS_NATIVE_REQUIRED` with reps>=5 local timing, resource/noise proxy, and native status separated.
+<!-- stage279-native-access-residual-profile-checklist -->
+- [x] Stage279 records `PASS_STAGE279_NATIVE_ACCESS_MISSING_PROFILE_SELECT_RESIDUAL` with native access status and fast-path residual profile.

@@ -1,0 +1,2 @@
+mode,r,default_t_bootstrap_over_r_us,fast_t_bootstrap_over_r_us,fast_speedup_vs_profile_default,default_sub_a_us,fast_sub_a_us,sub_a_reduction_ratio,default_correctness,fast_correctness,status
+include_zero,4,7764513.750,7088330.000,1.095394,3364257.000,654392.000,5.141042,Pass,Pass,positive

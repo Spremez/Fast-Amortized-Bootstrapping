@@ -3828,3 +3828,13 @@ H10_stage278_native_larger_stats_include_zero_fast:
     Stage278 records PASS_STAGE278_LOCAL_LARGER_STATS_NATIVE_REQUIRED. It strengthens local repeated evidence for
     the guarded include-zero fast path while keeping native paper-grade
     performance as a separate gate.
+H10_stage279_native_access_residual_profile:
+  status: PASS_STAGE279_NATIVE_ACCESS_MISSING_PROFILE_SELECT_RESIDUAL
+  evidence:
+    - repro/stage279_native_access_residual_profile/native_access_probe.csv
+    - repro/stage279_native_access_residual_profile/residual_top_components.csv
+    - repro/stage279_native_access_residual_profile/proof_gate.csv
+    - docs/stage279_native_access_residual_profile.md
+  conclusion: >
+    Stage279 records PASS_STAGE279_NATIVE_ACCESS_MISSING_PROFILE_SELECT_RESIDUAL. It keeps native performance gated and selects
+    the next candidate from the measured fast-path residual profile.
