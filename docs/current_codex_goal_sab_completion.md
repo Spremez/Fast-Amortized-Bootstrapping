@@ -1216,3 +1216,10 @@ compact/optimality proof remain open.
 `PASS_STAGE329_COMPACT_SELECTOR_FINITE_CHECKER_PASS_SECURITY_KEYGEN_OPEN_NO_CODE` runs an executable finite checker for the compact selector proof
 route. Finite algebra passes, but production keygen/security/noise and full SAB
 evidence remain open; no compact SAB code is admitted.
+<!-- stage330-highstat-reconciliation -->
+### Stage330 high-stat reconciliation
+
+`PASS_STAGE330_HIGHSTAT_RECONCILIATION_HISTORICAL_10RUN_CURRENT_HOTCODE_5RUN` records that Stage296 supplies same-flag 10-run direct-DFT
+mechanism evidence, while Stage321 remains the current-hot-code complete-SAB
+engineering claim with 5 samples. Strict current-head paper tables still require
+a fresh >=10-sample run.

@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage331_current_head_highstat_refresh,paper table needs exact current-head >=10 samples,rerun direct PVW/MAT-SAB complete T_bootstrap/r with >=10 samples plus noise/resource refresh,Keep Stage330 as historical high-stat mechanism support and Stage321 as current-hot-code engineering support.
+P1,stage331_compact_keygen_security_preflight,algorithmic improvement beyond exact dense frontier is prioritized,"close keygen distribution, semantic-zero security, and noise recurrence before production code",Keep compact route proof-blocked; no SAB hot-path code.

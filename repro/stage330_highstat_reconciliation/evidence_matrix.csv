@@ -1,0 +1,7 @@
+evidence,status,metric,value,scope
+stage296_perf_direct_dft,PASS,complete SAB T_bootstrap/r,speedup=1.735849; T/r=6116156.050us; samples=10,historical-source high-stat mechanism evidence for direct DFT selected path.
+stage296_noise_direct_dft,PASS,target final-output pair equivalence/noise,trials=10; pair_failures=0; log2_sigma=-7.759,historical direct-DFT noise side evidence.
+stage297_resource_sidecondition,PASS,resource side condition,rss_ratio=1.000005; key_ratio=1.065349,"local resource side condition, not all-parameter memory proof."
+stage321_direct_baseline,PASS,current-hot-code complete SAB T_bootstrap/r,speedup=1.745361; T/r=6118505.950us; samples=5,current-hot-code engineering evidence; sample count is 5.
+stage328_active_goal_audit,OPEN,remaining original-goal gaps,paper_highstat_ready=no; compact=proof_required,stage330 narrows the high-stat gap but does not close optimality or compact proof.
+stage329_compact_checker,OPEN,compact finite algebra,finite_failures=0; keygen_code_admitted=,compact selector finite algebra passed; no production keygen/security/noise/full-SAB claim.

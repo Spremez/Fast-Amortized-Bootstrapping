@@ -1,0 +1,3 @@
+comparison,hot_code_changed,changed_count,changed_paths,interpretation
+stage296_input_60350e3_to_current_head,yes,6,main.c; src/mosfhet/Makefile.def; src/mosfhet/src/fft/spqlios/spqlios-fft-impl-avx512.c; src/mosfhet/src/fft/spqlios/spqlios-fft.h; src/mosfhet/src/fft/spqlios/spqlios-ifft-avx512.s; src/mosfhet/src/mattrgsw.c,Stage296 is high-stat but historical-source evidence if any hot-code path changed after 60350e3.
+stage321_input_e193b30_to_current_head,no,0,,Stage321 can stand as current-hot-code evidence if no SAB/MAT source path changed after e193b30.

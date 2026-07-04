@@ -3277,3 +3277,11 @@ Repro artifacts:
   - `docs/stage329_formal_compact_selector_checker.md`
   - `scripts/build_stage329_formal_compact_selector_checker.py`
   - `repro/stage329_formal_compact_selector_checker/`
+<!-- stage330-highstat-reconciliation-manifest -->
+- stage330_highstat_reconciliation:
+  - `docs/stage330_highstat_reconciliation.md`
+  - `theory_checks/stage330_highstat_reconciliation_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage330_reconciled_direct_dft_claim.md`
+  - `experiments/stage331_current_head_highstat_or_compact_plan.md`
+  - `scripts/build_stage330_highstat_reconciliation.py`
+  - `repro/stage330_highstat_reconciliation/`

@@ -1,0 +1,6 @@
+claim,status,safe_statement,not_supported
+primary_metric_dimension,PASS,The supported PVW/MAT-SAB speedups are amortized complete-SAB T_bootstrap/r against repeated scalar SAB.,Kernel-only speedup or single bootstrap latency as the final algorithm claim.
+direct_dft_highstat_mechanism,PASS_SCOPED_HISTORICAL_SOURCE,Stage296 gives 10-run direct-DFT evidence with 10 noise trials under the same selected flags and parameter.,It is not by itself an exact current-head paper table because hot-code files changed after 60350e3.
+current_hotcode_complete_sab,PASS_SCOPED_ENGINEERING,Stage321 direct baseline is current-hot-code equivalent from e193b30 to HEAD and records 5-sample T_bootstrap/r speedup.,Paper-grade current-head >=10 sample claim without a rerun.
+strict_current_head_paper_ready,PARTIAL_RERUN_REQUIRED,A strict current-head paper table should rerun direct PVW/MAT-SAB with >=10 samples and refreshed noise/resource side conditions.,Claiming the current head has already met the >=10 sample threshold.
+theoretical_optimality,OPEN,The exact dense implementation frontier is closed under current evidence; theoretical optimality remains unproven.,The MAT/RLWE r-body SAB construction is globally optimal.

@@ -4360,3 +4360,15 @@ H329_formal_compact_selector_checker:
   conclusion: >
     Stage329 passes finite compact-selector algebra checks but leaves
     production keygen/security/noise and complete-SAB T_bootstrap/r gates open.
+H330_highstat_reconciliation:
+  status: PASS_STAGE330_HIGHSTAT_RECONCILIATION_HISTORICAL_10RUN_CURRENT_HOTCODE_5RUN
+  primary_metric: complete_sab_T_bootstrap_over_r_vs_repeated_scalar
+  evidence:
+    - repro/stage330_highstat_reconciliation/summary.csv
+    - repro/stage330_highstat_reconciliation/flag_compatibility.csv
+    - repro/stage330_highstat_reconciliation/source_diff_summary.csv
+    - repro/stage330_highstat_reconciliation/claim_update.csv
+  conclusion: >
+    Stage330 reconciles same-flag Stage296 high-stat direct-DFT evidence with
+    Stage321 current-hot-code engineering evidence. It preserves the strict
+    boundary that current-head paper-grade >=10-sample evidence needs a rerun.

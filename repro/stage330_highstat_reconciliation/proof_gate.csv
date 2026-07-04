@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_inputs_present,PASS,Stage296/Stage321 summaries,stage296=True; stage321=True,"Stage330 is an evidence reconciliation, so both input campaigns must be present."
+G2_flag_metric_compatibility,PASS,flag rows,all_pass,"High-stat bridging is denied if parameter, backend, branch, or direct-DFT flags differ."
+G3_highstat_threshold,PASS,Stage296 samples,10,High-stat mechanism evidence requires at least ten complete-SAB samples.
+G4_current_hotcode_equivalence,PASS,source diff e193b30..HEAD,no_hot_code_diff,Stage321 remains usable for current-hot-code evidence if hot SAB/MAT code did not change after its input head.
+G5_stage296_source_boundary,BOUNDARY,source diff 60350e3..HEAD,6 hot-code files changed,"Historical high-stat evidence supports the mechanism and flag path, but strict current-head paper tables still need rerun if hot code changed."
+G6_decision,PASS_STAGE330_HIGHSTAT_RECONCILIATION_HISTORICAL_10RUN_CURRENT_HOTCODE_5RUN,claim boundary,high-stat mechanism reconciled; current-head strict high-stat remains optional/required by paper wording,Do not claim theoretical optimality or compact SAB acceleration from this stage.

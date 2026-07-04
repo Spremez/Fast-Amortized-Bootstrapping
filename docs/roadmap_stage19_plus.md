@@ -7232,3 +7232,10 @@ Goal: convert the compact selector proof route into an executable finite
 checker without touching SAB hot paths.
 
 Status: `PASS_STAGE329_COMPACT_SELECTOR_FINITE_CHECKER_PASS_SECURITY_KEYGEN_OPEN_NO_CODE`.
+<!-- stage330-highstat-reconciliation-roadmap -->
+## Stage 330: High-Stat Reconciliation
+
+Goal: reconcile historical high-stat direct-DFT evidence with the current
+PVW/MAT-SAB `T_bootstrap/r` claim boundary.
+
+Status: `PASS_STAGE330_HIGHSTAT_RECONCILIATION_HISTORICAL_10RUN_CURRENT_HOTCODE_5RUN`.

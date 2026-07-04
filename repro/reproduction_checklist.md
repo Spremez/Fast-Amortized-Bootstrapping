@@ -499,3 +499,6 @@
 - [x] Stage328 records `PASS_STAGE328_ACTIVE_GOAL_AUDIT_GOAL_REMAINS_ACTIVE_SELECT_HIGHSTAT_OR_FORMAL_PROOF` and keeps the active goal open with explicit next routes.
 <!-- stage329-formal-compact-selector-checker-checklist -->
 - [x] Stage329 records `PASS_STAGE329_COMPACT_SELECTOR_FINITE_CHECKER_PASS_SECURITY_KEYGEN_OPEN_NO_CODE` and preserves no-code permission for compact SAB.
+<!-- stage330-highstat-reconciliation-checklist -->
+- [x] Stage330 records `PASS_STAGE330_HIGHSTAT_RECONCILIATION_HISTORICAL_10RUN_CURRENT_HOTCODE_5RUN` and separates high-stat historical mechanism
+  evidence from strict current-head paper-table requirements.

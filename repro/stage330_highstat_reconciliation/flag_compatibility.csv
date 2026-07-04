@@ -1,0 +1,18 @@
+check,stage296_perf_direct_dft,stage321_direct_baseline,status,interpretation
+metric_endpoint,complete SAB T_bootstrap/r,complete SAB T_bootstrap/r,PASS,Both summaries parse pvw_lane_us and speedup against repeated scalar SAB.
+param,SET_2_3_2048,SET_2_3_2048,PASS,Primary parameter set must match before statistical evidence can be bridged.
+fft_lib,spqlios_avx512,spqlios_avx512,PASS,Backend must match; otherwise SIMD/backend effects are confounded.
+r_body_lanes,4,4,PASS,The amortized metric divides by the same MAT body/lane count.
+reps,1,1,PASS,One complete SAB sample per outer run in both campaigns.
+include_zero_branch,true,true,PASS,Branch behavior is part of the algorithmic schedule.
+ternary_branch,false,false,PASS,"Both campaigns test binary include-zero, not ternary."
+A_PRNG=none,present,present,PASS,Required selected direct-DFT implementation flag.
+ENABLE_VAES=false,present,present,PASS,Required selected direct-DFT implementation flag.
+KEY=BINARY,present,present,PASS,Required selected direct-DFT implementation flag.
+MAT_TRGSW_AVX512_SMALLR_SPECIALIZED=true,present,present,PASS,Required selected direct-DFT implementation flag.
+MAT_TRGSW_AVX512_SUB_DECOMP=true,present,present,PASS,Required selected direct-DFT implementation flag.
+MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true,present,present,PASS,Required selected direct-DFT implementation flag.
+SAB_PVW_BACKEND_FROM_DFT_ADD=true,present,present,PASS,Required selected direct-DFT implementation flag.
+SAB_PVW_SUB_DECOMP_FUSION=true,present,present,PASS,Required selected direct-DFT implementation flag.
+SAB_PVW_DUAL_SUB_CMUX=true,present,present,PASS,Required selected direct-DFT implementation flag.
+SAB_PVW_SUBA_INCLUDE_ZERO_COEFF_ONE_FAST=true,present,present,PASS,Required selected direct-DFT implementation flag.
