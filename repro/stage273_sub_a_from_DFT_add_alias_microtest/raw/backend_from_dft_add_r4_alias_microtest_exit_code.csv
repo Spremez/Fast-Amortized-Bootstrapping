@@ -1,0 +1,4 @@
+variant,phase,exit_code
+backend_from_dft_add,clean,0
+backend_from_dft_add,build,0
+backend_from_dft_add,run,0

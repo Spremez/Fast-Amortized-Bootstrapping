@@ -1,0 +1,25 @@
+SAB_PVW_SUBA_ALIAS_TEST from_DFT_add variant=backend_from_dft_add case=out_distinct k=1 r=4 N=1024 mismatches=0 gate=Pass
+SAB_PVW_SUBA_ALIAS_TEST from_DFT_add variant=backend_from_dft_add case=out_equals_addend k=1 r=4 N=1024 mismatches=0 gate=Pass
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=include_zero step=start
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=include_zero step=input_key
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=include_zero step=pvw_key
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=include_zero step=sab_key
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=include_zero step=arrays
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=include_zero step=samples
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=include_zero step=reference
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=include_zero step=alias
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=include_zero step=compare
+SAB_PVW_SUBA_ALIAS_TEST sub_a_equivalence variant=backend_from_dft_add mode=include_zero r=4 in_N=16 mismatches=0 gate=Pass
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=include_zero step=free
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=ternary step=start
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=ternary step=input_key
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=ternary step=pvw_key
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=ternary step=sab_key
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=ternary step=arrays
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=ternary step=samples
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=ternary step=reference
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=ternary step=alias
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=ternary step=compare
+SAB_PVW_SUBA_ALIAS_TEST sub_a_equivalence variant=backend_from_dft_add mode=ternary r=4 in_N=16 mismatches=0 gate=Pass
+SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=backend_from_dft_add mode=ternary step=free
+SAB_PVW_SUBA_ALIAS_TEST overall variant=backend_from_dft_add gate=Pass

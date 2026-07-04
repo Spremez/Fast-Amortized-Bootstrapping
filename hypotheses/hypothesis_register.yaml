@@ -3763,3 +3763,14 @@ H10_stage272_sub_a_selector_materialization_design_gate:
     Stage272 records PASS_STAGE272_SUB_A_SELECTOR_MATERIALIZATION_DESIGN_GATE. It identifies alias safety as the first
     falsifiable gate for sub_a fused materialization and forbids speedup claims
     until isolated equivalence and full SAB A/B gates pass.
+H10_stage273_sub_a_from_DFT_add_alias_microtest:
+  status: PASS_STAGE273_SUB_A_ALIAS_MICROTEST_ENABLES_FLAGGED_SMOKE
+  evidence:
+    - repro/stage273_sub_a_from_DFT_add_alias_microtest/alias_summary.csv
+    - repro/stage273_sub_a_from_DFT_add_alias_microtest/sub_a_equivalence.csv
+    - repro/stage273_sub_a_from_DFT_add_alias_microtest/proof_gate.csv
+    - docs/stage273_sub_a_from_DFT_add_alias_microtest.md
+  conclusion: >
+    Stage273 records PASS_STAGE273_SUB_A_ALIAS_MICROTEST_ENABLES_FLAGGED_SMOKE. It permits only a flagged Stage274 smoke for
+    backend-based sub_a fused materialization; it does not prove full SAB
+    speedup and does not make the portable fallback alias-safe.

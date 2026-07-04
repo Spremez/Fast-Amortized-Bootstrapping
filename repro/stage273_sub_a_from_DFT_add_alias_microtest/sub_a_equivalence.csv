@@ -1,0 +1,3 @@
+variant,mode,r,in_N,mismatches,gate,source_log
+backend_from_dft_add,include_zero,4,16,0,Pass,repro/stage273_sub_a_from_DFT_add_alias_microtest/raw/backend_from_dft_add_r4_alias_microtest_run.log
+backend_from_dft_add,ternary,4,16,0,Pass,repro/stage273_sub_a_from_DFT_add_alias_microtest/raw/backend_from_dft_add_r4_alias_microtest_run.log

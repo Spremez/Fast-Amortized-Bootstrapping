@@ -1,0 +1,9 @@
+gate,status,metric,value,interpretation
+G1_default_distinct,PASS,default out!=addend,0,Portable fallback remains correct when output and addend are distinct.
+G2_default_alias_negative_control,PASS_NEGATIVE_CONTROL,default out==addend,5120,"Portable fallback is not alias-safe, so in-place sub_a fusion must not use it."
+G3_backend_alias_helper,PASS,backend out==addend,0,Backend direct add helper is alias-safe in this deterministic PVW_TMLWE microtest.
+G4_backend_include_zero_sub_a,PASS,include-zero sub_a exact equivalence,0,Alias materialization preserves include-zero sub_a state for r=4 fixture.
+G5_backend_ternary_sub_a,PASS,ternary sub_a exact equivalence,0,Alias materialization preserves ternary sub_a state for r=4 fixture.
+G6_exit_codes,PASS,run exit,default=0; backend=0,Both microtest binaries completed.
+G7_claim_boundary,PASS_MICROTEST_ONLY,claim scope,no full SAB speed claim,Stage273 only gates a candidate implementation path.
+G8_decision,PASS_STAGE273_SUB_A_ALIAS_MICROTEST_ENABLES_FLAGGED_SMOKE,stage decision,PASS_STAGE273_SUB_A_ALIAS_MICROTEST_ENABLES_FLAGGED_SMOKE,Proceed only to an explicit-flag Stage274 smoke when this decision is PASS.

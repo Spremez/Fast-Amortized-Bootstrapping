@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+backend_from_dft_add_alias_safety,microtest_supported,The backend direct-add helper passed deterministic out==addend PVW_TMLWE alias testing.,All from_DFT_add implementations are alias-safe.,alias_summary.csv
+sub_a_alias_equivalence,microtest_supported,A local alias-materialized sub_a candidate exactly matched reference include-zero and ternary sub_a on the Stage273 r=4 fixture.,The full SAB path is faster or fully correct after this stage.,sub_a_equivalence.csv
+default_fallback_alias,negative_control,The portable fallback failed out==addend alias testing and must not be used in-place.,The default fallback can be used for sub_a in-place fusion.,alias_summary.csv
+full_bootstrap_speedup,not_tested,Stage274 must test full SAB T_bootstrap/r under an explicit flag.,Stage273 proves a SAB acceleration.,proof_gate.csv

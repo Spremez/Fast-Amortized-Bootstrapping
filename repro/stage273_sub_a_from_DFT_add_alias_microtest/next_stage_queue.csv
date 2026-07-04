@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,status,failure_action
+P0,stage274_sub_a_fused_materialization_smoke,Stage273 backend alias and sub_a equivalence gates passed.,Add an explicit `SAB_PVW_SUBA_FUSED_FROM_DFT_ADD` flag; run correctness plus r=4 include-zero/ternary full SAB T_bootstrap/r smoke.,selected,"If full SAB is neutral or negative, close S272-A as microtest-only and do not default-enable."
+P1,stage275_sub_a_fused_repeated_noise_resource,Only if Stage274 smoke is positive.,"Repeated timing, noise/resource, and claim-boundary check.",conditional,Demote to neutral if repeated or noise/resource gates fail.

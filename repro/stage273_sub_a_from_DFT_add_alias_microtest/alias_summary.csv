@@ -1,0 +1,5 @@
+variant,case,k,r,N,mismatches,gate,source_log
+backend_from_dft_add,out_distinct,1,4,1024,0,Pass,repro/stage273_sub_a_from_DFT_add_alias_microtest/raw/backend_from_dft_add_r4_alias_microtest_run.log
+backend_from_dft_add,out_equals_addend,1,4,1024,0,Pass,repro/stage273_sub_a_from_DFT_add_alias_microtest/raw/backend_from_dft_add_r4_alias_microtest_run.log
+default,out_distinct,1,4,1024,0,Pass,repro/stage273_sub_a_from_DFT_add_alias_microtest/raw/default_r4_alias_microtest_run.log
+default,out_equals_addend,1,4,1024,5120,Fail,repro/stage273_sub_a_from_DFT_add_alias_microtest/raw/default_r4_alias_microtest_run.log

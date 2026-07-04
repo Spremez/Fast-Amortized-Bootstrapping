@@ -915,3 +915,9 @@ selects the next falsifiable optimization gate.
 `PASS_STAGE272_SUB_A_SELECTOR_MATERIALIZATION_DESIGN_GATE` records a design-only gate for non-binary `sub_a` selector
 materialization. It selects alias-safety/equivalence testing before any fused
 implementation and keeps all speedup claims bounded by Stage271 Amdahl shares.
+### Stage273 sub_a from_DFT_add alias microtest
+
+`PASS_STAGE273_SUB_A_ALIAS_MICROTEST_ENABLES_FLAGGED_SMOKE` records an isolated alias/equivalence gate for the non-binary
+`sub_a` fused materialization candidate. It validates only the backend
+direct-add route under deterministic r=4 fixtures and keeps the default fallback
+as a negative control.

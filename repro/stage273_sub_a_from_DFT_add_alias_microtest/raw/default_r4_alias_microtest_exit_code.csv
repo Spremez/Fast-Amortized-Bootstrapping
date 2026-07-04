@@ -1,0 +1,4 @@
+variant,phase,exit_code
+default,clean,0
+default,build,0
+default,run,0

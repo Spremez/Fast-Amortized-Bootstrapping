@@ -2952,3 +2952,8 @@ Repro artifacts:
   - `theory_checks/stage272_sub_a_selector_materialization.md`
   - `scripts/build_stage272_sub_a_selector_materialization_design_gate.py`
   - `repro/stage272_sub_a_selector_materialization_design_gate/`
+- stage273_sub_a_from_DFT_add_alias_microtest:
+  - `docs/stage273_sub_a_from_DFT_add_alias_microtest.md`
+  - `scripts/run_stage273_sub_a_from_DFT_add_alias_microtest.sh`
+  - `scripts/build_stage273_sub_a_from_DFT_add_alias_microtest.py`
+  - `repro/stage273_sub_a_from_DFT_add_alias_microtest/`

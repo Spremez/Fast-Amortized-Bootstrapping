@@ -3,7 +3,7 @@
 #include <benchmark_util.h>
 #include <sab_profile.h>
 #include <inttypes.h>
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 #include <sab_pvw.h>
 #endif
 
@@ -551,7 +551,7 @@ void test_sab_microbench(){
   );
 }
 
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
   const int N = in->s[0][lane]->N;
   TRLWE_Key out = trlwe_alloc_key(N, in->k, in->sigma);
@@ -2313,6 +2313,263 @@ static void isolated_scalar_sub_a_ternary(TRLWE * p, const uint64_t * a,
     trlwe_addto(p[idx], tmp);
   }
 }
+
+#if defined(SAB_PVW_SUBA_ALIAS_TEST)
+static const char * stage273_variant_name(void){
+#ifdef SAB_PVW_BACKEND_FROM_DFT_ADD
+  return "backend_from_dft_add";
+#else
+  return "default";
+#endif
+}
+
+static bool stage273_pvmtmlwe_equal(PVW_TMLWE lhs, PVW_TMLWE rhs,
+    uint64_t * mismatches){
+  bool pass = true;
+  for (size_t i = 0; i < (size_t) lhs->k; i++){
+    for (size_t coeff = 0; coeff < (size_t) lhs->a[i]->N; coeff++){
+      if(lhs->a[i]->coeffs[coeff] != rhs->a[i]->coeffs[coeff]){
+        pass = false;
+        (*mismatches)++;
+      }
+    }
+  }
+  for (size_t lane = 0; lane < (size_t) lhs->r; lane++){
+    for (size_t coeff = 0; coeff < (size_t) lhs->b[lane]->N; coeff++){
+      if(lhs->b[lane]->coeffs[coeff] != rhs->b[lane]->coeffs[coeff]){
+        pass = false;
+        (*mismatches)++;
+      }
+    }
+  }
+  return pass;
+}
+
+static void stage273_fill_sample(PVW_TMLWE sample, uint64_t salt){
+  for (size_t i = 0; i < (size_t) sample->k; i++){
+    for (size_t coeff = 0; coeff < (size_t) sample->a[i]->N; coeff++){
+      sample->a[i]->coeffs[coeff] = int2torus(
+          (salt + 3 * i + 5 * coeff) & 31, 5);
+    }
+  }
+  for (size_t lane = 0; lane < (size_t) sample->r; lane++){
+    for (size_t coeff = 0; coeff < (size_t) sample->b[lane]->N; coeff++){
+      sample->b[lane]->coeffs[coeff] = int2torus(
+          (7 + salt + 11 * lane + 13 * coeff) & 31, 5);
+    }
+  }
+}
+
+static TRLWE_Key stage273_sub_a_sparse_key_fixture(int N, int k,
+    const uint64_t * distances, const int64_t * coeffs, int h,
+    double sigma){
+  TRLWE_Key out = trlwe_alloc_key(N, k, sigma);
+  for (size_t key_idx = 0; key_idx < (size_t) k; key_idx++){
+    memset(out->s[key_idx]->coeffs, 0, sizeof(Torus) * N);
+    uint64_t previous = N;
+    for (size_t step = 0; step < (size_t) h; step++){
+      const uint64_t distance = distances[step];
+      if(distance == 0 || distance > previous){
+        printf("SAB_PVW_SUBA_ALIAS_TEST invalid fixture distance"
+               " step=%" PRIu64 " distance=%" PRIu64 " previous=%" PRIu64
+               "\n", (uint64_t) step, distance, previous);
+        exit(1);
+      }
+      if(coeffs[step] != 1 && coeffs[step] != -1){
+        printf("SAB_PVW_SUBA_ALIAS_TEST invalid fixture coeff"
+               " step=%" PRIu64 " coeff=%" PRId64 "\n",
+               (uint64_t) step, coeffs[step]);
+        exit(1);
+      }
+      previous -= distance;
+      out->s[key_idx]->coeffs[previous] = (Torus) coeffs[step];
+    }
+  }
+  return out;
+}
+
+static bool stage273_check_from_DFT_add_alias(int k, int r, int N){
+  const char * variant = stage273_variant_name();
+  bool pass = true;
+  uint64_t distinct_mismatches = 0;
+  uint64_t alias_mismatches = 0;
+  PVW_TMLWE addend = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE dft_source = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE tmp = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE expected = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE out_distinct = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE out_alias = pvmtmlwe_alloc_new_sample(k, r, N);
+  PVW_TMLWE_DFT dft = pvmtmlwe_alloc_new_DFT_sample(k, r, N);
+
+  stage273_fill_sample(addend, 17);
+  stage273_fill_sample(dft_source, 91);
+  pvmtmlwe_to_DFT(dft, dft_source);
+  pvmtmlwe_from_DFT(tmp, dft);
+  pvmtmlwe_add(expected, tmp, addend);
+
+  pvmtmlwe_from_DFT_add(out_distinct, dft, addend);
+  bool distinct_pass = stage273_pvmtmlwe_equal(expected, out_distinct,
+      &distinct_mismatches);
+  pvmtmlwe_copy(out_alias, addend);
+  pvmtmlwe_from_DFT_add(out_alias, dft, out_alias);
+  bool alias_pass = stage273_pvmtmlwe_equal(expected, out_alias,
+      &alias_mismatches);
+
+  printf("SAB_PVW_SUBA_ALIAS_TEST from_DFT_add variant=%s case=out_distinct"
+         " k=%d r=%d N=%d mismatches=%" PRIu64 " gate=%s\n",
+         variant, k, r, N, distinct_mismatches,
+         distinct_pass ? "Pass" : "Fail");
+  printf("SAB_PVW_SUBA_ALIAS_TEST from_DFT_add variant=%s case=out_equals_addend"
+         " k=%d r=%d N=%d mismatches=%" PRIu64 " gate=%s\n",
+         variant, k, r, N, alias_mismatches, alias_pass ? "Pass" : "Fail");
+
+  pass &= distinct_pass;
+#ifdef SAB_PVW_BACKEND_FROM_DFT_ADD
+  pass &= alias_pass;
+#endif
+
+  free_pvmtmlwe_DFT(dft);
+  free_pvmtmlwe(out_alias);
+  free_pvmtmlwe(out_distinct);
+  free_pvmtmlwe(expected);
+  free_pvmtmlwe(tmp);
+  free_pvmtmlwe(dft_source);
+  free_pvmtmlwe(addend);
+  return pass;
+}
+
+static void stage273_sub_a_include_zero_alias(PVW_TMLWE * p,
+    const uint64_t * a, MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+  for (size_t idx = 0; idx < sab->in_N; idx++){
+    pvmtmlwe_mul_by_xai_minus_1(sab->tmp->tmlwe, p[idx], a[idx]);
+    mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft, sab->tmp->tmlwe,
+        selector, sab->tmp->scratch);
+    pvmtmlwe_from_DFT_add(p[idx], sab->tmp->tmlwe_dft, p[idx]);
+  }
+}
+
+static void stage273_sub_a_ternary_alias(PVW_TMLWE * p,
+    const uint64_t * a, MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+  for (size_t idx = 0; idx < sab->in_N; idx++){
+    pvmtmlwe_mul_by_xai(sab->tmp->rotated, p[idx], a[idx]);
+    pvmtmlwe_copy(p[idx], sab->tmp->rotated);
+    pvmtmlwe_mul_by_xai_minus_1(sab->tmp->tmlwe, p[idx],
+        -2 * (int64_t) a[idx]);
+    mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft, sab->tmp->tmlwe,
+        selector, sab->tmp->scratch);
+    pvmtmlwe_from_DFT_add(p[idx], sab->tmp->tmlwe_dft, p[idx]);
+  }
+}
+
+static bool stage273_pvw_array_equal(PVW_TMLWE * lhs, PVW_TMLWE * rhs,
+    int count, uint64_t * mismatches){
+  bool pass = true;
+  for (size_t idx = 0; idx < (size_t) count; idx++){
+    pass &= stage273_pvmtmlwe_equal(lhs[idx], rhs[idx], mismatches);
+  }
+  return pass;
+}
+
+static bool stage273_check_sub_a_alias_equivalence(bool include_zeros){
+  const int N = 1024, k = 1, r = 4, l = 1, bg_bit = 23, prec = 3;
+  const int r_prec = 3, in_N = 16, h = 2;
+  const uint64_t selector_values[3] = {5, 4, 7};
+  const int64_t include_zero_coeffs[2] = {1, 1};
+  const int64_t ternary_coeffs[2] = {1, -1};
+  const int64_t * key_coeffs = include_zeros ?
+      include_zero_coeffs : ternary_coeffs;
+  const char * mode = include_zeros ? "include_zero" : "ternary";
+  const char * variant = stage273_variant_name();
+  uint64_t a[16];
+  uint64_t mismatches = 0;
+  bool pass;
+
+  printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=start\n",
+         variant, mode);
+  fflush(stdout);
+
+  for (size_t idx = 0; idx < (size_t) in_N; idx++){
+    a[idx] = (3 * idx + 5) % (2 * N);
+    if(a[idx] == 0) a[idx] = 1;
+  }
+
+  printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=input_key\n",
+         variant, mode);
+  fflush(stdout);
+  TRLWE_Key input_key = stage273_sub_a_sparse_key_fixture(in_N, k,
+      selector_values, key_coeffs, h, pow(2, -15));
+  printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=pvw_key\n",
+         variant, mode);
+  fflush(stdout);
+  PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(N, k, r, pow(2, -70));
+  printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=sab_key\n",
+         variant, mode);
+  fflush(stdout);
+  SAB_PVW_Key pvw_sab = sab_pvw_new_nonbinary_key(input_key, pvw_key,
+      prec, h, r_prec, l, bg_bit, include_zeros, !include_zeros);
+  printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=arrays\n",
+         variant, mode);
+  fflush(stdout);
+  PVW_TMLWE * ref = alloc_pvw_sample_array_local(in_N, k, r, N);
+  PVW_TMLWE * alias = alloc_pvw_sample_array_local(in_N, k, r, N);
+  TorusPolynomial * msg = polynomial_new_array_of_torus_polynomials(N, r);
+
+  printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=samples\n",
+         variant, mode);
+  fflush(stdout);
+  for (size_t idx = 0; idx < (size_t) in_N; idx++){
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      for (size_t coeff = 0; coeff < (size_t) N; coeff++){
+        msg[lane]->coeffs[coeff] = int2torus(
+            (idx + 3 * lane + 7 * coeff) & 7, prec);
+      }
+    }
+    pvmtmlwe_sample(ref[idx], msg, pvw_key);
+    pvmtmlwe_copy(alias[idx], ref[idx]);
+  }
+
+  if(include_zeros){
+    printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=reference\n",
+           variant, mode);
+    fflush(stdout);
+    sab_pvw_sub_a_include_zero(ref, a, pvw_sab->s_coff[0][0], pvw_sab);
+    printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=alias\n",
+           variant, mode);
+    fflush(stdout);
+    stage273_sub_a_include_zero_alias(alias, a, pvw_sab->s_coff[0][0],
+        pvw_sab);
+  }else{
+    printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=reference\n",
+           variant, mode);
+    fflush(stdout);
+    sab_pvw_sub_a_ternary(ref, a, pvw_sab->s_sign[0][0], pvw_sab);
+    printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=alias\n",
+           variant, mode);
+    fflush(stdout);
+    stage273_sub_a_ternary_alias(alias, a, pvw_sab->s_sign[0][0],
+        pvw_sab);
+  }
+
+  printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=compare\n",
+         variant, mode);
+  fflush(stdout);
+  pass = stage273_pvw_array_equal(ref, alias, in_N, &mismatches);
+  printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_equivalence variant=%s mode=%s"
+         " r=%d in_N=%d mismatches=%" PRIu64 " gate=%s\n",
+         variant, mode, r, in_N, mismatches, pass ? "Pass" : "Fail");
+
+  printf("SAB_PVW_SUBA_ALIAS_TEST sub_a_step variant=%s mode=%s step=free\n",
+         variant, mode);
+  fflush(stdout);
+  free_array_of_polynomials(msg, r);
+  free_pvw_sample_array_local(alias, in_N);
+  free_pvw_sample_array_local(ref, in_N);
+  free_sab_pvw_key(pvw_sab);
+  free_pvmtmlwe_key(pvw_key);
+  free_trlwe_key(input_key);
+  return pass;
+}
+#endif
 
 static void add_sparse_noise_pvmtmlwe_all_coeffs(TorusNoiseStats * lanes,
     int r, int count, int prec, PVW_TMLWE * pvw_arr, PVW_TMLWE_Key pvw_key,
@@ -4416,6 +4673,22 @@ void test_mat_trgsw_rgt4_kernel(){
 }
 #endif
 
+#if defined(SAB_PVW_SUBA_ALIAS_TEST)
+void test_sab_pvw_suba_alias_microtest(){
+  bool pass = true;
+  pass &= stage273_check_from_DFT_add_alias(1, 4, 1024);
+#ifdef SAB_PVW_BACKEND_FROM_DFT_ADD
+  pass &= stage273_check_sub_a_alias_equivalence(true);
+  pass &= stage273_check_sub_a_alias_equivalence(false);
+#else
+  (void) stage273_check_sub_a_alias_equivalence;
+#endif
+  printf("SAB_PVW_SUBA_ALIAS_TEST overall variant=%s gate=%s\n",
+         stage273_variant_name(), pass ? "Pass" : "Fail");
+  if(!pass) exit(1);
+}
+#endif
+
 #if defined(SAB_PVW_NONBINARY_TEST)
 void test_sab_pvw_nonbinary_sparsemul(){
   bool pass = true;
@@ -4496,6 +4769,8 @@ int main(int argc, char const *argv[])
 {
 #if defined(SAB_PVW_TARGET_TEST)
   test_sab_pvw_target_full();
+#elif defined(SAB_PVW_SUBA_ALIAS_TEST)
+  test_sab_pvw_suba_alias_microtest();
 #elif defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST)
   test_sab_pvw_nonbinary_full_noise_resource();
 #elif defined(SAB_PVW_NONBINARY_FULL_TEST)

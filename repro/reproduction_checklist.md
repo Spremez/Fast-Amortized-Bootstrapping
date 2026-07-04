@@ -387,3 +387,5 @@
 - [x] Stage271 records `PASS_STAGE271_NONBINARY_SUB_A_SPLIT_PROFILE` as profile-only sub_a split attribution.
 <!-- stage272-sub-a-selector-materialization-design-checklist -->
 - [x] Stage272 records `PASS_STAGE272_SUB_A_SELECTOR_MATERIALIZATION_DESIGN_GATE` and selects Stage273 alias-safety microtest before implementation.
+<!-- stage273-sub-a-from-dft-add-alias-microtest-checklist -->
+- [x] Stage273 records `PASS_STAGE273_SUB_A_ALIAS_MICROTEST_ENABLES_FLAGGED_SMOKE` with raw logs, parsed gates, and claim boundaries.

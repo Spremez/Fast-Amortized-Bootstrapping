@@ -1,0 +1,3 @@
+SAB_PVW_SUBA_ALIAS_TEST from_DFT_add variant=default case=out_distinct k=1 r=4 N=1024 mismatches=0 gate=Pass
+SAB_PVW_SUBA_ALIAS_TEST from_DFT_add variant=default case=out_equals_addend k=1 r=4 N=1024 mismatches=5120 gate=Fail
+SAB_PVW_SUBA_ALIAS_TEST overall variant=default gate=Pass
