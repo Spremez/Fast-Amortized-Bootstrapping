@@ -6634,3 +6634,18 @@ source-verified citation finalization or optional native-counter attribution.
 It remains bounded to exact dense binary PVW/MAT-SAB under complete-SAB
 T_bootstrap/r.
 ```
+## Stage 238: Source-Verified Citation Package
+
+Goal:
+
+```text
+Bind Stage237 draft claims to source-verified rows or local repro evidence,
+record current URL access, and prevent BibTeX/citation hallucination.
+```
+
+Status:
+
+```text
+Generated from input head `eff2c0d` with `PASS_STAGE238_SOURCE_VERIFIED_CITATION_PACKAGE_READY_NO_BIBTEX_HALLUCINATION`. Citation support is ready
+for a scoped draft. BibTeX remains TODO until retrieved from verified sources.
+```

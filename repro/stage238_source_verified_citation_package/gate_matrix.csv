@@ -1,0 +1,7 @@
+gate,required,observed,status,claim_effect
+G1_inputs,"Stage237 package, Stage230 source policy, and Stage236 local evidence exist",all present,PASS,allows citation package aggregation
+G2_stage230_source_rows,all source rows are Stage230 verified primary/official metadata rows,11 rows; verified=True,PASS,prevents fabricated reference rows
+G3_current_access_probe,URL access is probed and failures are recorded without upgrading claims,ACCESS_OK=18/22,PASS_ACCESS_RECORDED,records current reachability only
+G4_claim_support,draft claims are mapped to source rows or local evidence with support levels,6 claim-support rows; no wrong support=True,PASS,allows related-work/background draft sentences with guards
+G5_bibtex_policy,do not generate BibTeX from memory,11 BibTeX rows marked NOT_GENERATED_TO_AVOID_HALLUCINATION,PASS_NO_BIBTEX_HALLUCINATION,forces later BibTeX retrieval from verified sources
+G6_stage238_decision,citation package gates pass and no claim is upgraded beyond support,PASS_STAGE238_SOURCE_VERIFIED_CITATION_PACKAGE_READY_NO_BIBTEX_HALLUCINATION,PASS_STAGE238_SOURCE_VERIFIED_CITATION_PACKAGE_READY_NO_BIBTEX_HALLUCINATION,move to optional BibTeX retrieval or native-counter attribution

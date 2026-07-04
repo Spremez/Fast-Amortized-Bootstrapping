@@ -707,3 +707,9 @@ source-grounded novelty boundaries, and any broader design routes.
 PVW/MAT-SAB result. The goal remains active because final citation verification,
 venue-specific paper assembly, optional native-counter attribution, and broader
 algorithmic gates remain incomplete.
+### Stage238 source-verified citation package
+
+`PASS_STAGE238_SOURCE_VERIFIED_CITATION_PACKAGE_READY_NO_BIBTEX_HALLUCINATION` records source/claim support for the scoped manuscript package.
+The active goal remains open because final BibTeX retrieval, venue-specific
+paper assembly, optional native-counter attribution, and broader proof gates
+remain incomplete.

@@ -1,0 +1,10 @@
+input,status,role,bytes
+repro/stage237_scoped_manuscript_package/proof_gate.csv,present,Stage237 manuscript package proof,1615
+repro/stage237_scoped_manuscript_package/manuscript_skeleton.md,present,Stage237 manuscript skeleton,8976
+repro/stage237_scoped_manuscript_package/source_policy.csv,present,Stage237 source policy,4027
+repro/stage237_scoped_manuscript_package/contribution_claims.csv,present,Stage237 contribution claims,2398
+repro/stage230_source_verified_literature_novelty_audit/source_verification_refresh.csv,present,Stage230 source verification refresh,3734
+repro/stage230_source_verified_literature_novelty_audit/related_work_axes.csv,present,Stage230 related-work axes,1021
+repro/stage230_source_verified_literature_novelty_audit/novelty_risk_map.csv,present,Stage230 novelty risk map,1469
+repro/stage230_source_verified_literature_novelty_audit/claim_policy.csv,present,Stage230 claim policy,824
+repro/stage236_set_2_3_4096_r4_highstat_slice/selected_binary_matrix_summary.csv,present,Stage236 local experiment evidence,899

@@ -2735,3 +2735,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage237_scoped_manuscript.md`
   - `scripts/build_stage237_scoped_manuscript_package.py`
   - `repro/stage237_scoped_manuscript_package/`
+- stage238_source_verified_citation_package:
+  - `docs/stage238_source_verified_citation_package.md`
+  - `experiments/stage238_source_verified_citation_package_plan.md`
+  - `theory_checks/stage238_citation_claim_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage238_citation_package.md`
+  - `scripts/build_stage238_source_verified_citation_package.py`
+  - `repro/stage238_source_verified_citation_package/`

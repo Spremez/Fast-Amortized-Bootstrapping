@@ -338,3 +338,4 @@
 - [x] Stage236 selected binary added-parameter matrix records decision `PASS_STAGE236_SELECTED_BINARY_ADDED_PARAMETER_MATRIX_COMPLETE`.
 - [x] Stage236 selected binary added-parameter matrix records decision `PASS_STAGE236_SELECTED_BINARY_ADDED_PARAMETER_MATRIX_COMPLETE`.
 - [x] Stage237 scoped manuscript package records decision `PASS_STAGE237_SCOPED_MANUSCRIPT_PACKAGE_READY_CLAIM_BOUNDED`.
+- [x] Stage238 source-verified citation package records decision `PASS_STAGE238_SOURCE_VERIFIED_CITATION_PACKAGE_READY_NO_BIBTEX_HALLUCINATION`.

@@ -3339,3 +3339,16 @@ H10_stage237_scoped_manuscript_package:
     optional native-counter attribution, non-binary support, compact route,
     all-parameter scope, novelty, and theoretical optimality remain separately
     gated.
+H10_stage238_source_verified_citation_package:
+  status: source_verified_citation_package_ready_no_bibtex_hallucination
+  evidence:
+    - repro/stage238_source_verified_citation_package/claim_support_matrix.csv
+    - repro/stage238_source_verified_citation_package/source_access_probe.csv
+    - repro/stage238_source_verified_citation_package/bibtex_todo.csv
+    - docs/stage238_source_verified_citation_package.md
+  conclusion: >
+    Stage238 records PASS_STAGE238_SOURCE_VERIFIED_CITATION_PACKAGE_READY_NO_BIBTEX_HALLUCINATION. Draft background and related-work claims are
+    mapped to Stage230 verified source rows or local Stage233-236 repro
+    evidence. Current URL access is recorded separately, and BibTeX generation
+    is intentionally left as verified-source TODO work to avoid hallucinated
+    references.
