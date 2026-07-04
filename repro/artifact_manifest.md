@@ -3176,3 +3176,11 @@ Repro artifacts:
   - `scripts/run_stage312_digit_narrow32_fullsab_ab.sh`
   - `scripts/build_stage312_digit_narrow32_fullsab_ab.py`
   - `repro/stage312_digit_narrow32_fullsab_ab/`
+- stage313_narrow32_profile_attribution:
+  - `docs/stage313_narrow32_profile_attribution.md`
+  - `theory_checks/stage313_narrow32_profile_attribution_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage313_narrow32_attribution.md`
+  - `experiments/stage313_narrow32_profile_attribution_plan.md`
+  - `scripts/run_stage313_narrow32_profile_attribution.sh`
+  - `scripts/build_stage313_narrow32_profile_attribution.py`
+  - `repro/stage313_narrow32_profile_attribution/`

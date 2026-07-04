@@ -4163,3 +4163,13 @@ H312_digit_narrow32_fullsab_ab:
     Stage312 tests whether the Stage311 narrow32 digit microbench effect
     survives complete SAB. A positive result is still a preflight until
     noise/resource and high-stat gates pass.
+H313_narrow32_profile_attribution:
+  status: PASS_STAGE313_NARROW32_PROFILE_ATTRIBUTION_RECORDED
+  primary_metric: profile_attribution_for_stage312_no_promotion
+  evidence:
+    - repro/stage313_narrow32_profile_attribution/profile_summary.csv
+    - repro/stage313_narrow32_profile_attribution/lifecycle_comparison.csv
+    - repro/stage313_narrow32_profile_attribution/proof_gate.csv
+  conclusion: >
+    Stage313 attributes the gap between Stage311 microbench gain and Stage312
+    full-SAB neutral result. It is profile-only and does not promote narrow32.

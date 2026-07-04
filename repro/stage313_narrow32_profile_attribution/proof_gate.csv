@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_correctness,PASS,profile target correctness,Pass,Both profiled variants must preserve complete SAB correctness.
+G2_profile_consistency,PASS,direct rows,5632800/5632800,Both variants must profile the same direct sub-DTF surface.
+G3_digit_effect,RECORDED_POSITIVE,direct/narrow32 digit speedup,1.044719,Whether the microbench digit effect is visible in full-SAB profile mode.
+G4_fullsab_context,NO_PROMOTION_CONFIRMED,direct/narrow32 T/r speedup,0.978954,Narrow32 remains unpromoted unless full-SAB T/r improves.
+G5_claim_boundary,PASS_PROFILE_ONLY,scope,instrumented one-run profile,Do not use Stage313 latency as final speed evidence.
+G6_decision,PASS_STAGE313_NARROW32_PROFILE_ATTRIBUTION_RECORDED,stage decision,PASS_STAGE313_NARROW32_PROFILE_ATTRIBUTION_RECORDED,Controls Stage314 route.

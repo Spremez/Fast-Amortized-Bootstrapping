@@ -1,0 +1,6 @@
+component,direct,narrow32,direct_over_narrow32,interpretation
+T_over_r,6212113.750,6345664.750,0.978954,instrumented profile latency only
+body_full,49210765.000,49831639.000,0.987541,sum of body profiles
+mat_ep,28790362.000,28604279.000,1.006505,MAT EP inclusive profile
+digit_to_double,8489325,8125944,1.044719,direct DFT digit component
+ifft,8953547,8957938,0.999510,direct DFT reverse FFT component

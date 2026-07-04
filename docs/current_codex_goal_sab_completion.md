@@ -1130,3 +1130,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage312 digit narrow32 full-SAB A/B
 
 `NEUTRAL_STAGE312_DIGIT_NARROW32_FULLSAB_NO_PROMOTION` tests narrow32 at the complete SAB `T_bootstrap/r` endpoint; noise/resource/high-stat remain separate gates.
+<!-- stage313-narrow32-profile-attribution -->
+### Stage313 narrow32 profile attribution
+
+`PASS_STAGE313_NARROW32_PROFILE_ATTRIBUTION_RECORDED` records component-level attribution for the narrow32 no-promotion result and routes future work away from unsupported local digit microvariants.

@@ -464,3 +464,5 @@
 - [x] Stage311 records `PASS_STAGE311_DIGIT_NARROW32_MICRO_POSITIVE_FULLSAB_REQUIRED` for the narrow32 digit candidate.
 <!-- stage312-digit-narrow32-fullsab-ab-checklist -->
 - [x] Stage312 records `NEUTRAL_STAGE312_DIGIT_NARROW32_FULLSAB_NO_PROMOTION` for complete SAB narrow32 A/B.
+<!-- stage313-narrow32-profile-attribution-checklist -->
+- [x] Stage313 records `PASS_STAGE313_NARROW32_PROFILE_ATTRIBUTION_RECORDED` for narrow32 no-promotion attribution.

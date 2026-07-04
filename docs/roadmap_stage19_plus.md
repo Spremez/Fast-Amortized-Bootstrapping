@@ -7128,3 +7128,8 @@ Status: `PASS_STAGE311_DIGIT_NARROW32_MICRO_POSITIVE_FULLSAB_REQUIRED`.
 Goal: test whether Stage311 narrow32 digit conversion improves complete SAB `T_bootstrap/r` against the current direct-DFT baseline.
 
 Status: `NEUTRAL_STAGE312_DIGIT_NARROW32_FULLSAB_NO_PROMOTION`.
+## Stage 313: Narrow32 Profile Attribution
+
+Goal: attribute why Stage311 narrow32 microbench did not promote in complete SAB Stage312.
+
+Status: `PASS_STAGE313_NARROW32_PROFILE_ATTRIBUTION_RECORDED`.

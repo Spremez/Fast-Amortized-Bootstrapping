@@ -1,0 +1,2 @@
+priority,stage,input,task,gate
+P0,stage314_stop_local_digit_microvariants_backend_ifft_or_new_algorithm,PASS_STAGE313_NARROW32_PROFILE_ATTRIBUTION_RECORDED,Stop promoting narrow32/local digit microvariants unless a candidate has a predicted full-SAB effect above profile noise; route effort to backend IFFT or higher-level SAB schedule changes.,new candidate must have a full-SAB cost model and component budget before implementation
