@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs,PASS,Stage238 BibTeX TODO and claim support exist,all present,repro/stage239_bibtex_latex_stub/gate_matrix.csv,allows BibTeX retrieval
+G2_verified_retrieval,PASS_PARTIAL_RETRIEVAL,retrieved entries come from DBLP/verified routes and parse as BibTeX,retrieved=9; parsed=True,repro/stage239_bibtex_latex_stub/gate_matrix.csv,allows LaTeX stub citations for retrieved entries only
+G3_unresolved_todos,PASS_TODOS_RECORDED,unretrieved or composite sources remain explicit TODOs,todos=2,repro/stage239_bibtex_latex_stub/gate_matrix.csv,prevents silent citation gaps
+G4_no_bibtex_hallucination,PASS_NO_BIBTEX_HALLUCINATION,no BibTeX is generated from memory,no_fake=True; ready_keys=9,repro/stage239_bibtex_latex_stub/gate_matrix.csv,keeps references auditable
+G5_stage239_decision,PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN,"retrieval, TODO, and no-hallucination gates pass",PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN,repro/stage239_bibtex_latex_stub/gate_matrix.csv,move to optional LaTeX expansion or native counter attribution

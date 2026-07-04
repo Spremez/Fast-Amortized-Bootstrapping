@@ -1145,3 +1145,8 @@ Generated from input head `eff2c0d`, Stage238 records `PASS_STAGE238_SOURCE_VERI
 background and related-work claims now map to Stage230 source rows or local
 Stage233-236 evidence. Current URL access is recorded separately. No BibTeX is
 generated from memory.
+## Stage239 verified BibTeX retrieval and LaTeX stub
+
+Generated from input head `2b4fa33`, Stage239 records `PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN`. Retrieved
+9 verified BibTeX entries, wrote a LaTeX stub, and left 2
+sources as explicit TODOs instead of fabricating references.

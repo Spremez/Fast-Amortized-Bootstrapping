@@ -6649,3 +6649,19 @@ Status:
 Generated from input head `eff2c0d` with `PASS_STAGE238_SOURCE_VERIFIED_CITATION_PACKAGE_READY_NO_BIBTEX_HALLUCINATION`. Citation support is ready
 for a scoped draft. BibTeX remains TODO until retrieved from verified sources.
 ```
+## Stage 239: Verified BibTeX Retrieval and LaTeX Stub
+
+Goal:
+
+```text
+Retrieve BibTeX from verified routes where possible, keep unresolved sources as
+TODOs, and create a minimal LaTeX stub without generating references from
+memory.
+```
+
+Status:
+
+```text
+Generated from input head `2b4fa33` with `PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN`. Retrieved 9
+verified BibTeX entries and recorded 2 unresolved TODOs.
+```

@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,status,failure_action,evidence
+P0,stage240_latex_draft_expansion,A full LaTeX draft is needed.,Use only ready citation keys or explicit TODO comments; no broad novelty/optimality wording.,ready_if_draft_needed,Keep Stage239 stub only.,repro/stage239_bibtex_latex_stub/latex_stub.tex
+P1,stage241_native_counter_backend_validation,The draft needs stronger implementation attribution.,Native Linux perf counters or explicit WSL proxy label; no theoretical-optimality wording.,optional,Omit counter claims.,repro/stage239_bibtex_latex_stub/citation_key_map.csv
+P2,stage242_unresolved_bibtex_followup,Final LaTeX bibliography requires all sources resolved.,Resolve TODO sources from official routes or split composite rows.,future,Leave TODO comments and do not submit final paper.,repro/stage239_bibtex_latex_stub/unresolved_bibtex_todo.csv

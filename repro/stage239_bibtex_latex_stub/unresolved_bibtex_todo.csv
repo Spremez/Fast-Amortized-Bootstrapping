@@ -1,0 +1,3 @@
+source_id,title,todo_status,needed_action,route_attempted,route_url
+BATCHBOOT26,BatchBoot: Fast Batched Bootstrapping for TFHE scheme and Practical Applications,TODO_NO_VERIFIED_BIBTEX_ROUTE,no_hits,DBLP_SEARCH_NO_STRONG_MATCH,https://www.usenix.org/conference/usenixsecurity26/presentation/li-zhihao
+LW23A_B,Batch Bootstrapping I/II,TODO_COMPOSITE_SOURCE_SPLIT_REQUIRED,Stage230 source row combines Batch Bootstrapping I and II; split into two verified BibTeX entries before LaTeX.,manual_split_required,https://dl.acm.org/doi/10.1007/978-3-031-30620-4_11 ; https://dl.acm.org/doi/10.1007/978-3-031-30620-4_12

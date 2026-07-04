@@ -1,0 +1,6 @@
+gate,required,observed,status,claim_effect
+G1_inputs,Stage238 BibTeX TODO and claim support exist,all present,PASS,allows BibTeX retrieval
+G2_verified_retrieval,retrieved entries come from DBLP/verified routes and parse as BibTeX,retrieved=9; parsed=True,PASS_PARTIAL_RETRIEVAL,allows LaTeX stub citations for retrieved entries only
+G3_unresolved_todos,unretrieved or composite sources remain explicit TODOs,todos=2,PASS_TODOS_RECORDED,prevents silent citation gaps
+G4_no_bibtex_hallucination,no BibTeX is generated from memory,no_fake=True; ready_keys=9,PASS_NO_BIBTEX_HALLUCINATION,keeps references auditable
+G5_stage239_decision,"retrieval, TODO, and no-hallucination gates pass",PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN,PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN,move to optional LaTeX expansion or native counter attribution

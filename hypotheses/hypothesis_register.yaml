@@ -3352,3 +3352,15 @@ H10_stage238_source_verified_citation_package:
     evidence. Current URL access is recorded separately, and BibTeX generation
     is intentionally left as verified-source TODO work to avoid hallucinated
     references.
+H10_stage239_verified_bibtex_latex_stub:
+  status: partial_verified_bibtex_latex_stub_ready_todos_remain
+  evidence:
+    - repro/stage239_bibtex_latex_stub/bibtex_retrieval.csv
+    - repro/stage239_bibtex_latex_stub/retrieved_references.bib
+    - references/stage239_pvw_mat_sab.bib
+    - repro/stage239_bibtex_latex_stub/unresolved_bibtex_todo.csv
+    - docs/stage239_bibtex_latex_stub.md
+  conclusion: >
+    Stage239 records PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN. It retrieved 9 BibTeX entries from
+    verified routes, generated a minimal LaTeX stub, and left 2
+    unresolved sources as TODOs. No BibTeX entry was generated from memory.

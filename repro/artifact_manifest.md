@@ -2742,3 +2742,11 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage238_citation_package.md`
   - `scripts/build_stage238_source_verified_citation_package.py`
   - `repro/stage238_source_verified_citation_package/`
+- stage239_bibtex_latex_stub:
+  - `docs/stage239_bibtex_latex_stub.md`
+  - `experiments/stage239_bibtex_latex_stub_plan.md`
+  - `theory_checks/stage239_bibtex_policy_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage239_bibtex_stub.md`
+  - `scripts/build_stage239_bibtex_latex_stub.py`
+  - `references/stage239_pvw_mat_sab.bib`
+  - `repro/stage239_bibtex_latex_stub/`

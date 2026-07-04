@@ -713,3 +713,9 @@ algorithmic gates remain incomplete.
 The active goal remains open because final BibTeX retrieval, venue-specific
 paper assembly, optional native-counter attribution, and broader proof gates
 remain incomplete.
+### Stage239 verified BibTeX retrieval and LaTeX stub
+
+`PASS_STAGE239_PARTIAL_VERIFIED_BIBTEX_LATEX_STUB_READY_TODOS_REMAIN` records partial verified BibTeX retrieval and a minimal LaTeX
+stub. The active goal remains open because final bibliography closure,
+venue-specific paper assembly, optional native-counter attribution, and broader
+algorithmic gates remain incomplete.

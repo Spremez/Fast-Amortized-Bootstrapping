@@ -1,0 +1,6 @@
+input,status,role,bytes
+repro/stage238_source_verified_citation_package/proof_gate.csv,present,Stage238 citation proof,1598
+repro/stage238_source_verified_citation_package/bibtex_todo.csv,present,Stage238 BibTeX TODO,3949
+repro/stage238_source_verified_citation_package/claim_support_matrix.csv,present,Stage238 claim support,2643
+repro/stage237_scoped_manuscript_package/manuscript_skeleton.md,present,Stage237 manuscript skeleton,8976
+repro/stage236_set_2_3_4096_r4_highstat_slice/selected_binary_matrix_summary.csv,present,Stage236 local experiment table,899
