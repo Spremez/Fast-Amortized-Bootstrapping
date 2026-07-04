@@ -2764,3 +2764,11 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage241_compile_package.md`
   - `scripts/build_stage241_latex_compile_package.py`
   - `repro/stage241_latex_compile_package/`
+- stage242_unresolved_bibtex_followup:
+  - `docs/stage242_unresolved_bibtex_followup.md`
+  - `experiments/stage242_unresolved_bibtex_followup_plan.md`
+  - `theory_checks/stage242_bibtex_closure_boundary.md`
+  - `algorithm_variants/mat_rlwe_sab_stage242_bibtex_followup.md`
+  - `scripts/build_stage242_unresolved_bibtex_followup.py`
+  - `references/stage242_pvw_mat_sab.bib`
+  - `repro/stage242_unresolved_bibtex_followup/`

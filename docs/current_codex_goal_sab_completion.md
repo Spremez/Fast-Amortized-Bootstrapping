@@ -731,3 +731,9 @@ support, compact route, and theoretical optimality remain incomplete.
 The active goal remains open because unresolved bibliography rows, optional
 current-head counter refresh, non-binary support, compact route, and theoretical
 optimality remain incomplete.
+### Stage242 unresolved BibTeX follow-up
+
+`PASS_STAGE242_BIBTEX_TODO_REDUCED_BATCHBOOT_REMAINS` records partial bibliography closure. The active goal remains open
+because BatchBoot final citation closure, draft patch/recompile, optional
+counter refresh, non-binary support, compact route, and theoretical optimality
+remain incomplete.

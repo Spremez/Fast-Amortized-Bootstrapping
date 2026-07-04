@@ -1156,3 +1156,6 @@ sources as explicit TODOs instead of fabricating references.
 - Stage241 LaTeX compile package records `PASS_STAGE241_LATEX_COMPILE_PACKAGE_READY`: the scoped draft has a
   reproducible PDF/log package, but this does not expand the selected-binary
   claim boundary.
+- Stage242 unresolved BibTeX follow-up records `PASS_STAGE242_BIBTEX_TODO_REDUCED_BATCHBOOT_REMAINS`: Batch
+  Bootstrapping I/II now have verified separate citations, while BatchBoot is
+  kept out of the bibliography until an official BibTeX route is available.

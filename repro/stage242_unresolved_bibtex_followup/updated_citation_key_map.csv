@@ -1,0 +1,12 @@
+source_id,citation_key,entry_type,source,status
+FAB686_2025,DBLP:conf/ccs/GuimaraesP25,inproceedings,https://dblp.org/rec/conf/ccs/GuimaraesP25.bib,READY_FOR_LATEX
+INCNTT25_696,DBLP:journals/tches/PaivaMHSY25,article,https://dblp.org/rec/journals/tches/PaivaMHSY25.bib,READY_FOR_LATEX
+SHAREMASK25_2112,DBLP:journals/tches/BergeratBCOPT25,article,https://dblp.org/rec/journals/tches/BergeratBCOPT25.bib,READY_FOR_LATEX
+BGH2012_565,DBLP:conf/pkc/BrakerskiGH13,inproceedings,https://dblp.org/rec/conf/pkc/BrakerskiGH13.bib,READY_FOR_LATEX
+CGGI2018_421,DBLP:journals/joc/ChillottiGGI20,article,https://dblp.org/rec/journals/joc/ChillottiGGI20.bib,READY_FOR_LATEX
+MS2018_532,DBLP:conf/icalp/MicciancoS18,inproceedings,https://dblp.org/rec/conf/icalp/MicciancoS18.bib,READY_FOR_LATEX
+GPVL2023_014,DBLP:conf/asiacrypt/GuimaraesPL23,inproceedings,https://dblp.org/rec/conf/asiacrypt/GuimaraesPL23.bib,READY_FOR_LATEX
+DKMS2024_112,DBLP:conf/pkc/MicheliKMS24,inproceedings,https://dblp.org/rec/conf/pkc/MicheliKMS24.bib,READY_FOR_LATEX
+LW2023_910,DBLP:conf/asiacrypt/LiuW23,inproceedings,https://dblp.org/rec/conf/asiacrypt/LiuW23.bib,READY_FOR_LATEX
+LW23A,DBLP:conf/eurocrypt/LiuW23,inproceedings,https://dblp.org/rec/conf/eurocrypt/LiuW23.bib,READY_FOR_LATEX
+LW23B,DBLP:conf/eurocrypt/LiuW23a,inproceedings,https://dblp.org/rec/conf/eurocrypt/LiuW23a.bib,READY_FOR_LATEX

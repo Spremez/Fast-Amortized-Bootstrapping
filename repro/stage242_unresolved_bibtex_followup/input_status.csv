@@ -1,0 +1,5 @@
+input,status,role,bytes
+repro/stage239_bibtex_latex_stub/unresolved_bibtex_todo.csv,present,Stage239 unresolved BibTeX TODOs,611
+repro/stage239_bibtex_latex_stub/citation_key_map.csv,present,Stage239 ready citation keymap,1141
+references/stage239_pvw_mat_sab.bib,present,Stage239 verified references,8603
+repro/stage241_latex_compile_package/proof_gate.csv,present,Stage241 compile proof gate,1394

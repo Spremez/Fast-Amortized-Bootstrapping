@@ -1,0 +1,6 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs,PASS,Stage239 unresolved TODOs and Stage241 compile proof exist,all present,repro/stage242_unresolved_bibtex_followup/gate_matrix.csv,follow-up starts from auditable prior stages
+G2_lw_split_resolution,PASS,LW23A_B is split into two DOI-matching DBLP BibTeX entries,resolved=2; parsed=True; entries=2,repro/stage242_unresolved_bibtex_followup/gate_matrix.csv,Batch Bootstrapping I/II can be cited separately
+G3_batchboot_no_hallucination,PASS_TODO_RETAINED,BATCHBOOT26 remains TODO unless official BibTeX is found,remaining=BATCHBOOT26,repro/stage242_unresolved_bibtex_followup/gate_matrix.csv,prevents fabricated USENIX BibTeX
+G4_no_bibtex_hallucination,PASS_NO_BIBTEX_HALLUCINATION,all written BibTeX entries come from fetched verified routes,no_fake=True; written_entries=2,repro/stage242_unresolved_bibtex_followup/gate_matrix.csv,keeps bibliography auditable
+G5_stage242_decision,PASS_STAGE242_BIBTEX_TODO_REDUCED_BATCHBOOT_REMAINS,LW split resolved and any remaining source is explicit TODO,PASS_STAGE242_BIBTEX_TODO_REDUCED_BATCHBOOT_REMAINS,repro/stage242_unresolved_bibtex_followup/gate_matrix.csv,ready for draft-citation patch/recompile; final closure still blocked by BatchBoot BibTeX

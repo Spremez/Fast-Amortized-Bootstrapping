@@ -6697,3 +6697,19 @@ Generated from input head `fe28338` with `PASS_STAGE241_LATEX_COMPILE_PACKAGE_RE
 resolved compile evidence. Remaining gates are bibliography TODO closure,
 optional current-head counter wording, and any broader algorithmic route.
 ```
+## Stage 242: Unresolved BibTeX Follow-Up
+
+Goal:
+
+```text
+Resolve remaining BibTeX TODOs where verified routes exist, without generating
+references from memory.
+```
+
+Status:
+
+```text
+Generated from input head `359232c` with `PASS_STAGE242_BIBTEX_TODO_REDUCED_BATCHBOOT_REMAINS`. `LW23A_B` is split into
+two verified DBLP BibTeX entries. `BATCHBOOT26` remains an explicit TODO until
+an official BibTeX route exists.
+```

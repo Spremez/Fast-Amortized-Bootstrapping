@@ -3390,3 +3390,15 @@ H10_stage241_latex_compile_package:
     verifies resolved citations, references, PDF generation, and claim-guard
     checks. The result remains a package gate for selected-binary evidence, not
     a new algorithmic or optimality claim.
+H10_stage242_unresolved_bibtex_followup:
+  status: bibtex_todo_reduced_batchboot_remains
+  evidence:
+    - repro/stage242_unresolved_bibtex_followup/bibtex_resolution.csv
+    - repro/stage242_unresolved_bibtex_followup/merged_references_stage242.bib
+    - repro/stage242_unresolved_bibtex_followup/remaining_unresolved_bibtex_todo.csv
+    - docs/stage242_unresolved_bibtex_followup.md
+  conclusion: >
+    Stage242 records PASS_STAGE242_BIBTEX_TODO_REDUCED_BATCHBOOT_REMAINS. It resolves the composite LW23A_B source into
+    two DBLP BibTeX entries and leaves BATCHBOOT26 as an explicit TODO because
+    no verified BibTeX export was found. No BibTeX entry was generated from
+    memory.
