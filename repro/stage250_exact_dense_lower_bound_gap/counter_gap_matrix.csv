@@ -1,0 +1,6 @@
+metric,value,status,interpretation,evidence
+backend_vs_wrapper_complete_sab_speedup,1.024015000,timing_refresh,backend direct path is measurably better than wrapper in Stage224 repeated complete-SAB timing,repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv
+cycles_wrapper_over_backend,1.017861569,counter_attribution_only,"native counters support direction, not lower-bound tightness",repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv
+loads_wrapper_over_backend,1.011560486,counter_attribution_only,load reduction is small and does not prove theoretical optimum,repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv
+stores_wrapper_over_backend,1.009880546,counter_attribution_only,store reduction is small and does not prove theoretical optimum,repro/stage226_exact_mat_avx_counter_attribution/counter_comparison.csv
+optimality_gap_numeric,not_closed,blocked,no validated lower-bound denominator exists for A_impl/A_lower,theory_checks/stage250_exact_dense_lower_bound_gap_model.md

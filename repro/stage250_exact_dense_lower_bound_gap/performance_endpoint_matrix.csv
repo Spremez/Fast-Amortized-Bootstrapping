@@ -1,0 +1,6 @@
+source,param,r,endpoint,mean_speedup,ci95_low,ci95_high,noise_failures,status,claim_use
+Stage233,SET_4_5_2048,4,complete-SAB T_bootstrap/r,1.357500,1.344091,1.370909,0/0/0,PASS_HIGHSTAT_SLICE,selected_binary_timing_evidence_not_optimality
+Stage234,SET_4_5_2048,2,complete-SAB T_bootstrap/r,1.264700,1.255514,1.273886,0/0/0,PASS_HIGHSTAT_SLICE,selected_binary_timing_evidence_not_optimality
+Stage235,SET_2_3_4096,2,complete-SAB T_bootstrap/r,1.256900,1.229193,1.284607,0/0/0,PASS_HIGHSTAT_SLICE,selected_binary_timing_evidence_not_optimality
+Stage236,SET_2_3_4096,4,complete-SAB T_bootstrap/r,1.329600,1.317739,1.341461,0/0/0,PASS_HIGHSTAT_SLICE,selected_binary_timing_evidence_not_optimality
+Stage224 r6 exact refresh,explicit_r6_route,6,complete-SAB T_bootstrap/r,1.407333,not_highstat_3run,not_highstat_3run,inherited Stage148 side condition,PASS_STAGE224_PERF_REFRESH_POSITIVE,engineering_refresh_not_highstat_optimality

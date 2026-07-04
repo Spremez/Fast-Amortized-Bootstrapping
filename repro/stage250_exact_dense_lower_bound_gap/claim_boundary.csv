@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+exact_dense_speedup,supported_scoped,Selected binary exact dense PVW/MAT-SAB improves complete-SAB T_bootstrap/r under recorded gates.,This proves all-parameter or non-binary speedup.,repro/stage250_exact_dense_lower_bound_gap/performance_endpoint_matrix.csv
+exact_dense_optimality,blocked,The lower-bound gap remains open; counters are attribution-only.,The exact dense implementation is theoretically optimal.,repro/stage250_exact_dense_lower_bound_gap/lower_bound_component_matrix.csv
+compact_lower_bound,denied,Compact/body-linear term models are risks or blocked proxies.,Use compact term counts as a lower bound for exact dense optimality.,repro/stage249_structured_compact_distribution_security/proof_gate.csv
+next_code_permission,denied_without_new_mechanism,New exact hot-path code requires a counter-backed mechanism and full-SAB A/B gate.,Implement speculative AVX/MAT rewrites from current lower-bound tables.,repro/stage228_counter_driven_backend_kernel_search/proof_gate.csv

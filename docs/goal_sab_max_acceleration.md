@@ -1181,3 +1181,6 @@ sources as explicit TODOs instead of fabricating references.
   `PASS_STAGE249_COMPACT_SECURITY_PREFLIGHT_FREEZE_PRODUCTION_ROUTE`: Stage248's compact algebra does not authorize production SAB.
   Compact-saving public distributions are distinguishable; dummy random padding
   remains proof-only and has no complete-SAB `T_bootstrap/r` claim.
+- Stage250 exact dense lower-bound gap records `PASS_STAGE250_EXACT_DENSE_GAP_REFRESH_OPTIMALITY_OPEN`: exact dense
+  PVW/MAT-SAB keeps scoped complete-SAB `T_bootstrap/r` evidence, but the
+  numeric lower-bound gap and theoretical optimality remain open.

@@ -773,3 +773,8 @@ and final citation closure remain incomplete.
 distribution/keygen/security proof exists. The active goal remains open for
 exact dense lower-bound gap analysis, non-binary selector semantics, and final
 paper/citation closure.
+### Stage250 exact dense lower-bound gap
+
+`PASS_STAGE250_EXACT_DENSE_GAP_REFRESH_OPTIMALITY_OPEN` records that exact dense optimality is not proven. The active goal
+remains open for non-binary selector semantics, any future counter-backed exact
+mechanism, and final paper/citation closure.

@@ -3478,3 +3478,17 @@ H10_stage249_structured_compact_distribution_security:
     are distinguishable, while dummy random padding remains proof-only, keeps
     dense public size, and lacks keygen/security/ring-noise proofs. No compact
     production SAB implementation or speedup claim is admitted.
+H10_stage250_exact_dense_lower_bound_gap:
+  status: exact_dense_gap_refreshed_optimality_open
+  evidence:
+    - repro/stage250_exact_dense_lower_bound_gap/performance_endpoint_matrix.csv
+    - repro/stage250_exact_dense_lower_bound_gap/lower_bound_component_matrix.csv
+    - repro/stage250_exact_dense_lower_bound_gap/counter_gap_matrix.csv
+    - repro/stage250_exact_dense_lower_bound_gap/proof_gate.csv
+    - docs/stage250_exact_dense_lower_bound_gap.md
+  conclusion: >
+    Stage250 records PASS_STAGE250_EXACT_DENSE_GAP_REFRESH_OPTIMALITY_OPEN. It preserves scoped exact dense complete-SAB
+    speedup evidence while blocking theoretical optimality: no validated
+    numeric lower-bound denominator exists, compact/body-linear proxies are not
+    admissible after Stage249, and new hot-path code requires a concrete
+    counter-backed mechanism.

@@ -2814,3 +2814,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage249_structured_compact_security.md`
   - `scripts/build_stage249_structured_compact_distribution_security.py`
   - `repro/stage249_structured_compact_distribution_security/`
+- stage250_exact_dense_lower_bound_gap:
+  - `docs/stage250_exact_dense_lower_bound_gap.md`
+  - `experiments/stage250_exact_dense_lower_bound_gap_plan.md`
+  - `theory_checks/stage250_exact_dense_lower_bound_gap_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage250_exact_dense_lower_bound_gap.md`
+  - `scripts/build_stage250_exact_dense_lower_bound_gap.py`
+  - `repro/stage250_exact_dense_lower_bound_gap/`

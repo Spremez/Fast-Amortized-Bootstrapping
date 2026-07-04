@@ -1,0 +1,7 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs,PASS,required inputs,all present,repro/stage250_exact_dense_lower_bound_gap/input_status.csv,"Stage250 consumes compact freeze, selected timing, profile, split, and counters."
+G2_endpoint,PASS,performance rows use complete-SAB T_bootstrap/r,5,repro/stage250_exact_dense_lower_bound_gap/performance_endpoint_matrix.csv,Performance evidence remains aligned with the MAT-RLWE/r-body metric.
+G3_lower_bound_boundary,PASS_GAP_OPEN,body-linear/compact proxy,not admissible,repro/stage250_exact_dense_lower_bound_gap/lower_bound_component_matrix.csv,Compact/body-linear models are not valid lower-bound proof for exact dense optimality.
+G4_counter_boundary,PASS_ATTRIBUTION_ONLY,numeric optimality gap,not closed,repro/stage250_exact_dense_lower_bound_gap/counter_gap_matrix.csv,Stage226 counters support implementation direction only.
+G5_claim_boundary,PASS_NO_OPTIMALITY_CLAIM,exact dense optimality,blocked,repro/stage250_exact_dense_lower_bound_gap/claim_boundary.csv,No theoretical optimality claim is permitted.
+G6_stage250_decision,PASS_STAGE250_EXACT_DENSE_GAP_REFRESH_OPTIMALITY_OPEN,decision,PASS_STAGE250_EXACT_DENSE_GAP_REFRESH_OPTIMALITY_OPEN,repro/stage250_exact_dense_lower_bound_gap/proof_gate.csv,"Proceed to non-binary semantics or a new counter-backed exact mechanism, not speculative code."

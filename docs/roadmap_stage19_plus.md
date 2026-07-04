@@ -6812,3 +6812,21 @@ dummy random padding with dense public size and proof-only semantics. Compact
 production integration is frozen until a formal distribution/keygen/security
 proof exists.
 ```
+## Stage 250: Exact Dense Lower-Bound Gap
+
+Goal:
+
+```text
+Refresh the exact dense PVW/MAT-SAB lower-bound/optimality boundary after the
+compact production route is frozen.
+```
+
+Status:
+
+```text
+Generated from input head `b3dc1e0` with `PASS_STAGE250_EXACT_DENSE_GAP_REFRESH_OPTIMALITY_OPEN`. Complete-SAB
+`T_bootstrap/r` evidence remains scoped and positive, but exact dense
+optimality is still open. Compact/body-linear term models are not admissible
+lower bounds, and no speculative hot-path code is permitted without a new
+counter-backed mechanism.
+```
