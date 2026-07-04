@@ -701,3 +701,9 @@ manuscript packaging, and broader optimality/theory gates are not complete.
 The selected binary matrix is now complete for `SET_4_5_2048` and
 `SET_2_3_4096`, r=2/r=4. The active goal remains open for manuscript packaging,
 source-grounded novelty boundaries, and any broader design routes.
+### Stage237 scoped manuscript package
+
+`PASS_STAGE237_SCOPED_MANUSCRIPT_PACKAGE_READY_CLAIM_BOUNDED` records a paper-facing package for the selected binary exact dense
+PVW/MAT-SAB result. The goal remains active because final citation verification,
+venue-specific paper assembly, optional native-counter attribution, and broader
+algorithmic gates remain incomplete.

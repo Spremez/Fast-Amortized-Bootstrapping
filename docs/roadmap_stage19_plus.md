@@ -6616,3 +6616,21 @@ passes 10-run complete-SAB A/B, 20-seed noise, and resource recording. The
 selected binary matrix for SET_4_5_2048 and SET_2_3_4096 at r=2/r=4 is now
 high-stat complete, with broader claims still gated.
 ```
+## Stage 237: Scoped Manuscript Package
+
+Goal:
+
+```text
+Convert the selected binary PVW/MAT-SAB matrix into a scoped manuscript/report
+package with section evidence, claim ledger, source policy, candidate-path
+matrix, overclaim guard, and next-stage gates.
+```
+
+Status:
+
+```text
+Generated from input head `d825eec` with `PASS_STAGE237_SCOPED_MANUSCRIPT_PACKAGE_READY_CLAIM_BOUNDED`. The package is ready for
+source-verified citation finalization or optional native-counter attribution.
+It remains bounded to exact dense binary PVW/MAT-SAB under complete-SAB
+T_bootstrap/r.
+```

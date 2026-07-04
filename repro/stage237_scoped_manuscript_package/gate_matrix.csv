@@ -1,0 +1,8 @@
+gate,required,observed,status,claim_effect
+G1_inputs,"Stage236 matrix, Stage230 source policy, Stage227 claim boundary, Stage226 attribution exist",all present,PASS,allows manuscript package refresh
+G2_matrix,four selected binary rows have high-stat performance/noise/resource evidence,four rows pass,PASS_SELECTED_BINARY_MATRIX,allows selected-binary performance table only
+G3_primary_metric,primary endpoint is complete-SAB T_bootstrap/r,metric fixed in claims and manuscript,PASS,prevents isolated-kernel speedup overclaim
+G4_source_policy,source rows are taken from Stage230 verified primary/official metadata matrix,11 source rows,PASS,keeps references source-grounded
+G5_optimality_boundary,theoretical optimality remains denied,C5_optimality DENY,BOUNDARY_HELD,blocks theoretical-optimality wording
+G6_overclaim_scan,forbidden phrases absent or contextualized as blocked wording/limitations,contextual guard pass,PASS_CONTEXTUAL_GUARD,prevents manuscript overclaim
+G7_stage237_decision,all report package gates pass,PASS_STAGE237_SCOPED_MANUSCRIPT_PACKAGE_READY_CLAIM_BOUNDED,PASS_STAGE237_SCOPED_MANUSCRIPT_PACKAGE_READY_CLAIM_BOUNDED,move to source/citation finalization or native-counter attribution

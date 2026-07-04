@@ -1,0 +1,10 @@
+phrase,count,status,allowed_context
+first shared-mask,3,PASS_CONTEXTUAL_GUARD,allowed if only present in blocked wording or limitations
+first pvw packing,3,PASS_CONTEXTUAL_GUARD,allowed if only present in blocked wording or limitations
+first external product,1,PASS_CONTEXTUAL_GUARD,allowed if only present in blocked wording or limitations
+all-parameter speedup,2,PASS_CONTEXTUAL_GUARD,allowed if only present in blocked wording or limitations
+non-binary support,4,PASS_CONTEXTUAL_GUARD,allowed if only present in blocked wording or limitations
+theoretically optimal,2,PASS_CONTEXTUAL_GUARD,allowed if only present in blocked wording or limitations
+universally optimal,2,PASS_CONTEXTUAL_GUARD,allowed if only present in blocked wording or limitations
+lower-bound tight,2,PASS_CONTEXTUAL_GUARD,allowed if only present in blocked wording or limitations
+compact selector construction succeeds,0,PASS_ABSENT,allowed if only present in blocked wording or limitations

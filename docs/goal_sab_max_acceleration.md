@@ -1132,3 +1132,10 @@ current-head `SET_2_3_4096`, r=4 slice passes high-stat complete-SAB
 the selected binary matrix covers `SET_4_5_2048` and `SET_2_3_4096`, r=2/r=4.
 Non-binary support, compact route, novelty, all-parameter scope, and
 theoretical optimality remain open.
+## Stage237 scoped manuscript package
+
+Generated from input head `d825eec`, Stage237 records `PASS_STAGE237_SCOPED_MANUSCRIPT_PACKAGE_READY_CLAIM_BOUNDED`. The selected
+binary matrix is now packaged as a bounded manuscript/report skeleton with
+claim ledger, source policy, candidate-path matrix, and overclaim guard. The
+active research goal remains open for citation finalization, optional native
+counter attribution, and any broader proof/implementation routes.

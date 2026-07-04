@@ -337,3 +337,4 @@
 - [x] Stage235 third high-stat added-parameter slice records decision `PASS_STAGE235_THIRD_HIGHSTAT_SLICE_SET_2_3_4096_R4_HIGHSTAT_PENDING`.
 - [x] Stage236 selected binary added-parameter matrix records decision `PASS_STAGE236_SELECTED_BINARY_ADDED_PARAMETER_MATRIX_COMPLETE`.
 - [x] Stage236 selected binary added-parameter matrix records decision `PASS_STAGE236_SELECTED_BINARY_ADDED_PARAMETER_MATRIX_COMPLETE`.
+- [x] Stage237 scoped manuscript package records decision `PASS_STAGE237_SCOPED_MANUSCRIPT_PACKAGE_READY_CLAIM_BOUNDED`.

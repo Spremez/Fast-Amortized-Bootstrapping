@@ -1,0 +1,5 @@
+param,r,stage,stat_level,mean_speedup,speedup_ci95_low,speedup_ci95_high,noise_failures,key_bytes_ratio,keygen_ratio,rss_ratio,status,evidence
+SET_4_5_2048,4,Stage233,high-stat n=10/seeds=20,1.357500,1.344091,1.370909,0/0/0,1.069425,1.338877,1.000880,PASS_HIGHSTAT_SLICE,repro/stage233_set_4_5_2048_r4_highstat_slice/proof_gate.csv
+SET_4_5_2048,2,Stage234,high-stat n=10/seeds=20,1.264700,1.255514,1.273886,0/0/0,1.014389,1.262692,0.991062,PASS_HIGHSTAT_SLICE,repro/stage234_set_4_5_2048_r2_highstat_slice/proof_gate.csv
+SET_2_3_4096,2,Stage235,high-stat n=10/seeds=20,1.256900,1.229193,1.284607,0/0/0,1.006136,1.102149,0.982190,PASS_HIGHSTAT_SLICE,repro/stage235_set_2_3_4096_r2_highstat_slice/proof_gate.csv
+SET_2_3_4096,4,Stage236,high-stat n=10/seeds=20,1.329600,1.317739,1.341461,0/0/0,1.031844,1.357920,0.968173,PASS_HIGHSTAT_SLICE,repro/stage236_set_2_3_4096_r4_highstat_slice/proof_gate.csv

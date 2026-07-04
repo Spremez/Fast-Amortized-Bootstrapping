@@ -3324,3 +3324,18 @@ H10_stage236_selected_binary_matrix_complete:
     and SET_2_3_4096 at r=2/r=4 are high-stat complete. Non-binary support,
     compact route, novelty, all-parameter scope, and theoretical optimality
     remain pending.
+H10_stage237_scoped_manuscript_package:
+  status: scoped_manuscript_package_ready_claim_bounded
+  evidence:
+    - repro/stage237_scoped_manuscript_package/manuscript_skeleton.md
+    - repro/stage237_scoped_manuscript_package/contribution_claims.csv
+    - repro/stage237_scoped_manuscript_package/source_policy.csv
+    - repro/stage237_scoped_manuscript_package/candidate_path_matrix.csv
+    - docs/stage237_scoped_manuscript_package.md
+  conclusion: >
+    Stage237 records PASS_STAGE237_SCOPED_MANUSCRIPT_PACKAGE_READY_CLAIM_BOUNDED. The selected binary exact dense PVW/MAT-SAB
+    evidence is packaged into a bounded manuscript/report skeleton under the
+    complete-SAB T_bootstrap/r metric. Source-verified citation finalization,
+    optional native-counter attribution, non-binary support, compact route,
+    all-parameter scope, novelty, and theoretical optimality remain separately
+    gated.

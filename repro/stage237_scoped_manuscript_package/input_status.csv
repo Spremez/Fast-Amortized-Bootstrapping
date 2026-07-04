@@ -1,0 +1,11 @@
+input,status,role,bytes
+repro/stage236_set_2_3_4096_r4_highstat_slice/proof_gate.csv,present,Stage236 selected binary matrix proof,2238
+repro/stage236_set_2_3_4096_r4_highstat_slice/selected_binary_matrix_summary.csv,present,Stage236 four-row selected binary experiment table,899
+repro/stage236_set_2_3_4096_r4_highstat_slice/stage236_report.md,present,Stage236 report with metric and boundary,16890
+repro/stage230_source_verified_literature_novelty_audit/source_verification_refresh.csv,present,Stage230 source verification refresh,3734
+repro/stage230_source_verified_literature_novelty_audit/novelty_risk_map.csv,present,Stage230 novelty risk map,1469
+repro/stage230_source_verified_literature_novelty_audit/claim_policy.csv,present,Stage230 claim policy,824
+repro/stage230_source_verified_literature_novelty_audit/related_work_axes.csv,present,Stage230 related-work axes,1021
+repro/stage227_exact_route_claim_boundary_update/claim_matrix.csv,present,Stage227 metric/claim boundary,2129
+repro/stage227_exact_route_claim_boundary_update/metric_ledger.csv,present,Stage227 T_bootstrap/r metric ledger,2565
+repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv,present,"Stage226 native counter attribution, optional mechanism only",1607
