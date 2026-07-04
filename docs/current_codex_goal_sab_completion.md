@@ -666,3 +666,6 @@ or security claims.
 ### Stage228 counter-driven backend kernel search
 
 `PASS_STAGE228_NO_NEW_HOTPATH_CODE_SELECT_PARAMETER_MATRIX` prevents blind exact-path retuning and routes to parameter generalization.
+### Stage229 parameter generalization matrix
+
+`PASS_STAGE229_SCOPED_BINARY_MATRIX_RECORDED_NONBINARY_BLOCKED` fixes the exact-route parameter matrix and keeps non-binary, all-parameter, novelty, and theoretical-optimality claims out of scope until their gates run.

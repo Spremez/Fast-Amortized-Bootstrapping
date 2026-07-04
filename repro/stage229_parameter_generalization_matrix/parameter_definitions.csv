@@ -1,0 +1,5 @@
+param,key_mode,in_N,out_N,msg_prec,h,r_prec,status,evidence
+SET_2_3_2048,BINARY,2048,2048,3,39,7,target_main,main.c
+SET_4_5_2048,BINARY,2048,2048,5,42,7,added_binary_covered,main.c
+SET_2_3_4096,BINARY,4096,2048,3,32,8,added_binary_covered,main.c
+TERNARY_or_include_zero,NON_BINARY,,,,,,pvw_unsupported_scalar_preserved,docs/stage26_parameter_branch_log.md

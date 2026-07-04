@@ -1,0 +1,21 @@
+input,status,role,bytes
+repro/stage228_counter_driven_backend_kernel_search/proof_gate.csv,present,Stage228 proof gate selecting parameter matrix,1136
+repro/stage228_counter_driven_backend_kernel_search/next_stage_queue.csv,present,Stage228 next queue,923
+repro/stage206_current_head_highstat/performance_stats.csv,present,current-head r=2/r=4 complete-SAB A/B,877
+repro/stage206_current_head_highstat/noise_stats.csv,present,current-head r=2/r=4 final-output noise,549
+repro/stage207_current_head_resource_refresh/resource_comparison.csv,present,current-head r=2/r=4 resource refresh,900
+repro/stage224_exact_pvw_mat_avx_resource_refresh/perf_comparison.csv,present,exact r=6 backend complete-SAB refresh,479
+repro/stage225_exact_refresh_noise_resource_rerun/noise_aggregate.csv,present,exact r=6 fresh noise refresh,231
+repro/stage225_exact_refresh_noise_resource_rerun/resource_comparison.csv,present,exact r=6 fresh resource refresh,427
+repro/stage226_exact_mat_avx_counter_attribution/attribution_summary.csv,present,exact r=6 counter attribution,1607
+repro/stage36_target_perf_summary.csv,present,historical target high-stat performance,521
+repro/stage36_target_noise_seeds50/aggregate.csv,present,historical target 50-seed noise,235
+repro/stage36_stage_noise_seeds10/aggregate.csv,present,historical target stage-noise,1296
+repro/stage36_resource_summary.csv,present,historical target resource matrix,2083
+repro/stage36_added_params_runs10_seeds20/performance_stats.csv,present,added binary parameter 10-run performance,578
+repro/stage36_added_params_runs10_seeds20/noise_summary.csv,present,added binary parameter 20-seed noise,843
+docs/stage26_parameter_branch_log.md,present,PVW non-binary unsupported boundary,3165
+docs/stage26_parameter_perf_noise_log.md,present,added binary parameter smoke history,7864
+docs/stage36_added_params_expansion_log.md,present,added binary high-stat report,3162
+main.c,present,current target parameter definitions,152574
+stage228_next_selects_stage229,present,Keeps execution on the registered route.,

@@ -2672,3 +2672,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage228_counter_driven_candidates.md`
   - `scripts/build_stage228_counter_driven_backend_kernel_search.py`
   - `repro/stage228_counter_driven_backend_kernel_search/`
+- stage229_parameter_generalization_matrix:
+  - `docs/stage229_parameter_generalization_matrix.md`
+  - `experiments/stage229_parameter_generalization_matrix_plan.md`
+  - `theory_checks/stage229_parameter_scope_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage229_parameter_scope.md`
+  - `scripts/build_stage229_parameter_generalization_matrix.py`
+  - `repro/stage229_parameter_generalization_matrix/`

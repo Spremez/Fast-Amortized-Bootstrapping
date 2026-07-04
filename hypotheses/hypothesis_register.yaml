@@ -3228,3 +3228,14 @@ H10_stage228_counter_driven_kernel_search:
   conclusion: >
     Stage228 records PASS_STAGE228_NO_NEW_HOTPATH_CODE_SELECT_PARAMETER_MATRIX. New exact MAT/PVW hot-path code requires a
     projected complete-SAB gain gate before implementation.
+H10_stage229_parameter_generalization_matrix:
+  status: scoped_binary_matrix_recorded
+  evidence:
+    - repro/stage229_parameter_generalization_matrix/parameter_matrix.csv
+    - repro/stage229_parameter_generalization_matrix/coverage_gaps.csv
+    - docs/stage229_parameter_generalization_matrix.md
+  conclusion: >
+    Stage229 records PASS_STAGE229_SCOPED_BINARY_MATRIX_RECORDED_NONBINARY_BLOCKED. The correct comparison dimension is
+    complete-SAB T_bootstrap/r. Binary parameter evidence is scoped; non-binary,
+    all-parameter, paper-novelty, and theoretical-optimality claims remain
+    gated.

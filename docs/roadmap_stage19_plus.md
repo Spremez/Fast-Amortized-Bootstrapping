@@ -6484,3 +6484,19 @@ Status:
 Completed at `f2b753f` with `PASS_STAGE228_NO_NEW_HOTPATH_CODE_SELECT_PARAMETER_MATRIX`. No speculative hot-path edit is
 permitted; next selected work is parameter generalization.
 ```
+## Stage 229: Parameter Generalization Matrix
+
+Goal:
+
+```text
+Freeze the complete-SAB `T_bootstrap/r` parameter evidence matrix before
+broadening exact PVW/MAT-SAB claims.
+```
+
+Status:
+
+```text
+Generated from input head `cf19098` with `PASS_STAGE229_SCOPED_BINARY_MATRIX_RECORDED_NONBINARY_BLOCKED`. Binary target and added-parameter
+evidence is recorded, non-binary PVW-SAB remains unsupported, and all-parameter
+or theoretical-optimality claims remain blocked.
+```

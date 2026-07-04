@@ -1088,3 +1088,6 @@ At commit `df8db1f`, Stage227 records `PASS_STAGE227_EXACT_ROUTE_CLAIM_BOUNDARY_
 ## Stage228 counter-driven backend kernel search
 
 At commit `f2b753f`, Stage228 records `PASS_STAGE228_NO_NEW_HOTPATH_CODE_SELECT_PARAMETER_MATRIX`. Exact same-format kernel work remains gated by projected complete-SAB `T_bootstrap/r` gain.
+## Stage229 parameter generalization matrix
+
+Generated from input head `cf19098`, Stage229 records `PASS_STAGE229_SCOPED_BINARY_MATRIX_RECORDED_NONBINARY_BLOCKED`. The primary comparison dimension is complete-SAB `T_bootstrap/r`, i.e. bootstrap time per processed plaintext lane/bit. Claims remain binary-parameter scoped.

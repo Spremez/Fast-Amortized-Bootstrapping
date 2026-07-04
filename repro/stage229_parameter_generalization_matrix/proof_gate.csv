@@ -1,0 +1,9 @@
+gate,status,metric,value,evidence,interpretation
+G1_required_inputs,PASS,inputs_present,true,repro/stage229_parameter_generalization_matrix/input_status.csv,Stage229 only consumes registered evidence; missing inputs block promotion.
+G2_metric_dimension,PASS,primary_metric,T_bootstrap/r,repro/stage229_parameter_generalization_matrix/claim_scope.csv,All PVW/MAT-SAB speedups are amortized per processed plaintext lane/bit.
+G3_current_head_binary_target,PASS,current_rows,2,repro/stage229_parameter_generalization_matrix/parameter_matrix.csv,Current-head r=2/r=4 target evidence is present.
+G4_added_binary_history,PASS,added_rows,4,repro/stage229_parameter_generalization_matrix/parameter_matrix.csv,Two added binary parameters have historical 10-run/20-seed evidence.
+G5_exact_r6_current,PASS,r6_rows,1,repro/stage229_parameter_generalization_matrix/parameter_matrix.csv,Current exact r=6 explicit-path evidence is registered but remains scoped.
+G6_nonbinary_boundary,PASS_BLOCKED_SCOPE,nonbinary_blocked,true,repro/stage229_parameter_generalization_matrix/coverage_gaps.csv,PVW non-binary support remains unsupported; scalar non-binary is not removed.
+G7_generalization_boundary,PASS_NOT_ALL_PARAMETERS,all_parameter_claim,denied,repro/stage229_parameter_generalization_matrix/coverage_gaps.csv,"Stage229 records a scoped parameter matrix, not an all-parameter theorem."
+G8_stage229_decision,PASS_STAGE229_SCOPED_BINARY_MATRIX_RECORDED_NONBINARY_BLOCKED,decision,PASS_STAGE229_SCOPED_BINARY_MATRIX_RECORDED_NONBINARY_BLOCKED,repro/stage229_parameter_generalization_matrix/proof_gate.csv,Proceed to source-verified novelty audit and explicit implementation preflights only.
