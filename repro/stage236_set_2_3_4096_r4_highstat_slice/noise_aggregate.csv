@@ -1,0 +1,2 @@
+param,r,seeds,points,pvw_failures,scalar_failures,pair_failures,avg_pvw_minus_scalar_log2,min_pvw_minus_scalar_log2,max_pvw_minus_scalar_log2,status,stats_label
+SET_2_3_4096,4,20,327680,0,0,0,0.028950,-0.302000,0.595000,PASS_HIGHSTAT_SLICE,high-stat slice seeds=20; SET_2_3_4096 r=4

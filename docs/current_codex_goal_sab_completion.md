@@ -695,3 +695,9 @@ manuscript packaging, and broader optimality/theory gates are not complete.
 `PASS_STAGE235_THIRD_HIGHSTAT_SLICE_SET_2_3_4096_R4_HIGHSTAT_PENDING` records the third current-head added-parameter high-stat slice.
 The active goal remains open because `SET_2_3_4096`, r=4 high-stat evidence,
 manuscript packaging, and broader optimality/theory gates are not complete.
+### Stage236 selected binary added-parameter matrix complete
+
+`PASS_STAGE236_SELECTED_BINARY_ADDED_PARAMETER_MATRIX_COMPLETE` records the fourth current-head added-parameter high-stat slice.
+The selected binary matrix is now complete for `SET_4_5_2048` and
+`SET_2_3_4096`, r=2/r=4. The active goal remains open for manuscript packaging,
+source-grounded novelty boundaries, and any broader design routes.

@@ -335,3 +335,5 @@
 - [x] Stage233 first high-stat added-parameter slice records decision `PASS_STAGE233_FIRST_HIGHSTAT_SLICE_RESOURCE_RECORDED_MATRIX_PENDING`.
 - [x] Stage234 second high-stat added-parameter slice records decision `PASS_STAGE234_SECOND_HIGHSTAT_SLICE_SET_4_5_2048_COMPLETE_MATRIX_PENDING`.
 - [x] Stage235 third high-stat added-parameter slice records decision `PASS_STAGE235_THIRD_HIGHSTAT_SLICE_SET_2_3_4096_R4_HIGHSTAT_PENDING`.
+- [x] Stage236 selected binary added-parameter matrix records decision `PASS_STAGE236_SELECTED_BINARY_ADDED_PARAMETER_MATRIX_COMPLETE`.
+- [x] Stage236 selected binary added-parameter matrix records decision `PASS_STAGE236_SELECTED_BINARY_ADDED_PARAMETER_MATRIX_COMPLETE`.

@@ -6598,3 +6598,21 @@ Generated from input head `c8dae05` with `PASS_STAGE235_THIRD_HIGHSTAT_SLICE_SET
 passes 10-run complete-SAB A/B, 20-seed noise, and resource recording. The
 added-parameter matrix still requires SET_2_3_4096 r=4 high-stat evidence.
 ```
+## Stage 236: SET_2_3_4096 r=4 High-Stat Slice
+
+Goal:
+
+```text
+Promote SET_2_3_4096 r=4 from preflight to 10-run/20-seed/resource evidence
+under complete-SAB T_bootstrap/r and close the selected binary added-parameter
+matrix.
+```
+
+Status:
+
+```text
+Generated from input head `5475e49` with `PASS_STAGE236_SELECTED_BINARY_ADDED_PARAMETER_MATRIX_COMPLETE`. `SET_2_3_4096`, r=4
+passes 10-run complete-SAB A/B, 20-seed noise, and resource recording. The
+selected binary matrix for SET_4_5_2048 and SET_2_3_4096 at r=2/r=4 is now
+high-stat complete, with broader claims still gated.
+```

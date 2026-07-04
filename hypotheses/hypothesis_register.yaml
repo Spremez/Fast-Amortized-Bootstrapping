@@ -3309,3 +3309,18 @@ H10_stage235_third_highstat_slice:
     gates. The comparison dimension is amortized bootstrapping time per
     processed plaintext lane/bit. SET_2_3_4096 r=4 high-stat evidence, non-binary
     support, compact route, novelty, and theoretical optimality remain pending.
+H10_stage236_selected_binary_matrix_complete:
+  status: selected_binary_added_parameter_matrix_highstat_complete
+  evidence:
+    - repro/stage236_set_2_3_4096_r4_highstat_slice/performance_stats.csv
+    - repro/stage236_set_2_3_4096_r4_highstat_slice/noise_aggregate.csv
+    - repro/stage236_set_2_3_4096_r4_highstat_slice/resource_comparison.csv
+    - repro/stage236_set_2_3_4096_r4_highstat_slice/selected_binary_matrix_summary.csv
+    - docs/stage236_set_2_3_4096_r4_highstat_slice.md
+  conclusion: >
+    Stage236 records PASS_STAGE236_SELECTED_BINARY_ADDED_PARAMETER_MATRIX_COMPLETE. The current-head binary SET_2_3_4096, r=4
+    slice passes 10-run complete-SAB T_bootstrap/r, 20-seed noise, and resource
+    gates. Together with Stage233/234/235, selected binary rows SET_4_5_2048
+    and SET_2_3_4096 at r=2/r=4 are high-stat complete. Non-binary support,
+    compact route, novelty, all-parameter scope, and theoretical optimality
+    remain pending.

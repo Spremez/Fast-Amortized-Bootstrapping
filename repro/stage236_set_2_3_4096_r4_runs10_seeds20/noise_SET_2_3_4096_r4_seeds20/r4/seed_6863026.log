@@ -1,0 +1,10 @@
+SAB_PVW_NOISE trial target_full r=4 trial=0 complete
+SAB_PVW_NOISE lane target_full r=4 lane=0 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-7.739 scalar_log2_sigma_torus=-7.641 pair_log2_sigma_torus=-7.510
+SAB_PVW_NOISE lane target_full r=4 lane=1 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-7.756 scalar_log2_sigma_torus=-7.349 pair_log2_sigma_torus=-7.027
+SAB_PVW_NOISE lane target_full r=4 lane=2 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-7.737 scalar_log2_sigma_torus=-7.666 pair_log2_sigma_torus=-7.125
+SAB_PVW_NOISE lane target_full r=4 lane=3 trials=1 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-7.718 scalar_log2_sigma_torus=-7.898 pair_log2_sigma_torus=-7.490
+SAB_PVW_NOISE summary target_full r=4 trials=1 points=16384 pvw_failures=0 scalar_failures=0 pair_failures=0 pvw_log2_sigma_torus=-7.737 scalar_log2_sigma_torus=-7.612 pair_log2_sigma_torus=-7.256 pvw_minus_scalar_log2=-0.125 max_allowed_log2_gap=4.000
+SAB_PVW_NOISE pvw_total count=16384 failures=0 log2_sigma_torus=-7.737 log2_max_abs_torus=-6.022
+SAB_PVW_NOISE scalar_total count=16384 failures=0 log2_sigma_torus=-7.612 log2_max_abs_torus=-5.781
+SAB_PVW_NOISE pair_total count=16384 failures=0 log2_sigma_torus=-7.256 log2_max_abs_torus=-5.158
+SAB_PVW_NOISE target full bootstrap gate: Pass

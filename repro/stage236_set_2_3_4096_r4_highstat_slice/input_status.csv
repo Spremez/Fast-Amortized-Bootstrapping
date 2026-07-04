@@ -1,0 +1,9 @@
+input,status,role,bytes
+repro/stage233_set_4_5_2048_r4_highstat_slice/performance_stats.csv,present,Stage233 SET_4_5_2048 r=4 high-stat performance,448
+repro/stage234_set_4_5_2048_r2_highstat_slice/performance_stats.csv,present,Stage234 SET_4_5_2048 r=2 high-stat performance,443
+repro/stage235_set_2_3_4096_r2_highstat_slice/performance_stats.csv,present,Stage235 SET_2_3_4096 r=2 high-stat performance,444
+repro/stage236_set_2_3_4096_r4_runs10_seeds20/performance_summary.csv,present,Stage236 raw high-stat performance aggregate,286
+repro/stage236_set_2_3_4096_r4_runs10_seeds20/perf_SET_2_3_4096_r4_runs10/summary.csv,present,Stage236 per-run performance,983
+repro/stage236_set_2_3_4096_r4_runs10_seeds20/noise_summary.csv,present,Stage236 high-stat noise aggregate summary,308
+repro/stage236_set_2_3_4096_r4_runs10_seeds20/noise_SET_2_3_4096_r4_seeds20/summary.csv,present,Stage236 per-seed noise,3316
+repro/stage236_set_2_3_4096_r4_resource/summary.csv,present,Stage236 resource/keygen/RSS,680

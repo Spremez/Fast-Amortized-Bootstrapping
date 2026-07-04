@@ -2721,3 +2721,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage235_highstat_slice.md`
   - `scripts/build_stage235_highstat_slice.py`
   - `repro/stage235_set_2_3_4096_r2_highstat_slice/`
+- stage236_set_2_3_4096_r4_highstat_slice:
+  - `docs/stage236_set_2_3_4096_r4_highstat_slice.md`
+  - `experiments/stage236_set_2_3_4096_r4_highstat_slice_plan.md`
+  - `theory_checks/stage236_selected_binary_matrix_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage236_selected_binary_matrix.md`
+  - `scripts/build_stage236_highstat_slice.py`
+  - `repro/stage236_set_2_3_4096_r4_highstat_slice/`

@@ -1124,3 +1124,11 @@ current-head `SET_2_3_4096`, r=2 slice passes high-stat complete-SAB
 `T_bootstrap/r`, noise, and resource gates. This supports one additional
 binary parameter/r slice only. `SET_2_3_4096`, r=4, non-binary support, compact
 route, novelty, and theoretical optimality remain open.
+## Stage236 selected binary added-parameter matrix complete
+
+Generated from input head `5475e49`, Stage236 records `PASS_STAGE236_SELECTED_BINARY_ADDED_PARAMETER_MATRIX_COMPLETE`. The
+current-head `SET_2_3_4096`, r=4 slice passes high-stat complete-SAB
+`T_bootstrap/r`, noise, and resource gates. Together with Stage233/234/235,
+the selected binary matrix covers `SET_4_5_2048` and `SET_2_3_4096`, r=2/r=4.
+Non-binary support, compact route, novelty, all-parameter scope, and
+theoretical optimality remain open.
