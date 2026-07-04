@@ -1,0 +1,2 @@
+variant,gate,source_log
+include_zero_coeff_one_fast,Pass,repro/stage277_include_zero_fast_repeated_resource/raw/include_zero_coeff_one_fast_resource_trials1_run.log

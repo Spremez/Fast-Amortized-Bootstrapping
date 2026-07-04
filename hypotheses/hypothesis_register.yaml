@@ -3807,3 +3807,13 @@ H10_stage276_include_zero_coeff_one_fast_path:
     Stage276 records PASS_STAGE276_INCLUDE_ZERO_FAST_SMOKE_POSITIVE_REPEAT_REQUIRED. It tests only the guarded current-PVW
     include-zero coeff-one fast path and keeps claims scoped to full SAB
     smoke evidence until repeated/noise/resource gates pass.
+H10_stage277_include_zero_fast_repeated_resource:
+  status: PASS_STAGE277_INCLUDE_ZERO_FAST_REPEATED_RESOURCE_PROMOTE_NATIVE_STATS_REQUIRED
+  evidence:
+    - repro/stage277_include_zero_fast_repeated_resource/bench_summary.csv
+    - repro/stage277_include_zero_fast_repeated_resource/variant_compare.csv
+    - repro/stage277_include_zero_fast_repeated_resource/noise_summary.csv
+    - docs/stage277_include_zero_fast_repeated_resource.md
+  conclusion: >
+    Stage277 records PASS_STAGE277_INCLUDE_ZERO_FAST_REPEATED_RESOURCE_PROMOTE_NATIVE_STATS_REQUIRED. It promotes the guarded include-zero fast path
+    only to a native/larger-stat follow-up gate, not to a final paper claim.

@@ -937,3 +937,8 @@ path as the next executable experiment. No speed claim is made at this stage.
 `PASS_STAGE276_INCLUDE_ZERO_FAST_SMOKE_POSITIVE_REPEAT_REQUIRED` records an explicit-flag smoke for the guarded current-PVW
 include-zero coeff-one fast path. The primary metric is `T_bootstrap/r`; the
 scope is include-zero only.
+### Stage277 include-zero fast repeated/resource
+
+`PASS_STAGE277_INCLUDE_ZERO_FAST_REPEATED_RESOURCE_PROMOTE_NATIVE_STATS_REQUIRED` records local repeated timing plus r=4 include-zero fast-path
+noise/resource evidence. It remains WSL/local evidence and requires native or
+larger-stat promotion before paper-grade speed claims.

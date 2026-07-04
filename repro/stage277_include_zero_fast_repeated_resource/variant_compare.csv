@@ -1,0 +1,2 @@
+mode,r,reps,default_t_bootstrap_over_r_us,backend_t_bootstrap_over_r_us,fast_t_bootstrap_over_r_us,fast_speedup_vs_default,fast_speedup_vs_backend,fast_stddev_us,default_correctness,backend_correctness,fast_correctness,status
+include_zero,4,2,8306069.250,8030454.250,7148051.875,1.162005,1.123447,263706.282,Pass,Pass,Pass,positive

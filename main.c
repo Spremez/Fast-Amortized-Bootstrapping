@@ -3,7 +3,7 @@
 #include <benchmark_util.h>
 #include <sab_profile.h>
 #include <inttypes.h>
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 #include <sab_pvw.h>
 #endif
 
@@ -551,7 +551,7 @@ void test_sab_microbench(){
   );
 }
 
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
   const int N = in->s[0][lane]->N;
   TRLWE_Key out = trlwe_alloc_key(N, in->k, in->sigma);
@@ -958,6 +958,36 @@ static TRLWE_Key test_sparse_key_from_distances_coeffs(int N, int k,
   }
   return out;
 }
+
+#if defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST)
+static TRLWE_Key stage277_sparse_key_fixture_no_dft(int N, int k,
+    const uint64_t * distances, const int64_t * coeffs, int h,
+    double sigma){
+  TRLWE_Key out = trlwe_alloc_key(N, k, sigma);
+  for (size_t key_idx = 0; key_idx < (size_t) k; key_idx++){
+    memset(out->s[key_idx]->coeffs, 0, sizeof(Torus) * N);
+    uint64_t previous = N;
+    for (size_t step = 0; step < (size_t) h; step++){
+      const uint64_t distance = distances[step];
+      if(distance == 0 || distance > previous){
+        printf("SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE invalid fixture distance"
+               " step=%" PRIu64 " distance=%" PRIu64 " previous=%" PRIu64
+               "\n", (uint64_t) step, distance, previous);
+        exit(1);
+      }
+      if(coeffs[step] != 1 && coeffs[step] != -1){
+        printf("SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE invalid fixture coeff"
+               " step=%" PRIu64 " coeff=%" PRId64 "\n",
+               (uint64_t) step, coeffs[step]);
+        exit(1);
+      }
+      previous -= distance;
+      out->s[key_idx]->coeffs[previous] = (Torus) coeffs[step];
+    }
+  }
+  return out;
+}
+#endif
 
 static bool check_mat_trgsw_identity_lane(int r){
   const int N = 1024, k = 1, l = 1, bg_bit = 23, prec = 3;
@@ -4304,13 +4334,24 @@ static bool check_pvw_nonbinary_full_noise_resource(int r,
          ell_hw, b_hw);
 
   uint64_t begin = get_time();
+#ifdef SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST
+  TRLWE_Key input_key = stage277_sparse_key_fixture_no_dft(in_N, in_k,
+      selector_values, key_coeffs, h, pow(2, -15));
+#else
   TRLWE_Key input_key = test_sparse_key_from_distances_coeffs(in_N, in_k,
       selector_values, key_coeffs, h, pow(2, -15));
+#endif
   const uint64_t input_keygen_us = get_time() - begin;
 
   begin = get_time();
+#ifdef SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST
+  const int64_t packing_key_coeffs[2] = {1, 1};
+  TRLWE_Key packing_key = stage277_sparse_key_fixture_no_dft(in_N, in_k,
+      packing_key_distances, packing_key_coeffs, h, pow(2, -70));
+#else
   TRLWE_Key packing_key = test_binary_key_from_distances(in_N, in_k,
       packing_key_distances, h, pow(2, -70));
+#endif
   const uint64_t packing_keygen_us = get_time() - begin;
 
   begin = get_time();
@@ -4765,12 +4806,33 @@ void test_sab_pvw_nonbinary_full_noise_resource(){
 }
 #endif
 
+#if defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST)
+#ifndef SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TRIALS
+#define SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TRIALS 1
+#endif
+void test_sab_pvw_include_zero_fast_resource(){
+  const int trials = SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TRIALS;
+  bool pass = true;
+  if(trials < 1){
+    printf("SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE invalid trials=%d\n",
+           trials);
+    exit(1);
+  }
+  pass &= check_pvw_nonbinary_full_noise_resource(4, true, trials);
+  printf("SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE full bootstrap gate: %s\n",
+         pass ? "Pass" : "Fail");
+  if(!pass) exit(1);
+}
+#endif
+
 int main(int argc, char const *argv[])
 {
 #if defined(SAB_PVW_TARGET_TEST)
   test_sab_pvw_target_full();
 #elif defined(SAB_PVW_SUBA_ALIAS_TEST)
   test_sab_pvw_suba_alias_microtest();
+#elif defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST)
+  test_sab_pvw_include_zero_fast_resource();
 #elif defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST)
   test_sab_pvw_nonbinary_full_noise_resource();
 #elif defined(SAB_PVW_NONBINARY_FULL_TEST)

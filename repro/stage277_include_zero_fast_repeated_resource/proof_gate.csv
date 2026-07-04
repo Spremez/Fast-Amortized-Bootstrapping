@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,interpretation
+G1_repeated_coverage,PASS,variant coverage,"backend_from_dft_add:include_zero:reps2,default:include_zero:reps2,include_zero_coeff_one_fast:include_zero:reps2",bench_summary.csv,"Covers default, backend, and fast include-zero variants with repeated reps."
+G2_repeated_correctness,PASS,PVW/scalar target correctness,3/3,bench_summary.csv,Repeated timing is interpreted only after correctness passes.
+G3_repeated_speed,PASS,fast speedup vs backend,1.123447x,variant_compare.csv,Fast path must beat default and same-backend baseline on T_bootstrap/r.
+G4_noise,PASS,noise gate,Pass,noise_summary.csv,Noise/resource run is scoped to r=4 include-zero fast path.
+G5_resource,PASS,key size ratio vs scalar repeated,1.182308,resource_summary.csv,Fast path changes compute only; key format and estimates remain reported.
+G6_claim_boundary,PASS_WSL_NOT_FINAL,platform/statistics,WSL2 spqlios_avx512 reps2; FFNT resource trials1,claim_boundary.csv,Timing and resource/noise evidence are separated; native Linux and larger repeated/seed matrix are required before paper-grade claim.
+G7_decision,PASS_STAGE277_INCLUDE_ZERO_FAST_REPEATED_RESOURCE_PROMOTE_NATIVE_STATS_REQUIRED,stage decision,PASS_STAGE277_INCLUDE_ZERO_FAST_REPEATED_RESOURCE_PROMOTE_NATIVE_STATS_REQUIRED,proof_gate.csv,Promote to native/larger-stat gate only if all local gates pass.

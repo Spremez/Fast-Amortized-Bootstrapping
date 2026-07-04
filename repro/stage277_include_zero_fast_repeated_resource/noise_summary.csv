@@ -1,0 +1,2 @@
+variant,mode,r,trials,points,pvw_failures,scalar_failures,pair_failures,pvw_log2_sigma_torus,scalar_log2_sigma_torus,pair_log2_sigma_torus,pair_log2_max_abs_torus,gate,source_log
+include_zero_coeff_one_fast,include_zero,4,1,64,0,0,0,-11.886,-11.602,-11.371,-9.864,Pass,repro/stage277_include_zero_fast_repeated_resource/raw/include_zero_coeff_one_fast_resource_trials1_run.log

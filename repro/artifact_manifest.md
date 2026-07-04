@@ -2971,3 +2971,8 @@ Repro artifacts:
   - `scripts/run_stage276_include_zero_coeff_one_fast_path.sh`
   - `scripts/build_stage276_include_zero_coeff_one_fast_path.py`
   - `repro/stage276_include_zero_coeff_one_fast_path/`
+- stage277_include_zero_fast_repeated_resource:
+  - `docs/stage277_include_zero_fast_repeated_resource.md`
+  - `scripts/run_stage277_include_zero_fast_repeated_resource.sh`
+  - `scripts/build_stage277_include_zero_fast_repeated_resource.py`
+  - `repro/stage277_include_zero_fast_repeated_resource/`

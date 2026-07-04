@@ -395,3 +395,5 @@
 - [x] Stage275 records `PASS_STAGE275_CLOSE_S272A_SELECT_INCLUDE_ZERO_COEFF_ONE_FAST_PATH` and selects Stage276 guarded include-zero coeff-one fast path.
 <!-- stage276-include-zero-coeff-one-fast-path-checklist -->
 - [x] Stage276 include-zero coeff-one fast-path smoke records `PASS_STAGE276_INCLUDE_ZERO_FAST_SMOKE_POSITIVE_REPEAT_REQUIRED` with primary metric `T_bootstrap/r`.
+<!-- stage277-include-zero-fast-repeated-resource-checklist -->
+- [x] Stage277 include-zero fast repeated/resource records `PASS_STAGE277_INCLUDE_ZERO_FAST_REPEATED_RESOURCE_PROMOTE_NATIVE_STATS_REQUIRED` and keeps final claims gated.

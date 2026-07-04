@@ -1,0 +1,5 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+include_zero_fast_repeated_local,promote,Stage277 local repeated/resource evidence supports further promotion of the guarded include-zero fast path.,Stage277 is final paper-grade evidence.,variant_compare.csv; noise_summary.csv
+resource_cost,reported,Key-size/resource estimates are reported and unchanged by the compute-only fast path.,The fast path reduces key size.,resource_summary.csv
+backend_separation,explicit,"Stage277 timing uses spqlios_avx512, while small-parameter resource/noise uses FFNT proxy evidence.",FFNT resource/noise output is a spqlios_avx512 performance result.,raw/*_build.log; proof_gate.csv
+scope,guarded_include_zero_only,The claim is limited to current PVW include-zero coefficient-one semantics.,This covers ternary or scalar include-zero zero-gap semantics.,claim_boundary.csv
