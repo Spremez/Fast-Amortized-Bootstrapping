@@ -1,0 +1,10 @@
+component,share_of_direct_split_total,avg_us_per_call,hypothetical_component_reduction,profile_level_split_speedup_bound,claim_boundary
+decompose,0.002047,0.050785,0.10,1.000205,profile_model_only_not_latency_claim
+decompose,0.002047,0.050785,0.25,1.000514,profile_model_only_not_latency_claim
+decompose,0.002047,0.050785,0.50,1.001028,profile_model_only_not_latency_claim
+torus_to_dft,0.616652,15.300075,0.10,1.065939,profile_model_only_not_latency_claim
+torus_to_dft,0.616652,15.300075,0.25,1.182942,profile_model_only_not_latency_claim
+torus_to_dft,0.616652,15.300075,0.50,1.447805,profile_model_only_not_latency_claim
+dense_from_dec,0.378154,9.382574,0.10,1.039431,profile_model_only_not_latency_claim
+dense_from_dec,0.378154,9.382574,0.25,1.104773,profile_model_only_not_latency_claim
+dense_from_dec,0.378154,9.382574,0.50,1.234071,profile_model_only_not_latency_claim

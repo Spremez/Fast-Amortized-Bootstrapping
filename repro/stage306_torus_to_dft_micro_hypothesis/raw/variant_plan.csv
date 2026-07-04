@@ -1,0 +1,3 @@
+variant,r,N,reps,runs,fft_lib,flags
+baseline_sub_decomp,4,2048,5000,5,spqlios_avx512,MAT_TRGSW_AVX512_SUB_DECOMP=true
+direct_sub_decomp_dft,4,2048,5000,5,spqlios_avx512,MAT_TRGSW_AVX512_SUB_DECOMP=true MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true

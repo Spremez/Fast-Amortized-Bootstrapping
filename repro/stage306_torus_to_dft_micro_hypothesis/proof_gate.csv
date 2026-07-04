@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_entry_stage305,PASS,Stage305 proof,PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED,Stage306 must start from a measured complete-SAB residual.
+G2_dominant_component,PASS,dominant direct component,torus_to_dft,"The next candidate must target the measured residual, not a broad rewrite."
+G3_current_microbench,PASS,current direct sub-DTF min speedup,1.045028,The current direct path must still beat the old sub-DTF lifecycle.
+G4_prior_candidate_filter,PASS,Stage289/290 wrapper candidates,NEUTRAL_STAGE289_DFT_ARRAY_WRAPPER_NO_PROMOTION;NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION,Known neutral DFT wrappers are excluded from the next implementation route.
+G5_claim_boundary,PASS,scope,candidate admission,Stage306 is not a new full-SAB speed claim and does not prove theoretical optimality.
+G6_decision,PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED,stage decision,PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED,Controls Stage307: split direct DFT into digit-to-double and ifft before rewriting.

@@ -4083,3 +4083,15 @@ H305_materialization_split_probe:
   status: PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED
   dominant_direct_component: torus_to_dft
   evidence: repro/stage305_materialization_split_probe/split_components.csv
+H306_torus_to_dft_micro_hypothesis:
+  status: PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED
+  primary_metric: candidate_admission_with_current_sub_dft_microbench
+  evidence:
+    - repro/stage306_torus_to_dft_micro_hypothesis/stage306_summary.csv
+    - repro/stage306_torus_to_dft_micro_hypothesis/evidence_matrix.csv
+    - repro/stage306_torus_to_dft_micro_hypothesis/candidate_matrix.csv
+    - repro/stage306_torus_to_dft_micro_hypothesis/proof_gate.csv
+  conclusion: >
+    Stage306 keeps the current direct-DFT path as the best measured path and
+    admits only a direct digit-to-double/ifft lifecycle split as the next
+    research step; it is not a new full-SAB speed claim.

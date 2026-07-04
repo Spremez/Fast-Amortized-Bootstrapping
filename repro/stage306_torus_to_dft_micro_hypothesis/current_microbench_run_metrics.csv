@@ -1,0 +1,11 @@
+variant,run,status,r,N,reps,max_abs_diff,separate_avg_us,sub_avg_us,speedup_vs_separate,checksum,source_log
+baseline_sub_decomp,0,Pass,4,2048,5000,0,24.154,22.255,1.085,-1.0562677035506105e+31,repro/stage306_torus_to_dft_micro_hypothesis/raw/baseline_sub_decomp/run_0.log
+baseline_sub_decomp,1,Pass,4,2048,5000,0,24.419,23.064,1.059,-8.8184590672409614e+29,repro/stage306_torus_to_dft_micro_hypothesis/raw/baseline_sub_decomp/run_1.log
+baseline_sub_decomp,2,Pass,4,2048,5000,0,24.545,20.696,1.186,6.1034365264970259e+30,repro/stage306_torus_to_dft_micro_hypothesis/raw/baseline_sub_decomp/run_2.log
+baseline_sub_decomp,3,Pass,4,2048,5000,0,23.674,21.166,1.119,2.2726056080861395e+30,repro/stage306_torus_to_dft_micro_hypothesis/raw/baseline_sub_decomp/run_3.log
+baseline_sub_decomp,4,Pass,4,2048,5000,0,23.810,24.629,0.967,-2.2807775614155517e+30,repro/stage306_torus_to_dft_micro_hypothesis/raw/baseline_sub_decomp/run_4.log
+direct_sub_decomp_dft,0,Pass,4,2048,5000,0,24.366,20.647,1.180,-1.2319757319736661e+31,repro/stage306_torus_to_dft_micro_hypothesis/raw/direct_sub_decomp_dft/run_0.log
+direct_sub_decomp_dft,1,Pass,4,2048,5000,0,29.494,20.597,1.432,-5.9460735427050698e+30,repro/stage306_torus_to_dft_micro_hypothesis/raw/direct_sub_decomp_dft/run_1.log
+direct_sub_decomp_dft,2,Pass,4,2048,5000,0,26.374,19.221,1.372,1.6701942737381076e+31,repro/stage306_torus_to_dft_micro_hypothesis/raw/direct_sub_decomp_dft/run_2.log
+direct_sub_decomp_dft,3,Pass,4,2048,5000,0,25.182,20.254,1.243,-1.4251753103604064e+30,repro/stage306_torus_to_dft_micro_hypothesis/raw/direct_sub_decomp_dft/run_3.log
+direct_sub_decomp_dft,4,Pass,4,2048,5000,0,26.738,20.463,1.307,-8.623192360662418e+29,repro/stage306_torus_to_dft_micro_hypothesis/raw/direct_sub_decomp_dft/run_4.log

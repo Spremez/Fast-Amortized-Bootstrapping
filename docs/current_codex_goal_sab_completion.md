@@ -1102,3 +1102,7 @@ result strengthens parameter evidence but does not establish universal coverage.
 ### Stage305 materialization split probe
 
 `PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED` records split-profile attribution and selects `torus_to_dft` as the next measured component target.
+<!-- stage306-torus-to-dft-micro-hypothesis -->
+### Stage306 torus-to-DFT micro-hypothesis
+
+`PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED` filters prior DFT candidates and admits a direct-path lifecycle split before any new AVX512 rewrite.

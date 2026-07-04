@@ -450,3 +450,5 @@
 - [x] Stage304 records `PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM` and claim boundaries.
 <!-- stage305-materialization-split-probe-checklist -->
 - [x] Stage305 records `PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED` and a component-specific next target.
+<!-- stage306-torus-to-dft-micro-hypothesis-checklist -->
+- [x] Stage306 records `PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED` and routes Stage307 to direct-path lifecycle split profiling.

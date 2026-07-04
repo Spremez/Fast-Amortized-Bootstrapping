@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage307_direct_ifft_lifecycle_split_profile,PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED,"Direct path profile must split digit-to-double, ifft, and dense use without changing output.",Keep current direct-DFT implementation and move to branch/parameter evidence.
+P1,stage307_branch_coverage_or_parameter_matrix,paper claim expansion needed,Cover branch/parameter matrix before broad novelty wording.,Keep claim scoped to tested binary include-zero 2048-output settings.

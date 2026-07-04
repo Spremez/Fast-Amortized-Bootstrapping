@@ -7093,3 +7093,8 @@ Status: `PASS_STAGE304_TWO_PARAMETER_LOCAL_GENERALIZATION_WITH_COUNTER_MECHANISM
 Goal: profile selected-control vs direct-DFT split components before new AVX work.
 
 Status: `PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED`.
+## Stage 306: Torus-to-DFT Micro-Hypothesis
+
+Goal: bind Stage305 residual attribution to current-head microbench evidence and admit only a component-specific direct-DFT lifecycle target.
+
+Status: `PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED`.

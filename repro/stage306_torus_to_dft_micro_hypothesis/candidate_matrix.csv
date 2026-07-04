@@ -1,0 +1,6 @@
+candidate,status,evidence,next_action
+C1_multirow_dft_wrapper,REJECTED_OR_NEUTRAL,NEUTRAL_STAGE289_DFT_ARRAY_WRAPPER_NO_PROMOTION,Do not repeat this wrapper as an optimization candidate.
+C2_direct_output_dft_array,REJECTED_OR_NEUTRAL,NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION,Do not promote unless redesigned with new evidence.
+C3_sub_decompose_to_double_direct_dft,PROMOTED_ALREADY_IN_CURRENT_DIRECT_PATH,Stage291 plus Stage292-305; current min 1.045028x,Keep as current best complete-SAB path.
+C4_direct_ifft_lifecycle_split,ADMITTED_FOR_STAGE307,Stage305 direct torus_to_dft share 0.616652,Instrument direct path into digit-to-double and ifft subcomponents before any rewrite.
+C5_dense_mat_avx512_rewrite,NOT_ADMITTED_FROM_STAGE306,Stage301/302 FMA counters near-neutral; Stage305 dense is not dominant residual.,Return only if future split shows dense dominates after DFT lifecycle changes.

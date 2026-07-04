@@ -1,0 +1,6 @@
+stage,evidence,decision,metric,value,interpretation
+Stage289,multirow torus_to_DFT wrapper,NEUTRAL_STAGE289_DFT_ARRAY_WRAPPER_NO_PROMOTION,speedup_vs_scalar_loop_mean/min,0.948000/0.923000,Wrapping the same row-wise reverse FFT lifecycle is not promoted.
+Stage290,direct-output torus_to_DFT array,NEUTRAL_STAGE290_DFT_DIRECT_OUTPUT_NO_PROMOTION,speedup_vs_scalar_loop_mean/min,1.003200/0.920000,Avoiding the output copy alone is not stable enough to promote.
+Stage291,sub-decompose direct DFT,PASS_STAGE291_SUB_DECOMP_DFT_DIRECT_MICRO_POSITIVE_FULL_SAB_REQUIRED,direct_vs_baseline_speedup_mean/min,1.372118/1.109962,Direct digit-to-double plus ifft is the already-promoted lifecycle improvement.
+Stage305,complete-SAB split profile,PASS_STAGE305_MATERIALIZATION_SPLIT_PROFILE_RECORDED,dominant direct split component/share,torus_to_dft/0.616652,"After direct DFT, the next measured residual is the direct DFT materialization/ifft block itself."
+Stage306,current-head sub-DTF refresh,PASS_STAGE306_TORUS_TO_DFT_DIRECT_LIFECYCLE_TARGET_ADMITTED,direct_vs_baseline_speedup_mean/min,1.104602/1.045028,Refresh confirms the current direct path still beats the old sub-DTF materialization path.

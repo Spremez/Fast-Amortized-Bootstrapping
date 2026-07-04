@@ -3121,3 +3121,11 @@ Repro artifacts:
 - stage305_materialization_split_probe:
   - `docs/stage305_materialization_split_probe.md`
   - `repro/stage305_materialization_split_probe/`
+- stage306_torus_to_dft_micro_hypothesis:
+  - `docs/stage306_torus_to_dft_micro_hypothesis.md`
+  - `theory_checks/stage306_torus_to_dft_lifecycle_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage306_torus_to_dft_candidates.md`
+  - `experiments/stage306_torus_to_dft_micro_hypothesis_plan.md`
+  - `scripts/run_stage306_torus_to_dft_micro_hypothesis.sh`
+  - `scripts/build_stage306_torus_to_dft_micro_hypothesis.py`
+  - `repro/stage306_torus_to_dft_micro_hypothesis/`
