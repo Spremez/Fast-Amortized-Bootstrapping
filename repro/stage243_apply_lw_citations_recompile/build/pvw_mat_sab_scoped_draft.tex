@@ -1,0 +1,110 @@
+
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\title{Scoped Evidence Draft for Exact Dense PVW/MAT-SAB}
+\author{Anonymous}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We evaluate an exact dense PVW/MAT-RLWE realization of 2025/686-style sparse
+amortized bootstrapping \cite{DBLP:conf/ccs/GuimaraesP25}. The accumulator uses one
+shared mask with $r$ independent body lanes, and the primary endpoint is
+complete bootstrapping time per processed plaintext lane, $T_{\mathrm{bootstrap}}/r$,
+against $r$ repeated scalar SAB executions under the same backend. On the
+selected binary rows in Table~\ref{tab:selected-binary}, the current
+implementation records mean speedups from 1.256900x to 1.357500x,
+with the weakest reported 95\% CI lower bound 1.229193x. The same
+rows record zero PVW/scalar/pair final-output failures in 20 deterministic
+seeds per row. The result is deliberately scoped: it is not a non-binary claim,
+not a compact-selector construction, not a broad novelty claim, and not a
+theoretical optimality theorem.
+\end{abstract}
+
+\section{Research Question and Metric}
+The research question is whether replacing $r$ independent RLWE/SAB executions
+with an $r$-body MAT-RLWE accumulator improves the full bootstrapping cost per
+handled plaintext lane. The comparison is therefore not a single PVW/MAT run
+against a single scalar run. The measured speedup is
+\[
+S_r = \frac{T_{\mathrm{scalar},r\ \mathrm{repeated}}}
+           {T_{\mathrm{PVW/MAT},r\ \mathrm{lanes}}},
+\]
+which is equivalent to comparing amortized $T_{\mathrm{bootstrap}}/r$ for the
+same $r$-lane workload. All performance rows in this draft use complete-SAB
+timing and keep the scalar SAB path as the reference implementation.
+
+\section{Related Work Boundary}
+The target baseline is the 2025/686 SAB construction \cite{DBLP:conf/ccs/GuimaraesP25}.
+Incomplete-NTT acceleration is adjacent post-686 transform/backend work and is
+not folded into the PVW/MAT lane-batching claim \cite{DBLP:journals/tches/PaivaMHSY25}.
+Shared-mask packed-message TFHE creates prior-art risk for broad shared-mask
+novelty language \cite{DBLP:journals/tches/BergeratBCOPT25}. PVW packing and packed
+ciphertext background are treated as building blocks \cite{DBLP:conf/pkc/BrakerskiGH13},
+and TFHE/external-product terminology is background rather than a contribution
+\cite{DBLP:journals/joc/ChillottiGGI20}. Amortized, batched, and SIMD bootstrapping axes
+are established related work \cite{DBLP:conf/icalp/MicciancoS18}, \cite{DBLP:conf/asiacrypt/GuimaraesPL23},
+\cite{DBLP:conf/pkc/MicheliKMS24}, \cite{DBLP:conf/asiacrypt/LiuW23},
+\cite{DBLP:conf/eurocrypt/LiuW23}, and \cite{DBLP:conf/eurocrypt/LiuW23a}.
+
+% CITATION TODO [BATCHBOOT26]: Official USENIX page/PDF are accessible and DBLP search was probed, but no verified BibTeX export was found.
+
+\section{Algorithm Object}
+The implemented object is exact dense PVW/MAT-SAB. The scalar state has one
+mask/body pair per independent lane. The PVW/MAT state keeps one shared mask
+and $r$ body lanes. In this implementation, $r$ denotes independent LUT/SAB
+lanes, not adjacent accumulator-index packing. The correctness invariant is
+lane-wise: after each promoted stage and in the final output, PVW/MAT body lane
+$q$ must match the scalar SAB reference for lane $q$ under the same input, LUT,
+key material, backend, and parameter row.
+
+The exact dense path preserves the scalar SAB semantics and amortizes shared
+mask/schedule work, but it also pays dense MAT external-product and resource
+costs. The current evidence therefore supports a measured complete-SAB
+throughput claim on selected binary rows only. It does not prove that dense MAT
+is asymptotically or universally optimal among all possible SAB-compatible
+MAT-RLWE layouts.
+
+\section{Implementation Scope}
+The implementation keeps the original scalar SAB path available for A/B testing
+and routes the optimized path through explicit PVW/MAT entry points. The
+paper-facing implementation description should name the exact dense PVW/MAT
+path, active-buffer/copyback reductions where they are part of the measured
+code path, and the AVX512/spqlios backend used for the selected rows. Backend
+counter evidence may explain a mechanism, but complete-SAB $T_{\mathrm{bootstrap}}/r$
+remains the primary endpoint.
+
+\input{selected_binary_table.tex}
+
+\section{Evaluation Summary}
+Table~\ref{tab:selected-binary} reports four selected binary rows. Each row
+uses 10 complete-SAB A/B timing samples and 20 deterministic noise/correctness
+seeds. The key-size ratio is at most 1.069425 and the keygen-time ratio is
+at most 1.357920 in this selected matrix, so throughput is reported
+together with public-key and setup side costs rather than alone.
+
+\section{Claim Audit}
+The allowed claim is narrow: exact dense PVW/MAT-SAB improves complete-SAB
+$T_{\mathrm{bootstrap}}/r$ over repeated scalar SAB on the selected binary
+rows under the recorded backend and run protocol. The draft must not claim
+all-parameter coverage, non-binary coverage, compact selector support, first
+shared-mask batching, first PVW packing, or theoretical optimality. These
+blocked statements are tracked in \texttt{claim\_audit.csv}.
+
+\section{Limitations and Next Gates}
+This draft is an evidence artifact, not a final submission. Remaining gates
+include venue/template compilation, unresolved bibliography rows, any refreshed
+native-counter attribution needed for final wording, and separate proofs or
+experiments for non-binary, compact, or theoretically optimal MAT-RLWE SAB
+variants.
+
+\bibliographystyle{plain}
+\bibliography{pvw_mat_sab_references}
+\end{document}

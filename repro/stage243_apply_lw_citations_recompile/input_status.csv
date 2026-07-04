@@ -1,0 +1,9 @@
+input,status,role,bytes
+repro/stage240_scoped_latex_draft/pvw_mat_sab_scoped_draft.tex,present,Stage240 scoped draft source,5668
+repro/stage240_scoped_latex_draft/selected_binary_table.tex,present,Stage240 selected binary table,870
+repro/stage240_scoped_latex_draft/proof_gate.csv,present,Stage240 claim/citation gates,1351
+repro/stage241_latex_compile_package/proof_gate.csv,present,Stage241 compile proof gates,1394
+repro/stage242_unresolved_bibtex_followup/updated_citation_key_map.csv,present,Stage242 updated citation keymap,1363
+repro/stage242_unresolved_bibtex_followup/remaining_unresolved_bibtex_todo.csv,present,Stage242 remaining TODOs,662
+repro/stage242_unresolved_bibtex_followup/merged_references_stage242.bib,present,Stage242 merged verified references,10706
+repro/stage242_unresolved_bibtex_followup/proof_gate.csv,present,Stage242 BibTeX follow-up proof gates,1256

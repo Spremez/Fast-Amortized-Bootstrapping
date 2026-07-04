@@ -343,3 +343,4 @@
 - [x] Stage240 scoped LaTeX draft records claim and citation gates `PASS_STAGE240_SCOPED_LATEX_DRAFT_READY_CLAIMS_AUDITED`.
 - [x] Stage241 LaTeX compile package records compile and citation gates `PASS_STAGE241_LATEX_COMPILE_PACKAGE_READY`.
 - [x] Stage242 unresolved BibTeX follow-up records reduced TODO set `PASS_STAGE242_BIBTEX_TODO_REDUCED_BATCHBOOT_REMAINS`.
+- [x] Stage243 apply LW citations and recompile records 11-citation compile gates `FAIL_STAGE243_PATCH_RECOMPILE`.

@@ -2772,3 +2772,10 @@ Repro artifacts:
   - `scripts/build_stage242_unresolved_bibtex_followup.py`
   - `references/stage242_pvw_mat_sab.bib`
   - `repro/stage242_unresolved_bibtex_followup/`
+- stage243_apply_lw_citations_recompile:
+  - `docs/stage243_apply_lw_citations_recompile.md`
+  - `experiments/stage243_apply_lw_citations_recompile_plan.md`
+  - `theory_checks/stage243_draft_patch_claim_boundary.md`
+  - `algorithm_variants/mat_rlwe_sab_stage243_draft_patch.md`
+  - `scripts/build_stage243_apply_lw_citations_recompile.py`
+  - `repro/stage243_apply_lw_citations_recompile/`

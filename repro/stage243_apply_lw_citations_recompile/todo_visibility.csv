@@ -1,0 +1,3 @@
+todo_id,visible_in_tex,has_cite_key,status,evidence
+BATCHBOOT26,yes,no,PASS,repro/stage243_apply_lw_citations_recompile/build/pvw_mat_sab_scoped_draft.tex
+LW23A_B,no,n/a,PASS,repro/stage243_apply_lw_citations_recompile/build/pvw_mat_sab_scoped_draft.tex

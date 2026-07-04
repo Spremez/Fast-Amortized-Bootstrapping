@@ -737,3 +737,9 @@ optimality remain incomplete.
 because BatchBoot final citation closure, draft patch/recompile, optional
 counter refresh, non-binary support, compact route, and theoretical optimality
 remain incomplete.
+### Stage243 apply LW citations and recompile
+
+`FAIL_STAGE243_PATCH_RECOMPILE` records a patched, recompiled scoped draft with 11 resolved
+citations. The active goal remains open because BatchBoot final citation
+closure, optional current-head counter refresh, non-binary support, compact
+route, and theoretical optimality remain incomplete.

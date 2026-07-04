@@ -6713,3 +6713,19 @@ Generated from input head `359232c` with `PASS_STAGE242_BIBTEX_TODO_REDUCED_BATC
 two verified DBLP BibTeX entries. `BATCHBOOT26` remains an explicit TODO until
 an official BibTeX route exists.
 ```
+## Stage 243: Apply LW Citations and Recompile
+
+Goal:
+
+```text
+Patch the scoped draft with verified LW23A/LW23B citations and rerun compile
+gates while keeping BatchBoot as TODO.
+```
+
+Status:
+
+```text
+Generated from input head `e049e91` with `FAIL_STAGE243_PATCH_RECOMPILE`. The scoped draft now
+compiles with 11 resolved citation keys, including Batch Bootstrapping I/II.
+`BATCHBOOT26` remains a visible TODO until official BibTeX is available.
+```

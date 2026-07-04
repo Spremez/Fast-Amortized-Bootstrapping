@@ -1,0 +1,6 @@
+check,observed,status,evidence
+lw23a_cite_present,DBLP:conf/eurocrypt/LiuW23,PASS,repro/stage243_apply_lw_citations_recompile/build/pvw_mat_sab_scoped_draft.tex
+lw23b_cite_present,DBLP:conf/eurocrypt/LiuW23a,PASS,repro/stage243_apply_lw_citations_recompile/build/pvw_mat_sab_scoped_draft.tex
+old_composite_todo_removed,,PASS,repro/stage243_apply_lw_citations_recompile/build/pvw_mat_sab_scoped_draft.tex
+batchboot_todo_retained,BATCHBOOT26,PASS,repro/stage243_apply_lw_citations_recompile/build/pvw_mat_sab_scoped_draft.tex
+lw23b_otilde_compile_safe,{\~{O}}(1),PASS,repro/stage243_apply_lw_citations_recompile/build/pvw_mat_sab_references.bib

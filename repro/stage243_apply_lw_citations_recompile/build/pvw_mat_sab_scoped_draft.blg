@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: pvw_mat_sab_scoped_draft.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: plain.bst
+Reallocating 'name_of_file' (item size: 1) to 23 items.
+Database file #1: pvw_mat_sab_references.bib
+You've used 11 entries,
+            2118 wiz_defined-function locations,
+            582 strings with 7766 characters,
+and the built_in function-call counts, 5642 in all, are:
+= -- 558
+> -- 287
+< -- 15
++ -- 102
+- -- 91
+* -- 438
+:= -- 866
+add.period$ -- 41
+call.type$ -- 11
+change.case$ -- 68
+chr.to.int$ -- 0
+cite$ -- 11
+duplicate$ -- 222
+empty$ -- 423
+format.name$ -- 91
+if$ -- 1237
+int.to.chr$ -- 0
+int.to.str$ -- 11
+missing$ -- 11
+newline$ -- 58
+num.names$ -- 38
+pop$ -- 71
+preamble$ -- 1
+purify$ -- 57
+quote$ -- 0
+skip$ -- 180
+stack$ -- 0
+substring$ -- 381
+swap$ -- 103
+text.length$ -- 15
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 44
+warning$ -- 0
+while$ -- 60
+width$ -- 13
+write$ -- 138

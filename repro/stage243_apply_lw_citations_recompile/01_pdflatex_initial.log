@@ -1,0 +1,158 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(pvw_mat_sab_scoped_draft.tex
+LaTeX2e <2025-11-01>
+L3 programming layer <2025-12-24>
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo))
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty))
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg
+))
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.s
+ty)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefi
+nekeys.sty)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape
+.sty
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcm
+ds.sty
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr
+.sty)))
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
+)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gett
+itlestring.sty
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.s
+ty)))
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
+)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc
+.sty)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
+) (C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintca
+lc.sty)))
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunf
+ilecheck.sty
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniqu
+ecounter.sty)))
+(C:\Users\spremez\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-p
+dftex.def)
+No file pvw_mat_sab_scoped_draft.aux.
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+
+LaTeX Warning: Citation `DBLP:conf/ccs/GuimaraesP25' on page 1 undefined on inp
+ut line 18.
+
+
+LaTeX Warning: Reference `tab:selected-binary' on page 1 undefined on input lin
+e 22.
+
+
+LaTeX Warning: Citation `DBLP:conf/ccs/GuimaraesP25' on page 1 undefined on inp
+ut line 45.
+
+
+LaTeX Warning: Citation `DBLP:journals/tches/PaivaMHSY25' on page 1 undefined o
+n input line 47.
+
+
+LaTeX Warning: Citation `DBLP:journals/tches/BergeratBCOPT25' on page 1 undefin
+ed on input line 49.
+
+
+LaTeX Warning: Citation `DBLP:conf/pkc/BrakerskiGH13' on page 1 undefined on in
+put line 50.
+
+
+LaTeX Warning: Citation `DBLP:journals/joc/ChillottiGGI20' on page 1 undefined
+on input line 52.
+
+
+LaTeX Warning: Citation `DBLP:conf/icalp/MicciancoS18' on page 1 undefined on i
+nput line 53.
+
+
+LaTeX Warning: Citation `DBLP:conf/asiacrypt/GuimaraesPL23' on page 1 undefined
+ on input line 53.
+
+
+LaTeX Warning: Citation `DBLP:conf/pkc/MicheliKMS24' on page 1 undefined on inp
+ut line 54.
+
+
+LaTeX Warning: Citation `DBLP:conf/asiacrypt/LiuW23' on page 1 undefined on inp
+ut line 54.
+
+
+LaTeX Warning: Citation `DBLP:conf/eurocrypt/LiuW23' on page 1 undefined on inp
+ut line 55.
+
+
+LaTeX Warning: Citation `DBLP:conf/eurocrypt/LiuW23a' on page 1 undefined on in
+put line 55.
+
+[1{C:/Users/spremez/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
+(selected_binary_table.tex)
+
+LaTeX Warning: Reference `tab:selected-binary' on page 2 undefined on input lin
+e 87.
+
+No file pvw_mat_sab_scoped_draft.bbl.
+[2] (pvw_mat_sab_scoped_draft.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `pvw_mat_sab_scoped_draft.out' has changed
+.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ ) <C:\Users\spremez\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ec
+tt1000.pk> <C:\Users\spremez\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/d
+pi600\ecbx1000.pk> <C:\Users\spremez\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
+pen/ec/dpi600\ecrm1000.pk> <C:\Users\spremez\AppData\Local\MiKTeX\fonts/pk/ljfo
+ur/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\spremez\AppData\Local\MiKTeX\fonts
+/pk/ljfour/jknappen/ec/dpi600\ecrm0900.pk> <C:\Users\spremez\AppData\Local\MiKT
+eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx0900.pk> <C:\Users\spremez\AppData\Lo
+cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\spremez\Ap
+pData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk><C:/Users/spr
+emez/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C
+:/Users/spremez/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cm
+mi7.pfb><C:/Users/spremez/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
+onts/cm/cmmi9.pfb><C:/Users/spremez/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmr10.pfb><C:/Users/spremez/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/spremez/AppData/Local/Programs/M
+iKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb>
+Output written on pvw_mat_sab_scoped_draft.pdf (2 pages, 142638 bytes).
+Transcript written on pvw_mat_sab_scoped_draft.log.
+pdflatex: major issue: So far, you have not checked for MiKTeX updates.

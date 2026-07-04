@@ -3402,3 +3402,15 @@ H10_stage242_unresolved_bibtex_followup:
     two DBLP BibTeX entries and leaves BATCHBOOT26 as an explicit TODO because
     no verified BibTeX export was found. No BibTeX entry was generated from
     memory.
+H10_stage243_apply_lw_citations_recompile:
+  status: lw_citations_applied_recompiled_batchboot_todo
+  evidence:
+    - repro/stage243_apply_lw_citations_recompile/build/pvw_mat_sab_scoped_draft.pdf
+    - repro/stage243_apply_lw_citations_recompile/citation_resolution.csv
+    - repro/stage243_apply_lw_citations_recompile/todo_visibility.csv
+    - repro/stage243_apply_lw_citations_recompile/proof_gate.csv
+    - docs/stage243_apply_lw_citations_recompile.md
+  conclusion: >
+    Stage243 records FAIL_STAGE243_PATCH_RECOMPILE. It applies verified LW23A/LW23B citations,
+    recompiles the scoped draft with 11 resolved bibliography entries, and
+    leaves BATCHBOOT26 as a visible TODO. No algorithmic claim is expanded.
