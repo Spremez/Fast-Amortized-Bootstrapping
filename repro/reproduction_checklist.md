@@ -428,3 +428,5 @@
 - [x] Stage292 records `PASS_STAGE292_DIRECT_DFT_FULLSAB_POSITIVE_NOISE_RESOURCE_REQUIRED` for direct sub-decompose-to-DFT under complete SAB `T_bootstrap/r`.
 <!-- stage293-direct-dft-noise-resource-checklist -->
 - [x] Stage293 records `PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING` for direct DFT target correctness/resource smoke; high-stat noise remains pending.
+<!-- stage294-direct-dft-target-noise-checklist -->
+- [x] Stage294 records `PASS_STAGE294_DIRECT_DFT_TARGET_NOISE_FINAL_OUTPUT` for direct DFT target final-output noise.

@@ -3,7 +3,7 @@
 #include <benchmark_util.h>
 #include <sab_profile.h>
 #include <inttypes.h>
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_NONBINARY_TARGET_NOISE_TEST) || defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 #include <sab_pvw.h>
 #endif
 
@@ -551,7 +551,7 @@ void test_sab_microbench(){
   );
 }
 
-#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
+#if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_NONBINARY_TARGET_NOISE_TEST) || defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 static TRLWE_Key trlwe_key_from_pvmtmlwe_lane(PVW_TMLWE_Key in, int lane){
   const int N = in->s[0][lane]->N;
   TRLWE_Key out = trlwe_alloc_key(N, in->k, in->sigma);
@@ -3681,6 +3681,214 @@ void test_sab_pvw_nonbinary_target_bench(){
   if(!pass) exit(1);
 }
 
+static bool test_sab_pvw_nonbinary_target_noise_mode(int r, int trials,
+    bool include_zeros){
+  const SAB_PVW_Target_Params params = sab_pvw_target_params();
+  const int in_N = params.in_N, in_k = params.in_k;
+  const int out_N = params.out_N, out_k = params.out_k;
+  const int l = params.l, bg_bit = params.bg_bit, prec = params.prec;
+  const int h = params.h, r_prec = params.r_prec;
+  const int h_out = params.h_out, h_packing = params.h_packing;
+  const int ell_packing = params.ell_packing;
+  const int b_packing = params.b_packing;
+  const int ell_hw = params.t_ks, b_hw = params.b_ks;
+  const uint64_t lut_size = 1ULL << prec;
+  const uint64_t mod_mask = (1ULL << prec) - 1;
+  const char * mode = include_zeros ? "include_zero" : "ternary";
+
+  if(r < 1 || trials < 1){
+    printf("SAB_PVW_NONBINARY_TARGET_NOISE invalid config mode=%s r=%d trials=%d\n",
+           mode, r, trials);
+    exit(1);
+  }
+
+  uint64_t * distances = (uint64_t *) safe_malloc(sizeof(uint64_t) * h);
+  sab_pvw_fill_target_distances(distances, &params);
+  int64_t * coeffs = (int64_t *) safe_malloc(sizeof(int64_t) * h);
+  for (size_t step = 0; step < (size_t) h; step++){
+    coeffs[step] = include_zeros ? 1 : ((step & 1) ? -1 : 1);
+  }
+
+  TRLWE_Key input_key = test_sparse_key_from_distances_coeffs(in_N, in_k,
+      distances, coeffs, h, params.sigma_in);
+  TRLWE_Key packing_key = trlwe_new_ternary_key(in_N, in_k, h_packing,
+      params.sigma_packing);
+  PVW_TMLWE_Key pvw_key = pvmtmlwe_new_ternary_key(out_N, out_k, r, h_out,
+      params.sigma_out);
+  SAB_PVW_Key pvw_sab = sab_pvw_new_nonbinary_full_key(input_key,
+      packing_key, pvw_key, prec, b_packing, ell_packing, ell_hw, b_hw,
+      h, r_prec, l, bg_bit, include_zeros, !include_zeros);
+
+  SAB_Key * scalar_sabs = (SAB_Key *) safe_malloc(sizeof(SAB_Key) * r);
+  TRGSW_Key * scalar_trgsw_keys = (TRGSW_Key *) safe_malloc(sizeof(TRGSW_Key) * r);
+  TRLWE_Key * scalar_keys = (TRLWE_Key *) safe_malloc(sizeof(TRLWE_Key) * r);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    scalar_keys[lane] = trlwe_key_from_pvmtmlwe_lane(pvw_key, lane);
+    scalar_trgsw_keys[lane] = trgsw_new_key(scalar_keys[lane], l, bg_bit);
+    scalar_sabs[lane] = new_sparse_amortized_bootstrapping(input_key,
+        packing_key, scalar_trgsw_keys[lane], prec, b_packing, ell_packing,
+        ell_hw, b_hw, h, r_prec, include_zeros, !include_zeros, false);
+  }
+
+  TorusNoiseStats * pvw_lane = (TorusNoiseStats *) safe_malloc(
+      sizeof(TorusNoiseStats) * r);
+  TorusNoiseStats * scalar_lane = (TorusNoiseStats *) safe_malloc(
+      sizeof(TorusNoiseStats) * r);
+  TorusNoiseStats * pair_lane = (TorusNoiseStats *) safe_malloc(
+      sizeof(TorusNoiseStats) * r);
+  memset(pvw_lane, 0, sizeof(TorusNoiseStats) * r);
+  memset(scalar_lane, 0, sizeof(TorusNoiseStats) * r);
+  memset(pair_lane, 0, sizeof(TorusNoiseStats) * r);
+
+  uint64_t * luts = (uint64_t *) safe_malloc(sizeof(uint64_t) * r * lut_size);
+  TorusPolynomial input_msg = polynomial_new_torus_polynomial(in_N);
+  TRLWE input = trlwe_alloc_new_sample(in_k, in_N);
+  TorusPolynomial * tv_msg = polynomial_new_array_of_torus_polynomials(out_N,
+      r);
+  PVW_TMLWE pvw_tv = pvmtmlwe_alloc_new_sample(out_k, r, out_N);
+  TRLWE * scalar_tvs = trlwe_alloc_new_sample_array(r, out_k, out_N);
+  TRLWE * scalar_out = trlwe_alloc_new_sample_array(r, in_k, in_N);
+  TRLWE * pvw_out = trlwe_alloc_new_sample_array(r, in_k, in_N);
+  TorusPolynomial pvw_phase = polynomial_new_torus_polynomial(in_N);
+  TorusPolynomial scalar_phase = polynomial_new_torus_polynomial(in_N);
+
+  for (size_t trial = 0; trial < (size_t) trials; trial++){
+    for (size_t idx = 0; idx < (size_t) in_N; idx++){
+      input_msg->coeffs[idx] = int2torus(
+          (3 * idx + trial + (include_zeros ? 2 : 5)) & mod_mask, prec);
+    }
+    trlwe_sample(input, input_msg, input_key);
+
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      uint64_t * lane_lut = &luts[lane * lut_size];
+      for (size_t value = 0; value < lut_size; value++){
+        lane_lut[value] = (3 * value + 5 * lane + trial
+            + (include_zeros ? 1 : 2)) & mod_mask;
+      }
+      sab_LUT_packing(scalar_tvs[lane], lane_lut, scalar_sabs[lane]);
+      polynomial_copy_torus_polynomial(tv_msg[lane], scalar_tvs[lane]->b);
+    }
+    pvmtmlwe_noiseless_trivial_sample(pvw_tv, tv_msg);
+
+    sab_pvw_bootstrap_nonbinary(pvw_out, input, pvw_tv, pvw_sab);
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      sab_rlwe_bootstrap(scalar_out[lane], input, scalar_tvs[lane],
+          scalar_sabs[lane]);
+    }
+
+    for (size_t lane = 0; lane < (size_t) r; lane++){
+      trlwe_phase(pvw_phase, pvw_out[lane], input_key);
+      trlwe_phase(scalar_phase, scalar_out[lane], input_key);
+      const uint64_t * lane_lut = &luts[lane * lut_size];
+      for (size_t idx = 0; idx < (size_t) in_N; idx++){
+        const uint64_t input_val = torus2int(input_msg->coeffs[idx], prec);
+        const uint64_t expected_val = lane_lut[input_val];
+        const Torus expected_torus = int2torus(expected_val, prec);
+        const uint64_t pvw_val = torus2int(pvw_phase->coeffs[idx], prec);
+        const uint64_t scalar_val = torus2int(scalar_phase->coeffs[idx],
+            prec);
+
+        torus_noise_stats_add(&pvw_lane[lane], pvw_phase->coeffs[idx],
+            expected_torus, pvw_val, expected_val);
+        torus_noise_stats_add(&scalar_lane[lane], scalar_phase->coeffs[idx],
+            expected_torus, scalar_val, expected_val);
+        torus_noise_stats_add(&pair_lane[lane], pvw_phase->coeffs[idx],
+            scalar_phase->coeffs[idx], pvw_val, scalar_val);
+      }
+    }
+    printf("SAB_PVW_NONBINARY_TARGET_NOISE trial target_full mode=%s r=%d trial=%" PRIu64
+           " complete\n", mode, r, (uint64_t) trial);
+  }
+
+  TorusNoiseStats pvw_total = {0, 0, 0, 0};
+  TorusNoiseStats scalar_total = {0, 0, 0, 0};
+  TorusNoiseStats pair_total = {0, 0, 0, 0};
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    torus_noise_stats_merge(&pvw_total, pvw_lane[lane]);
+    torus_noise_stats_merge(&scalar_total, scalar_lane[lane]);
+    torus_noise_stats_merge(&pair_total, pair_lane[lane]);
+    printf("SAB_PVW_NONBINARY_TARGET_NOISE lane target_full mode=%s r=%d lane=%" PRIu64
+           " trials=%d expected_model_pvw_failures=%" PRIu64
+           " expected_model_scalar_failures=%" PRIu64
+           " pair_failures=%" PRIu64
+           " expected_model_pvw_log2_sigma_torus=%.3f"
+           " expected_model_scalar_log2_sigma_torus=%.3f"
+           " pair_log2_sigma_torus=%.3f\n",
+           mode, r, (uint64_t) lane, trials, pvw_lane[lane].failures,
+           scalar_lane[lane].failures, pair_lane[lane].failures,
+           torus_noise_log2_sigma(pvw_lane[lane]),
+           torus_noise_log2_sigma(scalar_lane[lane]),
+           torus_noise_log2_sigma(pair_lane[lane]));
+  }
+
+  const double pvw_log2_sigma = torus_noise_log2_sigma(pvw_total);
+  const double scalar_log2_sigma = torus_noise_log2_sigma(scalar_total);
+  const bool pass = pair_total.failures == 0;
+
+  printf("SAB_PVW_NONBINARY_TARGET_NOISE summary target_full mode=%s r=%d"
+         " trials=%d points=%" PRIu64
+         " expected_model_pvw_failures=%" PRIu64
+         " expected_model_scalar_failures=%" PRIu64
+         " pair_failures=%" PRIu64
+         " expected_model_pvw_log2_sigma_torus=%.3f"
+         " expected_model_scalar_log2_sigma_torus=%.3f"
+         " pair_log2_sigma_torus=%.3f pair_log2_max_abs_torus=%.3f"
+         " gate=%s\n",
+         mode, r, trials, pvw_total.count, pvw_total.failures,
+         scalar_total.failures, pair_total.failures, pvw_log2_sigma,
+         scalar_log2_sigma, torus_noise_log2_sigma(pair_total),
+         torus_noise_log2_max_abs(pair_total), pass ? "Pass" : "Fail");
+  printf("SAB_PVW_NONBINARY_TARGET_NOISE target full bootstrap gate mode=%s: %s\n",
+         mode, pass ? "Pass" : "Fail");
+
+  free_polynomial(scalar_phase);
+  free_polynomial(pvw_phase);
+  free_trlwe_array(pvw_out, r);
+  free_trlwe_array(scalar_out, r);
+  free_trlwe_array(scalar_tvs, r);
+  free_pvmtmlwe(pvw_tv);
+  free_array_of_polynomials(tv_msg, r);
+  free_trlwe(input);
+  free_polynomial(input_msg);
+  free(luts);
+  free(pair_lane);
+  free(scalar_lane);
+  free(pvw_lane);
+  free_sab_pvw_key(pvw_sab);
+  for (size_t lane = 0; lane < (size_t) r; lane++){
+    free_trgsw_key(scalar_trgsw_keys[lane]);
+    free_trlwe_key(scalar_keys[lane]);
+  }
+  free(scalar_sabs);
+  free(scalar_trgsw_keys);
+  free(scalar_keys);
+  free_pvmtmlwe_key(pvw_key);
+  free_trlwe_key(packing_key);
+  free_trlwe_key(input_key);
+  free(coeffs);
+  free(distances);
+  return pass;
+}
+
+void test_sab_pvw_nonbinary_target_noise(){
+  const int r = SAB_PVW_NONBINARY_TARGET_NOISE_R;
+  const int trials = SAB_PVW_NONBINARY_TARGET_NOISE_TRIALS;
+  bool pass = true;
+#if !defined(SAB_PVW_NONBINARY_TARGET_NOISE_INCLUDE_ZERO) && !defined(SAB_PVW_NONBINARY_TARGET_NOISE_TERNARY)
+  printf("SAB_PVW_NONBINARY_TARGET_NOISE invalid config no enabled mode\n");
+  exit(1);
+#endif
+#if defined(SAB_PVW_NONBINARY_TARGET_NOISE_INCLUDE_ZERO)
+  pass &= test_sab_pvw_nonbinary_target_noise_mode(r, trials, true);
+#endif
+#if defined(SAB_PVW_NONBINARY_TARGET_NOISE_TERNARY)
+  pass &= test_sab_pvw_nonbinary_target_noise_mode(r, trials, false);
+#endif
+  printf("SAB_PVW_NONBINARY_TARGET_NOISE target full final-output gate: %s\n",
+         pass ? "Pass" : "Fail");
+  if(!pass) exit(1);
+}
+
 void test_sab_pvw_resource(){
   const int r = SAB_PVW_RESOURCE_R;
   const SAB_PVW_Target_Params params = sab_pvw_target_params();
@@ -5049,6 +5257,8 @@ int main(int argc, char const *argv[])
   test_sab_pvw_suba_alias_microtest();
 #elif defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST)
   test_sab_pvw_include_zero_fast_resource();
+#elif defined(SAB_PVW_NONBINARY_TARGET_NOISE_TEST)
+  test_sab_pvw_nonbinary_target_noise();
 #elif defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST)
   test_sab_pvw_nonbinary_full_noise_resource();
 #elif defined(SAB_PVW_NONBINARY_FULL_TEST)

@@ -1,0 +1,5 @@
+mode,r,lane,trials,expected_model_pvw_failures,expected_model_scalar_failures,pair_failures,expected_model_pvw_log2_sigma_torus,expected_model_scalar_log2_sigma_torus,pair_log2_sigma_torus,source_run_log
+include_zero,4,0,3,2304,2304,0,-2.215,-2.212,-7.500,repro/stage294_direct_dft_target_noise/raw/direct_dft_target_noise/run.log
+include_zero,4,1,3,2304,2304,0,-2.215,-2.212,-7.680,repro/stage294_direct_dft_target_noise/raw/direct_dft_target_noise/run.log
+include_zero,4,2,3,2304,2304,0,-2.215,-2.212,-7.520,repro/stage294_direct_dft_target_noise/raw/direct_dft_target_noise/run.log
+include_zero,4,3,3,2304,2304,0,-2.215,-2.215,-6.957,repro/stage294_direct_dft_target_noise/raw/direct_dft_target_noise/run.log

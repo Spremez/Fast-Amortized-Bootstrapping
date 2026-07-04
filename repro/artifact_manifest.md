@@ -3065,3 +3065,8 @@ Repro artifacts:
   - `scripts/run_stage293_direct_dft_noise_resource.sh`
   - `scripts/build_stage293_direct_dft_noise_resource.py`
   - `repro/stage293_direct_dft_noise_resource/`
+- stage294_direct_dft_target_noise:
+  - `docs/stage294_direct_dft_target_noise.md`
+  - `scripts/run_stage294_direct_dft_target_noise.sh`
+  - `scripts/build_stage294_direct_dft_target_noise.py`
+  - `repro/stage294_direct_dft_target_noise/`

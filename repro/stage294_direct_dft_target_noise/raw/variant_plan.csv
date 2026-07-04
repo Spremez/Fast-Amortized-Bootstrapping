@@ -1,0 +1,2 @@
+variant,param,fft_lib,r,trials,flags
+direct_dft_target_noise,SET_2_3_2048,spqlios_avx512,4,3,SAB_PVW_NONBINARY_TARGET_NOISE_TEST=true MAT_TRGSW_SUB_DECOMP_DFT_DIRECT=true selected PVW-SAB flags

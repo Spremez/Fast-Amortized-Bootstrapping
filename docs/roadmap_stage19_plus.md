@@ -7025,3 +7025,9 @@ Status: `PASS_STAGE292_DIRECT_DFT_FULLSAB_POSITIVE_NOISE_RESOURCE_REQUIRED`.
 Goal: validate Stage292 direct DFT target correctness and resource reporting.
 
 Status: `PASS_STAGE293_DIRECT_DFT_TARGET_CORRECT_RESOURCE_SMOKE_NOISE_PENDING`. High-stat noise remains pending.
+## Stage 294: Direct DFT Target Final-Output Noise
+
+Goal: replace the old N=16 SPQLIOS noise fixture with a target-size
+include-zero final-output noise gate for direct DFT.
+
+Status: `PASS_STAGE294_DIRECT_DFT_TARGET_NOISE_FINAL_OUTPUT`.

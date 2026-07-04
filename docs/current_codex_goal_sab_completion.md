@@ -1036,3 +1036,9 @@ separately from the incremental selected-control comparison.
 Stage292 direct-DFT candidate. High-stat noise remains pending because the
 SPQLIOS full-noise harness needs repair or replacement before it can support a
 noise claim.
+<!-- stage294-direct-dft-target-noise -->
+### Stage294 direct DFT target final-output noise
+
+`PASS_STAGE294_DIRECT_DFT_TARGET_NOISE_FINAL_OUTPUT` adds a target-size include-zero final-output noise gate for the
+Stage292 direct-DFT candidate. The claim remains scoped to target final output;
+stage-wise and high-stat noise are still later gates.

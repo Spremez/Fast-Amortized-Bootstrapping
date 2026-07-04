@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_stage292_full_sab,PASS,Stage292 full-SAB T/r,positive,Noise gate follows a full-SAB positive candidate.
+G2_stage293_resource,PASS,Stage293 target correctness/resource,pass,Target correctness/resource smoke must precede stronger noise evidence.
+G3_pair_failures,PASS,PVW/scalar decoded pair failures,0,Direct DFT output must decode identically to repeated scalar SAB.
+G4_expected_model_boundary,INFO,expected-model mismatches,pvw=9216;scalar=9216,The hand-written LUT model is diagnostic only for nonbinary packing; scalar reference equivalence is the gate.
+G5_claim_boundary,PASS,scope,target final-output noise,"This is not stage-wise noise, all-parameter noise, or paper-grade high-stat closure."
+G6_decision,PASS_STAGE294_DIRECT_DFT_TARGET_NOISE_FINAL_OUTPUT,stage decision,PASS_STAGE294_DIRECT_DFT_TARGET_NOISE_FINAL_OUTPUT,Pass supports high-stat refresh and stage-wise repair next.

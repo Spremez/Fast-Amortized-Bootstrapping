@@ -3975,3 +3975,14 @@ H293_direct_dft_noise_resource:
   conclusion: >
     Stage293 records target correctness/resource smoke for the direct-DFT
     candidate. Noise high-stat closure is pending and must not be inferred.
+H294_direct_dft_target_noise:
+  status: PASS_STAGE294_DIRECT_DFT_TARGET_NOISE_FINAL_OUTPUT
+  primary_metric: target_final_output_noise
+  evidence:
+    - repro/stage294_direct_dft_target_noise/target_noise_summary.csv
+    - repro/stage294_direct_dft_target_noise/target_noise_lanes.csv
+    - repro/stage294_direct_dft_target_noise/proof_gate.csv
+    - docs/stage294_direct_dft_target_noise.md
+  conclusion: >
+    Direct DFT has target final-output noise evidence for include-zero r=4 if
+    Stage294 passes. Stage-wise and high-stat claims remain separate.
