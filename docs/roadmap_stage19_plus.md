@@ -7072,3 +7072,8 @@ Status: `PASS_STAGE300_COUNTER_CONTEXT_CURRENT_HEAD_REFRESH_REQUIRED`.
 Goal: record native hardware counters for selected-control vs direct-DFT current-head complete SAB.
 
 Status: `FAIL_STAGE301_CURRENT_HEAD_DIRECT_DFT_NATIVE_COUNTER_REFRESH`.
+## Stage 302: Counter Interpretation
+
+Goal: interpret current-head direct-DFT native counters against repeated `T_bootstrap/r` evidence.
+
+Status: `PASS_STAGE302_COUNTER_SUPPORTS_MEMORY_INSTRUCTION_MECHANISM`.

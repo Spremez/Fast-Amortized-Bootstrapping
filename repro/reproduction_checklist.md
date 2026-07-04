@@ -443,3 +443,4 @@
 
 - [x] Stage300 current-head counter route audit recorded with local perf probe and claim boundary.
 - [x] Stage301 current-head direct-DFT native counter refresh recorded without storing secrets.
+- [x] Stage302 counter interpretation recorded.

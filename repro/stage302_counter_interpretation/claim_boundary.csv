@@ -1,0 +1,4 @@
+claim,status,allowed,not_allowed
+direct_dft_memory_instruction_mechanism,supported,Stage301 supports direct-DFT reducing memory/instruction overhead relative to selected-control.,Do not claim direct-DFT reduces dense AVX512 FMA volume.
+mat_avx512_theoretical_optimality,not_supported,"State that counters support a mechanism, not optimality.",Do not claim theoretical optimum from one counter run and current dense layout.
+parameter_generalization,preflight_only,Stage299 shows SET_4_5_2048 preflight positive.,Do not claim broad parameter coverage before repeated matrix.

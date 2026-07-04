@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_inputs_present,PASS,stage296/stage299/stage301,1.075398; 1.063481; PASS_STAGE301_CURRENT_HEAD_DIRECT_DFT_NATIVE_COUNTER_REFRESH,Counter interpretation requires current performance and counter evidence.
+G2_latency_direction,PASS,selected/direct T/r,1.134934,Native one-run direction must agree with repeated local Stage296 direction.
+G3_memory_instruction_direction,PASS,loads/stores/instructions,1.038873/1.019832/1.024951,Direct DFT should reduce memory or instruction counters if its mechanism is materialization reduction.
+G4_arithmetic_boundary,PASS_NEUTRAL_FMA,fp512 selected/direct,1.000243,"FMA count is neutral, so Stage302 does not justify a reduced-arithmetic claim."
+G5_decision,PASS_STAGE302_COUNTER_SUPPORTS_MEMORY_INSTRUCTION_MECHANISM,stage decision,PASS_STAGE302_COUNTER_SUPPORTS_MEMORY_INSTRUCTION_MECHANISM,Controls Stage303 route.

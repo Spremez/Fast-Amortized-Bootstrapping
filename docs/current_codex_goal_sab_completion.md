@@ -1084,3 +1084,7 @@ context-only until a current-head direct-DFT counter refresh is recorded.
 ### Stage301 current-head direct-DFT native counter refresh
 
 `FAIL_STAGE301_CURRENT_HEAD_DIRECT_DFT_NATIVE_COUNTER_REFRESH` records native counter attribution status for the current direct-DFT candidate. The result is mechanism evidence only; complete-SAB performance claims remain tied to `T_bootstrap/r` campaigns.
+<!-- stage302-counter-interpretation -->
+### Stage302 counter interpretation
+
+`PASS_STAGE302_COUNTER_SUPPORTS_MEMORY_INSTRUCTION_MECHANISM` supports the mechanism that direct DFT reduces memory/instruction overhead while leaving dense AVX512 FP arithmetic nearly neutral. The next selected route is parameter-matrix high-stat, not an unconstrained AVX rewrite.

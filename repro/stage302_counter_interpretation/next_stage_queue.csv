@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage303_parameter_matrix_highstat,PASS_STAGE302_COUNTER_SUPPORTS_MEMORY_INSTRUCTION_MECHANISM,Promote SET_4_5_2048 from 3-run preflight to repeated performance/noise/resource matrix.,Keep broad parameter claim blocked.
+P1,stage303_materialization_split_probe,Need more kernel guidance after parameter matrix.,Split direct-DFT residual into torus-to-DFT/materialization/copy components.,Do not write new AVX kernel without component target.

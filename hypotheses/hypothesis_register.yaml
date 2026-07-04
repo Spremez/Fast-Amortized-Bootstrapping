@@ -4057,3 +4057,8 @@ H301_current_direct_dft_counter_attribution:
   status: FAIL_STAGE301_CURRENT_HEAD_DIRECT_DFT_NATIVE_COUNTER_REFRESH
   evidence: repro/stage301_current_head_direct_dft_native_counter/proof_gate.csv
   next_gate: Stage302 counter interpretation and parameter high-stat matrix.
+H302_direct_dft_memory_instruction_mechanism:
+  claim: Direct DFT gains come from memory/instruction overhead reduction rather than fewer dense AVX512 FP operations.
+  status: PASS_STAGE302_COUNTER_SUPPORTS_MEMORY_INSTRUCTION_MECHANISM
+  evidence: repro/stage302_counter_interpretation/mechanism_interpretation.csv
+  next_gate: Stage303 parameter matrix high-stat and residual materialization split probe.
