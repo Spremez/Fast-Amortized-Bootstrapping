@@ -7180,3 +7180,9 @@ Goal: test the old r=4 unrolled MAT EP candidate under the current selected
 direct PVW/MAT-SAB baseline.
 
 Status: `NEUTRAL_STAGE321_R4_UNROLLED_DIRECT_FULLSAB_NO_PROMOTION`.
+## Stage 322: Schedule/Profile Attribution
+
+Goal: profile the current direct PVW/MAT-SAB path after r4-unrolled neutral and
+select the next route by measured component budget.
+
+Status: `PASS_STAGE322_PROFILE_SELECT_DENSE_MAT_LAYOUT_COUNTER_PREFLIGHT`.

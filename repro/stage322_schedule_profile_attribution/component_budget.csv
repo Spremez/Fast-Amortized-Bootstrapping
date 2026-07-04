@@ -1,0 +1,12 @@
+component,us_sum,share_of_profile_full,calls,avg_us_per_call,status,interpretation
+mat_ep_lifecycle,28548177.000,0.576230,1146880,24.892035,DOMINANT_BUT_R4_UNROLLED_CLOSED,"MAT EP remains dominant; Stage321 closes only the r4-unrolled implementation, not all MAT layout work."
+cmux_from_dft,18865368.000,0.380787,1146880,16.449295,MATERIALIZATION_RESIDUAL,"Materializing MAT EP output remains large, but backend-from-DFT-add is already active."
+dense_from_dec,10520639.000,0.212353,1146880,9.173269,SELECTABLE_UNCLOSED,Largest unclosed MAT subcomponent after digit/IFFT/r4 routes are closed.
+direct_ifft,8836337.000,0.178357,1126560,7.843645,CLOSED_STAGE319,Batch5 IFFT intrinsics and assembly failed isolated gates.
+direct_digit,8446732.000,0.170493,1126560,7.497809,CLOSED_STAGE314,Local digit variants did not move complete SAB enough.
+sub_a_total,1332280.000,0.026891,78,17080.512821,LOW_SHARE_DEFER,Sub_a is below the schedule-preflight threshold in this profile.
+sub_a_rotate,1076916.000,0.021737,159744,6.741511,LOW_SHARE_DEFER,Rotation is the main sub_a cost but still too small for the next first candidate.
+sub_a_copy,247161.000,0.004989,159744,1.547232,LOW_SHARE_DEFER,Copy inside sub_a is measurable but below the materiality threshold.
+ncmux_auto,382264.000,0.007716,10160,37.624409,LOW_SHARE_DEFER,Automorphism work is not the largest remaining budget.
+dual_sub_pair,119563.000,0.002413,10160,11.768012,LOW_SHARE_DEFER,Dual-sub pair overhead is already small.
+copyback,0.000,0.000000,,,NO_CURRENT_BUDGET,Active/direct path reports zero copyback calls; copyback fusion is not a valid next target.

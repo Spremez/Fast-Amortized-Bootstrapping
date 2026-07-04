@@ -1,0 +1,2 @@
+variant,param,fft_lib,r,reps,profile_flags
+direct_profile,SET_2_3_2048,spqlios_avx512,4,1,SAB_PVW_BODY_PROFILE MAT_TRGSW_SPLIT_PROFILE MAT_TRGSW_DIRECT_DFT_PROFILE

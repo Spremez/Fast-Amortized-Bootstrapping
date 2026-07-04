@@ -3241,3 +3241,8 @@ Repro artifacts:
   - `scripts/run_stage321_r4_unrolled_fullsab_ab.sh`
   - `scripts/build_stage321_r4_unrolled_fullsab_ab.py`
   - `repro/stage321_r4_unrolled_fullsab_ab/`
+- stage322_schedule_profile_attribution:
+  - `docs/stage322_schedule_profile_attribution.md`
+  - `scripts/run_stage322_schedule_profile_attribution.sh`
+  - `scripts/build_stage322_schedule_profile_attribution.py`
+  - `repro/stage322_schedule_profile_attribution/`

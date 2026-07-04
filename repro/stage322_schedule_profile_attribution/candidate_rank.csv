@@ -1,0 +1,6 @@
+rank,candidate,status,profile_share,reason,next_gate
+P0,dense_mat_layout_counter_preflight,SELECT_STAGE323,0.212353,"Dense MAT addmul is the largest unclosed measured component after digit, IFFT, and r4-unrolled routes are closed.",Native counters or microbench must show a memory/FMA mechanism before writing another full-SAB variant.
+P1,sub_a_rotation_copy_preflight,DEFER_LOW_SHARE,0.026891,Schedule-level sub_a work is measurable but below the 5% materiality threshold in current profile.,Reopen only if later MAT changes raise sub_a share or a zero-risk implementation exists.
+P2,copyback_fusion_refresh,CLOSED_NO_BUDGET,0.000000,Current active/direct path reports no copyback calls.,Do not implement copyback fusion unless the active path changes and copyback reappears.
+CLOSED,r4_unrolled_current_direct,CLOSED_STAGE321_NEUTRAL,0.576230,"Stage321 complete-SAB A/B was neutral, so this exact r4-unrolled route is closed.",A different MAT layout/counter hypothesis is required before reopening MAT EP implementation work.
+CLOSED,batch5_ifft,CLOSED_STAGE319,0.178357,Both intrinsics and hand-assembly batch5 IFFT were correct but slower.,Reopen only with a different backend primitive.

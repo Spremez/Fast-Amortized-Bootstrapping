@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_stage321_input,PASS,Stage321 decision,r4-neutral,Stage322 opens only after r4-unrolled is closed under current direct baseline.
+G2_correctness,PASS,target correctness,Pass,Profile attribution is invalid if complete SAB correctness fails.
+G3_schedule_count,PASS,mat_ep calls,1146880/573440x2,Confirms the expected 40*7*2048 external-product call surface per profile sample.
+G4_closed_routes,PASS,deny list,digit;ifft;r4_unrolled,Closed routes are not reopened without a new mechanism.
+G5_candidate_selection,PASS_STAGE322_PROFILE_SELECT_DENSE_MAT_LAYOUT_COUNTER_PREFLIGHT,selected next,stage323_dense_mat_layout_counter_preflight,"Selects the next route by measured share and closure status, not by theoretical preference."

@@ -1,0 +1,2 @@
+priority,stage,input_decision,task,gate
+P0,stage323_dense_mat_layout_counter_preflight,PASS_STAGE322_PROFILE_SELECT_DENSE_MAT_LAYOUT_COUNTER_PREFLIGHT,Audit dense MAT addmul layout/register/memory behavior with counters or isolated microbench before writing a full-SAB implementation.,Proceed only if the measured mechanism can plausibly move complete SAB T_bootstrap/r by at least 1%.

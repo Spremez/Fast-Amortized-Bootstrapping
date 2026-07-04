@@ -4266,3 +4266,15 @@ H321_r4_unrolled_direct_fullsab_ab:
     SAB after the direct baseline changes. Algorithm-level speedup is reported
     as T_bootstrap/r versus repeated scalar; r4/direct is only an incremental
     implementation gate.
+H322_schedule_profile_attribution:
+  status: PASS_STAGE322_PROFILE_SELECT_DENSE_MAT_LAYOUT_COUNTER_PREFLIGHT
+  primary_metric: profile_budget_for_complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage322_schedule_profile_attribution/profile_summary.csv
+    - repro/stage322_schedule_profile_attribution/component_budget.csv
+    - repro/stage322_schedule_profile_attribution/candidate_rank.csv
+    - repro/stage322_schedule_profile_attribution/proof_gate.csv
+  conclusion: >
+    Stage322 closes copyback/sub_a as immediate next targets under the current
+    profile and selects dense MAT layout/counter preflight as the next
+    executable route.

@@ -1171,3 +1171,8 @@ existing SPQLIOS AVX512 `ifft` calls, closing the backend IFFT batch5 route.
 
 `NEUTRAL_STAGE321_R4_UNROLLED_DIRECT_FULLSAB_NO_PROMOTION` refreshes `MAT_TRGSW_AVX512_R4_UNROLLED_ROWS=true` under the
 current direct PVW/MAT-SAB baseline using complete `T_bootstrap/r`.
+<!-- stage322-schedule-profile-attribution -->
+### Stage322 schedule/profile attribution
+
+`PASS_STAGE322_PROFILE_SELECT_DENSE_MAT_LAYOUT_COUNTER_PREFLIGHT` profiles the current direct PVW/MAT-SAB path and selects
+`stage323_dense_mat_layout_counter_preflight` as the next preflight route.

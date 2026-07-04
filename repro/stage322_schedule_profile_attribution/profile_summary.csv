@@ -1,0 +1,2 @@
+decision,selected_next_stage,correctness,mode,r,h,r_prec,reps,t_bootstrap_over_r_us,speedup_vs_repeated_scalar,body_profile_rows,profile_full_us_sum,mat_ep_share,dense_share,sub_a_share,copyback_share,direct_ifft_share,direct_digit_share,source_log
+PASS_STAGE322_PROFILE_SELECT_DENSE_MAT_LAYOUT_COUNTER_PREFLIGHT,stage323_dense_mat_layout_counter_preflight,Pass,include_zero,4,39,7,1,6191943.500,1.748,2,49543067.000,0.576230,0.212353,0.026891,0.000000,0.178357,0.170493,repro/stage322_schedule_profile_attribution/raw/direct_profile/run.log
