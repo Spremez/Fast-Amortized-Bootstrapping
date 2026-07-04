@@ -1,0 +1,4 @@
+claim,status,allowed_wording,forbidden_wording,evidence
+backend_from_dft_add_repeated_t_over_r,not_promoted,Stage269 reports repeated WSL same-backend T_bootstrap/r for backend FromDFT-add versus default PVW/MAT-SAB.,This alone is final native Linux paper-grade speedup.,variant_compare.csv; sample_rows.csv
+noise_resource,pending_or_failed,"If present, Stage269 full-noise/resource is a one-trial gate for r=4 include-zero/ternary.",One trial establishes failure-rate bounds.,noise_summary.csv; resource_summary.csv
+algorithm_metric,aligned,"The primary metric is T_bootstrap/r, matching the r-body MAT-RLWE intent.",Use total batch latency alone as the speedup dimension.,bench_summary.csv; variant_compare.csv

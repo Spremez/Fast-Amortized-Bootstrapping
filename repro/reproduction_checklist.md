@@ -379,3 +379,5 @@
 - [x] Stage267 local split projection records `PASS_STAGE267_LOCAL_SPLIT_PROJECTION_SELECT_STAGE268_BACKEND_SMOKE` and selects bounded Stage268 backend FromDFT-add smoke.
 <!-- stage268-backend-from-dft-add-smoke-checklist -->
 - [x] Stage268 backend FromDFT-add smoke records `PASS_STAGE268_BACKEND_FROM_DFT_ADD_SMOKE_POSITIVE_REPEAT_REQUIRED` with primary metric `T_bootstrap/r`.
+<!-- stage269-backend-from-dft-add-repeated-noise-resource-checklist -->
+- [x] Stage269 backend FromDFT-add repeated/noise/resource records `NEUTRAL_STAGE269_BACKEND_FROM_DFT_ADD_REPEATED_NO_PROMOTION` with primary metric `T_bootstrap/r`.

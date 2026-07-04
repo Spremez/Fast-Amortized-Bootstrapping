@@ -1,0 +1,3 @@
+mode,r,reps,default_t_bootstrap_over_r_us,backend_t_bootstrap_over_r_us,backend_speedup_vs_default,backend_delta_pct,default_pvw_cv,backend_pvw_cv,default_correctness,backend_correctness,status
+include_zero,4,3,7695294.917,7761476.500,0.991473,0.860,0.001230,0.004094,Pass,Pass,neutral_or_negative
+ternary,4,3,7872110.833,7803079.083,1.008847,-0.877,0.004671,0.010598,Pass,Pass,neutral_or_negative

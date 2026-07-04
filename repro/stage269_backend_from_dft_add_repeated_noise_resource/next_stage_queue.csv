@@ -1,0 +1,2 @@
+priority,route,entry_condition,gate,status,failure_action
+P0,stage270_candidate_closeout,Repeated timing did not promote.,record neutral/failed candidate and return to Stage267 queue.,selected,Do not use Stage268 smoke as performance evidence.

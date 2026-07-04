@@ -1,0 +1,13 @@
+variant,mode,r,rep,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup,log
+backend_from_dft_add,include_zero,4,0,31109461,7777365.250,42066052,10516513.000,1.352,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/backend_from_dft_add_include_zero_r4_reps3_run.log
+backend_from_dft_add,include_zero,4,1,31128683,7782170.750,42003524,10500881.000,1.349,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/backend_from_dft_add_include_zero_r4_reps3_run.log
+backend_from_dft_add,include_zero,4,2,30899574,7724893.500,41567160,10391790.000,1.345,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/backend_from_dft_add_include_zero_r4_reps3_run.log
+default,include_zero,4,0,30767174,7691793.500,41898455,10474613.750,1.362,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/default_include_zero_r4_reps3_run.log
+default,include_zero,4,1,30824047,7706011.750,41960317,10490079.250,1.361,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/default_include_zero_r4_reps3_run.log
+default,include_zero,4,2,30752318,7688079.500,41754123,10438530.750,1.358,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/default_include_zero_r4_reps3_run.log
+backend_from_dft_add,ternary,4,0,31578212,7894553.000,42696658,10674164.500,1.352,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/backend_from_dft_add_ternary_r4_reps3_run.log
+backend_from_dft_add,ternary,4,1,30934477,7733619.250,42710574,10677643.500,1.381,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/backend_from_dft_add_ternary_r4_reps3_run.log
+backend_from_dft_add,ternary,4,2,31124260,7781065.000,42850469,10712617.250,1.377,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/backend_from_dft_add_ternary_r4_reps3_run.log
+default,ternary,4,0,31620283,7905070.750,42678238,10669559.500,1.350,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/default_ternary_r4_reps3_run.log
+default,ternary,4,1,31329813,7832453.250,42406227,10601556.750,1.354,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/default_ternary_r4_reps3_run.log
+default,ternary,4,2,31515234,7878808.500,42314106,10578526.500,1.343,repro/stage269_backend_from_dft_add_repeated_noise_resource/raw/default_ternary_r4_reps3_run.log

@@ -3721,3 +3721,13 @@ H10_stage268_backend_from_dft_add_smoke:
     FromDFT-add route to default PVW/MAT-SAB on the requested amortized
     `T_bootstrap/r` metric for r=4 include-zero and ternary. Promotion depends
     on the smoke threshold and later repeated/noise/resource gates.
+H10_stage269_backend_from_dft_add_repeated_noise_resource:
+  status: NEUTRAL_STAGE269_BACKEND_FROM_DFT_ADD_REPEATED_NO_PROMOTION
+  evidence:
+    - repro/stage269_backend_from_dft_add_repeated_noise_resource/variant_compare.csv
+    - repro/stage269_backend_from_dft_add_repeated_noise_resource/proof_gate.csv
+    - docs/stage269_backend_from_dft_add_repeated_noise_resource.md
+  conclusion: >
+    Stage269 records NEUTRAL_STAGE269_BACKEND_FROM_DFT_ADD_REPEATED_NO_PROMOTION. It keeps the metric aligned with MAT-RLWE
+    amortization by comparing `T_bootstrap/r` for backend FromDFT-add versus
+    default PVW/MAT-SAB under the same backend.

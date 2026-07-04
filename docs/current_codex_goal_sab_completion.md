@@ -894,3 +894,8 @@ explicit flag; it does not upgrade performance or hardware-counter claims.
 `SAB_PVW_BACKEND_FROM_DFT_ADD` flag. The primary metric is `T_bootstrap/r`.
 This stage is a screening gate and does not by itself create a final SAB
 speedup claim.
+### Stage269 backend FromDFT-add repeated/noise/resource
+
+`NEUTRAL_STAGE269_BACKEND_FROM_DFT_ADD_REPEATED_NO_PROMOTION` records the repeated timing and optional noise/resource gate for
+the existing backend FromDFT-add route. The primary metric remains
+`T_bootstrap/r`.

@@ -1,0 +1,9 @@
+gate,status,metric,value,evidence,interpretation
+G1_repeated_coverage,PASS,reps=3 default/backend r=4 modes,4,bench_summary.csv,Repeated timing covers both non-binary modes and both PVW variants.
+G2_correctness,PASS,PVW/scalar target correctness,4/4,bench_summary.csv,Timing is only interpreted after correctness passes.
+G3_repeated_speed,NEUTRAL,minimum backend speedup vs default,0.991473x,variant_compare.csv,Repeated performance must retain the Stage268 smoke benefit in both modes.
+G4_variability,PASS,max PVW coefficient of variation,0.010598,bench_summary.csv; sample_rows.csv,"Small local variation supports, but does not replace, native repeated evidence."
+G5_noise,PENDING,r=4 backend full-noise rows,0/2,noise_summary.csv,Noise/resource gate is separate from repeated timing.
+G6_resource,PENDING,r=4 backend resource rows,0/2,resource_summary.csv,Key size and RSS evidence must accompany promoted performance.
+G7_claim_boundary,PASS,claim level,WSL repeated; trials1 noise if present,claim_boundary.csv,Still not native paper-grade performance or multi-seed failure-rate evidence.
+G8_decision,NEUTRAL_STAGE269_BACKEND_FROM_DFT_ADD_REPEATED_NO_PROMOTION,stage decision,NEUTRAL_STAGE269_BACKEND_FROM_DFT_ADD_REPEATED_NO_PROMOTION,proof_gate.csv,Final promotion requires repeated timing plus noise/resource coverage.

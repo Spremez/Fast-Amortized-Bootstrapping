@@ -2932,3 +2932,8 @@ Repro artifacts:
   - `scripts/run_stage268_nonbinary_backend_from_dft_add_smoke.sh`
   - `scripts/build_stage268_nonbinary_backend_from_dft_add_smoke.py`
   - `repro/stage268_nonbinary_backend_from_dft_add_smoke/`
+- stage269_backend_from_dft_add_repeated_noise_resource:
+  - `docs/stage269_backend_from_dft_add_repeated_noise_resource.md`
+  - `scripts/run_stage269_backend_from_dft_add_repeated_noise_resource.sh`
+  - `scripts/build_stage269_backend_from_dft_add_repeated_noise_resource.py`
+  - `repro/stage269_backend_from_dft_add_repeated_noise_resource/`
