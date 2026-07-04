@@ -1,0 +1,5 @@
+param,r,stage,stat_level,performance_status,noise_status,resource_status,claim_scope,evidence
+SET_4_5_2048,4,Stage233,high-stat,PASS_HIGHSTAT_SLICE,PASS_HIGHSTAT_SLICE,recorded,promoted for this binary parameter/r slice,repro/stage233_set_4_5_2048_r4_highstat_slice/proof_gate.csv
+SET_4_5_2048,2,Stage234,high-stat,PASS_HIGHSTAT_SLICE,PASS_HIGHSTAT_SLICE,recorded,promoted for this binary parameter/r slice,repro/stage234_set_4_5_2048_r2_highstat_slice/proof_gate.csv
+SET_2_3_4096,2,Stage235,high-stat,PASS_HIGHSTAT_SLICE,PASS_HIGHSTAT_SLICE,recorded,promoted for this binary parameter/r slice,repro/stage235_set_2_3_4096_r2_highstat_slice/proof_gate.csv
+SET_2_3_4096,4,Stage232,preflight n=3/seeds=3,PASS_SELECTED_SUBSET_PREFLIGHT,PASS_PREFLIGHT,recorded,preflight only; high-stat pending,repro/stage232_selected_subset_fullstat_resource/proof_gate.csv

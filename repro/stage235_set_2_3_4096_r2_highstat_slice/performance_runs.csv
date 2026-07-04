@@ -1,0 +1,11 @@
+run,status,param,r,metric,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup_vs_scalar_repeated,source_log
+0,Pass,SET_2_3_4096,2,T_bootstrap/r,28623268.000,14311634.000,35640898.000,17820449.000,1.245,repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/run_0.log
+1,Pass,SET_2_3_4096,2,T_bootstrap/r,28767461.000,14383730.500,35400910.000,17700455.000,1.231,repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/run_1.log
+2,Pass,SET_2_3_4096,2,T_bootstrap/r,28818243.000,14409121.500,35623234.000,17811617.000,1.236,repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/run_2.log
+3,Pass,SET_2_3_4096,2,T_bootstrap/r,28773424.000,14386712.000,35886771.000,17943385.500,1.247,repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/run_3.log
+4,Pass,SET_2_3_4096,2,T_bootstrap/r,28784270.000,14392135.000,36734597.000,18367298.500,1.276,repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/run_4.log
+5,Pass,SET_2_3_4096,2,T_bootstrap/r,28670670.000,14335335.000,36158506.000,18079253.000,1.261,repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/run_5.log
+6,Pass,SET_2_3_4096,2,T_bootstrap/r,28935427.000,14467713.500,35678607.000,17839303.500,1.233,repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/run_6.log
+7,Pass,SET_2_3_4096,2,T_bootstrap/r,28366994.000,14183497.000,35212489.000,17606244.500,1.241,repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/run_7.log
+8,Pass,SET_2_3_4096,2,T_bootstrap/r,30923969.000,15461984.500,42052605.000,21026302.500,1.360,repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/run_8.log
+9,Pass,SET_2_3_4096,2,T_bootstrap/r,28773110.000,14386555.000,35653019.000,17826509.500,1.239,repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/run_9.log

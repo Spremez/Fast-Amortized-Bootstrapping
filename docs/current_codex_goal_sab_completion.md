@@ -690,3 +690,8 @@ packaging, and broader optimality/theory gates are not complete.
 `PASS_STAGE234_SECOND_HIGHSTAT_SLICE_SET_4_5_2048_COMPLETE_MATRIX_PENDING` records the second current-head added-parameter high-stat slice.
 The active goal remains open because `SET_2_3_4096` high-stat slices,
 manuscript packaging, and broader optimality/theory gates are not complete.
+### Stage235 SET_2_3_4096 r=2 high-stat slice
+
+`PASS_STAGE235_THIRD_HIGHSTAT_SLICE_SET_2_3_4096_R4_HIGHSTAT_PENDING` records the third current-head added-parameter high-stat slice.
+The active goal remains open because `SET_2_3_4096`, r=4 high-stat evidence,
+manuscript packaging, and broader optimality/theory gates are not complete.

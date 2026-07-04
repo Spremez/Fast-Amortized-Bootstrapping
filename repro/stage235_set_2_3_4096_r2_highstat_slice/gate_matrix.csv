@@ -1,0 +1,9 @@
+gate,required,observed,status,claim_effect
+G1_inputs,Stage232/233/234 route evidence plus raw Stage235 logs exist,all present,PASS,allows Stage235 aggregation
+G2_shape,"SET_2_3_4096 selects h=32, r_prec=8","h=32, r_prec=8",PASS,prevents default-parameter fallback
+G3_performance_highstat_slice,"10 complete-SAB A/B runs, all correctness Pass, mean T_bootstrap/r speedup > 1","runs=10, speedup_mean=1.256900, CI95=1.229193..1.284607",PASS_HIGHSTAT_SLICE,supports this parameter/r slice only
+G4_noise_highstat_slice,"20 deterministic seeds, zero PVW/scalar/pair failures","seeds=20, failures=0/0/0",PASS_HIGHSTAT_SLICE,noise side condition supports this slice only
+G5_resource,pvw and scalar resource/keygen/RSS rows for this slice,pvw/scalar resource rows present,PASS,records key/RSS side cost beside throughput
+G6_metric_boundary,"compare amortized complete SAB, not isolated MAT external product",primary endpoint is complete-SAB T_bootstrap/r,PASS,aligns with MAT-RLWE r-body design intent
+G7_matrix_boundary,do not promote full added-parameter matrix until SET_2_3_4096 r=4 is high-stat,SET_2_3_4096 r=4 remains Stage232 preflight only,BOUNDARY_HELD,blocks all-added-parameter and paper-final matrix claims
+G8_stage235_decision,all Stage235 gates pass and matrix boundary stays explicit,PASS_STAGE235_THIRD_HIGHSTAT_SLICE_SET_2_3_4096_R4_HIGHSTAT_PENDING,PASS_STAGE235_THIRD_HIGHSTAT_SLICE_SET_2_3_4096_R4_HIGHSTAT_PENDING,continue Stage236 SET_2_3_4096 r=4 high-stat slice

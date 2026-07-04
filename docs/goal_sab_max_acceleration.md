@@ -1117,3 +1117,10 @@ current-head `SET_4_5_2048`, r=2 slice passes high-stat complete-SAB
 `T_bootstrap/r`, noise, and resource gates. `SET_4_5_2048` r=2/r=4 is now
 covered, while `SET_2_3_4096`, non-binary, compact, and theoretical-optimality
 gates remain open.
+## Stage235 SET_2_3_4096 r=2 high-stat slice
+
+Generated from input head `c8dae05`, Stage235 records `PASS_STAGE235_THIRD_HIGHSTAT_SLICE_SET_2_3_4096_R4_HIGHSTAT_PENDING`. The
+current-head `SET_2_3_4096`, r=2 slice passes high-stat complete-SAB
+`T_bootstrap/r`, noise, and resource gates. This supports one additional
+binary parameter/r slice only. `SET_2_3_4096`, r=4, non-binary support, compact
+route, novelty, and theoretical optimality remain open.

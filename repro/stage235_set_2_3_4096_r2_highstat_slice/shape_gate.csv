@@ -1,0 +1,2 @@
+param,r,observed_h,expected_h,observed_r_prec,expected_r_prec,correctness_status,shape_gate,runs_checked,source_log
+SET_2_3_4096,2,32,32,8,8,Pass,PASS,10,repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/run_0.log

@@ -1,0 +1,11 @@
+input,status,role,bytes
+repro/stage232_selected_subset_fullstat_resource/performance_stats.csv,present,Stage232 sibling SET_2_3_4096 r=4 preflight,463
+repro/stage232_selected_subset_fullstat_resource/noise_aggregate.csv,present,Stage232 sibling SET_2_3_4096 r=4 preflight noise,287
+repro/stage232_selected_subset_fullstat_resource/resource_comparison.csv,present,Stage232 sibling SET_2_3_4096 r=4 preflight resource,818
+repro/stage233_set_4_5_2048_r4_highstat_slice/performance_stats.csv,present,Stage233 SET_4_5_2048 r=4 high-stat baseline row,448
+repro/stage234_set_4_5_2048_r2_highstat_slice/performance_stats.csv,present,Stage234 SET_4_5_2048 r=2 high-stat baseline row,443
+repro/stage235_set_2_3_4096_r2_runs10_seeds20/performance_summary.csv,present,Stage235 raw high-stat performance aggregate,286
+repro/stage235_set_2_3_4096_r2_runs10_seeds20/perf_SET_2_3_4096_r2_runs10/summary.csv,present,Stage235 per-run performance,983
+repro/stage235_set_2_3_4096_r2_runs10_seeds20/noise_summary.csv,present,Stage235 high-stat noise aggregate summary,309
+repro/stage235_set_2_3_4096_r2_runs10_seeds20/noise_SET_2_3_4096_r2_seeds20/summary.csv,present,Stage235 per-seed noise,3299
+repro/stage235_set_2_3_4096_r2_resource/summary.csv,present,Stage235 resource/keygen/RSS,674

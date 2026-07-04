@@ -3296,3 +3296,16 @@ H10_stage234_second_highstat_slice:
     slice passes 10-run complete-SAB T_bootstrap/r, 20-seed noise, and resource
     gates. SET_4_5_2048 r=2/r=4 is covered, but SET_2_3_4096, non-binary
     support, compact route, and theoretical optimality remain pending.
+H10_stage235_third_highstat_slice:
+  status: third_added_parameter_highstat_slice_passed_set_2_3_4096_r4_pending
+  evidence:
+    - repro/stage235_set_2_3_4096_r2_highstat_slice/performance_stats.csv
+    - repro/stage235_set_2_3_4096_r2_highstat_slice/noise_aggregate.csv
+    - repro/stage235_set_2_3_4096_r2_highstat_slice/resource_comparison.csv
+    - docs/stage235_set_2_3_4096_r2_highstat_slice.md
+  conclusion: >
+    Stage235 records PASS_STAGE235_THIRD_HIGHSTAT_SLICE_SET_2_3_4096_R4_HIGHSTAT_PENDING. The current-head binary SET_2_3_4096, r=2
+    slice passes 10-run complete-SAB T_bootstrap/r, 20-seed noise, and resource
+    gates. The comparison dimension is amortized bootstrapping time per
+    processed plaintext lane/bit. SET_2_3_4096 r=4 high-stat evidence, non-binary
+    support, compact route, novelty, and theoretical optimality remain pending.

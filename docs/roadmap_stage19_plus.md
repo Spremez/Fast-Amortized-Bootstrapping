@@ -6582,3 +6582,19 @@ Generated from input head `4e7facc` with `PASS_STAGE234_SECOND_HIGHSTAT_SLICE_SE
 passes 10-run complete-SAB A/B, 20-seed noise, and resource recording. Together
 with Stage233, SET_4_5_2048 r=2/r=4 is covered; SET_2_3_4096 remains pending.
 ```
+## Stage 235: SET_2_3_4096 r=2 High-Stat Slice
+
+Goal:
+
+```text
+Promote SET_2_3_4096 r=2 from smoke/preflight evidence to 10-run/20-seed/resource
+evidence under complete-SAB T_bootstrap/r.
+```
+
+Status:
+
+```text
+Generated from input head `c8dae05` with `PASS_STAGE235_THIRD_HIGHSTAT_SLICE_SET_2_3_4096_R4_HIGHSTAT_PENDING`. `SET_2_3_4096`, r=2
+passes 10-run complete-SAB A/B, 20-seed noise, and resource recording. The
+added-parameter matrix still requires SET_2_3_4096 r=4 high-stat evidence.
+```
