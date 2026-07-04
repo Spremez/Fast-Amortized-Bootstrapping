@@ -1,0 +1,4 @@
+layout,selector_bytes,packed_bytes,total_selector_storage_bytes,storage_ratio_vs_current,build_avg_ns,build_over_candidate_kernel,interpretation
+current_rowpoly_selector,409600,0,409600,1.000000,0,0,current production-like row/poly layout
+replace_with_coeffblocked_transpose,0,409600,409600,1.000000,16384.618,2.560215,possible future key format; no duplicate selector storage after keygen rewrite
+duplicate_transposed_view_probe,409600,409600,819200,2.000000,16384.618,2.560215,safe isolated probe shape; unacceptable as hidden production memory unless justified

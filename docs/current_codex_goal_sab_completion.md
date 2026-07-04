@@ -1187,3 +1187,9 @@ structured mechanism preflight.
 `PASS_STAGE324_SELECT_SELECTOR_TRANSPOSE_RESOURCE_PREFLIGHT_COMPACT_REMAINS_FROZEN` selects a bounded selector-transpose resource/microbench probe and
 keeps structured/compact production work frozen until a formal proof artifact
 exists.
+<!-- stage325-selector-transpose-resource-probe -->
+### Stage325 selector-transpose resource probe
+
+`NEUTRAL_STAGE325_SELECTOR_TRANSPOSE_MICRO_NO_PROMOTION` records isolated selector-transpose dense-addmul evidence:
+speedup mean `1.026188`, projected complete-SAB speedup
+`1.005449`.

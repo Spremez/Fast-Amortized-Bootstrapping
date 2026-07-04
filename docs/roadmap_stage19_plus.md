@@ -7202,3 +7202,9 @@ Status: `PASS_STAGE324_SELECT_SELECTOR_TRANSPOSE_RESOURCE_PREFLIGHT_COMPACT_REMA
 Next: Stage325 selector-transpose resource probe. No SAB hot-path code is
 admitted until equality, resource, microbench, and projected full-SAB gates
 pass.
+## Stage 325: Selector-Transpose Resource Probe
+
+Goal: run a concrete isolated r=4 selector-transpose dense-addmul experiment
+before any SAB hot-path code.
+
+Status: `NEUTRAL_STAGE325_SELECTOR_TRANSPOSE_MICRO_NO_PROMOTION`.

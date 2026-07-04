@@ -1,0 +1,1 @@
+stage325_selector_transpose_microbench,rows=5,outputs=5,N=2048,blocks=128,reps=100000,build_reps=500,current_avg_ns=6365.890,packed_avg_ns=6419.662,speedup=0.991623817,build_avg_ns=17624.106,max_abs_diff=0,selector_bytes=409600,packed_bytes=409600,duplicate_probe_bytes=819200,checksum=-27.802086706273258

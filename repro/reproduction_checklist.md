@@ -489,3 +489,5 @@
 - [x] Stage323 records `PASS_STAGE323_DENSE_MAT_PREFLIGHT_DENY_LOOP_CODE_ROUTE_SELECTOR_FORMAT_REQUIRED` and blocks speculative exact dense loop rewrites.
 <!-- stage324-selector-layout-mechanism-preflight-checklist -->
 - [x] Stage324 records `PASS_STAGE324_SELECT_SELECTOR_TRANSPOSE_RESOURCE_PREFLIGHT_COMPACT_REMAINS_FROZEN` and selects Stage325 selector-transpose resource probe without granting SAB hot-path code permission.
+<!-- stage325-selector-transpose-resource-probe-checklist -->
+- [x] Stage325 records `NEUTRAL_STAGE325_SELECTOR_TRANSPOSE_MICRO_NO_PROMOTION` from isolated selector-transpose dense-addmul microbench.

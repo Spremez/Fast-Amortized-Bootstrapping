@@ -4302,3 +4302,15 @@ H324_selector_layout_mechanism_preflight:
     Stage324 selects only a selector-transpose resource/microbench preflight
     for the exact dense route and freezes compact production code until a
     formal distribution/keygen/security proof exists.
+H325_selector_transpose_resource_probe:
+  status: NEUTRAL_STAGE325_SELECTOR_TRANSPOSE_MICRO_NO_PROMOTION
+  primary_metric: isolated_dense_speedup_and_projected_complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage325_selector_transpose_resource_probe/summary.csv
+    - repro/stage325_selector_transpose_resource_probe/microbench_runs.csv
+    - repro/stage325_selector_transpose_resource_probe/resource_projection.csv
+    - repro/stage325_selector_transpose_resource_probe/proof_gate.csv
+  conclusion: >
+    Stage325 tests coefficient-blocked selector-transposed storage as an
+    isolated exact dense-addmul locality mechanism. It does not alter scalar
+    SAB or default sab_pvw_* behavior.

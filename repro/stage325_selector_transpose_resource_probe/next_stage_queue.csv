@@ -1,0 +1,2 @@
+priority,stage,entry_condition,task,gate,failure_action
+P0,stage326_exact_dense_route_closeout,NEUTRAL_STAGE325_SELECTOR_TRANSPOSE_MICRO_NO_PROMOTION,Close selector-layout exact dense work under current evidence and refresh claim boundary.,Do not write key-view or hot-path code unless a new mechanism exceeds Stage324 threshold.,return only with new proof-backed compact route or new hardware-counter mechanism.

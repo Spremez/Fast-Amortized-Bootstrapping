@@ -1,0 +1,8 @@
+gate,status,metric,value,interpretation
+G1_stage324_input,PASS,Stage324 decision,PASS_STAGE324_SELECT_SELECTOR_TRANSPOSE_RESOURCE_PREFLIGHT_COMPACT_REMAINS_FROZEN,Stage325 is valid only as a bounded selector-transpose probe.
+G2_microbench_parse,PASS,parsed runs,15,All timing conclusions require parsed raw logs.
+G3_correctness,PASS,max_abs_diff,0.000000,Packed selector layout must be bit-exact for the same dense arithmetic order.
+G4_dense_speed_threshold,FAIL,mean dense speedup,1.028925 required 1.048905,"Below this threshold, isolated selector locality cannot project 1% full-SAB gain."
+G5_fullsab_projection,FAIL,projected full-SAB speedup,1.006006,Projection uses Stage322/323 dense share and is not a complete-SAB timing claim.
+G6_resource_visibility,PASS_REPORTED,duplicate storage ratio,2.000000,Duplicate transposed view cost is reported separately from replace-format key layout.
+G7_stage325_decision,NEUTRAL_STAGE325_SELECTOR_TRANSPOSE_MICRO_NO_PROMOTION,selected next,stage326_exact_dense_route_closeout,Only a positive result opens key-view prototype; otherwise close exact dense selector-layout work.

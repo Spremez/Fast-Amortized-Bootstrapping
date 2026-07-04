@@ -3254,3 +3254,9 @@ Repro artifacts:
   - `docs/stage324_selector_layout_mechanism_preflight.md`
   - `scripts/build_stage324_selector_layout_mechanism_preflight.py`
   - `repro/stage324_selector_layout_mechanism_preflight/`
+- stage325_selector_transpose_resource_probe:
+  - `docs/stage325_selector_transpose_resource_probe.md`
+  - `scripts/stage325_selector_transpose_microbench.c`
+  - `scripts/run_stage325_selector_transpose_resource_probe.sh`
+  - `scripts/build_stage325_selector_transpose_resource_probe.py`
+  - `repro/stage325_selector_transpose_resource_probe/`
