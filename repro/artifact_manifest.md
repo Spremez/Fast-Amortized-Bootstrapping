@@ -2793,3 +2793,10 @@ Repro artifacts:
   - `algorithm_variants/mat_rlwe_sab_stage245_counter_bridge.md`
   - `scripts/build_stage245_current_head_counter_bridge.py`
   - `repro/stage245_current_head_counter_bridge/`
+- stage246_broader_algorithm_admission_gate:
+  - `docs/stage246_broader_algorithm_admission_gate.md`
+  - `experiments/stage246_broader_algorithm_admission_gate_plan.md`
+  - `theory_checks/stage246_algorithm_admission_boundary.md`
+  - `algorithm_variants/mat_rlwe_sab_stage246_broader_algorithm_gate.md`
+  - `scripts/build_stage246_broader_algorithm_admission_gate.py`
+  - `repro/stage246_broader_algorithm_admission_gate/`

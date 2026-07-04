@@ -1,0 +1,6 @@
+check_id,topic,requirement,status,evidence
+S246-1,primary endpoint,Every performance claim reports complete-SAB T_bootstrap/r and same-r scalar repeated baseline.,enforced,repro/stage240_scoped_latex_draft/claim_audit.csv
+S246-2,statistics,Paper-level performance promotion needs repeated runs and uncertainty; single perf-stat runs are attribution only.,enforced,repro/stage245_current_head_counter_bridge/claim_boundary.csv
+S246-3,ablation,"Any new implementation must isolate representation, kernel, schedule, post-processing, and backend effects.",required_for_future_variants,experiments/stage246_broader_algorithm_admission_gate_plan.md
+S246-4,reproducibility,"Each future variant must record commit, command, backend, CPU flags, seeds, raw logs, and artifact hashes.",required_for_future_variants,repro/stage246_broader_algorithm_admission_gate/reproduction_commands.md
+S246-5,negative results,Rejected and blocked candidates remain in the matrix and are not deleted from the research record.,enforced,repro/stage246_broader_algorithm_admission_gate/candidate_algorithm_matrix.csv

@@ -1169,3 +1169,7 @@ sources as explicit TODOs instead of fabricating references.
   counters remain usable as attribution-only evidence for the unchanged exact
   dense MAT/PVW-SAB route, but do not prove theoretical optimality or a new
   speedup.
+- Stage246 broader algorithm admission gate records `PASS_STAGE246_BROADER_ALGORITHM_GATE_RECORDED_PROOF_PROTOTYPES_ONLY`: exact dense
+  selected-binary PVW/MAT-SAB remains the supported baseline, while generic
+  compact and non-binary claims are not promoted. The next executable route is
+  a structured-compact proof prototype, not production SAB integration.

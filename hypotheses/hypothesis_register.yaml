@@ -3437,3 +3437,17 @@ H10_stage245_current_head_counter_bridge:
     and finds no tracked executable MAT/PVW-SAB hot-path delta. Stage226 native
     counters can be cited as attribution-only evidence for the unchanged exact
     route, not as a new speedup, novelty, or theoretical-optimality proof.
+H10_stage246_broader_algorithm_admission_gate:
+  status: broader_algorithm_gate_proof_prototypes_only
+  evidence:
+    - repro/stage246_broader_algorithm_admission_gate/candidate_algorithm_matrix.csv
+    - repro/stage246_broader_algorithm_admission_gate/proof_obligation_matrix.csv
+    - repro/stage246_broader_algorithm_admission_gate/experiment_gate_matrix.csv
+    - repro/stage246_broader_algorithm_admission_gate/proof_gate.csv
+    - docs/stage246_broader_algorithm_admission_gate.md
+  conclusion: >
+    Stage246 records PASS_STAGE246_BROADER_ALGORITHM_GATE_RECORDED_PROOF_PROTOTYPES_ONLY. It keeps the exact dense selected-binary
+    PVW/MAT-SAB route as the measured baseline, rejects generic compact
+    shared-output MAT under existing counterexamples, blocks non-binary PVW
+    until selector semantics are defined, and admits only a structured compact
+    keygen/noise proof prototype as the next executable route.

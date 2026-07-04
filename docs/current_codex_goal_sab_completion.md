@@ -755,3 +755,9 @@ closure remain incomplete.
 counter attribution. The active goal remains open because broader algorithmic
 routes, theoretical optimality, non-binary support, and final citation closure
 remain incomplete.
+### Stage246 broader algorithm admission gate
+
+`PASS_STAGE246_BROADER_ALGORITHM_GATE_RECORDED_PROOF_PROTOTYPES_ONLY` records the admission decision for broader PVW/MAT-SAB routes.
+The active goal remains open because structured compact proof prototypes,
+non-binary selector semantics, lower-bound optimality, and final bibliography
+closure remain incomplete.

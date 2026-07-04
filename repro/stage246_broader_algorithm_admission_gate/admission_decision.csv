@@ -1,0 +1,6 @@
+candidate_id,decision,production_permission,next_action,claim_status
+V246-A,retain_as_baseline,already_existing_scoped_path,rerun full-SAB A/B if executable hot path or benchmark semantics change,BASELINE_SUPPORTED_SCOPED
+V246-B,block_until_preflight,no,"selector semantics preflight: define sign/coefficient mapping, staged phase invariant, noise/resource plan",BLOCKED_NO_SELECTOR_SEMANTICS
+V246-C,reject,no,none for generic route; replace with structured keygen design,REJECT_GENERIC_COMPACT
+V246-D,admit_proof_prototype,no_hot_path_edits,finite r=2 algebra simulator plus toy phase/noise recurrence; no production SAB edits,ADMIT_PROOF_PROTOTYPE_ONLY
+V246-E,admit_analysis_only,no_speedup_claim,derive measurable lower-bound rows and attach native counter/assembly evidence,ADMIT_MODEL_AND_COUNTER_GAP_ONLY

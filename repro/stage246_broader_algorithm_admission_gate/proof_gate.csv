@@ -1,0 +1,8 @@
+gate,status,metric,value,evidence,interpretation
+G1_inputs,PASS,required input files,all present,repro/stage246_broader_algorithm_admission_gate/input_status.csv,"Stage246 consumes existing selected-binary, compact, non-binary, and counter-boundary evidence."
+G2_claim_boundary,PASS_NO_BROADER_PRODUCTION_PROMOTION,broader claims,denied for production,repro/stage246_broader_algorithm_admission_gate/active_claim_boundary.csv,Selected binary exact dense claim is preserved; broader claims stay gated.
+G3_candidate_classification,PASS,candidate_count,5,repro/stage246_broader_algorithm_admission_gate/candidate_algorithm_matrix.csv,"Baseline, non-binary, generic compact, structured compact, and optimality routes are separated."
+G4_generic_compact_guard,PASS_REJECT_GENERIC_COMPACT,existing compact counterexamples,generic route rejected,repro/stage166_shared_output_compact_algebra_gate/summary.csv,Counterexamples prevent loop-only/shared-output compact hot-path implementation.
+G5_next_executable_gate,PASS_PROOF_PROTOTYPE_SELECTED,structured compact route,finite/toy proof prototype only,repro/stage246_broader_algorithm_admission_gate/experiment_gate_matrix.csv,"The next executable work is a proof prototype, not production SAB integration."
+G6_stats_repro,PASS,stats/repro constraints,enforced,repro/stage246_broader_algorithm_admission_gate/stats_repro_gate.csv,Future speedup claims require repeated complete-SAB timing and reproducible logs.
+G7_stage246_decision,PASS_STAGE246_BROADER_ALGORITHM_GATE_RECORDED_PROOF_PROTOTYPES_ONLY,decision,PASS_STAGE246_BROADER_ALGORITHM_GATE_RECORDED_PROOF_PROTOTYPES_ONLY,repro/stage246_broader_algorithm_admission_gate/proof_gate.csv,Proceed to Stage248 proof prototype; do not expand paper claims now.

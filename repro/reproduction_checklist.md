@@ -346,3 +346,4 @@
 - [x] Stage243 apply LW citations and recompile records 11-citation compile gates `PASS_STAGE243_LW_CITATIONS_APPLIED_RECOMPILED_BATCHBOOT_TODO`.
 - [x] Stage244 BatchBoot BibTeX monitor records no verified BibTeX route `PASS_STAGE244_BATCHBOOT_MONITOR_RECORDED_NO_VERIFIED_BIBTEX`.
 - [x] Stage245 current-head counter bridge records attribution-only reuse `PASS_STAGE245_COUNTER_REUSE_BRIDGED_NO_HOTPATH_DELTA`.
+- [x] Stage246 broader algorithm admission gate records proof-prototype-only promotion `PASS_STAGE246_BROADER_ALGORITHM_GATE_RECORDED_PROOF_PROTOTYPES_ONLY`.
