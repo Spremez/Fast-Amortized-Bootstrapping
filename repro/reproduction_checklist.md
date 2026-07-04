@@ -434,3 +434,5 @@
 - [x] Stage295 records `PASS_STAGE295_DIRECT_DFT_STATS_REFRESH_HIGHSTAT_PENDING` for direct DFT repeated performance plus target final-output noise refresh.
 <!-- stage296-direct-dft-highstat-checklist -->
 - [x] Stage296 records `PASS_STAGE296_DIRECT_DFT_HIGHSTAT_LOCAL` for direct DFT high-stat local complete-SAB evidence.
+<!-- stage297-direct-dft-resource-sidecondition-checklist -->
+- [x] Stage297 records `PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL` for direct DFT local resource side conditions.

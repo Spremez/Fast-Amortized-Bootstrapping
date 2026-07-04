@@ -1,0 +1,2 @@
+speedup_vs_selected_control_T_over_r,speedup_vs_repeated_scalar_T_over_r,stage293_target_key_ratio,stage293_target_pvw_key_bytes,stage293_target_scalar_repeated_key_bytes,stage293_target_keygen_lane_ratio,stage293_target_time_maxrss_kb,stage297_selected_time_maxrss_kb,stage297_direct_time_maxrss_kb,stage297_direct_vs_selected_rss_ratio,resource_scope
+1.075398,1.735849,1.065349,653500448,613414432,1.054635,1538040,2401940,2401952,1.000005,Stage293 key/keygen/RSS target binary resource plus Stage297 include-zero target final-output RSS probe.

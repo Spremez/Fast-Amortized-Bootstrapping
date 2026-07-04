@@ -7043,3 +7043,9 @@ Goal: upgrade Stage295 evidence with a 10-run/10-trial same-backend complete
 SAB campaign.
 
 Status: `PASS_STAGE296_DIRECT_DFT_HIGHSTAT_LOCAL`.
+## Stage 297: Direct DFT Resource Side Condition
+
+Goal: ensure direct-DFT speed evidence is not hiding unacceptable key/RSS
+growth.
+
+Status: `PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL`.

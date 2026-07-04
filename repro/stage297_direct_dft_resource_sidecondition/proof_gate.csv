@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_prior_stage296,PASS,Stage296 decision,positive,Resource side condition is only meaningful after high-stat speed evidence.
+G2_target_probe_correctness,PASS,selected/direct target probes,2/2,Both target final-output probes must pass scalar-equivalence.
+G3_key_resource_link,PASS,Stage293 key ratio,1.065349,Direct DFT adds no key format; PVW target key overhead remains the selected PVW-SAB key overhead.
+G4_rss_probe,PASS,direct/selected max RSS,1.000005,Direct DFT target final-output probe should not create a large RSS regression.
+G5_claim_boundary,PASS,scope,local resource side condition,This is not native counter attribution or stage-wise noise.
+G6_decision,PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL,stage decision,PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL,Controls Stage298 route.

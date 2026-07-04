@@ -4010,3 +4010,15 @@ H296_direct_dft_highstat:
     Stage296 tests whether direct-DFT complete-SAB throughput persists under a
     10-run/10-trial local campaign. It is still below paper-grade until native
     counter/resource, parameter, and stage-wise noise gates are complete.
+H297_direct_dft_resource_sidecondition:
+  status: PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL
+  primary_metric: resource_side_condition_for_complete_sab_T_over_r
+  evidence:
+    - repro/stage297_direct_dft_resource_sidecondition/target_resource_probe.csv
+    - repro/stage297_direct_dft_resource_sidecondition/linked_resource_summary.csv
+    - repro/stage297_direct_dft_resource_sidecondition/proof_gate.csv
+    - docs/stage297_direct_dft_resource_sidecondition.md
+  conclusion: >
+    Stage297 links the direct-DFT high-stat speedup to local key/RSS side
+    conditions. It does not close native counter, stage-wise noise, or
+    parameter-generalization gates.

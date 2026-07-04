@@ -1,0 +1,4 @@
+claim,status,supported_statement,not_supported
+resource_side_condition,PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL,Stage296 speedup is accompanied by target key-ratio evidence and Stage297 selected/direct RSS probes.,full native memory profiling or all-parameter resource matrix.
+direct_dft_key_overhead,no_new_key_format,"The direct-DFT flag changes decomposition/materialization, not SAB key generation.",a proof that every future direct-DFT variant has no resource cost.
+paper_grade,not_yet,Resource side condition is locally positive.,"native counter attribution, stage-wise noise, literature novelty, or parameter generalization."

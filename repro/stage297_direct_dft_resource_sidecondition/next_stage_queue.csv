@@ -1,0 +1,3 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage298_stagewise_noise_or_native_counter,PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL,Choose between target stage-wise noise and native counter/resource run.,Keep Stage297 as local side condition only.
+P1,stage298_parameter_generalization,after stage-wise/native gate,Repeat on at least one additional parameter/branch.,Limit claim to SET_2_3_2048 include-zero r=4.

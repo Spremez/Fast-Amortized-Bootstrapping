@@ -1054,3 +1054,9 @@ to local `spqlios_avx512`, `SET_2_3_2048`, include-zero r=4.
 `PASS_STAGE296_DIRECT_DFT_HIGHSTAT_LOCAL` expands the direct-DFT candidate to a local 10-run/10-trial
 complete-SAB campaign. The metric remains `T_bootstrap/r`; the result is local
 engineering evidence, not a final novelty or optimality claim.
+<!-- stage297-direct-dft-resource-sidecondition -->
+### Stage297 direct DFT resource side condition
+
+`PASS_STAGE297_DIRECT_DFT_RESOURCE_SIDECONDITION_LOCAL` binds Stage296 high-stat speed evidence to target resource side
+conditions. Direct DFT remains a no-new-key-format implementation variant; the
+claim is local and still needs native/stage-wise expansion.

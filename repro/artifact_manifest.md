@@ -3080,3 +3080,8 @@ Repro artifacts:
   - `scripts/run_stage296_direct_dft_highstat.sh`
   - `scripts/build_stage296_direct_dft_highstat.py`
   - `repro/stage296_direct_dft_highstat/`
+- stage297_direct_dft_resource_sidecondition:
+  - `docs/stage297_direct_dft_resource_sidecondition.md`
+  - `scripts/run_stage297_direct_dft_resource_sidecondition.sh`
+  - `scripts/build_stage297_direct_dft_resource_sidecondition.py`
+  - `repro/stage297_direct_dft_resource_sidecondition/`
