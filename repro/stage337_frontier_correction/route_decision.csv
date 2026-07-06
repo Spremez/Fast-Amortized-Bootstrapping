@@ -1,0 +1,5 @@
+route,decision,basis,allowed_next
+repeat_old_exact_kernel_work,DENY,Stage318/319/312/321/325 already close the concrete candidates.,none
+new_exact_mechanism,ALLOW_IF_MECHANISM_EXISTS,Stage326 permits reopening only with a new load/store/count mechanism.,preflight proof plus isolated microbench before SAB code
+compact_or_structured_algorithm,ALLOW_PROOF_ONLY,Stage335/222 deny current complete selector route.,formal closed-state/keygen/noise proof before any hot-path code
+claim_and_parameter_package,ALLOW,Current supported claim remains scoped T_bootstrap/r evidence.,parameter/statistical refresh or paper package without stronger wording

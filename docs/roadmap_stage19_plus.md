@@ -7278,3 +7278,9 @@ Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
 - Decision: `PASS_STAGE336_CURRENT_HEAD_SMOKE_SELECT_DIRECT_IFFT_FRONTIER`.
 - Current-head guard: FFNT scalar/PVW smoke pass in `repro/stage336_current_head_smoke/`.
 - Next: Stage337 direct IFFT lifecycle candidate under closed-state gates.
+<!-- stage337-frontier-correction -->
+## Stage337: Frontier Correction
+
+- Decision: `PASS_STAGE337_FRONTIER_CORRECTED_NO_REPEAT_FAILED_CANDIDATES`.
+- Purpose: prevent repeated work on already neutral/failed candidates.
+- Next: Stage338 only with a new mechanism, a formal compact proof, or scoped claim/package work.

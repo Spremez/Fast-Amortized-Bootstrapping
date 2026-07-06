@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage338_new_mechanism_intake,A concrete new load/store/count or backend primitive is identified.,Mechanism model plus isolated equivalence/microbench; no SAB code first.,Reject without full-SAB work.
+P1,stage338_formal_compact_reopen,A formal neighbor/cross-body closed state proof is supplied or derived.,Distribution/keygen/security/noise proof then isolated equivalence.,Keep compact route blocked.
+P2,stage338_parameter_or_paper_package,No new mechanism/proof is available.,Use only scoped T_bootstrap/r claims and recorded negative ablations.,Do not claim theoretical optimality or universal speedup.

@@ -4440,3 +4440,14 @@ H336_exact_pvw_mat_frontier:
   conclusion: >
     Current-head smoke passes and the next exact-state optimization candidate is
     direct IFFT lifecycle. Compact selector and r4-unrolled rows are not promoted.
+H337_frontier_correction:
+  status: PASS_STAGE337_FRONTIER_CORRECTED_NO_REPEAT_FAILED_CANDIDATES
+  primary_metric: admissible_next_route
+  evidence:
+    - repro/stage337_frontier_correction/closed_candidate_audit.csv
+    - repro/stage337_frontier_correction/route_decision.csv
+    - repro/stage337_frontier_correction/proof_gate.csv
+  conclusion: >
+    No current exact local candidate is admitted for hot-path work. Progress
+    requires a new measured mechanism, a formal compact proof, or scoped result
+    packaging with negative ablations.
