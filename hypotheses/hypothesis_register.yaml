@@ -4487,3 +4487,14 @@ H340_parameter_matrix_current_head_gate:
     Stage340 adds an executable current-head parameter-matrix gate. Historical
     parameter rows are not promoted; broader claims require executed WSL/Linux
     logs that pass the parser and proof gates.
+H341_parameter_matrix_smoke:
+  status: PASS_STAGE341_PARAMETER_MATRIX_SMOKE_EXECUTED_NO_MATRIX_CLAIM
+  primary_metric: smoke_complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage341_parameter_matrix_smoke/summary.csv
+    - repro/stage341_parameter_matrix_smoke/perf_summary.csv
+    - repro/stage341_parameter_matrix_smoke/noise_summary.csv
+    - repro/stage341_parameter_matrix_smoke/proof_gate.csv
+  conclusion: >
+    One current-head missing matrix case executed and parsed as a smoke gate.
+    This is not a high-stat matrix or broader parameter result.

@@ -1,0 +1,2 @@
+case,samples,correctness,pvw_t_over_r_mean_us,pvw_t_over_r_ci95_us,scalar_t_over_r_mean_us,speedup_mean
+SET_2_3_2048_r2,1,Pass,6404564.000,6404564.000..6404564.000,10857942.500,1.695000

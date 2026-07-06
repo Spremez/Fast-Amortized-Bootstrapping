@@ -3364,3 +3364,11 @@ Repro artifacts:
   - `scripts/run_stage340_parameter_matrix_current_head.sh`
   - `scripts/build_stage340_parameter_matrix_execution_gate.py`
   - `repro/stage340_parameter_matrix_current_head_gate/`
+<!-- stage341-parameter-matrix-smoke-manifest -->
+- stage341_parameter_matrix_smoke:
+  - `docs/stage341_parameter_matrix_smoke.md`
+  - `theory_checks/stage341_smoke_claim_boundary.md`
+  - `experiments/stage342_full_matrix_or_literature_plan.md`
+  - `scripts/run_stage341_parameter_matrix_smoke.sh`
+  - `scripts/build_stage341_parameter_matrix_smoke.py`
+  - `repro/stage341_parameter_matrix_smoke/`

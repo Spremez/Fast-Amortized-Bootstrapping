@@ -1,0 +1,3 @@
+claim,status,supported,not_supported
+harness_real_execution,PASS,"One current-head missing matrix case can build, run, and parse.","High-stat performance, full parameter matrix, or broader parameter generality."
+single_run_speedup,SMOKE_ONLY,Single smoke speedup field parsed as 1.695000.,Paper-grade timing or stable throughput claim.

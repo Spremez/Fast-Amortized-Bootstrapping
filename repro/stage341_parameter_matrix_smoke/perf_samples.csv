@@ -1,0 +1,2 @@
+case,mode,r,h,r_prec,outer_log,inner_rep,correctness,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup_vs_repeated_scalar,source_log
+SET_2_3_2048_r2,include_zero,2,39,7,run_0.log,0,Pass,12809128,6404564.000,21715885,10857942.500,1.695,repro/stage341_parameter_matrix_smoke/raw/SET_2_3_2048_r2/perf/run_0.log

@@ -523,3 +523,5 @@
 - [x] Stage339 records `PASS_STAGE339_SCOPED_PACKAGE_REFRESH_NO_STRONGER_CLAIM` and refreshes scoped claim, parameter, negative-ablation, and reviewer-risk artifacts.
 <!-- stage340-parameter-matrix-gate-checklist -->
 - [x] Stage340 records `READY_STAGE340_CURRENT_HEAD_MATRIX_HARNESS_NO_NEW_PERFORMANCE_CLAIM` and provides a current-head parameter-matrix harness without promoting unexecuted results.
+<!-- stage341-parameter-matrix-smoke-checklist -->
+- [x] Stage341 records `PASS_STAGE341_PARAMETER_MATRIX_SMOKE_EXECUTED_NO_MATRIX_CLAIM` as a real execution smoke with no broader claim promotion.

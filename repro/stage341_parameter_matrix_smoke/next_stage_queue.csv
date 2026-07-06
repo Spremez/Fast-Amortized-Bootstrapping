@@ -1,0 +1,3 @@
+priority,route,entry_condition,command,gate,failure_action
+P0,stage342_full_current_head_matrix,PASS_STAGE341_PARAMETER_MATRIX_SMOKE_EXECUTED_NO_MATRIX_CLAIM,STAGE340_EXECUTE=1 STAGE340_PERF_RUNS=10 STAGE340_NOISE_TRIALS=10 FFT_LIB=spqlios_avx512 bash scripts/run_stage340_parameter_matrix_current_head.sh,all intended cases pass high-stat complete SAB T_bootstrap/r and noise/RSS,Keep Stage339 scoped claim.
+P1,stage342_literature_or_new_mechanism,full matrix is not being executed now,verified source audit or mechanism/proof preflight,source-checked novelty or isolated mechanism/proof gates,No novelty or new algorithm claim.

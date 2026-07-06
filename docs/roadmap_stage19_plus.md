@@ -7302,3 +7302,9 @@ Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
 - Decision: `READY_STAGE340_CURRENT_HEAD_MATRIX_HARNESS_NO_NEW_PERFORMANCE_CLAIM`.
 - Result: executable dry-run/execute harness for SET_2_3_2048, SET_4_5_2048, SET_2_3_4096 with r=2/4.
 - Boundary: no new performance claim until logs are executed and parsed.
+<!-- stage341-parameter-matrix-smoke -->
+## Stage341: Parameter Matrix Smoke
+
+- Decision: `PASS_STAGE341_PARAMETER_MATRIX_SMOKE_EXECUTED_NO_MATRIX_CLAIM`.
+- Result: real build/run/parse smoke for one missing current-head case.
+- Boundary: no statistical or broader parameter claim.
