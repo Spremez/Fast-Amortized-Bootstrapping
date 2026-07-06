@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_inputs,PASS,required artifacts,Stage36;Stage49;Stage50;Stage331;Stage341,Continuity audit has the required evidence layers.
+G2_stage36_hotpath_delta,PASS_SCOPED,Stage36 -> HEAD hotpath diff,changed,Changed hotpath keeps Stage36 as historical/supporting unless bridged by current-head reruns.
+G3_current_head_anchor,PASS,Stage331 r4 and Stage341 r2,r4_highstat;r2_smoke,"Current-head evidence exists, but does not complete the full matrix."
+G4_full_matrix,MISSING_CURRENT_HEAD_CASES,cases not current-head high-stat,5,Do not promote broader parameter wording.
+G5_decision,PASS_STAGE342_CONTINUITY_AUDIT_SCOPED_BRIDGE_NO_FULL_MATRIX_CLAIM,stage decision,PASS_STAGE342_CONTINUITY_AUDIT_SCOPED_BRIDGE_NO_FULL_MATRIX_CLAIM,Proceed by targeted current-head topups or verified literature/mechanism route.

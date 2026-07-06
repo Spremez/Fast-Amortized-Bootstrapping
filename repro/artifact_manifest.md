@@ -3372,3 +3372,10 @@ Repro artifacts:
   - `scripts/run_stage341_parameter_matrix_smoke.sh`
   - `scripts/build_stage341_parameter_matrix_smoke.py`
   - `repro/stage341_parameter_matrix_smoke/`
+<!-- stage342-continuity-audit-manifest -->
+- stage342_continuity_audit:
+  - `docs/stage342_continuity_audit.md`
+  - `theory_checks/stage342_continuity_claim_model.md`
+  - `experiments/stage343_current_head_matrix_topup_plan.md`
+  - `scripts/build_stage342_continuity_audit.py`
+  - `repro/stage342_continuity_audit/`

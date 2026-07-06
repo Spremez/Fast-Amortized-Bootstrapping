@@ -1263,3 +1263,5 @@ The allowed claim remains the scoped measured `T_bootstrap/r` systems result.
 - Stage340: `READY_STAGE340_CURRENT_HEAD_MATRIX_HARNESS_NO_NEW_PERFORMANCE_CLAIM`. Added the current-head parameter-matrix harness and hot-code equivalence gate; broader parameter speedup remains blocked until executed WSL/Linux logs pass.
 <!-- stage341-parameter-matrix-smoke -->
 - Stage341: `PASS_STAGE341_PARAMETER_MATRIX_SMOKE_EXECUTED_NO_MATRIX_CLAIM`. Executed one real current-head parameter-matrix smoke case; result is smoke-only and does not promote broader parameter claims.
+<!-- stage342-continuity-audit -->
+- Stage342: `PASS_STAGE342_CONTINUITY_AUDIT_SCOPED_BRIDGE_NO_FULL_MATRIX_CLAIM`. Historical high-stat rows, current-head r=4 high-stat, and current-head r=2 smoke are separated; full current-head matrix claim remains blocked.

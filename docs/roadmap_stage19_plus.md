@@ -7308,3 +7308,9 @@ Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
 - Decision: `PASS_STAGE341_PARAMETER_MATRIX_SMOKE_EXECUTED_NO_MATRIX_CLAIM`.
 - Result: real build/run/parse smoke for one missing current-head case.
 - Boundary: no statistical or broader parameter claim.
+<!-- stage342-continuity-audit -->
+## Stage342: Continuity Audit
+
+- Decision: `PASS_STAGE342_CONTINUITY_AUDIT_SCOPED_BRIDGE_NO_FULL_MATRIX_CLAIM`.
+- Result: scoped bridge only; no broader parameter promotion.
+- Next: targeted current-head topups or verified literature/mechanism route.

@@ -1,0 +1,4 @@
+priority,route,entry_condition,command,gate,failure_action
+P0,stage343_target_r2_current_head_highstat_topup,Need target SET_2_3_2048 r=2 current-head high-stat wording.,"run 9 additional r=2 perf samples plus enough noise trials, or rerun STAGE340 for SET_2_3_2048 r=2 only","10 current-head samples, correctness Pass, noise/RSS recorded",Keep r=2 as smoke/current-head continuity only.
+P1,stage343_added_param_current_head_matrix,Need current-head added-binary parameter wording.,STAGE340_EXECUTE=1 STAGE340_PARAMS='SET_4_5_2048 SET_2_3_4096' STAGE340_R_VALUES='2 4' ...,Each added case passes high-stat performance and noise/RSS.,Keep Stage36 added rows historical/supporting only.
+P2,stage343_verified_literature_or_mechanism,Full matrix execution is deferred.,verified source audit or new mechanism/proof preflight,source-checked novelty or isolated mechanism/proof gates,"No novelty, theoretical optimality, or new algorithm claim."

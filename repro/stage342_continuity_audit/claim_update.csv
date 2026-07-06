@@ -1,0 +1,5 @@
+claim,status,safe_statement,blocked_statement,evidence
+current_head_primary_r4,ALLOW_SCOPED,Current-head r=4 SET_2_3_2048 include-zero has scoped complete-SAB T_bootstrap/r evidence.,All-r or all-parameter current-head matrix.,repro/stage331_current_head_highstat_refresh/summary.csv
+current_head_r2,SMOKE_ONLY,Current-head r=2 SET_2_3_2048 execution path passed one smoke.,Stable r=2 throughput or high-stat current-head claim.,repro/stage341_parameter_matrix_smoke/summary.csv
+historical_stage36_target_and_added_params,SUPPORTING_ONLY,Stage36 remains historical high-stat evidence and Stage50 provides continuity context.,Treating historical high-stat rows as full current-head matrix without rerun.,repro/stage36_target_perf_summary.csv; repro/stage36_added_params_runs10_seeds20/performance_stats.csv; repro/stage50_performance_evidence_matrix.csv
+broader_parameter_generalization,BLOCK_CURRENT_HEAD_FULL_MATRIX_MISSING,Broader claim requires current-head execution for missing cases.,"Universal, non-binary, or all-parameter claim.",repro/stage342_continuity_audit/current_head_matrix_status.csv

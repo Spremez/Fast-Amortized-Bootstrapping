@@ -1,0 +1,7 @@
+case,status,samples,speedup,noise,next_needed
+SET_2_3_2048_r4,CURRENT_HEAD_HIGHSTAT_AVAILABLE,10,1.747647,0/10,none for scoped primary r=4; rerun only after hotpath changes
+SET_2_3_2048_r2,CURRENT_HEAD_SMOKE_ONLY,1,1.695000,0/1,run 10-sample current-head target r=2 if target r=2 wording is desired
+SET_4_5_2048_r2,HISTORICAL_HIGHSTAT_ONLY,10,1.285700,0/20,rerun current-head case before broader current-head parameter claim
+SET_4_5_2048_r4,HISTORICAL_HIGHSTAT_ONLY,10,1.350700,0/20,rerun current-head case before broader current-head parameter claim
+SET_2_3_4096_r2,HISTORICAL_HIGHSTAT_ONLY,10,1.235100,0/20,rerun current-head case before broader current-head parameter claim
+SET_2_3_4096_r4,HISTORICAL_HIGHSTAT_ONLY,10,1.346200,0/20,rerun current-head case before broader current-head parameter claim

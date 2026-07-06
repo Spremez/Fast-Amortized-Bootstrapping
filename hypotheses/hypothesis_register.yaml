@@ -4498,3 +4498,14 @@ H341_parameter_matrix_smoke:
   conclusion: >
     One current-head missing matrix case executed and parsed as a smoke gate.
     This is not a high-stat matrix or broader parameter result.
+H342_continuity_audit:
+  status: PASS_STAGE342_CONTINUITY_AUDIT_SCOPED_BRIDGE_NO_FULL_MATRIX_CLAIM
+  primary_metric: evidence_continuity_for_complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage342_continuity_audit/summary.csv
+    - repro/stage342_continuity_audit/hotpath_delta_audit.csv
+    - repro/stage342_continuity_audit/evidence_ladder.csv
+    - repro/stage342_continuity_audit/proof_gate.csv
+  conclusion: >
+    Stage342 separates historical high-stat rows from current-head anchors.
+    The result is a scoped bridge, not a full current-head parameter matrix.
