@@ -7296,3 +7296,9 @@ Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
 - Decision: `PASS_STAGE339_SCOPED_PACKAGE_REFRESH_NO_STRONGER_CLAIM`.
 - Result: current-head r=4 SET_2_3_2048 complete-SAB `T_bootstrap/r` claim remains the primary supported result.
 - Next: Stage340 parameter matrix, verified related work, new mechanism protocol, or formal compact proof.
+<!-- stage340-parameter-matrix-gate -->
+## Stage340: Parameter Matrix Current-Head Gate
+
+- Decision: `READY_STAGE340_CURRENT_HEAD_MATRIX_HARNESS_NO_NEW_PERFORMANCE_CLAIM`.
+- Result: executable dry-run/execute harness for SET_2_3_2048, SET_4_5_2048, SET_2_3_4096 with r=2/4.
+- Boundary: no new performance claim until logs are executed and parsed.

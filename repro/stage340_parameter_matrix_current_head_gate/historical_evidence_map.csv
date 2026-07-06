@@ -1,0 +1,8 @@
+parameter,r,evidence_class,perf_speedup,perf_samples,noise_status,source,claim_use
+SET_2_3_2048 include-zero,4,current_head_primary,1.747647,10,0/10,repro/stage331_current_head_highstat_refresh/summary.csv,main scoped claim if hotcode-equivalent
+SET_2_3_2048,2,historical_target_matrix,1.191,10,0/50,repro/stage36_target_perf_summary.csv,supporting only; rerun for current-head broader claim
+SET_2_3_2048,4,historical_target_matrix,1.377,10,0/50,repro/stage36_target_perf_summary.csv,supporting only; rerun for current-head broader claim
+SET_4_5_2048,2,historical_added_binary_matrix,1.285700,10,0/20,repro/stage36_added_params_runs10_seeds20/performance_stats.csv,supporting only; rerun for current-head broader claim
+SET_4_5_2048,4,historical_added_binary_matrix,1.350700,10,0/20,repro/stage36_added_params_runs10_seeds20/performance_stats.csv,supporting only; rerun for current-head broader claim
+SET_2_3_4096,2,historical_added_binary_matrix,1.235100,10,0/20,repro/stage36_added_params_runs10_seeds20/performance_stats.csv,supporting only; rerun for current-head broader claim
+SET_2_3_4096,4,historical_added_binary_matrix,1.346200,10,0/20,repro/stage36_added_params_runs10_seeds20/performance_stats.csv,supporting only; rerun for current-head broader claim

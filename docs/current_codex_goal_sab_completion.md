@@ -1259,3 +1259,5 @@ The allowed claim remains the scoped measured `T_bootstrap/r` systems result.
 - Stage338: `PASS_STAGE338_NO_NEW_MECHANISM_SELECT_SCOPED_PACKAGE_OR_EXTERNAL_PROOF`. No current new exact mechanism or formal compact proof is present; next work is scoped package refresh unless a new gated mechanism/proof is supplied.
 <!-- stage339-scoped-paper-package-refresh -->
 - Stage339: `PASS_STAGE339_SCOPED_PACKAGE_REFRESH_NO_STRONGER_CLAIM`. The current safe result is scoped complete-SAB `T_bootstrap/r` speedup `1.747647x`; broader parameter, novelty, compact, and optimality claims remain gated.
+<!-- stage340-parameter-matrix-gate -->
+- Stage340: `READY_STAGE340_CURRENT_HEAD_MATRIX_HARNESS_NO_NEW_PERFORMANCE_CLAIM`. Added the current-head parameter-matrix harness and hot-code equivalence gate; broader parameter speedup remains blocked until executed WSL/Linux logs pass.

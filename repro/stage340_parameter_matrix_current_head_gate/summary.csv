@@ -1,0 +1,2 @@
+decision,current_head,stage331_head,hotcode_status,primary_supported_speedup,executed_case_count,missing_current_head_cases,claim_status,next_required
+READY_STAGE340_CURRENT_HEAD_MATRIX_HARNESS_NO_NEW_PERFORMANCE_CLAIM,e0b7560,6a5f113,HOTCODE_EQUIVALENT,1.747647,0,5,no_new_performance_claim,execute Stage340 matrix on WSL/Linux or switch to verified literature/new mechanism/proof route

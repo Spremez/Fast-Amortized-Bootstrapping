@@ -1,0 +1,1 @@
+case,parameter,r,samples,correctness,pvw_t_over_r_mean_us,pvw_t_over_r_ci95_us,scalar_t_over_r_mean_us,speedup_mean,noise_trials,noise_pair_failures,noise_gate,time_maxrss_kb,status

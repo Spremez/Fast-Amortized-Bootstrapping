@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_stage339_route,PASS,Stage339 decision,PASS_STAGE339_SCOPED_PACKAGE_REFRESH_NO_STRONGER_CLAIM,Stage340 follows the parameter-matrix route.
+G2_hotcode_equivalence,PASS,src/Makefile/include diff since Stage331,HOTCODE_EQUIVALENT,Primary r=4 result remains hot-code current only if this passes.
+G3_harness_ready,PASS,runner and builder,scripts/run_stage340_parameter_matrix_current_head.sh; scripts/build_stage340_parameter_matrix_execution_gate.py,The matrix can be executed with STAGE340_EXECUTE=1 on WSL/Linux.
+G4_current_head_matrix_coverage,PARTIAL,missing current-head cases,5,Broader parameter claims require every intended case to pass.
+G5_executed_result_cases,NOT_EXECUTED_OR_PARTIAL,passed executed cases,0,No new speedup claim is allowed if no executed cases are parsed.
+G6_decision,READY_STAGE340_CURRENT_HEAD_MATRIX_HARNESS_NO_NEW_PERFORMANCE_CLAIM,stage decision,READY_STAGE340_CURRENT_HEAD_MATRIX_HARNESS_NO_NEW_PERFORMANCE_CLAIM,"Controls whether Stage341 runs the matrix, verifies literature, or admits a new mechanism/proof."

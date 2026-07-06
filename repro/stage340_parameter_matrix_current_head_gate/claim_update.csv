@@ -1,0 +1,5 @@
+claim,status,statement,evidence
+primary_r4_SET_2_3_2048,UNCHANGED_SUPPORTED,Stage331 primary r=4 result remains hot-code current if no src/Makefile/include changes occurred.,repro/stage331_current_head_highstat_refresh/summary.csv; repro/stage340_parameter_matrix_current_head_gate/hotcode_equivalence.csv
+current_head_parameter_matrix,NOT_PROMOTED,Executed current-head matrix cases parsed: 0.,repro/stage340_parameter_matrix_current_head_gate/parsed_result_summary.csv
+broader_parameter_generality,BLOCK_UNTIL_STAGE340_EXECUTED,Historical parameter rows remain supporting evidence only until current-head matrix logs pass.,repro/stage340_parameter_matrix_current_head_gate/historical_evidence_map.csv
+new_performance_speedup,NO_NEW_CLAIM_THIS_STAGE,The harness gate itself does not create a new performance result.,repro/stage340_parameter_matrix_current_head_gate/proof_gate.csv

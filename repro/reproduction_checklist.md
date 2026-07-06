@@ -521,3 +521,5 @@
 - [x] Stage338 records `PASS_STAGE338_NO_NEW_MECHANISM_SELECT_SCOPED_PACKAGE_OR_EXTERNAL_PROOF` and selects scoped package work unless a new mechanism/proof is supplied.
 <!-- stage339-scoped-paper-package-refresh-checklist -->
 - [x] Stage339 records `PASS_STAGE339_SCOPED_PACKAGE_REFRESH_NO_STRONGER_CLAIM` and refreshes scoped claim, parameter, negative-ablation, and reviewer-risk artifacts.
+<!-- stage340-parameter-matrix-gate-checklist -->
+- [x] Stage340 records `READY_STAGE340_CURRENT_HEAD_MATRIX_HARNESS_NO_NEW_PERFORMANCE_CLAIM` and provides a current-head parameter-matrix harness without promoting unexecuted results.

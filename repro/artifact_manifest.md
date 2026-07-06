@@ -3356,3 +3356,11 @@ Repro artifacts:
   - `experiments/stage340_parameter_matrix_or_new_mechanism_gate.md`
   - `scripts/build_stage339_scoped_paper_package_refresh.py`
   - `repro/stage339_scoped_paper_package_refresh/`
+<!-- stage340-parameter-matrix-gate-manifest -->
+- stage340_parameter_matrix_current_head_gate:
+  - `docs/stage340_parameter_matrix_current_head_gate.md`
+  - `theory_checks/stage340_parameter_matrix_model.md`
+  - `experiments/stage341_parameter_matrix_execution_or_literature_plan.md`
+  - `scripts/run_stage340_parameter_matrix_current_head.sh`
+  - `scripts/build_stage340_parameter_matrix_execution_gate.py`
+  - `repro/stage340_parameter_matrix_current_head_gate/`
