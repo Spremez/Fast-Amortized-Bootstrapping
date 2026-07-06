@@ -1,0 +1,2 @@
+case,param,r,fft_lib,perf_runs,perf_reps,noise_trials
+SET_2_3_2048_r2,SET_2_3_2048,2,spqlios_avx512,9,1,9

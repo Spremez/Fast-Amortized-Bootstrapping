@@ -1,0 +1,2 @@
+case,samples,stage341_samples_included,stage343_samples_included,correctness,pvw_t_over_r_mean_us,pvw_t_over_r_ci95_us,scalar_t_over_r_mean_us,speedup_mean,speedup_ci95
+SET_2_3_2048_r2,10,1,9,Pass,6612564.550,6537048.579..6688080.521,11056987.250,1.672200,1.651056..1.693344

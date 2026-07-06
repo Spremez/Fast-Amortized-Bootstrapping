@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_stage342_route,PASS,Stage342 decision,PASS_STAGE342_CONTINUITY_AUDIT_SCOPED_BRIDGE_NO_FULL_MATRIX_CLAIM,Stage343 follows the r=2 current-head top-up route.
+G2_hotpath_equivalence,PASS,Stage341/Stage343 run heads to HEAD,stage341_smoke_to_head=HOTPATH_EQUIVALENT;stage343_topup_to_head=HOTPATH_EQUIVALENT,Stage341 smoke can be combined only when hotpath-equivalent.
+G3_perf_highstat,PASS,samples/correctness,10/Pass,Requires 10 complete-SAB samples with correctness Pass.
+G4_noise_resource,PASS,pair failures/trials,0/10,Requires zero pair failures over 10 combined trials and RSS recorded.
+G5_claim_boundary,PASS,claim level,target_r2_only,"Do not promote added parameters, novelty, or theoretical optimality."
+G6_decision,PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP,stage decision,PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP,Controls whether r=2 moves from smoke-only to scoped current-head high-stat.

@@ -4509,3 +4509,14 @@ H342_continuity_audit:
   conclusion: >
     Stage342 separates historical high-stat rows from current-head anchors.
     The result is a scoped bridge, not a full current-head parameter matrix.
+H343_target_r2_topup:
+  status: PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage343_target_r2_current_head_topup/summary.csv
+    - repro/stage343_target_r2_current_head_topup/combined_perf_summary.csv
+    - repro/stage343_target_r2_current_head_topup/combined_noise_summary.csv
+    - repro/stage343_target_r2_current_head_topup/proof_gate.csv
+  conclusion: >
+    Stage343 top-ups the target r=2 row only. It does not alter claims about
+    added parameters, non-binary branches, novelty, or theoretical optimality.

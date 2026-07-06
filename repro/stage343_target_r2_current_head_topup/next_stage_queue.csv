@@ -1,0 +1,3 @@
+priority,route,entry_condition,command,gate,failure_action
+P0,stage344_added_parameter_current_head_topups,Need broader binary parameter wording beyond SET_2_3_2048.,"Run current-head topups for SET_4_5_2048 and SET_2_3_4096, r=2/4.","10 samples and 10 noise trials per claimed case, same backend, T_bootstrap/r.",Keep added-parameter rows historical/supporting only.
+P1,stage344_mechanism_or_source_verified_paper_route,No further matrix execution or a stronger algorithmic claim is needed.,Admit only a new measured mechanism/proof or verified literature audit.,No novelty/theoretical-optimality wording without source/proof support.,Publish scoped systems result and negative ablations only.

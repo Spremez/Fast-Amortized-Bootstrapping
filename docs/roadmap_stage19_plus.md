@@ -7314,3 +7314,9 @@ Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
 - Decision: `PASS_STAGE342_CONTINUITY_AUDIT_SCOPED_BRIDGE_NO_FULL_MATRIX_CLAIM`.
 - Result: scoped bridge only; no broader parameter promotion.
 - Next: targeted current-head topups or verified literature/mechanism route.
+<!-- stage343-target-r2-topup -->
+## Stage343: Target r=2 Current-Head Top-Up
+
+- Decision: `PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP`.
+- Result: target `SET_2_3_2048 r=2` high-stat top-up route.
+- Boundary: no added-parameter, novelty, or theoretical-optimality claim.

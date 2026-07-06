@@ -1265,3 +1265,5 @@ The allowed claim remains the scoped measured `T_bootstrap/r` systems result.
 - Stage341: `PASS_STAGE341_PARAMETER_MATRIX_SMOKE_EXECUTED_NO_MATRIX_CLAIM`. Executed one real current-head parameter-matrix smoke case; result is smoke-only and does not promote broader parameter claims.
 <!-- stage342-continuity-audit -->
 - Stage342: `PASS_STAGE342_CONTINUITY_AUDIT_SCOPED_BRIDGE_NO_FULL_MATRIX_CLAIM`. Historical high-stat rows, current-head r=4 high-stat, and current-head r=2 smoke are separated; full current-head matrix claim remains blocked.
+<!-- stage343-target-r2-topup -->
+- Stage343: `PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP`. Target r=2 current-head top-up is recorded; only the target-row claim may be promoted if gates pass.

@@ -1,0 +1,10 @@
+sample_source,case,mode,r,h,r_prec,outer_log,inner_rep,correctness,pvw_us,pvw_lane_us,scalar_repeated_us,scalar_lane_us,speedup_vs_repeated_scalar,source_log
+stage343_topup,SET_2_3_2048_r2,include_zero,2,39,7,run_0.log,0,Pass,13265982,6632991.000,21410491,10705245.500,1.614,repro/stage343_target_r2_current_head_topup/raw/SET_2_3_2048_r2/perf/run_0.log
+stage343_topup,SET_2_3_2048_r2,include_zero,2,39,7,run_1.log,0,Pass,13145841,6572920.500,22245187,11122593.500,1.692,repro/stage343_target_r2_current_head_topup/raw/SET_2_3_2048_r2/perf/run_1.log
+stage343_topup,SET_2_3_2048_r2,include_zero,2,39,7,run_2.log,0,Pass,13577769,6788884.500,22032465,11016232.500,1.623,repro/stage343_target_r2_current_head_topup/raw/SET_2_3_2048_r2/perf/run_2.log
+stage343_topup,SET_2_3_2048_r2,include_zero,2,39,7,run_3.log,0,Pass,12943939,6471969.500,21959327,10979663.500,1.696,repro/stage343_target_r2_current_head_topup/raw/SET_2_3_2048_r2/perf/run_3.log
+stage343_topup,SET_2_3_2048_r2,include_zero,2,39,7,run_4.log,0,Pass,13243440,6621720.000,22348246,11174123.000,1.687,repro/stage343_target_r2_current_head_topup/raw/SET_2_3_2048_r2/perf/run_4.log
+stage343_topup,SET_2_3_2048_r2,include_zero,2,39,7,run_5.log,0,Pass,13366918,6683459.000,22207285,11103642.500,1.661,repro/stage343_target_r2_current_head_topup/raw/SET_2_3_2048_r2/perf/run_5.log
+stage343_topup,SET_2_3_2048_r2,include_zero,2,39,7,run_6.log,0,Pass,13425860,6712930.000,22678883,11339441.500,1.689,repro/stage343_target_r2_current_head_topup/raw/SET_2_3_2048_r2/perf/run_6.log
+stage343_topup,SET_2_3_2048_r2,include_zero,2,39,7,run_7.log,0,Pass,13222070,6611035.000,22011605,11005802.500,1.665,repro/stage343_target_r2_current_head_topup/raw/SET_2_3_2048_r2/perf/run_7.log
+stage343_topup,SET_2_3_2048_r2,include_zero,2,39,7,run_8.log,0,Pass,13250344,6625172.000,22530371,11265185.500,1.700,repro/stage343_target_r2_current_head_topup/raw/SET_2_3_2048_r2/perf/run_8.log

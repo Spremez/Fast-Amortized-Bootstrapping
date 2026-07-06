@@ -1,0 +1,2 @@
+status,mode,r,trials,points,pair_failures,pair_log2_sigma_torus,pair_log2_max_abs_torus,gate,overall_gate,time_maxrss_kb,source_run_log,source_time_log
+pass,include_zero,2,9,36864,0,-7.478,-5.640,Pass,Pass,1222776,repro/stage343_target_r2_current_head_topup/raw/SET_2_3_2048_r2/noise/run.log,repro/stage343_target_r2_current_head_topup/raw/SET_2_3_2048_r2/noise/time.log

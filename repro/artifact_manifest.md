@@ -3379,3 +3379,11 @@ Repro artifacts:
   - `experiments/stage343_current_head_matrix_topup_plan.md`
   - `scripts/build_stage342_continuity_audit.py`
   - `repro/stage342_continuity_audit/`
+<!-- stage343-target-r2-topup-manifest -->
+- stage343_target_r2_current_head_topup:
+  - `docs/stage343_target_r2_current_head_topup.md`
+  - `theory_checks/stage343_r2_topup_claim_model.md`
+  - `experiments/stage344_added_parameter_topup_plan.md`
+  - `scripts/run_stage343_target_r2_current_head_topup.sh`
+  - `scripts/build_stage343_target_r2_current_head_topup.py`
+  - `repro/stage343_target_r2_current_head_topup/`

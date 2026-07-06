@@ -1,0 +1,2 @@
+decision,run_head,current_head,case,samples,correctness,pvw_t_over_r_mean_us,pvw_t_over_r_ci95_us,scalar_t_over_r_mean_us,speedup_mean,speedup_ci95,noise_trials,noise_pair_failures,time_maxrss_kb_max,claim_status
+PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP,6b2885d,6b2885d,SET_2_3_2048_r2,10,Pass,6612564.550,6537048.579..6688080.521,11056987.250,1.672200,1.651056..1.693344,10,0,1222776,target_r2_scoped_highstat

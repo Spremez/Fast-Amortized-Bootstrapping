@@ -1,0 +1,3 @@
+basis,ref,ref_resolves,current_head,hotpath_diff_count,hotpath_diff_paths,status
+stage341_smoke_to_head,8019f34,yes,6b2885d,0,,HOTPATH_EQUIVALENT
+stage343_topup_to_head,6b2885d,yes,6b2885d,0,,HOTPATH_EQUIVALENT
