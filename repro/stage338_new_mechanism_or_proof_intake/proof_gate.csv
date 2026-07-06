@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_inputs,PASS,required prior stage artifacts,all_present,Stage338 consumes prior evidence instead of reopening closed paths.
+G2_new_mechanism,NO_NEW_MECHANISM_FOUND,concrete load/store/count/backend primitive,absent,No SAB code is admitted without an isolated mechanism gate.
+G3_formal_compact_proof,NO_FORMAL_PROOF_FOUND,neighbor-capable closed state proof,absent,Compact selector remains blocked for complete SAB integration.
+G4_scoped_package_route,PASS,supported current evidence,scoped_T_bootstrap_over_r_plus_negative_ablations,Proceed to paper/parameter package unless a new mechanism or proof is supplied.
+G5_decision,PASS_STAGE338_NO_NEW_MECHANISM_SELECT_SCOPED_PACKAGE_OR_EXTERNAL_PROOF,selected next route,stage339_scoped_package_refresh_or_external_mechanism_proof,The active research goal remains open; Stage338 prevents an ungrounded theory loop.

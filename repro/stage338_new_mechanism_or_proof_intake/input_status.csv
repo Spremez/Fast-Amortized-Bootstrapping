@@ -1,0 +1,8 @@
+input,status,path,role
+stage337_next_queue,PRESENT,repro/stage337_frontier_correction/next_stage_queue.csv,Defines the only admitted continuation routes.
+stage337_route_decision,PRESENT,repro/stage337_frontier_correction/route_decision.csv,Blocks repeated failed exact-kernel work.
+stage337_closed_candidates,PRESENT,repro/stage337_frontier_correction/closed_candidate_audit.csv,"Records closed IFFT, digit, unrolled, selector, and compact candidates."
+stage328_requirement_matrix,PRESENT,repro/stage328_active_goal_requirement_audit/requirement_matrix.csv,Keeps the active goal open until optimality/proof gaps are closed.
+stage328_evidence_grade,PRESENT,repro/stage328_active_goal_requirement_audit/evidence_grade.csv,Separates scoped complete-SAB evidence from paper-level/global claims.
+stage331_highstat_complete_sab,PRESENT,repro/stage331_current_head_highstat_refresh/summary.csv,Supplies the current strongest scoped T_bootstrap/r measurement.
+stage335_compact_boundary,PRESENT,repro/stage335_source_and_compact_route/proof_gate.csv,Blocks complete compact selector integration without a new proof.

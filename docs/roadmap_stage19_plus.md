@@ -7284,3 +7284,9 @@ Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
 - Decision: `PASS_STAGE337_FRONTIER_CORRECTED_NO_REPEAT_FAILED_CANDIDATES`.
 - Purpose: prevent repeated work on already neutral/failed candidates.
 - Next: Stage338 only with a new mechanism, a formal compact proof, or scoped claim/package work.
+<!-- stage338-new-mechanism-intake -->
+## Stage338: New Mechanism Or Proof Intake
+
+- Decision: `PASS_STAGE338_NO_NEW_MECHANISM_SELECT_SCOPED_PACKAGE_OR_EXTERNAL_PROOF`.
+- Gate: no SAB hot-path code without a concrete mechanism model or formal compact proof.
+- Next: Stage339 scoped package refresh, or switch to the new mechanism/proof protocol if new evidence appears.

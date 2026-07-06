@@ -1,0 +1,5 @@
+candidate_input,status,evidence,admission_gate,action
+new_exact_backend_or_loadstore_mechanism,NOT_PRESENT_IN_CURRENT_WORKTREE,repro/stage337_frontier_correction/route_decision.csv,mechanism_model plus isolated equivalence plus isolated speedup,Do not edit SAB hot path until a concrete count/load/store primitive exists.
+repeat_direct_ifft_batch5_family,DENIED_ALREADY_CLOSED,repro/stage337_frontier_correction/closed_candidate_audit.csv,new backend primitive not equivalent to Stage318/319,Reject repeat implementation work.
+repeat_digit_narrow32_or_r4_unrolled,DENIED_FULLSAB_NEUTRAL,repro/stage337_frontier_correction/closed_candidate_audit.csv,new mechanism with full-SAB positive A/B,Keep as negative ablation.
+native_perf_counter_refresh,ATTRIBUTION_ONLY_NOT_NEW_MECHANISM,repro/stage331_current_head_highstat_refresh/summary.csv,may explain speedup but cannot by itself claim a new algorithm,Use only for attribution if native Linux counters are available.

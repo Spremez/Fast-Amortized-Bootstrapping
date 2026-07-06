@@ -517,3 +517,5 @@
 - [x] Stage336 records `PASS_STAGE336_CURRENT_HEAD_SMOKE_SELECT_DIRECT_IFFT_FRONTIER` and selects a closed exact PVW/MAT candidate for Stage337.
 <!-- stage337-frontier-correction-checklist -->
 - [x] Stage337 records `PASS_STAGE337_FRONTIER_CORRECTED_NO_REPEAT_FAILED_CANDIDATES` and blocks repeated failed candidate work.
+<!-- stage338-new-mechanism-intake-checklist -->
+- [x] Stage338 records `PASS_STAGE338_NO_NEW_MECHANISM_SELECT_SCOPED_PACKAGE_OR_EXTERNAL_PROOF` and selects scoped package work unless a new mechanism/proof is supplied.

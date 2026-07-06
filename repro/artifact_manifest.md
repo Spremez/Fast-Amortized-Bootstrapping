@@ -3341,3 +3341,10 @@ Repro artifacts:
   - `experiments/stage338_new_mechanism_or_proof_plan.md`
   - `scripts/build_stage337_frontier_correction.py`
   - `repro/stage337_frontier_correction/`
+<!-- stage338-new-mechanism-intake-manifest -->
+- stage338_new_mechanism_or_proof_intake:
+  - `docs/stage338_new_mechanism_or_proof_intake.md`
+  - `theory_checks/stage338_route_decision_model.md`
+  - `experiments/stage339_scoped_package_or_new_mechanism_plan.md`
+  - `scripts/build_stage338_new_mechanism_or_proof_intake.py`
+  - `repro/stage338_new_mechanism_or_proof_intake/`

@@ -1,0 +1,6 @@
+claim_or_task,decision,support,boundary
+scoped_complete_sab_t_bootstrap_over_r,ALLOW,speedup=1.747647; T_over_r_us=6117083.425; CI95=6073694.765..6160472.085; samples=10,"same repo, same backend, r=4 current-head scoped comparison only"
+negative_ablation_table,ALLOW,repro/stage337_frontier_correction/closed_candidate_audit.csv,closed candidates explain why old exact routes should not be repeated
+theoretical_optimality_of_mat_rlwe_sab,BLOCK,repro/stage328_active_goal_requirement_audit/requirement_matrix.csv,same-format lower bound exists; global optimum is not proven
+universal_or_multi_parameter_speedup,BLOCK,repro/stage328_active_goal_requirement_audit/evidence_grade.csv,requires parameter matrix beyond the current scoped result
+novel_shared_mask_or_common_mask_claim,BLOCK,repro/stage335_source_and_compact_route/proof_gate.csv,adjacent fulltext audit blocks broad novelty wording

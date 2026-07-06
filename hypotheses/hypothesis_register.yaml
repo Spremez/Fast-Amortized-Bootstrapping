@@ -4451,3 +4451,15 @@ H337_frontier_correction:
     No current exact local candidate is admitted for hot-path work. Progress
     requires a new measured mechanism, a formal compact proof, or scoped result
     packaging with negative ablations.
+H338_new_mechanism_or_proof_intake:
+  status: PASS_STAGE338_NO_NEW_MECHANISM_SELECT_SCOPED_PACKAGE_OR_EXTERNAL_PROOF
+  primary_metric: admissible_research_route
+  evidence:
+    - repro/stage338_new_mechanism_or_proof_intake/summary.csv
+    - repro/stage338_new_mechanism_or_proof_intake/mechanism_intake.csv
+    - repro/stage338_new_mechanism_or_proof_intake/formal_proof_intake.csv
+    - repro/stage338_new_mechanism_or_proof_intake/package_route.csv
+  conclusion: >
+    No new exact mechanism or formal compact proof is present in the current
+    worktree. Continue with scoped paper/parameter packaging, or admit future
+    code only through the explicit new-mechanism/proof gates.

@@ -1,0 +1,5 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage339_scoped_paper_package_refresh,No new mechanism or formal proof is available.,"Produce claim matrix, parameter status, negative ablation table, and repro pack without stronger wording.",Downgrade to engineering note; do not claim optimality.
+P1,stage339_new_mechanism_protocol,A concrete new exact mechanism is supplied or derived.,"Count model, isolated equivalence, isolated microbench, then full SAB T_bootstrap/r A/B.",Reject before hot-path integration if isolated gate fails.
+P2,stage339_formal_compact_state_proof,A neighbor/cross-body closed compact state proof is available.,Distribution/keygen/security/noise proof followed by finite checker and isolated equivalence.,Keep compact route as future work only.
+P3,stage339_parameter_matrix_refresh,Paper claim needs more than the current r=4 scoped result.,Run available parameter/r matrix and mark unsupported branches explicitly.,Limit claims to the measured parameter set.

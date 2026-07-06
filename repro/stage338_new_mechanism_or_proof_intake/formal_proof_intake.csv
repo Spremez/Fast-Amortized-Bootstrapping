@@ -1,0 +1,4 @@
+proof_input,status,evidence,required_before_code,action
+neighbor_capable_compact_selector_state,NOT_PRESENT_IN_CURRENT_WORKTREE,repro/stage335_source_and_compact_route/proof_gate.csv,closed state invariant for every SAB neighbor/cross-body selector,Keep compact route blocked.
+current_lane_local_compact_state,DENIED_FOR_COMPLETE_SAB,repro/stage335_source_and_compact_route/proof_gate.csv,"distribution, keygen, security, noise, and finite equivalence gates",Do not integrate into complete SAB.
+shared_mask_or_common_mask_novelty,NOVELTY_BOUNDARY_ONLY,repro/stage335_source_and_compact_route/proof_gate.csv,not a proof of complete SAB acceleration,"Use as related-work boundary, not as an implementation trigger."
