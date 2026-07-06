@@ -1,0 +1,9 @@
+parameter,r,status,speedup,performance_samples,noise_status,claim_use,source
+BINARY SET_2_3_2048 include-zero,4,CURRENT_HEAD_PRIMARY_PASS,1.747647,10,0/10 pair failures,main scoped claim,repro/stage331_current_head_highstat_refresh/summary.csv
+BINARY SET_2_3_2048,2,HISTORICAL_PASS_NEEDS_CURRENT_HEAD_REFRESH,1.191,10,0/50 seed failures,supporting historical matrix only,repro/stage36_target_perf_summary.csv
+BINARY SET_2_3_2048,4,HISTORICAL_PASS_SUPERSEDED_BY_CURRENT_HEAD_R4,1.377,10,0/50 seed failures,supporting historical matrix only,repro/stage36_target_perf_summary.csv
+BINARY SET_4_5_2048,2,HISTORICAL_ADDED_BINARY_PASS_NEEDS_CURRENT_HEAD_REFRESH,1.285700,10,0/20 seed failures,do not use as current-head generality without rerun,repro/stage36_added_params_runs10_seeds20/performance_stats.csv
+BINARY SET_4_5_2048,4,HISTORICAL_ADDED_BINARY_PASS_NEEDS_CURRENT_HEAD_REFRESH,1.350700,10,0/20 seed failures,do not use as current-head generality without rerun,repro/stage36_added_params_runs10_seeds20/performance_stats.csv
+BINARY SET_2_3_4096,2,HISTORICAL_ADDED_BINARY_PASS_NEEDS_CURRENT_HEAD_REFRESH,1.235100,10,0/20 seed failures,do not use as current-head generality without rerun,repro/stage36_added_params_runs10_seeds20/performance_stats.csv
+BINARY SET_2_3_4096,4,HISTORICAL_ADDED_BINARY_PASS_NEEDS_CURRENT_HEAD_REFRESH,1.346200,10,0/20 seed failures,do not use as current-head generality without rerun,repro/stage36_added_params_runs10_seeds20/performance_stats.csv
+ternary/include-zero branches beyond recorded binary target,n/a,NOT_COVERED_BY_CURRENT_STAGE339_CLAIM,,,,blocked until measured,

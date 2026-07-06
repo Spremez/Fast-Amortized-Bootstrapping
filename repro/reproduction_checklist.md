@@ -519,3 +519,5 @@
 - [x] Stage337 records `PASS_STAGE337_FRONTIER_CORRECTED_NO_REPEAT_FAILED_CANDIDATES` and blocks repeated failed candidate work.
 <!-- stage338-new-mechanism-intake-checklist -->
 - [x] Stage338 records `PASS_STAGE338_NO_NEW_MECHANISM_SELECT_SCOPED_PACKAGE_OR_EXTERNAL_PROOF` and selects scoped package work unless a new mechanism/proof is supplied.
+<!-- stage339-scoped-paper-package-refresh-checklist -->
+- [x] Stage339 records `PASS_STAGE339_SCOPED_PACKAGE_REFRESH_NO_STRONGER_CLAIM` and refreshes scoped claim, parameter, negative-ablation, and reviewer-risk artifacts.

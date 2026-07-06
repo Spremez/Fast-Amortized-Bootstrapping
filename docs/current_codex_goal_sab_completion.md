@@ -1257,3 +1257,5 @@ The allowed claim remains the scoped measured `T_bootstrap/r` systems result.
 - Stage337: `PASS_STAGE337_FRONTIER_CORRECTED_NO_REPEAT_FAILED_CANDIDATES`. Direct IFFT, digit, r4-unrolled, selector-transpose, and current compact candidates are not reopened; next work requires a new mechanism/proof or scoped packaging.
 <!-- stage338-new-mechanism-intake -->
 - Stage338: `PASS_STAGE338_NO_NEW_MECHANISM_SELECT_SCOPED_PACKAGE_OR_EXTERNAL_PROOF`. No current new exact mechanism or formal compact proof is present; next work is scoped package refresh unless a new gated mechanism/proof is supplied.
+<!-- stage339-scoped-paper-package-refresh -->
+- Stage339: `PASS_STAGE339_SCOPED_PACKAGE_REFRESH_NO_STRONGER_CLAIM`. The current safe result is scoped complete-SAB `T_bootstrap/r` speedup `1.747647x`; broader parameter, novelty, compact, and optimality claims remain gated.

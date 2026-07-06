@@ -3348,3 +3348,11 @@ Repro artifacts:
   - `experiments/stage339_scoped_package_or_new_mechanism_plan.md`
   - `scripts/build_stage338_new_mechanism_or_proof_intake.py`
   - `repro/stage338_new_mechanism_or_proof_intake/`
+<!-- stage339-scoped-paper-package-refresh-manifest -->
+- stage339_scoped_paper_package_refresh:
+  - `docs/stage339_scoped_paper_package_refresh.md`
+  - `docs/pvw_mat_sab_claim_matrix_stage339.md`
+  - `theory_checks/stage339_metric_and_claim_ladder.md`
+  - `experiments/stage340_parameter_matrix_or_new_mechanism_gate.md`
+  - `scripts/build_stage339_scoped_paper_package_refresh.py`
+  - `repro/stage339_scoped_paper_package_refresh/`

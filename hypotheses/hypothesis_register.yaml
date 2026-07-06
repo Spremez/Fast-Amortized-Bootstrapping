@@ -4463,3 +4463,15 @@ H338_new_mechanism_or_proof_intake:
     No new exact mechanism or formal compact proof is present in the current
     worktree. Continue with scoped paper/parameter packaging, or admit future
     code only through the explicit new-mechanism/proof gates.
+H339_scoped_paper_package_refresh:
+  status: PASS_STAGE339_SCOPED_PACKAGE_REFRESH_NO_STRONGER_CLAIM
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage339_scoped_paper_package_refresh/summary.csv
+    - repro/stage339_scoped_paper_package_refresh/primary_result.csv
+    - repro/stage339_scoped_paper_package_refresh/claim_matrix.csv
+    - repro/stage339_scoped_paper_package_refresh/parameter_coverage.csv
+  conclusion: >
+    The current safe claim is scoped to the current-head r=4 SET_2_3_2048
+    complete-SAB T_bootstrap/r result. Historical parameter evidence is kept
+    separate, and stronger claims require Stage340 gates.

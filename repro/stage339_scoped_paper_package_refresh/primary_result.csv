@@ -1,0 +1,2 @@
+evidence_class,path,parameter,backend,r_body_lanes,samples,correctness,pvw_total_bootstrap_us,pvw_t_bootstrap_over_r_us,pvw_t_over_r_ci95_us,scalar_repeated_total_us,scalar_repeated_t_over_r_us,speedup_vs_repeated_scalar,noise_trials,noise_pair_failures,maxrss_kb,source_head,source
+current_head_primary,direct_pvw_mat_sab,BINARY SET_2_3_2048 include-zero,spqlios_avx512 WSL,4,10,Pass,24468333.700,6117083.425,6073694.765..6160472.085,42762012.800,10690503.200,1.747647,10,0,2415796,6a5f113,repro/stage331_current_head_highstat_refresh/summary.csv

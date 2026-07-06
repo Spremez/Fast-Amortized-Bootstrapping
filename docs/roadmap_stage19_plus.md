@@ -7290,3 +7290,9 @@ Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
 - Decision: `PASS_STAGE338_NO_NEW_MECHANISM_SELECT_SCOPED_PACKAGE_OR_EXTERNAL_PROOF`.
 - Gate: no SAB hot-path code without a concrete mechanism model or formal compact proof.
 - Next: Stage339 scoped package refresh, or switch to the new mechanism/proof protocol if new evidence appears.
+<!-- stage339-scoped-paper-package-refresh -->
+## Stage339: Scoped Paper Package Refresh
+
+- Decision: `PASS_STAGE339_SCOPED_PACKAGE_REFRESH_NO_STRONGER_CLAIM`.
+- Result: current-head r=4 SET_2_3_2048 complete-SAB `T_bootstrap/r` claim remains the primary supported result.
+- Next: Stage340 parameter matrix, verified related work, new mechanism protocol, or formal compact proof.

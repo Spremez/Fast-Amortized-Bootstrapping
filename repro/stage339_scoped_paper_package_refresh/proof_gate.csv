@@ -1,0 +1,6 @@
+gate,status,metric,value,interpretation
+G1_stage338_route,PASS,Stage338 decision,PASS_STAGE338_NO_NEW_MECHANISM_SELECT_SCOPED_PACKAGE_OR_EXTERNAL_PROOF,Stage339 follows the no-new-mechanism scoped package route.
+G2_current_head_primary,PASS,Stage331 decision,PASS_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH,The primary result is high-stat current-head complete-SAB evidence.
+G3_claim_boundary,PASS,blocked stronger claims,3,"The package keeps optimality, compact, novelty, and universal claims blocked."
+G4_parameter_scope,PASS_SCOPED,current-head primary rows,1,Current-head claim is intentionally scoped; historical rows are not promoted.
+G5_decision,PASS_STAGE339_SCOPED_PACKAGE_REFRESH_NO_STRONGER_CLAIM,stage decision,scoped_package_refreshed,"Proceed to Stage340 only for parameter refresh, literature verification, new mechanism, or formal proof."

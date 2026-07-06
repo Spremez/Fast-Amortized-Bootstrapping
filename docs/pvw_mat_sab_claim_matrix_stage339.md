@@ -1,0 +1,22 @@
+# PVW/MAT-SAB Claim Matrix Stage339
+
+This document is the current safe wording source for paper/report drafting.
+
+| claim_id | status | paper_safe_statement | blocked_statement | evidence |
+| --- | --- | --- | --- | --- |
+| C1_metric | PASS | The primary endpoint is complete bootstrapping wall time divided by r processed MAT/RLWE body lanes. | Single-lane latency speedup over one scalar bootstrap. | repro/stage331_current_head_highstat_refresh/summary.csv |
+| C2_current_head_r4_speedup | PASS_SCOPED | For the measured r=4 BINARY SET_2_3_2048 include-zero path, direct PVW/MAT-SAB reaches 1.747647x T_bootstrap/r speedup over repeated scalar SAB. | Universal PVW/MAT-SAB speedup or all-parameter generality. | repro/stage331_current_head_highstat_refresh/summary.csv |
+| C3_correctness_noise_resource | PASS_SCOPED | Current-head output equivalence has 0/10 pair failures and max RSS 2415796 KB. | Security proof for compact selector variants. | repro/stage331_current_head_highstat_refresh/noise_summary.csv |
+| C4_algorithmic_metric_vs_backend | PASS_SCOPED | The primary comparison is same-backend repeated scalar SAB versus r-body PVW/MAT-SAB by T_bootstrap/r. | Attributing the full speedup to AVX512 instructions alone or to backend changes. | repro/stage338_new_mechanism_or_proof_intake/package_route.csv |
+| C5_mat_rlwe_theoretical_optimality | BLOCK | Current exact dense MAT/RLWE route is closed under recorded local evidence. | The current MAT/RLWE SAB implementation is theoretically optimal. | repro/stage328_active_goal_requirement_audit/requirement_matrix.csv |
+| C6_compact_or_structured_sab | BLOCK | Compact/structured selector remains a proof-gated future route. | Compact selector has complete SAB acceleration or production security. | repro/stage335_source_and_compact_route/proof_gate.csv |
+| C7_parameter_generalization | PARTIAL_HISTORICAL_NEEDS_CURRENT_HEAD_REFRESH | Historical r=2/r=4 and added binary parameter evidence exists, but the current-head primary claim remains r=4 SET_2_3_2048. | Current-head all-parameter claim. | repro/stage36_target_perf_summary.csv; repro/stage36_added_params_runs10_seeds20/performance_stats.csv |
+| C8_novelty | BLOCK_UNTIL_CITATION_VERIFIED | Novelty wording must wait for real, source-checked related-work support. | Novel shared-mask/common-mask or multi-output bootstrapping claim without verified sources. | repro/stage338_new_mechanism_or_proof_intake/package_route.csv |
+
+The strongest supported current-head statement is:
+
+> For the measured r=4 BINARY SET_2_3_2048 include-zero path, direct PVW/MAT-SAB
+> reaches 1.747647x complete-SAB throughput
+> per processed lane, measured by T_bootstrap/r against repeated scalar SAB.
+
+Do not broaden this statement without the Stage340 gates.

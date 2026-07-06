@@ -1,0 +1,5 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage340_parameter_matrix_current_head_refresh,A broader than r=4 SET_2_3_2048 claim is desired.,same-backend complete SAB T_bootstrap/r A/B plus noise/RSS for each parameter and r.,Keep Stage339 claim scoped to the primary row.
+P1,stage340_verified_related_work_matrix,Any novelty or paper contribution wording is needed.,real source-checked citations only; no broad shared-mask/common-mask novelty overclaim.,Write as scoped engineering systems result.
+P2,stage340_new_mechanism_protocol,A concrete new load/store/count/backend primitive is identified.,"mechanism model, isolated equivalence, isolated microbench, then complete SAB A/B.",Reject before hot-path integration.
+P3,stage340_formal_compact_state_proof,A neighbor/cross-body closed compact state proof is available.,distribution/keygen/security/noise proof before production code.,Keep compact SAB claim blocked.
