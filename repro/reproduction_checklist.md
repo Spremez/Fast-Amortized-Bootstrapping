@@ -511,3 +511,5 @@
 - [x] Stage333 records `PASS_STAGE333_REAL_SOURCE_MATRIX_NOVELTY_CLAIM_OPEN` with real sources and no novelty claim.
 <!-- stage334-fulltext-claim-audit-checklist -->
 - [x] Stage334 records `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED` and keeps novelty blocked pending missing full-text audits.
+<!-- stage335-source-and-compact-route-checklist -->
+- [x] Stage335 records `PASS_STAGE335_SHARING_MASK_FULLTEXT_AUDITED_COMPACT_SELECTOR_DENIED` and routes next execution to exact PVW/MAT-SAB frontier work.

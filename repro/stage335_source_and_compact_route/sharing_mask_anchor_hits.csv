@@ -1,0 +1,9 @@
+anchor,status,line_refs,claim_use
+cm_ciphertext_definition,FOUND,16;17;18;19;20,Blocks broad shared-mask/common-mask novelty; not evidence for this repo's 2025/686 SAB speedup.
+distinct_messages,FOUND,17;18;19;20;21;22,Blocks broad shared-mask/common-mask novelty; not evidence for this repo's 2025/686 SAB speedup.
+tfhe_ops_extend_to_cm,FOUND,19;20;21;22;23,Blocks broad shared-mask/common-mask novelty; not evidence for this repo's 2025/686 SAB speedup.
+distinct_luts,FOUND,25;26;27;28;29,Blocks broad shared-mask/common-mask novelty; not evidence for this repo's 2025/686 SAB speedup.
+multi_ciphertext_bootstrapping_prior,FOUND,102;103;104;105;106,Blocks broad shared-mask/common-mask novelty; not evidence for this repo's 2025/686 SAB speedup.
+bootstrapping_cost_table,FOUND,311;312;313;314;315,Blocks broad shared-mask/common-mask novelty; not evidence for this repo's 2025/686 SAB speedup.
+cm_pbs_inputs,FOUND,358;359;360;361;362,Blocks broad shared-mask/common-mask novelty; not evidence for this repo's 2025/686 SAB speedup.
+reported_51_percent,FOUND,21;22;23;24;25;26;391;392;393;394,Blocks broad shared-mask/common-mask novelty; not evidence for this repo's 2025/686 SAB speedup.

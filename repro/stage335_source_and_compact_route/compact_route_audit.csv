@@ -1,0 +1,5 @@
+stage,status,evidence,result,admission
+217,PATTERN_ONLY,repro/stage217_compact_keygen_security_preflight/proof_gate.csv,Only count-matched random dummy padding survives public-pattern probes.,no_sab_hotpath
+220,KEYGEN_PROTOTYPE,repro/stage220_encrypted_compact_keygen_prototype/proof_gate.csv,Encrypted compact keygen prototype passes phase/DFT/noise negative controls.,noise_recurrence_only
+221,NOISE_MODEL,repro/stage221_compact_keygen_noise_recurrence/proof_gate.csv,Relative recurrence and T_bootstrap/r normalization permit isolated compact EP only.,isolated_ep_only
+222,COMPLETE_SELECTOR_DENIED,repro/stage222_isolated_compact_ep_integration/proof_gate.csv,"Lane-local compact EP works, but neighbor/cross-body selector equations are missing.",return_to_exact_pvw_mat_or_new_closed_state

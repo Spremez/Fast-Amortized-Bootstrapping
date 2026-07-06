@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage336_exact_pvw_mat_frontier,Stage222 denies current compact complete-selector integration.,"Run same-backend exact PVW/MAT-SAB frontier refresh: current T_bootstrap/r, MAT EP attribution, and one implementable closed-path optimization candidate.",Record neutral/negative and keep exact PVW/MAT-SAB scoped result only.
+P1,stage336_new_neighbor_capable_compact_state_design,Only if a closed state can represent Stage203 neighbor/cross-body equations.,Finite phase oracle plus encrypted keygen/noise recurrence before any SAB code.,Do not implement compact SAB hot path.
+P2,fulltext_remaining_sources,"Accessible 2025/696, 2017/430, or MOSFHET PDF is supplied or found.",Replace metadata blockers with page/line anchors.,Keep latest-work/backend optimality wording blocked.

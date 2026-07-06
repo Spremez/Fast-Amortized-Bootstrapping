@@ -4417,3 +4417,15 @@ H334_fulltext_claim_audit:
     Stage334 supports only the scoped systems result. Broad novelty remains
     blocked because high-risk shared-mask/backend/latest-work full texts are
     not yet audited.
+H335_source_and_compact_route:
+  status: PASS_STAGE335_SHARING_MASK_FULLTEXT_AUDITED_COMPACT_SELECTOR_DENIED
+  primary_metric: claim_boundary_and_route_selection
+  evidence:
+    - repro/stage335_source_and_compact_route/source_acquisition_audit.csv
+    - repro/stage335_source_and_compact_route/sharing_mask_anchor_hits.csv
+    - repro/stage335_source_and_compact_route/compact_route_audit.csv
+    - repro/stage335_source_and_compact_route/proof_gate.csv
+  conclusion: >
+    Broad shared-mask novelty is blocked by audited TCHES full text, while
+    current compact selector integration is blocked by Stage222 expressiveness.
+    Continue exact PVW/MAT-SAB optimization under T_bootstrap/r.

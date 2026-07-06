@@ -1,0 +1,5 @@
+claim,status,evidence,safe_wording,blocked_wording
+complete_pvw_mat_sab_t_bootstrap_per_r,ALLOW_SCOPED_MEASURED,repro/stage331_current_head_highstat_refresh/summary.csv,"For BINARY SET_2_3_2048 on the recorded backend, current-head complete PVW/MAT-SAB improves T_bootstrap/r versus repeated scalar SAB.","Universal, all-parameter, or theorem-level speedup."
+shared_mask_r_body_novelty,BLOCK,repro/stage335_source_and_compact_route/sharing_mask_anchor_hits.csv,This work studies a 2025/686 SAB-specific PVW/MAT implementation path.,First shared-mask/common-mask multi-body TFHE bootstrapping construction.
+compact_selector_sab_acceleration,BLOCK_CURRENT_COMPACT_STATE,repro/stage222_isolated_compact_ep_integration/proof_gate.csv,"Lane-local compact EP is correct in isolation, but complete selector integration is denied.",Compact selector accelerates complete SAB.
+mat_avx_optimality,BLOCK,Stage101/286 counters plus missing MOSFHET full-text audit,MAT AVX paths have measured backend evidence under recorded flags.,The current AVX implementation reaches a theoretical optimum.

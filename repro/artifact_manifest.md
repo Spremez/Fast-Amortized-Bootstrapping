@@ -3319,3 +3319,10 @@ Repro artifacts:
   - `experiments/stage335_fulltext_acquisition_or_compact_security_plan.md`
   - `scripts/build_stage334_fulltext_claim_audit.py`
   - `repro/stage334_fulltext_claim_audit/`
+<!-- stage335-source-and-compact-route-manifest -->
+- stage335_source_and_compact_route:
+  - `docs/stage335_source_and_compact_route.md`
+  - `theory_checks/stage335_claim_and_route_model.md`
+  - `experiments/stage336_exact_pvw_mat_frontier_plan.md`
+  - `scripts/build_stage335_source_and_compact_route.py`
+  - `repro/stage335_source_and_compact_route/`

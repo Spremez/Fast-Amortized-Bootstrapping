@@ -1,0 +1,2 @@
+decision,sharing_mask_fulltext,other_fulltexts,compact_route,allowed_claim,blocked_claims,selected_next
+PASS_STAGE335_SHARING_MASK_FULLTEXT_AUDITED_COMPACT_SELECTOR_DENIED,audited,blocked_or_metadata_only,complete_selector_denied,scoped measured complete PVW/MAT-SAB T_bootstrap/r,broad novelty; compact complete-SAB acceleration; AVX optimality; latest-work superiority,stage336_exact_pvw_mat_frontier

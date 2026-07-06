@@ -7266,3 +7266,9 @@ Goal: replace metadata-only novelty risk with source-anchor/full-text claim
 boundaries where available.
 
 Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
+<!-- stage335-source-and-compact-route -->
+## Stage335: Source And Compact Route Audit
+
+- Decision: `PASS_STAGE335_SHARING_MASK_FULLTEXT_AUDITED_COMPACT_SELECTOR_DENIED`.
+- Output: `docs/stage335_source_and_compact_route.md`, `repro/stage335_source_and_compact_route/`.
+- Next: Stage336 exact PVW/MAT frontier. Compact selector remains outside SAB hot paths until a neighbor-capable closed state passes isolated gates.

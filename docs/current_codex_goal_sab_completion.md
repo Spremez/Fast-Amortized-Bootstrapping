@@ -1249,3 +1249,5 @@ The allowed claim remains the Stage332 scoped measured systems result only.
 `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED` records a partial full-text audit: 2025/686 source anchors and Ring
 Packing prior art are audited, but critical adjacent full texts remain missing.
 The allowed claim remains the scoped measured `T_bootstrap/r` systems result.
+<!-- stage335-source-and-compact-route -->
+- Stage335: `PASS_STAGE335_SHARING_MASK_FULLTEXT_AUDITED_COMPACT_SELECTOR_DENIED`. Sharing-the-Mask full text now blocks broad shared-mask novelty; Stage222 compact selector complete integration remains denied; next executable route is Stage336 exact PVW/MAT-SAB frontier under `T_bootstrap/r`.
