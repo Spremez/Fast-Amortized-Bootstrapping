@@ -513,3 +513,5 @@
 - [x] Stage334 records `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED` and keeps novelty blocked pending missing full-text audits.
 <!-- stage335-source-and-compact-route-checklist -->
 - [x] Stage335 records `PASS_STAGE335_SHARING_MASK_FULLTEXT_AUDITED_COMPACT_SELECTOR_DENIED` and routes next execution to exact PVW/MAT-SAB frontier work.
+<!-- stage336-exact-pvw-mat-frontier-checklist -->
+- [x] Stage336 records `PASS_STAGE336_CURRENT_HEAD_SMOKE_SELECT_DIRECT_IFFT_FRONTIER` and selects a closed exact PVW/MAT candidate for Stage337.

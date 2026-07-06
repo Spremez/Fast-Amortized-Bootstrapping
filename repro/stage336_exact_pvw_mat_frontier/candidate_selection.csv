@@ -1,0 +1,5 @@
+candidate,status,basis,allowed_action,blocked_action
+direct_ifft_lifecycle,SELECT_STAGE337,Stage288 torus_to_dft share=0.386764; Stage307 ifft share=0.504577,isolated lifecycle/microbench design and a flag-gated closed-path experiment,claim complete SAB speedup before full A/B
+digit_to_double_narrow_or_batch,SECONDARY,Stage307 digit_to_double share=0.481687,microbench only after IFFT route is understood,wide hot-path rewrite without isolated equivalence
+r4_unrolled_rows,CLOSED_NEUTRAL,Stage321 full SAB A/B ratio=0.998571,none unless a new mechanism changes the cost model,promote r4-unrolled under current direct baseline
+compact_selector,DENIED_FOR_COMPLETE_SAB,Stage222 complete selector expressiveness denied; Stage335 route audit,new closed neighbor-capable state proof only,integrate compact selector into SAB hot path

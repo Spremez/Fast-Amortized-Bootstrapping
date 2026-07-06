@@ -1,0 +1,3 @@
+step,backend,key,param,status,evidence,claim_use
+scalar_binary_full_run,ffnt,BINARY,SET_2_3,PASS,repro/stage336_current_head_smoke/scalar_binary_SET_2_3/run.log,current-head correctness/build smoke only; not performance evidence
+pvw_target_full_gate,ffnt,BINARY,SET_2_3,PASS,repro/stage336_current_head_smoke/pvw_target_SET_2_3/run.log,current-head correctness/build smoke only; not performance evidence

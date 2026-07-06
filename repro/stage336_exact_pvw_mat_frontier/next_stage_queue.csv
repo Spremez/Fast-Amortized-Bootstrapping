@@ -1,0 +1,4 @@
+priority,route,entry_condition,gate,failure_action
+P0,stage337_direct_ifft_lifecycle_candidate,Stage336 selects direct IFFT lifecycle as the closed exact-path frontier.,Isolated equivalence and microbench for reducing reverse-FFT lifecycle cost without changing DFT semantics.,Record neutral/negative; do not touch SAB state.
+P1,stage338_fullsab_ab_if_candidate_passes,Stage337 candidate passes correctness and microbench.,Repeated complete SAB T_bootstrap/r A/B plus noise/resource.,Keep candidate kernel-only or reject.
+P2,stage337_current_head_spqlios_avx512_refresh_optional,Native/WSL performance platform available.,Refresh complete SAB current head on spqlios_avx512 without changing code.,Use Stage331 as current performance anchor and label local smoke non-performance.

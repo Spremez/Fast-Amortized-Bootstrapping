@@ -1,0 +1,42 @@
+mkdir -p ./build
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/keyswitch.c -o build/keyswitch.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/bootstrap.c -o build/bootstrap.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/bootstrap_ga.c -o build/bootstrap_ga.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/tlwe.c -o build/tlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/trlwe.c -o build/trlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/trgsw.c -o build/trgsw.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/misc.c -o build/misc.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/polynomial.c -o build/polynomial.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/register.c -o build/register.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/pvwtlwe.c -o build/pvwtlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/sha3/fips202.c -o build/fips202.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/fft/karatsuba.c -o build/karatsuba.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/pvwtmlwe.c -o build/pvwtmlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/mattrgsw.c -o build/mattrgsw.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ src/mosfhet/src/fft/ffnt/ffnt.c -o build/ffnt.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3 src/sparse_amortized_bootstrap.c -o build/sparse_amortized_bootstrap.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3 src/sab_profile.c -o build/sab_profile.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3 src/sab_pvw.c -o build/sab_pvw.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DSAB_PVW_TARGET_TEST -DSAB_PVW_ACTIVE_BUFFER_FUSION -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3 main.c -o build/main.o
+main.c: In function ‘test_sab_pvw_nonbinary_target_bench’:
+main.c:3688:13: warning: unused variable ‘reps’ [-Wunused-variable]
+ 3688 |   const int reps = SAB_PVW_NONBINARY_BENCH_REPS;
+      |             ^~~~
+main.c:3687:13: warning: unused variable ‘r’ [-Wunused-variable]
+ 3687 |   const int r = SAB_PVW_NONBINARY_BENCH_R;
+      |             ^
+main.c: In function ‘test_sab_pvw_nonbinary_target_noise’:
+main.c:3896:13: warning: unused variable ‘trials’ [-Wunused-variable]
+ 3896 |   const int trials = SAB_PVW_NONBINARY_TARGET_NOISE_TRIALS;
+      |             ^~~~~~
+main.c:3895:13: warning: unused variable ‘r’ [-Wunused-variable]
+ 3895 |   const int r = SAB_PVW_NONBINARY_TARGET_NOISE_R;
+      |             ^
+main.c: In function ‘test_sab_pvw_nonbinary_target_stage_noise’:
+main.c:4763:13: warning: unused variable ‘trials’ [-Wunused-variable]
+ 4763 |   const int trials = SAB_PVW_NONBINARY_TARGET_STAGE_NOISE_TRIALS;
+      |             ^~~~~~
+main.c:4762:13: warning: unused variable ‘r’ [-Wunused-variable]
+ 4762 |   const int r = SAB_PVW_NONBINARY_TARGET_STAGE_NOISE_R;
+      |             ^
+gcc -g -o main build/keyswitch.o build/bootstrap.o build/bootstrap_ga.o build/tlwe.o build/trlwe.o build/trgsw.o build/misc.o build/polynomial.o build/register.o build/pvwtlwe.o build/fips202.o build/karatsuba.o build/pvwtmlwe.o build/mattrgsw.o build/ffnt.o build/sparse_amortized_bootstrap.o build/sab_profile.o build/sab_pvw.o build/main.o  -lm

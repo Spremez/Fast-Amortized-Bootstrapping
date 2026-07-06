@@ -1,0 +1,7 @@
+source_stage,component,share,avg_us,status,interpretation
+288,decompose,0.271126,7.501737,measured_profile_only,MAT EP split component; profile-only
+288,torus_to_dft,0.386764,10.701313,measured_profile_only,MAT EP split component; profile-only
+288,dense_from_dec,0.337370,9.334637,measured_profile_only,MAT EP split component; profile-only
+307,digit_to_double,0.481687,7.533581,profile_only,Direct DFT lifecycle subcomponent; profile-only
+307,ifft,0.504577,7.891585,profile_only,Direct DFT lifecycle subcomponent; profile-only
+307,accounting_gap,0.013737,,profile_only,Direct DFT lifecycle subcomponent; profile-only

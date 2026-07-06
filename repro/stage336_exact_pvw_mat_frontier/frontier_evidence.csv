@@ -1,0 +1,5 @@
+evidence,status,metric,value,claim_use
+stage331_current_head_highstat,PASS_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH,complete_sab_T_bootstrap_over_r_vs_repeated_scalar,T/r=6117083.425; speedup=1.747647,main scoped complete SAB result
+stage336_current_head_smoke,PASS,current-head FFNT smoke,scalar_binary_and_pvw_target,"current commit guard, non-performance"
+stage321_r4_unrolled_fullsab_ab,NEUTRAL_STAGE321_R4_UNROLLED_DIRECT_FULLSAB_NO_PROMOTION,incremental r4_unrolled_vs_direct_baseline,0.998571,closes r4-unrolled as current direct-path candidate
+stage321_direct_baseline,Pass,complete SAB T/r direct baseline,6118505.950,sanity anchor for selected direct path

@@ -4429,3 +4429,14 @@ H335_source_and_compact_route:
     Broad shared-mask novelty is blocked by audited TCHES full text, while
     current compact selector integration is blocked by Stage222 expressiveness.
     Continue exact PVW/MAT-SAB optimization under T_bootstrap/r.
+H336_exact_pvw_mat_frontier:
+  status: PASS_STAGE336_CURRENT_HEAD_SMOKE_SELECT_DIRECT_IFFT_FRONTIER
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage336_exact_pvw_mat_frontier/current_head_smoke_audit.csv
+    - repro/stage336_exact_pvw_mat_frontier/frontier_evidence.csv
+    - repro/stage336_exact_pvw_mat_frontier/component_frontier.csv
+    - repro/stage336_exact_pvw_mat_frontier/candidate_selection.csv
+  conclusion: >
+    Current-head smoke passes and the next exact-state optimization candidate is
+    direct IFFT lifecycle. Compact selector and r4-unrolled rows are not promoted.

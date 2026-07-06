@@ -7272,3 +7272,9 @@ Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
 - Decision: `PASS_STAGE335_SHARING_MASK_FULLTEXT_AUDITED_COMPACT_SELECTOR_DENIED`.
 - Output: `docs/stage335_source_and_compact_route.md`, `repro/stage335_source_and_compact_route/`.
 - Next: Stage336 exact PVW/MAT frontier. Compact selector remains outside SAB hot paths until a neighbor-capable closed state passes isolated gates.
+<!-- stage336-exact-pvw-mat-frontier -->
+## Stage336: Exact PVW/MAT Frontier
+
+- Decision: `PASS_STAGE336_CURRENT_HEAD_SMOKE_SELECT_DIRECT_IFFT_FRONTIER`.
+- Current-head guard: FFNT scalar/PVW smoke pass in `repro/stage336_current_head_smoke/`.
+- Next: Stage337 direct IFFT lifecycle candidate under closed-state gates.

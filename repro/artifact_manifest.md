@@ -3326,3 +3326,11 @@ Repro artifacts:
   - `experiments/stage336_exact_pvw_mat_frontier_plan.md`
   - `scripts/build_stage335_source_and_compact_route.py`
   - `repro/stage335_source_and_compact_route/`
+<!-- stage336-exact-pvw-mat-frontier-manifest -->
+- stage336_exact_pvw_mat_frontier:
+  - `docs/stage336_exact_pvw_mat_frontier.md`
+  - `theory_checks/stage336_exact_pvw_mat_frontier_model.md`
+  - `experiments/stage337_direct_ifft_candidate_plan.md`
+  - `scripts/build_stage336_exact_pvw_mat_frontier.py`
+  - `repro/stage336_current_head_smoke/`
+  - `repro/stage336_exact_pvw_mat_frontier/`

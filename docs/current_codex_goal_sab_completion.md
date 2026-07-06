@@ -1251,3 +1251,5 @@ Packing prior art are audited, but critical adjacent full texts remain missing.
 The allowed claim remains the scoped measured `T_bootstrap/r` systems result.
 <!-- stage335-source-and-compact-route -->
 - Stage335: `PASS_STAGE335_SHARING_MASK_FULLTEXT_AUDITED_COMPACT_SELECTOR_DENIED`. Sharing-the-Mask full text now blocks broad shared-mask novelty; Stage222 compact selector complete integration remains denied; next executable route is Stage336 exact PVW/MAT-SAB frontier under `T_bootstrap/r`.
+<!-- stage336-exact-pvw-mat-frontier -->
+- Stage336: `PASS_STAGE336_CURRENT_HEAD_SMOKE_SELECT_DIRECT_IFFT_FRONTIER`. Current-head FFNT smoke passed; performance anchor remains Stage331 spqlios_avx512 high-stat; exact PVW/MAT frontier selects direct IFFT lifecycle for Stage337.
