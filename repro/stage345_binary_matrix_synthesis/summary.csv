@@ -1,0 +1,2 @@
+decision,current_head,rows,parameters,r_values,primary_metric,speedup_min,speedup_max,speedup_mean_across_rows,max_rss_kb,claim_status
+PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY,131fa17,6,SET_2_3_2048;SET_4_5_2048;SET_2_3_4096,2;4,complete_sab_T_bootstrap_over_r_vs_repeated_scalar,1.612100,1.747647,1.686741,4618504,scoped_binary_matrix_ready

@@ -1,0 +1,4 @@
+stage,role,decision,source
+Stage331,target r=4 current-head high-stat,PASS_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH,repro/stage331_current_head_highstat_refresh/summary.csv
+Stage343,target r=2 current-head high-stat top-up,PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP,repro/stage343_target_r2_current_head_topup/summary.csv
+Stage344,added binary parameter current-head matrix,PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX,repro/stage344_added_parameter_topups/summary.csv

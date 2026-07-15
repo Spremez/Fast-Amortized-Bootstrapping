@@ -1,0 +1,4 @@
+priority,route,entry_condition,command,gate,failure_action
+P0,stage346_resource_and_paper_table_refresh,PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY,Refresh paper result tables and resource caveats from Stage345.,"No claim may omit row-level source, metric, backend, sample count, or blocked-claim boundary.",Keep Stage345 as internal synthesis only.
+P1,stage346_new_mechanism_or_formal_lower_bound,Need theoretical-optimality or stronger algorithmic contribution.,Admit only a concrete mechanism/proof candidate with falsifiable gates.,No theoretical-optimality statement without a proof obligation and experiment link.,Retain scoped systems result.
+P2,stage346_nonbinary_or_backend_extension,Need claims outside binary spqlios_avx512 rows.,Run branch/backend-specific gates rather than reusing this binary matrix.,"Each new branch/backend needs correctness, noise, and T_bootstrap/r evidence.",Block broader generality wording.

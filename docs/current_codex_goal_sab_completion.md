@@ -1269,3 +1269,5 @@ The allowed claim remains the scoped measured `T_bootstrap/r` systems result.
 - Stage343: `PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP`. Target r=2 current-head top-up is recorded; only the target-row claim may be promoted if gates pass.
 <!-- stage344-added-parameter-topups -->
 - Stage344: `PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX`. Added binary parameter current-head top-ups are recorded; synthesis is allowed only if every row passes.
+<!-- stage345-binary-matrix-synthesis -->
+- Stage345: `PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY`. Synthesized current-head binary parameter matrix under complete `T_bootstrap/r`; stronger novelty/optimality/general-resource claims remain blocked.

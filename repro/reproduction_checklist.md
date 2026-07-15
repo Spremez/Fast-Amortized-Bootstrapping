@@ -531,3 +531,5 @@
 - [x] Stage343 records `PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP` with target r=2 only claim boundary.
 <!-- stage344-added-parameter-topups-checklist -->
 - [x] Stage344 records `PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX` with added-parameter-only claim boundary.
+<!-- stage345-binary-matrix-synthesis-checklist -->
+- [x] Stage345 records `PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY` and preserves blocked stronger-claim boundaries.

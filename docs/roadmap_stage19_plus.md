@@ -7326,3 +7326,9 @@ Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
 - Decision: `PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX`.
 - Result: current-head added binary parameter rows under complete `T_bootstrap/r`.
 - Boundary: no non-binary, all-parameter, novelty, or theoretical-optimality claim.
+<!-- stage345-binary-matrix-synthesis -->
+## Stage345: Binary Matrix Synthesis
+
+- Decision: `PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY`.
+- Result: scoped current-head binary matrix for SET_2_3_2048, SET_4_5_2048, and SET_2_3_4096 with r=2/4.
+- Boundary: no novelty, theoretical optimality, non-binary, all-parameter, backend-general, or full-resource claim.

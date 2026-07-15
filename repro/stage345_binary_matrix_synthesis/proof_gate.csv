@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_input_stage_decisions,PASS,Stage331/343/344 decisions,Stage331=PASS_STAGE331_CURRENT_HEAD_HIGHSTAT_REFRESH;Stage343=PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP;Stage344=PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX,Every source stage must have passed before synthesis.
+G2_matrix_coverage,PASS,observed/expected cases,6/6,The scoped binary matrix needs target and added rows for r=2/4.
+G3_row_quality,PASS,samples/correctness/noise,"all rows 10 samples, correctness Pass, noise 0/10","Rows must be high-stat current-head evidence, not smoke or historical-only rows."
+G4_metric_alignment,PASS,primary endpoint,complete SAB T_bootstrap/r vs repeated scalar,This synthesis answers the user's amortized per plaintext-bit comparison requirement.
+G5_claim_boundary,PASS,blocked claims,non-binary;all-parameter;novelty;theoretical-optimality;resource-generality,The synthesis does not overclaim beyond tested binary rows.
+G6_decision,PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY,stage decision,PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY,Controls whether the scoped binary matrix is ready for paper-package use.

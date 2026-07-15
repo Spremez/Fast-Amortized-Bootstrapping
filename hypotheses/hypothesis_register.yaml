@@ -4531,3 +4531,15 @@ H344_added_parameter_topups:
   conclusion: >
     Stage344 upgrades added binary parameter rows only if every current-head
     row passes timing, correctness, noise, resource, and hotpath gates.
+H345_binary_matrix_synthesis:
+  status: PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage345_binary_matrix_synthesis/summary.csv
+    - repro/stage345_binary_matrix_synthesis/binary_matrix.csv
+    - repro/stage345_binary_matrix_synthesis/claim_boundary.csv
+    - repro/stage345_binary_matrix_synthesis/proof_gate.csv
+  conclusion: >
+    Stage345 synthesizes Stage331/343/344 into a scoped current-head binary
+    parameter matrix. It does not prove novelty, theoretical optimality,
+    non-binary support, backend generality, or full resource dominance.

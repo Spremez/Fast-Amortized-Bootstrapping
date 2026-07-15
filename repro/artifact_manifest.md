@@ -3395,3 +3395,10 @@ Repro artifacts:
   - `scripts/run_stage344_added_parameter_topups.sh`
   - `scripts/build_stage344_added_parameter_topups.py`
   - `repro/stage344_added_parameter_topups/`
+<!-- stage345-binary-matrix-synthesis-manifest -->
+- stage345_binary_matrix_synthesis:
+  - `docs/stage345_binary_matrix_synthesis.md`
+  - `theory_checks/stage345_binary_matrix_claim_model.md`
+  - `experiments/stage346_next_mechanism_or_paper_plan.md`
+  - `scripts/build_stage345_binary_matrix_synthesis.py`
+  - `repro/stage345_binary_matrix_synthesis/`
