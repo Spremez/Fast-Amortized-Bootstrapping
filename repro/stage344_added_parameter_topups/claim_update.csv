@@ -1,0 +1,3 @@
+claim,status,safe_statement,blocked_statement,evidence
+binary_added_parameter_matrix,ALLOW_SCOPED,Current-head binary added-parameter rows have 10-sample T_bootstrap/r and 10-trial noise evidence.,"Non-binary, all-parameter, novelty, or theoretical-optimality wording.",repro/stage344_added_parameter_topups/summary.csv
+full_binary_matrix_with_target,READY_FOR_SYNTHESIS,Stage343 target rows plus Stage344 added rows can be synthesized if all gates pass.,Do not synthesize if either Stage343 or Stage344 gate is missing.,repro/stage343_target_r2_current_head_topup/summary.csv; repro/stage344_added_parameter_topups/perf_summary.csv

@@ -4520,3 +4520,14 @@ H343_target_r2_topup:
   conclusion: >
     Stage343 top-ups the target r=2 row only. It does not alter claims about
     added parameters, non-binary branches, novelty, or theoretical optimality.
+H344_added_parameter_topups:
+  status: PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage344_added_parameter_topups/summary.csv
+    - repro/stage344_added_parameter_topups/perf_summary.csv
+    - repro/stage344_added_parameter_topups/noise_summary.csv
+    - repro/stage344_added_parameter_topups/proof_gate.csv
+  conclusion: >
+    Stage344 upgrades added binary parameter rows only if every current-head
+    row passes timing, correctness, noise, resource, and hotpath gates.

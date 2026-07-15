@@ -1,0 +1,2 @@
+decision,run_head,current_head,intended_cases,passed_cases,speedup_min,speedup_max,speedup_mean_across_cases,max_rss_kb,claim_status
+PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX,0afc972,0afc972,4,4,1.612100,1.738200,1.675150,4618504,binary_added_parameter_current_head_matrix

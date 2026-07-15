@@ -9,6 +9,8 @@ import math
 import os
 import re
 import subprocess
+from datetime import date
+from io import StringIO
 from pathlib import Path
 from statistics import mean, pstdev
 from typing import Iterable
@@ -428,7 +430,26 @@ def next_rows(decision: str) -> list[dict[str, object]]:
 
 def append_run_log(decision: str, perf_summary: list[dict[str, object]]) -> None:
     marker = "stage344-added-parameter-topups-001"
+    row = [
+        marker,
+        date.today().isoformat(),
+        run_head(),
+        "Stage 344",
+        "spqlios_avx512-wsl",
+        "STAGE344_PERF_RUNS=10 STAGE344_NOISE_TRIALS=10 FFT_LIB=spqlios_avx512 bash scripts/run_stage344_added_parameter_topups.sh",
+        ";".join(str(row.get("case", "")) for row in perf_summary),
+        "n/a",
+        decision,
+        "Executes current-head added binary parameter rows under complete SAB T_bootstrap/r and noise gates.",
+        f"{rel(DOC)}; {rel(SUMMARY)}; {rel(PERF_SUMMARY)}; {rel(NOISE_SUMMARY)}; {rel(PROOF)}",
+    ]
+    line_buffer = StringIO()
+    csv.writer(line_buffer, lineterminator="").writerow(row)
+    replacement_line = line_buffer.getvalue()
     if marker in read_text(RUN_LOG):
+        lines = read_text(RUN_LOG).splitlines()
+        lines = [replacement_line if line.startswith(f"{marker},") else line for line in lines]
+        write_text(RUN_LOG, "\n".join(lines))
         return
     exists = RUN_LOG.exists()
     RUN_LOG.parent.mkdir(parents=True, exist_ok=True)
@@ -436,19 +457,7 @@ def append_run_log(decision: str, perf_summary: list[dict[str, object]]) -> None
         writer = csv.writer(handle, lineterminator="\n")
         if not exists:
             writer.writerow(["run_id", "date", "git_head", "stage", "backend", "command", "params", "seed", "status", "interpretation", "artifacts"])
-        writer.writerow([
-            marker,
-            "2026-07-06",
-            run_head(),
-            "Stage 344",
-            "spqlios_avx512-wsl",
-            "STAGE344_PERF_RUNS=10 STAGE344_NOISE_TRIALS=10 FFT_LIB=spqlios_avx512 bash scripts/run_stage344_added_parameter_topups.sh",
-            ";".join(str(row.get("case", "")) for row in perf_summary),
-            "n/a",
-            decision,
-            "Executes current-head added binary parameter rows under complete SAB T_bootstrap/r and noise gates.",
-            f"{rel(DOC)}; {rel(SUMMARY)}; {rel(PERF_SUMMARY)}; {rel(NOISE_SUMMARY)}; {rel(PROOF)}",
-        ])
+        writer.writerow(row)
 
 
 def sha256_file(path: Path) -> str:

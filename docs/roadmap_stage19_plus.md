@@ -7320,3 +7320,9 @@ Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
 - Decision: `PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP`.
 - Result: target `SET_2_3_2048 r=2` high-stat top-up route.
 - Boundary: no added-parameter, novelty, or theoretical-optimality claim.
+<!-- stage344-added-parameter-topups -->
+## Stage344: Added-Parameter Current-Head Top-Ups
+
+- Decision: `PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX`.
+- Result: current-head added binary parameter rows under complete `T_bootstrap/r`.
+- Boundary: no non-binary, all-parameter, novelty, or theoretical-optimality claim.

@@ -529,3 +529,5 @@
 - [x] Stage342 records `PASS_STAGE342_CONTINUITY_AUDIT_SCOPED_BRIDGE_NO_FULL_MATRIX_CLAIM` and keeps full current-head matrix claims blocked.
 <!-- stage343-target-r2-topup-checklist -->
 - [x] Stage343 records `PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP` with target r=2 only claim boundary.
+<!-- stage344-added-parameter-topups-checklist -->
+- [x] Stage344 records `PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX` with added-parameter-only claim boundary.

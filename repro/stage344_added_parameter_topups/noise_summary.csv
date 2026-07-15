@@ -1,0 +1,5 @@
+case,mode,r,trials,points,pair_failures,pair_log2_sigma_torus,pair_log2_max_abs_torus,gate,overall_gate,time_maxrss_kb,status,source_run_log,source_time_log
+SET_4_5_2048_r2,include_zero,2,10,40960,0,-9.422,-7.450,Pass,Pass,1254060,pass,repro/stage344_added_parameter_topups/raw/SET_4_5_2048_r2/noise/run.log,repro/stage344_added_parameter_topups/raw/SET_4_5_2048_r2/noise/time.log
+SET_4_5_2048_r4,include_zero,4,10,81920,0,-9.690,-7.532,Pass,Pass,2444492,pass,repro/stage344_added_parameter_topups/raw/SET_4_5_2048_r4/noise/run.log,repro/stage344_added_parameter_topups/raw/SET_4_5_2048_r4/noise/time.log
+SET_2_3_4096_r2,include_zero,2,10,81920,0,-7.183,-5.161,Pass,Pass,2382964,pass,repro/stage344_added_parameter_topups/raw/SET_2_3_4096_r2/noise/run.log,repro/stage344_added_parameter_topups/raw/SET_2_3_4096_r2/noise/time.log
+SET_2_3_4096_r4,include_zero,4,10,163840,0,-7.379,-5.015,Pass,Pass,4618504,pass,repro/stage344_added_parameter_topups/raw/SET_2_3_4096_r4/noise/run.log,repro/stage344_added_parameter_topups/raw/SET_2_3_4096_r4/noise/time.log

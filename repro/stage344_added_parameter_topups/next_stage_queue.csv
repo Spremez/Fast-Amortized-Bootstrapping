@@ -1,0 +1,3 @@
+priority,route,entry_condition,command,gate,failure_action
+P0,stage345_binary_matrix_synthesis,PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX,Build a matrix-level synthesis from Stage331/343/344 plus resource evidence.,Every synthesized claim must cite exact rows and preserve unsupported-claim blocks.,Keep results as separate scoped rows.
+P1,stage345_mechanism_or_literature,Need stronger algorithmic or paper claim after matrix synthesis.,Admit only a new measured mechanism/proof or verified related-work audit.,No novelty/theoretical-optimality wording without source/proof support.,Publish scoped systems evidence and negative ablations only.

@@ -1,0 +1,7 @@
+gate,status,metric,value,interpretation
+G1_stage343_input,PASS,Stage343 summary,PASS_STAGE343_TARGET_R2_CURRENT_HEAD_HIGHSTAT_TOPUP,Target parameter high-stat evidence must already exist before matrix synthesis.
+G2_hotpath_equivalence,PASS,Stage344 run head to HEAD,stage344_run_head_to_current_head=HOTPATH_EQUIVALENT,Current-head claim requires no hotpath diff after execution.
+G3_added_parameter_coverage,PASS,passed/intended rows,4/4,Every added binary parameter/r row must pass before broader wording.
+G4_metric_alignment,PASS,primary endpoint,complete SAB T_bootstrap/r vs repeated scalar,Kernel-only or backend-only wins are not used for this stage claim.
+G5_claim_boundary,PASS,claim level,binary added parameters only,"No non-binary, all-parameter, novelty, or theoretical-optimality claim."
+G6_decision,PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX,stage decision,PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX,Controls whether Stage345 can synthesize the binary matrix.

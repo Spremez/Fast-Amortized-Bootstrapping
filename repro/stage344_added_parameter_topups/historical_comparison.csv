@@ -1,0 +1,5 @@
+case,current_head_speedup,current_head_samples,current_head_noise,historical_stage36_speedup,historical_stage36_samples,historical_stage36_noise,interpretation
+SET_4_5_2048_r2,1.709700,10,0/10,1.285700,10,0/20,current-head row supersedes historical supporting row if PASS_CASE
+SET_4_5_2048_r4,1.738200,10,0/10,1.350700,10,0/20,current-head row supersedes historical supporting row if PASS_CASE
+SET_2_3_4096_r2,1.612100,10,0/10,1.235100,10,0/20,current-head row supersedes historical supporting row if PASS_CASE
+SET_2_3_4096_r4,1.640600,10,0/10,1.346200,10,0/20,current-head row supersedes historical supporting row if PASS_CASE

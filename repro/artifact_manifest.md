@@ -3387,3 +3387,11 @@ Repro artifacts:
   - `scripts/run_stage343_target_r2_current_head_topup.sh`
   - `scripts/build_stage343_target_r2_current_head_topup.py`
   - `repro/stage343_target_r2_current_head_topup/`
+<!-- stage344-added-parameter-topups-manifest -->
+- stage344_added_parameter_topups:
+  - `docs/stage344_added_parameter_topups.md`
+  - `theory_checks/stage344_added_parameter_claim_model.md`
+  - `experiments/stage345_matrix_synthesis_or_mechanism_plan.md`
+  - `scripts/run_stage344_added_parameter_topups.sh`
+  - `scripts/build_stage344_added_parameter_topups.py`
+  - `repro/stage344_added_parameter_topups/`
