@@ -1271,3 +1271,5 @@ The allowed claim remains the scoped measured `T_bootstrap/r` systems result.
 - Stage344: `PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX`. Added binary parameter current-head top-ups are recorded; synthesis is allowed only if every row passes.
 <!-- stage345-binary-matrix-synthesis -->
 - Stage345: `PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY`. Synthesized current-head binary parameter matrix under complete `T_bootstrap/r`; stronger novelty/optimality/general-resource claims remain blocked.
+<!-- stage346-algorithm-redesign-audit -->
+- Stage346: `PASS_STAGE346_REDESIGN_AUDIT_READY_STAGE347_MECHANISM_GATE`. The scoped exact-dense PVW/MAT-SAB result remains supported by Stage345, but the new-algorithm goal is now explicitly routed to Stage347 closed structured-state or current-format lower-bound proof. No SAB hot-path rewrite is admitted before that gate.

@@ -1,0 +1,7 @@
+case,rss_kb_recorded,key_size_recorded_for_this_row,keygen_time_recorded_for_this_row,scratch_peak_recorded_for_this_row,paper_resource_claim_status,required_next
+SET_2_3_2048_r2,1222776,not_in_stage345_matrix,not_in_stage345_matrix,not_in_stage345_matrix,blocked_except_rss,"Stage347+ promoted variants must bind speedup to key size, keygen, RSS, and scratch."
+SET_2_3_2048_r4,2415796,not_in_stage345_matrix,not_in_stage345_matrix,not_in_stage345_matrix,blocked_except_rss,"Stage347+ promoted variants must bind speedup to key size, keygen, RSS, and scratch."
+SET_4_5_2048_r2,1254060,not_in_stage345_matrix,not_in_stage345_matrix,not_in_stage345_matrix,blocked_except_rss,"Stage347+ promoted variants must bind speedup to key size, keygen, RSS, and scratch."
+SET_4_5_2048_r4,2444492,not_in_stage345_matrix,not_in_stage345_matrix,not_in_stage345_matrix,blocked_except_rss,"Stage347+ promoted variants must bind speedup to key size, keygen, RSS, and scratch."
+SET_2_3_4096_r2,2382964,not_in_stage345_matrix,not_in_stage345_matrix,not_in_stage345_matrix,blocked_except_rss,"Stage347+ promoted variants must bind speedup to key size, keygen, RSS, and scratch."
+SET_2_3_4096_r4,4618504,not_in_stage345_matrix,not_in_stage345_matrix,not_in_stage345_matrix,blocked_except_rss,"Stage347+ promoted variants must bind speedup to key size, keygen, RSS, and scratch."

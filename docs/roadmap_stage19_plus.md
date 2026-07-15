@@ -7332,3 +7332,45 @@ Status: `PASS_STAGE334_PARTIAL_FULLTEXT_AUDIT_NOVELTY_REMAINS_BLOCKED`.
 - Decision: `PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY`.
 - Result: scoped current-head binary matrix for SET_2_3_2048, SET_4_5_2048, and SET_2_3_4096 with r=2/4.
 - Boundary: no novelty, theoretical optimality, non-binary, all-parameter, backend-general, or full-resource claim.
+<!-- stage346-algorithm-redesign-audit -->
+## Stage346: Algorithm Redesign Audit
+
+- Decision: `PASS_STAGE346_REDESIGN_AUDIT_READY_STAGE347_MECHANISM_GATE`.
+- Result: separates current exact-dense MAT-SAB evidence from the still-open new-algorithm route.
+- Next: Stage347 mechanism proof gate.
+
+## Stage347: Closed State Or Lower-Bound Mechanism Gate
+
+- Goal: prove a closed structured MAT-SAB state or prove a current-format dense lower bound.
+- Code permission: finite checker/proof artifact only; no SAB hot-path integration.
+- Gate: r=2/r=4 lane invariant passes over CMUX/NCMUX plus sparse_mul/sub_a lifecycle, or lower-bound assumptions are explicit.
+
+## Stage348: Full Schedule Finite Checker
+
+- Goal: if Stage347 admits a structured state, check the complete binary SAB schedule.
+- Gate: zero lane phase mismatches and failing negative controls.
+
+## Stage349: Keygen/Security/Noise/Resource Preflight
+
+- Goal: define encrypted selector material, noise recurrence, and resource model for the new state.
+- Gate: isolated keygen/noise/resource pass before production integration.
+
+## Stage350: Isolated Structured Kernel Microbench
+
+- Goal: test the new state at kernel level under the same backend.
+- Gate: correctness plus same-backend kernel improvement; no SAB claim yet.
+
+## Stage351: Full SAB Flagged Integration
+
+- Goal: add a new explicit `sab_pvw_structured_*` path only if Stage347-350 pass.
+- Gate: full SAB `T_bootstrap/r` A/B and deterministic equivalence for r=2/r=4.
+
+## Stage352: High-Stat Noise/Resource/Parameter Matrix
+
+- Goal: convert a promoted structured path into statistically reliable evidence.
+- Gate: timing, noise, key size, keygen, RSS, scratch, and parameter matrix pass.
+
+## Stage353: Source-Verified Paper Package
+
+- Goal: write paper claims only from verified source and experiment ledgers.
+- Gate: no novelty, optimality, or related-work claim without source support.

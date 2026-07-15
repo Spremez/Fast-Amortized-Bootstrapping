@@ -1,0 +1,6 @@
+rule,condition,action
+no_theory_loop,A proposed new state cannot be converted into equations and a finite checker in Stage347.,Stop the mechanism route and keep the Stage345 scoped exact-dense result.
+no_hotpath_before_closure,CMUX/NCMUX plus sparse_mul/sub_a closure is unproven.,Do not edit sab_pvw hot paths.
+one_revision_limit,A finite checker fails.,Allow one equation revision; a second failure closes the candidate.
+same_backend_endpoint,A candidate only wins a kernel microbench or different backend.,Do not claim SAB acceleration; require full SAB T_bootstrap/r under the same backend.
+source_verified_paper_claims,"A manuscript sentence asserts novelty, optimality, or related-work contrast.",Require source/full-text evidence in the claim ledger.

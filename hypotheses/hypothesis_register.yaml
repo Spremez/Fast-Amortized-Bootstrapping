@@ -4543,3 +4543,16 @@ H345_binary_matrix_synthesis:
     Stage345 synthesizes Stage331/343/344 into a scoped current-head binary
     parameter matrix. It does not prove novelty, theoretical optimality,
     non-binary support, backend generality, or full resource dominance.
+H346_algorithm_redesign_audit:
+  status: PASS_STAGE346_REDESIGN_AUDIT_READY_STAGE347_MECHANISM_GATE
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/stage346_algorithm_redesign_audit/summary.csv
+    - repro/stage346_algorithm_redesign_audit/current_state_layers.csv
+    - repro/stage346_algorithm_redesign_audit/algorithm_gap_matrix.csv
+    - repro/stage346_algorithm_redesign_audit/redesign_route_queue.csv
+  conclusion: >
+    Stage346 separates the supported exact-dense PVW/MAT-SAB systems result
+    from the still-open new-algorithm objective. The next valid execution is
+    Stage347 closed structured-state or current-format lower-bound proof, not
+    another speculative SAB hot-path rewrite.

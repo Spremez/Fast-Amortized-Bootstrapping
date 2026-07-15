@@ -3402,3 +3402,11 @@ Repro artifacts:
   - `experiments/stage346_next_mechanism_or_paper_plan.md`
   - `scripts/build_stage345_binary_matrix_synthesis.py`
   - `repro/stage345_binary_matrix_synthesis/`
+<!-- stage346-algorithm-redesign-audit-manifest -->
+- stage346_algorithm_redesign_audit:
+  - `docs/stage346_algorithm_redesign_audit.md`
+  - `theory_checks/stage346_mat_sab_algorithm_gap_model.md`
+  - `algorithm_variants/mat_rlwe_sab_stage346_redesign_candidates.md`
+  - `experiments/stage347_mechanism_proof_gate_plan.md`
+  - `scripts/build_stage346_algorithm_redesign_audit.py`
+  - `repro/stage346_algorithm_redesign_audit/`

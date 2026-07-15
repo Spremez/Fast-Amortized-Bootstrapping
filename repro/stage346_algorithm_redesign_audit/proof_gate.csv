@@ -1,0 +1,7 @@
+gate,status,value,interpretation
+G1_stage345_input,PASS,PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY,Stage346 only audits after the current binary matrix is ready.
+G2_metric_alignment,PASS,complete_sab_T_bootstrap_over_r_vs_repeated_scalar,"The active endpoint remains complete SAB T_bootstrap/r, matching the MAT-r-body intent."
+G3_evidence_quality,PASS,rows=6,The scoped current result is strong enough to serve as the exact-dense reference.
+G4_new_algorithm_boundary,PASS,current exact-dense result is not relabeled as theoretical optimality,The new-algorithm goal remains active and distinct from the current measured systems result.
+G5_stage347_route,PASS,Stage347_closed_structured_state_or_lower_bound_gate,"Next execution is a falsifiable mechanism/lower-bound gate, not another unconstrained rewrite."
+G6_decision,PASS_STAGE346_REDESIGN_AUDIT_READY_STAGE347_MECHANISM_GATE,PASS_STAGE346_REDESIGN_AUDIT_READY_STAGE347_MECHANISM_GATE,Controls whether Stage347 is admitted.

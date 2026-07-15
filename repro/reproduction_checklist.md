@@ -533,3 +533,5 @@
 - [x] Stage344 records `PASS_STAGE344_ADDED_PARAMETER_CURRENT_HEAD_MATRIX` with added-parameter-only claim boundary.
 <!-- stage345-binary-matrix-synthesis-checklist -->
 - [x] Stage345 records `PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY` and preserves blocked stronger-claim boundaries.
+<!-- stage346-algorithm-redesign-audit-checklist -->
+- [x] Stage346 records `PASS_STAGE346_REDESIGN_AUDIT_READY_STAGE347_MECHANISM_GATE` and routes the new-algorithm objective to a falsifiable Stage347 mechanism gate.
