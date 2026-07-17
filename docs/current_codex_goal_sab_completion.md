@@ -1,3 +1,8 @@
+> Historical stage ledger. The active research contract is
+> `docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md`;
+> the concise Goal is `docs/current_mat_sab_ccs_goal.md`; machine state is
+> `research_state.yaml`. Do not append new automatic stages to this ledger.
+
 # Current Codex Goal: PVW/MAT-SAB Completion Route
 
 Date: 2026-06-30
