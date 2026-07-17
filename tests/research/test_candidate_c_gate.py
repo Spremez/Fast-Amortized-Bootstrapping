@@ -16,6 +16,26 @@ ROOT = Path(__file__).resolve().parents[2]
 APPROVED_TERMINAL_HASH = (
     "8ad876708aa4a736c0f0f9adae33bab766272f411e90fbc23a5ac23e10a73cb6"
 )
+C1_PHASE_REJECTION = "REJECT_C1_PHASE_IDENTITY_TERMINAL"
+C1_RELATION_REJECTION = (
+    "REJECT_C1_REGISTERED_SHORT_ERROR_RELATION_TERMINAL"
+)
+C1_STRUCTURAL_REJECTION = (
+    "REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL"
+)
+C1_AMDAHL_REJECTION = (
+    "REJECT_C1_NEGATIVE_PESSIMISTIC_AMDAHL_PROJECTION_TERMINAL"
+)
+C2_CLOSURE_REJECTION = "REJECT_C2_CONVERSION_CLOSURE"
+C2_STRUCTURAL_REJECTION = "REJECT_C2_NONPOSITIVE_STRUCTURAL_COST"
+REGISTERED_REJECTION_LABELS = (
+    C1_PHASE_REJECTION,
+    C1_RELATION_REJECTION,
+    C1_STRUCTURAL_REJECTION,
+    C1_AMDAHL_REJECTION,
+    C2_CLOSURE_REJECTION,
+    C2_STRUCTURAL_REJECTION,
+)
 EXPECTED_ARTIFACTS = {
     "summary.csv",
     "source_mapping.csv",
@@ -176,6 +196,304 @@ def fixture_raw_evidence(gate, decision):
         mechanisms=(mechanism,),
     )
     return gate.bind_fixture_decision_evidence(raw)
+
+
+def registered_rejection_evidence(gate, label):
+    mechanism = fixture_mechanism(gate)
+    replay_status = gate.SKIPPED
+    task3b_status = gate.NO_VERIFIED_TASK3B_RESULT
+    task4_status = gate.SKIPPED
+    mechanism = replace(
+        mechanism,
+        complete_cost_status=gate.SKIPPED,
+        complete_cost=None,
+        amdahl_status=gate.SKIPPED,
+        amdahl_projection=None,
+        amdahl_pessimistic_projection=None,
+        failure_reason=label,
+    )
+    if label == C1_PHASE_REJECTION:
+        mechanism = replace(mechanism, phase_status="FAIL")
+    elif label == C1_RELATION_REJECTION:
+        mechanism = replace(
+            mechanism,
+            symbolic_independence_status="REGISTERED_SHORT_ERROR_RELATION_FAIL",
+        )
+    elif label == C1_STRUCTURAL_REJECTION:
+        mechanism = replace(
+            mechanism,
+            compression_status=label,
+            compression_interval=0,
+            closed_next_state_consumption=False,
+            structural_cost_status=label,
+        )
+    elif label == C1_AMDAHL_REJECTION:
+        replay_status = "PASS"
+        task3b_status = "PASS"
+        task4_status = "PASS"
+        mechanism = replace(
+            fixture_mechanism(gate),
+            amdahl_pessimistic_projection=-0.01,
+            failure_reason=label,
+        )
+    elif label == C2_CLOSURE_REJECTION:
+        task3b_status = "PASS"
+        mechanism = replace(
+            mechanism,
+            mechanism_id="C2",
+            compression_status=label,
+            closed_next_state_consumption=False,
+        )
+    elif label == C2_STRUCTURAL_REJECTION:
+        task3b_status = "PASS"
+        mechanism = replace(
+            mechanism,
+            mechanism_id="C2",
+            compression_status=label,
+            compression_interval=0,
+            structural_cost_status=label,
+        )
+    else:
+        raise ValueError(label)
+    return gate.bind_fixture_decision_evidence(
+        gate.RawDecisionEvidence(
+            schema=gate.DECISION_EVIDENCE_SCHEMA,
+            binding_kind=gate.FIXTURE_EVIDENCE,
+            claimed_decision=gate.REJECT,
+            terminal_classification="REJECT",
+            terminal_decision=label,
+            terminal_record_hash="",
+            terminal_evidence_exhausted=False,
+            replay_status=replay_status,
+            task3b_status=task3b_status,
+            task4_status=task4_status,
+            mechanisms=(mechanism,),
+        )
+    )
+
+
+def relabel_fixture_rejection(gate, raw, label, *, mechanism_id=None):
+    mechanism = replace(
+        raw.mechanisms[0],
+        mechanism_id=(
+            raw.mechanisms[0].mechanism_id
+            if mechanism_id is None
+            else mechanism_id
+        ),
+        failure_reason=label,
+    )
+    return gate.bind_fixture_decision_evidence(
+        replace(
+            raw,
+            terminal_decision=label,
+            terminal_record_hash="",
+            mechanisms=(mechanism,),
+        )
+    )
+
+
+class CandidateCDecisionVerifierTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.gate = load_gate()
+        cls.input_commit = git_head()
+        cls.terminal = cls.gate.terminal_record_for_task5(ROOT)
+
+    def test_actual_raw_evidence_requires_the_approved_task3c_terminal(self):
+        terminal = self.terminal
+        cases = {
+            "nonapproved_hash": replace(
+                terminal,
+                record_hash="f" * 64,
+            ),
+            "inconclusive": replace(
+                terminal,
+                classification="INCONCLUSIVE",
+                decision="TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED",
+                record_hash="e" * 64,
+            ),
+            "alternate_terminal": replace(
+                terminal,
+                decision=C1_PHASE_REJECTION,
+                record_hash="d" * 64,
+            ),
+        }
+        for name, changed in cases.items():
+            with self.subTest(name=name):
+                with self.assertRaisesRegex(
+                    self.gate.GateEvidenceError,
+                    "approved actual Task 3C",
+                ):
+                    self.gate._raw_decision_evidence_from_terminal(changed)
+
+    def test_actual_raw_evidence_requires_approved_mechanism_facts(self):
+        terminal = self.terminal
+        first = replace(
+            terminal.operator_results[0],
+            phase_identity_passed=False,
+        )
+        changed = replace(
+            terminal,
+            operator_results=(first, *terminal.operator_results[1:]),
+        )
+        with self.assertRaisesRegex(
+            self.gate.GateEvidenceError,
+            "approved actual mechanism facts",
+        ):
+            self.gate._raw_decision_evidence_from_terminal(changed)
+
+    def test_registered_rejection_registry_accepts_exact_semantics(self):
+        self.assertEqual(
+            set(REGISTERED_REJECTION_LABELS),
+            set(self.gate.REGISTERED_REJECTION_LABELS),
+        )
+        for label in REGISTERED_REJECTION_LABELS:
+            with self.subTest(label=label):
+                raw = registered_rejection_evidence(self.gate, label)
+                verified = self.gate.verify_decision_evidence(
+                    raw,
+                    allow_fixture=True,
+                )
+                self.assertEqual(verified.decision, self.gate.REJECT)
+
+    def test_each_rejection_label_requires_its_exact_failure_fields(self):
+        repairs = {
+            C1_PHASE_REJECTION: {"phase_status": "PASS"},
+            C1_RELATION_REJECTION: {
+                "symbolic_independence_status": "PASS",
+            },
+            C1_STRUCTURAL_REJECTION: {
+                "structural_cost_status": "PASS",
+            },
+            C1_AMDAHL_REJECTION: {
+                "amdahl_pessimistic_projection": 0.0,
+            },
+            C2_CLOSURE_REJECTION: {
+                "closed_next_state_consumption": True,
+            },
+            C2_STRUCTURAL_REJECTION: {
+                "structural_cost_status": "PASS",
+            },
+        }
+        incompatible = {
+            C1_PHASE_REJECTION: {"schedule_status": "FAIL"},
+            C1_RELATION_REJECTION: {"phase_status": "FAIL"},
+            C1_STRUCTURAL_REJECTION: {"phase_status": "FAIL"},
+            C1_AMDAHL_REJECTION: {"complete_cost_status": "FAIL"},
+            C2_CLOSURE_REJECTION: {"structural_cost_status": "FAIL"},
+            C2_STRUCTURAL_REJECTION: {
+                "closed_next_state_consumption": False,
+            },
+        }
+        self.assertEqual(set(repairs), set(REGISTERED_REJECTION_LABELS))
+        self.assertEqual(set(incompatible), set(REGISTERED_REJECTION_LABELS))
+        for label in REGISTERED_REJECTION_LABELS:
+            raw = registered_rejection_evidence(self.gate, label)
+            for case, mutation in (
+                ("repaired_failure", repairs[label]),
+                ("incompatible_failure", incompatible[label]),
+            ):
+                with self.subTest(label=label, case=case):
+                    mechanism = replace(raw.mechanisms[0], **mutation)
+                    changed = self.gate.bind_fixture_decision_evidence(
+                        replace(
+                            raw,
+                            terminal_record_hash="",
+                            mechanisms=(mechanism,),
+                        )
+                    )
+                    with self.assertRaisesRegex(
+                        self.gate.GateEvidenceError,
+                        "does not derive",
+                    ):
+                        self.gate.verify_decision_evidence(
+                            changed,
+                            allow_fixture=True,
+                        )
+
+    def test_rejection_registry_rejects_unknown_family_and_field_mismatches(self):
+        amdahl = registered_rejection_evidence(
+            self.gate,
+            C1_AMDAHL_REJECTION,
+        )
+        cases = {
+            "unknown_label": relabel_fixture_rejection(
+                self.gate,
+                amdahl,
+                "REJECT_C1_COMPLETE_COST_TERMINAL",
+            ),
+            "c1_label_on_c2": relabel_fixture_rejection(
+                self.gate,
+                amdahl,
+                C1_AMDAHL_REJECTION,
+                mechanism_id="C2",
+            ),
+            "c2_label_on_c1": relabel_fixture_rejection(
+                self.gate,
+                amdahl,
+                C2_CLOSURE_REJECTION,
+            ),
+            "reviewer_phase_probe": relabel_fixture_rejection(
+                self.gate,
+                amdahl,
+                C1_PHASE_REJECTION,
+            ),
+            "structural_label_with_structural_pass": (
+                relabel_fixture_rejection(
+                    self.gate,
+                    amdahl,
+                    C1_STRUCTURAL_REJECTION,
+                )
+            ),
+            "closure_label_with_closed_state": relabel_fixture_rejection(
+                self.gate,
+                amdahl,
+                C2_CLOSURE_REJECTION,
+                mechanism_id="C2",
+            ),
+        }
+        for name, changed in cases.items():
+            with self.subTest(name=name):
+                with self.assertRaisesRegex(
+                    self.gate.GateEvidenceError,
+                    "does not derive",
+                ):
+                    self.gate.verify_decision_evidence(
+                        changed,
+                        allow_fixture=True,
+                    )
+
+    def test_canonical_summary_rejects_amdahl_failure_relabelled_as_phase(self):
+        amdahl = registered_rejection_evidence(
+            self.gate,
+            C1_AMDAHL_REJECTION,
+        )
+        valid = self.gate.gate_result_from_decision_evidence(
+            amdahl,
+            allow_fixture=True,
+        )
+        probe = relabel_fixture_rejection(
+            self.gate,
+            amdahl,
+            C1_PHASE_REJECTION,
+        )
+        forged = replace(
+            valid,
+            decision_evidence=probe,
+            terminal_decision=probe.terminal_decision,
+            terminal_record_hash=probe.terminal_record_hash,
+            mechanisms=probe.mechanisms,
+        )
+        with self.assertRaisesRegex(
+            self.gate.GateEvidenceError,
+            "does not derive",
+        ):
+            self.gate.canonical_summary_record(
+                forged,
+                root=ROOT,
+                input_commit=self.input_commit,
+                allow_fixture=True,
+            )
 
 
 class CandidateCGateTests(unittest.TestCase):

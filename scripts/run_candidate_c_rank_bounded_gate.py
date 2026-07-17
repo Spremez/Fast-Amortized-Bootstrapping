@@ -23,7 +23,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from research.mat_sab.candidate_c_operator_tensor import (
+    REGISTERED_SHORT_ERROR_RELATION_FAIL,
     REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL,
+    REJECT_C1_PHASE_IDENTITY_TERMINAL,
+    REJECT_C1_REGISTERED_SHORT_ERROR_RELATION_TERMINAL,
 )
 from research.mat_sab.candidate_c_registered_replay import (
     NO_VERIFIED_TASK3B_RESULT,
@@ -115,6 +118,18 @@ DECISION_EVIDENCE_SCHEMA = "candidate-c-task5-decision-evidence-v1"
 ACTUAL_EVIDENCE = "ACTUAL_TASK3C"
 FIXTURE_EVIDENCE = "VERIFIED_FIXTURE"
 _FIXTURE_HASH_DOMAIN = "candidate-c/task5/verified-fixture/v1"
+REJECT_C1_NEGATIVE_PESSIMISTIC_AMDAHL_PROJECTION_TERMINAL = (
+    "REJECT_C1_NEGATIVE_PESSIMISTIC_AMDAHL_PROJECTION_TERMINAL"
+)
+REJECT_C2_CONVERSION_CLOSURE = "REJECT_C2_CONVERSION_CLOSURE"
+REJECT_C2_NONPOSITIVE_STRUCTURAL_COST = (
+    "REJECT_C2_NONPOSITIVE_STRUCTURAL_COST"
+)
+_APPROVED_C1_RESULT_HASHES = (
+    "41d9629ceab043f9b18b97cafa7edb7c2f84d7d85feac0816c8951a887cadbf8",
+    "2dfa7574c3c0a2708c69ec4c918c30ca01a239f119c458c7c4d9d5d5bd817a78",
+    "553247432086c35f913b21e1706e620f5978b555c44e8c315a8943750c8ba36d",
+)
 
 
 class GateEvidenceError(RuntimeError):
@@ -637,25 +652,49 @@ def _mechanism_admits(mechanism: MechanismEvaluation) -> bool:
     )
 
 
-def _pre_cost_scoped_failure(
+def _symbolic_gate_passed(mechanism: MechanismEvaluation) -> bool:
+    return mechanism.symbolic_independence_status in {
+        "PASS",
+        "PASS_SCOPED_NO_SECURITY_CLAIM",
+    }
+
+
+def _rank_gate_passed(mechanism: MechanismEvaluation) -> bool:
+    return (
+        mechanism.rank_status == "PASS"
+        and 0 <= mechanism.max_rho <= 2
+    )
+
+
+def _compression_gate_passed(mechanism: MechanismEvaluation) -> bool:
+    return (
+        mechanism.compression_status == "PASS"
+        and mechanism.b_min > 0
+        and mechanism.compression_interval >= mechanism.b_min
+    )
+
+
+def _base_registered_failure(
     raw: RawDecisionEvidence,
     mechanism: MechanismEvaluation,
 ) -> bool:
-    gate_failed = (
-        mechanism.phase_status != "PASS"
-        or mechanism.schedule_status != "PASS"
-        or mechanism.rank_status != "PASS"
-        or mechanism.max_rho > 2
-        or mechanism.compression_status != "PASS"
-        or mechanism.compression_interval < mechanism.b_min
-        or not mechanism.closed_next_state_consumption
-        or mechanism.structural_cost_status != "PASS"
-    )
     return (
         mechanism.mechanism_id in {"C1", "C2"}
         and mechanism.registered
         and mechanism.fully_evaluated
         and mechanism.failure_reason == raw.terminal_decision
+        and not raw.terminal_evidence_exhausted
+        and mechanism.source_status == "PASS"
+        and mechanism.equation_status == "PASS"
+    )
+
+
+def _pre_cost_failure_context(
+    raw: RawDecisionEvidence,
+    mechanism: MechanismEvaluation,
+) -> bool:
+    return (
+        _base_registered_failure(raw, mechanism)
         and raw.replay_status == SKIPPED
         and raw.task4_status == SKIPPED
         and mechanism.complete_cost_status == SKIPPED
@@ -663,51 +702,166 @@ def _pre_cost_scoped_failure(
         and mechanism.complete_cost is None
         and mechanism.amdahl_projection is None
         and mechanism.amdahl_pessimistic_projection is None
-        and gate_failed
     )
 
 
-def _reject_after_cost(
+def _reject_c1_phase(
     raw: RawDecisionEvidence,
     mechanism: MechanismEvaluation,
 ) -> bool:
-    pre_cost_passed = (
-        mechanism.source_status == "PASS"
-        and mechanism.equation_status == "PASS"
-        and mechanism.symbolic_independence_status == "PASS"
-        and mechanism.phase_status == "PASS"
+    return (
+        _pre_cost_failure_context(raw, mechanism)
+        and _symbolic_gate_passed(mechanism)
+        and mechanism.phase_status == "FAIL"
         and mechanism.schedule_status == "PASS"
-        and mechanism.rank_status == "PASS"
-        and 0 <= mechanism.max_rho <= 2
-        and mechanism.compression_status == "PASS"
-        and mechanism.b_min > 0
-        and mechanism.compression_interval >= mechanism.b_min
+        and _rank_gate_passed(mechanism)
+        and _compression_gate_passed(mechanism)
         and mechanism.closed_next_state_consumption
         and mechanism.structural_cost_status == "PASS"
     )
-    numeric_cost = (
-        raw.task4_status == "PASS"
+
+
+def _reject_c1_relation(
+    raw: RawDecisionEvidence,
+    mechanism: MechanismEvaluation,
+) -> bool:
+    return (
+        _pre_cost_failure_context(raw, mechanism)
+        and mechanism.symbolic_independence_status
+        == REGISTERED_SHORT_ERROR_RELATION_FAIL
+        and mechanism.phase_status == "PASS"
+        and mechanism.schedule_status == "PASS"
+        and _rank_gate_passed(mechanism)
+        and _compression_gate_passed(mechanism)
+        and mechanism.closed_next_state_consumption
+        and mechanism.structural_cost_status == "PASS"
+    )
+
+
+def _reject_c1_structural_cost(
+    raw: RawDecisionEvidence,
+    mechanism: MechanismEvaluation,
+) -> bool:
+    return (
+        _pre_cost_failure_context(raw, mechanism)
+        and _symbolic_gate_passed(mechanism)
+        and mechanism.phase_status == "PASS"
+        and mechanism.schedule_status == "PASS"
+        and _rank_gate_passed(mechanism)
+        and mechanism.compression_status
+        == REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL
+        and mechanism.b_min > 0
+        and mechanism.compression_interval < mechanism.b_min
+        and not mechanism.closed_next_state_consumption
+        and mechanism.structural_cost_status
+        == REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL
+    )
+
+
+def _reject_c2_conversion_closure(
+    raw: RawDecisionEvidence,
+    mechanism: MechanismEvaluation,
+) -> bool:
+    return (
+        _pre_cost_failure_context(raw, mechanism)
+        and _symbolic_gate_passed(mechanism)
+        and mechanism.phase_status == "PASS"
+        and mechanism.schedule_status == "PASS"
+        and _rank_gate_passed(mechanism)
+        and mechanism.compression_status == REJECT_C2_CONVERSION_CLOSURE
+        and mechanism.b_min > 0
+        and mechanism.compression_interval >= mechanism.b_min
+        and not mechanism.closed_next_state_consumption
+        and mechanism.structural_cost_status == "PASS"
+    )
+
+
+def _reject_c2_structural_cost(
+    raw: RawDecisionEvidence,
+    mechanism: MechanismEvaluation,
+) -> bool:
+    return (
+        _pre_cost_failure_context(raw, mechanism)
+        and _symbolic_gate_passed(mechanism)
+        and mechanism.phase_status == "PASS"
+        and mechanism.schedule_status == "PASS"
+        and _rank_gate_passed(mechanism)
+        and mechanism.compression_status
+        == REJECT_C2_NONPOSITIVE_STRUCTURAL_COST
+        and mechanism.b_min > 0
+        and mechanism.compression_interval < mechanism.b_min
+        and mechanism.closed_next_state_consumption
+        and mechanism.structural_cost_status
+        == REJECT_C2_NONPOSITIVE_STRUCTURAL_COST
+    )
+
+
+def _reject_c1_negative_pessimistic_amdahl(
+    raw: RawDecisionEvidence,
+    mechanism: MechanismEvaluation,
+) -> bool:
+    return (
+        _base_registered_failure(raw, mechanism)
+        and raw.replay_status == "PASS"
+        and raw.task4_status == "PASS"
+        and _symbolic_gate_passed(mechanism)
+        and mechanism.phase_status == "PASS"
+        and mechanism.schedule_status == "PASS"
+        and _rank_gate_passed(mechanism)
+        and _compression_gate_passed(mechanism)
+        and mechanism.closed_next_state_consumption
+        and mechanism.structural_cost_status == "PASS"
         and mechanism.complete_cost_status == "PASS"
         and _is_finite_number(mechanism.complete_cost)
         and float(mechanism.complete_cost) >= 0.0
+        and mechanism.amdahl_status == "PASS"
         and _is_finite_number(mechanism.amdahl_projection)
-        and _is_finite_number(
-            mechanism.amdahl_pessimistic_projection
-        )
+        and float(mechanism.amdahl_projection) > 1.0
+        and _is_finite_number(mechanism.amdahl_pessimistic_projection)
+        and float(mechanism.amdahl_pessimistic_projection) < 0.0
     )
-    projection_failed = numeric_cost and (
-        mechanism.amdahl_status != "PASS"
-        or float(mechanism.amdahl_projection) <= 1.0
-        or float(mechanism.amdahl_pessimistic_projection) < 0.0
-    )
+
+
+_REGISTERED_REJECTION_RULES = {
+    REJECT_C1_PHASE_IDENTITY_TERMINAL: (
+        "C1",
+        _reject_c1_phase,
+    ),
+    REJECT_C1_REGISTERED_SHORT_ERROR_RELATION_TERMINAL: (
+        "C1",
+        _reject_c1_relation,
+    ),
+    REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL: (
+        "C1",
+        _reject_c1_structural_cost,
+    ),
+    REJECT_C1_NEGATIVE_PESSIMISTIC_AMDAHL_PROJECTION_TERMINAL: (
+        "C1",
+        _reject_c1_negative_pessimistic_amdahl,
+    ),
+    REJECT_C2_CONVERSION_CLOSURE: (
+        "C2",
+        _reject_c2_conversion_closure,
+    ),
+    REJECT_C2_NONPOSITIVE_STRUCTURAL_COST: (
+        "C2",
+        _reject_c2_structural_cost,
+    ),
+}
+REGISTERED_REJECTION_LABELS = tuple(_REGISTERED_REJECTION_RULES)
+
+
+def _matches_registered_rejection(
+    raw: RawDecisionEvidence,
+    mechanism: MechanismEvaluation,
+) -> bool:
+    rule = _REGISTERED_REJECTION_RULES.get(raw.terminal_decision)
+    if rule is None:
+        return False
+    mechanism_id, predicate = rule
     return (
-        mechanism.mechanism_id in {"C1", "C2"}
-        and mechanism.registered
-        and mechanism.fully_evaluated
-        and mechanism.failure_reason == raw.terminal_decision
-        and raw.replay_status == "PASS"
-        and pre_cost_passed
-        and projection_failed
+        mechanism.mechanism_id == mechanism_id
+        and predicate(raw, mechanism)
     )
 
 
@@ -720,10 +874,7 @@ def _derive_decision(raw: RawDecisionEvidence) -> str:
     failed = tuple(
         mechanism
         for mechanism in raw.mechanisms
-        if (
-            _pre_cost_scoped_failure(raw, mechanism)
-            or _reject_after_cost(raw, mechanism)
-        )
+        if _matches_registered_rejection(raw, mechanism)
     )
     if (
         raw.terminal_classification == "ADMIT"
@@ -741,7 +892,7 @@ def _derive_decision(raw: RawDecisionEvidence) -> str:
         return ADMIT
     if (
         raw.terminal_classification == "REJECT"
-        and raw.terminal_decision.startswith(("REJECT_C1_", "REJECT_C2_"))
+        and raw.terminal_decision in _REGISTERED_REJECTION_RULES
         and not raw.terminal_evidence_exhausted
         and failed
         and not admitted
@@ -779,9 +930,130 @@ def _derive_decision(raw: RawDecisionEvidence) -> str:
     )
 
 
+def _approved_actual_mechanisms(
+    terminal: CandidateCTerminalRecord,
+) -> tuple[MechanismEvaluation, ...]:
+    if (
+        terminal.record_hash != APPROVED_TASK3C_HASH
+        or terminal.classification != "REJECT"
+        or terminal.decision
+        != REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL
+        or terminal.replay_status != SKIPPED
+        or terminal.task4_status != SKIPPED
+        or terminal.conversion_status != NO_VERIFIED_TASK3B_RESULT
+    ):
+        raise GateEvidenceError("approved actual Task 3C terminal changed")
+    mechanisms = _actual_mechanisms(terminal)
+    expected = (
+        MechanismEvaluation(
+            mechanism_id="C1",
+            registered=True,
+            source_status="PASS",
+            equation_status="PASS",
+            symbolic_independence_status="PASS_SCOPED_NO_SECURITY_CLAIM",
+            phase_status="PASS",
+            schedule_status="PASS",
+            rank_status="PASS",
+            max_rho=2,
+            compression_status=(
+                REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL
+            ),
+            compression_interval=0,
+            b_min=1,
+            closed_next_state_consumption=False,
+            structural_cost_status=(
+                REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL
+            ),
+            complete_cost_status=SKIPPED,
+            complete_cost=None,
+            amdahl_status=SKIPPED,
+            amdahl_projection=None,
+            amdahl_pessimistic_projection=None,
+            fully_evaluated=True,
+            failure_reason=(
+                REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL
+            ),
+            object_hashes=_APPROVED_C1_RESULT_HASHES,
+        ),
+        MechanismEvaluation(
+            mechanism_id="C2",
+            registered=False,
+            source_status="PASS",
+            equation_status="PASS",
+            symbolic_independence_status=NO_VERIFIED_TASK3B_RESULT,
+            phase_status=NO_VERIFIED_TASK3B_RESULT,
+            schedule_status=NO_VERIFIED_TASK3B_RESULT,
+            rank_status=NO_VERIFIED_TASK3B_RESULT,
+            max_rho=0,
+            compression_status=NO_VERIFIED_TASK3B_RESULT,
+            compression_interval=0,
+            b_min=1,
+            closed_next_state_consumption=False,
+            structural_cost_status=NO_VERIFIED_TASK3B_RESULT,
+            complete_cost_status=SKIPPED,
+            complete_cost=None,
+            amdahl_status=SKIPPED,
+            amdahl_projection=None,
+            amdahl_pessimistic_projection=None,
+            fully_evaluated=False,
+            failure_reason=NO_VERIFIED_TASK3B_RESULT,
+            object_hashes=(),
+        ),
+    )
+    operator_facts = tuple(
+        (
+            result.r,
+            result.rho,
+            result.phase_identity_passed,
+            result.joint_rank_passed,
+            result.structural_improvement,
+            result.decision,
+            result.schedule_hash == terminal.schedule_hash,
+        )
+        for result in terminal.operator_results
+    )
+    if (
+        terminal.r_values != (2, 4, 6)
+        or operator_facts
+        != (
+            (
+                2,
+                1,
+                True,
+                True,
+                False,
+                REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL,
+                True,
+            ),
+            (
+                4,
+                2,
+                True,
+                True,
+                False,
+                REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL,
+                True,
+            ),
+            (
+                6,
+                2,
+                True,
+                True,
+                False,
+                REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL,
+                True,
+            ),
+        )
+        or mechanisms != expected
+    ):
+        raise GateEvidenceError("approved actual mechanism facts changed")
+    return mechanisms
+
+
 def _raw_decision_evidence_from_terminal(
     terminal: CandidateCTerminalRecord,
 ) -> RawDecisionEvidence:
+    mechanisms = _approved_actual_mechanisms(terminal)
     provisional = RawDecisionEvidence(
         schema=DECISION_EVIDENCE_SCHEMA,
         binding_kind=ACTUAL_EVIDENCE,
@@ -795,7 +1067,7 @@ def _raw_decision_evidence_from_terminal(
         replay_status=terminal.replay_status,
         task3b_status=terminal.conversion_status,
         task4_status=terminal.task4_status,
-        mechanisms=_actual_mechanisms(terminal),
+        mechanisms=mechanisms,
     )
     return replace(
         provisional,

@@ -22,6 +22,7 @@ MANIFEST_END = "<!-- candidate-c-rank-bounded-gate-manifest-end -->"
 CHECKLIST_START = "<!-- candidate-c-rank-bounded-gate-checklist-start -->"
 CHECKLIST_END = "<!-- candidate-c-rank-bounded-gate-checklist-end -->"
 PREDECESSOR = "REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C"
+C1_PHASE_REJECTION = "REJECT_C1_PHASE_IDENTITY_TERMINAL"
 
 
 def load_closeout():
@@ -119,6 +120,18 @@ def fixture_raw_evidence(decision):
             replay_status=replay_status,
             task3b_status=task3b_status,
             task4_status=task4_status,
+            mechanisms=(mechanism,),
+        )
+    )
+
+
+def relabel_fixture_rejection(raw, label):
+    mechanism = replace(raw.mechanisms[0], failure_reason=label)
+    return gate.bind_fixture_decision_evidence(
+        replace(
+            raw,
+            terminal_decision=label,
+            terminal_record_hash="",
             mechanisms=(mechanism,),
         )
     )
@@ -375,6 +388,44 @@ class CandidateCCloseoutTests(unittest.TestCase):
             with self.assertRaisesRegex(
                 ValueError,
                 "summary does not match recomputed gate evidence",
+            ):
+                self.closeout.apply_gate(
+                    root,
+                    state_path,
+                    summary,
+                    input_commit=self.input_commit,
+                    evidence_path=evidence,
+                    allow_fixture=True,
+                )
+            self.assertEqual(before, self._tracked(root, state_path))
+
+    def test_apply_rejects_amdahl_failure_relabelled_as_phase(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            raw = fixture_raw_evidence(gate.REJECT)
+            summary, evidence = self._write_fixture_pack(root, raw)
+            probe = relabel_fixture_rejection(raw, C1_PHASE_REJECTION)
+            evidence.write_text(
+                gate.decision_evidence_json(probe),
+                encoding="ascii",
+                newline="\n",
+            )
+            with summary.open(newline="", encoding="ascii") as handle:
+                record = next(csv.DictReader(handle))
+            record["terminal_decision"] = probe.terminal_decision
+            record["terminal_record_hash"] = probe.terminal_record_hash
+            with summary.open("w", newline="", encoding="ascii") as handle:
+                writer = csv.DictWriter(
+                    handle,
+                    fieldnames=gate.SUMMARY_FIELDS,
+                    lineterminator="\n",
+                )
+                writer.writeheader()
+                writer.writerow(record)
+            before = self._tracked(root, state_path)
+            with self.assertRaisesRegex(
+                gate.GateEvidenceError,
+                "does not derive",
             ):
                 self.closeout.apply_gate(
                     root,
