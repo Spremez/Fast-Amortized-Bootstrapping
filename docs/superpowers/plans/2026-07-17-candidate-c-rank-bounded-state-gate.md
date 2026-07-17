@@ -11,8 +11,11 @@ complete-SAB `T_bootstrap/r` projection.
 
 **Architecture:** Build a source-anchored schedule graph, then a symbolic
 finite-field mask-span model that tracks independent mask directions instead
-of relying on accidental numeric cancellation. Register a finite set of
-Candidate C mechanisms and subject each to phase, rank-growth, closure,
+of relying on accidental numeric cancellation. After the support-only
+schedule gate, consume one equation revision to synthesize a concrete
+gadget-indexed operator tensor or a scoped obstruction, then gate any
+secret-dependent relinearization before complete-cost work. Register a finite
+set of Candidate C mechanisms and subject each to phase, rank-growth, closure,
 relinearization, complete-cost, and Amdahl gates. This plan changes no C hot
 path; a passing mechanism receives a separate key/security/noise and
 implementation plan.
@@ -43,8 +46,11 @@ anchors.
 - C is rejected before hot-path work if rank reaches the lane maximum
   immediately, if compression is required after every CMUX/NCMUX, or if the
   complete-cost projection is nonpositive.
-- At most one Candidate C equation revision may be consumed by this plan.
-  No kernel-layout or full-SAB-integration budget is consumed.
+- Task 3A consumes the one permitted Candidate C equation revision described
+  by
+  `docs/superpowers/specs/2026-07-17-candidate-c-operator-tensor-revision-design.md`.
+  No further equation rewrite, kernel-layout budget, or full-SAB-integration
+  budget is permitted.
 - Do not modify C/C++ sources, headers, `main.c`, or `Makefile`.
 - Add no dependency.
 - Failed evidence is `INCONCLUSIVE`; only a fully evaluated mechanism may be
@@ -344,6 +350,371 @@ anchors.
   git commit -m "research: replay Candidate C SAB rank schedule"
   ```
 
+### Task 3A: Synthesize Or Obstruct The Concrete C1 Operator Tensor
+
+**Files:**
+- Create: `research/mat_sab/candidate_c_operator_tensor.py`
+- Create: `tests/research/test_candidate_c_operator_tensor.py`
+- Create: `theory_checks/candidate_c_operator_tensor.md`
+
+**Interfaces:**
+- Consumes:
+  `docs/superpowers/specs/2026-07-17-candidate-c-operator-tensor-revision-design.md`,
+  `MaskSpanState`, Task 3's exact schedule metadata, the Stage203
+  support-only map, Candidate A's phase solver, the Stage222 lane-local
+  compact operator, and the current exact-dense MAT keygen/operator.
+- Produces:
+
+  ```text
+  PhaseProjection
+  OperatorTensor
+  EvaluatorSampleRelationAudit
+  OperatorGateResult
+  build_phase_projection(public_lambda, secrets, mu, modulus)
+  build_dense_control_tensor(r, mu, secrets, gadget, n, modulus)
+  build_rank_bounded_tensor(
+      r, rho, mu, secrets, gadget, n, modulus, public_lambda)
+  verify_phase_identity(tensor, projection)
+  concatenated_mask_difference_rank(tensor)
+  build_evaluator_sample_matrix(tensor)
+  audit_evaluator_sample_relations(tensor, projection)
+  run_c1_operator_gate(root, r, modulus)
+  ```
+
+- [ ] **Step 1: Write equation and source-binding tests**
+
+  Fix `d=rho+1`, one public `Lambda in GF(257)^(r x d)`, the exact surrogate
+  ring `GF(257)[X]/(X^8+1)`, and ordered input components
+
+  ```text
+  M_0,...,M_(d-1),B_0,...,B_(r-1).
+  ```
+
+  Require separate `K_0` and `K_1` tensor objects and
+
+  ```text
+  P_Lambda[q,M_u] = -Lambda[q,u] s_q
+  P_Lambda[q,B_j] = 1 if q=j and 0 otherwise
+  B_mu[t,q,c] - s_q sum_v Lambda[q,v] A_mu[t,v,c]
+    = mu h_t P_Lambda[q,c].
+  ```
+
+  Require every `A_mu`, `B_mu`, and `s_q` entry to be a length-8 polynomial
+  vector and every multiplication to use exact negacyclic convolution.
+
+  Bind the dense control to current MAT keygen/operator source tokens. Bind
+  Stage203 as support-only and reject any attempt to read coefficients from
+  it.
+
+- [ ] **Step 2: Verify RED**
+
+  Run:
+
+  ```text
+  python -m unittest tests.research.test_candidate_c_operator_tensor -v
+  ```
+
+  Expected: import failure because the operator module does not exist.
+
+- [ ] **Step 3: Implement exact tensor and phase controls**
+
+  Use exact arithmetic in `GF(257)[X]/(X^8+1)` and test `r=2,4,6`,
+  `mu=0,1`, every gadget level, input component, and coefficient basis
+  vector. The dense positive control must satisfy the phase identity. A
+  phase mutation in one `(mu,t,c,q,coefficient)` entry must fail the same
+  verifier.
+
+- [ ] **Step 4: Implement the arbitrary-input rank gate**
+
+  Let `L=I-1e_0^T` and
+
+  ```text
+  Abar_mu[t,q,c] = sum_v Lambda[q,v] A_mu[t,v,c].
+  ```
+
+  Replace every `A_mu[t,v,c]` polynomial by its `8 x 8` negacyclic
+  convolution matrix and concatenate the basis-output blocks into
+  `R_mu in GF(257)^(d*8 x ell*(d+r)*8)`. Define
+  `T_mu=(Lambda tensor I_8)R_mu`, equivalently the lane-stacked convolution
+  matrix of every `Abar`, so
+  `T_mu in GF(257)^(r*8 x ell*(d+r)*8)`. Require
+
+  ```text
+  ((L tensor I_8) T_mu)
+    = ((L Lambda) tensor I_8) R_mu
+  rank((L tensor I_8) T_mu) <= min(2,r-1) * 8.
+  ```
+
+  Do not call this field rank `rho`; it is the exact finite surrogate of
+  module rank `rho`. Do not infer it from Stage203 support. Add a full-rank
+  C0 control, a common-`Lambda` rank-two control, and a control where each
+  level separately satisfies the field bound but their joint span exceeds
+  `rho*8`.
+
+- [ ] **Step 5: Implement the evaluator-sample relation preflight**
+
+  Audit `K_0` and `K_1` separately. For one fixed `mu`, put
+  `m=ell*(d+r)`. Build
+  `S_mu in GF(257)^(m x d*8)`, whose row `(t,c)` concatenates the
+  coefficients of every `A_mu[t,v,c]`, and
+  `M_mu,q in GF(257)^(m x 8)`, whose row contains the corresponding
+  lane-q phase/message polynomial. For every exact scalar relation
+  `z in GF(257)^m` in the left kernel of `S_mu`, compute the retained
+  message separately for each secret lane:
+
+  ```text
+  z^T S_mu = 0
+  z^T M_mu,q for q=0,...,r-1
+  ```
+
+  Include:
+
+  ```text
+  shared-mask PVW control -> no unsupported insecurity decision
+  independent-mask dense control -> no unsupported insecurity decision
+  explicit same-secret zero-error cancellation -> decisive synthetic FAIL
+  one sample/message mutation -> changed diagnostic
+  ```
+
+  For every retained-message relation, record centered coefficients, L1/L2
+  norms, retained centered message gap, symbolic error multiplier, and any
+  registered sigma/error inequality. Without a registered error distribution
+  and decision inequality, emit
+  `RELATION_RECORDED_NO_SECURITY_DECISION`; containment failure alone cannot
+  reject C1. Only a registered inequality proving distinguishability after
+  combined relation error may emit
+  `REGISTERED_SHORT_ERROR_RELATION_FAIL`. State that this is a finite
+  diagnostic, not an RLWE/PVW security proof or a universal impossibility
+  theorem.
+
+- [ ] **Step 6: Count the complete evaluator object**
+
+  Count mask roots, body polynomials, gadget rows, decomposition inputs,
+  add-multiplies, transforms, public mixing coefficients, and bytes. A
+  factorization that reconstructs `Theta(r^2)` body work cannot pass the
+  structural improvement gate.
+
+- [ ] **Step 7: Emit one terminal C1 decision**
+
+  The only decisions are:
+
+  ```text
+  ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY
+  ROUTE_PHASE_CORRECT_HIGH_RANK_OPERATOR_TO_C2
+  REJECT_C1_PHASE_IDENTITY_TERMINAL
+  REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL
+  REJECT_C1_REGISTERED_SHORT_ERROR_RELATION_TERMINAL
+  TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED
+  ```
+
+  The C2 route must include a concrete, hash-bound, phase-correct seed tensor.
+  A phase failure or nonpositive C1 structural cost is terminal because
+  relinearization cannot repair it. The sample-relation record is attached
+  but cannot become a security verdict without its missing noise inequality.
+  A registered `REGISTERED_SHORT_ERROR_RELATION_FAIL` is terminal and
+  explicitly excludes both admission and C2 routing. A decision must be
+  derived from phase, joint-rank, relation status, and evaluator counts;
+  changing only the decision field must fail.
+
+- [ ] **Step 8: Write the theory record**
+
+  Record equations, matrix orientations, dimensions, exact controls, result
+  scope, and the next route. The record must distinguish a concrete tensor
+  from support-only and random finite witnesses.
+
+- [ ] **Step 9: Run focused and full tests**
+
+  Expected: all exact controls pass, every C1 result is derived from a
+  complete finite tensor or becomes terminal inconclusive, and the full
+  research suite remains green.
+
+- [ ] **Step 10: Commit**
+
+  ```text
+  git add research/mat_sab/candidate_c_operator_tensor.py \
+    tests/research/test_candidate_c_operator_tensor.py \
+    theory_checks/candidate_c_operator_tensor.md
+  git commit -m "research: gate Candidate C operator tensor"
+  ```
+
+### Task 3B: Specify And Gate C2 Secret-Dependent Relinearization
+
+**Files:**
+- Create: `research/mat_sab/candidate_c_relinearization.py`
+- Create: `tests/research/test_candidate_c_relinearization.py`
+- Create: `theory_checks/candidate_c_relinearization.md`
+
+**Interfaces:**
+- Consumes: Task 3's exact event stream and only a Task 3A
+  `ROUTE_PHASE_CORRECT_HIGH_RANK_OPERATOR_TO_C2` result carrying its
+  hash-bound phase-correct seed tensor, projection, sample-relation audit,
+  and structural evaluator counts. A phase-invalid or evidence-inconclusive
+  C1 result cannot enter Task 3B.
+- Produces:
+
+  ```text
+  AccumulatorDependencyGraph
+  RelinearizationSpec
+  ConversionMaterial
+  ConversionCost
+  build_accumulator_dependency_graph(schedule)
+  verify_relinearization_phase(spec)
+  derive_conversion_material(spec)
+  count_conversion_work(spec, schedule)
+  classify_public_block(schedule, B)
+  run_c2_relinearization_gate(root, r, B, modulus)
+  ```
+
+- [ ] **Step 1: Write dependency-graph tests**
+
+  Assign every selector output an identity
+
+  ```text
+  (monomial_call, bit, accumulator_index)
+  ```
+
+  and connect it to its exact next consumer. Prove by test that consecutive
+  selector events in one loop usually update independent accumulator
+  indices; they are not repeated updates of one state.
+
+- [ ] **Step 2: Verify RED**
+
+  Expected: import failure for the relinearization module.
+
+- [ ] **Step 3: Define the phase-preserving conversion**
+
+  Require for every lane:
+
+  ```text
+  tilde_b_q = b_q + (tilde_a_q-a_q) s_q
+  phase(tilde_a_q,tilde_b_q) = phase(a_q,b_q).
+  ```
+
+  A public projection without correction material must fail. A finite
+  secret-aware positive control must pass. A correction-sign mutation must
+  fail the same phase verifier.
+
+- [ ] **Step 4: Register evaluation material**
+
+  Name every key sample needed to evaluate the secret-dependent correction.
+  Record source secret, target mask basis, gadget levels, error term, public
+  metadata, and consumer. Missing material is inconclusive, not zero cost.
+
+- [ ] **Step 5: Separate postponement from batching**
+
+  For every `B in {1,2,4,8,16,32,64}`, classify whether the block:
+
+  ```text
+  postpones conversion on one live state
+  batches B independent states
+  crosses a butterfly-bit dependency boundary
+  requires conversion before the next selector
+  ```
+
+  Do not divide conversion work by `B` unless one registered cryptographic
+  product actually serves all `B` states.
+
+- [ ] **Step 6: Count structural conversion cost**
+
+  Count discarded directions, decompositions, forward transforms,
+  key-sample products, inverse transforms, additions, key bytes, and scratch.
+  Bind dense comparison counts to Task 3A. Reject an omitted correction or
+  a denominator that assumes free batching.
+
+- [ ] **Step 7: Emit one terminal C2 decision**
+
+  The only decisions are:
+
+  ```text
+  ADMIT_C2_RELINEARIZATION_TO_SCHEDULE_REPLAY
+  REJECT_C2_CONVERSION_CLOSURE
+  REJECT_C2_NONPOSITIVE_STRUCTURAL_COST
+  TERMINAL_INCONCLUSIVE_C2_EVIDENCE_EXHAUSTED
+  ```
+
+  Incomplete evidence selects the explicit terminal-inconclusive artifact; it
+  cannot be converted to rejection or passed to schedule replay.
+
+- [ ] **Step 8: Run tests and commit**
+
+  ```text
+  git add research/mat_sab/candidate_c_relinearization.py \
+    tests/research/test_candidate_c_relinearization.py \
+    theory_checks/candidate_c_relinearization.md
+  git commit -m "research: gate Candidate C relinearization"
+  ```
+
+### Task 3C: Replay Only A Registered Candidate C Operator
+
+**Files:**
+- Create: `research/mat_sab/candidate_c_registered_replay.py`
+- Create: `tests/research/test_candidate_c_registered_replay.py`
+
+**Interfaces:**
+- Consumes: Task 3's source-bound event iterator and exactly one terminal
+  Task 3A/3B result: an admitted C1 tensor, an admitted C2 tensor plus
+  conversion specification, a scoped rejection, or terminal inconclusive
+  evidence exhaustion.
+- Produces:
+
+  ```text
+  RegisteredScheduleTrace
+  RegisteredOperatorArtifact
+  CandidateCTerminalRecord
+  replay_registered_operator(root, operator_result, conversion_result)
+  registered_operator_for_task4(root)
+  terminal_record_for_task5(root)
+  ```
+
+- [ ] **Step 1: Write admission-binding tests**
+
+  Reject support-only Stage203 rows, random Stage329 matrices, a fabricated
+  C1 decision, and a C2 decision without conversion material. Accept only an
+  object whose recomputed canonical hash binds:
+
+  ```text
+  all K_0/K_1 tensor coefficients
+  dimensions and GF(257)/n/gadget parameters
+  public Lambda and finite secret witnesses
+  source-anchor hashes
+  exact Task 3 schedule hash
+  Task 3A equation/gate result
+  all C2 conversion material and structural costs, when present
+  terminal decision
+  ```
+
+- [ ] **Step 2: Verify RED**
+
+  Expected: import failure for the registered replay module.
+
+- [ ] **Step 3: Replay per-state phase and rank**
+
+  Traverse all `573440` selector events and exact boundaries. Propagate each
+  accumulator-state identity separately. Verify phase and rank after every
+  operator and every registered conversion; do not extrapolate one state to
+  unrelated indices.
+
+- [ ] **Step 4: Add adversarial controls**
+
+  Mutate one tensor coefficient, one state edge, one conversion boundary,
+  and one conversion-key identity. Each must fail a distinct recomputed gate.
+
+- [ ] **Step 5: Authorize or block Task 4**
+
+  `registered_operator_for_task4` returns exactly one admitted, hash-bound
+  C1/C2 object or raises `NoRegisteredCandidateCOperator`. Task 4 must not run
+  on that exception. Rejected and terminal-inconclusive routes instead emit
+  one `CandidateCTerminalRecord` for Task 5; neither can be silently converted
+  to the other.
+
+- [ ] **Step 6: Run tests and commit**
+
+  ```text
+  git add research/mat_sab/candidate_c_registered_replay.py \
+    tests/research/test_candidate_c_registered_replay.py
+  git commit -m "research: replay registered Candidate C operator"
+  ```
+
 ### Task 4: Build Complete-Cost And Amdahl Gates
 
 **Files:**
@@ -352,6 +723,10 @@ anchors.
 - Create: `theory_checks/candidate_c_complete_cost.md`
 
 **Interfaces:**
+- Consumes: exactly one object returned by
+  `registered_operator_for_task4(root)`, including its complete canonical
+  object hash. If no registered operator exists, Task 4 is skipped and Task
+  3C routes its terminal record directly to Task 5.
 - Produces:
 
   ```text
@@ -435,6 +810,8 @@ anchors.
 - Create: `algorithm_variants/candidate_c_rank_bounded_state.md`
 - Create: `experiments/candidate_c_rank_bounded_gate_plan.md`
 - Create: `repro/candidate_c_rank_bounded_gate/`
+- Modify: `scripts/mat_sab_research_state.py`
+- Modify: `tests/research/test_research_state.py`
 - Modify through closeout only: `research_state.yaml`
 - Modify through closeout only: `hypotheses/hypothesis_register.yaml`
 - Modify through closeout only: `repro/run_log.csv`
@@ -446,14 +823,19 @@ anchors.
 ```text
 ADMIT_CANDIDATE_C_KEY_SECURITY_NOISE_PREFLIGHT
 REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED
+INCONCLUSIVE_CANDIDATE_C_EVIDENCE_EXHAUSTED
 ```
 
 - [ ] **Step 1: Write gate tests**
 
   Require source, equation, symbolic independence, phase, schedule, rank,
   compression, complete-cost, and Amdahl fields in one canonical summary.
-  Failed evidence raises an inconclusive error. A decision cannot be changed
-  independently of its mechanism fields.
+  When Task 4 is skipped, complete-cost and Amdahl fields remain present with
+  exact status `SKIPPED_NO_REGISTERED_OPERATOR` and no fabricated numeric
+  values.
+  A scoped mechanism failure selects REJECT. Missing evidence selects the
+  explicit terminal INCONCLUSIVE decision. Neither may be changed
+  independently of its mechanism fields or terminal Task 3C record.
 
 - [ ] **Step 2: Write generator tests**
 
@@ -463,6 +845,11 @@ REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED
   summary.csv
   source_mapping.csv
   schedule_trace.csv
+  operator_tensor.csv
+  evaluator_sample_relations.csv
+  conversion_material.csv
+  registered_object_hash.csv
+  terminal_record.csv
   rank_growth.csv
   compression_gate.csv
   complete_cost.csv
@@ -482,13 +869,22 @@ REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED
   Admit only if one registered C1/C2 mechanism passes every gate with
   `max_rho<=2`, public compression interval at least `B_min`, exact phase
   preservation, closed next-state consumption, and positive central Amdahl
-  projection. Otherwise reject C and exhaust the finite A/B/C campaign.
+  projection. Select REJECT only for a fully evaluated scoped mechanism
+  failure. Select INCONCLUSIVE only for a hash-bound terminal evidence-
+  exhaustion record. Task 4 fields are numeric on ADMIT/REJECT-after-cost and
+  present with `SKIPPED_NO_REGISTERED_OPERATOR` on a skipped route.
 
 - [ ] **Step 4: Write atomic closeout tests**
 
-  Test ADMIT and REJECT in temporary roots. On ADMIT, C advances only to
-  `ADVERSARIAL_CHECKER_PASS`; production permission remains false. On REJECT,
-  set:
+  Extend the research-state validator with terminal candidate status
+  `INCONCLUSIVE` and goal status `RESEARCH_CAMPAIGN_INCONCLUSIVE`. This state
+  is valid only when A and B are `REJECTED`, C is active and
+  `INCONCLUSIVE`, paper gate is `BLOCKED`, and production permission is
+  false.
+
+  Test ADMIT, REJECT, and INCONCLUSIVE in temporary roots. On ADMIT, C
+  advances only to `ADVERSARIAL_CHECKER_PASS`; production permission remains
+  false. On REJECT, set:
 
   ```text
   C = REJECTED
@@ -498,9 +894,18 @@ REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED
   production_hot_path_permission = false
   ```
 
-  This is the exact terminal state already enforced by
-  `scripts/mat_sab_research_state.py`; do not substitute
-  `EXTERNAL_BLOCKED`, which is reserved for unavailable external evidence.
+  On INCONCLUSIVE, set:
+
+  ```text
+  C = INCONCLUSIVE
+  active_candidate = C
+  goal_status = RESEARCH_CAMPAIGN_INCONCLUSIVE
+  paper_gate = BLOCKED
+  production_hot_path_permission = false
+  ```
+
+  Do not substitute `EXTERNAL_BLOCKED`, which remains reserved for
+  unavailable external evidence.
 
 - [ ] **Step 5: Preserve legacy run-log rows safely**
 
@@ -535,3 +940,7 @@ speedup claim.
 - On REJECT: the finite A/B/C mechanism campaign is exhausted. Preserve the
   exact-dense PVW/MAT-SAB implementation and its scoped measured result; do
   not invent Candidate D automatically.
+- On INCONCLUSIVE: close this finite equation budget without claiming
+  mechanism failure. Preserve the exact missing-evidence boundary and do not
+  resume Candidate C or invent Candidate D without a separately approved
+  research design.
