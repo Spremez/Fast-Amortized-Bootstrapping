@@ -11,6 +11,16 @@ from typing import Mapping
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_STATE = ROOT / "research_state.yaml"
 ORDER = ("A", "B", "C")
+APPROVED_CONTRACT = (
+    "docs/superpowers/specs/"
+    "2026-07-16-ccs-usenix-mat-sab-research-contract-design.md"
+)
+APPROVED_VENUE = "CCS_USENIX_SECURITY"
+PRIMARY_METRIC = "complete_sab_T_bootstrap_over_r"
+APPROVED_BASELINES = {
+    "B0": "repeated_scalar_SAB",
+    "B1": "exact_dense_PVW_MAT_SAB_current_head",
+}
 PIPELINE = (
     "INTAKE",
     "TECHGRAPH_ANCHORED",
@@ -22,6 +32,38 @@ PIPELINE = (
     "FULL_SAB_PASS",
     "PAPER_GATE_PASS",
 )
+DECISION_REGISTRY = {
+    "CANDIDATE_A_TECHGRAPH_ANCHORED": {
+        "candidate": "A",
+        "from_status": "INTAKE",
+        "to_status": "TECHGRAPH_ANCHORED",
+        "evidence_type": "technical_graph_artifact",
+        "evidence_path": "paper_techgraphs/2025_686_mat_sab_selector.yaml",
+    },
+    "CANDIDATE_A_PRODUCTION_EQUATIONS_DEFINED": {
+        "candidate": "A",
+        "from_status": "TECHGRAPH_ANCHORED",
+        "to_status": "EQUATIONS_DEFINED",
+        "evidence_type": "derivation_artifact",
+        "evidence_path": (
+            "theory_checks/candidate_a_star_cycle_production_equations.md"
+        ),
+    },
+    "ADMIT_CANDIDATE_A_REVISION_OR_KEYGEN_PREFLIGHT": {
+        "candidate": "A",
+        "from_status": "EQUATIONS_DEFINED",
+        "to_status": "ADVERSARIAL_CHECKER_PASS",
+        "evidence_type": "checker_summary",
+        "evidence_path": "repro/candidate_a_star_cycle_gate/summary.csv",
+    },
+    "REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B": {
+        "candidate": "A",
+        "from_status": "EQUATIONS_DEFINED",
+        "to_status": "REJECTED",
+        "evidence_type": "checker_summary",
+        "evidence_path": "repro/candidate_a_star_cycle_gate/summary.csv",
+    },
+}
 
 
 def load_state(path: Path = DEFAULT_STATE) -> dict[str, object]:
@@ -33,10 +75,16 @@ def load_state(path: Path = DEFAULT_STATE) -> dict[str, object]:
 def validate_state(state: Mapping[str, object]) -> None:
     if state.get("schema_version") != 1:
         raise ValueError("schema_version must be 1")
+    if state.get("contract") != APPROVED_CONTRACT:
+        raise ValueError("contract changed")
+    if state.get("target_venue") != APPROVED_VENUE:
+        raise ValueError("target venue changed")
     if state.get("candidate_order") != list(ORDER):
         raise ValueError("candidate_order must be A, B, C")
-    if state.get("primary_metric") != "complete_sab_T_bootstrap_over_r":
+    if state.get("primary_metric") != PRIMARY_METRIC:
         raise ValueError("primary metric changed")
+    if state.get("baselines") != APPROVED_BASELINES:
+        raise ValueError("baselines changed")
     if state.get("goal_status") not in {
         "ACTIVE", "PAPER_READY", "ACCEPTED", "RESEARCH_CAMPAIGN_EXHAUSTED", "EXTERNAL_BLOCKED"
     }:
@@ -72,12 +120,45 @@ def validate_state(state: Mapping[str, object]) -> None:
             raise ValueError("candidates before the active candidate must be rejected")
         if any(candidates[name]["status"] != "QUEUED" for name in ORDER[active_index + 1:]):
             raise ValueError("candidates after the active candidate must be queued")
-    if state.get("paper_gate") == "PASS" and state.get("goal_status") not in {"PAPER_READY", "ACCEPTED"}:
+    paper_gate = state.get("paper_gate")
+    if paper_gate not in {"BLOCKED", "PASS"}:
+        raise ValueError("invalid paper_gate")
+    if paper_gate == "PASS" and state.get("goal_status") not in {"PAPER_READY", "ACCEPTED"}:
         raise ValueError("paper gate and goal status disagree")
-    if state.get("goal_status") in {"PAPER_READY", "ACCEPTED"} and state.get("paper_gate") != "PASS":
+    if state.get("goal_status") in {"PAPER_READY", "ACCEPTED"} and paper_gate != "PASS":
         raise ValueError("completed paper state requires paper gate pass")
-    if state.get("production_hot_path_permission") not in {True, False}:
+    permission = state.get("production_hot_path_permission")
+    if not isinstance(permission, bool):
         raise ValueError("production_hot_path_permission must be boolean")
+    active_status = candidates[state["active_candidate"]]["status"]
+    amdahl_index = PIPELINE.index("AMDAHL_PROJECTION_PASS")
+    if permission and (
+        active_status not in PIPELINE
+        or PIPELINE.index(active_status) < amdahl_index
+    ):
+        raise ValueError(
+            "production hot path permission requires AMDAHL_PROJECTION_PASS"
+        )
+    history = state.get("transition_history")
+    if not isinstance(history, list):
+        raise ValueError("transition_history must be a list")
+    for index, row in enumerate(history):
+        if not isinstance(row, Mapping):
+            raise ValueError(f"invalid transition_history row {index}")
+        decision = row.get("decision")
+        registered = DECISION_REGISTRY.get(decision)
+        if registered is None:
+            raise ValueError(f"invalid transition_history row {index}")
+        expected = {
+            "candidate": registered["candidate"],
+            "from_status": registered["from_status"],
+            "to_status": registered["to_status"],
+            "decision": decision,
+            "evidence_type": registered["evidence_type"],
+            "evidence_path": registered["evidence_path"],
+        }
+        if dict(row) != expected:
+            raise ValueError(f"invalid transition_history row {index}")
 
 
 def transition_candidate(
@@ -95,8 +176,25 @@ def transition_candidate(
         allowed = allowed and PIPELINE[PIPELINE.index(current) + 1] == to_status
     if not allowed:
         raise ValueError(f"invalid transition {candidate}: {current} -> {to_status}")
+    registered = DECISION_REGISTRY.get(decision)
+    if registered is None:
+        raise ValueError(f"unknown transition decision {decision}")
+    if (
+        registered["candidate"],
+        registered["from_status"],
+        registered["to_status"],
+    ) != (candidate, current, to_status):
+        raise ValueError("decision does not match transition")
     changed["candidates"][candidate]["status"] = to_status
     changed["last_decision"] = decision
+    changed["transition_history"].append({
+        "candidate": candidate,
+        "from_status": current,
+        "to_status": to_status,
+        "decision": decision,
+        "evidence_type": registered["evidence_type"],
+        "evidence_path": registered["evidence_path"],
+    })
     if to_status == "REJECTED":
         index = ORDER.index(candidate)
         if index + 1 == len(ORDER):
