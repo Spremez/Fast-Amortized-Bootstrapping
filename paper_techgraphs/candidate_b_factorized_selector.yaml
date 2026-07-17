@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "candidate": "B",
+  "name": "Factorized Star-Cycle",
+  "design": "docs/superpowers/specs/2026-07-17-candidate-b-factorized-gate-design.md",
+  "plan": "docs/superpowers/plans/2026-07-17-candidate-b-factorized-mechanism-gate.md",
+  "research_question": "Can the complete current standard-PVW MAT_TRGSW selector be evaluated with Theta(r) encrypted work while preserving one-mask r-body closure and without moving dense work into another primitive?",
+  "production_hot_path_permission": false,
+  "coordinate_order": [
+    "a_0",
+    "...",
+    "a_(k-1)",
+    "b_0",
+    "...",
+    "b_(r-1)"
+  ],
+  "source_anchors": [
+    {
+      "id": "pvw_ciphertext_type",
+      "path": "src/mosfhet/include/mosfhet.h",
+      "symbol_or_token": "typedef struct _PVW_TMLWE{",
+      "role": "Declares k shared mask polynomials and r body polynomials.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "pvw_sample",
+      "path": "src/mosfhet/src/pvwtmlwe.c",
+      "symbol_or_token": "void pvmtmlwe_sample(",
+      "role": "Samples masks and independent body errors, then forms b = a S + e + m.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "pvw_phase",
+      "path": "src/mosfhet/src/pvwtmlwe.c",
+      "symbol_or_token": "void pvmtmlwe_phase(",
+      "role": "Computes the r-body phase map P(a,b) = b - a S.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "torus_error_sampler",
+      "path": "src/mosfhet/src/misc.c",
+      "symbol_or_token": "out[i] = double2torus(generate_normal_random(sigma));",
+      "role": "Samples every torus error coefficient through the rounded normal sampler.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "mat_selector_sample",
+      "path": "src/mosfhet/src/mattrgsw.c",
+      "symbol_or_token": "void mat_trgsw_monomial_sample(",
+      "role": "Creates T(k+r) independently randomized PVW rows and injects the gadget selector on the diagonal.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "dense_external_product",
+      "path": "src/mosfhet/src/mattrgsw.c",
+      "symbol_or_token": "void mat_trgsw_mul_pvmtmlwe_DFT(",
+      "role": "Decomposes all input coordinates and contracts selector rows into every output coordinate.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "sab_pvw_cmux",
+      "path": "src/sab_pvw.c",
+      "symbol_or_token": "void sab_pvw_CMUX(",
+      "role": "Consumes the MAT external product inside the PVW SAB butterfly.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "target_k_t_one",
+      "path": "main.c",
+      "symbol_or_token": "return (SAB_PVW_Target_Params){2048, 1, 2048, 1, 1, 23, 3, 39, 7,",
+      "role": "Anchors the default target out_k=1 and gadget level l=1 used by the (r+1)^2 count.",
+      "anchor_status": "PASS"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "pvw_state",
+      "layer": "implementation",
+      "statement": "A PVW_TMLWE ciphertext has k shared masks, r bodies, and phase P(a,b) = b - a S."
+    },
+    {
+      "id": "standard_selector_distribution",
+      "layer": "cryptographic_mechanism",
+      "claim_scope": "complete_encrypted_distribution",
+      "statement": "Each MAT_TRGSW row is a freshly randomized PVW encryption with an independent body-error vector before diagonal gadget injection."
+    },
+    {
+      "id": "dense_selector_matrix",
+      "layer": "algebra",
+      "statement": "C = mu h I_(k+r) + V [I_k | S] + [0 | E]."
+    },
+    {
+      "id": "phase_identity",
+      "layer": "algebra",
+      "statement": "P(d^T C) = mu h P(d) + d^T E."
+    },
+    {
+      "id": "star_cycle_semantics",
+      "layer": "semantic_map",
+      "claim_scope": "semantic_support_only",
+      "proves_standard_distribution": false,
+      "statement": "Stage203 and Stage329 establish the intended 4r shared-row, shared-column, diagonal, and cycle equation support only."
+    },
+    {
+      "id": "independent_error_rank",
+      "layer": "distribution_support",
+      "statement": "Explicit sampler inputs witness both parities; phi(f)=f(1) mod 2 maps a supported parity-pattern error matrix to rank r, so E = U V with q<r cannot represent the complete support."
+    },
+    {
+      "id": "one_mask_closure",
+      "layer": "state_invariant",
+      "statement": "Every admitted mechanism must return one shared output mask and r bodies, including neighbor and cycle effects."
+    },
+    {
+      "id": "factor_cost_gate",
+      "layer": "cost",
+      "statement": "Count polynomial components, decompositions, DFTs, add-multiplies, key material, conversions, relinearization, and key switching."
+    },
+    {
+      "id": "complete_sab_gate",
+      "layer": "endpoint",
+      "statement": "Only complete T_bootstrap/r against repeated scalar SAB and exact-dense MAT-SAB can support a bootstrapping acceleration claim."
+    }
+  ],
+  "edges": [
+    {
+      "from": "pvw_state",
+      "to": "standard_selector_distribution",
+      "relation": "defines_row_ciphertext_type"
+    },
+    {
+      "from": "standard_selector_distribution",
+      "to": "dense_selector_matrix",
+      "relation": "induces"
+    },
+    {
+      "from": "dense_selector_matrix",
+      "to": "phase_identity",
+      "relation": "cancels_mask_randomization_under_phase"
+    },
+    {
+      "from": "star_cycle_semantics",
+      "to": "standard_selector_distribution",
+      "relation": "does_not_imply"
+    },
+    {
+      "from": "standard_selector_distribution",
+      "to": "independent_error_rank",
+      "relation": "contains_full_rank_error_support"
+    },
+    {
+      "from": "star_cycle_semantics",
+      "to": "one_mask_closure",
+      "relation": "requires_neighbor_capable_realization"
+    },
+    {
+      "from": "independent_error_rank",
+      "to": "factor_cost_gate",
+      "relation": "blocks_exact_q_less_than_r_factorization"
+    },
+    {
+      "from": "one_mask_closure",
+      "to": "complete_sab_gate",
+      "relation": "is_required_before_endpoint_measurement"
+    },
+    {
+      "from": "factor_cost_gate",
+      "to": "complete_sab_gate",
+      "relation": "prevents_hidden_dense_work"
+    }
+  ],
+  "historical_evidence": [
+    {
+      "id": "stage203_semantic_support",
+      "path": "repro/stage203_production_selector_equation_probe/equation_map.csv",
+      "claim": "Four semantic equation families and 4r active support were mapped."
+    },
+    {
+      "id": "stage139_closure_failure",
+      "path": "repro/stage139_compact_closure_audit/summary.csv",
+      "claim": "The lane-local compact output did not close as one-mask PVW."
+    },
+    {
+      "id": "stage249_distribution_boundary",
+      "path": "repro/stage249_structured_compact_distribution_security/claim_boundary.csv",
+      "claim": "Public deletion, zeros, or forced mask relations did not establish a standard secure distribution."
+    },
+    {
+      "id": "stage329_finite_checker",
+      "path": "repro/stage329_formal_compact_selector_checker/summary.csv",
+      "claim": "Finite semantic checks passed without proving key distribution, noise, or complete SAB performance."
+    }
+  ],
+  "equation_obligations": {
+    "general_k": "C = mu h I_(k+r) + V [I_k | S] + [0 | E]",
+    "target_k1": "C = mu h I_m + v w^T + [0 | E], where m=r+1 and w^T=(1,s_0,...,s_(r-1))",
+    "phase": "P(d^T C) = mu h P(d) + d^T E",
+    "rank_boundary": "rank_GF(2)(phi(U V)) <= q, while a supported witness has rank_GF(2)(phi(E))=r",
+    "dense_work": "At k=T=1, m^2=(r+1)^2 polynomial add-multiply terms are exposed by the dense contraction."
+  },
+  "work_count_policy": [
+    "Count polynomial components rather than names of vector ciphertext objects.",
+    "Count decomposition and DFT streams.",
+    "Count polynomial add-multiply and accumulation work.",
+    "Count key bytes, conversion work, relinearization, key switching, and scratch.",
+    "Require q=O(1) for Theta(r) complete work in the generic dense-factor path.",
+    "Treat generic dense-factor counts as implementation counts, not universal arithmetic lower bounds.",
+    "Do not claim endpoint improvement before complete T_bootstrap/r measurement."
+  ],
+  "candidate_state": {
+    "candidate": "B",
+    "repository_status": "INTAKE",
+    "in_memory_progression": [
+      "INTAKE",
+      "TECHGRAPH_ANCHORED",
+      "EQUATIONS_DEFINED"
+    ],
+    "repository_state_mutated": false,
+    "reason": "Task 1 validates source and equation prerequisites without applying the campaign state transition."
+  },
+  "claim_boundary": {
+    "allowed": "The current source flow and the exact standard-PVW factorization obligations are anchored.",
+    "blocked": [
+      "A general impossibility result for compact MAT-SAB",
+      "Security of a correlated or low-rank replacement distribution",
+      "Noise correctness for a redesigned selector",
+      "Kernel or complete-SAB speedup",
+      "A new bootstrapping algorithm or novelty claim"
+    ]
+  },
+  "claim_gates": {
+    "security": "BLOCKED",
+    "noise": "BLOCKED",
+    "kernel_speedup": "BLOCKED",
+    "complete_sab_speedup": "BLOCKED",
+    "novelty": "BLOCKED",
+    "production_algorithm": "BLOCKED"
+  }
+}
