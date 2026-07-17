@@ -45,3 +45,10 @@ flowchart TD
 | neighbor_gap | `repro/stage222_isolated_compact_ep_integration/expressiveness_results.csv` | PASS |
 | distribution_blocker | `repro/stage249_structured_compact_distribution_security/claim_boundary.csv` | PASS |
 | finite_semantic_zero | `repro/stage329_formal_compact_selector_checker/summary.csv` | PASS |
+
+## Reproduction
+
+```powershell
+python scripts/build_mat_sab_selector_techgraph.py
+python -m unittest discover -s tests/research -p "test_*.py" -v
+```

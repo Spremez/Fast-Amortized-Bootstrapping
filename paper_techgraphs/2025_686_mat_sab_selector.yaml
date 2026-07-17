@@ -3,6 +3,7 @@
   "contract": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
   "candidate": "A",
   "production_code_permission": false,
+  "reproduction_command": "python scripts/build_mat_sab_selector_techgraph.py",
   "nodes": [
     {
       "id": "sab_schedule",

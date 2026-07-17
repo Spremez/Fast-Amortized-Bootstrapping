@@ -11,6 +11,10 @@ OUT_DIR = ROOT / "paper_techgraphs"
 JSON_OUT = OUT_DIR / "2025_686_mat_sab_selector.yaml"
 GRAPH_OUT = OUT_DIR / "2025_686_mat_sab_selector_graph.md"
 GAPS_OUT = OUT_DIR / "2025_686_mat_sab_selector_gaps.md"
+REPRODUCTION_COMMAND = "python scripts/build_mat_sab_selector_techgraph.py"
+DISCOVERY_COMMAND = (
+    'python -m unittest discover -s tests/research -p "test_*.py" -v'
+)
 
 NODE_SPECS = (
     ("sab_schedule", "src/sparse_amortized_bootstrap.c", "void RGSW_monomial_mul(", "scalar SAB butterfly and sparse schedule"),
@@ -70,6 +74,7 @@ def build_graph(root: Path = ROOT) -> dict[str, object]:
         "contract": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
         "candidate": "A",
         "production_code_permission": False,
+        "reproduction_command": REPRODUCTION_COMMAND,
         "nodes": [_node(root, spec) for spec in NODE_SPECS],
         "edges": [
             {"from": source, "to": target, "relation": relation}
@@ -77,6 +82,18 @@ def build_graph(root: Path = ROOT) -> dict[str, object]:
         ],
         "open_gaps": list(OPEN_GAPS),
     }
+
+
+def _reproduction_markdown(graph: Mapping[str, object]) -> list[str]:
+    return [
+        "",
+        "## Reproduction",
+        "",
+        "```powershell",
+        str(graph["reproduction_command"]),
+        DISCOVERY_COMMAND,
+        "```",
+    ]
 
 
 def _graph_markdown(graph: Mapping[str, object]) -> str:
@@ -93,6 +110,7 @@ def _graph_markdown(graph: Mapping[str, object]) -> str:
     lines.extend(["```", "", "## Anchors", "", "| node | path | status |", "| --- | --- | --- |"])
     for node in graph["nodes"]:
         lines.append(f'| {node["id"]} | `{node["path"]}` | {node["anchor_status"]} |')
+    lines.extend(_reproduction_markdown(graph))
     return "\n".join(lines) + "\n"
 
 
@@ -109,6 +127,7 @@ def _gaps_markdown(graph: Mapping[str, object]) -> str:
         "The next gate tests `P M = mu P` and the standard PVW randomization",
         "dimension. It does not infer cryptographic security from finite arithmetic.",
     ])
+    lines.extend(_reproduction_markdown(graph))
     return "\n".join(lines) + "\n"
 
 
