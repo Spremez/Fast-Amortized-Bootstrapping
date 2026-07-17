@@ -2,15 +2,15 @@
 
 ## Campaign State
 
-- Goal: `ACTIVE`
+- Goal: `RESEARCH_CAMPAIGN_EXHAUSTED`
 - Paper gate: `BLOCKED`
 - Candidate A: `REJECTED`
 - Candidate B: `REJECTED`
-- Candidate C: `INTAKE` (active)
-- Last decision: `REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C`
-- Disposition: Candidate B is closed after failing the exact standard-PVW factorization gate.
+- Candidate C: `REJECTED` (active)
+- Last decision: `REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED`
+- Disposition: The finite A/B/C mechanism campaign is exhausted; Candidate C closed on its scoped C1 nonpositive structural-cost failure.
 
-Candidate C is active at `INTAKE`; its equations and implementation have not begun.
+Task 3B and Task 4 were skipped; exact-dense PVW/MAT-SAB evidence is preserved; no Candidate D is opened automatically.
 
 ```mermaid
 flowchart TD

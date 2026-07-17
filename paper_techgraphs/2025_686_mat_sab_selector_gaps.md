@@ -2,15 +2,15 @@
 
 ## Campaign State
 
-- Goal: `ACTIVE`
+- Goal: `RESEARCH_CAMPAIGN_EXHAUSTED`
 - Paper gate: `BLOCKED`
 - Candidate A: `REJECTED`
 - Candidate B: `REJECTED`
-- Candidate C: `INTAKE` (active)
-- Last decision: `REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C`
-- Disposition: Candidate B is closed after failing the exact standard-PVW factorization gate.
+- Candidate C: `REJECTED` (active)
+- Last decision: `REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED`
+- Disposition: The finite A/B/C mechanism campaign is exhausted; Candidate C closed on its scoped C1 nonpositive structural-cost failure.
 
-Candidate C is active at `INTAKE`; its equations and implementation have not begun.
+Task 3B and Task 4 were skipped; exact-dense PVW/MAT-SAB evidence is preserved; no Candidate D is opened automatically.
 
 Production code permission: `false`.
 
@@ -18,11 +18,9 @@ The closed Candidate A result is a finite-field necessary-condition rejection; i
 
 ## Open Obligations
 
-- Candidate C rank-bounded shared-mask state equation gate (not begun)
-- phase and rank-growth checks for the admitted accumulator state
-- public relinearization cost and lane-phase preservation
-- Amdahl projection against exact-dense complete SAB
-- isolated kernel and complete-SAB evidence
+- Task 3B has no C2 seed or material; Task 4 is SKIPPED_NO_REGISTERED_OPERATOR with no numeric complete-cost or Amdahl values.
+- The exact-dense PVW/MAT-SAB implementation and its scoped measured result remain preserved.
+- No Candidate D is opened automatically; any continuation requires a separately approved research design.
 
 ## Reproduction
 

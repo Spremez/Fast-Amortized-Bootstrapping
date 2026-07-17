@@ -549,3 +549,11 @@
   `python scripts/run_candidate_b_factorized_gate.py` followed by
   `python scripts/apply_candidate_b_factorized_gate.py`.
 <!-- candidate-b-factorized-gate-checklist-end -->
+<!-- candidate-c-rank-bounded-gate-checklist-start -->
+- [x] Candidate C records `REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED` from hash-bound source,
+  equation, symbolic-independence, phase, schedule, rank, compression,
+  complete-cost, and Amdahl fields. Reproduce with
+  `python scripts/run_candidate_c_rank_bounded_gate.py` followed by
+  `python scripts/apply_candidate_c_rank_bounded_gate.py`; production hot-path
+  permission remains false.
+<!-- candidate-c-rank-bounded-gate-checklist-end -->

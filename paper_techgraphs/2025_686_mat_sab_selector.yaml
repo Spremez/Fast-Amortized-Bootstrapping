@@ -152,22 +152,20 @@
     }
   ],
   "campaign_state": {
-    "goal_status": "ACTIVE",
+    "goal_status": "RESEARCH_CAMPAIGN_EXHAUSTED",
     "paper_gate": "BLOCKED",
     "active_candidate": "C",
-    "active_candidate_status": "INTAKE",
+    "active_candidate_status": "REJECTED",
     "candidate_a_status": "REJECTED",
     "candidate_b_status": "REJECTED",
-    "candidate_c_status": "INTAKE",
-    "last_decision": "REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C"
+    "candidate_c_status": "REJECTED",
+    "last_decision": "REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED"
   },
-  "candidate_a_disposition": "Candidate B is closed after failing the exact standard-PVW factorization gate.",
-  "next_step": "Candidate C is active at `INTAKE`; its equations and implementation have not begun.",
+  "candidate_a_disposition": "The finite A/B/C mechanism campaign is exhausted; Candidate C closed on its scoped C1 nonpositive structural-cost failure.",
+  "next_step": "Task 3B and Task 4 were skipped; exact-dense PVW/MAT-SAB evidence is preserved; no Candidate D is opened automatically.",
   "open_gaps": [
-    "Candidate C rank-bounded shared-mask state equation gate (not begun)",
-    "phase and rank-growth checks for the admitted accumulator state",
-    "public relinearization cost and lane-phase preservation",
-    "Amdahl projection against exact-dense complete SAB",
-    "isolated kernel and complete-SAB evidence"
+    "Task 3B has no C2 seed or material; Task 4 is SKIPPED_NO_REGISTERED_OPERATOR with no numeric complete-cost or Amdahl values.",
+    "The exact-dense PVW/MAT-SAB implementation and its scoped measured result remain preserved.",
+    "No Candidate D is opened automatically; any continuation requires a separately approved research design."
   ]
 }

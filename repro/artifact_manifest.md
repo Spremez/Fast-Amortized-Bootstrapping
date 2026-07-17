@@ -3429,3 +3429,14 @@ Repro artifacts:
   - `scripts/apply_candidate_b_factorized_gate.py`
   - `repro/candidate_b_factorized_gate/`
 <!-- candidate-b-factorized-gate-manifest-end -->
+<!-- candidate-c-rank-bounded-gate-manifest-start -->
+- candidate_c_rank_bounded_gate:
+  - `research/mat_sab/candidate_c_operator_tensor.py`
+  - `research/mat_sab/candidate_c_registered_replay.py`
+  - `scripts/run_candidate_c_rank_bounded_gate.py`
+  - `scripts/apply_candidate_c_rank_bounded_gate.py`
+  - `docs/candidate_c_rank_bounded_mechanism_gate.md`
+  - `algorithm_variants/candidate_c_rank_bounded_state.md`
+  - `experiments/candidate_c_rank_bounded_gate_plan.md`
+  - `repro/candidate_c_rank_bounded_gate/`
+<!-- candidate-c-rank-bounded-gate-manifest-end -->

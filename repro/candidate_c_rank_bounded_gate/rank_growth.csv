@@ -1,0 +1,7 @@
+mechanism_id,r,mu,rho,rank_bound,observed_joint_rank,status
+C1,2,0,1,8,8,PASS
+C1,2,1,1,8,8,PASS
+C1,4,0,2,16,16,PASS
+C1,4,1,2,16,16,PASS
+C1,6,0,2,16,16,PASS
+C1,6,1,2,16,16,PASS
