@@ -9,6 +9,7 @@ phase, and compression admissibility remain inconclusive.
 from __future__ import annotations
 
 import csv
+import hashlib
 import re
 from dataclasses import dataclass, replace
 from pathlib import Path
@@ -27,6 +28,18 @@ INCONCLUSIVE_OPERATOR = (
 )
 _C2_BLOCK_LENGTHS = frozenset((1, 2, 4, 8, 16, 32, 64))
 _SELECTOR_KINDS = frozenset(("ncmux", "cmux"))
+_STAGE203_SUPPORT_FIELDS = (
+    "r",
+    "row",
+    "col",
+    "equation_class",
+    "semantic_role",
+    "is_public_row",
+    "may_skip_after_proof",
+)
+_UNREGISTERED_NUMERIC_EVIDENCE = (
+    "REJECT_UNREGISTERED_NUMERIC_EVIDENCE_SCHEMA"
+)
 
 
 class ScheduleInconclusiveError(ValueError):
@@ -92,6 +105,12 @@ class _CBlock:
     body: str
 
 
+@dataclass(frozen=True)
+class _Stage203Evidence:
+    fields: tuple[str, ...]
+    rows: tuple[tuple[str, ...], ...]
+
+
 @dataclass
 class _ReplayCounts:
     events: int = 0
@@ -115,6 +134,72 @@ _SOURCE_ANCHORS = (
     ("src/sab_pvw.c", "sab_pvw_sparse_mul_binary"),
     ("src/sab_pvw.c", "sab_pvw_sub_a_binary_to"),
     ("src/mosfhet/Makefile.def", "SAB_PVW_DUAL_SUB_CMUX"),
+)
+
+_EXPECTED_FUNCTION_TOKEN_DIGESTS = {
+    (
+        "src/sparse_amortized_bootstrap.c",
+        "void RGSW_monomial_mul(",
+    ): "e0cd91bf3d7d790e6b8ce1477f4f144d46039d3fe8a94a28e9324b68e5263aa3",
+    (
+        "src/sparse_amortized_bootstrap.c",
+        "void sparse_mul(",
+    ): "8e80845ce907cb0be7c1e7a7d60ce0fee1237005417c32ec9bdf7454e8b65a8e",
+    (
+        "src/sab_pvw.c",
+        "static void sab_pvw_schedule_dual_sub_pair(",
+    ): "40eee548c273a88518fef1becfa5fa9e36061fe141f4824f7610825c42900d8b",
+    (
+        "src/sab_pvw.c",
+        "static uint64_t sab_pvw_RGSW_monomial_mul_state(",
+    ): "a8b68aaee69c0f5043b32ea3b3c537dc511c4b19196494dfa3f0bfb3c2e93b3b",
+    (
+        "src/sab_pvw.c",
+        "void sab_pvw_RGSW_monomial_mul(",
+    ): "8c12dab0f90946776fac7380343f1ee0a41fbb83eab5603dd3ece174941fbc45",
+    (
+        "src/sab_pvw.c",
+        "void sab_pvw_sub_a_binary(",
+    ): "dea8fe9e6e74ead9f09a22a8612d7773b26dbdd944e95e0443397e43a5aadf90",
+    (
+        "src/sab_pvw.c",
+        "static void sab_pvw_sub_a_binary_to(",
+    ): "cb0adcf1e250b908ac7b58a4679ffb5edfb14bd281aecf83b04c7f19e176305a",
+    (
+        "src/sab_pvw.c",
+        "void sab_pvw_sparse_mul_binary(",
+    ): "f389252c3ea05c01f689fac1db1939b0ba83b66d7d08c9b23f470984e99408b3",
+}
+
+_C_MULTI_CHARACTER_TOKENS = (
+    ">>=",
+    "<<=",
+    "...",
+    "->",
+    "++",
+    "--",
+    "<<",
+    ">>",
+    "<=",
+    ">=",
+    "==",
+    "!=",
+    "&&",
+    "||",
+    "+=",
+    "-=",
+    "*=",
+    "/=",
+    "%=",
+    "&=",
+    "|=",
+    "^=",
+    "##",
+)
+_C_NUMBER = re.compile(
+    r"(?:0[xX][0-9A-Fa-f]+|"
+    r"(?:[0-9]+\.[0-9]*|\.[0-9]+|[0-9]+)"
+    r"(?:[eEpP][+-]?[0-9]+)?)[fFlLuU]*"
 )
 
 
@@ -226,21 +311,133 @@ def _balanced_end(source: str, opening: int, label: str) -> int:
     raise ScheduleInconclusiveError(f"{label} has unbalanced braces")
 
 
-def _extract_function(source: str, signature: str) -> str:
+def _c_tokens(source: str) -> tuple[str, ...]:
+    tokens: list[str] = []
+    index = 0
+    while index < len(source):
+        current = source[index]
+        following = source[index + 1] if index + 1 < len(source) else ""
+        if current.isspace():
+            index += 1
+            continue
+        if current == "/" and following == "/":
+            newline = source.find("\n", index + 2)
+            index = len(source) if newline < 0 else newline + 1
+            continue
+        if current == "/" and following == "*":
+            closing = source.find("*/", index + 2)
+            if closing < 0:
+                raise ScheduleInconclusiveError(
+                    "unterminated C comment in required source"
+                )
+            index = closing + 2
+            continue
+        if current in {'"', "'"}:
+            quote = current
+            start = index
+            index += 1
+            while index < len(source):
+                if source[index] == "\\":
+                    index += 2
+                    continue
+                if source[index] == quote:
+                    index += 1
+                    tokens.append(source[start:index])
+                    break
+                index += 1
+            else:
+                raise ScheduleInconclusiveError(
+                    "unterminated C literal in required source"
+                )
+            continue
+        identifier = re.match(
+            r"[A-Za-z_][A-Za-z0-9_]*",
+            source[index:],
+        )
+        if identifier is not None:
+            token = identifier.group(0)
+            tokens.append(token)
+            index += len(token)
+            continue
+        number = _C_NUMBER.match(source, index)
+        if number is not None:
+            tokens.append(number.group(0))
+            index = number.end()
+            continue
+        operator = next(
+            (
+                candidate
+                for candidate in _C_MULTI_CHARACTER_TOKENS
+                if source.startswith(candidate, index)
+            ),
+            None,
+        )
+        if operator is not None:
+            tokens.append(operator)
+            index += len(operator)
+            continue
+        tokens.append(current)
+        index += 1
+    return tuple(tokens)
+
+
+def _function_bounds(source: str, signature: str) -> tuple[int, int]:
     sanitized = _sanitize_c(source)
-    start = sanitized.find(signature)
-    if start < 0:
+    signature_tokens = _c_tokens(signature)
+    pattern = (
+        r"(?<![A-Za-z0-9_])"
+        + r"\s*".join(
+            re.escape(token) for token in signature_tokens
+        )
+    )
+    match = re.search(pattern, sanitized)
+    if match is None:
         name = signature.split("(")[0]
         raise ScheduleInconclusiveError(
             f"required source function {name} not found"
         )
-    opening = sanitized.find("{", start + len(signature))
+    opening = sanitized.find("{", match.end())
     if opening < 0:
         raise ScheduleInconclusiveError(
             f"required source function {signature!r} has no body"
         )
     end = _balanced_end(sanitized, opening, signature)
+    return match.start(), end
+
+
+def _extract_function(source: str, signature: str) -> str:
+    sanitized = _sanitize_c(source)
+    start, end = _function_bounds(source, signature)
     return sanitized[start : end + 1]
+
+
+def _extract_raw_function(source: str, signature: str) -> str:
+    start, end = _function_bounds(source, signature)
+    return source[start : end + 1]
+
+
+def _function_token_digest(source: str, signature: str) -> str:
+    function = _extract_raw_function(source, signature)
+    normalized = "\0".join(_c_tokens(function)).encode("utf-8")
+    return hashlib.sha256(normalized).hexdigest()
+
+
+def _validate_exact_function_bindings(
+    sources: dict[str, str],
+) -> None:
+    for (
+        relative_path,
+        signature,
+    ), expected in _EXPECTED_FUNCTION_TOKEN_DIGESTS.items():
+        actual = _function_token_digest(
+            sources[relative_path],
+            signature,
+        )
+        if actual != expected:
+            function = signature.split("(")[0].split()[-1]
+            raise ScheduleInconclusiveError(
+                f"{relative_path}:{function} token digest mismatch"
+            )
 
 
 def _find_blocks(
@@ -626,28 +823,69 @@ def _validate_pvw_schedule(source: str) -> None:
     _validate_pvw_sparse(source)
 
 
-def _validate_stage203_support(root: Path, r: int) -> bool:
+def _load_stage203_support(root: Path) -> _Stage203Evidence:
     relative_path = (
         "repro/stage203_production_selector_equation_probe/"
         "equation_map.csv"
     )
     source = _read_source(root, relative_path)
-    reader = csv.DictReader(source.splitlines())
-    expected_fields = [
-        "r",
-        "row",
-        "col",
-        "equation_class",
-        "semantic_role",
-        "is_public_row",
-        "may_skip_after_proof",
-    ]
-    if reader.fieldnames != expected_fields:
+    table = tuple(csv.reader(source.splitlines()))
+    if not table:
+        raise ScheduleInconclusiveError(
+            "Stage203 support-only equation map is empty"
+        )
+    fields = tuple(table[0])
+    rows = tuple(tuple(row) for row in table[1:])
+    if any(len(row) != len(fields) for row in rows):
+        raise ScheduleInconclusiveError(
+            "Stage203 equation map contains malformed rows"
+        )
+    return _Stage203Evidence(fields=fields, rows=rows)
+
+
+def _with_cycle_coefficient(
+    evidence: _Stage203Evidence,
+    r: int,
+) -> _Stage203Evidence:
+    if not {"r", "equation_class"}.issubset(evidence.fields):
         raise ScheduleInconclusiveError(
             "Stage203 support-only equation map header changed"
         )
+    fields = evidence.fields + ("coefficient",)
+    equation_index = evidence.fields.index("equation_class")
+    r_index = evidence.fields.index("r")
+    rows = tuple(
+        row
+        + (
+            "1"
+            if (
+                row[r_index] == str(r)
+                and row[equation_index]
+                == "lane_neighbor_body_interaction"
+            )
+            else "",
+        )
+        for row in evidence.rows
+    )
+    return _Stage203Evidence(fields=fields, rows=rows)
+
+
+def _validate_stage203_support(
+    evidence: _Stage203Evidence,
+    r: int,
+) -> str:
+    if evidence.fields != _STAGE203_SUPPORT_FIELDS:
+        if "coefficient" in evidence.fields:
+            return _UNREGISTERED_NUMERIC_EVIDENCE
+        raise ScheduleInconclusiveError(
+            "Stage203 support-only equation map header changed"
+        )
+    records = tuple(
+        dict(zip(evidence.fields, row, strict=True))
+        for row in evidence.rows
+    )
     try:
-        selected = [row for row in reader if int(row["r"]) == r]
+        selected = [row for row in records if int(row["r"]) == r]
     except (KeyError, TypeError, ValueError) as error:
         raise ScheduleInconclusiveError(
             "Stage203 equation map contains malformed rows"
@@ -676,7 +914,7 @@ def _validate_stage203_support(root: Path, r: int) -> bool:
             raise ScheduleInconclusiveError(
                 f"Stage203 r={r} cycle support changed"
             )
-    return False
+    return INCONCLUSIVE_OPERATOR
 
 
 def load_binary_target_schedule(
@@ -698,6 +936,12 @@ def load_binary_target_schedule(
     target = _parse_default_target(main_source)
     _validate_scalar_schedule(scalar_source)
     _validate_pvw_schedule(pvw_source)
+    _validate_exact_function_bindings(
+        {
+            "src/sparse_amortized_bootstrap.c": scalar_source,
+            "src/sab_pvw.c": pvw_source,
+        }
+    )
 
     h = _parse_int(target, "h")
     r_prec = _parse_int(target, "r_prec")
@@ -957,24 +1201,19 @@ def replay_variant_schedule(
             "cycle coefficient mutation requires C1 or C2"
         )
 
-    numeric_mapping_registered = (
-        True if variant == "C0" else _validate_stage203_support(
-            root_path,
+    if variant == "C0":
+        operator_gate = "PASS_EXPLICIT_NEGATIVE_CONTROL"
+    else:
+        support_evidence = _load_stage203_support(root_path)
+        if mutation == "cycle_coefficient":
+            support_evidence = _with_cycle_coefficient(
+                support_evidence,
+                r,
+            )
+        operator_gate = _validate_stage203_support(
+            support_evidence,
             r,
         )
-    )
-    operator_gate = (
-        "PASS_EXPLICIT_NEGATIVE_CONTROL"
-        if variant == "C0"
-        else INCONCLUSIVE_OPERATOR
-    )
-    if mutation == "cycle_coefficient":
-        if numeric_mapping_registered:
-            operator_gate = "FAIL_CYCLE_COEFFICIENT_MUTATION"
-        else:
-            operator_gate = (
-                "FAIL_UNREGISTERED_CYCLE_COEFFICIENT_MUTATION"
-            )
 
     counts = _stream_replay(
         schedule,

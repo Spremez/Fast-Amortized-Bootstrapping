@@ -166,6 +166,77 @@ class BinaryTargetScheduleParsingTests(unittest.TestCase):
             ):
                 load_binary_target_schedule(root)
 
+    def test_dead_selector_call_is_rejected_by_exact_function_binding(self):
+        old = (
+            "      const uint64_t out = (i+1)&1, in = out^1;\n"
+            "      for (size_t j = 0; j < power; j++){"
+        )
+        new = (
+            "      const uint64_t out = (i+1)&1, in = out^1;\n"
+            "      if (0) NCMUX(p[out][0], p[in][0], p[in][0], "
+            "e[i], sab);\n"
+            "      for (size_t j = 0; j < power; j++){"
+        )
+        with MutatedRoot(
+            "src/sparse_amortized_bootstrap.c",
+            old,
+            new,
+        ) as root:
+            with self.assertRaisesRegex(
+                ScheduleInconclusiveError,
+                "token digest mismatch",
+            ):
+                load_binary_target_schedule(root)
+
+    def test_duplicate_monomial_call_is_rejected_by_exact_function_binding(
+        self,
+    ):
+        call = (
+            "    sab_pvw_RGSW_monomial_mul("
+            "p, sab->s[a_idx][step], sab);\n"
+        )
+        with MutatedRoot(
+            "src/sab_pvw.c",
+            call,
+            call + call,
+        ) as root:
+            with self.assertRaisesRegex(
+                ScheduleInconclusiveError,
+                "token digest mismatch",
+            ):
+                load_binary_target_schedule(root)
+
+    def test_comment_only_function_edit_preserves_exact_function_binding(self):
+        old = (
+            "        NCMUX(p[out][j], p[in][j], "
+            "p[in][in_N - power + j], e[i], sab);"
+        )
+        new = (
+            "        /* exact-binding comment control */\n"
+            "        NCMUX(p[out][j], p[in][j], "
+            "p[in][in_N - power + j], e[i], sab);"
+        )
+        with MutatedRoot(
+            "src/sparse_amortized_bootstrap.c",
+            old,
+            new,
+        ) as root:
+            schedule = load_binary_target_schedule(root)
+
+        self.assertEqual(schedule.selector_applications, 573440)
+
+    def test_whitespace_only_edit_preserves_exact_function_binding(self):
+        old = "void RGSW_monomial_mul("
+        new = "void\nRGSW_monomial_mul \n("
+        with MutatedRoot(
+            "src/sparse_amortized_bootstrap.c",
+            old,
+            new,
+        ) as root:
+            schedule = load_binary_target_schedule(root)
+
+        self.assertEqual(schedule.selector_applications, 573440)
+
 
 class StreamingScheduleEventTests(unittest.TestCase):
     def test_default_generator_traverses_every_exact_schedule_event(self):
@@ -348,20 +419,27 @@ class PeriodicCompressionBoundaryTests(unittest.TestCase):
 
 
 class ValidatorDrivenMutationTests(unittest.TestCase):
-    def test_cycle_coefficient_mutation_fails_operator_mapping_gate(self):
-        trace = replay_variant_schedule(
+    def test_support_only_control_is_inconclusive_and_coefficient_is_rejected(
+        self,
+    ):
+        baseline = replay_variant_schedule("C1", 4, 257)
+        mutated = replay_variant_schedule(
             "C1",
             4,
             257,
             mutation="cycle_coefficient",
         )
 
+        self.assertEqual(baseline.operator_mapping_gate, INCONCLUSIVE)
         self.assertEqual(
-            trace.operator_mapping_gate,
-            "FAIL_UNREGISTERED_CYCLE_COEFFICIENT_MUTATION",
+            mutated.operator_mapping_gate,
+            "REJECT_UNREGISTERED_NUMERIC_EVIDENCE_SCHEMA",
         )
-        self.assertEqual(trace.closure_gate, INCONCLUSIVE)
-        self.assertEqual(trace.boundary_gate, "PASS_STRUCTURAL_SCHEDULE")
+        self.assertEqual(mutated.closure_gate, INCONCLUSIVE)
+        self.assertEqual(
+            mutated.boundary_gate,
+            "PASS_STRUCTURAL_SCHEDULE",
+        )
 
     def test_boundary_mutation_is_detected_at_the_real_event_position(self):
         trace = replay_variant_schedule(
