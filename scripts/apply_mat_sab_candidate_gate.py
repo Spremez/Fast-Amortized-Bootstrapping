@@ -20,36 +20,70 @@ from scripts.mat_sab_research_state import (
 from scripts.run_candidate_a_star_cycle_gate import ADMIT, REJECT
 
 
-HYPOTHESIS_MARKER = "H_candidate_a_star_cycle_mechanism:"
 RUN_MARKER = "candidate-a-star-cycle-gate-001"
-MANIFEST_MARKER = "<!-- candidate-a-star-cycle-gate-manifest -->"
-CHECKLIST_MARKER = "<!-- candidate-a-star-cycle-gate-checklist -->"
+HYPOTHESIS_START = "# candidate-a-star-cycle-gate-hypothesis-start"
+HYPOTHESIS_END = "# candidate-a-star-cycle-gate-hypothesis-end"
+MANIFEST_START = "<!-- candidate-a-star-cycle-gate-manifest-start -->"
+MANIFEST_END = "<!-- candidate-a-star-cycle-gate-manifest-end -->"
+CHECKLIST_START = "<!-- candidate-a-star-cycle-gate-checklist-start -->"
+CHECKLIST_END = "<!-- candidate-a-star-cycle-gate-checklist-end -->"
+PREDECESSOR_DECISION = "CANDIDATE_A_PRODUCTION_EQUATIONS_DEFINED"
+
+
+def _resolved_root(root: Path) -> Path:
+    resolved = root.resolve(strict=True)
+    if not resolved.is_dir():
+        raise ValueError(f"root is not a directory: {resolved}")
+    return resolved
+
+
+def _resolved_under_root(
+    root: Path,
+    path: Path,
+    label: str,
+    *,
+    strict: bool,
+) -> Path:
+    resolved = path.resolve(strict=strict)
+    if not resolved.is_relative_to(root):
+        raise ValueError(f"{label} escapes root: {resolved}")
+    return resolved
 
 
 def _read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8-sig") if path.exists() else ""
 
 
-def _check_append(path: Path, marker: str, content: str) -> bool:
+def _bounded_block(start: str, end: str, content: str) -> str:
+    return f"{start}\n{content.rstrip()}\n{end}"
+
+
+def _check_append(path: Path, start: str, end: str, content: str) -> bool:
     current = _read_text(path)
-    count = current.count(marker)
-    if count > 1:
-        raise ValueError(f"duplicate ledger marker in {path}: {marker}")
-    if count == 1:
-        if content.rstrip() not in current:
-            raise ValueError(f"ledger marker/content mismatch in {path}: {marker}")
-        return False
-    return True
+    start_count = current.count(start)
+    end_count = current.count(end)
+    if start_count == 0 and end_count == 0:
+        return True
+    if start_count != 1 or end_count != 1:
+        raise ValueError(f"ledger block marker mismatch in {path}: {start}")
+    start_index = current.index(start)
+    end_index = current.index(end)
+    if end_index < start_index:
+        raise ValueError(f"ledger block marker mismatch in {path}: {start}")
+    actual = current[start_index : end_index + len(end)]
+    if actual != _bounded_block(start, end, content):
+        raise ValueError(f"ledger block/content mismatch in {path}: {start}")
+    return False
 
 
-def _append_once(path: Path, marker: str, content: str) -> None:
-    if not _check_append(path, marker, content):
+def _append_once(path: Path, start: str, end: str, content: str) -> None:
+    if not _check_append(path, start, end, content):
         return
     current = _read_text(path)
     separator = "" if not current or current.endswith("\n") else "\n"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
-        current + separator + content.rstrip() + "\n",
+        current + separator + _bounded_block(start, end, content) + "\n",
         encoding="utf-8",
         newline="\n",
     )
@@ -57,10 +91,23 @@ def _append_once(path: Path, marker: str, content: str) -> None:
 
 def _decision(summary_path: Path) -> str:
     with summary_path.open(newline="", encoding="ascii") as handle:
-        rows = list(csv.DictReader(handle))
-    if len(rows) != 1 or rows[0].get("decision") not in {ADMIT, REJECT}:
+        records = list(csv.reader(handle))
+    if len(records) != 2:
         raise ValueError("summary must contain one recognized decision")
-    return rows[0]["decision"]
+    fields, row = records
+    structurally_valid = (
+        fields.count("decision") == 1
+        and len(set(fields)) == len(fields)
+        and all(fields)
+        and len(row) == len(fields)
+        and all(value != "" for value in row)
+    )
+    if not structurally_valid:
+        raise ValueError("summary must contain one recognized decision")
+    decision = row[fields.index("decision")]
+    if decision not in {ADMIT, REJECT}:
+        raise ValueError("summary must contain one recognized decision")
+    return decision
 
 
 def _run_row(decision: str) -> dict[str, str]:
@@ -83,7 +130,12 @@ def _run_row(decision: str) -> dict[str, str]:
 
 
 def _run_log_plan(root: Path, decision: str) -> tuple[Path, list[str], bool]:
-    path = root / "repro/run_log.csv"
+    path = _resolved_under_root(
+        root,
+        root / "repro/run_log.csv",
+        "run-log destination",
+        strict=True,
+    )
     with path.open(newline="", encoding="utf-8-sig") as handle:
         reader = csv.DictReader(handle)
         fields = list(reader.fieldnames or [])
@@ -106,12 +158,20 @@ def _append_run(path: Path, fields: list[str], decision: str, needed: bool) -> N
     if not needed:
         return
     row = _run_row(decision)
+    with path.open("rb") as handle:
+        handle.seek(-1, 2)
+        has_line_terminator = handle.read(1) in {b"\r", b"\n"}
+    if not has_line_terminator:
+        with path.open("ab") as handle:
+            handle.write(b"\n")
     with path.open("a", newline="", encoding="ascii") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writerow({field: row.get(field, "") for field in fields})
 
 
-def _ledger_entries(decision: str) -> tuple[tuple[str, str, str], ...]:
+def _ledger_entries(
+    decision: str,
+) -> tuple[tuple[str, str, str, str], ...]:
     hypothesis = f"""H_candidate_a_star_cycle_mechanism:
   status: {decision}
   primary_metric: complete_sab_T_bootstrap_over_r
@@ -125,8 +185,7 @@ def _ledger_entries(decision: str) -> tuple[tuple[str, str, str], ...]:
     randomization gate. The finite-field checker makes no security, noise,
     production-readiness, or performance claim.
 """
-    manifest = """<!-- candidate-a-star-cycle-gate-manifest -->
-- candidate_a_star_cycle_gate:
+    manifest = """- candidate_a_star_cycle_gate:
   - `research/mat_sab/`
   - `theory_checks/candidate_a_star_cycle_production_equations.md`
   - `docs/candidate_a_star_cycle_mechanism_gate.md`
@@ -134,17 +193,31 @@ def _ledger_entries(decision: str) -> tuple[tuple[str, str, str], ...]:
   - `scripts/apply_mat_sab_candidate_gate.py`
   - `repro/candidate_a_star_cycle_gate/`
 """
-    checklist = f"""<!-- candidate-a-star-cycle-gate-checklist -->
-- [x] Candidate A records `{decision}` from source, phase, dense-control,
+    checklist = f"""- [x] Candidate A records `{decision}` from source, phase, dense-control,
   negative-control, and standard-PVW randomization gates; production hot-path
   permission remains false. Reproduce with
   `python scripts/run_candidate_a_star_cycle_gate.py` followed by
   `python scripts/apply_mat_sab_candidate_gate.py`.
 """
     return (
-        ("hypotheses/hypothesis_register.yaml", HYPOTHESIS_MARKER, hypothesis),
-        ("repro/artifact_manifest.md", MANIFEST_MARKER, manifest),
-        ("repro/reproduction_checklist.md", CHECKLIST_MARKER, checklist),
+        (
+            "hypotheses/hypothesis_register.yaml",
+            HYPOTHESIS_START,
+            HYPOTHESIS_END,
+            hypothesis,
+        ),
+        (
+            "repro/artifact_manifest.md",
+            MANIFEST_START,
+            MANIFEST_END,
+            manifest,
+        ),
+        (
+            "repro/reproduction_checklist.md",
+            CHECKLIST_START,
+            CHECKLIST_END,
+            checklist,
+        ),
     )
 
 
@@ -155,6 +228,7 @@ def _validate_pre_state(state: dict[str, object]) -> None:
         and state["paper_gate"] == "BLOCKED"
         and state["production_hot_path_permission"] is False
         and state["active_candidate"] == "A"
+        and state.get("last_decision") == PREDECESSOR_DECISION
         and candidates["A"]["status"] == "EQUATIONS_DEFINED"
         and candidates["B"]["status"] == "QUEUED"
         and candidates["C"]["status"] == "QUEUED"
@@ -192,14 +266,40 @@ def _validate_applied_state(state: dict[str, object], decision: str) -> None:
 
 
 def apply_gate(root: Path, state_path: Path, summary_path: Path) -> str:
+    root = _resolved_root(root)
+    state_path = _resolved_under_root(
+        root,
+        state_path,
+        "state path",
+        strict=True,
+    )
+    summary_path = _resolved_under_root(
+        root,
+        summary_path,
+        "summary path",
+        strict=True,
+    )
     decision = _decision(summary_path)
     state = load_state(state_path)
     target = "ADVERSARIAL_CHECKER_PASS" if decision == ADMIT else "REJECTED"
     current = state["candidates"]["A"]["status"]
 
-    entries = _ledger_entries(decision)
-    for relative, marker, content in entries:
-        _check_append(root / relative, marker, content)
+    entries = tuple(
+        (
+            _resolved_under_root(
+                root,
+                root / relative,
+                f"ledger destination {relative}",
+                strict=False,
+            ),
+            start,
+            end,
+            content,
+        )
+        for relative, start, end, content in _ledger_entries(decision)
+    )
+    for path, start, end, content in entries:
+        _check_append(path, start, end, content)
     run_path, run_fields, append_run = _run_log_plan(root, decision)
 
     if current == "EQUATIONS_DEFINED":
@@ -210,8 +310,8 @@ def apply_gate(root: Path, state_path: Path, summary_path: Path) -> str:
     else:
         _validate_applied_state(state, decision)
 
-    for relative, marker, content in entries:
-        _append_once(root / relative, marker, content)
+    for path, start, end, content in entries:
+        _append_once(path, start, end, content)
     _append_run(run_path, run_fields, decision, append_run)
     return decision
 

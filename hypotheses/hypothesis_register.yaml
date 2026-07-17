@@ -4556,6 +4556,7 @@ H346_algorithm_redesign_audit:
     from the still-open new-algorithm objective. The next valid execution is
     Stage347 closed structured-state or current-format lower-bound proof, not
     another speculative SAB hot-path rewrite.
+# candidate-a-star-cycle-gate-hypothesis-start
 H_candidate_a_star_cycle_mechanism:
   status: REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B
   primary_metric: complete_sab_T_bootstrap_over_r
@@ -4568,3 +4569,4 @@ H_candidate_a_star_cycle_mechanism:
     Candidate A is decided by the source-anchored phase and standard-PVW
     randomization gate. The finite-field checker makes no security, noise,
     production-readiness, or performance claim.
+# candidate-a-star-cycle-gate-hypothesis-end

@@ -3410,7 +3410,7 @@ Repro artifacts:
   - `experiments/stage347_mechanism_proof_gate_plan.md`
   - `scripts/build_stage346_algorithm_redesign_audit.py`
   - `repro/stage346_algorithm_redesign_audit/`
-<!-- candidate-a-star-cycle-gate-manifest -->
+<!-- candidate-a-star-cycle-gate-manifest-start -->
 - candidate_a_star_cycle_gate:
   - `research/mat_sab/`
   - `theory_checks/candidate_a_star_cycle_production_equations.md`
@@ -3418,3 +3418,4 @@ Repro artifacts:
   - `scripts/run_candidate_a_star_cycle_gate.py`
   - `scripts/apply_mat_sab_candidate_gate.py`
   - `repro/candidate_a_star_cycle_gate/`
+<!-- candidate-a-star-cycle-gate-manifest-end -->

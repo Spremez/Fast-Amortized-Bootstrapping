@@ -1,5 +1,7 @@
 import csv
 import json
+import os
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,15 +12,20 @@ from scripts.run_candidate_a_star_cycle_gate import ADMIT, REJECT
 
 
 ROOT = Path(__file__).resolve().parents[2]
-HYPOTHESIS_MARKER = "H_candidate_a_star_cycle_mechanism:"
 RUN_MARKER = "candidate-a-star-cycle-gate-001"
-MANIFEST_MARKER = "<!-- candidate-a-star-cycle-gate-manifest -->"
-CHECKLIST_MARKER = "<!-- candidate-a-star-cycle-gate-checklist -->"
+HYPOTHESIS_KEY = "H_candidate_a_star_cycle_mechanism:"
+HYPOTHESIS_START = "# candidate-a-star-cycle-gate-hypothesis-start"
+HYPOTHESIS_END = "# candidate-a-star-cycle-gate-hypothesis-end"
+MANIFEST_START = "<!-- candidate-a-star-cycle-gate-manifest-start -->"
+MANIFEST_END = "<!-- candidate-a-star-cycle-gate-manifest-end -->"
+CHECKLIST_START = "<!-- candidate-a-star-cycle-gate-checklist-start -->"
+CHECKLIST_END = "<!-- candidate-a-star-cycle-gate-checklist-end -->"
 
 
 class CandidateACloseoutTests(unittest.TestCase):
     def _make_root(self, directory: str) -> tuple[Path, Path]:
         root = Path(directory)
+        root.mkdir(parents=True, exist_ok=True)
         (root / "hypotheses").mkdir()
         (root / "repro").mkdir()
         state = json.loads((ROOT / "research_state.yaml").read_text(encoding="ascii"))
@@ -52,6 +59,11 @@ class CandidateACloseoutTests(unittest.TestCase):
             writer.writerows({"decision": decision} for decision in decisions)
         return summary
 
+    def _write_raw_summary(self, root: Path, content: str) -> Path:
+        summary = root / "summary.csv"
+        summary.write_text(content, encoding="ascii", newline="\n")
+        return summary
+
     def _tracked_outputs(self, root: Path, state_path: Path) -> dict[Path, bytes]:
         paths = (
             state_path,
@@ -64,10 +76,14 @@ class CandidateACloseoutTests(unittest.TestCase):
 
     def _assert_markers_once(self, root: Path) -> None:
         markers = (
-            (root / "hypotheses/hypothesis_register.yaml", HYPOTHESIS_MARKER),
+            (root / "hypotheses/hypothesis_register.yaml", HYPOTHESIS_START),
+            (root / "hypotheses/hypothesis_register.yaml", HYPOTHESIS_END),
+            (root / "hypotheses/hypothesis_register.yaml", HYPOTHESIS_KEY),
             (root / "repro/run_log.csv", RUN_MARKER),
-            (root / "repro/artifact_manifest.md", MANIFEST_MARKER),
-            (root / "repro/reproduction_checklist.md", CHECKLIST_MARKER),
+            (root / "repro/artifact_manifest.md", MANIFEST_START),
+            (root / "repro/artifact_manifest.md", MANIFEST_END),
+            (root / "repro/reproduction_checklist.md", CHECKLIST_START),
+            (root / "repro/reproduction_checklist.md", CHECKLIST_END),
         )
         for path, marker in markers:
             with self.subTest(path=path.name, marker=marker):
@@ -147,6 +163,179 @@ class CandidateACloseoutTests(unittest.TestCase):
                     self.assertFalse(
                         (root / "repro/reproduction_checklist.md").exists()
                     )
+
+    def test_summary_rejects_duplicate_ragged_and_missing_values(self):
+        malformed = (
+            f"decision,decision\n{REJECT},{REJECT}\n",
+            f"decision\n{REJECT},surplus\n",
+            f"decision,route\n{REJECT}\n",
+        )
+        for content in malformed:
+            with self.subTest(content=content):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root, state_path = self._make_root(tmp)
+                    summary = self._write_raw_summary(root, content)
+                    state_before = state_path.read_bytes()
+
+                    with self.assertRaisesRegex(
+                        ValueError,
+                        "summary must contain one recognized decision",
+                    ):
+                        apply_gate(root, state_path, summary)
+
+                    self.assertEqual(state_path.read_bytes(), state_before)
+                    self.assertNotIn(
+                        RUN_MARKER,
+                        (root / "repro/run_log.csv").read_text(encoding="ascii"),
+                    )
+
+    def test_summary_allows_real_gate_extra_named_columns(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            summary = root / "summary.csv"
+            summary.write_bytes(
+                (
+                    ROOT
+                    / "repro/candidate_a_star_cycle_gate/summary.csv"
+                ).read_bytes()
+            )
+
+            self.assertEqual(apply_gate(root, state_path, summary), REJECT)
+
+    def test_explicit_state_and_summary_paths_must_resolve_under_root(self):
+        for escaped_input in ("state", "summary"):
+            with self.subTest(escaped_input=escaped_input):
+                with tempfile.TemporaryDirectory() as tmp:
+                    base = Path(tmp)
+                    root, state_path = self._make_root(str(base / "root"))
+                    summary = self._write_summary(root, [REJECT])
+                    outside_state = base / "outside-state.yaml"
+                    outside_state.write_bytes(state_path.read_bytes())
+                    outside_summary = base / "outside-summary.csv"
+                    outside_summary.write_bytes(summary.read_bytes())
+                    state_before = state_path.read_bytes()
+
+                    with self.assertRaisesRegex(ValueError, "escapes root"):
+                        apply_gate(
+                            root,
+                            outside_state if escaped_input == "state" else state_path,
+                            (
+                                outside_summary
+                                if escaped_input == "summary"
+                                else summary
+                            ),
+                        )
+
+                    self.assertEqual(state_path.read_bytes(), state_before)
+                    self.assertNotIn(
+                        RUN_MARKER,
+                        (root / "repro/run_log.csv").read_text(encoding="ascii"),
+                    )
+
+    def test_fixed_ledger_symlink_escape_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root, state_path = self._make_root(str(base / "root"))
+            summary = self._write_summary(root, [REJECT])
+            outside = base / "outside-hypotheses"
+            outside.mkdir()
+            hypotheses = root / "hypotheses"
+            hypotheses.rmdir()
+            if os.name == "nt":
+                subprocess.run(
+                    [
+                        "cmd",
+                        "/c",
+                        "mklink",
+                        "/J",
+                        str(hypotheses),
+                        str(outside),
+                    ],
+                    check=True,
+                    capture_output=True,
+                )
+            else:
+                hypotheses.symlink_to(outside, target_is_directory=True)
+            state_before = state_path.read_bytes()
+
+            with self.assertRaisesRegex(ValueError, "escapes root"):
+                apply_gate(root, state_path, summary)
+
+            self.assertEqual(state_path.read_bytes(), state_before)
+            self.assertEqual(list(outside.iterdir()), [])
+
+    def test_run_log_without_terminal_newline_preserves_bom_and_rows(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            summary = self._write_summary(root, [REJECT])
+            run_log = root / "repro/run_log.csv"
+            header = (
+                "run_id,date,commit_or_state,stage,backend,command,params,seed,"
+                "status,summary,artifacts"
+            )
+            run_log.write_text(
+                header,
+                encoding="utf-8-sig",
+                newline="",
+            )
+
+            self.assertEqual(apply_gate(root, state_path, summary), REJECT)
+
+            raw = run_log.read_bytes()
+            self.assertTrue(raw.startswith(b"\xef\xbb\xbf"))
+            self.assertIn(b"artifacts\ncandidate-a-star-cycle-gate-001,", raw)
+            with run_log.open(newline="", encoding="utf-8-sig") as handle:
+                rows = list(csv.DictReader(handle))
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["run_id"], RUN_MARKER)
+
+    def test_first_transition_requires_exact_predecessor_decision(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            summary = self._write_summary(root, [REJECT])
+            state = json.loads(state_path.read_text(encoding="ascii"))
+            state["last_decision"] = "OTHER_EQUATIONS_DEFINED_DECISION"
+            state_path.write_text(
+                json.dumps(state, indent=2) + "\n",
+                encoding="ascii",
+                newline="\n",
+            )
+            state_before = state_path.read_bytes()
+
+            with self.assertRaisesRegex(
+                ValueError,
+                "state is not at the Candidate A mechanism gate",
+            ):
+                apply_gate(root, state_path, summary)
+
+            self.assertEqual(state_path.read_bytes(), state_before)
+            self.assertNotIn(
+                RUN_MARKER,
+                (root / "repro/run_log.csv").read_text(encoding="ascii"),
+            )
+
+    def test_altered_content_inside_bounded_ledger_block_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            summary = self._write_summary(root, [REJECT])
+            apply_gate(root, state_path, summary)
+            hypothesis = root / "hypotheses/hypothesis_register.yaml"
+            current = hypothesis.read_text(encoding="ascii")
+            self.assertIn(HYPOTHESIS_END, current)
+            hypothesis.write_text(
+                current.replace(
+                    HYPOTHESIS_END,
+                    "  conflicting_claim: true\n" + HYPOTHESIS_END,
+                ),
+                encoding="ascii",
+                newline="\n",
+            )
+            state_before = state_path.read_bytes()
+
+            with self.assertRaisesRegex(ValueError, "ledger block/content mismatch"):
+                apply_gate(root, state_path, summary)
+
+            self.assertEqual(state_path.read_bytes(), state_before)
 
     def test_state_decision_mismatch_is_rejected_before_ledger_updates(self):
         with tempfile.TemporaryDirectory() as tmp:
