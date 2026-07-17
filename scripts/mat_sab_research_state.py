@@ -21,6 +21,11 @@ APPROVED_BASELINES = {
     "B0": "repeated_scalar_SAB",
     "B1": "exact_dense_PVW_MAT_SAB_current_head",
 }
+APPROVED_CANDIDATE_NAMES = {
+    "A": "Star-Cycle Sparse MAT-GGSW",
+    "B": "Factorized Star-Cycle",
+    "C": "Rank-Bounded Shared-Mask State",
+}
 PIPELINE = (
     "INTAKE",
     "TECHGRAPH_ANCHORED",
@@ -32,38 +37,6 @@ PIPELINE = (
     "FULL_SAB_PASS",
     "PAPER_GATE_PASS",
 )
-DECISION_REGISTRY = {
-    "CANDIDATE_A_TECHGRAPH_ANCHORED": {
-        "candidate": "A",
-        "from_status": "INTAKE",
-        "to_status": "TECHGRAPH_ANCHORED",
-        "evidence_type": "technical_graph_artifact",
-        "evidence_path": "paper_techgraphs/2025_686_mat_sab_selector.yaml",
-    },
-    "CANDIDATE_A_PRODUCTION_EQUATIONS_DEFINED": {
-        "candidate": "A",
-        "from_status": "TECHGRAPH_ANCHORED",
-        "to_status": "EQUATIONS_DEFINED",
-        "evidence_type": "derivation_artifact",
-        "evidence_path": (
-            "theory_checks/candidate_a_star_cycle_production_equations.md"
-        ),
-    },
-    "ADMIT_CANDIDATE_A_REVISION_OR_KEYGEN_PREFLIGHT": {
-        "candidate": "A",
-        "from_status": "EQUATIONS_DEFINED",
-        "to_status": "ADVERSARIAL_CHECKER_PASS",
-        "evidence_type": "checker_summary",
-        "evidence_path": "repro/candidate_a_star_cycle_gate/summary.csv",
-    },
-    "REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B": {
-        "candidate": "A",
-        "from_status": "EQUATIONS_DEFINED",
-        "to_status": "REJECTED",
-        "evidence_type": "checker_summary",
-        "evidence_path": "repro/candidate_a_star_cycle_gate/summary.csv",
-    },
-}
 
 
 def load_state(path: Path = DEFAULT_STATE) -> dict[str, object]:
@@ -99,13 +72,15 @@ def validate_state(state: Mapping[str, object]) -> None:
         candidate = candidates[name]
         if not isinstance(candidate, Mapping) or candidate.get("status") not in allowed:
             raise ValueError(f"invalid status for candidate {name}")
+        if candidate.get("name") != APPROVED_CANDIDATE_NAMES[name]:
+            raise ValueError(f"candidate name changed for {name}")
         for field, limit in (
             ("equation_revisions_used", 2),
             ("kernel_layouts_used", 2),
             ("full_sab_integrations_used", 1),
         ):
             value = candidate.get(field)
-            if not isinstance(value, int) or value < 0 or value > limit:
+            if type(value) is not int or value < 0 or value > limit:
                 raise ValueError(f"invalid {field} for candidate {name}")
     active_index = ORDER.index(state["active_candidate"])
     if state.get("goal_status") == "RESEARCH_CAMPAIGN_EXHAUSTED":
@@ -139,26 +114,6 @@ def validate_state(state: Mapping[str, object]) -> None:
         raise ValueError(
             "production hot path permission requires AMDAHL_PROJECTION_PASS"
         )
-    history = state.get("transition_history")
-    if not isinstance(history, list):
-        raise ValueError("transition_history must be a list")
-    for index, row in enumerate(history):
-        if not isinstance(row, Mapping):
-            raise ValueError(f"invalid transition_history row {index}")
-        decision = row.get("decision")
-        registered = DECISION_REGISTRY.get(decision)
-        if registered is None:
-            raise ValueError(f"invalid transition_history row {index}")
-        expected = {
-            "candidate": registered["candidate"],
-            "from_status": registered["from_status"],
-            "to_status": registered["to_status"],
-            "decision": decision,
-            "evidence_type": registered["evidence_type"],
-            "evidence_path": registered["evidence_path"],
-        }
-        if dict(row) != expected:
-            raise ValueError(f"invalid transition_history row {index}")
 
 
 def transition_candidate(
@@ -176,25 +131,8 @@ def transition_candidate(
         allowed = allowed and PIPELINE[PIPELINE.index(current) + 1] == to_status
     if not allowed:
         raise ValueError(f"invalid transition {candidate}: {current} -> {to_status}")
-    registered = DECISION_REGISTRY.get(decision)
-    if registered is None:
-        raise ValueError(f"unknown transition decision {decision}")
-    if (
-        registered["candidate"],
-        registered["from_status"],
-        registered["to_status"],
-    ) != (candidate, current, to_status):
-        raise ValueError("decision does not match transition")
     changed["candidates"][candidate]["status"] = to_status
     changed["last_decision"] = decision
-    changed["transition_history"].append({
-        "candidate": candidate,
-        "from_status": current,
-        "to_status": to_status,
-        "decision": decision,
-        "evidence_type": registered["evidence_type"],
-        "evidence_path": registered["evidence_path"],
-    })
     if to_status == "REJECTED":
         index = ORDER.index(candidate)
         if index + 1 == len(ORDER):

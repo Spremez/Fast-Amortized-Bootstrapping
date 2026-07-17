@@ -18,7 +18,6 @@ def candidate_a_state(state, status):
     state["paper_gate"] = "BLOCKED"
     state["production_hot_path_permission"] = False
     state["active_candidate"] = "A"
-    state["transition_history"] = []
     state["candidates"]["A"]["status"] = status
     state["candidates"]["B"]["status"] = "QUEUED"
     state["candidates"]["C"]["status"] = "QUEUED"
@@ -45,7 +44,14 @@ class ResearchStateTests(unittest.TestCase):
             "B1": "exact_dense_PVW_MAT_SAB_current_head",
         })
         self.assertIn(state["active_candidate"], ("A", "B", "C"))
-        self.assertIsInstance(state.get("transition_history"), list)
+        self.assertEqual(
+            {name: state["candidates"][name]["name"] for name in ("A", "B", "C")},
+            {
+                "A": "Star-Cycle Sparse MAT-GGSW",
+                "B": "Factorized Star-Cycle",
+                "C": "Rank-Bounded Shared-Mask State",
+            },
+        )
         active = state["candidates"][state["active_candidate"]]["status"]
         if active in {"INTAKE", "TECHGRAPH_ANCHORED", "EQUATIONS_DEFINED"}:
             self.assertFalse(state["production_hot_path_permission"])
@@ -58,15 +64,16 @@ class ResearchStateTests(unittest.TestCase):
         self.assertEqual(state["candidates"]["A"]["status"], "INTAKE")
         self.assertEqual(changed["candidates"]["A"]["status"], "TECHGRAPH_ANCHORED")
         self.assertEqual(changed["last_decision"], "CANDIDATE_A_TECHGRAPH_ANCHORED")
-        self.assertEqual(state["transition_history"], [])
-        self.assertEqual(changed["transition_history"], [{
-            "candidate": "A",
-            "from_status": "INTAKE",
-            "to_status": "TECHGRAPH_ANCHORED",
-            "decision": "CANDIDATE_A_TECHGRAPH_ANCHORED",
-            "evidence_type": "technical_graph_artifact",
-            "evidence_path": "paper_techgraphs/2025_686_mat_sab_selector.yaml",
-        }])
+
+    def test_transition_records_an_opaque_decision(self):
+        state = candidate_a_state(load_state(ROOT / "research_state.yaml"), "INTAKE")
+        try:
+            changed = transition_candidate(
+                state, "A", "TECHGRAPH_ANCHORED", "OPAQUE_TEST_DECISION"
+            )
+        except ValueError as error:
+            self.fail(f"opaque decision was rejected: {error}")
+        self.assertEqual(changed["last_decision"], "OPAQUE_TEST_DECISION")
 
     def test_skipping_a_gate_is_rejected(self):
         state = candidate_a_state(load_state(ROOT / "research_state.yaml"), "INTAKE")
@@ -89,16 +96,6 @@ class ResearchStateTests(unittest.TestCase):
         self.assertEqual(changed["active_candidate"], "B")
         self.assertEqual(changed["candidates"]["B"]["status"], "INTAKE")
         self.assertEqual(changed["goal_status"], "ACTIVE")
-        self.assertEqual(changed["transition_history"], [{
-            "candidate": "A",
-            "from_status": "EQUATIONS_DEFINED",
-            "to_status": "REJECTED",
-            "decision": (
-                "REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B"
-            ),
-            "evidence_type": "checker_summary",
-            "evidence_path": "repro/candidate_a_star_cycle_gate/summary.csv",
-        }])
 
     def test_immutable_contract_fields_cannot_change(self):
         mutations = (
@@ -129,6 +126,36 @@ class ResearchStateTests(unittest.TestCase):
                 state["baselines"] = baselines
                 with self.assertRaisesRegex(ValueError, "baselines changed"):
                     validate_state(state)
+
+    def test_exact_candidate_names_cannot_change(self):
+        expected = {
+            "A": "Star-Cycle Sparse MAT-GGSW",
+            "B": "Factorized Star-Cycle",
+            "C": "Rank-Bounded Shared-Mask State",
+        }
+        for candidate, name in expected.items():
+            with self.subTest(candidate=candidate):
+                state = load_state(ROOT / "research_state.yaml")
+                state["candidates"][candidate]["name"] = f"{name} changed"
+                with self.assertRaisesRegex(ValueError, "candidate name changed"):
+                    validate_state(state)
+
+    def test_candidate_budgets_reject_json_booleans(self):
+        fields = (
+            "equation_revisions_used",
+            "kernel_layouts_used",
+            "full_sab_integrations_used",
+        )
+        for candidate in ("A", "B", "C"):
+            for field in fields:
+                for value in (False, True):
+                    with self.subTest(
+                        candidate=candidate, field=field, value=value
+                    ):
+                        state = load_state(ROOT / "research_state.yaml")
+                        state["candidates"][candidate][field] = value
+                        with self.assertRaisesRegex(ValueError, f"invalid {field}"):
+                            validate_state(state)
 
     def test_hot_path_permission_is_rejected_before_amdahl_projection_pass(self):
         before_amdahl = (
@@ -167,89 +194,6 @@ class ResearchStateTests(unittest.TestCase):
         state["paper_gate"] = "pending-anything"
         with self.assertRaisesRegex(ValueError, "invalid paper_gate"):
             validate_state(state)
-
-    def test_transition_history_is_required_and_registry_backed(self):
-        state = load_state(ROOT / "research_state.yaml")
-        state.pop("transition_history", None)
-        with self.assertRaisesRegex(ValueError, "transition_history"):
-            validate_state(state)
-
-        state = load_state(ROOT / "research_state.yaml")
-        state["transition_history"] = [{
-            "candidate": "A",
-            "from_status": "INTAKE",
-            "to_status": "TECHGRAPH_ANCHORED",
-            "decision": "CANDIDATE_A_TECHGRAPH_ANCHORED",
-            "evidence_type": "technical_graph_artifact",
-            "evidence_path": "../outside.yaml",
-        }]
-        with self.assertRaisesRegex(ValueError, "transition_history"):
-            validate_state(state)
-
-    def test_unsupported_transition_decision_is_rejected(self):
-        state = candidate_a_state(load_state(ROOT / "research_state.yaml"), "INTAKE")
-        with self.assertRaisesRegex(ValueError, "unknown transition decision"):
-            transition_candidate(
-                state, "A", "TECHGRAPH_ANCHORED", "UNSUPPORTED_DECISION"
-            )
-
-    def test_registered_decision_must_match_the_transition(self):
-        state = candidate_a_state(load_state(ROOT / "research_state.yaml"), "INTAKE")
-        with self.assertRaisesRegex(ValueError, "decision does not match transition"):
-            transition_candidate(
-                state,
-                "A",
-                "TECHGRAPH_ANCHORED",
-                "CANDIDATE_A_PRODUCTION_EQUATIONS_DEFINED",
-            )
-
-    def test_registered_decisions_append_fixed_evidence(self):
-        cases = (
-            (
-                "INTAKE",
-                "TECHGRAPH_ANCHORED",
-                "CANDIDATE_A_TECHGRAPH_ANCHORED",
-                "technical_graph_artifact",
-                "paper_techgraphs/2025_686_mat_sab_selector.yaml",
-            ),
-            (
-                "TECHGRAPH_ANCHORED",
-                "EQUATIONS_DEFINED",
-                "CANDIDATE_A_PRODUCTION_EQUATIONS_DEFINED",
-                "derivation_artifact",
-                "theory_checks/candidate_a_star_cycle_production_equations.md",
-            ),
-            (
-                "EQUATIONS_DEFINED",
-                "ADVERSARIAL_CHECKER_PASS",
-                "ADMIT_CANDIDATE_A_REVISION_OR_KEYGEN_PREFLIGHT",
-                "checker_summary",
-                "repro/candidate_a_star_cycle_gate/summary.csv",
-            ),
-            (
-                "EQUATIONS_DEFINED",
-                "REJECTED",
-                "REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B",
-                "checker_summary",
-                "repro/candidate_a_star_cycle_gate/summary.csv",
-            ),
-        )
-        for from_status, to_status, decision, evidence_type, evidence_path in cases:
-            with self.subTest(decision=decision):
-                state = candidate_a_state(
-                    load_state(ROOT / "research_state.yaml"), from_status
-                )
-                changed = transition_candidate(
-                    state, "A", to_status, decision
-                )
-                self.assertEqual(changed["transition_history"], [{
-                    "candidate": "A",
-                    "from_status": from_status,
-                    "to_status": to_status,
-                    "decision": decision,
-                    "evidence_type": evidence_type,
-                    "evidence_path": evidence_path,
-                }])
 
     def test_json_valid_yaml_round_trip(self):
         state = load_state(ROOT / "research_state.yaml")

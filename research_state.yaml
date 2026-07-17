@@ -35,6 +35,5 @@
   },
   "paper_gate": "BLOCKED",
   "production_hot_path_permission": false,
-  "transition_history": [],
   "last_decision": "CONTRACT_APPROVED"
 }
