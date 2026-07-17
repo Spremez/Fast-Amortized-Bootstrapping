@@ -73,6 +73,21 @@ POST_B_REJECTION_OPEN_GAPS = (
     "Amdahl projection against exact-dense complete SAB",
     "isolated kernel and complete-SAB evidence",
 )
+TERMINAL_CAMPAIGN_BOUNDARIES = (
+    (
+        "Task 3B has no C2 seed or material; Task 4 is "
+        "SKIPPED_NO_REGISTERED_OPERATOR with no numeric complete-cost or "
+        "Amdahl values."
+    ),
+    (
+        "The exact-dense PVW/MAT-SAB implementation and its scoped measured "
+        "result remain preserved."
+    ),
+    (
+        "No Candidate D is opened automatically; any continuation requires "
+        "a separately approved research design."
+    ),
+)
 
 
 def _node(root: Path, spec: tuple[str, str, str, str]) -> dict[str, object]:
@@ -104,6 +119,23 @@ def _campaign_view(state: Mapping[str, object]) -> dict[str, object]:
         "last_decision": state["last_decision"],
     }
     if (
+        state["goal_status"] == "RESEARCH_CAMPAIGN_EXHAUSTED"
+        and active_candidate == "C"
+        and all(
+            candidates[candidate]["status"] == "REJECTED"
+            for candidate in ("A", "B", "C")
+        )
+    ):
+        disposition = (
+            "The finite A/B/C mechanism campaign is exhausted; Candidate C "
+            "closed on its scoped C1 nonpositive structural-cost failure."
+        )
+        next_step = (
+            "Task 3B and Task 4 were skipped; exact-dense PVW/MAT-SAB "
+            "evidence is preserved; no Candidate D is opened automatically."
+        )
+        open_gaps = TERMINAL_CAMPAIGN_BOUNDARIES
+    elif (
         candidates["A"]["status"] == "REJECTED"
         and active_candidate == "B"
     ):

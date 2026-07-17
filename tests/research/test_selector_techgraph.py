@@ -55,6 +55,22 @@ def synthetic_campaign_state(active_candidate):
     }
 
 
+def terminal_rejected_campaign_state():
+    return {
+        "goal_status": "RESEARCH_CAMPAIGN_EXHAUSTED",
+        "paper_gate": "BLOCKED",
+        "production_hot_path_permission": False,
+        "active_candidate": "C",
+        "candidates": {
+            candidate: {"status": "REJECTED"}
+            for candidate in ("A", "B", "C")
+        },
+        "last_decision": (
+            "REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED"
+        ),
+    }
+
+
 class SelectorTechgraphTests(unittest.TestCase):
     def test_all_source_and_artifact_anchors_resolve(self):
         graph = build_graph(ROOT)
@@ -102,6 +118,31 @@ class SelectorTechgraphTests(unittest.TestCase):
                     campaign,
                 )
                 self.assertEqual(campaign.count("(active)"), 1)
+
+    def test_terminal_campaign_records_candidate_c_closeout_boundary(self):
+        graph = _campaign_view(terminal_rejected_campaign_state())
+        campaign = "\n".join(_campaign_markdown(graph))
+        rendered = "\n".join(
+            (
+                campaign,
+                str(graph["candidate_a_disposition"]),
+                str(graph["next_step"]),
+                *graph["open_gaps"],
+            )
+        )
+        required = (
+            "finite A/B/C mechanism campaign is exhausted",
+            "scoped C1 nonpositive structural-cost failure",
+            "Task 3B and Task 4 were skipped",
+            "exact-dense PVW/MAT-SAB evidence is preserved",
+            "no Candidate D is opened automatically",
+        )
+        for text in required:
+            with self.subTest(text=text):
+                self.assertIn(text, rendered)
+        for forbidden in ("not begun", "unstarted", "active research"):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, rendered)
 
     def test_graph_records_the_stable_reproduction_command(self):
         graph = build_graph(ROOT)
