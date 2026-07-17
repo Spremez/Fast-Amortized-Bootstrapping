@@ -18,12 +18,15 @@ from scripts.mat_sab_research_state import (
     write_state,
 )
 from scripts.run_candidate_c_rank_bounded_gate import (
+    ACTUAL_EVIDENCE,
     ADMIT,
     INCONCLUSIVE,
     REJECT,
     SUMMARY_FIELDS,
     canonical_summary_record,
     evaluate_candidate_c,
+    gate_result_from_decision_evidence,
+    load_decision_evidence,
 )
 
 RUN_MARKER = "candidate-c-rank-bounded-gate-001"
@@ -123,7 +126,11 @@ def _summary_record(path: Path) -> dict[str, str]:
     record = dict(zip(fields, row))
     if record["decision"] not in DECISIONS:
         raise ValueError("summary must contain one canonical decision")
-    optional_numeric = {"complete_cost", "amdahl_projection"}
+    optional_numeric = {
+        "complete_cost",
+        "amdahl_projection",
+        "amdahl_pessimistic_projection",
+    }
     if any(
         value == "" and field not in optional_numeric
         for field, value in record.items()
@@ -137,6 +144,12 @@ def _summary_record(path: Path) -> dict[str, str]:
         record["amdahl_status"] != "SKIPPED_NO_REGISTERED_OPERATOR"
     ):
         raise ValueError("blank Amdahl projection requires skipped Task 4")
+    if record["amdahl_pessimistic_projection"] == "" and (
+        record["amdahl_status"] != "SKIPPED_NO_REGISTERED_OPERATOR"
+    ):
+        raise ValueError(
+            "blank pessimistic Amdahl projection requires skipped Task 4"
+        )
     return record
 
 
@@ -392,6 +405,8 @@ def apply_gate(
     summary_path: Path,
     *,
     input_commit: str,
+    evidence_path: Path | None = None,
+    allow_fixture: bool = False,
 ) -> str:
     resolved_root = _resolved_root(root)
     state = _resolved_under_root(
@@ -406,15 +421,37 @@ def apply_gate(
         "summary path",
         strict=True,
     )
-    summary_record = _summary_record(summary)
-    recomputed_result = evaluate_candidate_c(
+    evidence = _resolved_under_root(
         resolved_root,
-        input_commit=input_commit,
+        (
+            evidence_path
+            if evidence_path is not None
+            else summary.parent / "decision_evidence.json"
+        ),
+        "decision evidence path",
+        strict=True,
     )
+    summary_record = _summary_record(summary)
+    raw_evidence = load_decision_evidence(evidence)
+    if raw_evidence.binding_kind == ACTUAL_EVIDENCE:
+        recomputed_result = evaluate_candidate_c(
+            resolved_root,
+            input_commit=input_commit,
+        )
+        if raw_evidence != recomputed_result.decision_evidence:
+            raise ValueError(
+                "decision evidence does not match fresh repository evidence"
+            )
+    else:
+        recomputed_result = gate_result_from_decision_evidence(
+            raw_evidence,
+            allow_fixture=allow_fixture,
+        )
     recomputed = canonical_summary_record(
         recomputed_result,
         root=resolved_root,
         input_commit=input_commit,
+        allow_fixture=allow_fixture,
     )
     if summary_record != recomputed:
         raise ValueError("summary does not match recomputed gate evidence")
@@ -478,6 +515,7 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--state", type=Path)
     parser.add_argument("--summary", type=Path)
+    parser.add_argument("--evidence", type=Path)
     parser.add_argument("--input-commit", required=True)
     args = parser.parse_args()
     state = args.state or args.root / "research_state.yaml"
@@ -491,6 +529,7 @@ def main() -> int:
             state,
             summary,
             input_commit=args.input_commit,
+            evidence_path=args.evidence,
         )
     )
     return 0

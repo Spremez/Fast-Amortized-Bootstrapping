@@ -3,8 +3,10 @@ from __future__ import annotations
 
 import argparse
 import csv
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, replace
 import hashlib
+import json
+import math
 import os
 import platform
 from pathlib import Path
@@ -26,6 +28,7 @@ from research.mat_sab.candidate_c_operator_tensor import (
 from research.mat_sab.candidate_c_registered_replay import (
     NO_VERIFIED_TASK3B_RESULT,
     SKIPPED_NO_REGISTERED_OPERATOR,
+    TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED,
     CandidateCTerminalRecord,
     terminal_record_for_task5,
 )
@@ -51,6 +54,7 @@ SUMMARY_FIELDS = (
     "complete_cost",
     "amdahl_status",
     "amdahl_projection",
+    "amdahl_pessimistic_projection",
     "task4_status",
     "mechanism_id",
     "max_rho",
@@ -77,6 +81,7 @@ REQUIRED_PACK_FILES = (
     "amdahl_projection.csv",
     "mechanism_matrix.csv",
     "proof_gate.csv",
+    "decision_evidence.json",
     "input_manifest.csv",
     "environment.csv",
     "artifact_index.csv",
@@ -106,6 +111,10 @@ GENERATED_DOCUMENTS = (
     "algorithm_variants/candidate_c_rank_bounded_state.md",
     "experiments/candidate_c_rank_bounded_gate_plan.md",
 )
+DECISION_EVIDENCE_SCHEMA = "candidate-c-task5-decision-evidence-v1"
+ACTUAL_EVIDENCE = "ACTUAL_TASK3C"
+FIXTURE_EVIDENCE = "VERIFIED_FIXTURE"
+_FIXTURE_HASH_DOMAIN = "candidate-c/task5/verified-fixture/v1"
 
 
 class GateEvidenceError(RuntimeError):
@@ -132,14 +141,38 @@ class MechanismEvaluation:
     complete_cost: float | None
     amdahl_status: str
     amdahl_projection: float | None
+    amdahl_pessimistic_projection: float | None
     fully_evaluated: bool
     failure_reason: str
     object_hashes: tuple[str, ...]
 
 
 @dataclass(frozen=True)
+class RawDecisionEvidence:
+    schema: str
+    binding_kind: str
+    claimed_decision: str
+    terminal_classification: str
+    terminal_decision: str
+    terminal_record_hash: str
+    terminal_evidence_exhausted: bool
+    replay_status: str
+    task3b_status: str
+    task4_status: str
+    mechanisms: tuple[MechanismEvaluation, ...]
+
+
+@dataclass(frozen=True)
+class VerifiedDecisionEvidence:
+    raw: RawDecisionEvidence
+    decision: str
+    verification_hash: str
+
+
+@dataclass(frozen=True)
 class GateResult:
-    terminal_record: CandidateCTerminalRecord
+    decision_evidence: RawDecisionEvidence
+    terminal_record: CandidateCTerminalRecord | None
     decision: str
     terminal_classification: str
     terminal_decision: str
@@ -149,6 +182,7 @@ class GateResult:
     complete_cost: float | None
     amdahl_status: str
     amdahl_projection: float | None
+    amdahl_pessimistic_projection: float | None
     production_hot_path_permission: bool
     mechanisms: tuple[MechanismEvaluation, ...]
     source_rows: tuple[dict[str, object], ...]
@@ -163,6 +197,221 @@ class GateResult:
 
 def _sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+def _sha256_json(value: object) -> str:
+    return _sha256_bytes(
+        json.dumps(
+            value,
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=True,
+        ).encode("ascii")
+    )
+
+
+def _fixture_hash_payload(raw: RawDecisionEvidence) -> dict[str, object]:
+    payload = asdict(raw)
+    payload.pop("terminal_record_hash")
+    return {
+        "domain": _FIXTURE_HASH_DOMAIN,
+        "evidence": payload,
+    }
+
+
+def bind_fixture_decision_evidence(
+    raw: RawDecisionEvidence,
+) -> RawDecisionEvidence:
+    if (
+        type(raw) is not RawDecisionEvidence
+        or raw.schema != DECISION_EVIDENCE_SCHEMA
+        or raw.binding_kind != FIXTURE_EVIDENCE
+    ):
+        raise GateEvidenceError(
+            "only typed fixture decision evidence can be fixture-bound"
+        )
+    return replace(
+        raw,
+        terminal_record_hash=_sha256_json(_fixture_hash_payload(raw)),
+    )
+
+
+def decision_evidence_json(raw: RawDecisionEvidence) -> str:
+    _validate_raw_decision_types(raw)
+    return (
+        json.dumps(
+            asdict(raw),
+            indent=2,
+            sort_keys=True,
+            ensure_ascii=True,
+        )
+        + "\n"
+    )
+
+
+def _mapping_keys(
+    value: object,
+    expected: set[str],
+    label: str,
+) -> Mapping[str, object]:
+    if not isinstance(value, Mapping) or set(value) != expected:
+        raise GateEvidenceError(f"{label} has a noncanonical schema")
+    return value
+
+
+def raw_decision_evidence_from_json(
+    content: str,
+) -> RawDecisionEvidence:
+    try:
+        decoded = json.loads(content)
+    except (json.JSONDecodeError, TypeError) as error:
+        raise GateEvidenceError(
+            "decision evidence is not canonical JSON"
+        ) from error
+    raw_fields = set(RawDecisionEvidence.__dataclass_fields__)
+    record = _mapping_keys(decoded, raw_fields, "decision evidence")
+    mechanisms_value = record["mechanisms"]
+    if not isinstance(mechanisms_value, list):
+        raise GateEvidenceError("decision mechanisms must be a JSON list")
+    mechanism_fields = set(MechanismEvaluation.__dataclass_fields__)
+    mechanisms = []
+    for index, value in enumerate(mechanisms_value):
+        mechanism = dict(
+            _mapping_keys(
+                value,
+                mechanism_fields,
+                f"decision mechanism {index}",
+            )
+        )
+        hashes = mechanism["object_hashes"]
+        if not isinstance(hashes, list):
+            raise GateEvidenceError(
+                "decision mechanism object hashes must be a JSON list"
+            )
+        mechanism["object_hashes"] = tuple(hashes)
+        try:
+            mechanisms.append(MechanismEvaluation(**mechanism))
+        except TypeError as error:
+            raise GateEvidenceError(
+                f"decision mechanism {index} has invalid fields"
+            ) from error
+    values = dict(record)
+    values["mechanisms"] = tuple(mechanisms)
+    try:
+        raw = RawDecisionEvidence(**values)
+    except TypeError as error:
+        raise GateEvidenceError(
+            "decision evidence has invalid fields"
+        ) from error
+    _validate_raw_decision_types(raw)
+    return raw
+
+
+def load_decision_evidence(path: Path) -> RawDecisionEvidence:
+    try:
+        content = Path(path).read_text(encoding="ascii")
+    except (OSError, UnicodeError) as error:
+        raise GateEvidenceError("cannot read decision evidence") from error
+    return raw_decision_evidence_from_json(content)
+
+
+def _is_finite_number(value: object) -> bool:
+    return (
+        type(value) in {int, float}
+        and math.isfinite(float(value))
+    )
+
+
+def _validate_digest(value: object, label: str) -> None:
+    if (
+        type(value) is not str
+        or len(value) != 64
+        or any(character not in "0123456789abcdef" for character in value)
+    ):
+        raise GateEvidenceError(f"{label} is not a SHA-256 digest")
+
+
+def _validate_mechanism_types(mechanism: MechanismEvaluation) -> None:
+    if type(mechanism) is not MechanismEvaluation:
+        raise GateEvidenceError("decision mechanism type changed")
+    string_fields = (
+        "mechanism_id",
+        "source_status",
+        "equation_status",
+        "symbolic_independence_status",
+        "phase_status",
+        "schedule_status",
+        "rank_status",
+        "compression_status",
+        "structural_cost_status",
+        "complete_cost_status",
+        "amdahl_status",
+        "failure_reason",
+    )
+    if any(type(getattr(mechanism, field)) is not str for field in string_fields):
+        raise GateEvidenceError("decision mechanism string field changed")
+    boolean_fields = (
+        "registered",
+        "closed_next_state_consumption",
+        "fully_evaluated",
+    )
+    if any(type(getattr(mechanism, field)) is not bool for field in boolean_fields):
+        raise GateEvidenceError("decision mechanism boolean field changed")
+    integer_fields = (
+        "max_rho",
+        "compression_interval",
+        "b_min",
+    )
+    if any(type(getattr(mechanism, field)) is not int for field in integer_fields):
+        raise GateEvidenceError("decision mechanism integer field changed")
+    for field in (
+        "complete_cost",
+        "amdahl_projection",
+        "amdahl_pessimistic_projection",
+    ):
+        value = getattr(mechanism, field)
+        if value is not None and not _is_finite_number(value):
+            raise GateEvidenceError(
+                f"decision mechanism {field} is not finite"
+            )
+    if (
+        type(mechanism.object_hashes) is not tuple
+        or any(type(value) is not str for value in mechanism.object_hashes)
+    ):
+        raise GateEvidenceError("decision mechanism object hashes changed")
+    for digest in mechanism.object_hashes:
+        _validate_digest(digest, "decision mechanism object hash")
+
+
+def _validate_raw_decision_types(raw: RawDecisionEvidence) -> None:
+    if type(raw) is not RawDecisionEvidence:
+        raise GateEvidenceError("raw decision evidence type changed")
+    if raw.schema != DECISION_EVIDENCE_SCHEMA:
+        raise GateEvidenceError("decision evidence schema changed")
+    string_fields = (
+        "binding_kind",
+        "claimed_decision",
+        "terminal_classification",
+        "terminal_decision",
+        "terminal_record_hash",
+        "replay_status",
+        "task3b_status",
+        "task4_status",
+    )
+    if any(type(getattr(raw, field)) is not str for field in string_fields):
+        raise GateEvidenceError("decision evidence string field changed")
+    if type(raw.terminal_evidence_exhausted) is not bool:
+        raise GateEvidenceError(
+            "decision terminal exhaustion field changed"
+        )
+    if (
+        type(raw.mechanisms) is not tuple
+        or not raw.mechanisms
+    ):
+        raise GateEvidenceError("decision evidence mechanisms changed")
+    for mechanism in raw.mechanisms:
+        _validate_mechanism_types(mechanism)
+    _validate_digest(raw.terminal_record_hash, "terminal record hash")
 
 
 def _status(value: bool) -> str:
@@ -293,32 +542,15 @@ def _actual_mechanisms(
     results = terminal.operator_results
     if not results:
         raise GateEvidenceError("Task 3C terminal record has no Task 3A results")
-    structural_failure = all(
-        not result.structural_improvement
-        and result.decision
-        == REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL
-        for result in results
+    structural_passed = all(
+        result.structural_improvement for result in results
     )
-    if (
-        not structural_failure
-        or terminal.decision
-        != REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL
-    ):
-        raise GateEvidenceError(
-            "Task 3C terminal record is not the scoped C1 structural-cost "
-            "failure"
-        )
     source_passed = all(result.source_bindings for result in results)
     schedule_passed = all(
         result.schedule_hash == terminal.schedule_hash for result in results
     )
     replay_skipped = terminal.replay_status == SKIPPED
-    task4_skipped = terminal.task4_status == SKIPPED
-    if not replay_skipped or not task4_skipped:
-        raise GateEvidenceError(
-            "Task 3C terminal record does not preserve the skipped replay/"
-            "Task 4 route"
-        )
+    structural_status = "PASS" if structural_passed else terminal.decision
     c1 = MechanismEvaluation(
         mechanism_id="C1",
         registered=True,
@@ -329,17 +561,22 @@ def _actual_mechanisms(
         schedule_status=_status(schedule_passed),
         rank_status=_status(all(result.joint_rank_passed for result in results)),
         max_rho=max(result.rho for result in results),
-        compression_status=terminal.decision,
-        compression_interval=0,
+        compression_status=structural_status,
+        compression_interval=1 if structural_passed else 0,
         b_min=1,
         closed_next_state_consumption=not replay_skipped,
-        structural_cost_status=terminal.decision,
+        structural_cost_status=structural_status,
         complete_cost_status=terminal.task4_status,
         complete_cost=None,
         amdahl_status=terminal.task4_status,
         amdahl_projection=None,
-        fully_evaluated=structural_failure,
-        failure_reason=terminal.decision,
+        amdahl_pessimistic_projection=None,
+        fully_evaluated=terminal.classification == "REJECT",
+        failure_reason=(
+            terminal.decision
+            if terminal.classification == "REJECT"
+            else ""
+        ),
         object_hashes=tuple(result.result_hash for result in results),
     )
     c2 = MechanismEvaluation(
@@ -361,11 +598,264 @@ def _actual_mechanisms(
         complete_cost=None,
         amdahl_status=terminal.task4_status,
         amdahl_projection=None,
+        amdahl_pessimistic_projection=None,
         fully_evaluated=False,
         failure_reason=terminal.conversion_status,
         object_hashes=(),
     )
     return (c1, c2)
+
+
+def _mechanism_admits(mechanism: MechanismEvaluation) -> bool:
+    return (
+        mechanism.mechanism_id in {"C1", "C2"}
+        and mechanism.registered
+        and mechanism.source_status == "PASS"
+        and mechanism.equation_status == "PASS"
+        and mechanism.symbolic_independence_status == "PASS"
+        and mechanism.phase_status == "PASS"
+        and mechanism.schedule_status == "PASS"
+        and mechanism.rank_status == "PASS"
+        and 0 <= mechanism.max_rho <= 2
+        and mechanism.compression_status == "PASS"
+        and mechanism.b_min > 0
+        and mechanism.compression_interval >= mechanism.b_min
+        and mechanism.closed_next_state_consumption
+        and mechanism.structural_cost_status == "PASS"
+        and mechanism.complete_cost_status == "PASS"
+        and _is_finite_number(mechanism.complete_cost)
+        and float(mechanism.complete_cost) >= 0.0
+        and mechanism.amdahl_status == "PASS"
+        and _is_finite_number(mechanism.amdahl_projection)
+        and float(mechanism.amdahl_projection) > 1.0
+        and _is_finite_number(
+            mechanism.amdahl_pessimistic_projection
+        )
+        and float(mechanism.amdahl_pessimistic_projection) >= 0.0
+        and mechanism.fully_evaluated
+        and mechanism.failure_reason == ""
+    )
+
+
+def _pre_cost_scoped_failure(
+    raw: RawDecisionEvidence,
+    mechanism: MechanismEvaluation,
+) -> bool:
+    gate_failed = (
+        mechanism.phase_status != "PASS"
+        or mechanism.schedule_status != "PASS"
+        or mechanism.rank_status != "PASS"
+        or mechanism.max_rho > 2
+        or mechanism.compression_status != "PASS"
+        or mechanism.compression_interval < mechanism.b_min
+        or not mechanism.closed_next_state_consumption
+        or mechanism.structural_cost_status != "PASS"
+    )
+    return (
+        mechanism.mechanism_id in {"C1", "C2"}
+        and mechanism.registered
+        and mechanism.fully_evaluated
+        and mechanism.failure_reason == raw.terminal_decision
+        and raw.replay_status == SKIPPED
+        and raw.task4_status == SKIPPED
+        and mechanism.complete_cost_status == SKIPPED
+        and mechanism.amdahl_status == SKIPPED
+        and mechanism.complete_cost is None
+        and mechanism.amdahl_projection is None
+        and mechanism.amdahl_pessimistic_projection is None
+        and gate_failed
+    )
+
+
+def _reject_after_cost(
+    raw: RawDecisionEvidence,
+    mechanism: MechanismEvaluation,
+) -> bool:
+    pre_cost_passed = (
+        mechanism.source_status == "PASS"
+        and mechanism.equation_status == "PASS"
+        and mechanism.symbolic_independence_status == "PASS"
+        and mechanism.phase_status == "PASS"
+        and mechanism.schedule_status == "PASS"
+        and mechanism.rank_status == "PASS"
+        and 0 <= mechanism.max_rho <= 2
+        and mechanism.compression_status == "PASS"
+        and mechanism.b_min > 0
+        and mechanism.compression_interval >= mechanism.b_min
+        and mechanism.closed_next_state_consumption
+        and mechanism.structural_cost_status == "PASS"
+    )
+    numeric_cost = (
+        raw.task4_status == "PASS"
+        and mechanism.complete_cost_status == "PASS"
+        and _is_finite_number(mechanism.complete_cost)
+        and float(mechanism.complete_cost) >= 0.0
+        and _is_finite_number(mechanism.amdahl_projection)
+        and _is_finite_number(
+            mechanism.amdahl_pessimistic_projection
+        )
+    )
+    projection_failed = numeric_cost and (
+        mechanism.amdahl_status != "PASS"
+        or float(mechanism.amdahl_projection) <= 1.0
+        or float(mechanism.amdahl_pessimistic_projection) < 0.0
+    )
+    return (
+        mechanism.mechanism_id in {"C1", "C2"}
+        and mechanism.registered
+        and mechanism.fully_evaluated
+        and mechanism.failure_reason == raw.terminal_decision
+        and raw.replay_status == "PASS"
+        and pre_cost_passed
+        and projection_failed
+    )
+
+
+def _derive_decision(raw: RawDecisionEvidence) -> str:
+    admitted = tuple(
+        mechanism
+        for mechanism in raw.mechanisms
+        if _mechanism_admits(mechanism)
+    )
+    failed = tuple(
+        mechanism
+        for mechanism in raw.mechanisms
+        if (
+            _pre_cost_scoped_failure(raw, mechanism)
+            or _reject_after_cost(raw, mechanism)
+        )
+    )
+    if (
+        raw.terminal_classification == "ADMIT"
+        and raw.terminal_decision
+        in {
+            "ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY",
+            "ADMIT_C2_RELINEARIZATION_TO_SCHEDULE_REPLAY",
+        }
+        and not raw.terminal_evidence_exhausted
+        and raw.replay_status == "PASS"
+        and raw.task4_status == "PASS"
+        and admitted
+        and not failed
+    ):
+        return ADMIT
+    if (
+        raw.terminal_classification == "REJECT"
+        and raw.terminal_decision.startswith(("REJECT_C1_", "REJECT_C2_"))
+        and not raw.terminal_evidence_exhausted
+        and failed
+        and not admitted
+    ):
+        return REJECT
+    no_numerics = all(
+        mechanism.complete_cost is None
+        and mechanism.amdahl_projection is None
+        and mechanism.amdahl_pessimistic_projection is None
+        for mechanism in raw.mechanisms
+    )
+    task4_skipped = all(
+        mechanism.complete_cost_status == SKIPPED
+        and mechanism.amdahl_status == SKIPPED
+        for mechanism in raw.mechanisms
+    )
+    if (
+        raw.terminal_classification == "INCONCLUSIVE"
+        and raw.terminal_decision
+        == TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED
+        and raw.terminal_evidence_exhausted
+        and raw.replay_status == SKIPPED
+        and raw.task4_status == SKIPPED
+        and raw.task3b_status
+        in {NO_VERIFIED_TASK3B_RESULT, "EVIDENCE_EXHAUSTED"}
+        and no_numerics
+        and task4_skipped
+        and not admitted
+        and not failed
+    ):
+        return INCONCLUSIVE
+    raise GateEvidenceError(
+        "typed decision evidence does not derive ADMIT, REJECT, or "
+        "INCONCLUSIVE"
+    )
+
+
+def _raw_decision_evidence_from_terminal(
+    terminal: CandidateCTerminalRecord,
+) -> RawDecisionEvidence:
+    provisional = RawDecisionEvidence(
+        schema=DECISION_EVIDENCE_SCHEMA,
+        binding_kind=ACTUAL_EVIDENCE,
+        claimed_decision="",
+        terminal_classification=terminal.classification,
+        terminal_decision=terminal.decision,
+        terminal_record_hash=terminal.record_hash,
+        terminal_evidence_exhausted=(
+            terminal.classification == "INCONCLUSIVE"
+        ),
+        replay_status=terminal.replay_status,
+        task3b_status=terminal.conversion_status,
+        task4_status=terminal.task4_status,
+        mechanisms=_actual_mechanisms(terminal),
+    )
+    return replace(
+        provisional,
+        claimed_decision=_derive_decision(provisional),
+    )
+
+
+def verify_decision_evidence(
+    raw: RawDecisionEvidence,
+    *,
+    root: Path | None = None,
+    terminal: CandidateCTerminalRecord | None = None,
+    allow_fixture: bool = False,
+) -> VerifiedDecisionEvidence:
+    _validate_raw_decision_types(raw)
+    if raw.binding_kind == ACTUAL_EVIDENCE:
+        if root is None:
+            raise GateEvidenceError(
+                "actual decision evidence requires a source root"
+            )
+        actual_terminal = (
+            terminal
+            if terminal is not None
+            else terminal_record_for_task5(root)
+        )
+        try:
+            actual_terminal.validate(root)
+        except (OSError, TypeError, ValueError) as error:
+            raise GateEvidenceError(
+                "actual Task 3C decision evidence failed verification"
+            ) from error
+        expected = _raw_decision_evidence_from_terminal(actual_terminal)
+        if raw != expected:
+            raise GateEvidenceError(
+                "actual decision evidence changed from fresh Task 3A/Task 3C"
+            )
+        verification_hash = actual_terminal.record_hash
+    elif raw.binding_kind == FIXTURE_EVIDENCE:
+        if not allow_fixture:
+            raise GateEvidenceError(
+                "fixture decision evidence is disabled"
+            )
+        expected_hash = _sha256_json(_fixture_hash_payload(raw))
+        if raw.terminal_record_hash != expected_hash:
+            raise GateEvidenceError(
+                "fixture decision evidence hash changed"
+            )
+        verification_hash = expected_hash
+    else:
+        raise GateEvidenceError("decision evidence binding kind changed")
+    decision = _derive_decision(raw)
+    if raw.claimed_decision != decision:
+        raise GateEvidenceError(
+            "claimed decision does not match typed evidence derivation"
+        )
+    return VerifiedDecisionEvidence(
+        raw=raw,
+        decision=decision,
+        verification_hash=verification_hash,
+    )
 
 
 def _primary_mechanism(result: GateResult) -> MechanismEvaluation:
@@ -377,46 +867,42 @@ def _primary_mechanism(result: GateResult) -> MechanismEvaluation:
     return registered[0]
 
 
-def _evaluate_verified_terminal(root: Path) -> GateResult:
-    try:
-        terminal = terminal_record_for_task5(root)
-        terminal.validate(root)
-    except (OSError, TypeError, ValueError) as error:
-        raise GateEvidenceError(
-            "Candidate C requires a hash-bound terminal Task 3C record"
-        ) from error
-    if terminal.record_hash != APPROVED_TASK3C_HASH:
-        raise GateEvidenceError(
-            "Candidate C terminal Task 3C record is not the approved record"
-        )
-    if (
-        terminal.classification != "REJECT"
-        or terminal.decision
-        != REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL
-    ):
-        raise GateEvidenceError(
-            "Candidate C terminal Task 3C record is not the approved REJECT "
-            "route"
-        )
-    mechanisms = _actual_mechanisms(terminal)
+def _gate_result_from_verified(
+    verified: VerifiedDecisionEvidence,
+    *,
+    terminal: CandidateCTerminalRecord | None,
+) -> GateResult:
+    raw = verified.raw
+    primary = next(
+        (
+            mechanism
+            for mechanism in raw.mechanisms
+            if mechanism.registered
+        ),
+        raw.mechanisms[0],
+    )
     result = GateResult(
+        decision_evidence=raw,
         terminal_record=terminal,
-        decision=REJECT,
-        terminal_classification=terminal.classification,
-        terminal_decision=terminal.decision,
-        terminal_record_hash=terminal.record_hash,
-        task4_status=terminal.task4_status,
-        complete_cost_status=terminal.task4_status,
-        complete_cost=None,
-        amdahl_status=terminal.task4_status,
-        amdahl_projection=None,
+        decision=verified.decision,
+        terminal_classification=raw.terminal_classification,
+        terminal_decision=raw.terminal_decision,
+        terminal_record_hash=raw.terminal_record_hash,
+        task4_status=raw.task4_status,
+        complete_cost_status=primary.complete_cost_status,
+        complete_cost=primary.complete_cost,
+        amdahl_status=primary.amdahl_status,
+        amdahl_projection=primary.amdahl_projection,
+        amdahl_pessimistic_projection=(
+            primary.amdahl_pessimistic_projection
+        ),
         production_hot_path_permission=False,
-        mechanisms=mechanisms,
-        source_rows=_source_rows(terminal),
-        schedule_rows=_schedule_rows(terminal),
-        operator_rows=_operator_rows(terminal),
-        relation_rows=_relation_rows(terminal),
-        conversion_rows=(
+        mechanisms=raw.mechanisms,
+        source_rows=() if terminal is None else _source_rows(terminal),
+        schedule_rows=() if terminal is None else _schedule_rows(terminal),
+        operator_rows=() if terminal is None else _operator_rows(terminal),
+        relation_rows=() if terminal is None else _relation_rows(terminal),
+        conversion_rows=() if terminal is None else (
             {
                 "mechanism_id": "C2",
                 "conversion_status": terminal.conversion_status,
@@ -424,7 +910,7 @@ def _evaluate_verified_terminal(root: Path) -> GateResult:
                 "task4_status": terminal.task4_status,
             },
         ),
-        hash_rows=(
+        hash_rows=() if terminal is None else (
             {
                 "object": "terminal_record",
                 "mechanism_id": "C1",
@@ -439,32 +925,55 @@ def _evaluate_verified_terminal(root: Path) -> GateResult:
                 for operator in terminal.operator_results
             ),
         ),
-        terminal_rows=(
+        terminal_rows=() if terminal is None else (
             {
                 "classification": terminal.classification,
                 "decision": terminal.decision,
                 "replay_status": terminal.replay_status,
                 "task4_status": terminal.task4_status,
                 "conversion_status": terminal.conversion_status,
-                "r_values": ";".join(str(value) for value in terminal.r_values),
+                "r_values": ";".join(
+                    str(value) for value in terminal.r_values
+                ),
                 "schedule_hash": terminal.schedule_hash,
                 "record_hash": terminal.record_hash,
             },
         ),
-        rank_rows=_rank_rows(terminal),
+        rank_rows=() if terminal is None else _rank_rows(terminal),
     )
-    mechanism = _primary_mechanism(result)
-    if (
-        result.production_hot_path_permission
-        or result.task4_status != terminal.task4_status
-        or result.complete_cost_status != terminal.task4_status
-        or result.amdahl_status != terminal.task4_status
-        or result.complete_cost is not None
-        or result.amdahl_projection is not None
-        or mechanism.structural_cost_status != terminal.decision
-    ):
+    return result
+
+
+def gate_result_from_decision_evidence(
+    raw: RawDecisionEvidence,
+    *,
+    allow_fixture: bool = False,
+) -> GateResult:
+    verified = verify_decision_evidence(
+        raw,
+        allow_fixture=allow_fixture,
+    )
+    return _gate_result_from_verified(verified, terminal=None)
+
+
+def _evaluate_verified_terminal(root: Path) -> GateResult:
+    try:
+        terminal = terminal_record_for_task5(root)
+        terminal.validate(root)
+    except (OSError, TypeError, ValueError) as error:
         raise GateEvidenceError(
-            "Candidate C fields do not derive from the terminal record"
+            "Candidate C requires a hash-bound terminal Task 3C record"
+        ) from error
+    raw = _raw_decision_evidence_from_terminal(terminal)
+    verified = verify_decision_evidence(
+        raw,
+        root=root,
+        terminal=terminal,
+    )
+    result = _gate_result_from_verified(verified, terminal=terminal)
+    if result.production_hot_path_permission:
+        raise GateEvidenceError(
+            "Candidate C evidence cannot enable production code"
         )
     return result
 
@@ -490,13 +999,33 @@ def validate_gate_result(
     *,
     root: Path,
     input_commit: str,
-) -> None:
-    expected = evaluate_candidate_c(root, input_commit=input_commit)
+    allow_fixture: bool = False,
+) -> VerifiedDecisionEvidence:
+    if result.decision_evidence.binding_kind == ACTUAL_EVIDENCE:
+        expected = evaluate_candidate_c(root, input_commit=input_commit)
+        _validate_raw_decision_types(result.decision_evidence)
+        derived = _derive_decision(result.decision_evidence)
+        if result.decision_evidence.claimed_decision != derived:
+            raise GateEvidenceError(
+                "claimed decision does not match typed evidence derivation"
+            )
+        verified = VerifiedDecisionEvidence(
+            raw=result.decision_evidence,
+            decision=derived,
+            verification_hash=result.terminal_record_hash,
+        )
+    else:
+        verified = verify_decision_evidence(
+            result.decision_evidence,
+            allow_fixture=allow_fixture,
+        )
+        expected = _gate_result_from_verified(verified, terminal=None)
     if result != expected:
         raise ValueError(
-            "gate result does not match freshly verified Task 3C/Task 3A "
-            "evidence"
+            "gate result does not match freshly verified or rederived typed "
+            "decision evidence"
         )
+    return verified
 
 
 def _summary_from_verified_result(result: GateResult) -> dict[str, str]:
@@ -519,6 +1048,10 @@ def _summary_from_verified_result(result: GateResult) -> dict[str, str]:
             "" if result.amdahl_projection is None
             else f"{result.amdahl_projection:.9f}"
         ),
+        "amdahl_pessimistic_projection": (
+            "" if result.amdahl_pessimistic_projection is None
+            else f"{result.amdahl_pessimistic_projection:.9f}"
+        ),
         "task4_status": result.task4_status,
         "mechanism_id": mechanism.mechanism_id,
         "max_rho": str(mechanism.max_rho),
@@ -540,11 +1073,13 @@ def canonical_summary_record(
     *,
     root: Path,
     input_commit: str,
+    allow_fixture: bool = False,
 ) -> dict[str, str]:
     validate_gate_result(
         result,
         root=root,
         input_commit=input_commit,
+        allow_fixture=allow_fixture,
     )
     return _summary_from_verified_result(result)
 
@@ -802,6 +1337,11 @@ def _mechanism_rows(
             "structural_cost_status": mechanism.structural_cost_status,
             "complete_cost_status": mechanism.complete_cost_status,
             "amdahl_status": mechanism.amdahl_status,
+            "amdahl_pessimistic_projection": (
+                ""
+                if mechanism.amdahl_pessimistic_projection is None
+                else f"{mechanism.amdahl_pessimistic_projection:.9f}"
+            ),
             "fully_evaluated": "yes" if mechanism.fully_evaluated else "no",
             "failure_reason": mechanism.failure_reason,
         }
@@ -994,7 +1534,12 @@ def _render_gate_artifacts(
     )
     _write_csv(
         out / "amdahl_projection.csv",
-        ("mechanism_id", "status", "central_projection"),
+        (
+            "mechanism_id",
+            "status",
+            "central_projection",
+            "pessimistic_projection",
+        ),
         (
             {
                 "mechanism_id": mechanism.mechanism_id,
@@ -1002,6 +1547,11 @@ def _render_gate_artifacts(
                 "central_projection": (
                     "" if mechanism.amdahl_projection is None
                     else f"{mechanism.amdahl_projection:.9f}"
+                ),
+                "pessimistic_projection": (
+                    ""
+                    if mechanism.amdahl_pessimistic_projection is None
+                    else f"{mechanism.amdahl_pessimistic_projection:.9f}"
                 ),
             }
             for mechanism in result.mechanisms
@@ -1046,6 +1596,10 @@ def _render_gate_artifacts(
                 "evidence": result.decision,
             },
         ),
+    )
+    _write_text(
+        out / "decision_evidence.json",
+        decision_evidence_json(result.decision_evidence),
     )
     expected_inputs = _input_paths(source_root, result)
     if tuple(row["path"] for row in input_rows) != expected_inputs:

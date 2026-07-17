@@ -3,7 +3,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import shutil
 import sys
+import tempfile
 from pathlib import Path
 from typing import Mapping
 
@@ -13,7 +16,13 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.mat_sab_research_state import load_state
-from scripts.run_candidate_c_rank_bounded_gate import _validated_input_rows
+from scripts.run_candidate_c_rank_bounded_gate import (
+    GateEvidenceError,
+    _resolve_under_root,
+    _resolved_directory,
+    _restore_file_atomic,
+    _validated_input_rows,
+)
 
 
 OUT_DIR = ROOT / "paper_techgraphs"
@@ -96,11 +105,38 @@ TERMINAL_CAMPAIGN_BOUNDARIES = (
 )
 
 
+def _safe_source_file(root: Path, relative: str, label: str) -> Path:
+    path = _resolve_under_root(
+        root,
+        root / relative,
+        label,
+        strict=False,
+    )
+    if not path.is_file():
+        raise GateEvidenceError(f"{label} is not a file: {path}")
+    return path
+
+
+def _load_state_safe(root: Path) -> dict[str, object]:
+    state_path = _safe_source_file(
+        root,
+        "research_state.yaml",
+        "selector state source",
+    )
+    return load_state(state_path)
+
+
 def _node(root: Path, spec: tuple[str, str, str, str]) -> dict[str, object]:
     node_id, relative, needle, role = spec
-    path = root / relative
-    exists = path.is_file()
-    contains = exists and (not needle or needle in path.read_text(encoding="utf-8", errors="replace"))
+    path = _safe_source_file(
+        root,
+        relative,
+        f"selector node source {node_id}",
+    )
+    contains = (
+        not needle
+        or needle in path.read_text(encoding="utf-8", errors="replace")
+    )
     return {
         "id": node_id,
         "path": relative,
@@ -189,12 +225,13 @@ def build_graph(
     *,
     input_commit: str,
 ) -> dict[str, object]:
+    source_root = _resolved_directory(root, "selector source root")
     resolved_commit, _input_rows = _validated_input_rows(
-        root,
+        source_root,
         input_commit,
         SELECTOR_IMPLEMENTATION_INPUTS,
     )
-    state = load_state(root / "research_state.yaml")
+    state = _load_state_safe(source_root)
     graph = {
         "schema_version": 1,
         "contract": state["contract"],
@@ -205,7 +242,7 @@ def build_graph(
             "python scripts/build_mat_sab_selector_techgraph.py "
             f"--input-commit {resolved_commit}"
         ),
-        "nodes": [_node(root, spec) for spec in NODE_SPECS],
+        "nodes": [_node(source_root, spec) for spec in NODE_SPECS],
         "edges": [
             {"from": source, "to": target, "relation": relation}
             for source, target, relation in EDGES
@@ -314,18 +351,118 @@ def _gaps_markdown(graph: Mapping[str, object]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def write_outputs(root: Path, graph: Mapping[str, object]) -> tuple[Path, Path, Path]:
-    out_dir = root / "paper_techgraphs"
-    out_dir.mkdir(parents=True, exist_ok=True)
-    paths = (
-        out_dir / JSON_OUT.name,
-        out_dir / GRAPH_OUT.name,
-        out_dir / GAPS_OUT.name,
+def _selector_relative_paths() -> tuple[Path, Path, Path]:
+    return (
+        Path("paper_techgraphs") / JSON_OUT.name,
+        Path("paper_techgraphs") / GRAPH_OUT.name,
+        Path("paper_techgraphs") / GAPS_OUT.name,
     )
-    paths[0].write_text(json.dumps(graph, indent=2) + "\n", encoding="ascii", newline="\n")
-    paths[1].write_text(_graph_markdown(graph), encoding="ascii", newline="\n")
-    paths[2].write_text(_gaps_markdown(graph), encoding="ascii", newline="\n")
+
+
+def _preflight_selector_destinations(destination: Path) -> None:
+    for relative in _selector_relative_paths():
+        candidate = destination / relative
+        resolved = _resolve_under_root(
+            destination,
+            candidate,
+            f"selector destination {relative.as_posix()}",
+            strict=False,
+        )
+        if candidate.exists() and not resolved.is_file():
+            raise GateEvidenceError(
+                f"selector destination is not a file: {resolved}"
+            )
+
+
+def _render_selector_outputs(
+    destination: Path,
+    graph: Mapping[str, object],
+) -> tuple[Path, Path, Path]:
+    paths = tuple(
+        destination / relative
+        for relative in _selector_relative_paths()
+    )
+    for path in paths:
+        path.parent.mkdir(parents=True, exist_ok=True)
+    paths[0].write_text(
+        json.dumps(graph, indent=2) + "\n",
+        encoding="ascii",
+        newline="\n",
+    )
+    paths[1].write_text(
+        _graph_markdown(graph),
+        encoding="ascii",
+        newline="\n",
+    )
+    paths[2].write_text(
+        _gaps_markdown(graph),
+        encoding="ascii",
+        newline="\n",
+    )
     return paths
+
+
+def _publish_selector_outputs(
+    destination: Path,
+    stage: Path,
+) -> tuple[Path, Path, Path]:
+    relative_paths = _selector_relative_paths()
+    snapshots = {
+        relative: (
+            (destination / relative).read_bytes()
+            if (destination / relative).is_file()
+            else None
+        )
+        for relative in relative_paths
+    }
+    published: list[Path] = []
+    try:
+        for relative in relative_paths:
+            target = destination / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            _resolve_under_root(
+                destination,
+                target,
+                f"selector destination {relative.as_posix()}",
+                strict=False,
+            )
+            os.replace(stage / relative, target)
+            published.append(relative)
+    except Exception:
+        for relative in reversed(published):
+            _restore_file_atomic(
+                destination / relative,
+                snapshots[relative],
+            )
+        raise
+    return tuple(destination / relative for relative in relative_paths)
+
+
+def write_outputs(
+    root: Path,
+    graph: Mapping[str, object],
+) -> tuple[Path, Path, Path]:
+    destination = _resolved_directory(root, "selector destination root")
+    _preflight_selector_destinations(destination)
+    stage = Path(
+        tempfile.mkdtemp(
+            prefix=".selector-techgraph-stage-",
+            dir=destination,
+        )
+    )
+    _resolve_under_root(
+        destination,
+        stage,
+        "selector staging directory",
+        strict=True,
+    )
+    try:
+        _preflight_selector_destinations(stage)
+        _render_selector_outputs(stage, graph)
+        return _publish_selector_outputs(destination, stage)
+    finally:
+        if stage.exists():
+            shutil.rmtree(stage)
 
 
 def main() -> int:

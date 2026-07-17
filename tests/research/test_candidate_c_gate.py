@@ -31,6 +31,7 @@ EXPECTED_ARTIFACTS = {
     "amdahl_projection.csv",
     "mechanism_matrix.csv",
     "proof_gate.csv",
+    "decision_evidence.json",
     "input_manifest.csv",
     "environment.csv",
     "artifact_index.csv",
@@ -78,6 +79,103 @@ def published_input_commit():
             row["key"]: row["value"] for row in csv.DictReader(handle)
         }
     return environment["input_head"]
+
+
+def fixture_mechanism(gate):
+    return gate.MechanismEvaluation(
+        mechanism_id="C1",
+        registered=True,
+        source_status="PASS",
+        equation_status="PASS",
+        symbolic_independence_status="PASS",
+        phase_status="PASS",
+        schedule_status="PASS",
+        rank_status="PASS",
+        max_rho=2,
+        compression_status="PASS",
+        compression_interval=4,
+        b_min=4,
+        closed_next_state_consumption=True,
+        structural_cost_status="PASS",
+        complete_cost_status="PASS",
+        complete_cost=100.0,
+        amdahl_status="PASS",
+        amdahl_projection=1.01,
+        amdahl_pessimistic_projection=0.0,
+        fully_evaluated=True,
+        failure_reason="",
+        object_hashes=("1" * 64,),
+    )
+
+
+def fixture_raw_evidence(gate, decision):
+    mechanism = fixture_mechanism(gate)
+    if decision == gate.ADMIT:
+        classification = "ADMIT"
+        terminal_decision = "ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY"
+        exhausted = False
+        replay_status = "PASS"
+        task4_status = "PASS"
+    elif decision == gate.REJECT:
+        classification = "REJECT"
+        terminal_decision = (
+            "REJECT_C1_NEGATIVE_PESSIMISTIC_AMDAHL_PROJECTION_TERMINAL"
+        )
+        exhausted = False
+        replay_status = "PASS"
+        task4_status = "PASS"
+        mechanism = replace(
+            mechanism,
+            amdahl_pessimistic_projection=-0.01,
+            failure_reason=terminal_decision,
+        )
+    elif decision == gate.INCONCLUSIVE:
+        classification = "INCONCLUSIVE"
+        terminal_decision = (
+            "TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED"
+        )
+        exhausted = True
+        replay_status = gate.SKIPPED
+        task4_status = gate.SKIPPED
+        mechanism = replace(
+            mechanism,
+            registered=False,
+            symbolic_independence_status="EVIDENCE_EXHAUSTED",
+            phase_status="EVIDENCE_EXHAUSTED",
+            schedule_status="EVIDENCE_EXHAUSTED",
+            rank_status="EVIDENCE_EXHAUSTED",
+            compression_status="EVIDENCE_EXHAUSTED",
+            compression_interval=0,
+            closed_next_state_consumption=False,
+            structural_cost_status="EVIDENCE_EXHAUSTED",
+            complete_cost_status=gate.SKIPPED,
+            complete_cost=None,
+            amdahl_status=gate.SKIPPED,
+            amdahl_projection=None,
+            amdahl_pessimistic_projection=None,
+            fully_evaluated=False,
+            failure_reason=terminal_decision,
+            object_hashes=(),
+        )
+    else:
+        raise ValueError(decision)
+    raw = gate.RawDecisionEvidence(
+        schema=gate.DECISION_EVIDENCE_SCHEMA,
+        binding_kind=gate.FIXTURE_EVIDENCE,
+        claimed_decision=decision,
+        terminal_classification=classification,
+        terminal_decision=terminal_decision,
+        terminal_record_hash="",
+        terminal_evidence_exhausted=exhausted,
+        replay_status=replay_status,
+        task3b_status=(
+            "PASS" if decision != gate.INCONCLUSIVE
+            else "EVIDENCE_EXHAUSTED"
+        ),
+        task4_status=task4_status,
+        mechanisms=(mechanism,),
+    )
+    return gate.bind_fixture_decision_evidence(raw)
 
 
 class CandidateCGateTests(unittest.TestCase):
@@ -132,6 +230,7 @@ class CandidateCGateTests(unittest.TestCase):
         self.assertEqual(result.amdahl_status, self.gate.SKIPPED)
         self.assertIsNone(result.complete_cost)
         self.assertIsNone(result.amdahl_projection)
+        self.assertIsNone(result.amdahl_pessimistic_projection)
         self.assertFalse(result.production_hot_path_permission)
         self.assertEqual(
             tuple(operator.r for operator in result.terminal_record.operator_results),
@@ -160,6 +259,7 @@ class CandidateCGateTests(unittest.TestCase):
         self.assertEqual(summary["amdahl_status"], self.gate.SKIPPED)
         self.assertEqual(summary["complete_cost"], "")
         self.assertEqual(summary["amdahl_projection"], "")
+        self.assertEqual(summary["amdahl_pessimistic_projection"], "")
 
     def test_every_mechanism_field_is_bound_to_fresh_terminal_evidence(self):
         mechanism = self.result.mechanisms[0]
@@ -182,6 +282,7 @@ class CandidateCGateTests(unittest.TestCase):
             "complete_cost": 1.0,
             "amdahl_status": "PASS",
             "amdahl_projection": 1.01,
+            "amdahl_pessimistic_projection": 0.0,
             "fully_evaluated": False,
             "failure_reason": "FORGED",
             "object_hashes": ("0" * 64,),
@@ -203,6 +304,129 @@ class CandidateCGateTests(unittest.TestCase):
                 ):
                     self._summary(forged)
 
+    def test_verified_decision_evidence_derives_all_three_routes(self):
+        for decision in (
+            self.gate.ADMIT,
+            self.gate.REJECT,
+            self.gate.INCONCLUSIVE,
+        ):
+            with self.subTest(decision=decision):
+                raw = fixture_raw_evidence(self.gate, decision)
+                verified = self.gate.verify_decision_evidence(
+                    raw,
+                    allow_fixture=True,
+                )
+                result = self.gate.gate_result_from_decision_evidence(
+                    raw,
+                    allow_fixture=True,
+                )
+                self.assertEqual(verified.decision, decision)
+                self.assertEqual(result.decision, decision)
+                self.assertEqual(
+                    self.gate.canonical_summary_record(
+                        result,
+                        root=ROOT,
+                        input_commit=self.input_commit,
+                        allow_fixture=True,
+                    )["decision"],
+                    decision,
+                )
+
+    def test_fixture_evidence_is_disabled_without_explicit_test_mode(self):
+        raw = fixture_raw_evidence(self.gate, self.gate.ADMIT)
+        with self.assertRaisesRegex(
+            self.gate.GateEvidenceError,
+            "fixture decision evidence is disabled",
+        ):
+            self.gate.verify_decision_evidence(raw)
+
+    def test_admit_requires_every_typed_mechanism_gate(self):
+        raw = fixture_raw_evidence(self.gate, self.gate.ADMIT)
+        mechanism = raw.mechanisms[0]
+        mutations = {
+            "mechanism_id": "C3",
+            "registered": False,
+            "phase_status": "FAIL",
+            "max_rho": 3,
+            "closed_next_state_consumption": False,
+            "compression_status": "FAIL",
+            "compression_interval": mechanism.b_min - 1,
+            "complete_cost_status": "MISSING",
+            "complete_cost": None,
+            "amdahl_status": "FAIL",
+            "amdahl_projection": 1.0,
+            "amdahl_pessimistic_projection": -0.01,
+        }
+        for field, value in mutations.items():
+            with self.subTest(field=field):
+                changed = replace(mechanism, **{field: value})
+                changed_raw = self.gate.bind_fixture_decision_evidence(
+                    replace(raw, mechanisms=(changed,))
+                )
+                with self.assertRaisesRegex(
+                    self.gate.GateEvidenceError,
+                    "does not derive",
+                ):
+                    self.gate.verify_decision_evidence(
+                        changed_raw,
+                        allow_fixture=True,
+                    )
+
+    def test_reject_after_cost_requires_registered_fully_evaluated_failure(self):
+        raw = fixture_raw_evidence(self.gate, self.gate.REJECT)
+        verified = self.gate.verify_decision_evidence(
+            raw,
+            allow_fixture=True,
+        )
+        self.assertEqual(verified.decision, self.gate.REJECT)
+        for changed in (
+            replace(raw.mechanisms[0], registered=False),
+            replace(raw.mechanisms[0], fully_evaluated=False),
+            replace(raw.mechanisms[0], failure_reason=""),
+        ):
+            with self.subTest(changed=changed):
+                changed_raw = self.gate.bind_fixture_decision_evidence(
+                    replace(raw, mechanisms=(changed,))
+                )
+                with self.assertRaisesRegex(
+                    self.gate.GateEvidenceError,
+                    "does not derive",
+                ):
+                    self.gate.verify_decision_evidence(
+                        changed_raw,
+                        allow_fixture=True,
+                    )
+
+    def test_inconclusive_requires_hash_bound_exhaustion_without_numerics(self):
+        raw = fixture_raw_evidence(self.gate, self.gate.INCONCLUSIVE)
+        self.assertEqual(
+            self.gate.verify_decision_evidence(
+                raw,
+                allow_fixture=True,
+            ).decision,
+            self.gate.INCONCLUSIVE,
+        )
+        mutations = (
+            replace(raw, terminal_evidence_exhausted=False),
+            replace(raw, task4_status="PASS"),
+            replace(
+                raw,
+                mechanisms=(
+                    replace(raw.mechanisms[0], complete_cost=1.0),
+                ),
+            ),
+            replace(raw, terminal_record_hash="0" * 64),
+        )
+        for changed in mutations:
+            with self.subTest(changed=changed):
+                if changed.terminal_record_hash != "0" * 64:
+                    changed = self.gate.bind_fixture_decision_evidence(changed)
+                with self.assertRaises(self.gate.GateEvidenceError):
+                    self.gate.verify_decision_evidence(
+                        changed,
+                        allow_fixture=True,
+                    )
+
     def test_terminal_labels_hash_and_task4_fields_are_fresh_bound(self):
         mutations = {
             "decision": self.gate.ADMIT,
@@ -214,6 +438,7 @@ class CandidateCGateTests(unittest.TestCase):
             "complete_cost": 1.0,
             "amdahl_status": "PASS",
             "amdahl_projection": 1.01,
+            "amdahl_pessimistic_projection": 0.0,
             "production_hot_path_permission": True,
         }
         for field, value in mutations.items():
@@ -534,7 +759,9 @@ class CandidateCGateTests(unittest.TestCase):
             try:
                 os.symlink(outside, root / "input.txt")
             except OSError as error:
-                self.skipTest(f"symbolic links unavailable: {error}")
+                if getattr(error, "winerror", None) == 1314:
+                    self.skipTest(f"symbolic links unavailable: {error}")
+                raise
             with self.assertRaisesRegex(
                 self.gate.GateEvidenceError,
                 "escapes declared root",
@@ -565,7 +792,9 @@ class CandidateCGateTests(unittest.TestCase):
                     target_is_directory=True,
                 )
             except OSError as error:
-                self.skipTest(f"symbolic links unavailable: {error}")
+                if getattr(error, "winerror", None) == 1314:
+                    self.skipTest(f"symbolic links unavailable: {error}")
+                raise
             with self.assertRaisesRegex(
                 self.gate.GateEvidenceError,
                 "escapes declared root",

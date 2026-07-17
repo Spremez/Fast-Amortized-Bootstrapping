@@ -1,11 +1,14 @@
 import csv
 import json
+import os
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
+import scripts.build_mat_sab_selector_techgraph as selector
 from scripts.build_mat_sab_selector_techgraph import (
     _campaign_markdown,
     _campaign_view,
@@ -255,6 +258,139 @@ class SelectorTechgraphTests(unittest.TestCase):
             self.assertEqual(before, [path.read_bytes() for path in second])
             parsed = json.loads(first[0].read_text(encoding="ascii"))
         self.assertEqual(parsed["schema_version"], 1)
+
+    @unittest.skipUnless(
+        hasattr(os, "symlink"),
+        "symbolic links are not supported",
+    )
+    def test_node_source_symlink_escape_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root = base / "root"
+            root.mkdir()
+            outside = base / "outside.txt"
+            outside.write_text("needle\n", encoding="ascii", newline="\n")
+            try:
+                os.symlink(outside, root / "node.txt")
+            except OSError as error:
+                if getattr(error, "winerror", None) == 1314:
+                    self.skipTest(f"symbolic links unavailable: {error}")
+                raise
+            with self.assertRaisesRegex(
+                selector.GateEvidenceError,
+                "escapes declared root",
+            ):
+                selector._node(
+                    root,
+                    ("node", "node.txt", "needle", "test node"),
+                )
+
+    def test_node_source_parent_escape_is_rejected_everywhere(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root = base / "root"
+            root.mkdir()
+            (base / "outside.txt").write_text(
+                "needle\n",
+                encoding="ascii",
+                newline="\n",
+            )
+            with self.assertRaisesRegex(
+                selector.GateEvidenceError,
+                "escapes declared root",
+            ):
+                selector._node(
+                    root,
+                    ("node", "../outside.txt", "needle", "test node"),
+                )
+
+    @unittest.skipUnless(
+        hasattr(os, "symlink"),
+        "symbolic links are not supported",
+    )
+    def test_state_source_symlink_escape_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root = base / "root"
+            root.mkdir()
+            outside = base / "research_state.yaml"
+            outside.write_text("{}\n", encoding="ascii", newline="\n")
+            try:
+                os.symlink(outside, root / "research_state.yaml")
+            except OSError as error:
+                if getattr(error, "winerror", None) == 1314:
+                    self.skipTest(f"symbolic links unavailable: {error}")
+                raise
+            with self.assertRaisesRegex(
+                selector.GateEvidenceError,
+                "escapes declared root",
+            ):
+                selector._load_state_safe(root)
+
+    @unittest.skipUnless(
+        hasattr(os, "symlink"),
+        "symbolic links are not supported",
+    )
+    def test_destination_symlink_escape_is_rejected(self):
+        graph = build_graph(ROOT, input_commit=UNIT_INPUT_COMMIT)
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            destination = base / "destination"
+            outside = base / "outside"
+            destination.mkdir()
+            outside.mkdir()
+            try:
+                os.symlink(
+                    outside,
+                    destination / "paper_techgraphs",
+                    target_is_directory=True,
+                )
+            except OSError as error:
+                if getattr(error, "winerror", None) == 1314:
+                    self.skipTest(f"symbolic links unavailable: {error}")
+                raise
+            with self.assertRaisesRegex(
+                selector.GateEvidenceError,
+                "escapes declared root",
+            ):
+                write_outputs(destination, graph)
+            self.assertEqual(tuple(outside.iterdir()), ())
+
+    def test_mid_publish_failure_rolls_back_all_selector_outputs(self):
+        graph = build_graph(ROOT, input_commit=UNIT_INPUT_COMMIT)
+        with tempfile.TemporaryDirectory() as tmp:
+            destination = Path(tmp)
+            paths = write_outputs(destination, graph)
+            before = {path: path.read_bytes() for path in paths}
+            original_replace = os.replace
+
+            def fail_on_graph(source, target):
+                if Path(target).name == TRACKED_OUTPUTS[1]:
+                    raise OSError("injected selector publish failure")
+                return original_replace(source, target)
+
+            with (
+                patch.object(
+                    selector.os,
+                    "replace",
+                    side_effect=fail_on_graph,
+                ),
+                self.assertRaisesRegex(
+                    OSError,
+                    "injected selector publish failure",
+                ),
+            ):
+                write_outputs(destination, graph)
+            self.assertEqual(
+                before,
+                {path: path.read_bytes() for path in paths},
+            )
+            self.assertFalse(
+                any(
+                    path.name.startswith(".selector-techgraph-stage-")
+                    for path in destination.iterdir()
+                )
+            )
 
     def test_tracked_outputs_match_a_fresh_render(self):
         bound_commit = published_input_commit()

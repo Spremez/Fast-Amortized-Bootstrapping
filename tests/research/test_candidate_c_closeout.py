@@ -1,4 +1,5 @@
 import csv
+from dataclasses import replace
 import importlib
 import inspect
 import json
@@ -24,12 +25,103 @@ PREDECESSOR = "REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C"
 
 
 def load_closeout():
-    try:
-        return importlib.import_module(
-            "scripts.apply_candidate_c_rank_bounded_gate"
+    return importlib.import_module(
+        "scripts.apply_candidate_c_rank_bounded_gate"
+    )
+
+
+def fixture_raw_evidence(decision):
+    mechanism = gate.MechanismEvaluation(
+        mechanism_id="C1",
+        registered=True,
+        source_status="PASS",
+        equation_status="PASS",
+        symbolic_independence_status="PASS",
+        phase_status="PASS",
+        schedule_status="PASS",
+        rank_status="PASS",
+        max_rho=2,
+        compression_status="PASS",
+        compression_interval=4,
+        b_min=4,
+        closed_next_state_consumption=True,
+        structural_cost_status="PASS",
+        complete_cost_status="PASS",
+        complete_cost=100.0,
+        amdahl_status="PASS",
+        amdahl_projection=1.01,
+        amdahl_pessimistic_projection=0.0,
+        fully_evaluated=True,
+        failure_reason="",
+        object_hashes=("1" * 64,),
+    )
+    if decision == gate.ADMIT:
+        classification = "ADMIT"
+        terminal_decision = "ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY"
+        exhausted = False
+        replay_status = "PASS"
+        task3b_status = "PASS"
+        task4_status = "PASS"
+    elif decision == gate.REJECT:
+        classification = "REJECT"
+        terminal_decision = (
+            "REJECT_C1_NEGATIVE_PESSIMISTIC_AMDAHL_PROJECTION_TERMINAL"
         )
-    except ModuleNotFoundError:
-        return None
+        exhausted = False
+        replay_status = "PASS"
+        task3b_status = "PASS"
+        task4_status = "PASS"
+        mechanism = replace(
+            mechanism,
+            amdahl_pessimistic_projection=-0.01,
+            failure_reason=terminal_decision,
+        )
+    elif decision == gate.INCONCLUSIVE:
+        classification = "INCONCLUSIVE"
+        terminal_decision = (
+            "TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED"
+        )
+        exhausted = True
+        replay_status = gate.SKIPPED
+        task3b_status = "EVIDENCE_EXHAUSTED"
+        task4_status = gate.SKIPPED
+        mechanism = replace(
+            mechanism,
+            registered=False,
+            symbolic_independence_status="EVIDENCE_EXHAUSTED",
+            phase_status="EVIDENCE_EXHAUSTED",
+            schedule_status="EVIDENCE_EXHAUSTED",
+            rank_status="EVIDENCE_EXHAUSTED",
+            compression_status="EVIDENCE_EXHAUSTED",
+            compression_interval=0,
+            closed_next_state_consumption=False,
+            structural_cost_status="EVIDENCE_EXHAUSTED",
+            complete_cost_status=gate.SKIPPED,
+            complete_cost=None,
+            amdahl_status=gate.SKIPPED,
+            amdahl_projection=None,
+            amdahl_pessimistic_projection=None,
+            fully_evaluated=False,
+            failure_reason=terminal_decision,
+            object_hashes=(),
+        )
+    else:
+        raise ValueError(decision)
+    return gate.bind_fixture_decision_evidence(
+        gate.RawDecisionEvidence(
+            schema=gate.DECISION_EVIDENCE_SCHEMA,
+            binding_kind=gate.FIXTURE_EVIDENCE,
+            claimed_decision=decision,
+            terminal_classification=classification,
+            terminal_decision=terminal_decision,
+            terminal_record_hash="",
+            terminal_evidence_exhausted=exhausted,
+            replay_status=replay_status,
+            task3b_status=task3b_status,
+            task4_status=task4_status,
+            mechanisms=(mechanism,),
+        )
+    )
 
 
 class CandidateCCloseoutTests(unittest.TestCase):
@@ -43,20 +135,9 @@ class CandidateCCloseoutTests(unittest.TestCase):
             capture_output=True,
             text=True,
         ).stdout.strip()
-        cls.actual = gate.evaluate_candidate_c(
-            ROOT,
-            input_commit=cls.input_commit,
-        )
-        cls.actual_summary = gate._summary_from_verified_result(cls.actual)
-
-    def setUp(self):
-        self.assertIsNotNone(
-            self.closeout,
-            "Task 5 Candidate C closeout module has not been implemented",
-        )
 
     @staticmethod
-    def _make_root(directory: str) -> tuple[Path, Path]:
+    def _make_root(directory):
         root = Path(directory)
         (root / "hypotheses").mkdir(parents=True)
         (root / "repro").mkdir()
@@ -85,21 +166,36 @@ class CandidateCCloseoutTests(unittest.TestCase):
         )
         return root, state_path
 
-    @staticmethod
-    def _write_summary(root: Path, record: dict[str, str]) -> Path:
-        path = root / "summary.csv"
-        with path.open("w", newline="", encoding="ascii") as handle:
+    def _write_fixture_pack(self, root, raw):
+        result = gate.gate_result_from_decision_evidence(
+            raw,
+            allow_fixture=True,
+        )
+        summary_record = gate.canonical_summary_record(
+            result,
+            root=root,
+            input_commit=self.input_commit,
+            allow_fixture=True,
+        )
+        summary = root / "summary.csv"
+        with summary.open("w", newline="", encoding="ascii") as handle:
             writer = csv.DictWriter(
                 handle,
                 fieldnames=gate.SUMMARY_FIELDS,
                 lineterminator="\n",
             )
             writer.writeheader()
-            writer.writerow(record)
-        return path
+            writer.writerow(summary_record)
+        evidence = root / "decision_evidence.json"
+        evidence.write_text(
+            gate.decision_evidence_json(raw),
+            encoding="ascii",
+            newline="\n",
+        )
+        return summary, evidence
 
     @staticmethod
-    def _tracked(root: Path, state_path: Path) -> dict[Path, bytes | None]:
+    def _tracked(root, state_path):
         paths = (
             state_path,
             root / "hypotheses/hypothesis_register.yaml",
@@ -113,7 +209,7 @@ class CandidateCCloseoutTests(unittest.TestCase):
         }
 
     @staticmethod
-    def _assert_markers_once(root: Path) -> None:
+    def _assert_markers_once(root):
         markers = (
             (root / "hypotheses/hypothesis_register.yaml", HYPOTHESIS_START),
             (root / "hypotheses/hypothesis_register.yaml", HYPOTHESIS_END),
@@ -128,83 +224,38 @@ class CandidateCCloseoutTests(unittest.TestCase):
                 text = path.read_text(encoding="ascii")
                 unittest.TestCase().assertEqual(text.count(marker), 1)
 
-    def _apply_twice(
-        self,
-        root: Path,
-        state_path: Path,
-        summary_record: dict[str, str],
-    ) -> dict[str, object]:
-        summary = self._write_summary(root, summary_record)
-        with (
-            patch.object(
-                self.closeout,
-                "evaluate_candidate_c",
-                return_value=self.actual,
-            ),
-            patch.object(
-                self.closeout,
-                "canonical_summary_record",
-                return_value=summary_record,
-            ),
-        ):
-            first = self.closeout.apply_gate(
-                root,
-                state_path,
-                summary,
-                input_commit=self.input_commit,
-            )
-            after_first = self._tracked(root, state_path)
-            second = self.closeout.apply_gate(
-                root,
-                state_path,
-                summary,
-                input_commit=self.input_commit,
-            )
-        self.assertEqual(first, summary_record["decision"])
-        self.assertEqual(second, summary_record["decision"])
+    def _apply_twice(self, root, state_path, raw):
+        summary, evidence = self._write_fixture_pack(root, raw)
+        first = self.closeout.apply_gate(
+            root,
+            state_path,
+            summary,
+            input_commit=self.input_commit,
+            evidence_path=evidence,
+            allow_fixture=True,
+        )
+        after_first = self._tracked(root, state_path)
+        second = self.closeout.apply_gate(
+            root,
+            state_path,
+            summary,
+            input_commit=self.input_commit,
+            evidence_path=evidence,
+            allow_fixture=True,
+        )
+        self.assertEqual(first, raw.claimed_decision)
+        self.assertEqual(second, raw.claimed_decision)
         self.assertEqual(after_first, self._tracked(root, state_path))
         self._assert_markers_once(root)
         return json.loads(state_path.read_text(encoding="ascii"))
 
-    def _summary_for(self, decision: str) -> dict[str, str]:
-        summary = dict(self.actual_summary)
-        summary["decision"] = decision
-        if decision == gate.ADMIT:
-            summary.update(
-                {
-                    "compression_status": "PASS",
-                    "compression_interval": "8",
-                    "b_min": "4",
-                    "closed_next_state_consumption": "yes",
-                    "complete_cost_status": "PASS",
-                    "complete_cost": "1.000000000",
-                    "amdahl_status": "PASS",
-                    "amdahl_projection": "1.010000000",
-                    "task4_status": "PASS",
-                    "terminal_classification": "ADMIT",
-                    "terminal_decision": (
-                        "ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY"
-                    ),
-                }
-            )
-        elif decision == gate.INCONCLUSIVE:
-            summary.update(
-                {
-                    "terminal_classification": "INCONCLUSIVE",
-                    "terminal_decision": (
-                        "TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED"
-                    ),
-                }
-            )
-        return summary
-
-    def test_admit_advances_c_only_to_adversarial_checker_pass(self):
+    def test_admit_fixture_pack_advances_only_to_adversarial_checker_pass(self):
         with tempfile.TemporaryDirectory() as tmp:
             root, state_path = self._make_root(tmp)
             state = self._apply_twice(
                 root,
                 state_path,
-                self._summary_for(gate.ADMIT),
+                fixture_raw_evidence(gate.ADMIT),
             )
         self.assertEqual(state["active_candidate"], "C")
         self.assertEqual(
@@ -217,13 +268,13 @@ class CandidateCCloseoutTests(unittest.TestCase):
         self.assertEqual(state["last_decision"], gate.ADMIT)
         validate_state(state)
 
-    def test_reject_exhausts_the_finite_campaign(self):
+    def test_reject_after_cost_fixture_pack_exhausts_campaign(self):
         with tempfile.TemporaryDirectory() as tmp:
             root, state_path = self._make_root(tmp)
             state = self._apply_twice(
                 root,
                 state_path,
-                self.actual_summary,
+                fixture_raw_evidence(gate.REJECT),
             )
         self.assertEqual(state["active_candidate"], "C")
         self.assertEqual(state["candidates"]["A"]["status"], "REJECTED")
@@ -235,13 +286,13 @@ class CandidateCCloseoutTests(unittest.TestCase):
         self.assertEqual(state["last_decision"], gate.REJECT)
         validate_state(state)
 
-    def test_inconclusive_closes_without_external_blocked(self):
+    def test_inconclusive_fixture_pack_closes_without_external_blocked(self):
         with tempfile.TemporaryDirectory() as tmp:
             root, state_path = self._make_root(tmp)
             state = self._apply_twice(
                 root,
                 state_path,
-                self._summary_for(gate.INCONCLUSIVE),
+                fixture_raw_evidence(gate.INCONCLUSIVE),
             )
         self.assertEqual(state["active_candidate"], "C")
         self.assertEqual(state["candidates"]["C"]["status"], "INCONCLUSIVE")
@@ -262,7 +313,11 @@ class CandidateCCloseoutTests(unittest.TestCase):
             legacy = "legacy-stage,row-without-canonical-width\n"
             with run_log.open("a", encoding="ascii", newline="") as handle:
                 handle.write(legacy)
-            self._apply_twice(root, state_path, self.actual_summary)
+            self._apply_twice(
+                root,
+                state_path,
+                fixture_raw_evidence(gate.REJECT),
+            )
             self.assertIn(legacy, run_log.read_text(encoding="ascii"))
 
     def test_marker_outside_canonical_run_id_is_rejected(self):
@@ -284,39 +339,32 @@ class CandidateCCloseoutTests(unittest.TestCase):
                         newline="",
                     ) as handle:
                         handle.write(row)
-                    summary = self._write_summary(
+                    summary, evidence = self._write_fixture_pack(
                         root,
-                        self.actual_summary,
+                        fixture_raw_evidence(gate.REJECT),
                     )
                     before = self._tracked(root, state_path)
-                    with (
-                        patch.object(
-                            self.closeout,
-                            "evaluate_candidate_c",
-                            return_value=self.actual,
-                        ),
-                        patch.object(
-                            self.closeout,
-                            "canonical_summary_record",
-                            return_value=self.actual_summary,
-                        ),
+                    with self.assertRaisesRegex(
+                        ValueError,
+                        "run log rows must match canonical schema",
                     ):
-                        with self.assertRaisesRegex(
-                            ValueError,
-                            "run log rows must match canonical schema",
-                        ):
-                            self.closeout.apply_gate(
-                                root,
-                                state_path,
-                                summary,
-                                input_commit=self.input_commit,
-                            )
+                        self.closeout.apply_gate(
+                            root,
+                            state_path,
+                            summary,
+                            input_commit=self.input_commit,
+                            evidence_path=evidence,
+                            allow_fixture=True,
+                        )
                     self.assertEqual(before, self._tracked(root, state_path))
 
     def test_summary_tamper_is_rejected_before_mutation(self):
         with tempfile.TemporaryDirectory() as tmp:
             root, state_path = self._make_root(tmp)
-            summary = self._write_summary(root, self.actual_summary)
+            summary, evidence = self._write_fixture_pack(
+                root,
+                fixture_raw_evidence(gate.REJECT),
+            )
             text = summary.read_text(encoding="ascii")
             summary.write_text(
                 text.replace(gate.REJECT, gate.ADMIT, 1),
@@ -324,51 +372,32 @@ class CandidateCCloseoutTests(unittest.TestCase):
                 newline="\n",
             )
             before = self._tracked(root, state_path)
-            with (
-                patch.object(
-                    self.closeout,
-                    "evaluate_candidate_c",
-                    return_value=self.actual,
-                ),
-                patch.object(
-                    self.closeout,
-                    "canonical_summary_record",
-                    return_value=self.actual_summary,
-                ),
+            with self.assertRaisesRegex(
+                ValueError,
+                "summary does not match recomputed gate evidence",
             ):
-                with self.assertRaisesRegex(
-                    ValueError,
-                    "summary does not match recomputed gate evidence",
-                ):
-                    self.closeout.apply_gate(
-                        root,
-                        state_path,
-                        summary,
-                        input_commit=self.input_commit,
-                    )
+                self.closeout.apply_gate(
+                    root,
+                    state_path,
+                    summary,
+                    input_commit=self.input_commit,
+                    evidence_path=evidence,
+                    allow_fixture=True,
+                )
             self.assertEqual(before, self._tracked(root, state_path))
 
     def test_write_failure_rolls_back_every_closeout_output(self):
         with tempfile.TemporaryDirectory() as tmp:
             root, state_path = self._make_root(tmp)
-            summary = self._write_summary(root, self.actual_summary)
+            summary, evidence = self._write_fixture_pack(
+                root,
+                fixture_raw_evidence(gate.REJECT),
+            )
             before = self._tracked(root, state_path)
-            with (
-                patch.object(
-                    self.closeout,
-                    "evaluate_candidate_c",
-                    return_value=self.actual,
-                ),
-                patch.object(
-                    self.closeout,
-                    "canonical_summary_record",
-                    return_value=self.actual_summary,
-                ),
-                patch.object(
-                    self.closeout,
-                    "_append_once",
-                    side_effect=OSError("injected write failure"),
-                ),
+            with patch.object(
+                self.closeout,
+                "_append_once",
+                side_effect=OSError("injected write failure"),
             ):
                 with self.assertRaisesRegex(OSError, "injected write failure"):
                     self.closeout.apply_gate(
@@ -376,13 +405,19 @@ class CandidateCCloseoutTests(unittest.TestCase):
                         state_path,
                         summary,
                         input_commit=self.input_commit,
+                        evidence_path=evidence,
+                        allow_fixture=True,
                     )
             self.assertEqual(before, self._tracked(root, state_path))
 
     def test_closeout_outputs_are_ascii(self):
         with tempfile.TemporaryDirectory() as tmp:
             root, state_path = self._make_root(tmp)
-            self._apply_twice(root, state_path, self.actual_summary)
+            self._apply_twice(
+                root,
+                state_path,
+                fixture_raw_evidence(gate.REJECT),
+            )
             for path in self._tracked(root, state_path):
                 with self.subTest(path=path.name):
                     path.read_bytes().decode("ascii")
