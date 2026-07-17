@@ -53,6 +53,16 @@ NO_VERIFIED_TASK3B_RESULT = "NO_VERIFIED_TASK3B_RESULT"
 NO_VERIFIED_ARTIFACT_NO_PER_EVENT_TENSOR_EXECUTOR = (
     "NO_VERIFIED_ARTIFACT_NO_PER_EVENT_TENSOR_EXECUTOR"
 )
+NO_VERIFIED_ARTIFACT_UNEXPECTED_RESULT_TYPE = (
+    "NO_VERIFIED_ARTIFACT_UNEXPECTED_RESULT_TYPE"
+)
+NO_VERIFIED_ARTIFACT_TASK3A_VERIFICATION_FAILED = (
+    "NO_VERIFIED_ARTIFACT_TASK3A_VERIFICATION_FAILED"
+)
+NO_VERIFIED_ARTIFACT_TASK3A_RECOMPUTATION_FAILED = (
+    "NO_VERIFIED_ARTIFACT_TASK3A_RECOMPUTATION_FAILED"
+)
+_TASK3A_VALIDATION_EXCEPTIONS = (IndexError, TypeError, ValueError)
 _EXPECTED_R_VALUES = (2, 4, 6)
 _EXPECTED_COUNTS = {
     "h": 39,
@@ -865,14 +875,23 @@ def registered_operator_for_task4(
 ) -> RegisteredOperatorArtifact:
     """Always block Task 4; no Task 3C executor can emit an artifact."""
 
-    results = tuple(
-        run_c1_operator_gate(root, r, RING_MODULUS)
-        for r in _EXPECTED_R_VALUES
-    )
+    try:
+        results = tuple(
+            run_c1_operator_gate(root, r, RING_MODULUS)
+            for r in _EXPECTED_R_VALUES
+        )
+    except _TASK3A_VALIDATION_EXCEPTIONS as exc:
+        raise NoRegisteredCandidateCOperator(
+            NO_VERIFIED_ARTIFACT_TASK3A_RECOMPUTATION_FAILED
+        ) from exc
     if any(type(result) is not OperatorGateResult for result in results):
-        raise TypeError("recomputed Task 3A result type changed")
+        raise NoRegisteredCandidateCOperator(
+            NO_VERIFIED_ARTIFACT_UNEXPECTED_RESULT_TYPE
+        )
     if not all(verify_operator_gate_result(result) for result in results):
-        raise ValueError("recomputed Task 3A result failed verification")
+        raise NoRegisteredCandidateCOperator(
+            NO_VERIFIED_ARTIFACT_TASK3A_VERIFICATION_FAILED
+        )
     decisions = tuple(result.decision for result in results)
     if len(set(decisions)) == 1 and decisions[0] in _C1_NONADMITTED_DECISIONS:
         raise NoRegisteredCandidateCOperator(decisions[0])

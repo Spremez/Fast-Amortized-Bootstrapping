@@ -177,6 +177,62 @@ class RegisteredReplayInputTests(unittest.TestCase):
                     NO_VERIFIED_ARTIFACT_NO_PER_EVENT_TENSOR_EXECUTOR,
                 )
 
+    def test_task4_normalizes_unexpected_recomputation_result_type(self):
+        with patch.object(
+            registered_replay,
+            "run_c1_operator_gate",
+            return_value=object(),
+        ):
+            with self.assertRaises(
+                NoRegisteredCandidateCOperator
+            ) as caught:
+                registered_operator_for_task4(ROOT)
+        self.assertEqual(
+            caught.exception.reason,
+            registered_replay.NO_VERIFIED_ARTIFACT_UNEXPECTED_RESULT_TYPE,
+        )
+        self.assertIsNone(caught.exception.__cause__)
+
+    def test_task4_normalizes_failed_result_verification(self):
+        with (
+            patch.object(
+                registered_replay,
+                "run_c1_operator_gate",
+                side_effect=self.results,
+            ),
+            patch.object(
+                registered_replay,
+                "verify_operator_gate_result",
+                return_value=False,
+            ),
+        ):
+            with self.assertRaises(
+                NoRegisteredCandidateCOperator
+            ) as caught:
+                registered_operator_for_task4(ROOT)
+        self.assertEqual(
+            caught.exception.reason,
+            registered_replay.NO_VERIFIED_ARTIFACT_TASK3A_VERIFICATION_FAILED,
+        )
+        self.assertIsNone(caught.exception.__cause__)
+
+    def test_task4_normalizes_task3a_recomputation_error_with_cause(self):
+        recomputation_error = ValueError("Task 3A validation failed")
+        with patch.object(
+            registered_replay,
+            "run_c1_operator_gate",
+            side_effect=recomputation_error,
+        ):
+            with self.assertRaises(
+                NoRegisteredCandidateCOperator
+            ) as caught:
+                registered_operator_for_task4(ROOT)
+        self.assertEqual(
+            caught.exception.reason,
+            registered_replay.NO_VERIFIED_ARTIFACT_TASK3A_RECOMPUTATION_FAILED,
+        )
+        self.assertIs(caught.exception.__cause__, recomputation_error)
+
     def test_one_tensor_coefficient_mutation_fails_distinct_gate(self):
         result = self.results[0]
         tensor = result.tensors[0]
