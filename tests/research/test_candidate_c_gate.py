@@ -16,6 +16,9 @@ ROOT = Path(__file__).resolve().parents[2]
 APPROVED_TERMINAL_HASH = (
     "8ad876708aa4a736c0f0f9adae33bab766272f411e90fbc23a5ac23e10a73cb6"
 )
+C1_ADMIT = "ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY"
+C2_ADMIT = "ADMIT_C2_RELINEARIZATION_TO_SCHEDULE_REPLAY"
+REGISTERED_ADMIT_LABELS = (C1_ADMIT, C2_ADMIT)
 C1_PHASE_REJECTION = "REJECT_C1_PHASE_IDENTITY_TERMINAL"
 C1_RELATION_REJECTION = (
     "REJECT_C1_REGISTERED_SHORT_ERROR_RELATION_TERMINAL"
@@ -198,6 +201,26 @@ def fixture_raw_evidence(gate, decision):
     return gate.bind_fixture_decision_evidence(raw)
 
 
+def registered_admit_evidence(gate, mechanism_id, *, label_family=None):
+    raw = fixture_raw_evidence(gate, gate.ADMIT)
+    terminal_decision = {
+        "C1": C1_ADMIT,
+        "C2": C2_ADMIT,
+    }[mechanism_id if label_family is None else label_family]
+    mechanism = replace(
+        raw.mechanisms[0],
+        mechanism_id=mechanism_id,
+    )
+    return gate.bind_fixture_decision_evidence(
+        replace(
+            raw,
+            terminal_decision=terminal_decision,
+            terminal_record_hash="",
+            mechanisms=(mechanism,),
+        )
+    )
+
+
 def registered_rejection_evidence(gate, label):
     mechanism = fixture_mechanism(gate)
     replay_status = gate.SKIPPED
@@ -373,6 +396,108 @@ class CandidateCDecisionVerifierTests(unittest.TestCase):
                     allow_fixture=True,
                 )
                 self.assertEqual(verified.decision, self.gate.REJECT)
+
+    def test_registered_admit_registry_accepts_exact_c1_and_c2_families(self):
+        self.assertEqual(
+            set(REGISTERED_ADMIT_LABELS),
+            set(getattr(self.gate, "REGISTERED_ADMIT_LABELS", ())),
+        )
+        for mechanism_id in ("C1", "C2"):
+            with self.subTest(mechanism_id=mechanism_id):
+                raw = registered_admit_evidence(
+                    self.gate,
+                    mechanism_id,
+                )
+                verified = self.gate.verify_decision_evidence(
+                    raw,
+                    allow_fixture=True,
+                )
+                result = self.gate.gate_result_from_decision_evidence(
+                    raw,
+                    allow_fixture=True,
+                )
+                self.assertEqual(verified.decision, self.gate.ADMIT)
+                self.assertEqual(
+                    self.gate._primary_mechanism(result).mechanism_id,
+                    mechanism_id,
+                )
+
+    def test_admit_family_mismatches_are_rejected_by_verifier_and_result(self):
+        for mechanism_id, label_family in (
+            ("C2", "C1"),
+            ("C1", "C2"),
+        ):
+            raw = registered_admit_evidence(
+                self.gate,
+                mechanism_id,
+                label_family=label_family,
+            )
+            with self.subTest(
+                mechanism_id=mechanism_id,
+                label_family=label_family,
+                boundary="verifier",
+            ):
+                with self.assertRaisesRegex(
+                    self.gate.GateEvidenceError,
+                    "does not derive",
+                ):
+                    self.gate.verify_decision_evidence(
+                        raw,
+                        allow_fixture=True,
+                    )
+            with self.subTest(
+                mechanism_id=mechanism_id,
+                label_family=label_family,
+                boundary="gate_result",
+            ):
+                with self.assertRaisesRegex(
+                    self.gate.GateEvidenceError,
+                    "does not derive",
+                ):
+                    self.gate.gate_result_from_decision_evidence(
+                        raw,
+                        allow_fixture=True,
+                    )
+
+    def test_canonical_summary_rejects_admit_family_mismatches(self):
+        for mechanism_id, label_family in (
+            ("C2", "C1"),
+            ("C1", "C2"),
+        ):
+            valid = registered_admit_evidence(
+                self.gate,
+                mechanism_id,
+            )
+            result = self.gate.gate_result_from_decision_evidence(
+                valid,
+                allow_fixture=True,
+            )
+            probe = registered_admit_evidence(
+                self.gate,
+                mechanism_id,
+                label_family=label_family,
+            )
+            forged = replace(
+                result,
+                decision_evidence=probe,
+                terminal_decision=probe.terminal_decision,
+                terminal_record_hash=probe.terminal_record_hash,
+                mechanisms=probe.mechanisms,
+            )
+            with self.subTest(
+                mechanism_id=mechanism_id,
+                label_family=label_family,
+            ):
+                with self.assertRaisesRegex(
+                    self.gate.GateEvidenceError,
+                    "does not derive",
+                ):
+                    self.gate.canonical_summary_record(
+                        forged,
+                        root=ROOT,
+                        input_commit=self.input_commit,
+                        allow_fixture=True,
+                    )
 
     def test_decision_evidence_rejects_multiple_registered_mechanisms(self):
         raw = multiple_registered_phase_rejection_evidence(self.gate)

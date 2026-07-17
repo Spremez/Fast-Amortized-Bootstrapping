@@ -5,6 +5,8 @@ import argparse
 import csv
 import io
 from pathlib import Path
+import re
+import subprocess
 import sys
 
 
@@ -43,6 +45,10 @@ PREDECESSOR_DECISION = (
 TECHGRAPH_DECISION = "CANDIDATE_C_TECHGRAPH_ANCHORED"
 EQUATIONS_DECISION = "CANDIDATE_C_EQUATIONS_DEFINED"
 DECISIONS = {ADMIT, REJECT, INCONCLUSIVE}
+PINNED_GENERATOR_COMMAND = re.compile(
+    r"python scripts/run_candidate_c_rank_bounded_gate\.py "
+    r"--input-commit ([0-9a-f]{40})"
+)
 
 
 def _resolved_root(root: Path) -> Path:
@@ -238,7 +244,9 @@ def _run_log_plan(
     root: Path,
     decision: str,
     input_commit: str,
-) -> tuple[Path, list[str], str]:
+    *,
+    allow_fixture: bool,
+) -> tuple[Path, list[str], str, str | None]:
     path = _resolved_under_root(
         root,
         root / "repro/run_log.csv",
@@ -271,11 +279,39 @@ def _run_log_plan(
         raise ValueError(f"duplicate run-log marker: {RUN_MARKER}")
     if matches:
         if matches[0] == _run_row(decision, input_commit):
-            return path, fields, "unchanged"
+            return path, fields, "unchanged", None
         if matches[0] == _legacy_run_row(decision):
-            return path, fields, "replace"
+            return path, fields, "replace", None
+        command = matches[0]["command"]
+        pinned = PINNED_GENERATOR_COMMAND.fullmatch(command)
+        if pinned is not None:
+            previous_input_commit = pinned.group(1)
+            if matches[0] == _run_row(decision, previous_input_commit):
+                if not allow_fixture:
+                    ancestor = subprocess.run(
+                        [
+                            "git",
+                            "merge-base",
+                            "--is-ancestor",
+                            previous_input_commit,
+                            input_commit,
+                        ],
+                        cwd=root,
+                        check=False,
+                        capture_output=True,
+                    )
+                    if ancestor.returncode != 0:
+                        raise ValueError(
+                            "run-log prior input commit is not an ancestor"
+                        )
+                return (
+                    path,
+                    fields,
+                    "replace",
+                    previous_input_commit,
+                )
         raise ValueError(f"run-log marker/content mismatch: {RUN_MARKER}")
-    return path, fields, "append"
+    return path, fields, "append", None
 
 
 def _serialized_run_row(
@@ -298,12 +334,18 @@ def _append_run(
     decision: str,
     input_commit: str,
     action: str,
+    previous_input_commit: str | None,
 ) -> None:
     if action == "unchanged":
         return
     if action == "replace":
         current = path.read_text(encoding="ascii")
-        legacy = _serialized_run_row(fields, _legacy_run_row(decision))
+        previous_row = (
+            _legacy_run_row(decision)
+            if previous_input_commit is None
+            else _run_row(decision, previous_input_commit)
+        )
+        legacy = _serialized_run_row(fields, previous_row)
         if current.count(legacy) != 1:
             raise ValueError(
                 f"run-log legacy row bytes changed: {RUN_MARKER}"
@@ -347,9 +389,20 @@ def _legacy_checklist(decision: str) -> str:
 """
 
 
+def _pinned_checklist(decision: str, input_commit: str) -> str:
+    return f"""- [x] Candidate C records `{decision}` from hash-bound source,
+  equation, symbolic-independence, phase, schedule, rank, compression,
+  complete-cost, and Amdahl fields. Reproduce with
+  `{_generator_command(input_commit)}` followed by
+  `{_closeout_command(input_commit)}`; production hot-path
+  permission remains false.
+"""
+
+
 def _ledger_entries(
     decision: str,
     input_commit: str,
+    previous_input_commit: str | None,
 ) -> tuple[tuple[str, str, str, str, tuple[str, ...]], ...]:
     hypothesis = f"""H_candidate_c_rank_bounded_mechanism:
   status: {decision}
@@ -376,13 +429,11 @@ def _ledger_entries(
   - `experiments/candidate_c_rank_bounded_gate_plan.md`
   - `repro/candidate_c_rank_bounded_gate/`
 """
-    checklist = f"""- [x] Candidate C records `{decision}` from hash-bound source,
-  equation, symbolic-independence, phase, schedule, rank, compression,
-  complete-cost, and Amdahl fields. Reproduce with
-  `{_generator_command(input_commit)}` followed by
-  `{_closeout_command(input_commit)}`; production hot-path
-  permission remains false.
-"""
+    accepted_checklists = [_legacy_checklist(decision)]
+    if previous_input_commit is not None:
+        accepted_checklists.append(
+            _pinned_checklist(decision, previous_input_commit)
+        )
     return (
         (
             "hypotheses/hypothesis_register.yaml",
@@ -402,8 +453,8 @@ def _ledger_entries(
             "repro/reproduction_checklist.md",
             CHECKLIST_START,
             CHECKLIST_END,
-            checklist,
-            (_legacy_checklist(decision),),
+            _pinned_checklist(decision, input_commit),
+            tuple(accepted_checklists),
         ),
     )
 
@@ -571,6 +622,17 @@ def apply_gate(
     decision = summary_record["decision"]
     current_state = load_state(state)
 
+    (
+        run_path,
+        run_fields,
+        run_action,
+        previous_input_commit,
+    ) = _run_log_plan(
+        resolved_root,
+        decision,
+        input_commit,
+        allow_fixture=allow_fixture,
+    )
     entries = tuple(
         (
             _resolved_under_root(
@@ -585,7 +647,11 @@ def apply_gate(
             accepted_previous,
         )
         for relative, start, end, content, accepted_previous
-        in _ledger_entries(decision, input_commit)
+        in _ledger_entries(
+            decision,
+            input_commit,
+            previous_input_commit,
+        )
     )
     for path, start, end, content, accepted_previous in entries:
         _check_append(
@@ -595,12 +661,6 @@ def apply_gate(
             content,
             accepted_previous,
         )
-    run_path, run_fields, run_action = _run_log_plan(
-        resolved_root,
-        decision,
-        input_commit,
-    )
-
     current = current_state["candidates"]["C"]["status"]
     if current == "INTAKE":
         changed = _transition_initial_state(current_state, decision)
@@ -641,6 +701,7 @@ def apply_gate(
             decision,
             input_commit,
             run_action,
+            previous_input_commit,
         )
     except Exception:
         _restore_outputs(snapshot)

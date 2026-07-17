@@ -121,6 +121,12 @@ _FIXTURE_HASH_DOMAIN = "candidate-c/task5/verified-fixture/v1"
 REJECT_C1_NEGATIVE_PESSIMISTIC_AMDAHL_PROJECTION_TERMINAL = (
     "REJECT_C1_NEGATIVE_PESSIMISTIC_AMDAHL_PROJECTION_TERMINAL"
 )
+ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY = (
+    "ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY"
+)
+ADMIT_C2_RELINEARIZATION_TO_SCHEDULE_REPLAY = (
+    "ADMIT_C2_RELINEARIZATION_TO_SCHEDULE_REPLAY"
+)
 REJECT_C2_CONVERSION_CLOSURE = "REJECT_C2_CONVERSION_CLOSURE"
 REJECT_C2_NONPOSITIVE_STRUCTURAL_COST = (
     "REJECT_C2_NONPOSITIVE_STRUCTURAL_COST"
@@ -652,6 +658,25 @@ def _mechanism_admits(mechanism: MechanismEvaluation) -> bool:
     )
 
 
+_REGISTERED_ADMIT_RULES = {
+    ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY: "C1",
+    ADMIT_C2_RELINEARIZATION_TO_SCHEDULE_REPLAY: "C2",
+}
+REGISTERED_ADMIT_LABELS = tuple(_REGISTERED_ADMIT_RULES)
+
+
+def _matches_registered_admit(
+    raw: RawDecisionEvidence,
+    mechanism: MechanismEvaluation,
+) -> bool:
+    mechanism_id = _REGISTERED_ADMIT_RULES.get(raw.terminal_decision)
+    return (
+        mechanism_id is not None
+        and mechanism.mechanism_id == mechanism_id
+        and _mechanism_admits(mechanism)
+    )
+
+
 def _symbolic_gate_passed(mechanism: MechanismEvaluation) -> bool:
     return mechanism.symbolic_independence_status in {
         "PASS",
@@ -875,10 +900,15 @@ def _derive_decision(raw: RawDecisionEvidence) -> str:
         raise GateEvidenceError(
             "decision evidence must contain one unique registered mechanism"
         )
-    admitted = tuple(
+    admissible = tuple(
         mechanism
         for mechanism in raw.mechanisms
         if _mechanism_admits(mechanism)
+    )
+    admitted = tuple(
+        mechanism
+        for mechanism in raw.mechanisms
+        if _matches_registered_admit(raw, mechanism)
     )
     failed = tuple(
         mechanism
@@ -887,15 +917,12 @@ def _derive_decision(raw: RawDecisionEvidence) -> str:
     )
     if (
         raw.terminal_classification == "ADMIT"
-        and raw.terminal_decision
-        in {
-            "ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY",
-            "ADMIT_C2_RELINEARIZATION_TO_SCHEDULE_REPLAY",
-        }
+        and raw.terminal_decision in _REGISTERED_ADMIT_RULES
         and not raw.terminal_evidence_exhausted
         and raw.replay_status == "PASS"
         and raw.task4_status == "PASS"
         and len(registered) == 1
+        and admissible == registered
         and admitted == registered
         and not failed
     ):
@@ -906,7 +933,7 @@ def _derive_decision(raw: RawDecisionEvidence) -> str:
         and not raw.terminal_evidence_exhausted
         and len(registered) == 1
         and failed == registered
-        and not admitted
+        and not admissible
     ):
         return REJECT
     no_numerics = all(
@@ -932,7 +959,7 @@ def _derive_decision(raw: RawDecisionEvidence) -> str:
         and no_numerics
         and task4_skipped
         and not registered
-        and not admitted
+        and not admissible
         and not failed
     ):
         return INCONCLUSIVE
@@ -1150,7 +1177,7 @@ def _decision_mechanism(
         selected = tuple(
             mechanism
             for mechanism in raw.mechanisms
-            if _mechanism_admits(mechanism)
+            if _matches_registered_admit(raw, mechanism)
         )
     elif decision == REJECT:
         selected = tuple(

@@ -24,6 +24,8 @@ MANIFEST_END = "<!-- candidate-c-rank-bounded-gate-manifest-end -->"
 CHECKLIST_START = "<!-- candidate-c-rank-bounded-gate-checklist-start -->"
 CHECKLIST_END = "<!-- candidate-c-rank-bounded-gate-checklist-end -->"
 PREDECESSOR = "REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C"
+C1_ADMIT = "ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY"
+C2_ADMIT = "ADMIT_C2_RELINEARIZATION_TO_SCHEDULE_REPLAY"
 C1_PHASE_REJECTION = "REJECT_C1_PHASE_IDENTITY_TERMINAL"
 
 
@@ -139,6 +141,27 @@ def relabel_fixture_rejection(raw, label):
     )
 
 
+def registered_admit_evidence(mechanism_id, *, label_family=None):
+    raw = fixture_raw_evidence(gate.ADMIT)
+    terminal_decision = {
+        "C1": C1_ADMIT,
+        "C2": C2_ADMIT,
+    }[mechanism_id if label_family is None else label_family]
+    return gate.bind_fixture_decision_evidence(
+        replace(
+            raw,
+            terminal_decision=terminal_decision,
+            terminal_record_hash="",
+            mechanisms=(
+                replace(
+                    raw.mechanisms[0],
+                    mechanism_id=mechanism_id,
+                ),
+            ),
+        )
+    )
+
+
 def multiple_registered_phase_rejection_evidence():
     admitted = fixture_raw_evidence(gate.ADMIT)
     c1_failure = replace(
@@ -178,6 +201,13 @@ class CandidateCCloseoutTests(unittest.TestCase):
         cls.closeout = load_closeout()
         cls.input_commit = subprocess.run(
             ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        cls.previous_input_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD^"],
             cwd=ROOT,
             check=True,
             capture_output=True,
@@ -315,6 +345,23 @@ class CandidateCCloseoutTests(unittest.TestCase):
         self.assertFalse(state["production_hot_path_permission"])
         self.assertEqual(state["last_decision"], gate.ADMIT)
         validate_state(state)
+
+    def test_matching_c1_and_c2_admit_fixture_packs_advance(self):
+        for mechanism_id in ("C1", "C2"):
+            with self.subTest(mechanism_id=mechanism_id):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root, state_path = self._make_root(tmp)
+                    state = self._apply_twice(
+                        root,
+                        state_path,
+                        registered_admit_evidence(mechanism_id),
+                    )
+                self.assertEqual(
+                    state["candidates"]["C"]["status"],
+                    "ADVERSARIAL_CHECKER_PASS",
+                )
+                self.assertEqual(state["last_decision"], gate.ADMIT)
+                validate_state(state)
 
     def test_reject_after_cost_fixture_pack_exhausts_campaign(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -533,6 +580,76 @@ class CandidateCCloseoutTests(unittest.TestCase):
             transition.assert_not_called()
             self.assertEqual(before, self._tracked(root, state_path))
 
+    def test_apply_rejects_admit_family_mismatches_before_transition(self):
+        for mechanism_id, label_family in (
+            ("C2", "C1"),
+            ("C1", "C2"),
+        ):
+            with self.subTest(
+                mechanism_id=mechanism_id,
+                label_family=label_family,
+            ):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root, state_path = self._make_root(tmp)
+                    valid = registered_admit_evidence(mechanism_id)
+                    result = gate.gate_result_from_decision_evidence(
+                        valid,
+                        allow_fixture=True,
+                    )
+                    probe = registered_admit_evidence(
+                        mechanism_id,
+                        label_family=label_family,
+                    )
+                    record = gate._summary_from_verified_result(result)
+                    record["terminal_decision"] = probe.terminal_decision
+                    record["terminal_record_hash"] = (
+                        probe.terminal_record_hash
+                    )
+                    summary = root / "summary.csv"
+                    with summary.open(
+                        "w",
+                        newline="",
+                        encoding="ascii",
+                    ) as handle:
+                        writer = csv.DictWriter(
+                            handle,
+                            fieldnames=gate.SUMMARY_FIELDS,
+                            lineterminator="\n",
+                        )
+                        writer.writeheader()
+                        writer.writerow(record)
+                    evidence = root / "decision_evidence.json"
+                    evidence.write_text(
+                        gate.decision_evidence_json(probe),
+                        encoding="ascii",
+                        newline="\n",
+                    )
+                    before = self._tracked(root, state_path)
+                    with (
+                        patch.object(
+                            self.closeout,
+                            "_transition_initial_state",
+                            wraps=self.closeout._transition_initial_state,
+                        ) as transition,
+                        self.assertRaisesRegex(
+                            gate.GateEvidenceError,
+                            "does not derive",
+                        ),
+                    ):
+                        self.closeout.apply_gate(
+                            root,
+                            state_path,
+                            summary,
+                            input_commit=self.input_commit,
+                            evidence_path=evidence,
+                            allow_fixture=True,
+                        )
+                    transition.assert_not_called()
+                    self.assertEqual(
+                        before,
+                        self._tracked(root, state_path),
+                    )
+
     def test_closeout_provenance_commands_pin_exact_input_commit(self):
         with tempfile.TemporaryDirectory() as tmp:
             root, state_path = self._make_root(tmp)
@@ -667,6 +784,69 @@ class CandidateCCloseoutTests(unittest.TestCase):
             "`python scripts/run_candidate_c_rank_bounded_gate.py`",
             checklist,
         )
+
+    def test_closeout_refreshes_exact_prior_pinned_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            summary, evidence = self._write_fixture_pack(
+                root,
+                fixture_raw_evidence(gate.REJECT),
+            )
+            previous = self.previous_input_commit
+            checklist = f"""{CHECKLIST_START}
+- [x] Candidate C records `{gate.REJECT}` from hash-bound source,
+  equation, symbolic-independence, phase, schedule, rank, compression,
+  complete-cost, and Amdahl fields. Reproduce with
+  `python scripts/run_candidate_c_rank_bounded_gate.py --input-commit {previous}` followed by
+  `python scripts/apply_candidate_c_rank_bounded_gate.py --input-commit {previous}`; production hot-path
+  permission remains false.
+{CHECKLIST_END}
+"""
+            (root / "repro/reproduction_checklist.md").write_text(
+                checklist,
+                encoding="ascii",
+                newline="\n",
+            )
+            with (root / "repro/run_log.csv").open(
+                "a",
+                newline="",
+                encoding="ascii",
+            ) as handle:
+                writer = csv.DictWriter(
+                    handle,
+                    fieldnames=self.closeout._run_row(
+                        gate.REJECT,
+                        previous,
+                    ),
+                    lineterminator="\n",
+                )
+                writer.writerow(
+                    self.closeout._run_row(gate.REJECT, previous)
+                )
+
+            try:
+                self.closeout.apply_gate(
+                    root,
+                    state_path,
+                    summary,
+                    input_commit=self.input_commit,
+                    evidence_path=evidence,
+                    allow_fixture=True,
+                )
+            except ValueError as error:
+                self.fail(f"exact prior pinned provenance was rejected: {error}")
+            run_log = (root / "repro/run_log.csv").read_text(
+                encoding="ascii"
+            )
+            updated_checklist = (
+                root / "repro/reproduction_checklist.md"
+            ).read_text(encoding="ascii")
+
+        pinned = f"--input-commit {self.input_commit}"
+        self.assertEqual(run_log.count(pinned), 1)
+        self.assertEqual(updated_checklist.count(pinned), 2)
+        self.assertNotIn(previous, run_log)
+        self.assertNotIn(previous, updated_checklist)
 
     def test_write_failure_rolls_back_every_closeout_output(self):
         with tempfile.TemporaryDirectory() as tmp:
