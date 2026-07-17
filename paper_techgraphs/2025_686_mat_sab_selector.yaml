@@ -1,108 +1,195 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "contract": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
   "candidate": "A",
   "production_code_permission": false,
-  "implementation_input_commit": "801a7833dc4b12cd57fc920030b837a348ffcc16",
-  "reproduction_command": "python scripts/build_mat_sab_selector_techgraph.py --input-commit 801a7833dc4b12cd57fc920030b837a348ffcc16",
+  "selector_source_state_commit": "8da7571de52ff42d56f061bb0fc7111824dabd04",
+  "selector_source_manifest": [
+    {
+      "path": "repro/stage134_generalized_lane_pair_input_ep_gate/summary.csv",
+      "availability": "PRESENT",
+      "sha256": "2171789abea1362f39c0aa1b131d6047888cdbe3a609e88f6894cbf9a30407d5"
+    },
+    {
+      "path": "repro/stage138_shared_mask_compact_gate/summary.csv",
+      "availability": "PRESENT",
+      "sha256": "5039b0ae258599b16799fd1a7e482560353948cd41efa15c9dfc9032c5d6017d"
+    },
+    {
+      "path": "repro/stage139_compact_closure_audit/summary.csv",
+      "availability": "PRESENT",
+      "sha256": "0b7cee0811eb90a6ff5bf4e784bdb510a2cdc96b64f30932fbe9d4a58da10e95"
+    },
+    {
+      "path": "repro/stage203_production_selector_equation_probe/equation_map.csv",
+      "availability": "PRESENT",
+      "sha256": "5c146ee16c6c6cc2dac542e8c8ac4af74cd8bd017844929683190d5bdd2ab574"
+    },
+    {
+      "path": "repro/stage222_isolated_compact_ep_integration/expressiveness_results.csv",
+      "availability": "PRESENT",
+      "sha256": "c6b60c73e64ec2fd0859e33e33525651e6404d21967e621961e0e6310477fe6c"
+    },
+    {
+      "path": "repro/stage249_structured_compact_distribution_security/claim_boundary.csv",
+      "availability": "PRESENT",
+      "sha256": "4fe2339ceb1a6c2408c6977960f61194cdab54e0b64de70a3ece6064e389296d"
+    },
+    {
+      "path": "repro/stage329_formal_compact_selector_checker/summary.csv",
+      "availability": "PRESENT",
+      "sha256": "6b0ffeb6384e99c5b9f99191e59e8194c7aa0a784e674a8acca6e7b7c9b09998"
+    },
+    {
+      "path": "research_state.yaml",
+      "availability": "PRESENT",
+      "sha256": "00d1354d93639f501712e9e218870da14bcc22c6bb9f8cf577b26b1487f1d182"
+    },
+    {
+      "path": "scripts/build_mat_sab_selector_techgraph.py",
+      "availability": "PRESENT",
+      "sha256": "0139ce7f32542a85e5ba169119f4e160e33acf60669e97fafb8263f2ede01bb6"
+    },
+    {
+      "path": "scripts/mat_sab_research_state.py",
+      "availability": "PRESENT",
+      "sha256": "f5133f58dfe904c3300e60ba7cd8874a422a771968c317b424a15bb43594f20d"
+    },
+    {
+      "path": "scripts/run_candidate_c_rank_bounded_gate.py",
+      "availability": "PRESENT",
+      "sha256": "5c8b1bb19a941ac9e07c2b10f52bd084f0b2fba1e6481bbf577f19fd7b6d4f4c"
+    },
+    {
+      "path": "src/mosfhet/src/mattrgsw.c",
+      "availability": "PRESENT",
+      "sha256": "5da51089a748f7f1f54b56f81c2948ced14f0be4dd431bcffb2339af97c527fa"
+    },
+    {
+      "path": "src/mosfhet/src/pvwtmlwe.c",
+      "availability": "PRESENT",
+      "sha256": "742799572c62b64f766d7d6d424626808615d2930d270cb60d91cd8a51d5ddd2"
+    },
+    {
+      "path": "src/sparse_amortized_bootstrap.c",
+      "availability": "PRESENT",
+      "sha256": "8c0953caca8c87fe6fe5a12334d1bdfb320ddadf2dbf12379c221361a9b28d82"
+    }
+  ],
+  "research_state_sha256": "00d1354d93639f501712e9e218870da14bcc22c6bb9f8cf577b26b1487f1d182",
+  "reproduction_command": "python scripts/build_mat_sab_selector_techgraph.py --source-state-commit 8da7571de52ff42d56f061bb0fc7111824dabd04",
   "nodes": [
     {
       "id": "sab_schedule",
       "path": "src/sparse_amortized_bootstrap.c",
       "symbol_or_token": "void RGSW_monomial_mul(",
       "role": "scalar SAB butterfly and sparse schedule",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "8c0953caca8c87fe6fe5a12334d1bdfb320ddadf2dbf12379c221361a9b28d82"
     },
     {
       "id": "pvw_phase",
       "path": "src/mosfhet/src/pvwtmlwe.c",
       "symbol_or_token": "void pvmtmlwe_phase(",
       "role": "phase map b_q - a*s_q",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "742799572c62b64f766d7d6d424626808615d2930d270cb60d91cd8a51d5ddd2"
     },
     {
       "id": "pvw_randomization",
       "path": "src/mosfhet/src/pvwtmlwe.c",
       "symbol_or_token": "void pvmtmlwe_sample(",
       "role": "shared random mask and r body corrections",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "742799572c62b64f766d7d6d424626808615d2930d270cb60d91cd8a51d5ddd2"
     },
     {
       "id": "dense_keygen",
       "path": "src/mosfhet/src/mattrgsw.c",
       "symbol_or_token": "void mat_trgsw_monomial_sample(",
       "role": "standard dense MAT-GGSW row sampling",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "5da51089a748f7f1f54b56f81c2948ced14f0be4dd431bcffb2339af97c527fa"
     },
     {
       "id": "dense_decompose",
       "path": "src/mosfhet/src/mattrgsw.c",
       "symbol_or_token": "pvmtmlwe_decompose(scratch->dec",
       "role": "decompose all k+r components",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "5da51089a748f7f1f54b56f81c2948ced14f0be4dd431bcffb2339af97c527fa"
     },
     {
       "id": "dense_addmul",
       "path": "src/mosfhet/src/mattrgsw.c",
       "symbol_or_token": "static void mat_trgsw_mul_pvmtmlwe_DFT_from_dec(",
       "role": "dense selector-output products",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "5da51089a748f7f1f54b56f81c2948ced14f0be4dd431bcffb2339af97c527fa"
     },
     {
       "id": "compact_kernel",
       "path": "src/mosfhet/src/mattrgsw.c",
       "symbol_or_token": "void mat_trgsw_compact_mul_pvmtmlwe_DFT(",
       "role": "lane-local compact evaluator",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "5da51089a748f7f1f54b56f81c2948ced14f0be4dd431bcffb2339af97c527fa"
     },
     {
       "id": "generalized_lane_pair",
       "path": "repro/stage134_generalized_lane_pair_input_ep_gate/summary.csv",
       "symbol_or_token": "",
       "role": "closure-restoring but performance-negative lane-pair input",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "2171789abea1362f39c0aa1b131d6047888cdbe3a609e88f6894cbf9a30407d5"
     },
     {
       "id": "shared_mask_kernel",
       "path": "repro/stage138_shared_mask_compact_gate/summary.csv",
       "symbol_or_token": "",
       "role": "positive isolated compact-kernel evidence",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "5039b0ae258599b16799fd1a7e482560353948cd41efa15c9dfc9032c5d6017d"
     },
     {
       "id": "closure_failure",
       "path": "repro/stage139_compact_closure_audit/summary.csv",
       "symbol_or_token": "",
       "role": "compact output not closed as standard PVW state",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "0b7cee0811eb90a6ff5bf4e784bdb510a2cdc96b64f30932fbe9d4a58da10e95"
     },
     {
       "id": "star_cycle_support",
       "path": "repro/stage203_production_selector_equation_probe/equation_map.csv",
       "symbol_or_token": "lane_neighbor_body_interaction",
       "role": "4r declared active support",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "5c146ee16c6c6cc2dac542e8c8ac4af74cd8bd017844929683190d5bdd2ab574"
     },
     {
       "id": "neighbor_gap",
       "path": "repro/stage222_isolated_compact_ep_integration/expressiveness_results.csv",
       "symbol_or_token": "",
       "role": "lane-local API lacks neighbor-capable selector",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "c6b60c73e64ec2fd0859e33e33525651e6404d21967e621961e0e6310477fe6c"
     },
     {
       "id": "distribution_blocker",
       "path": "repro/stage249_structured_compact_distribution_security/claim_boundary.csv",
       "symbol_or_token": "",
       "role": "public compact-saving pattern remains distinguishable",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "4fe2339ceb1a6c2408c6977960f61194cdab54e0b64de70a3ece6064e389296d"
     },
     {
       "id": "finite_semantic_zero",
       "path": "repro/stage329_formal_compact_selector_checker/summary.csv",
       "symbol_or_token": "",
       "role": "finite semantic-zero pass with security open",
-      "anchor_status": "PASS"
+      "anchor_status": "PASS",
+      "sha256": "6b0ffeb6384e99c5b9f99191e59e8194c7aa0a784e674a8acca6e7b7c9b09998"
     }
   ],
   "edges": [
