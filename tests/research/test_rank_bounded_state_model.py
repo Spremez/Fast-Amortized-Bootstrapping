@@ -30,6 +30,35 @@ def state_with_two_symbols():
     )
 
 
+def compressible_rank_two_state():
+    return MaskSpanState(
+        lane_coefficients=(
+            (0, 0, 0),
+            (1, 0, 1),
+            (0, 1, 1),
+            (1, 1, 2),
+        ),
+        body_constants=(11, 13, 17, 19),
+        mask_symbols=(5, 7, 11),
+        provenance=("alpha", "beta", "gamma"),
+        modulus=PRIME,
+    )
+
+
+def matrix_product(lhs, rhs, modulus):
+    return tuple(
+        tuple(
+            sum(
+                lhs[row][inner] * rhs[inner][column]
+                for inner in range(len(rhs))
+            )
+            % modulus
+            for column in range(len(rhs[0]))
+        )
+        for row in range(len(lhs))
+    )
+
+
 class RankBoundedStateValidationTests(unittest.TestCase):
     def test_modulus_must_be_positive_and_prime(self):
         for modulus in (-3, 0, 1, 4, 15):
@@ -212,6 +241,31 @@ class IndependentProvenanceTests(unittest.TestCase):
 
 
 class PhaseControlTests(unittest.TestCase):
+    def test_scalar_related_rotation_cancels_to_zero_rank(self):
+        for modulus in (2, 3, PRIME):
+            with self.subTest(modulus=modulus):
+                state = MaskSpanState(
+                    lane_coefficients=((0, 0), (1, 0), (0, 1)),
+                    body_constants=(1, 2, 3),
+                    mask_symbols=(1, 2),
+                    provenance=("alpha", "beta"),
+                    modulus=modulus,
+                )
+                cancelled = linear_combine_states(
+                    state,
+                    rotate_state(state, 1),
+                    1,
+                    1,
+                )
+
+                self.assertEqual(
+                    phase_vector(cancelled, (1, 1, 1), modulus),
+                    (0, 0, 0),
+                )
+                self.assertEqual(excess_rank(cancelled), 0)
+                self.assertEqual(cancelled.provenance, ())
+                self.assertEqual(cancelled.mask_symbols, ())
+
     def test_appended_direction_phase_witnesses_do_not_depend_on_call_order(self):
         base = shared_state(3, PRIME)
         pattern = ((0, 0), (1, 2), (3, 5))
@@ -282,7 +336,14 @@ class PhaseControlTests(unittest.TestCase):
         factor = pow(-1, exponent, PRIME)
         rotated = rotate_state(state, exponent)
 
-        self.assertEqual(rotated.lane_coefficients, state.lane_coefficients)
+        self.assertEqual(
+            rotated.lane_coefficients,
+            tuple(
+                tuple(factor * value % PRIME for value in row)
+                for row in state.lane_coefficients
+            ),
+        )
+        self.assertEqual(rotated.mask_symbols, state.mask_symbols)
         self.assertEqual(excess_rank(rotated), excess_rank(state))
         self.assertEqual(
             phase_vector(rotated, secrets, PRIME),
@@ -367,6 +428,108 @@ class PhaseControlTests(unittest.TestCase):
 
 
 class CompressionSemanticsTests(unittest.TestCase):
+    def test_identity_recompression_preserves_canonical_source_identity(self):
+        state = compressible_rank_two_state()
+        projection = ((1, 0, 1), (0, 1, 1))
+        first = compress_state(state, projection).compressed_state
+
+        recompressed = compress_state(
+            first,
+            ((1, 0), (0, 1)),
+        ).compressed_state
+
+        self.assertEqual(recompressed, first)
+        self.assertEqual(
+            recompressed._provenance_tokens,
+            first._provenance_tokens,
+        )
+        cancelled = linear_combine_states(first, recompressed, 1, -1)
+        self.assertEqual(excess_rank(cancelled), 0)
+        self.assertEqual(cancelled.provenance, ())
+
+    def test_composed_public_maps_match_their_matrix_product(self):
+        state = compressible_rank_two_state()
+        projection = ((1, 0, 1), (0, 1, 1))
+        second_projection = ((1, 1), (1, 2))
+        composed_projection = matrix_product(
+            second_projection,
+            projection,
+            PRIME,
+        )
+
+        nested = compress_state(
+            compress_state(state, projection).compressed_state,
+            second_projection,
+        ).compressed_state
+        direct = compress_state(
+            state,
+            composed_projection,
+        ).compressed_state
+
+        self.assertEqual(nested, direct)
+        self.assertEqual(
+            nested._provenance_tokens,
+            direct._provenance_tokens,
+        )
+        cancelled = linear_combine_states(nested, direct, 1, -1)
+        self.assertEqual(excess_rank(cancelled), 0)
+        self.assertEqual(cancelled.provenance, ())
+
+    def test_compression_commutes_with_rotation_on_source_identity(self):
+        state = compressible_rank_two_state()
+        projection = ((1, 0, 1), (0, 1, 1))
+        exponent = -3
+
+        rotate_then_compress = compress_state(
+            rotate_state(state, exponent),
+            projection,
+        ).compressed_state
+        compress_then_rotate = rotate_state(
+            compress_state(state, projection).compressed_state,
+            exponent,
+        )
+
+        self.assertEqual(rotate_then_compress, compress_then_rotate)
+        self.assertEqual(
+            rotate_then_compress._provenance_tokens,
+            compress_then_rotate._provenance_tokens,
+        )
+        cancelled = linear_combine_states(
+            rotate_then_compress,
+            compress_then_rotate,
+            1,
+            -1,
+        )
+        self.assertEqual(excess_rank(cancelled), 0)
+        self.assertEqual(cancelled.provenance, ())
+
+    def test_rho_zero_compression_discards_existing_inactive_symbols(self):
+        state = MaskSpanState(
+            lane_coefficients=((0, 0), (0, 0), (0, 0)),
+            body_constants=(11, 13, 17),
+            mask_symbols=(5, 7),
+            provenance=("inactive-alpha", "inactive-beta"),
+            modulus=PRIME,
+        )
+        self.assertEqual(excess_rank(state), 0)
+
+        result = compress_state(state, ())
+
+        self.assertTrue(result.phase_preserved)
+        self.assertEqual(result.discarded_directions, 2)
+        self.assertEqual(result.online_product_count, 0)
+        self.assertEqual(result.key_component_count, 0)
+        self.assertEqual(result.compressed_state.provenance, ())
+        self.assertEqual(result.compressed_state.mask_symbols, ())
+        self.assertEqual(
+            result.compressed_state.lane_coefficients,
+            ((), (), ()),
+        )
+        self.assertEqual(
+            phase_vector(result.compressed_state, (2, 3, 5), PRIME),
+            phase_vector(state, (2, 3, 5), PRIME),
+        )
+
     def test_shared_state_has_truthful_zero_dimensional_compression(self):
         state = MaskSpanState(
             lane_coefficients=((), (), (), ()),

@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from itertools import count
 from typing import Hashable, NamedTuple, Sequence
 
-from .finite_linear import rank, solve_affine
+from .finite_linear import rank, rref, solve_affine
 
 
 Matrix = tuple[tuple[int, ...], ...]
@@ -19,41 +19,80 @@ _SYMBOL_SEQUENCE = count(1)
 
 
 @dataclass(frozen=True)
-class _RotatedIdentity:
-    base: Hashable
+class _RootIdentity:
+    token: int
+    provenance: Hashable
+    value: int
 
 
-def _rotate_identity(identifier: Hashable, exponent: int) -> Hashable:
-    if exponent % 2 == 0:
-        return identifier
-    if isinstance(identifier, _RotatedIdentity):
-        return identifier.base
-    return _RotatedIdentity(identifier)
+@dataclass(frozen=True)
+class _LinearIdentity:
+    modulus: int
+    terms: tuple[tuple[_RootIdentity, int], ...]
 
 
-def _linear_image_identity(
-    coefficients: Sequence[int],
-    identities: Sequence[Hashable],
+def _root_identity(
+    provenance: Hashable,
+    value: int,
     modulus: int,
-) -> Hashable:
-    return (
-        "public-linear-image",
+) -> _LinearIdentity:
+    root = _RootIdentity(
+        token=next(_SYMBOL_SEQUENCE),
+        provenance=provenance,
+        value=value % modulus,
+    )
+    return _LinearIdentity(modulus, ((root, 1),))
+
+
+def _combine_identities(
+    coefficients: Sequence[int],
+    identities: Sequence[_LinearIdentity],
+    modulus: int,
+) -> _LinearIdentity:
+    combined: dict[_RootIdentity, int] = {}
+    for coefficient, identity in zip(coefficients, identities):
+        coefficient %= modulus
+        for root, root_coefficient in identity.terms:
+            combined[root] = (
+                combined.get(root, 0)
+                + coefficient * root_coefficient
+            ) % modulus
+    return _LinearIdentity(
         modulus,
         tuple(
-            (coefficient % modulus, identity)
-            for coefficient, identity in zip(coefficients, identities)
-            if coefficient % modulus
+            (root, combined[root])
+            for root in sorted(combined, key=lambda item: item.token)
+            if combined[root]
         ),
     )
+
+
+def _identity_value(identity: _LinearIdentity) -> int:
+    return sum(
+        root.value * coefficient
+        for root, coefficient in identity.terms
+    ) % identity.modulus
+
+
+def _public_identity(identity: _LinearIdentity) -> Hashable:
+    terms = tuple(
+        (coefficient, root.provenance)
+        for root, coefficient in identity.terms
+    )
+    if len(terms) == 1 and terms[0][0] == 1:
+        return terms[0][1]
+    return ("root-linear-image", identity.modulus, terms)
 
 
 def _fresh_symbol(
     modulus: int,
     symbol_index: int,
-) -> tuple[Hashable, int, int]:
+) -> tuple[Hashable, int, _LinearIdentity]:
     token = next(_SYMBOL_SEQUENCE)
     value = 1 + (symbol_index % (modulus - 1))
-    return ("independent-mask", token), value, token
+    provenance = ("independent-mask", token)
+    root = _RootIdentity(token, provenance, value)
+    return provenance, value, _LinearIdentity(modulus, ((root, 1),))
 
 
 def _validate_modulus(modulus: int) -> None:
@@ -89,7 +128,7 @@ class MaskSpanState:
     mask_symbols: tuple[int, ...]
     provenance: tuple[Hashable, ...]
     modulus: int
-    _provenance_tokens: tuple[Hashable, ...] = field(
+    _provenance_tokens: tuple[_LinearIdentity, ...] = field(
         default=(),
         repr=False,
         compare=False,
@@ -131,16 +170,37 @@ class MaskSpanState:
             "body_constants",
             tuple(value % self.modulus for value in self.body_constants),
         )
+        normalized_symbols = tuple(
+            value % self.modulus for value in self.mask_symbols
+        )
         object.__setattr__(
             self,
             "mask_symbols",
-            tuple(value % self.modulus for value in self.mask_symbols),
+            normalized_symbols,
         )
         if not self._provenance_tokens:
             object.__setattr__(
                 self,
                 "_provenance_tokens",
-                tuple(next(_SYMBOL_SEQUENCE) for _ in range(symbols)),
+                tuple(
+                    _root_identity(provenance, value, self.modulus)
+                    for provenance, value in zip(
+                        self.provenance,
+                        normalized_symbols,
+                    )
+                ),
+            )
+        elif any(
+            not isinstance(identity, _LinearIdentity)
+            or identity.modulus != self.modulus
+            or _identity_value(identity) != value
+            for identity, value in zip(
+                self._provenance_tokens,
+                normalized_symbols,
+            )
+        ):
+            raise ValueError(
+                "provenance identities must match their mask symbols"
             )
 
 
@@ -162,6 +222,121 @@ def shared_state(r: int, modulus: int) -> MaskSpanState:
         mask_symbols=(),
         provenance=(),
         modulus=modulus,
+    )
+
+
+def _roots_for_identities(
+    identities: Sequence[_LinearIdentity],
+) -> tuple[_RootIdentity, ...]:
+    roots: dict[int, _RootIdentity] = {}
+    for identity in identities:
+        for root, _ in identity.terms:
+            previous = roots.get(root.token)
+            if previous is not None and previous != root:
+                raise ValueError("immutable root identity collision")
+            roots[root.token] = root
+    return tuple(roots[token] for token in sorted(roots))
+
+
+def _effective_root_matrix(
+    state: MaskSpanState,
+    roots: Sequence[_RootIdentity],
+) -> Matrix:
+    root_index = {
+        root: column
+        for column, root in enumerate(roots)
+    }
+    rows: list[tuple[int, ...]] = []
+    for lane_coefficients in state.lane_coefficients:
+        effective = [0] * len(roots)
+        for coefficient, identity in zip(
+            lane_coefficients,
+            state._provenance_tokens,
+        ):
+            for root, root_coefficient in identity.terms:
+                column = root_index[root]
+                effective[column] = (
+                    effective[column]
+                    + coefficient * root_coefficient
+                ) % state.modulus
+        rows.append(tuple(effective))
+    return tuple(rows)
+
+
+def _state_from_effective_root_matrix(
+    effective: Matrix,
+    body_constants: Sequence[int],
+    roots: Sequence[_RootIdentity],
+    modulus: int,
+) -> MaskSpanState:
+    reduced, pivots = rref(effective, modulus)
+    source_rank = len(pivots)
+    if source_rank == 0:
+        return MaskSpanState(
+            lane_coefficients=tuple(() for _ in body_constants),
+            body_constants=tuple(body_constants),
+            mask_symbols=(),
+            provenance=(),
+            modulus=modulus,
+        )
+
+    basis = tuple(
+        tuple(reduced[row])
+        for row in range(source_rank)
+    )
+    transposed_basis = tuple(
+        tuple(
+            basis[component][root]
+            for component in range(source_rank)
+        )
+        for root in range(len(roots))
+    )
+    lane_coefficients: list[tuple[int, ...]] = []
+    for lane_effective in effective:
+        factorization = solve_affine(
+            transposed_basis,
+            lane_effective,
+            modulus,
+        )
+        if not factorization.consistent:
+            raise AssertionError("canonical source basis lost a lane equation")
+        lane_coefficients.append(factorization.particular)
+
+    identities = tuple(
+        _LinearIdentity(
+            modulus,
+            tuple(
+                (root, coefficient)
+                for root, coefficient in zip(roots, basis_row)
+                if coefficient
+            ),
+        )
+        for basis_row in basis
+    )
+    return MaskSpanState(
+        lane_coefficients=tuple(lane_coefficients),
+        body_constants=tuple(body_constants),
+        mask_symbols=tuple(
+            _identity_value(identity)
+            for identity in identities
+        ),
+        provenance=tuple(
+            _public_identity(identity)
+            for identity in identities
+        ),
+        modulus=modulus,
+        _provenance_tokens=identities,
+    )
+
+
+def _canonicalize_state(state: MaskSpanState) -> MaskSpanState:
+    roots = _roots_for_identities(state._provenance_tokens)
+    effective = _effective_root_matrix(state, roots)
+    return _state_from_effective_root_matrix(
+        effective,
+        state.body_constants,
+        roots,
+        state.modulus,
     )
 
 
@@ -242,7 +417,7 @@ def linear_combine_states(
     columns: list[list[int]] = []
     symbols: list[int] = []
     provenances: list[Hashable] = []
-    tokens: list[Hashable] = []
+    tokens: list[_LinearIdentity] = []
     provenance_index: dict[Hashable, int] = {}
 
     for operand, scale in ((lhs, lhs_scale), (rhs, rhs_scale)):
@@ -283,7 +458,7 @@ def linear_combine_states(
         for column, values in enumerate(columns)
         if any(values)
     ]
-    return MaskSpanState(
+    combined = MaskSpanState(
         lane_coefficients=tuple(
             tuple(columns[column][lane] for column in active)
             for lane in range(len(lhs.lane_coefficients))
@@ -297,28 +472,29 @@ def linear_combine_states(
         modulus=modulus,
         _provenance_tokens=tuple(tokens[column] for column in active),
     )
+    return _canonicalize_state(combined)
 
 
 def rotate_state(state: MaskSpanState, exponent: int) -> MaskSpanState:
     if type(exponent) is not int:
         raise ValueError("rotation exponent must be an integer")
-    if exponent % 2 == 0:
+    factor = 1 if exponent % 2 == 0 else (-1) % state.modulus
+    if factor == 1:
         return state
-    factor = (-1) % state.modulus
     return MaskSpanState(
-        lane_coefficients=state.lane_coefficients,
+        lane_coefficients=tuple(
+            tuple(
+                factor * value % state.modulus
+                for value in row
+            )
+            for row in state.lane_coefficients
+        ),
         body_constants=tuple(
             factor * value % state.modulus
             for value in state.body_constants
         ),
-        mask_symbols=tuple(
-            factor * value % state.modulus
-            for value in state.mask_symbols
-        ),
-        provenance=tuple(
-            _rotate_identity(identifier, exponent)
-            for identifier in state.provenance
-        ),
+        mask_symbols=state.mask_symbols,
+        provenance=state.provenance,
         modulus=state.modulus,
         _provenance_tokens=state._provenance_tokens,
     )
@@ -362,14 +538,27 @@ def compress_state(
     ):
         raise ValueError("projection must be an immutable public matrix")
     if not projection:
-        if state.provenance:
+        if any(
+            value
+            for row in state.lane_coefficients
+            for value in row
+        ):
             raise ValueError(
-                "zero-dimensional projection requires a shared state"
+                "public projection would discard a phase-active direction"
             )
+        compressed = MaskSpanState(
+            lane_coefficients=tuple(
+                () for _ in state.lane_coefficients
+            ),
+            body_constants=state.body_constants,
+            mask_symbols=(),
+            provenance=(),
+            modulus=state.modulus,
+        )
         return CompressionResult(
-            compressed_state=state,
+            compressed_state=compressed,
             phase_preserved=True,
-            discarded_directions=0,
+            discarded_directions=len(state.provenance),
             online_product_count=0,
             key_component_count=0,
         )
@@ -421,32 +610,23 @@ def compress_state(
             "public projection would discard a phase-active direction"
         )
 
-    projected_symbols = tuple(
-        sum(
-            normalized_projection[component][symbol]
-            * state.mask_symbols[symbol]
-            for symbol in range(columns)
-        )
-        % state.modulus
-        for component in range(components)
-    )
-    projected_provenance = tuple(
-        _linear_image_identity(
-            normalized_projection[component],
-            state.provenance,
-            state.modulus,
-        )
-        for component in range(components)
-    )
     projected_tokens = tuple(
-        _linear_image_identity(
+        _combine_identities(
             normalized_projection[component],
             state._provenance_tokens,
             state.modulus,
         )
         for component in range(components)
     )
-    compressed = MaskSpanState(
+    projected_provenance = tuple(
+        _public_identity(identity)
+        for identity in projected_tokens
+    )
+    projected_symbols = tuple(
+        _identity_value(identity)
+        for identity in projected_tokens
+    )
+    projected = MaskSpanState(
         lane_coefficients=tuple(compressed_coefficients),
         body_constants=state.body_constants,
         mask_symbols=projected_symbols,
@@ -454,16 +634,19 @@ def compress_state(
         modulus=state.modulus,
         _provenance_tokens=projected_tokens,
     )
+    compressed = _canonicalize_state(projected)
     return CompressionResult(
         compressed_state=compressed,
         phase_preserved=True,
-        discarded_directions=columns - projection_rank,
+        discarded_directions=(
+            columns - len(compressed.provenance)
+        ),
         online_product_count=sum(
             value != 0
-            for row in compressed_coefficients
+            for row in compressed.lane_coefficients
             for value in row
         ),
-        key_component_count=components,
+        key_component_count=len(compressed.provenance),
     )
 
 
