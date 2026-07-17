@@ -8,7 +8,7 @@
     "B0": "repeated_scalar_SAB",
     "B1": "exact_dense_PVW_MAT_SAB_current_head"
   },
-  "active_candidate": "A",
+  "active_candidate": "B",
   "candidate_order": [
     "A",
     "B",
@@ -17,14 +17,14 @@
   "candidates": {
     "A": {
       "name": "Star-Cycle Sparse MAT-GGSW",
-      "status": "EQUATIONS_DEFINED",
+      "status": "REJECTED",
       "equation_revisions_used": 0,
       "kernel_layouts_used": 0,
       "full_sab_integrations_used": 0
     },
     "B": {
       "name": "Factorized Star-Cycle",
-      "status": "QUEUED",
+      "status": "INTAKE",
       "equation_revisions_used": 0,
       "kernel_layouts_used": 0,
       "full_sab_integrations_used": 0
@@ -39,5 +39,5 @@
   },
   "paper_gate": "BLOCKED",
   "production_hot_path_permission": false,
-  "last_decision": "CANDIDATE_A_PRODUCTION_EQUATIONS_DEFINED"
+  "last_decision": "REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B"
 }

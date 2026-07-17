@@ -535,3 +535,9 @@
 - [x] Stage345 records `PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY` and preserves blocked stronger-claim boundaries.
 <!-- stage346-algorithm-redesign-audit-checklist -->
 - [x] Stage346 records `PASS_STAGE346_REDESIGN_AUDIT_READY_STAGE347_MECHANISM_GATE` and routes the new-algorithm objective to a falsifiable Stage347 mechanism gate.
+<!-- candidate-a-star-cycle-gate-checklist -->
+- [x] Candidate A records `REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B` from source, phase, dense-control,
+  negative-control, and standard-PVW randomization gates; production hot-path
+  permission remains false. Reproduce with
+  `python scripts/run_candidate_a_star_cycle_gate.py` followed by
+  `python scripts/apply_mat_sab_candidate_gate.py`.
