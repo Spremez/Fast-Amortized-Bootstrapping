@@ -1,0 +1,448 @@
+from __future__ import annotations
+
+import math
+import shutil
+import tempfile
+import unittest
+from dataclasses import replace
+from pathlib import Path
+
+from research.mat_sab.candidate_c_operator_tensor import (
+    ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY,
+    REGISTERED_SHORT_ERROR_RELATION_FAIL,
+    RELATION_RECORDED_NO_SECURITY_DECISION,
+    REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL,
+    SourceBindingError,
+    audit_evaluator_sample_relations,
+    build_dense_control_tensor,
+    build_evaluator_sample_matrix,
+    build_joint_rank_escape_control,
+    build_phase_projection,
+    build_rank_bounded_tensor,
+    concatenated_mask_difference_rank,
+    level_mask_difference_ranks,
+    negacyclic_multiply,
+    run_c1_operator_gate,
+    verify_joint_rank_factorization,
+    verify_operator_gate_result,
+    verify_phase_identity,
+)
+
+
+ROOT = Path(__file__).resolve().parents[2]
+PRIME = 257
+N = 8
+GADGET = (1, 16)
+
+
+def secrets_for(r: int) -> tuple[tuple[int, ...], ...]:
+    return tuple(
+        tuple((17 * (lane + 1) + 11 * coefficient + 3) % PRIME for coefficient in range(N))
+        for lane in range(r)
+    )
+
+
+def public_lambda_for(r: int, rho: int) -> tuple[tuple[int, ...], ...]:
+    if rho == 1:
+        return ((1, 0), (1, 1))
+    return tuple(
+        (1, 0, 0) if lane == 0 else (1, lane, lane * lane % PRIME)
+        for lane in range(r)
+    )
+
+
+class MutatedRoot:
+    REQUIRED_PATHS = (
+        "main.c",
+        "src/sparse_amortized_bootstrap.c",
+        "src/sab_pvw.c",
+        "src/mosfhet/Makefile.def",
+        "src/mosfhet/src/mattrgsw.c",
+        "research/mat_sab/star_cycle_model.py",
+        "research/mat_sab/candidate_c_schedule.py",
+        "repro/stage203_production_selector_equation_probe/equation_map.csv",
+        "repro/stage222_isolated_compact_ep_integration/proof_gate.csv",
+        "repro/stage345_binary_matrix_synthesis/proof_gate.csv",
+    )
+
+    def __init__(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.root = Path(self.temporary.name)
+        for relative in self.REQUIRED_PATHS:
+            destination = self.root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / relative, destination)
+
+    def replace(self, relative: str, old: str, new: str) -> None:
+        path = self.root / relative
+        source = path.read_text(encoding="utf-8")
+        if old not in source:
+            raise AssertionError(f"mutation token is absent from {relative}: {old!r}")
+        path.write_text(source.replace(old, new, 1), encoding="utf-8")
+
+    def close(self) -> None:
+        self.temporary.cleanup()
+
+
+class ExactRingAndPhaseProjectionTests(unittest.TestCase):
+    def test_negacyclic_multiplication_wraps_x_to_the_eighth_as_minus_one(self):
+        x = (0, 1, 0, 0, 0, 0, 0, 0)
+        x_to_seven = (0, 0, 0, 0, 0, 0, 0, 1)
+        self.assertEqual(
+            negacyclic_multiply(x, x_to_seven, PRIME),
+            (PRIME - 1, 0, 0, 0, 0, 0, 0, 0),
+        )
+
+    def test_phase_projection_uses_ordered_mask_then_body_inputs(self):
+        secrets = secrets_for(4)
+        public_lambda = public_lambda_for(4, 2)
+        projection = build_phase_projection(public_lambda, secrets, 1, PRIME)
+
+        self.assertEqual(projection.input_components, ("M_0", "M_1", "M_2", "B_0", "B_1", "B_2", "B_3"))
+        self.assertEqual(projection.entries[2][1], tuple((-2 * value) % PRIME for value in secrets[2]))
+        self.assertEqual(projection.entries[2][4], (0, 0, 0, 0, 0, 0, 0, 0))
+        self.assertEqual(projection.entries[2][5], (1, 0, 0, 0, 0, 0, 0, 0))
+
+    def test_exact_surrogate_rejects_wrong_ring_or_modulus(self):
+        secrets = secrets_for(2)
+        with self.assertRaisesRegex(ValueError, "n must equal 8"):
+            build_rank_bounded_tensor(
+                2, 1, 1, secrets, GADGET, 4, PRIME, public_lambda_for(2, 1)
+            )
+        with self.assertRaisesRegex(ValueError, "modulus must equal 257"):
+            build_rank_bounded_tensor(
+                2, 1, 1, secrets, GADGET, N, 263, public_lambda_for(2, 1)
+            )
+
+
+class ConcreteTensorPhaseTests(unittest.TestCase):
+    def test_k0_and_k1_pass_every_phase_equation_for_all_registered_r(self):
+        for r in (2, 4, 6):
+            rho = min(2, r - 1)
+            secrets = secrets_for(r)
+            public_lambda = public_lambda_for(r, rho)
+            for mu in (0, 1):
+                with self.subTest(r=r, mu=mu):
+                    tensor = build_rank_bounded_tensor(
+                        r, rho, mu, secrets, GADGET, N, PRIME, public_lambda
+                    )
+                    projection = build_phase_projection(public_lambda, secrets, mu, PRIME)
+                    self.assertEqual(tensor.mu, mu)
+                    self.assertTrue(verify_phase_identity(tensor, projection))
+                    self.assertTrue(
+                        all(
+                            len(polynomial) == N
+                            for level in tensor.mask_polynomials
+                            for basis in level
+                            for polynomial in basis
+                        )
+                    )
+                    self.assertTrue(
+                        all(
+                            len(polynomial) == N
+                            for level in tensor.body_polynomials
+                            for lane in level
+                            for polynomial in lane
+                        )
+                    )
+
+    def test_dense_positive_control_passes_and_one_body_coefficient_mutation_fails(self):
+        secrets = secrets_for(4)
+        dense = build_dense_control_tensor(4, 1, secrets, GADGET, N, PRIME)
+        projection = build_phase_projection(dense.public_lambda, secrets, 1, PRIME)
+        self.assertTrue(verify_phase_identity(dense, projection))
+
+        bodies = [
+            [list(component_polynomials) for component_polynomials in level]
+            for level in dense.body_polynomials
+        ]
+        changed = list(bodies[0][2][1])
+        changed[5] = (changed[5] + 1) % PRIME
+        bodies[0][2][1] = tuple(changed)
+        mutated = replace(
+            dense,
+            body_polynomials=tuple(
+                tuple(tuple(lane) for lane in level)
+                for level in bodies
+            ),
+        )
+        self.assertFalse(verify_phase_identity(mutated, projection))
+
+    def test_verifiers_reject_trailing_material_omitted_from_structural_counts(self):
+        tensor = build_rank_bounded_tensor(
+            4, 2, 1, secrets_for(4), GADGET, N, PRIME, public_lambda_for(4, 2)
+        )
+        projection = build_phase_projection(
+            tensor.public_lambda, tensor.secrets, tensor.mu, PRIME
+        )
+        extra_body = replace(
+            tensor,
+            body_polynomials=tuple(
+                tuple(
+                    lane + ((0,) * N,)
+                    for lane in level
+                )
+                for level in tensor.body_polynomials
+            ),
+        )
+        self.assertFalse(verify_phase_identity(extra_body, projection))
+
+        extra_mask = replace(
+            tensor,
+            mask_polynomials=tuple(
+                tuple(
+                    basis + ((0,) * N,)
+                    for basis in level
+                )
+                for level in tensor.mask_polynomials
+            ),
+        )
+        with self.assertRaisesRegex(ValueError, "shape"):
+            concatenated_mask_difference_rank(extra_mask)
+        with self.assertRaisesRegex(ValueError, "shape"):
+            build_evaluator_sample_matrix(extra_mask)
+
+
+class JointRankGateTests(unittest.TestCase):
+    def test_common_lambda_has_exact_concatenated_module_rank_surrogate(self):
+        for r in (2, 4, 6):
+            rho = min(2, r - 1)
+            tensor = build_rank_bounded_tensor(
+                r,
+                rho,
+                1,
+                secrets_for(r),
+                GADGET,
+                N,
+                PRIME,
+                public_lambda_for(r, rho),
+            )
+            with self.subTest(r=r):
+                self.assertTrue(verify_joint_rank_factorization(tensor))
+                self.assertEqual(concatenated_mask_difference_rank(tensor), rho * N)
+                self.assertTrue(all(value <= rho * N for value in level_mask_difference_ranks(tensor)))
+
+    def test_full_rank_c0_control_reaches_lane_maximum(self):
+        for r in (2, 4, 6):
+            rho = r - 1
+            tensor = build_rank_bounded_tensor(
+                r,
+                rho,
+                1,
+                secrets_for(r),
+                GADGET,
+                N,
+                PRIME,
+                public_lambda_for(r, rho) if rho <= 2 else tuple(
+                    (1,) + tuple(1 if column == lane else 0 for column in range(1, r))
+                    for lane in range(r)
+                ),
+            )
+            self.assertEqual(concatenated_mask_difference_rank(tensor), (r - 1) * N)
+
+    def test_per_level_bounds_do_not_replace_the_joint_span_check(self):
+        control = build_joint_rank_escape_control(
+            6, 2, 1, secrets_for(6), GADGET, N, PRIME
+        )
+        self.assertTrue(all(value <= 2 * N for value in level_mask_difference_ranks(control)))
+        self.assertGreater(concatenated_mask_difference_rank(control), 2 * N)
+
+
+class EvaluatorSampleRelationTests(unittest.TestCase):
+    def test_sample_matrix_orientation_and_audits_are_selector_local(self):
+        tensor = build_rank_bounded_tensor(
+            4, 2, 1, secrets_for(4), GADGET, N, PRIME, public_lambda_for(4, 2)
+        )
+        sample_matrix, messages = build_evaluator_sample_matrix(tensor)
+        self.assertEqual(len(sample_matrix), len(GADGET) * (3 + 4))
+        self.assertEqual(len(sample_matrix[0]), 3 * N)
+        self.assertEqual(len(messages), 4)
+        self.assertEqual(len(messages[0]), len(sample_matrix))
+
+        audit = audit_evaluator_sample_relations(
+            tensor,
+            build_phase_projection(tensor.public_lambda, tensor.secrets, 1, PRIME),
+        )
+        self.assertEqual(audit.mu, 1)
+        self.assertIn(
+            audit.status,
+            {
+                RELATION_RECORDED_NO_SECURITY_DECISION,
+                "NO_RETAINED_MESSAGE_RELATION",
+            },
+        )
+        self.assertNotEqual(audit.status, REGISTERED_SHORT_ERROR_RELATION_FAIL)
+        for relation in audit.relations:
+            self.assertEqual(relation.l1_norm, sum(abs(value) for value in relation.centered_coefficients))
+            self.assertAlmostEqual(
+                relation.l2_norm,
+                math.sqrt(sum(value * value for value in relation.centered_coefficients)),
+            )
+            self.assertIsNotNone(relation.symbolic_error_multiplier)
+
+    def test_shared_and_independent_controls_do_not_invent_insecurity_decisions(self):
+        shared = build_dense_control_tensor(4, 1, secrets_for(4), GADGET, N, PRIME)
+        independent = build_rank_bounded_tensor(
+            4, 3, 1, secrets_for(4), GADGET, N, PRIME, tuple(
+                (1,) + tuple(1 if column == lane else 0 for column in range(1, 4))
+                for lane in range(4)
+            )
+        )
+        for tensor in (shared, independent):
+            audit = audit_evaluator_sample_relations(
+                tensor,
+                build_phase_projection(
+                    tensor.public_lambda, tensor.secrets, tensor.mu, PRIME
+                ),
+            )
+            self.assertNotEqual(audit.status, REGISTERED_SHORT_ERROR_RELATION_FAIL)
+            self.assertFalse(audit.security_decision)
+
+    def test_same_secret_zero_error_cancellation_is_a_decisive_synthetic_fail(self):
+        secret = secrets_for(1)[0]
+        tensor = build_rank_bounded_tensor(
+            4,
+            2,
+            1,
+            (secret, secret, secret, secret),
+            GADGET,
+            N,
+            PRIME,
+            public_lambda_for(4, 2),
+        )
+        synthetic = replace(
+            tensor,
+            relation_error_distribution="SYNTHETIC_SAME_SECRET_ZERO_ERROR",
+            registered_sigma=0.0,
+            registered_error_bound=0.0,
+            decision_inequality="retained_gap > combined_error_bound",
+        )
+        audit = audit_evaluator_sample_relations(
+            synthetic,
+            build_phase_projection(
+                synthetic.public_lambda, synthetic.secrets, synthetic.mu, PRIME
+            ),
+        )
+        self.assertEqual(audit.status, REGISTERED_SHORT_ERROR_RELATION_FAIL)
+        self.assertTrue(audit.security_decision)
+
+    def test_message_mutation_changes_the_relation_diagnostic(self):
+        tensor = build_rank_bounded_tensor(
+            4, 2, 1, secrets_for(4), GADGET, N, PRIME, public_lambda_for(4, 2)
+        )
+        projection = build_phase_projection(
+            tensor.public_lambda, tensor.secrets, tensor.mu, PRIME
+        )
+        baseline = audit_evaluator_sample_relations(tensor, projection)
+
+        bodies = [
+            [list(component_polynomials) for component_polynomials in level]
+            for level in tensor.body_polynomials
+        ]
+        changed = list(bodies[1][0][6])
+        changed[0] = (changed[0] + 1) % PRIME
+        bodies[1][0][6] = tuple(changed)
+        mutated = replace(
+            tensor,
+            body_polynomials=tuple(
+                tuple(tuple(lane) for lane in level)
+                for level in bodies
+            ),
+        )
+        diagnostic = audit_evaluator_sample_relations(mutated, projection)
+        self.assertNotEqual(diagnostic.diagnostic_hash, baseline.diagnostic_hash)
+
+
+class SourceBindingAndDecisionTests(unittest.TestCase):
+    def test_gate_binds_sources_counts_and_emits_one_recomputed_terminal_result(self):
+        for r in (2, 4, 6):
+            with self.subTest(r=r):
+                result = run_c1_operator_gate(ROOT, r, PRIME)
+                self.assertEqual(len(result.tensors), 2)
+                self.assertEqual(
+                    tuple(tensor.mu for tensor in result.tensors), (0, 1)
+                )
+                self.assertTrue(result.phase_identity_passed)
+                self.assertTrue(result.joint_rank_passed)
+                self.assertFalse(result.structural_improvement)
+                self.assertGreaterEqual(
+                    result.evaluator_counts.add_multiplies,
+                    result.dense_counts.add_multiplies,
+                )
+                self.assertEqual(
+                    result.decision,
+                    REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL,
+                )
+                self.assertNotEqual(
+                    result.decision, ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY
+                )
+                self.assertTrue(result.seed_hash)
+                self.assertTrue(result.schedule_hash)
+                self.assertEqual(
+                    {
+                        binding.classification
+                        for binding in result.source_bindings
+                    },
+                    {
+                        "EXACT_SOURCE",
+                        "EXACT_ARTIFACT",
+                        "SUPPORT_ONLY_NO_NUMERIC_COEFFICIENTS",
+                    },
+                )
+                self.assertTrue(verify_operator_gate_result(result))
+
+    def test_changing_only_the_decision_field_fails_recomputation(self):
+        result = run_c1_operator_gate(ROOT, 2, PRIME)
+        forged = replace(result, decision=ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY)
+        self.assertFalse(verify_operator_gate_result(forged))
+
+    def test_stage203_numeric_coefficient_claim_is_rejected(self):
+        mutated = MutatedRoot()
+        try:
+            path = (
+                mutated.root
+                / "repro/stage203_production_selector_equation_probe/equation_map.csv"
+            )
+            lines = path.read_text(encoding="utf-8").splitlines()
+            lines = [lines[0] + ",coefficient"] + [line + ",7" for line in lines[1:]]
+            path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(SourceBindingError, "support-only"):
+                run_c1_operator_gate(mutated.root, 4, PRIME)
+        finally:
+            mutated.close()
+
+    def test_dense_keygen_or_operator_token_change_breaks_source_binding(self):
+        mutated = MutatedRoot()
+        try:
+            mutated.replace(
+                "src/mosfhet/src/mattrgsw.c",
+                "return l * (k + r);",
+                "return l * (k + r + 1);",
+            )
+            with self.assertRaisesRegex(SourceBindingError, "MAT dense source token"):
+                run_c1_operator_gate(mutated.root, 4, PRIME)
+        finally:
+            mutated.close()
+
+    def test_theory_record_states_scope_equations_dimensions_and_terminal_route(self):
+        record = (ROOT / "theory_checks/candidate_c_operator_tensor.md").read_text(
+            encoding="ascii"
+        )
+        for token in (
+            "R_257,8 = GF(257)[X]/(X^8+1)",
+            "B_mu[t,q,c] - s_q sum_v Lambda[q,v] A_mu[t,v,c]",
+            "R_mu",
+            "T_mu",
+            "field-expanded finite surrogate of module rank rho",
+            "SUPPORT_ONLY_NO_NUMERIC_COEFFICIENTS",
+            "RELATION_RECORDED_NO_SECURITY_DECISION",
+            "REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL",
+            "not a security proof",
+            "not a universal impossibility theorem",
+            "Task 3B is not entered",
+        ):
+            self.assertIn(token, record)
+
+
+if __name__ == "__main__":
+    unittest.main()
