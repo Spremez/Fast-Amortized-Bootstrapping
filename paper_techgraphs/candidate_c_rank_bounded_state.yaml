@@ -60,7 +60,7 @@
       "id": "default_target",
       "path": "main.c",
       "symbol_or_token": "return (SAB_PVW_Target_Params){2048, 1, 2048, 1, 1, 23, 3, 39, 7,",
-      "role": "Anchors the default target initializer with out_k=1, l=1, and N=2048.",
+      "role": "Anchors the default initializer; values are mapped through the declared SAB_PVW_Target_Params field order.",
       "anchor_status": "PASS"
     },
     {
@@ -100,6 +100,11 @@
     "kind": "current_exact_dense_pvw_mat_sab",
     "evidence": "repro/stage345_binary_matrix_synthesis/summary.csv",
     "scope": "historical scoped binary baseline; no Candidate C comparison"
+  },
+  "default_target_parameters": {
+    "out_N": 2048,
+    "out_k": 1,
+    "l": 1
   },
   "state_invariant": {
     "state": "(a_shared, delta_a[1..rho], lambda, b[0..r-1])",
@@ -160,7 +165,9 @@
       "id": "ncmux",
       "source_anchor": "sab_pvw_ncmux",
       "input_state": "X1=(a1_q,b1_q,rho1), X2=(a2_q,b2_q,rho2), encrypted selector bit mu",
-      "public_linear_operation": "apply the scheduled minus-one automorphism tau_-1 to X2, then invoke CMUX(X1,tau_-1(X2))",
+      "public_permutation_and_wiring": "public gen=2N-1 fixes tau_-1; polynomial_permute applies that coefficient permutation before public wiring feeds the evaluated result to the CMUX right-hand input",
+      "automorphism_evaluation_key_work": "pvmtmlwe_keyswitch(out,out,sab->aut_minus1) applies automorphism evaluation-key/key-switch work to the publicly permuted ciphertext; this is not public linear work",
+      "encrypted_selector_cmux": "sab_pvw_CMUX applies the encrypted MAT_TRGSW selector to the transformed right-hand input; this is not public linear work",
       "newly_introduced_independent_mask_directions": "nu_NCMUX for automorphism/rekey and compact selector directions outside the transformed input spans",
       "output_phase_equation": "phase'_q = phase1_q + mu (tau_-1(phase2_q)-phase1_q) + epsilon_NCMUX_q",
       "output_rho_rule": "rho' <= min(r-1, rho1+rho2+nu_NCMUX)",

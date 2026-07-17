@@ -68,7 +68,7 @@ flowchart TD
 | Binary `sub_a` | `src/sab_pvw.c` | `static void sab_pvw_sub_a_binary_to(` | Applies one public monomial rotation per array index. |
 | Rotation | `src/mosfhet/src/pvwtmlwe.c` | `void pvmtmlwe_mul_by_xai(` | Rotates every mask and body polynomial by the same public exponent. |
 | Dense MAT external product | `src/mosfhet/src/mattrgsw.c` | `void mat_trgsw_mul_pvmtmlwe_DFT(` | Current exact-dense CMUX materialization primitive. |
-| Default target | `main.c` | `return (SAB_PVW_Target_Params){2048, 1, 2048, 1, 1, 23, 3, 39, 7,` | Fixes `out_k=1`, `l=1`, and `N=2048`. |
+| Default target | `main.c` | `return (SAB_PVW_Target_Params){2048, 1, 2048, 1, 1, 23, 3, 39, 7,` | The declaration-order mapping fixes `out_N=2048`, `out_k=1`, and `l=1`. |
 | Candidate B terminal record | `repro/candidate_b_factorized_gate/summary.csv` | `REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C` | Fixes the predecessor route. |
 | Stage203 equation map | `repro/stage203_production_selector_equation_probe/equation_map.csv` | `r,row,col,equation_class,semantic_role,is_public_row,may_skip_after_proof` | Fixes the four star-cycle semantic equation classes. |
 | Stage345 baseline | `repro/stage345_binary_matrix_synthesis/summary.csv` | `PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY` | Identifies the historical exact-dense baseline only. |
@@ -96,7 +96,19 @@ two input difference spans:
 rho' <= min(r-1, rho1+rho2+nu_CMUX).
 ```
 
-NCMUX first applies the scheduled minus-one automorphism `tau_-1`:
+NCMUX has three distinct operation classes:
+
+1. The public generator `gen=2N-1` fixes `tau_-1`;
+   `polynomial_permute` applies that public coefficient permutation, and
+   public permutation and wiring place the evaluated result at the CMUX
+   right-hand input.
+2. `pvmtmlwe_keyswitch` with `sab->aut_minus1` applies automorphism
+   evaluation-key/key-switch work to the publicly permuted ciphertext. This
+   evaluation-key/key-switch work is not public linear work.
+3. `sab_pvw_CMUX` consumes the encrypted MAT_TRGSW selector; this
+   encrypted-selector CMUX is not public linear work.
+
+The resulting phase obligation is:
 
 ```text
 phase'_q =

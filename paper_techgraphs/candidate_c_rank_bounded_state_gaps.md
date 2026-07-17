@@ -18,12 +18,18 @@ All claim gates remain `BLOCKED`.
   `sub_a` for each of `h` rounds and then executes one final RGSW monomial.
 - CMUX forms a difference, applies
   `mat_trgsw_mul_pvmtmlwe_DFT`, and adds the selected contribution.
-- NCMUX applies the minus-one automorphism to its second input before CMUX.
+- For NCMUX, `gen=2N-1` and `polynomial_permute` define the public
+  coefficient permutation; public permutation and wiring route the evaluated
+  right-hand input. The separate `pvmtmlwe_keyswitch` automorphism
+  evaluation-key/key-switch work is not public linear work, and the
+  encrypted-selector CMUX is not public linear work.
 - Binary `sub_a` applies `pvmtmlwe_mul_by_xai` independently at each public
   accumulator index.
 - The current exact-dense PVW output shape has one shared mask, represented by
   `rho=0`.
 - Stage203 fixes four semantic star-cycle equation classes.
+- The `SAB_PVW_Target_Params` declaration-order mapping gives
+  `out_N=2048`, `out_k=1`, and `l=1` for the default initializer.
 - Stage345 identifies the historical scoped exact-dense binary baseline. It
   does not compare a Candidate C implementation.
 

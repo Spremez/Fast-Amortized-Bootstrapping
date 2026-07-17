@@ -110,8 +110,18 @@ Source anchor:
 
 - `src/sab_pvw.c`: `void sab_pvw_NCMUX(`
 
-NCMUX applies the scheduled minus-one automorphism `tau_-1` to `in2` and
-passes that result to CMUX:
+NCMUX separates three operation classes:
+
+1. Public `gen=2N-1` determines `tau_-1`, and `polynomial_permute` applies
+   that public coefficient permutation. Public permutation and wiring route
+   the evaluated result to the CMUX right-hand input.
+2. `pvmtmlwe_keyswitch` using `sab->aut_minus1` applies automorphism
+   evaluation-key work to the publicly permuted ciphertext. This
+   evaluation-key/key-switch work is not public linear work.
+3. `sab_pvw_CMUX` evaluates the encrypted MAT_TRGSW selector. This
+   encrypted-selector CMUX is not public linear work.
+
+The phase equation for the complete NCMUX edge is:
 
 ```text
 phase'_q =

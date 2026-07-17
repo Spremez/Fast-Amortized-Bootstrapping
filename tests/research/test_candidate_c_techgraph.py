@@ -1,4 +1,5 @@
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -90,6 +91,72 @@ def load_graph():
     return json.loads(GRAPH_PATH.read_text(encoding="ascii"))
 
 
+def split_c_initializer(initializer):
+    values = []
+    start = 0
+    depth = 0
+    for index, character in enumerate(initializer):
+        if character == "(":
+            depth += 1
+        elif character == ")":
+            depth -= 1
+            if depth < 0:
+                raise ValueError("unbalanced initializer parentheses")
+        elif character == "," and depth == 0:
+            values.append(initializer[start:index].strip())
+            start = index + 1
+    if depth != 0:
+        raise ValueError("unbalanced initializer parentheses")
+    values.append(initializer[start:].strip())
+    if any(not value for value in values):
+        raise ValueError("empty initializer value")
+    return values
+
+
+def parse_default_target_params(source):
+    declaration = re.search(
+        r"typedef\s+struct\s*\{(?P<body>.*?)\}"
+        r"\s*SAB_PVW_Target_Params\s*;",
+        source,
+        flags=re.DOTALL,
+    )
+    if declaration is None:
+        raise ValueError("SAB_PVW_Target_Params declaration not found")
+    fields = re.findall(
+        r"^\s*(?:int|double)\s+([A-Za-z_][A-Za-z0-9_]*)\s*;\s*$",
+        declaration.group("body"),
+        flags=re.MULTILINE,
+    )
+    if not fields:
+        raise ValueError("SAB_PVW_Target_Params fields not found")
+    if len(fields) != len(set(fields)):
+        raise ValueError("duplicate SAB_PVW_Target_Params field")
+
+    target_function = re.search(
+        r"static\s+SAB_PVW_Target_Params\s+"
+        r"sab_pvw_target_params\s*\(\s*void\s*\)\s*\{"
+        r"(?P<body>.*?)#endif\s*\}",
+        source,
+        flags=re.DOTALL,
+    )
+    if target_function is None:
+        raise ValueError("sab_pvw_target_params function not found")
+    default_initializer = re.search(
+        r"#else\s*return\s*\(SAB_PVW_Target_Params\)\s*"
+        r"\{(?P<values>.*?)\}\s*;",
+        target_function.group("body"),
+        flags=re.DOTALL,
+    )
+    if default_initializer is None:
+        raise ValueError("default SAB_PVW_Target_Params initializer not found")
+    values = split_c_initializer(default_initializer.group("values"))
+    if len(fields) != len(values):
+        raise ValueError(
+            "SAB_PVW_Target_Params field/initializer length mismatch"
+        )
+    return dict(zip(fields, values, strict=True))
+
+
 class CandidateCTechgraphTests(unittest.TestCase):
     def test_source_anchors_resolve_to_exact_current_tokens(self):
         graph = load_graph()
@@ -110,10 +177,6 @@ class CandidateCTechgraphTests(unittest.TestCase):
 
     def test_historical_and_parameter_anchors_preserve_scope(self):
         graph = load_graph()
-        anchors = {anchor["id"]: anchor for anchor in graph["source_anchors"]}
-        target_role = anchors["default_target"]["role"]
-        for fragment in ("out_k=1", "l=1", "N=2048"):
-            self.assertIn(fragment, target_role)
 
         self.assertEqual(
             graph["predecessor"],
@@ -148,6 +211,35 @@ class CandidateCTechgraphTests(unittest.TestCase):
             },
         )
 
+    def test_default_target_is_derived_from_struct_field_order(self):
+        source = (ROOT / "main.c").read_text(encoding="utf-8")
+        target = parse_default_target_params(source)
+        self.assertEqual(int(target["out_N"], 0), 2048)
+        self.assertEqual(int(target["out_k"], 0), 1)
+        self.assertEqual(int(target["l"], 0), 1)
+        graph = load_graph()
+        self.assertEqual(
+            graph["default_target_parameters"],
+            {
+                "out_N": int(target["out_N"], 0),
+                "out_k": int(target["out_k"], 0),
+                "l": int(target["l"], 0),
+            },
+        )
+
+        reordered = source.replace(
+            "  int out_N;\n  int out_k;",
+            "  int out_k;\n  int out_N;",
+            1,
+        )
+        reordered_target = parse_default_target_params(reordered)
+        with self.assertRaises(AssertionError):
+            self.assertEqual(int(reordered_target["out_N"], 0), 2048)
+
+        malformed = source.replace("  int out_N;\n", "", 1)
+        with self.assertRaisesRegex(ValueError, "length mismatch"):
+            parse_default_target_params(malformed)
+
     def test_rank_bounded_state_invariant_is_explicit(self):
         graph = load_graph()
         invariant = graph["state_invariant"]
@@ -177,7 +269,6 @@ class CandidateCTechgraphTests(unittest.TestCase):
         self.assertEqual(set(transformations), TRANSFORMATIONS)
         required = {
             "input_state",
-            "public_linear_operation",
             "newly_introduced_independent_mask_directions",
             "output_phase_equation",
             "output_rho_rule",
@@ -195,6 +286,18 @@ class CandidateCTechgraphTests(unittest.TestCase):
                     transformation["current_exact_dense_closure"],
                     "rho=0",
                 )
+                if transformation_id == "ncmux":
+                    self.assertNotIn("public_linear_operation", transformation)
+                    self.assertTrue(
+                        {
+                            "public_permutation_and_wiring",
+                            "automorphism_evaluation_key_work",
+                            "encrypted_selector_cmux",
+                        }
+                        <= set(transformation)
+                    )
+                else:
+                    self.assertIn("public_linear_operation", transformation)
         for transformation_id in ("cmux", "ncmux", "butterfly"):
             self.assertIn(
                 "may introduce lane-dependent mask directions",
@@ -218,6 +321,82 @@ class CandidateCTechgraphTests(unittest.TestCase):
                 "then rgsw_monomial"
             ),
         )
+
+    def test_ncmux_separates_public_and_encrypted_operation_classes(self):
+        graph = load_graph()
+        ncmux = next(
+            item
+            for item in graph["schedule_transformations"]
+            if item["id"] == "ncmux"
+        )
+        self.assertNotIn("public_linear_operation", ncmux)
+        self.assertEqual(
+            ncmux["public_permutation_and_wiring"],
+            (
+                "public gen=2N-1 fixes tau_-1; polynomial_permute "
+                "applies that coefficient permutation before public "
+                "wiring feeds the evaluated result to the CMUX "
+                "right-hand input"
+            ),
+        )
+        self.assertEqual(
+            ncmux["automorphism_evaluation_key_work"],
+            (
+                "pvmtmlwe_keyswitch(out,out,sab->aut_minus1) applies "
+                "automorphism evaluation-key/key-switch work to the "
+                "publicly permuted ciphertext; this is not public "
+                "linear work"
+            ),
+        )
+        self.assertEqual(
+            ncmux["encrypted_selector_cmux"],
+            (
+                "sab_pvw_CMUX applies the encrypted MAT_TRGSW selector "
+                "to the transformed right-hand input; this is not public "
+                "linear work"
+            ),
+        )
+        automorphism_source = (
+            ROOT / "src/mosfhet/src/pvwtmlwe.c"
+        ).read_text(encoding="utf-8")
+        automorphism_start = automorphism_source.index(
+            "void pvmtmlwe_eval_automorphism("
+        )
+        automorphism_end = automorphism_source.index(
+            "\n}",
+            automorphism_start,
+        )
+        automorphism = automorphism_source[
+            automorphism_start:automorphism_end
+        ]
+        self.assertIn("polynomial_permute(", automorphism)
+        self.assertIn("pvmtmlwe_keyswitch(out, out, ks_key);", automorphism)
+        self.assertLess(
+            automorphism.index("polynomial_permute("),
+            automorphism.index("pvmtmlwe_keyswitch(out, out, ks_key);"),
+        )
+        graph_md = GRAPH_MD_PATH.read_text(encoding="ascii")
+        gaps = GAPS_PATH.read_text(encoding="ascii")
+        model = MODEL_PATH.read_text(encoding="ascii")
+        for content in (graph_md, gaps, model):
+            self.assertRegex(
+                content,
+                r"(?i)public\s+permutation\s+and\s+wiring",
+            )
+            self.assertRegex(
+                content,
+                (
+                    r"(?i)evaluation-key/key-switch\s+work\s+is\s+not\s+"
+                    r"public\s+linear\s+work"
+                ),
+            )
+            self.assertRegex(
+                content,
+                (
+                    r"(?i)encrypted-selector\s+CMUX\s+is\s+not\s+public\s+"
+                    r"linear\s+work"
+                ),
+            )
 
     def test_exactly_three_finite_variants_are_registered(self):
         graph = load_graph()
