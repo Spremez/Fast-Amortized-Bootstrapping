@@ -81,6 +81,35 @@ class RankBoundedStateValidationTests(unittest.TestCase):
 
 
 class RankGrowthControlTests(unittest.TestCase):
+    def test_exact_rank_is_invariant_under_every_reference_lane(self):
+        for r in (2, 4, 6):
+            patterns = tuple(
+                (0, 0)
+                if lane == 0
+                else (
+                    1 if lane == 1 else 0,
+                    1 if lane == 2 else lane - 1,
+                )
+                for lane in range(r)
+            )
+            state = append_mask_directions(
+                shared_state(r, PRIME),
+                patterns,
+            )
+            expected_rank = min(2, r - 1)
+
+            for reference_lane in range(r):
+                with self.subTest(r=r, reference_lane=reference_lane):
+                    differences = lane_difference_matrix(
+                        state,
+                        reference_lane=reference_lane,
+                    )
+                    self.assertEqual(len(differences), r - 1)
+                    self.assertEqual(
+                        finite_rank(differences, PRIME),
+                        expected_rank,
+                    )
+
     def test_shared_and_independent_direction_controls_use_exact_rank(self):
         for r in (2, 4, 6):
             with self.subTest(r=r, control="shared"):
@@ -250,7 +279,7 @@ class PhaseControlTests(unittest.TestCase):
         state = state_with_two_symbols()
         secrets = (2, 3, 5)
         exponent = 3
-        factor = pow(2, exponent, PRIME)
+        factor = pow(-1, exponent, PRIME)
         rotated = rotate_state(state, exponent)
 
         self.assertEqual(rotated.lane_coefficients, state.lane_coefficients)
@@ -262,6 +291,53 @@ class PhaseControlTests(unittest.TestCase):
                 for value in phase_vector(state, secrets, PRIME)
             ),
         )
+
+    def test_rotation_is_invertible_for_positive_and_negative_exponents_in_gf2(
+        self,
+    ):
+        state = MaskSpanState(
+            lane_coefficients=((0, 0), (1, 0), (0, 1)),
+            body_constants=(1, 0, 1),
+            mask_symbols=(1, 1),
+            provenance=("alpha", "beta"),
+            modulus=2,
+        )
+        secrets = (1, 1, 1)
+        expected_phase = phase_vector(state, secrets, 2)
+
+        for exponent in (1, -1, 2, -2):
+            with self.subTest(exponent=exponent):
+                rotated = rotate_state(state, exponent)
+                restored = rotate_state(rotated, -exponent)
+                self.assertEqual(
+                    phase_vector(rotated, secrets, 2),
+                    expected_phase,
+                )
+                self.assertEqual(restored, state)
+                self.assertEqual(excess_rank(rotated), excess_rank(state))
+
+    def test_accumulated_rotation_provenance_is_canonical(self):
+        state = state_with_two_symbols()
+        for first, second in ((5, -2), (5, -3), (-1, -2), (2, 4)):
+            with self.subTest(first=first, second=second):
+                nested = rotate_state(
+                    rotate_state(state, first),
+                    second,
+                )
+                direct = rotate_state(state, first + second)
+
+                self.assertEqual(nested, direct)
+                self.assertEqual(nested.provenance, direct.provenance)
+                self.assertEqual(
+                    nested._provenance_tokens,
+                    direct._provenance_tokens,
+                )
+                combined = linear_combine_states(nested, direct, 1, 1)
+                self.assertEqual(
+                    len(combined.provenance),
+                    len(state.provenance),
+                )
+                self.assertEqual(excess_rank(combined), excess_rank(state))
 
     def test_omitting_a_phase_active_direction_changes_the_oracle(self):
         complete = MaskSpanState(
@@ -291,6 +367,119 @@ class PhaseControlTests(unittest.TestCase):
 
 
 class CompressionSemanticsTests(unittest.TestCase):
+    def test_shared_state_has_truthful_zero_dimensional_compression(self):
+        state = MaskSpanState(
+            lane_coefficients=((), (), (), ()),
+            body_constants=(11, 13, 17, 19),
+            mask_symbols=(),
+            provenance=(),
+            modulus=PRIME,
+        )
+
+        result = compress_state(state, ())
+
+        self.assertEqual(result.compressed_state, state)
+        self.assertTrue(result.phase_preserved)
+        self.assertEqual(result.discarded_directions, 0)
+        self.assertEqual(result.online_product_count, 0)
+        self.assertEqual(result.key_component_count, 0)
+        self.assertEqual(excess_rank(result.compressed_state), 0)
+        self.assertEqual(
+            phase_vector(
+                result.compressed_state,
+                (2, 3, 5, 7),
+                PRIME,
+            ),
+            phase_vector(state, (2, 3, 5, 7), PRIME),
+        )
+
+    def test_identical_compressions_derive_shareable_symbol_identity(self):
+        state = MaskSpanState(
+            lane_coefficients=(
+                (0, 0, 0),
+                (1, 0, 1),
+                (0, 1, 1),
+            ),
+            body_constants=(11, 13, 17),
+            mask_symbols=(5, 7, 11),
+            provenance=("alpha", "beta", "gamma"),
+            modulus=PRIME,
+        )
+        projection = ((1, 0, 1), (0, 1, 1))
+
+        first = compress_state(state, projection).compressed_state
+        second = compress_state(state, projection).compressed_state
+
+        self.assertEqual(first.provenance, second.provenance)
+        self.assertEqual(
+            first._provenance_tokens,
+            second._provenance_tokens,
+        )
+        combined = linear_combine_states(first, second, 1, 1)
+        self.assertEqual(len(combined.provenance), 2)
+        self.assertEqual(excess_rank(combined), 2)
+
+    def test_compression_keeps_independent_hidden_roots_disjoint(self):
+        lhs = MaskSpanState(
+            lane_coefficients=((0,), (1,)),
+            body_constants=(11, 13),
+            mask_symbols=(5,),
+            provenance=("alpha",),
+            modulus=PRIME,
+        )
+        rhs = MaskSpanState(
+            lane_coefficients=((0,), (1,)),
+            body_constants=(11, 13),
+            mask_symbols=(5,),
+            provenance=("alpha",),
+            modulus=PRIME,
+        )
+        lhs_compressed = compress_state(lhs, ((1,),)).compressed_state
+        rhs_compressed = compress_state(rhs, ((1,),)).compressed_state
+
+        self.assertEqual(
+            lhs_compressed.provenance,
+            rhs_compressed.provenance,
+        )
+        self.assertNotEqual(
+            lhs_compressed._provenance_tokens,
+            rhs_compressed._provenance_tokens,
+        )
+        with self.assertRaisesRegex(ValueError, "independent provenance"):
+            linear_combine_states(
+                lhs_compressed,
+                rhs_compressed,
+                1,
+                1,
+            )
+
+    def test_online_products_count_returned_lane_component_equations(self):
+        state = MaskSpanState(
+            lane_coefficients=(
+                (0, 0, 0),
+                (1, 0, 1),
+                (0, 1, 1),
+            ),
+            body_constants=(11, 13, 17),
+            mask_symbols=(5, 7, 11),
+            provenance=("alpha", "beta", "gamma"),
+            modulus=PRIME,
+        )
+        projection = ((1, 0, 1), (0, 1, 1))
+        self.assertEqual(
+            sum(value != 0 for row in projection for value in row),
+            4,
+        )
+
+        result = compress_state(state, projection)
+
+        self.assertEqual(
+            result.compressed_state.lane_coefficients,
+            ((0, 0), (1, 0), (0, 1)),
+        )
+        self.assertEqual(result.online_product_count, 2)
+        self.assertEqual(result.key_component_count, 2)
+
     def test_rank_two_exact_span_projection_preserves_every_lane_phase(self):
         state = MaskSpanState(
             lane_coefficients=(
@@ -345,12 +534,12 @@ class ScheduleStepTests(unittest.TestCase):
 
         rotated = schedule_step(
             appended,
-            {"operation": "rotate", "exponent": 2},
+            {"operation": "rotate", "exponent": 3},
         )
         self.assertEqual(
             phase_vector(rotated, (2, 3, 5), PRIME),
             tuple(
-                4 * value % PRIME
+                -value % PRIME
                 for value in phase_vector(appended, (2, 3, 5), PRIME)
             ),
         )

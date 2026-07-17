@@ -18,6 +18,35 @@ Matrix = tuple[tuple[int, ...], ...]
 _SYMBOL_SEQUENCE = count(1)
 
 
+@dataclass(frozen=True)
+class _RotatedIdentity:
+    base: Hashable
+
+
+def _rotate_identity(identifier: Hashable, exponent: int) -> Hashable:
+    if exponent % 2 == 0:
+        return identifier
+    if isinstance(identifier, _RotatedIdentity):
+        return identifier.base
+    return _RotatedIdentity(identifier)
+
+
+def _linear_image_identity(
+    coefficients: Sequence[int],
+    identities: Sequence[Hashable],
+    modulus: int,
+) -> Hashable:
+    return (
+        "public-linear-image",
+        modulus,
+        tuple(
+            (coefficient % modulus, identity)
+            for coefficient, identity in zip(coefficients, identities)
+            if coefficient % modulus
+        ),
+    )
+
+
 def _fresh_symbol(
     modulus: int,
     symbol_index: int,
@@ -60,7 +89,7 @@ class MaskSpanState:
     mask_symbols: tuple[int, ...]
     provenance: tuple[Hashable, ...]
     modulus: int
-    _provenance_tokens: tuple[int, ...] = field(
+    _provenance_tokens: tuple[Hashable, ...] = field(
         default=(),
         repr=False,
         compare=False,
@@ -136,14 +165,23 @@ def shared_state(r: int, modulus: int) -> MaskSpanState:
     )
 
 
-def lane_difference_matrix(state: MaskSpanState) -> Matrix:
-    reference = state.lane_coefficients[0]
+def lane_difference_matrix(
+    state: MaskSpanState,
+    reference_lane: int = 0,
+) -> Matrix:
+    if (
+        type(reference_lane) is not int
+        or not 0 <= reference_lane < len(state.lane_coefficients)
+    ):
+        raise ValueError("reference lane is out of range")
+    reference = state.lane_coefficients[reference_lane]
     return tuple(
         tuple(
             (value - reference[column]) % state.modulus
             for column, value in enumerate(row)
         )
-        for row in state.lane_coefficients[1:]
+        for lane, row in enumerate(state.lane_coefficients)
+        if lane != reference_lane
     )
 
 
@@ -204,7 +242,7 @@ def linear_combine_states(
     columns: list[list[int]] = []
     symbols: list[int] = []
     provenances: list[Hashable] = []
-    tokens: list[int] = []
+    tokens: list[Hashable] = []
     provenance_index: dict[Hashable, int] = {}
 
     for operand, scale in ((lhs, lhs_scale), (rhs, rhs_scale)):
@@ -264,9 +302,9 @@ def linear_combine_states(
 def rotate_state(state: MaskSpanState, exponent: int) -> MaskSpanState:
     if type(exponent) is not int:
         raise ValueError("rotation exponent must be an integer")
-    if exponent == 0:
+    if exponent % 2 == 0:
         return state
-    factor = pow(2, exponent, state.modulus)
+    factor = (-1) % state.modulus
     return MaskSpanState(
         lane_coefficients=state.lane_coefficients,
         body_constants=tuple(
@@ -278,7 +316,7 @@ def rotate_state(state: MaskSpanState, exponent: int) -> MaskSpanState:
             for value in state.mask_symbols
         ),
         provenance=tuple(
-            ("rotation", exponent, identifier)
+            _rotate_identity(identifier, exponent)
             for identifier in state.provenance
         ),
         modulus=state.modulus,
@@ -323,6 +361,18 @@ def compress_state(
         not isinstance(row, tuple) for row in projection
     ):
         raise ValueError("projection must be an immutable public matrix")
+    if not projection:
+        if state.provenance:
+            raise ValueError(
+                "zero-dimensional projection requires a shared state"
+            )
+        return CompressionResult(
+            compressed_state=state,
+            phase_preserved=True,
+            discarded_directions=0,
+            online_product_count=0,
+            key_component_count=0,
+        )
     components, columns = _matrix_shape(projection, label="projection")
     if columns != len(state.provenance):
         raise ValueError("projection width must match the state symbol count")
@@ -381,15 +431,20 @@ def compress_state(
         for component in range(components)
     )
     projected_provenance = tuple(
-        (
-            "public-projection",
+        _linear_image_identity(
             normalized_projection[component],
             state.provenance,
+            state.modulus,
         )
         for component in range(components)
     )
     projected_tokens = tuple(
-        next(_SYMBOL_SEQUENCE) for _ in range(components)
+        _linear_image_identity(
+            normalized_projection[component],
+            state._provenance_tokens,
+            state.modulus,
+        )
+        for component in range(components)
     )
     compressed = MaskSpanState(
         lane_coefficients=tuple(compressed_coefficients),
@@ -405,7 +460,7 @@ def compress_state(
         discarded_directions=columns - projection_rank,
         online_product_count=sum(
             value != 0
-            for row in normalized_projection
+            for row in compressed_coefficients
             for value in row
         ),
         key_component_count=components,
