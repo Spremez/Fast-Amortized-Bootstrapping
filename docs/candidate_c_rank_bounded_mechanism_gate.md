@@ -21,15 +21,15 @@ Task 3C terminal record is `8ad876708aa4a736c0f0f9adae33bab766272f411e90fbc23a5a
 - Amdahl projection: `SKIPPED_NO_REGISTERED_OPERATOR`
 
 Task 4 is exactly `SKIPPED_NO_REGISTERED_OPERATOR`. No complete-cost or Amdahl number is inferred.
-This is a finite mechanism rejection, not a general impossibility, security,
-noise, production, or bootstrapping-speedup claim. The exact-dense PVW/MAT-SAB
-implementation and its scoped measured result remain unchanged.
+This is a finite mechanism rejection, not a general impossibility claim. No security, noise, production, or bootstrapping-speedup claim
+is made. The exact-dense PVW/MAT-SAB implementation and its scoped measured
+result remain unchanged.
 
 ## Reproduction
 
-Implementation-input commit: `801a7833dc4b12cd57fc920030b837a348ffcc16`
+Implementation-input commit: `cca8c7127575767448d5caf99a2b66f4299e8332`
 
 ```text
-python scripts/run_candidate_c_rank_bounded_gate.py --input-commit 801a7833dc4b12cd57fc920030b837a348ffcc16
-python scripts/apply_candidate_c_rank_bounded_gate.py --input-commit 801a7833dc4b12cd57fc920030b837a348ffcc16
+python scripts/run_candidate_c_rank_bounded_gate.py --input-commit cca8c7127575767448d5caf99a2b66f4299e8332
+python scripts/apply_candidate_c_rank_bounded_gate.py --input-commit cca8c7127575767448d5caf99a2b66f4299e8332
 ```

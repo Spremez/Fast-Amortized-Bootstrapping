@@ -6,9 +6,8 @@ Task 3A records for `r=2,4,6` all end at
 `REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL`. The resulting Task 3C record is
 `8ad876708aa4a736c0f0f9adae33bab766272f411e90fbc23a5ac23e10a73cb6`.
 
-C2 has no verified Task 3B conversion material. Task 4 therefore remains
-`SKIPPED_NO_REGISTERED_OPERATOR` with blank numeric cost and Amdahl fields. Production permission
-is false.
+C2 status is `NO_VERIFIED_TASK3B_RESULT`. Task 4 therefore remains `SKIPPED_NO_REGISTERED_OPERATOR` with
+blank numeric cost and Amdahl fields. Production permission is false.
 
-Reproduce from implementation-input commit `801a7833dc4b12cd57fc920030b837a348ffcc16` with
-`python scripts/run_candidate_c_rank_bounded_gate.py --input-commit 801a7833dc4b12cd57fc920030b837a348ffcc16`.
+Reproduce from implementation-input commit `cca8c7127575767448d5caf99a2b66f4299e8332` with
+`python scripts/run_candidate_c_rank_bounded_gate.py --input-commit cca8c7127575767448d5caf99a2b66f4299e8332`.

@@ -32,7 +32,7 @@
     "C": {
       "name": "Rank-Bounded Shared-Mask State",
       "status": "REJECTED",
-      "equation_revisions_used": 0,
+      "equation_revisions_used": 1,
       "kernel_layouts_used": 0,
       "full_sab_integrations_used": 0
     }
