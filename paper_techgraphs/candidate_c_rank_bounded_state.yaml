@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "candidate": "C",
+  "name": "Rank-Bounded Shared-Mask State",
+  "controlling_design": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
+  "production_hot_path_permission": false,
+  "research_state_mutated": false,
+  "repository_status": "INTAKE",
+  "source_anchors": [
+    {
+      "id": "sab_pvw_cmux",
+      "path": "src/sab_pvw.c",
+      "symbol_or_token": "void sab_pvw_CMUX(",
+      "role": "Anchors the public CMUX entry point and its in1 plus selector times (in2-in1) schedule.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "sab_pvw_ncmux",
+      "path": "src/sab_pvw.c",
+      "symbol_or_token": "void sab_pvw_NCMUX(",
+      "role": "Anchors the minus-one automorphism of in2 followed by CMUX.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "sab_pvw_rgsw_monomial_state",
+      "path": "src/sab_pvw.c",
+      "symbol_or_token": "static uint64_t sab_pvw_RGSW_monomial_mul_state(",
+      "role": "Anchors the bitwise NCMUX/direct-CMUX butterfly and active-buffer recurrence.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "sab_pvw_sparse_mul_binary",
+      "path": "src/sab_pvw.c",
+      "symbol_or_token": "void sab_pvw_sparse_mul_binary(",
+      "role": "Anchors h repetitions of RGSW monomial then sub_a, followed by one final RGSW monomial.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "sab_pvw_sub_a_binary_to",
+      "path": "src/sab_pvw.c",
+      "symbol_or_token": "static void sab_pvw_sub_a_binary_to(",
+      "role": "Anchors the per-index public monomial rotation used by binary sub_a.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "pvmtmlwe_mul_by_xai",
+      "path": "src/mosfhet/src/pvwtmlwe.c",
+      "symbol_or_token": "void pvmtmlwe_mul_by_xai(",
+      "role": "Applies the same public X^u multiplication to every mask and body polynomial.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "mat_trgsw_mul_pvmtmlwe_dft",
+      "path": "src/mosfhet/src/mattrgsw.c",
+      "symbol_or_token": "void mat_trgsw_mul_pvmtmlwe_DFT(",
+      "role": "Anchors the current exact-dense MAT external product consumed by CMUX materialization.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "default_target",
+      "path": "main.c",
+      "symbol_or_token": "return (SAB_PVW_Target_Params){2048, 1, 2048, 1, 1, 23, 3, 39, 7,",
+      "role": "Anchors the default target initializer with out_k=1, l=1, and N=2048.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "candidate_b_terminal_summary",
+      "path": "repro/candidate_b_factorized_gate/summary.csv",
+      "symbol_or_token": "REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C",
+      "role": "Anchors the finite campaign route from rejected Candidate B to Candidate C.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "stage203_star_cycle_equations",
+      "path": "repro/stage203_production_selector_equation_probe/equation_map.csv",
+      "symbol_or_token": "r,row,col,equation_class,semantic_role,is_public_row,may_skip_after_proof",
+      "role": "Anchors the Stage203 shared-row, shared-column, self, and cyclic-neighbor semantic equation map.",
+      "anchor_status": "PASS"
+    },
+    {
+      "id": "stage345_exact_dense_baseline",
+      "path": "repro/stage345_binary_matrix_synthesis/summary.csv",
+      "symbol_or_token": "PASS_STAGE345_BINARY_MATRIX_SYNTHESIS_SCOPED_READY",
+      "role": "Anchors the current exact-dense PVW/MAT-SAB scoped binary baseline without comparing Candidate C.",
+      "anchor_status": "PASS"
+    }
+  ],
+  "predecessor": {
+    "candidate": "B",
+    "decision": "REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C",
+    "route": "candidate_c_rank_bounded_shared_mask_state"
+  },
+  "star_cycle_equations": [
+    "mask_output_from_body_input",
+    "body_output_from_mask_input",
+    "lane_self_body_interaction",
+    "lane_neighbor_body_interaction"
+  ],
+  "baseline": {
+    "kind": "current_exact_dense_pvw_mat_sab",
+    "evidence": "repro/stage345_binary_matrix_synthesis/summary.csv",
+    "scope": "historical scoped binary baseline; no Candidate C comparison"
+  },
+  "state_invariant": {
+    "state": "(a_shared, delta_a[1..rho], lambda, b[0..r-1])",
+    "lane_mask": "a_q = a_shared + sum_(t=1..rho) lambda[q,t] delta_a[t]",
+    "phase": "phase_q = b_q - a_q s_q",
+    "rank": "rho = rank({a_q-a_0 : q=1,...,r-1})",
+    "normalization": "lambda[0,t]=0",
+    "reference_lane_rule": "changing the reference lane does not change rho",
+    "lambda_visibility": "public",
+    "configured_bound": "rho<=2"
+  },
+  "rank_symbols": {
+    "nu_E": "new independent lane-mask directions introduced by compact encrypted operator E modulo the input difference span",
+    "epsilon_E_q": "lane-q phase error contribution of encrypted operator E; no bound is asserted in Task 1",
+    "rank_cap": "r-1"
+  },
+  "nodes": [
+    {
+      "id": "rank_bounded_state",
+      "layer": "state",
+      "statement": "Lane masks lie in one public-coefficient affine basis of rank rho."
+    },
+    {
+      "id": "current_exact_dense_operator",
+      "layer": "baseline",
+      "statement": "The current MAT external product returns the shared-mask PVW_TMLWE shape, hence rho=0 for admitted current-format inputs."
+    },
+    {
+      "id": "proposed_compact_operator",
+      "layer": "candidate",
+      "statement": "A proposed compact operator may return lane-dependent masks and must expose nu_E and the resulting rho rule."
+    },
+    {
+      "id": "real_sab_schedule",
+      "layer": "schedule",
+      "statement": "Binary sparse_mul repeats RGSW monomial then sub_a h times and ends with RGSW monomial."
+    },
+    {
+      "id": "claim_gate",
+      "layer": "boundary",
+      "statement": "Task 1 anchors equations and obligations only."
+    }
+  ],
+  "schedule_transformations": [
+    {
+      "id": "cmux",
+      "source_anchor": "sab_pvw_cmux",
+      "input_state": "X1=(a1_q,b1_q,rho1), X2=(a2_q,b2_q,rho2), encrypted selector bit mu",
+      "public_linear_operation": "form d=X2-X1 and add X1 after the encrypted selector external product; the selector action itself is not public",
+      "newly_introduced_independent_mask_directions": "nu_CMUX for compact selector output directions outside span(Delta(X1),Delta(X2))",
+      "output_phase_equation": "phase'_q = phase1_q + mu (phase2_q-phase1_q) + epsilon_CMUX_q",
+      "output_rho_rule": "rho' <= min(r-1, rho1+rho2+nu_CMUX)",
+      "next_schedule_consumer": "direct butterfly output or caller of sab_pvw_CMUX",
+      "current_exact_dense_closure": "rho=0",
+      "proposed_compact_obligation": "A compact CMUX may introduce lane-dependent mask directions; measure nu_CMUX and check the configured bound."
+    },
+    {
+      "id": "ncmux",
+      "source_anchor": "sab_pvw_ncmux",
+      "input_state": "X1=(a1_q,b1_q,rho1), X2=(a2_q,b2_q,rho2), encrypted selector bit mu",
+      "public_linear_operation": "apply the scheduled minus-one automorphism tau_-1 to X2, then invoke CMUX(X1,tau_-1(X2))",
+      "newly_introduced_independent_mask_directions": "nu_NCMUX for automorphism/rekey and compact selector directions outside the transformed input spans",
+      "output_phase_equation": "phase'_q = phase1_q + mu (tau_-1(phase2_q)-phase1_q) + epsilon_NCMUX_q",
+      "output_rho_rule": "rho' <= min(r-1, rho1+rho2+nu_NCMUX)",
+      "next_schedule_consumer": "wraparound butterfly output",
+      "current_exact_dense_closure": "rho=0",
+      "proposed_compact_obligation": "A compact NCMUX may introduce lane-dependent mask directions; separate automorphism and selector contributions."
+    },
+    {
+      "id": "butterfly",
+      "source_anchor": "sab_pvw_rgsw_monomial_state",
+      "input_state": "active accumulator array P_in, public bit index, power=2^bit, encrypted selector e[bit]",
+      "public_linear_operation": "wire wraparound pairs to NCMUX and remaining pairs to direct CMUX at public indices",
+      "newly_introduced_independent_mask_directions": "the per-output nu_NCMUX or nu_CMUX accumulated over the public butterfly block",
+      "output_phase_equation": "wrap: phi'_(q,j)=phi_(q,j)+mu(tau_-1(phi_(q,N-power+j))-phi_(q,j))+epsilon; direct: phi'_(q,j+power)=phi_(q,j+power)+mu(phi_(q,j)-phi_(q,j+power))+epsilon",
+      "output_rho_rule": "apply the NCMUX or CMUX rho rule independently to every public butterfly output",
+      "next_schedule_consumer": "next bit of sab_pvw_RGSW_monomial_mul_state",
+      "current_exact_dense_closure": "rho=0",
+      "proposed_compact_obligation": "A compact butterfly may introduce lane-dependent mask directions; record growth after each bit and after the full public block."
+    },
+    {
+      "id": "rgsw_monomial",
+      "source_anchor": "sab_pvw_rgsw_monomial_state",
+      "input_state": "active accumulator array P^0 and encrypted monomial selector bits mu_0..mu_(r_prec-1)",
+      "public_linear_operation": "iterate the public power-of-two butterfly wiring and flip the active buffer according to the public bit-loop index",
+      "newly_introduced_independent_mask_directions": "nu_bit,j inherited from each compact CMUX/NCMUX output",
+      "output_phase_equation": "phi^(bit+1)_(q,j) = B_(mu_bit,2^bit)(phi^bit_q)_j + epsilon_(bit,q,j)",
+      "output_rho_rule": "rho^(bit+1)_j follows the selected butterfly edge rule; the monomial output bound is max_j rho^(r_prec)_j",
+      "next_schedule_consumer": "sub_a_binary inside sparse_mul, or sparse_mul normalization after the final monomial",
+      "current_exact_dense_closure": "rho=0",
+      "proposed_compact_obligation": "Compact monomial closure requires a measured rho trace across every butterfly bit, not only the final output."
+    },
+    {
+      "id": "sub_a_binary",
+      "source_anchor": "sab_pvw_sub_a_binary_to",
+      "input_state": "accumulator array P indexed by idx and public rotation exponents a[idx]",
+      "public_linear_operation": "for every idx apply pvmtmlwe_mul_by_xai(out[idx],in[idx],a[idx])",
+      "newly_introduced_independent_mask_directions": "0 for the lane-uniform public monomial map at each idx",
+      "output_phase_equation": "phase'_(q,idx) = X^(a[idx]) phase_(q,idx)",
+      "output_rho_rule": "rho'_(idx) <= rho_(idx)",
+      "next_schedule_consumer": "next RGSW monomial in sab_pvw_sparse_mul_binary",
+      "current_exact_dense_closure": "rho=0",
+      "proposed_compact_obligation": "The compact representation must rotate a_shared and every delta_a[t] by the same X^(a[idx]) while leaving public lambda unchanged."
+    },
+    {
+      "id": "rotation",
+      "source_anchor": "pvmtmlwe_mul_by_xai",
+      "input_state": "one rank-bounded lane tuple and public exponent u",
+      "public_linear_operation": "L_u(f)=X^u f applied to all mask and body polynomials",
+      "newly_introduced_independent_mask_directions": "0 because one lane-uniform linear map is applied to the entire affine basis",
+      "output_phase_equation": "phase'_q = X^u b_q - (X^u a_q)s_q = X^u phase_q",
+      "output_rho_rule": "rho' <= rho",
+      "next_schedule_consumer": "sub_a_binary output array or the next public schedule edge",
+      "current_exact_dense_closure": "rho=0",
+      "proposed_compact_obligation": "Rotation itself must not create a new basis direction; any observed growth belongs to a different encrypted operator."
+    }
+  ],
+  "schedule_edges": [
+    {
+      "from": "sab_pvw_NCMUX",
+      "to": "butterfly_wrap_output",
+      "relation": "produces"
+    },
+    {
+      "from": "sab_pvw_CMUX",
+      "to": "butterfly_direct_output",
+      "relation": "produces"
+    },
+    {
+      "from": "butterfly_outputs",
+      "to": "sab_pvw_RGSW_monomial_mul_state",
+      "relation": "feed_next_public_bit"
+    },
+    {
+      "from": "sab_pvw_RGSW_monomial_mul_state",
+      "to": "sab_pvw_sub_a_binary_to",
+      "relation": "feeds_inside_each_of_h_rounds"
+    },
+    {
+      "from": "sab_pvw_sub_a_binary_to",
+      "to": "sab_pvw_RGSW_monomial_mul_state",
+      "relation": "feeds_next_round"
+    },
+    {
+      "from": "final_sab_pvw_RGSW_monomial_mul_state",
+      "to": "sparse_mul_normalization",
+      "relation": "completes_binary_sparse_mul"
+    }
+  ],
+  "real_schedule": [
+    "rgsw_monomial",
+    "sub_a_binary",
+    "rgsw_monomial"
+  ],
+  "real_schedule_repetition": "repeat [rgsw_monomial, sub_a_binary] h times, then rgsw_monomial",
+  "variants": [
+    {
+      "id": "C0",
+      "name": "independent_lane_directions",
+      "control": "negative",
+      "definition": "Allow each nonreference lane to contribute an independent mask difference.",
+      "expected_rank_observation": "rho=r-1 when the lane differences are independent",
+      "disposition_rule": "Use only to prove that the checker detects unbounded lane growth."
+    },
+    {
+      "id": "C1",
+      "name": "rank_two_basis_with_public_lambda",
+      "control": "candidate",
+      "required_bound": "rho<=2",
+      "conversion_policy": "none",
+      "definition": "Carry at most two public-coefficient mask-difference basis vectors through every registered schedule edge.",
+      "disposition_rule": "Must close through the tested schedule without conversion."
+    },
+    {
+      "id": "C2",
+      "name": "rank_two_basis_with_periodic_public_relinearization",
+      "control": "candidate",
+      "required_bound": "rho<=2 after relinearization",
+      "allowed_boundary": "after a public block of butterfly steps",
+      "forbidden_boundary": "after every CMUX",
+      "definition": "Permit temporary measured rank growth inside a public butterfly block and invoke one registered public-schedule batched relinearization at its boundary.",
+      "disposition_rule": "The future checker must preserve every lane phase and account for all conversion work."
+    }
+  ],
+  "claim_gates": {
+    "security": "BLOCKED",
+    "noise": "BLOCKED",
+    "amdahl": "BLOCKED",
+    "kernel": "BLOCKED",
+    "full_sab": "BLOCKED",
+    "novelty": "BLOCKED",
+    "production": "BLOCKED"
+  },
+  "task1_conclusion": "The current state equations and schedule obligations are source anchored."
+}
