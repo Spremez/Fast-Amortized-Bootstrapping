@@ -7,11 +7,14 @@ import unittest
 from dataclasses import replace
 from pathlib import Path
 
+import research.mat_sab.candidate_c_operator_tensor as operator_tensor
 from research.mat_sab.candidate_c_operator_tensor import (
     ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY,
+    NO_RETAINED_MESSAGE_RELATION,
     REGISTERED_SHORT_ERROR_RELATION_FAIL,
     RELATION_RECORDED_NO_SECURITY_DECISION,
     REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL,
+    EvaluatorCounts,
     SourceBindingError,
     audit_evaluator_sample_relations,
     build_dense_control_tensor,
@@ -250,35 +253,53 @@ class JointRankGateTests(unittest.TestCase):
 
 class EvaluatorSampleRelationTests(unittest.TestCase):
     def test_sample_matrix_orientation_and_audits_are_selector_local(self):
-        tensor = build_rank_bounded_tensor(
-            4, 2, 1, secrets_for(4), GADGET, N, PRIME, public_lambda_for(4, 2)
-        )
-        sample_matrix, messages = build_evaluator_sample_matrix(tensor)
-        self.assertEqual(len(sample_matrix), len(GADGET) * (3 + 4))
-        self.assertEqual(len(sample_matrix[0]), 3 * N)
-        self.assertEqual(len(messages), 4)
-        self.assertEqual(len(messages[0]), len(sample_matrix))
-
-        audit = audit_evaluator_sample_relations(
-            tensor,
-            build_phase_projection(tensor.public_lambda, tensor.secrets, 1, PRIME),
-        )
-        self.assertEqual(audit.mu, 1)
-        self.assertIn(
-            audit.status,
-            {
-                RELATION_RECORDED_NO_SECURITY_DECISION,
-                "NO_RETAINED_MESSAGE_RELATION",
-            },
-        )
-        self.assertNotEqual(audit.status, REGISTERED_SHORT_ERROR_RELATION_FAIL)
-        for relation in audit.relations:
-            self.assertEqual(relation.l1_norm, sum(abs(value) for value in relation.centered_coefficients))
-            self.assertAlmostEqual(
-                relation.l2_norm,
-                math.sqrt(sum(value * value for value in relation.centered_coefficients)),
+        for mu, expected_status in (
+            (0, NO_RETAINED_MESSAGE_RELATION),
+            (1, RELATION_RECORDED_NO_SECURITY_DECISION),
+        ):
+            tensor = build_rank_bounded_tensor(
+                4,
+                2,
+                mu,
+                secrets_for(4),
+                GADGET,
+                N,
+                PRIME,
+                public_lambda_for(4, 2),
             )
-            self.assertIsNotNone(relation.symbolic_error_multiplier)
+            sample_matrix, messages = build_evaluator_sample_matrix(tensor)
+            self.assertEqual(len(sample_matrix), len(GADGET) * (3 + 4))
+            self.assertEqual(len(sample_matrix[0]), 3 * N)
+            self.assertEqual(len(messages), 4)
+            self.assertEqual(len(messages[0]), len(sample_matrix))
+
+            audit = audit_evaluator_sample_relations(
+                tensor,
+                build_phase_projection(
+                    tensor.public_lambda, tensor.secrets, mu, PRIME
+                ),
+            )
+            self.assertEqual(audit.mu, mu)
+            self.assertEqual(audit.status, expected_status)
+            self.assertFalse(audit.security_decision)
+            for relation in audit.relations:
+                self.assertEqual(
+                    relation.l1_norm,
+                    sum(
+                        abs(value)
+                        for value in relation.centered_coefficients
+                    ),
+                )
+                self.assertAlmostEqual(
+                    relation.l2_norm,
+                    math.sqrt(
+                        sum(
+                            value * value
+                            for value in relation.centered_coefficients
+                        )
+                    ),
+                )
+                self.assertIsNotNone(relation.symbolic_error_multiplier)
 
     def test_shared_and_independent_controls_do_not_invent_insecurity_decisions(self):
         shared = build_dense_control_tensor(4, 1, secrets_for(4), GADGET, N, PRIME)
@@ -326,6 +347,68 @@ class EvaluatorSampleRelationTests(unittest.TestCase):
         self.assertEqual(audit.status, REGISTERED_SHORT_ERROR_RELATION_FAIL)
         self.assertTrue(audit.security_decision)
 
+    def test_forged_or_malformed_relation_registrations_are_rejected(self):
+        secret = secrets_for(1)[0]
+        tensor = build_rank_bounded_tensor(
+            4,
+            2,
+            1,
+            (secret, secret, secret, secret),
+            GADGET,
+            N,
+            PRIME,
+            public_lambda_for(4, 2),
+        )
+        projection = build_phase_projection(
+            tensor.public_lambda, tensor.secrets, tensor.mu, PRIME
+        )
+        valid = {
+            "relation_error_distribution": (
+                "SYNTHETIC_SAME_SECRET_ZERO_ERROR"
+            ),
+            "registered_sigma": 0.0,
+            "registered_error_bound": 0.0,
+            "decision_inequality": (
+                "retained_gap > combined_error_bound"
+            ),
+        }
+        cases = (
+            (
+                "forged distribution",
+                {"relation_error_distribution": "FORGED_ZERO_ERROR"},
+            ),
+            (
+                "forged inequality",
+                {"decision_inequality": "FORGED_INEQUALITY"},
+            ),
+            ("negative sigma", {"registered_sigma": -1.0}),
+            ("infinite sigma", {"registered_sigma": math.inf}),
+            ("nan sigma", {"registered_sigma": math.nan}),
+            ("negative bound", {"registered_error_bound": -1.0}),
+            ("infinite bound", {"registered_error_bound": math.inf}),
+            ("nan bound", {"registered_error_bound": math.nan}),
+            ("nonzero synthetic sigma", {"registered_sigma": 1.0}),
+            (
+                "nonzero synthetic bound",
+                {"registered_error_bound": 1.0},
+            ),
+            (
+                "partial registration",
+                {
+                    "registered_sigma": None,
+                    "registered_error_bound": None,
+                    "decision_inequality": None,
+                },
+            ),
+        )
+        for label, mutation in cases:
+            with self.subTest(label=label):
+                malformed = replace(tensor, **(valid | mutation))
+                with self.assertRaisesRegex(ValueError, "registration"):
+                    audit_evaluator_sample_relations(
+                        malformed, projection
+                    )
+
     def test_message_mutation_changes_the_relation_diagnostic(self):
         tensor = build_rank_bounded_tensor(
             4, 2, 1, secrets_for(4), GADGET, N, PRIME, public_lambda_for(4, 2)
@@ -355,6 +438,32 @@ class EvaluatorSampleRelationTests(unittest.TestCase):
 
 class SourceBindingAndDecisionTests(unittest.TestCase):
     def test_gate_binds_sources_counts_and_emits_one_recomputed_terminal_result(self):
+        expected_counts = {
+            2: (
+                EvaluatorCounts(
+                    2, 32, 32, 16, 4, 32, 12, 3, 2280, True
+                ),
+                EvaluatorCounts(
+                    2, 12, 24, 12, 3, 18, 9, 2, 1754, True
+                ),
+            ),
+            4: (
+                EvaluatorCounts(
+                    2, 84, 112, 28, 7, 98, 21, 10, 5689, True
+                ),
+                EvaluatorCounts(
+                    2, 20, 80, 20, 5, 50, 15, 4, 3767, True
+                ),
+            ),
+            6: (
+                EvaluatorCounts(
+                    2, 108, 216, 36, 9, 162, 27, 16, 9346, True
+                ),
+                EvaluatorCounts(
+                    2, 28, 168, 28, 7, 98, 21, 6, 6767, True
+                ),
+            ),
+        }
         for r in (2, 4, 6):
             with self.subTest(r=r):
                 result = run_c1_operator_gate(ROOT, r, PRIME)
@@ -365,9 +474,19 @@ class SourceBindingAndDecisionTests(unittest.TestCase):
                 self.assertTrue(result.phase_identity_passed)
                 self.assertTrue(result.joint_rank_passed)
                 self.assertFalse(result.structural_improvement)
-                self.assertGreaterEqual(
-                    result.evaluator_counts.add_multiplies,
-                    result.dense_counts.add_multiplies,
+                self.assertEqual(
+                    (result.evaluator_counts, result.dense_counts),
+                    expected_counts[r],
+                )
+                self.assertEqual(
+                    tuple(
+                        audit.status
+                        for audit in result.relation_audits
+                    ),
+                    (
+                        NO_RETAINED_MESSAGE_RELATION,
+                        RELATION_RECORDED_NO_SECURITY_DECISION,
+                    ),
                 )
                 self.assertEqual(
                     result.decision,
@@ -390,6 +509,153 @@ class SourceBindingAndDecisionTests(unittest.TestCase):
                     },
                 )
                 self.assertTrue(verify_operator_gate_result(result))
+                for metric in operator_tensor._STRUCTURAL_COUNT_FIELDS:
+                    forged_counts = replace(
+                        result.evaluator_counts,
+                        **{
+                            metric: getattr(
+                                result.evaluator_counts, metric
+                            )
+                            + 1
+                        },
+                    )
+                    self.assertFalse(
+                        verify_operator_gate_result(
+                            replace(
+                                result,
+                                evaluator_counts=forged_counts,
+                            )
+                        )
+                    )
+
+    def test_gate_material_rejects_noncanonical_rho_and_alternate_lambda(self):
+        r = 4
+        secrets = secrets_for(r)
+        noncanonical_lambda = tuple(
+            (1, 0) if lane == 0 else (1, lane)
+            for lane in range(r)
+        )
+        noncanonical_tensors = tuple(
+            build_rank_bounded_tensor(
+                r,
+                1,
+                mu,
+                secrets,
+                GADGET,
+                N,
+                PRIME,
+                noncanonical_lambda,
+            )
+            for mu in (0, 1)
+        )
+        noncanonical_projections = tuple(
+            build_phase_projection(
+                noncanonical_lambda, secrets, mu, PRIME
+            )
+            for mu in (0, 1)
+        )
+        with self.assertRaisesRegex(ValueError, "canonical rho"):
+            operator_tensor._evaluate_gate_material(
+                noncanonical_tensors, noncanonical_projections
+            )
+
+        alternate_lambda = tuple(
+            (1, 0, 0)
+            if lane == 0
+            else (1, 2 * lane, lane * lane % PRIME)
+            for lane in range(r)
+        )
+        alternate_tensors = tuple(
+            build_rank_bounded_tensor(
+                r,
+                2,
+                mu,
+                secrets,
+                GADGET,
+                N,
+                PRIME,
+                alternate_lambda,
+            )
+            for mu in (0, 1)
+        )
+        alternate_projections = tuple(
+            build_phase_projection(
+                alternate_lambda, secrets, mu, PRIME
+            )
+            for mu in (0, 1)
+        )
+        with self.assertRaisesRegex(ValueError, "canonical Lambda"):
+            operator_tensor._evaluate_gate_material(
+                alternate_tensors, alternate_projections
+            )
+
+    def test_structural_policy_uses_every_count_and_recomputes_rejection(self):
+        required_metrics = (
+            "selector_objects",
+            "mask_roots",
+            "body_polynomials",
+            "gadget_rows",
+            "decomposition_inputs",
+            "add_multiplies",
+            "transforms",
+            "public_mixing_coefficients",
+            "bytes",
+        )
+        candidate = EvaluatorCounts(
+            selector_objects=1,
+            mask_roots=9,
+            body_polynomials=9,
+            gadget_rows=9,
+            decomposition_inputs=9,
+            add_multiplies=9,
+            transforms=9,
+            public_mixing_coefficients=9,
+            bytes=9,
+            reconstructs_quadratic_body_work=False,
+        )
+        dense = replace(
+            candidate,
+            selector_objects=2,
+            mask_roots=10,
+            body_polynomials=10,
+            gadget_rows=10,
+            decomposition_inputs=10,
+            add_multiplies=10,
+            transforms=10,
+            public_mixing_coefficients=10,
+            bytes=10,
+        )
+        self.assertTrue(
+            operator_tensor._has_strict_pareto_improvement(
+                candidate, dense
+            )
+        )
+        for metric in required_metrics:
+            with self.subTest(metric=metric):
+                mutated = replace(candidate, **{metric: 11})
+                self.assertFalse(
+                    operator_tensor._has_strict_pareto_improvement(
+                        mutated, dense
+                    )
+                )
+                self.assertEqual(
+                    operator_tensor._derive_decision(
+                        phase_identity_passed=True,
+                        joint_rank_passed=True,
+                        relation_audits=(),
+                        structural_improvement=False,
+                    ),
+                    REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL,
+                )
+        self.assertFalse(
+            operator_tensor._has_strict_pareto_improvement(
+                replace(
+                    candidate,
+                    reconstructs_quadratic_body_work=True,
+                ),
+                dense,
+            )
+        )
 
     def test_changing_only_the_decision_field_fails_recomputation(self):
         result = run_c1_operator_gate(ROOT, 2, PRIME)
@@ -437,6 +703,9 @@ class SourceBindingAndDecisionTests(unittest.TestCase):
             "SUPPORT_ONLY_NO_NUMERIC_COEFFICIENTS",
             "RELATION_RECORDED_NO_SECURITY_DECISION",
             "REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL",
+            "SYNTHETIC_SAME_SECRET_ZERO_ERROR",
+            "strict-Pareto policy",
+            "canonical JSON",
             "not a security proof",
             "not a universal impossibility theorem",
             "Task 3B is not entered",

@@ -13,7 +13,7 @@ import json
 import math
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
-from typing import Sequence
+from typing import Callable, Sequence
 
 from .candidate_c_schedule import load_binary_target_schedule
 from .finite_linear import rank, rref
@@ -49,6 +49,12 @@ REGISTERED_SHORT_ERROR_RELATION_FAIL = (
     "REGISTERED_SHORT_ERROR_RELATION_FAIL"
 )
 NO_RETAINED_MESSAGE_RELATION = "NO_RETAINED_MESSAGE_RELATION"
+SYNTHETIC_SAME_SECRET_ZERO_ERROR = (
+    "SYNTHETIC_SAME_SECRET_ZERO_ERROR"
+)
+RETAINED_GAP_EXCEEDS_COMBINED_ERROR = (
+    "retained_gap > combined_error_bound"
+)
 
 
 Polynomial = tuple[int, ...]
@@ -1241,6 +1247,104 @@ def _sha256_json(value: object) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+RelationEvidenceEvaluator = Callable[
+    [OperatorTensor, float, float, int, float],
+    float,
+]
+
+
+def _synthetic_zero_error_bound(
+    tensor: OperatorTensor,
+    sigma: float,
+    error_bound: float,
+    l1_norm: int,
+    l2_norm: float,
+) -> float:
+    del l1_norm, l2_norm
+    if sigma != 0.0 or error_bound != 0.0:
+        raise ValueError(
+            "relation registration for synthetic zero error "
+            "requires zero sigma and error bound"
+        )
+    if any(
+        secret != tensor.secrets[0]
+        for secret in tensor.secrets[1:]
+    ):
+        raise ValueError(
+            "relation registration for same-secret cancellation "
+            "requires identical secrets"
+        )
+    return 0.0
+
+
+_RELATION_EVIDENCE_REGISTRY: dict[
+    tuple[str, str],
+    RelationEvidenceEvaluator,
+] = {
+    (
+        SYNTHETIC_SAME_SECRET_ZERO_ERROR,
+        RETAINED_GAP_EXCEEDS_COMBINED_ERROR,
+    ): _synthetic_zero_error_bound,
+}
+
+
+def _finite_nonnegative_registration_value(
+    value: object,
+    *,
+    label: str,
+) -> float:
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, (int, float))
+    ):
+        raise ValueError(
+            f"relation registration {label} must be numeric"
+        )
+    normalized = float(value)
+    if not math.isfinite(normalized) or normalized < 0.0:
+        raise ValueError(
+            f"relation registration {label} must be finite and nonnegative"
+        )
+    return normalized
+
+
+def _validate_relation_registration(
+    tensor: OperatorTensor,
+) -> tuple[RelationEvidenceEvaluator, float, float] | None:
+    fields = (
+        tensor.relation_error_distribution,
+        tensor.registered_sigma,
+        tensor.registered_error_bound,
+        tensor.decision_inequality,
+    )
+    if all(value is None for value in fields):
+        return None
+    if any(value is None for value in fields):
+        raise ValueError(
+            "relation registration must provide distribution, sigma, "
+            "error bound, and inequality"
+        )
+    key = (
+        tensor.relation_error_distribution,
+        tensor.decision_inequality,
+    )
+    evaluator = _RELATION_EVIDENCE_REGISTRY.get(key)
+    if evaluator is None:
+        raise ValueError(
+            "relation registration distribution/inequality is not supported"
+        )
+    sigma = _finite_nonnegative_registration_value(
+        tensor.registered_sigma,
+        label="sigma",
+    )
+    error_bound = _finite_nonnegative_registration_value(
+        tensor.registered_error_bound,
+        label="error bound",
+    )
+    evaluator(tensor, sigma, error_bound, 0, 0.0)
+    return evaluator, sigma, error_bound
+
+
 def audit_evaluator_sample_relations(
     tensor: OperatorTensor,
     projection: PhaseProjection,
@@ -1253,6 +1357,7 @@ def audit_evaluator_sample_relations(
         or tensor.secrets != projection.secrets
     ):
         raise ValueError("relation audit projection does not match tensor")
+    registration = _validate_relation_registration(tensor)
     sample_matrix, messages = build_evaluator_sample_matrix(tensor)
     kernel = _left_kernel_basis(sample_matrix, tensor.modulus)
     diagnostics: list[EvaluatorSampleRelation] = []
@@ -1286,20 +1391,14 @@ def audit_evaluator_sample_relations(
             sum(value * value for value in centered)
         )
         combined_error_bound: float | None = None
-        if (
-            tensor.relation_error_distribution is not None
-            and tensor.decision_inequality
-            == "retained_gap > combined_error_bound"
-            and tensor.registered_error_bound is not None
-        ):
-            sigma_term = (
-                0.0
-                if tensor.registered_sigma is None
-                else tensor.registered_sigma * l2_norm
-            )
-            combined_error_bound = (
-                tensor.registered_error_bound * l1_norm
-                + sigma_term
+        if registration is not None:
+            evaluator, sigma, error_bound = registration
+            combined_error_bound = evaluator(
+                tensor,
+                sigma,
+                error_bound,
+                l1_norm,
+                l2_norm,
             )
         relation_decisive = (
             gap > 0
@@ -1355,20 +1454,74 @@ def audit_evaluator_sample_relations(
     )
 
 
-def _counts_for_shape(
-    *,
-    r: int,
-    d: int,
-    ell: int,
-    n: int,
-    public_lambda: Matrix,
+_STRUCTURAL_COUNT_FIELDS = (
+    "selector_objects",
+    "mask_roots",
+    "body_polynomials",
+    "gadget_rows",
+    "decomposition_inputs",
+    "add_multiplies",
+    "transforms",
+    "public_mixing_coefficients",
+    "bytes",
+)
+
+
+def _serialized_evaluator_bytes(
+    tensors: Sequence[OperatorTensor],
+) -> int:
+    payload = [asdict(tensor) for tensor in tensors]
+    return len(
+        json.dumps(
+            payload,
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=True,
+        ).encode("ascii")
+    )
+
+
+def _counts_for_tensors(
+    tensors: Sequence[OperatorTensor],
 ) -> EvaluatorCounts:
-    inputs = d + r
-    outputs = d + r
-    selector_objects = 2
-    mask_roots = selector_objects * ell * d * inputs
-    body_polynomials = selector_objects * ell * r * inputs
-    total_polynomials = mask_roots + body_polynomials
+    if not tensors:
+        raise ValueError("at least one evaluator tensor is required")
+    for tensor in tensors:
+        _validate_tensor_shape(tensor)
+    reference = tensors[0]
+    shared_fields = (
+        "r",
+        "d",
+        "gadget",
+        "n",
+        "modulus",
+        "public_lambda",
+        "input_components",
+    )
+    if any(
+        getattr(tensor, field) != getattr(reference, field)
+        for tensor in tensors[1:]
+        for field in shared_fields
+    ):
+        raise ValueError("evaluator tensor metadata must match")
+    inputs = reference.d + reference.r
+    outputs = inputs
+    ell = len(reference.gadget)
+    selector_objects = len(tensors)
+    mask_roots = sum(
+        1
+        for tensor in tensors
+        for level in tensor.mask_polynomials
+        for basis in level
+        for _polynomial in basis
+    )
+    body_polynomials = sum(
+        1
+        for tensor in tensors
+        for level in tensor.body_polynomials
+        for lane in level
+        for _polynomial in lane
+    )
     return EvaluatorCounts(
         selector_objects=selector_objects,
         mask_roots=mask_roots,
@@ -1379,13 +1532,55 @@ def _counts_for_shape(
         transforms=ell * inputs + outputs,
         public_mixing_coefficients=sum(
             value != 0
-            for row in public_lambda
+            for row in reference.public_lambda
             for value in row
         ),
-        bytes=total_polynomials * n * 2,
+        bytes=_serialized_evaluator_bytes(tensors),
         reconstructs_quadratic_body_work=(
-            body_polynomials >= selector_objects * ell * r * r
+            body_polynomials
+            >= selector_objects * ell * reference.r * reference.r
         ),
+    )
+
+
+def _has_strict_pareto_improvement(
+    candidate: EvaluatorCounts,
+    dense: EvaluatorCounts,
+) -> bool:
+    if (
+        type(candidate.reconstructs_quadratic_body_work) is not bool
+        or type(dense.reconstructs_quadratic_body_work) is not bool
+    ):
+        return False
+    candidate_values = tuple(
+        getattr(candidate, field)
+        for field in _STRUCTURAL_COUNT_FIELDS
+    )
+    dense_values = tuple(
+        getattr(dense, field)
+        for field in _STRUCTURAL_COUNT_FIELDS
+    )
+    if any(
+        type(value) is not int or value < 0
+        for value in candidate_values + dense_values
+    ):
+        return False
+    return (
+        not candidate.reconstructs_quadratic_body_work
+        and all(
+            candidate_value <= dense_value
+            for candidate_value, dense_value in zip(
+                candidate_values,
+                dense_values,
+            )
+        )
+        and any(
+            candidate_value < dense_value
+            for candidate_value, dense_value in zip(
+                candidate_values,
+                dense_values,
+            )
+        )
     )
 
 
@@ -1644,6 +1839,23 @@ def _evaluate_gate_material(
     ):
         raise ValueError("gate requires separate canonical K_0 and K_1")
     reference = tensors[0]
+    canonical_rho = min(2, reference.r - 1)
+    if reference.rho != canonical_rho:
+        raise ValueError(
+            "gate material must use canonical rho=min(2,r-1)"
+        )
+    if reference.d != canonical_rho + 1:
+        raise ValueError("gate material must use canonical d=rho+1")
+    canonical_lambda = _gate_lambda(reference.r, canonical_rho)
+    if reference.public_lambda != canonical_lambda:
+        raise ValueError("gate material must use canonical Lambda")
+    if (
+        rank(_lambda_differences(reference), reference.modulus)
+        != canonical_rho
+    ):
+        raise ValueError(
+            "canonical Lambda-difference rank must equal rho"
+        )
     shared_fields = (
         "construction",
         "r",
@@ -1657,14 +1869,13 @@ def _evaluate_gate_material(
         "input_components",
     )
     if (
-        reference.d != reference.rho + 1
-        or any(
+        any(
             getattr(tensor, field) != getattr(reference, field)
             for tensor in tensors[1:]
             for field in shared_fields
         )
     ):
-        raise ValueError("K_0 and K_1 metadata must share d=rho+1")
+        raise ValueError("K_0 and K_1 metadata must match")
     phase_identity_passed = all(
         verify_phase_identity(tensor, projection)
         for tensor, projection in zip(tensors, projections)
@@ -1683,25 +1894,22 @@ def _evaluate_gate_material(
         for tensor, projection in zip(tensors, projections)
     )
     audits = (audits_raw[0], audits_raw[1])
-    evaluator_counts = _counts_for_shape(
-        r=reference.r,
-        d=reference.d,
-        ell=len(reference.gadget),
-        n=reference.n,
-        public_lambda=reference.public_lambda,
+    evaluator_counts = _counts_for_tensors(tensors)
+    dense_tensors = tuple(
+        build_dense_control_tensor(
+            reference.r,
+            mu,
+            reference.secrets,
+            reference.gadget,
+            reference.n,
+            reference.modulus,
+        )
+        for mu in (0, 1)
     )
-    dense_counts = _counts_for_shape(
-        r=reference.r,
-        d=1,
-        ell=len(reference.gadget),
-        n=reference.n,
-        public_lambda=tuple((1,) for _ in range(reference.r)),
-    )
-    structural_improvement = (
-        evaluator_counts.add_multiplies < dense_counts.add_multiplies
-        and evaluator_counts.body_polynomials
-        < dense_counts.body_polynomials
-        and not evaluator_counts.reconstructs_quadratic_body_work
+    dense_counts = _counts_for_tensors(dense_tensors)
+    structural_improvement = _has_strict_pareto_improvement(
+        evaluator_counts,
+        dense_counts,
     )
     decision = _derive_decision(
         phase_identity_passed=phase_identity_passed,

@@ -53,6 +53,11 @@ B_mu[t,q,c] - s_q sum_v Lambda[q,v] A_mu[t,v,c]
   = mu h_t P_Lambda[q,c].
 ```
 
+Gate recomputation requires `rho=min(2,r-1)`, `d=rho+1`, exact equality with
+the displayed canonical `Lambda`, and exact difference rank `rho`. Generic
+control builders remain able to construct other ranks and matrices, but
+those objects cannot be substituted into a terminal gate result.
+
 The registered finite gadget is `(1,16)`. Mask roots are deterministic
 monomials that expose every basis row; they are not random finite witnesses.
 The bodies are then fixed by the displayed identity. Separate `K_0` and
@@ -127,6 +132,16 @@ with the registered inequality
 diagnostic hash. This finite diagnostic is not a security proof.
 It is not a universal impossibility theorem.
 
+Evidence registration is an explicit `(distribution, inequality)` registry.
+The only registered evaluator in Task 3A is
+`SYNTHETIC_SAME_SECRET_ZERO_ERROR` with
+`retained_gap > combined_error_bound`. It requires identical secrets and
+finite, nonnegative sigma/error bounds that are both exactly zero. Partial
+registrations, unknown labels or inequalities, negative values, and
+nonfinite values are invalid. Therefore only the registered synthetic
+control can emit `REGISTERED_SHORT_ERROR_RELATION_FAIL`; assigning a
+favorable string cannot create a decision.
+
 ## Source Binding
 
 Stage203 is classified only as
@@ -151,16 +166,32 @@ call, gadget injection entry point, and dense add-multiply loop.
 ## Structural Count
 
 Counts include both `K_0` and `K_1`; online add-multiplies and transforms are
-per selected operator evaluation.
+per selected operator evaluation. Serialized evaluator bytes are the exact
+ASCII length of canonical JSON (sorted keys and compact separators) for the
+complete two-tensor evaluator object. This includes every represented
+coefficient and metadata field: construction, dimensions, selector bit,
+finite secret witnesses, gadget, modulus, public `Lambda`, input component
+names, mask/body polynomials, and optional relation-registration fields.
+Thus public mixing and serialized metadata cannot disappear from the byte
+comparison.
 
 | r | object | mask roots | body polynomials | gadget rows | decomposition inputs | add-multiplies | transforms | public mixing | bytes |
 |---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| 2 | C1 | 32 | 32 | 16 | 4 | 32 | 12 | 3 | 1024 |
-| 2 | dense | 12 | 24 | 12 | 3 | 18 | 9 | 2 | 576 |
-| 4 | C1 | 84 | 112 | 28 | 7 | 98 | 21 | 10 | 3136 |
-| 4 | dense | 20 | 80 | 20 | 5 | 50 | 15 | 4 | 1600 |
-| 6 | C1 | 108 | 216 | 36 | 9 | 162 | 27 | 16 | 5184 |
-| 6 | dense | 28 | 168 | 28 | 7 | 98 | 21 | 6 | 3136 |
+| 2 | C1 | 32 | 32 | 16 | 4 | 32 | 12 | 3 | 2280 |
+| 2 | dense | 12 | 24 | 12 | 3 | 18 | 9 | 2 | 1754 |
+| 4 | C1 | 84 | 112 | 28 | 7 | 98 | 21 | 10 | 5689 |
+| 4 | dense | 20 | 80 | 20 | 5 | 50 | 15 | 4 | 3767 |
+| 6 | C1 | 108 | 216 | 36 | 9 | 162 | 27 | 16 | 9346 |
+| 6 | dense | 28 | 168 | 28 | 7 | 98 | 21 | 6 | 6767 |
+
+Structural improvement uses one strict-Pareto policy over selector objects,
+mask roots, body polynomials, gadget rows, decomposition inputs,
+add-multiplies, transforms, public mixing coefficients, and complete
+serialized bytes. C1 must be no greater than dense in every field and
+strictly smaller in at least one. Independently, reconstructing
+`Theta(r^2)` body work disqualifies the candidate. Mutating any one count
+above the dense comparator therefore makes structural improvement false and
+recomputes the nonpositive-cost terminal decision.
 
 The concrete common-Lambda mask factorization still reconstructs
 `ell*r*(d+r)` body polynomials per selector object. This is `Theta(r^2)`
