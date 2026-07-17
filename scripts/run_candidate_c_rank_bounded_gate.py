@@ -23,12 +23,17 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from research.mat_sab.candidate_c_operator_tensor import (
+    MISSING_STAGE203_EVIDENCE_HASH,
+    MISSING_STAGE203_SUPPORT_MAP,
     REGISTERED_SHORT_ERROR_RELATION_FAIL,
     REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL,
     REJECT_C1_PHASE_IDENTITY_TERMINAL,
     REJECT_C1_REGISTERED_SHORT_ERROR_RELATION_TERMINAL,
+    STAGE203_SUPPORT_MAP_PATH,
+    Task3AEvidenceExhaustion,
 )
 from research.mat_sab.candidate_c_registered_replay import (
+    CandidateCInconclusiveTerminalRecord,
     NO_VERIFIED_TASK3B_RESULT,
     SKIPPED_NO_REGISTERED_OPERATOR,
     TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED,
@@ -86,6 +91,7 @@ REQUIRED_PACK_FILES = (
     "proof_gate.csv",
     "decision_evidence.json",
     "input_manifest.csv",
+    "closeout_executable_manifest.csv",
     "environment.csv",
     "artifact_index.csv",
     "reproduction_commands.md",
@@ -102,6 +108,8 @@ COMPUTATIONAL_INPUTS = (
     "research/mat_sab/finite_linear.py",
     "research/mat_sab/rank_bounded_state_model.py",
     "research/mat_sab/star_cycle_model.py",
+    "scripts/apply_candidate_c_rank_bounded_gate.py",
+    "scripts/mat_sab_research_state.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
     "src/mosfhet/Makefile.def",
     "src/mosfhet/src/mattrgsw.c",
@@ -109,6 +117,26 @@ COMPUTATIONAL_INPUTS = (
     "src/sparse_amortized_bootstrap.c",
     "theory_checks/candidate_c_rank_bounded_state_model.md",
 )
+CLOSEOUT_EXECUTABLE_INPUTS = (
+    "research/mat_sab/candidate_c_operator_tensor.py",
+    "research/mat_sab/candidate_c_registered_replay.py",
+    "research/mat_sab/candidate_c_schedule.py",
+    "scripts/apply_candidate_c_rank_bounded_gate.py",
+    "scripts/mat_sab_research_state.py",
+    "scripts/run_candidate_c_rank_bounded_gate.py",
+)
+CLOSEOUT_EXECUTABLE_ROLES = {
+    "research/mat_sab/candidate_c_operator_tensor.py": (
+        "task3a_evidence_verifier"
+    ),
+    "research/mat_sab/candidate_c_registered_replay.py": (
+        "task3c_terminal_verifier"
+    ),
+    "research/mat_sab/candidate_c_schedule.py": "schedule_binding_verifier",
+    "scripts/apply_candidate_c_rank_bounded_gate.py": "atomic_closeout",
+    "scripts/mat_sab_research_state.py": "state_transition_validator",
+    "scripts/run_candidate_c_rank_bounded_gate.py": "decision_verifier",
+}
 GENERATED_DOCUMENTS = (
     "docs/candidate_c_rank_bounded_mechanism_gate.md",
     "algorithm_variants/candidate_c_rank_bounded_state.md",
@@ -193,7 +221,11 @@ class VerifiedDecisionEvidence:
 @dataclass(frozen=True)
 class GateResult:
     decision_evidence: RawDecisionEvidence
-    terminal_record: CandidateCTerminalRecord | None
+    terminal_record: (
+        CandidateCTerminalRecord
+        | CandidateCInconclusiveTerminalRecord
+        | None
+    )
     decision: str
     terminal_classification: str
     terminal_decision: str
@@ -440,8 +472,20 @@ def _status(value: bool) -> str:
 
 
 def _source_rows(
-    terminal: CandidateCTerminalRecord,
+    terminal: CandidateCTerminalRecord | CandidateCInconclusiveTerminalRecord,
 ) -> tuple[dict[str, object], ...]:
+    if type(terminal) is CandidateCInconclusiveTerminalRecord:
+        exhaustion = terminal.evidence_exhaustions[0]
+        return (
+            {
+                "source_id": "stage203_support_map",
+                "path": exhaustion.missing_path,
+                "sha256": exhaustion.missing_evidence_hash,
+                "classification": "MISSING_RECOGNIZED_EVIDENCE",
+                "required_tokens": "",
+                "status": exhaustion.condition,
+            },
+        )
     by_key = {}
     for result in terminal.operator_results:
         for binding in result.source_bindings:
@@ -458,7 +502,7 @@ def _source_rows(
 
 
 def _schedule_rows(
-    terminal: CandidateCTerminalRecord,
+    terminal: CandidateCTerminalRecord | CandidateCInconclusiveTerminalRecord,
 ) -> tuple[dict[str, object], ...]:
     return (
         {
@@ -481,8 +525,28 @@ def _schedule_rows(
 
 
 def _operator_rows(
-    terminal: CandidateCTerminalRecord,
+    terminal: CandidateCTerminalRecord | CandidateCInconclusiveTerminalRecord,
 ) -> tuple[dict[str, object], ...]:
+    if type(terminal) is CandidateCInconclusiveTerminalRecord:
+        return tuple(
+            {
+                "mechanism_id": "C1",
+                "r": exhaustion.r,
+                "rho": exhaustion.rho,
+                "modulus": exhaustion.modulus,
+                "ring_degree": exhaustion.n,
+                "gadget": ";".join(
+                    str(value) for value in exhaustion.gadget
+                ),
+                "phase_identity_status": "EVIDENCE_EXHAUSTED",
+                "joint_rank_status": "EVIDENCE_EXHAUSTED",
+                "structural_cost_status": "EVIDENCE_EXHAUSTED",
+                "decision": exhaustion.decision,
+                "seed_hash": exhaustion.missing_evidence_hash,
+                "result_hash": exhaustion.record_hash,
+            }
+            for exhaustion in terminal.evidence_exhaustions
+        )
     rows = []
     for result in terminal.operator_results:
         rows.append(
@@ -508,8 +572,23 @@ def _operator_rows(
 
 
 def _relation_rows(
-    terminal: CandidateCTerminalRecord,
+    terminal: CandidateCTerminalRecord | CandidateCInconclusiveTerminalRecord,
 ) -> tuple[dict[str, object], ...]:
+    if type(terminal) is CandidateCInconclusiveTerminalRecord:
+        return tuple(
+            {
+                "mechanism_id": "C1",
+                "r": exhaustion.r,
+                "mu": "",
+                "status": "EVIDENCE_EXHAUSTED",
+                "security_decision": "no",
+                "registered_sigma": "",
+                "registered_error_bound": "",
+                "decision_inequality": "",
+                "diagnostic_hash": exhaustion.record_hash,
+            }
+            for exhaustion in terminal.evidence_exhaustions
+        )
     rows = []
     for result in terminal.operator_results:
         for mu, audit in enumerate(result.relation_audits):
@@ -538,8 +617,21 @@ def _relation_rows(
 
 
 def _rank_rows(
-    terminal: CandidateCTerminalRecord,
+    terminal: CandidateCTerminalRecord | CandidateCInconclusiveTerminalRecord,
 ) -> tuple[dict[str, object], ...]:
+    if type(terminal) is CandidateCInconclusiveTerminalRecord:
+        return tuple(
+            {
+                "mechanism_id": "C1",
+                "r": exhaustion.r,
+                "mu": "",
+                "rho": exhaustion.rho,
+                "rank_bound": exhaustion.rho * exhaustion.n,
+                "observed_joint_rank": "",
+                "status": "EVIDENCE_EXHAUSTED",
+            }
+            for exhaustion in terminal.evidence_exhaustions
+        )
     rows = []
     for result in terminal.operator_results:
         for mu, observed in enumerate(result.joint_ranks):
@@ -557,7 +649,7 @@ def _rank_rows(
     return tuple(rows)
 
 
-def _actual_mechanisms(
+def _actual_rejection_mechanisms(
     terminal: CandidateCTerminalRecord,
 ) -> tuple[MechanismEvaluation, ...]:
     results = terminal.operator_results
@@ -622,6 +714,51 @@ def _actual_mechanisms(
         amdahl_pessimistic_projection=None,
         fully_evaluated=False,
         failure_reason=terminal.conversion_status,
+        object_hashes=(),
+    )
+    return (c1, c2)
+
+
+def _actual_inconclusive_mechanisms(
+    terminal: CandidateCInconclusiveTerminalRecord,
+) -> tuple[MechanismEvaluation, ...]:
+    exhausted = "EVIDENCE_EXHAUSTED"
+    c1 = MechanismEvaluation(
+        mechanism_id="C1",
+        registered=False,
+        source_status=MISSING_STAGE203_SUPPORT_MAP,
+        equation_status=exhausted,
+        symbolic_independence_status=exhausted,
+        phase_status=exhausted,
+        schedule_status=exhausted,
+        rank_status=exhausted,
+        max_rho=max(
+            exhaustion.rho
+            for exhaustion in terminal.evidence_exhaustions
+        ),
+        compression_status=exhausted,
+        compression_interval=0,
+        b_min=1,
+        closed_next_state_consumption=False,
+        structural_cost_status=exhausted,
+        complete_cost_status=SKIPPED,
+        complete_cost=None,
+        amdahl_status=SKIPPED,
+        amdahl_projection=None,
+        amdahl_pessimistic_projection=None,
+        fully_evaluated=False,
+        failure_reason=terminal.decision,
+        object_hashes=tuple(
+            exhaustion.record_hash
+            for exhaustion in terminal.evidence_exhaustions
+        ),
+    )
+    c2 = replace(
+        c1,
+        mechanism_id="C2",
+        source_status=exhausted,
+        max_rho=0,
+        failure_reason=terminal.decision,
         object_hashes=(),
     )
     return (c1, c2)
@@ -970,8 +1107,79 @@ def _derive_decision(raw: RawDecisionEvidence) -> str:
 
 
 def _approved_actual_mechanisms(
-    terminal: CandidateCTerminalRecord,
+    terminal: CandidateCTerminalRecord | CandidateCInconclusiveTerminalRecord,
 ) -> tuple[MechanismEvaluation, ...]:
+    if type(terminal) is CandidateCInconclusiveTerminalRecord:
+        exhaustions = terminal.evidence_exhaustions
+        if (
+            terminal.classification != "INCONCLUSIVE"
+            or terminal.decision
+            != TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED
+            or terminal.replay_status != SKIPPED
+            or terminal.task4_status != SKIPPED
+            or terminal.conversion_status != "EVIDENCE_EXHAUSTED"
+            or terminal.r_values != (2, 4, 6)
+            or tuple(exhaustion.r for exhaustion in exhaustions)
+            != (2, 4, 6)
+            or any(
+                type(exhaustion) is not Task3AEvidenceExhaustion
+                or exhaustion.condition != MISSING_STAGE203_SUPPORT_MAP
+                or exhaustion.missing_path != STAGE203_SUPPORT_MAP_PATH
+                or exhaustion.missing_evidence_hash
+                != MISSING_STAGE203_EVIDENCE_HASH
+                or exhaustion.decision
+                != TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED
+                for exhaustion in exhaustions
+            )
+        ):
+            raise GateEvidenceError(
+                "approved actual Task 3C inconclusive terminal changed"
+            )
+        mechanisms = _actual_inconclusive_mechanisms(terminal)
+        expected_c1 = MechanismEvaluation(
+            mechanism_id="C1",
+            registered=False,
+            source_status=MISSING_STAGE203_SUPPORT_MAP,
+            equation_status="EVIDENCE_EXHAUSTED",
+            symbolic_independence_status="EVIDENCE_EXHAUSTED",
+            phase_status="EVIDENCE_EXHAUSTED",
+            schedule_status="EVIDENCE_EXHAUSTED",
+            rank_status="EVIDENCE_EXHAUSTED",
+            max_rho=2,
+            compression_status="EVIDENCE_EXHAUSTED",
+            compression_interval=0,
+            b_min=1,
+            closed_next_state_consumption=False,
+            structural_cost_status="EVIDENCE_EXHAUSTED",
+            complete_cost_status=SKIPPED,
+            complete_cost=None,
+            amdahl_status=SKIPPED,
+            amdahl_projection=None,
+            amdahl_pessimistic_projection=None,
+            fully_evaluated=False,
+            failure_reason=TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED,
+            object_hashes=tuple(
+                exhaustion.record_hash
+                for exhaustion in exhaustions
+            ),
+        )
+        expected = (
+            expected_c1,
+            replace(
+                expected_c1,
+                mechanism_id="C2",
+                source_status="EVIDENCE_EXHAUSTED",
+                max_rho=0,
+                object_hashes=(),
+            ),
+        )
+        if mechanisms != expected:
+            raise GateEvidenceError(
+                "approved actual inconclusive mechanism facts changed"
+            )
+        return mechanisms
+    if type(terminal) is not CandidateCTerminalRecord:
+        raise GateEvidenceError("approved actual Task 3C terminal type changed")
     if (
         terminal.record_hash != APPROVED_TASK3C_HASH
         or terminal.classification != "REJECT"
@@ -982,7 +1190,7 @@ def _approved_actual_mechanisms(
         or terminal.conversion_status != NO_VERIFIED_TASK3B_RESULT
     ):
         raise GateEvidenceError("approved actual Task 3C terminal changed")
-    mechanisms = _actual_mechanisms(terminal)
+    mechanisms = _actual_rejection_mechanisms(terminal)
     expected = (
         MechanismEvaluation(
             mechanism_id="C1",
@@ -1090,7 +1298,7 @@ def _approved_actual_mechanisms(
 
 
 def _raw_decision_evidence_from_terminal(
-    terminal: CandidateCTerminalRecord,
+    terminal: CandidateCTerminalRecord | CandidateCInconclusiveTerminalRecord,
 ) -> RawDecisionEvidence:
     mechanisms = _approved_actual_mechanisms(terminal)
     provisional = RawDecisionEvidence(
@@ -1118,7 +1326,11 @@ def verify_decision_evidence(
     raw: RawDecisionEvidence,
     *,
     root: Path | None = None,
-    terminal: CandidateCTerminalRecord | None = None,
+    terminal: (
+        CandidateCTerminalRecord
+        | CandidateCInconclusiveTerminalRecord
+        | None
+    ) = None,
     allow_fixture: bool = False,
 ) -> VerifiedDecisionEvidence:
     _validate_raw_decision_types(raw)
@@ -1212,10 +1424,62 @@ def _primary_mechanism(result: GateResult) -> MechanismEvaluation:
     )
 
 
+def _terminal_hash_rows(
+    terminal: CandidateCTerminalRecord | CandidateCInconclusiveTerminalRecord,
+) -> tuple[dict[str, object], ...]:
+    rows = (
+        {
+            "object": "terminal_record",
+            "mechanism_id": "C1",
+            "sha256": terminal.record_hash,
+        },
+    )
+    if type(terminal) is CandidateCTerminalRecord:
+        return rows + tuple(
+            {
+                "object": f"operator_result_r{operator.r}",
+                "mechanism_id": "C1",
+                "sha256": operator.result_hash,
+            }
+            for operator in terminal.operator_results
+        )
+    return rows + tuple(
+        {
+            "object": f"evidence_exhaustion_r{exhaustion.r}",
+            "mechanism_id": "C1",
+            "sha256": exhaustion.record_hash,
+        }
+        for exhaustion in terminal.evidence_exhaustions
+    )
+
+
+def _terminal_rows(
+    terminal: CandidateCTerminalRecord | CandidateCInconclusiveTerminalRecord,
+) -> tuple[dict[str, object], ...]:
+    return (
+        {
+            "classification": terminal.classification,
+            "decision": terminal.decision,
+            "replay_status": terminal.replay_status,
+            "task4_status": terminal.task4_status,
+            "conversion_status": terminal.conversion_status,
+            "r_values": ";".join(
+                str(value) for value in terminal.r_values
+            ),
+            "schedule_hash": terminal.schedule_hash,
+            "record_hash": terminal.record_hash,
+        },
+    )
+
+
 def _gate_result_from_verified(
     verified: VerifiedDecisionEvidence,
     *,
-    terminal: CandidateCTerminalRecord | None,
+    terminal: (
+        CandidateCTerminalRecord
+        | CandidateCInconclusiveTerminalRecord
+        | None
+    ),
 ) -> GateResult:
     raw = verified.raw
     primary = _decision_mechanism(raw, verified.decision)
@@ -1248,35 +1512,8 @@ def _gate_result_from_verified(
                 "task4_status": terminal.task4_status,
             },
         ),
-        hash_rows=() if terminal is None else (
-            {
-                "object": "terminal_record",
-                "mechanism_id": "C1",
-                "sha256": terminal.record_hash,
-            },
-            *(
-                {
-                    "object": f"operator_result_r{operator.r}",
-                    "mechanism_id": "C1",
-                    "sha256": operator.result_hash,
-                }
-                for operator in terminal.operator_results
-            ),
-        ),
-        terminal_rows=() if terminal is None else (
-            {
-                "classification": terminal.classification,
-                "decision": terminal.decision,
-                "replay_status": terminal.replay_status,
-                "task4_status": terminal.task4_status,
-                "conversion_status": terminal.conversion_status,
-                "r_values": ";".join(
-                    str(value) for value in terminal.r_values
-                ),
-                "schedule_hash": terminal.schedule_hash,
-                "record_hash": terminal.record_hash,
-            },
-        ),
+        hash_rows=() if terminal is None else _terminal_hash_rows(terminal),
+        terminal_rows=() if terminal is None else _terminal_rows(terminal),
         rank_rows=() if terminal is None else _rank_rows(terminal),
     )
     return result
@@ -1540,7 +1777,13 @@ def _resolve_input_commit(root: Path, input_commit: str) -> str:
     return resolved
 
 
-def _git_regular_blob(root: Path, commit: str, relative: str) -> bytes:
+def _git_regular_blob(
+    root: Path,
+    commit: str,
+    relative: str,
+    *,
+    allow_absent: bool = False,
+) -> bytes | None:
     try:
         entry = subprocess.run(
             ["git", "ls-tree", commit, "--", relative],
@@ -1553,7 +1796,13 @@ def _git_regular_blob(root: Path, commit: str, relative: str) -> bytes:
         raise GateEvidenceError(
             f"cannot inspect implementation-input blob: {relative}"
         ) from error
-    if not entry or "\t" not in entry:
+    if not entry:
+        if allow_absent:
+            return None
+        raise GateEvidenceError(
+            f"implementation-input commit has no file: {relative}"
+        )
+    if "\t" not in entry:
         raise GateEvidenceError(
             f"implementation-input commit has no file: {relative}"
         )
@@ -1617,11 +1866,42 @@ def _validated_input_rows(
             f"manifest source {relative}",
             strict=False,
         )
+        if (
+            relative != STAGE203_SUPPORT_MAP_PATH
+            and not path.is_file()
+        ):
+            raise GateEvidenceError(
+                f"missing computational input: {relative}"
+            )
+        committed = _git_regular_blob(
+            source_root,
+            commit,
+            relative,
+            allow_absent=(relative == STAGE203_SUPPORT_MAP_PATH),
+        )
+        if relative == STAGE203_SUPPORT_MAP_PATH and committed is None:
+            if path.exists():
+                raise GateEvidenceError(
+                    "recognized missing evidence does not match "
+                    "implementation-input commit: "
+                    f"{relative}"
+                )
+            rows.append(
+                {
+                    "path": relative,
+                    "availability": "MISSING_RECOGNIZED_EVIDENCE",
+                    "sha256": MISSING_STAGE203_EVIDENCE_HASH,
+                }
+            )
+            continue
+        if committed is None:
+            raise GateEvidenceError(
+                f"implementation-input commit has no file: {relative}"
+            )
         if not path.is_file():
             raise GateEvidenceError(
                 f"missing computational input: {relative}"
             )
-        committed = _git_regular_blob(source_root, commit, relative)
         working = path.read_bytes()
         if working != committed:
             raise GateEvidenceError(
@@ -1631,6 +1911,7 @@ def _validated_input_rows(
         rows.append(
             {
                 "path": relative,
+                "availability": "PRESENT",
                 "sha256": _sha256_bytes(committed),
             }
         )
@@ -1687,8 +1968,50 @@ def _mechanism_rows(
     )
 
 
+def _closeout_executable_rows(
+    input_rows: tuple[dict[str, str], ...],
+) -> tuple[dict[str, str], ...]:
+    by_path = {row["path"]: row for row in input_rows}
+    if set(CLOSEOUT_EXECUTABLE_ROLES) != set(
+        CLOSEOUT_EXECUTABLE_INPUTS
+    ):
+        raise GateEvidenceError(
+            "closeout executable role registry changed"
+        )
+    rows = []
+    for relative in CLOSEOUT_EXECUTABLE_INPUTS:
+        row = by_path.get(relative)
+        if row is None or row["availability"] != "PRESENT":
+            raise GateEvidenceError(
+                f"closeout executable is not a present bound input: "
+                f"{relative}"
+            )
+        rows.append(
+            {
+                "role": CLOSEOUT_EXECUTABLE_ROLES[relative],
+                "path": relative,
+                "sha256": row["sha256"],
+            }
+        )
+    return tuple(rows)
+
+
 def _report(result: GateResult, input_commit: str) -> str:
     summary = _summary_from_verified_result(result)
+    conversion_status = (
+        result.terminal_record.conversion_status
+        if result.terminal_record is not None
+        else result.decision_evidence.task3b_status
+    )
+    disposition = (
+        "This is a finite evidence-exhaustion closeout, not a mechanism "
+        "failure claim."
+        if result.decision == INCONCLUSIVE
+        else (
+            "This is a finite mechanism rejection, not a general "
+            "impossibility claim."
+        )
+    )
     return f"""# Candidate C Rank-Bounded Mechanism Gate
 
 ## Decision
@@ -1697,7 +2020,7 @@ def _report(result: GateResult, input_commit: str) -> str:
 
 Candidate C closes on the finite C1/C2 mechanism campaign. The hash-bound
 Task 3C terminal record is `{result.terminal_record_hash}` and records
-`{result.terminal_decision}`. C2 has `{NO_VERIFIED_TASK3B_RESULT}`.
+`{result.terminal_decision}`. C2 has `{conversion_status}`.
 
 ## Gate Summary
 
@@ -1712,9 +2035,9 @@ Task 3C terminal record is `{result.terminal_record_hash}` and records
 - Amdahl projection: `{summary["amdahl_status"]}`
 
 Task 4 is exactly `{SKIPPED}`. No complete-cost or Amdahl number is inferred.
-This is a finite mechanism rejection, not a general impossibility, security,
-noise, production, or bootstrapping-speedup claim. The exact-dense PVW/MAT-SAB
-implementation and its scoped measured result remain unchanged.
+{disposition} No security, noise, production, or bootstrapping-speedup claim
+is made. The exact-dense PVW/MAT-SAB implementation and its scoped measured
+result remain unchanged.
 
 ## Reproduction
 
@@ -1728,6 +2051,11 @@ python scripts/apply_candidate_c_rank_bounded_gate.py --input-commit {input_comm
 
 
 def _variant(result: GateResult, input_commit: str) -> str:
+    conversion_status = (
+        result.terminal_record.conversion_status
+        if result.terminal_record is not None
+        else result.decision_evidence.task3b_status
+    )
     return f"""# Candidate C Rank-Bounded Shared-Mask State
 
 The registered C1 equation uses `rho <= 2`, exact phase projections, the
@@ -1736,9 +2064,8 @@ Task 3A records for `r=2,4,6` all end at
 `{result.terminal_decision}`. The resulting Task 3C record is
 `{result.terminal_record_hash}`.
 
-C2 has no verified Task 3B conversion material. Task 4 therefore remains
-`{SKIPPED}` with blank numeric cost and Amdahl fields. Production permission
-is false.
+C2 status is `{conversion_status}`. Task 4 therefore remains `{SKIPPED}` with
+blank numeric cost and Amdahl fields. Production permission is false.
 
 Reproduce from implementation-input commit `{input_commit}` with
 `python scripts/run_candidate_c_rank_bounded_gate.py --input-commit {input_commit}`.
@@ -1746,12 +2073,17 @@ Reproduce from implementation-input commit `{input_commit}` with
 
 
 def _experiment(result: GateResult, input_commit: str) -> str:
+    conversion_status = (
+        result.terminal_record.conversion_status
+        if result.terminal_record is not None
+        else result.decision_evidence.task3b_status
+    )
     return f"""# Candidate C Rank-Bounded Gate Plan
 
 1. Recompute the C1 operator tensor for `r=2,4,6`.
 2. Bind source, equations, symbolic relations, phase, schedule, rank, and
    compression/structural cost in one canonical summary.
-3. Preserve `{NO_VERIFIED_TASK3B_RESULT}` for C2.
+3. Preserve `{conversion_status}` for C2.
 4. Preserve `{SKIPPED}` for Task 4 without numeric substitution.
 5. Apply `{result.decision}` atomically to the research state and ledgers.
 
@@ -1946,8 +2278,13 @@ def _render_gate_artifacts(
         )
     _write_csv(
         out / "input_manifest.csv",
-        ("path", "sha256"),
+        ("path", "availability", "sha256"),
         input_rows,
+    )
+    _write_csv(
+        out / "closeout_executable_manifest.csv",
+        ("role", "path", "sha256"),
+        _closeout_executable_rows(input_rows),
     )
     _write_csv(
         out / "environment.csv",
@@ -1968,7 +2305,6 @@ Implementation-input commit: `{input_commit}`
 ```text
 python scripts/run_candidate_c_rank_bounded_gate.py --input-commit {input_commit}
 python scripts/apply_candidate_c_rank_bounded_gate.py --input-commit {input_commit}
-python scripts/build_mat_sab_selector_techgraph.py --input-commit {input_commit}
 python -m unittest discover -s tests/research -p "test_*.py" -v
 python scripts/mat_sab_research_state.py validate
 git diff --check

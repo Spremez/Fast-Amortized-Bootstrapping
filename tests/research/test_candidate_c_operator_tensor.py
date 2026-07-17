@@ -87,6 +87,64 @@ class MutatedRoot:
         self.temporary.cleanup()
 
 
+class MissingEvidenceRoutingTests(unittest.TestCase):
+    def test_missing_stage203_support_map_emits_typed_hash_bound_exhaustion(self):
+        mutated = MutatedRoot()
+        try:
+            missing = (
+                mutated.root
+                / "repro/stage203_production_selector_equation_probe/"
+                "equation_map.csv"
+            )
+            missing.unlink()
+            first = run_c1_operator_gate(mutated.root, 4, PRIME)
+            second = run_c1_operator_gate(mutated.root, 4, PRIME)
+            verified = (
+                operator_tensor.verify_task3a_evidence_exhaustion(
+                    first,
+                    mutated.root,
+                )
+            )
+        finally:
+            mutated.close()
+
+        self.assertIsInstance(
+            first,
+            operator_tensor.Task3AEvidenceExhaustion,
+        )
+        self.assertEqual(
+            first.condition,
+            operator_tensor.MISSING_STAGE203_SUPPORT_MAP,
+        )
+        self.assertEqual(
+            first.missing_path,
+            "repro/stage203_production_selector_equation_probe/"
+            "equation_map.csv",
+        )
+        self.assertEqual(
+            first.decision,
+            operator_tensor.TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED,
+        )
+        self.assertEqual(first, second)
+        self.assertTrue(verified)
+        self.assertRegex(first.missing_evidence_hash, r"^[0-9a-f]{64}$")
+        self.assertRegex(first.record_hash, r"^[0-9a-f]{64}$")
+
+    def test_other_missing_or_tampered_task3a_inputs_do_not_become_inconclusive(self):
+        for relative in (
+            "repro/stage222_isolated_compact_ep_integration/proof_gate.csv",
+            "src/mosfhet/src/mattrgsw.c",
+        ):
+            mutated = MutatedRoot()
+            try:
+                (mutated.root / relative).unlink()
+                with self.subTest(relative=relative):
+                    with self.assertRaises((OSError, SourceBindingError)):
+                        run_c1_operator_gate(mutated.root, 4, PRIME)
+            finally:
+                mutated.close()
+
+
 class ExactRingAndPhaseProjectionTests(unittest.TestCase):
     def test_negacyclic_multiplication_wraps_x_to_the_eighth_as_minus_one(self):
         x = (0, 1, 0, 0, 0, 0, 0, 0)

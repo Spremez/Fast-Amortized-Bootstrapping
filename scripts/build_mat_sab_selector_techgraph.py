@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -53,6 +54,15 @@ NODE_SPECS = (
     ("neighbor_gap", "repro/stage222_isolated_compact_ep_integration/expressiveness_results.csv", "", "lane-local API lacks neighbor-capable selector"),
     ("distribution_blocker", "repro/stage249_structured_compact_distribution_security/claim_boundary.csv", "", "public compact-saving pattern remains distinguishable"),
     ("finite_semantic_zero", "repro/stage329_formal_compact_selector_checker/summary.csv", "", "finite semantic-zero pass with security open"),
+)
+SELECTOR_SOURCE_STATE_INPUTS = tuple(
+    sorted(
+        {
+            *SELECTOR_IMPLEMENTATION_INPUTS,
+            "research_state.yaml",
+            *(spec[1] for spec in NODE_SPECS),
+        }
+    )
 )
 
 EDGES = (
@@ -126,7 +136,11 @@ def _load_state_safe(root: Path) -> dict[str, object]:
     return load_state(state_path)
 
 
-def _node(root: Path, spec: tuple[str, str, str, str]) -> dict[str, object]:
+def _node(
+    root: Path,
+    spec: tuple[str, str, str, str],
+    source_hashes: Mapping[str, str] | None = None,
+) -> dict[str, object]:
     node_id, relative, needle, role = spec
     path = _safe_source_file(
         root,
@@ -137,12 +151,21 @@ def _node(root: Path, spec: tuple[str, str, str, str]) -> dict[str, object]:
         not needle
         or needle in path.read_text(encoding="utf-8", errors="replace")
     )
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    if (
+        source_hashes is not None
+        and source_hashes.get(relative) != digest
+    ):
+        raise GateEvidenceError(
+            f"selector node source hash changed: {relative}"
+        )
     return {
         "id": node_id,
         "path": relative,
         "symbol_or_token": needle,
         "role": role,
         "anchor_status": "PASS" if contains else "FAIL",
+        "sha256": digest,
     }
 
 
@@ -223,26 +246,38 @@ def _campaign_view(state: Mapping[str, object]) -> dict[str, object]:
 def build_graph(
     root: Path = ROOT,
     *,
-    input_commit: str,
+    source_state_commit: str,
 ) -> dict[str, object]:
     source_root = _resolved_directory(root, "selector source root")
-    resolved_commit, _input_rows = _validated_input_rows(
+    resolved_commit, input_rows = _validated_input_rows(
         source_root,
-        input_commit,
-        SELECTOR_IMPLEMENTATION_INPUTS,
+        source_state_commit,
+        SELECTOR_SOURCE_STATE_INPUTS,
     )
+    if any(row["availability"] != "PRESENT" for row in input_rows):
+        raise GateEvidenceError(
+            "selector source/state manifest requires present files"
+        )
+    source_hashes = {
+        row["path"]: row["sha256"] for row in input_rows
+    }
     state = _load_state_safe(source_root)
     graph = {
-        "schema_version": 1,
+        "schema_version": 2,
         "contract": state["contract"],
         "candidate": "A",
         "production_code_permission": state["production_hot_path_permission"],
-        "implementation_input_commit": resolved_commit,
+        "selector_source_state_commit": resolved_commit,
+        "selector_source_manifest": list(input_rows),
+        "research_state_sha256": source_hashes["research_state.yaml"],
         "reproduction_command": (
             "python scripts/build_mat_sab_selector_techgraph.py "
-            f"--input-commit {resolved_commit}"
+            f"--source-state-commit {resolved_commit}"
         ),
-        "nodes": [_node(source_root, spec) for spec in NODE_SPECS],
+        "nodes": [
+            _node(source_root, spec, source_hashes)
+            for spec in NODE_SPECS
+        ],
         "edges": [
             {"from": source, "to": target, "relation": relation}
             for source, target, relation in EDGES
@@ -469,11 +504,11 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--destination-root", type=Path)
-    parser.add_argument("--input-commit", required=True)
+    parser.add_argument("--source-state-commit", required=True)
     args = parser.parse_args()
     graph = build_graph(
         args.root,
-        input_commit=args.input_commit,
+        source_state_commit=args.source_state_commit,
     )
     failed = [node["id"] for node in graph["nodes"] if node["anchor_status"] != "PASS"]
     if failed:

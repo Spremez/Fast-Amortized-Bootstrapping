@@ -41,6 +41,16 @@ REJECT_C1_REGISTERED_SHORT_ERROR_RELATION_TERMINAL = (
 TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED = (
     "TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED"
 )
+MISSING_STAGE203_SUPPORT_MAP = "MISSING_STAGE203_SUPPORT_MAP"
+STAGE203_SUPPORT_MAP_PATH = (
+    "repro/stage203_production_selector_equation_probe/equation_map.csv"
+)
+TASK3A_EVIDENCE_EXHAUSTION_SCHEMA = (
+    "candidate-c-task-3a-evidence-exhaustion-v1"
+)
+_MISSING_EVIDENCE_HASH_DOMAIN = (
+    "candidate-c/task3a/missing-evidence/v1"
+)
 
 RELATION_RECORDED_NO_SECURITY_DECISION = (
     "RELATION_RECORDED_NO_SECURITY_DECISION"
@@ -157,6 +167,34 @@ class SourceBinding:
     sha256: str
     classification: str
     required_tokens: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class Task3AEvidenceExhaustion:
+    schema: str
+    r: int
+    rho: int
+    modulus: int
+    n: int
+    gadget: tuple[int, ...]
+    condition: str
+    missing_path: str
+    missing_evidence_hash: str
+    decision: str
+    record_hash: str
+
+    def recomputed_hash(self) -> str:
+        return _sha256_json(_evidence_exhaustion_payload(self))
+
+    def canonical_bytes(self) -> bytes:
+        _validate_evidence_exhaustion_types(self, require_hash=True)
+        return json.dumps(
+            _evidence_exhaustion_payload(self),
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=True,
+            allow_nan=False,
+        ).encode("ascii")
 
 
 @dataclass(frozen=True)
@@ -1604,6 +1642,152 @@ def _read_bound_file(root: Path, relative_path: str) -> bytes:
         ) from error
 
 
+def _missing_evidence_hash(condition: str, relative_path: str) -> str:
+    payload = (
+        f"{_MISSING_EVIDENCE_HASH_DOMAIN}\0"
+        f"{condition}\0{relative_path}"
+    ).encode("ascii")
+    return hashlib.sha256(payload).hexdigest()
+
+
+MISSING_STAGE203_EVIDENCE_HASH = _missing_evidence_hash(
+    MISSING_STAGE203_SUPPORT_MAP,
+    STAGE203_SUPPORT_MAP_PATH,
+)
+
+
+def _evidence_exhaustion_payload(
+    exhaustion: Task3AEvidenceExhaustion,
+) -> dict[str, object]:
+    return {
+        "schema": exhaustion.schema,
+        "r": exhaustion.r,
+        "rho": exhaustion.rho,
+        "modulus": exhaustion.modulus,
+        "n": exhaustion.n,
+        "gadget": exhaustion.gadget,
+        "condition": exhaustion.condition,
+        "missing_path": exhaustion.missing_path,
+        "missing_evidence_hash": exhaustion.missing_evidence_hash,
+        "decision": exhaustion.decision,
+    }
+
+
+def _validate_evidence_exhaustion_types(
+    exhaustion: Task3AEvidenceExhaustion,
+    *,
+    require_hash: bool,
+) -> None:
+    if type(exhaustion) is not Task3AEvidenceExhaustion:
+        raise TypeError("Task 3A evidence exhaustion type changed")
+    for name in (
+        "schema",
+        "condition",
+        "missing_path",
+        "missing_evidence_hash",
+        "decision",
+        "record_hash",
+    ):
+        if type(getattr(exhaustion, name)) is not str:
+            raise TypeError(f"{name} must be str")
+    for name in ("r", "rho", "modulus", "n"):
+        if type(getattr(exhaustion, name)) is not int:
+            raise TypeError(f"{name} must be int")
+    if (
+        type(exhaustion.gadget) is not tuple
+        or any(type(value) is not int for value in exhaustion.gadget)
+    ):
+        raise TypeError("gadget must be a tuple of int")
+    digests = (exhaustion.missing_evidence_hash,)
+    if require_hash:
+        digests += (exhaustion.record_hash,)
+    if any(
+        len(digest) != 64
+        or any(character not in "0123456789abcdef" for character in digest)
+        for digest in digests
+    ):
+        raise ValueError("evidence exhaustion hashes must be lowercase SHA-256")
+
+
+def _stage203_path(root: Path) -> Path:
+    try:
+        source_root = root.resolve(strict=True)
+        path = (source_root / STAGE203_SUPPORT_MAP_PATH).resolve(
+            strict=False
+        )
+    except OSError as error:
+        raise SourceBindingError(
+            "cannot resolve Task 3A evidence boundary"
+        ) from error
+    if not source_root.is_dir() or not path.is_relative_to(source_root):
+        raise SourceBindingError(
+            "Stage203 support-only map escapes the source root"
+        )
+    return path
+
+
+def _recognized_evidence_exhaustion(
+    root: Path,
+    r: int,
+    modulus: int,
+) -> Task3AEvidenceExhaustion | None:
+    path = _stage203_path(root)
+    if path.exists():
+        return None
+    rho = min(2, r - 1)
+    provisional = Task3AEvidenceExhaustion(
+        schema=TASK3A_EVIDENCE_EXHAUSTION_SCHEMA,
+        r=r,
+        rho=rho,
+        modulus=modulus,
+        n=RING_DEGREE,
+        gadget=DEFAULT_GADGET,
+        condition=MISSING_STAGE203_SUPPORT_MAP,
+        missing_path=STAGE203_SUPPORT_MAP_PATH,
+        missing_evidence_hash=MISSING_STAGE203_EVIDENCE_HASH,
+        decision=TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED,
+        record_hash="",
+    )
+    return replace(
+        provisional,
+        record_hash=provisional.recomputed_hash(),
+    )
+
+
+def verify_task3a_evidence_exhaustion(
+    exhaustion: Task3AEvidenceExhaustion,
+    root: Path | str,
+) -> bool:
+    try:
+        _validate_evidence_exhaustion_types(
+            exhaustion,
+            require_hash=True,
+        )
+        if (
+            exhaustion.schema != TASK3A_EVIDENCE_EXHAUSTION_SCHEMA
+            or exhaustion.r not in (2, 4, 6)
+            or exhaustion.rho != min(2, exhaustion.r - 1)
+            or exhaustion.modulus != RING_MODULUS
+            or exhaustion.n != RING_DEGREE
+            or exhaustion.gadget != DEFAULT_GADGET
+            or exhaustion.condition != MISSING_STAGE203_SUPPORT_MAP
+            or exhaustion.missing_path != STAGE203_SUPPORT_MAP_PATH
+            or exhaustion.missing_evidence_hash
+            != MISSING_STAGE203_EVIDENCE_HASH
+            or exhaustion.decision
+            != TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED
+            or exhaustion.record_hash != exhaustion.recomputed_hash()
+        ):
+            return False
+        return exhaustion == _recognized_evidence_exhaustion(
+            Path(root),
+            exhaustion.r,
+            exhaustion.modulus,
+        )
+    except (OSError, TypeError, ValueError):
+        return False
+
+
 def _bind_text(
     root: Path,
     *,
@@ -1635,10 +1819,7 @@ def _bind_text(
 
 
 def _bind_stage203_support(root: Path) -> SourceBinding:
-    relative_path = (
-        "repro/stage203_production_selector_equation_probe/"
-        "equation_map.csv"
-    )
+    relative_path = STAGE203_SUPPORT_MAP_PATH
     content = _read_bound_file(root, relative_path)
     try:
         rows = tuple(
@@ -1967,13 +2148,20 @@ def run_c1_operator_gate(
     root: Path | str,
     r: int,
     modulus: int,
-) -> OperatorGateResult:
+) -> OperatorGateResult | Task3AEvidenceExhaustion:
     """Build K_0/K_1 and derive exactly one Task 3A decision."""
 
     _validate_exact_ring(RING_DEGREE, modulus)
     if type(r) is not int or r not in (2, 4, 6):
         raise ValueError("r must be one of 2, 4, 6")
     root_path = Path(root)
+    exhaustion = _recognized_evidence_exhaustion(
+        root_path,
+        r,
+        modulus,
+    )
+    if exhaustion is not None:
+        return exhaustion
     bindings = _source_bindings(root_path)
     schedule_hash = _schedule_hash(root_path)
     rho = min(2, r - 1)

@@ -15,6 +15,7 @@ import math
 from collections import Counter
 from collections.abc import Mapping
 from dataclasses import dataclass, fields, is_dataclass, replace
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -27,7 +28,9 @@ from .candidate_c_operator_tensor import (
     ROUTE_PHASE_CORRECT_HIGH_RANK_OPERATOR_TO_C2,
     TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED,
     OperatorGateResult,
+    Task3AEvidenceExhaustion,
     run_c1_operator_gate,
+    verify_task3a_evidence_exhaustion,
     verify_operator_gate_result,
 )
 from .candidate_c_schedule import (
@@ -47,6 +50,12 @@ CONVERSION_SCHEMA = "candidate-c-task-3c-rejected-conversion-v1"
 CONVERSION_DOMAIN = "candidate-c/rejected-conversion-envelope"
 TERMINAL_SCHEMA = "candidate-c-task-3c-terminal-v2"
 TERMINAL_DOMAIN = "candidate-c/terminal-record"
+INCONCLUSIVE_TERMINAL_SCHEMA = (
+    "candidate-c-task-3c-inconclusive-terminal-v1"
+)
+INCONCLUSIVE_TERMINAL_DOMAIN = (
+    "candidate-c/inconclusive-terminal-record"
+)
 
 SKIPPED_NO_REGISTERED_OPERATOR = "SKIPPED_NO_REGISTERED_OPERATOR"
 NO_VERIFIED_TASK3B_RESULT = "NO_VERIFIED_TASK3B_RESULT"
@@ -99,6 +108,12 @@ _CONVERSION_HASH_DOMAIN = "candidate-c/rejected-conversion-envelope/hash"
 _CONVERSION_BYTES_DOMAIN = "candidate-c/rejected-conversion-envelope/bytes"
 _TERMINAL_HASH_DOMAIN = "candidate-c/terminal-record/hash"
 _TERMINAL_BYTES_DOMAIN = "candidate-c/terminal-record/bytes"
+_INCONCLUSIVE_TERMINAL_HASH_DOMAIN = (
+    "candidate-c/inconclusive-terminal-record/hash"
+)
+_INCONCLUSIVE_TERMINAL_BYTES_DOMAIN = (
+    "candidate-c/inconclusive-terminal-record/bytes"
+)
 
 
 def _typed_value(value: Any) -> dict[str, Any]:
@@ -477,6 +492,58 @@ class CandidateCTerminalRecord:
         return True
 
 
+@dataclass(frozen=True)
+class CandidateCInconclusiveTerminalRecord:
+    schema: str
+    canonical_version: str
+    canonical_domain: str
+    classification: str
+    decision: str
+    replay_status: str
+    task4_status: str
+    conversion_status: str
+    r_values: tuple[int, ...]
+    evidence_exhaustions: tuple[Task3AEvidenceExhaustion, ...]
+    schedule_hash: str
+    schedule_event_digest: str
+    state_edge_digest: str
+    h: int
+    monomial_calls: int
+    r_prec: int
+    in_N: int
+    selector_events: int
+    ncmux_events: int
+    cmux_events: int
+    butterfly_boundaries: int
+    monomial_boundaries: int
+    sub_a_boundaries: int
+    record_hash: str
+
+    def recomputed_hash(self) -> str:
+        _validate_inconclusive_terminal_types(self, require_hash=False)
+        return _sha256(
+            _INCONCLUSIVE_TERMINAL_HASH_DOMAIN,
+            _inconclusive_terminal_payload(self),
+        )
+
+    def canonical_bytes(self) -> bytes:
+        _validate_inconclusive_terminal_types(self, require_hash=True)
+        return _canonical_bytes(
+            _INCONCLUSIVE_TERMINAL_BYTES_DOMAIN,
+            self,
+        )
+
+    def validate(self, root: Path | str) -> None:
+        _validate_inconclusive_terminal_record(self, root)
+
+    def verify(self, root: Path | str) -> bool:
+        try:
+            self.validate(root)
+        except (TypeError, ValueError):
+            return False
+        return True
+
+
 def _validate_string_tuple(value: Any, name: str) -> None:
     _require_tuple(value, name)
     if any(type(item) is not str for item in value):
@@ -582,8 +649,10 @@ def _event_bytes(event: ScheduleEvent) -> bytes:
     return _canonical_bytes(_EVENT_DOMAIN, event)
 
 
-def _schedule_binding(root: Path | str) -> _ScheduleBinding:
-    schedule = load_binary_target_schedule(root)
+@lru_cache(maxsize=16)
+def _schedule_binding_for_schedule(
+    schedule: BinaryTargetSchedule,
+) -> _ScheduleBinding:
     if type(schedule) is not BinaryTargetSchedule:
         raise TypeError("binary schedule type changed")
     event_hasher = hashlib.sha256()
@@ -629,6 +698,12 @@ def _schedule_binding(root: Path | str) -> _ScheduleBinding:
                 f"{getattr(binding, field)} != {expected}"
             )
     return binding
+
+
+def _schedule_binding(root: Path | str) -> _ScheduleBinding:
+    return _schedule_binding_for_schedule(
+        load_binary_target_schedule(root)
+    )
 
 
 def _presented_evidence_error(operator_result: Any) -> str:
@@ -852,6 +927,12 @@ def replay_registered_operator(
 ) -> RegisteredScheduleTrace | None:
     """Return no trace unless a future real executor replaces this boundary."""
 
+    if type(operator_result) is Task3AEvidenceExhaustion:
+        if conversion_result is not None:
+            _reject_conversion_input(conversion_result)
+        if not verify_task3a_evidence_exhaustion(operator_result, root):
+            raise ValueError("Task 3A evidence exhaustion failed verification")
+        return None
     if type(operator_result) is not OperatorGateResult:
         raise ValueError(_presented_evidence_error(operator_result))
     if conversion_result is not None:
@@ -884,6 +965,14 @@ def registered_operator_for_task4(
         raise NoRegisteredCandidateCOperator(
             NO_VERIFIED_ARTIFACT_TASK3A_RECOMPUTATION_FAILED
         ) from exc
+    if all(
+        type(result) is Task3AEvidenceExhaustion
+        and verify_task3a_evidence_exhaustion(result, root)
+        for result in results
+    ):
+        raise NoRegisteredCandidateCOperator(
+            TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED
+        )
     if any(type(result) is not OperatorGateResult for result in results):
         raise NoRegisteredCandidateCOperator(
             NO_VERIFIED_ARTIFACT_UNEXPECTED_RESULT_TYPE
@@ -908,6 +997,73 @@ def _terminal_payload(
         for field in fields(record)
         if field.name != "record_hash"
     }
+
+
+def _inconclusive_terminal_payload(
+    record: CandidateCInconclusiveTerminalRecord,
+) -> dict[str, Any]:
+    return {
+        field.name: getattr(record, field.name)
+        for field in fields(record)
+        if field.name != "record_hash"
+    }
+
+
+def _validate_inconclusive_terminal_types(
+    record: CandidateCInconclusiveTerminalRecord,
+    *,
+    require_hash: bool,
+) -> None:
+    if type(record) is not CandidateCInconclusiveTerminalRecord:
+        raise TypeError("inconclusive terminal record type changed")
+    for name in (
+        "schema",
+        "canonical_version",
+        "canonical_domain",
+        "classification",
+        "decision",
+        "replay_status",
+        "task4_status",
+        "conversion_status",
+        "schedule_hash",
+        "schedule_event_digest",
+        "state_edge_digest",
+        "record_hash",
+    ):
+        _require_str(getattr(record, name), name)
+    _require_tuple(record.r_values, "r_values")
+    if any(type(value) is not int for value in record.r_values):
+        raise TypeError("r_values entries must be int")
+    _require_tuple(record.evidence_exhaustions, "evidence_exhaustions")
+    if any(
+        type(result) is not Task3AEvidenceExhaustion
+        for result in record.evidence_exhaustions
+    ):
+        raise TypeError(
+            "evidence_exhaustions entries must be "
+            "Task3AEvidenceExhaustion"
+        )
+    for name in (
+        "h",
+        "monomial_calls",
+        "r_prec",
+        "in_N",
+        "selector_events",
+        "ncmux_events",
+        "cmux_events",
+        "butterfly_boundaries",
+        "monomial_boundaries",
+        "sub_a_boundaries",
+    ):
+        _require_int(getattr(record, name), name)
+    for name in (
+        "schedule_hash",
+        "schedule_event_digest",
+        "state_edge_digest",
+    ):
+        _require_digest(getattr(record, name), name)
+    if require_hash:
+        _require_digest(record.record_hash, "record_hash")
 
 
 def _validate_terminal_types(
@@ -972,13 +1128,10 @@ def _terminal_classification(decision: str) -> str:
     raise ValueError("Task 3A decision does not route to Task 5")
 
 
-def _build_terminal_record(root: Path | str) -> CandidateCTerminalRecord:
-    results = tuple(
-        run_c1_operator_gate(root, r, RING_MODULUS)
-        for r in _EXPECTED_R_VALUES
-    )
-    if any(type(result) is not OperatorGateResult for result in results):
-        raise TypeError("recomputed Task 3A result type changed")
+def _build_rejection_terminal_record(
+    root: Path | str,
+    results: tuple[OperatorGateResult, ...],
+) -> CandidateCTerminalRecord:
     if not all(verify_operator_gate_result(result) for result in results):
         raise ValueError("recomputed Task 3A result failed verification")
     decisions = tuple(result.decision for result in results)
@@ -1022,6 +1175,68 @@ def _build_terminal_record(root: Path | str) -> CandidateCTerminalRecord:
         provisional,
         record_hash=provisional.recomputed_hash(),
     )
+
+
+def _build_inconclusive_terminal_record(
+    root: Path | str,
+    exhaustions: tuple[Task3AEvidenceExhaustion, ...],
+) -> CandidateCInconclusiveTerminalRecord:
+    if not all(
+        verify_task3a_evidence_exhaustion(exhaustion, root)
+        for exhaustion in exhaustions
+    ):
+        raise ValueError("Task 3A evidence exhaustion failed verification")
+    if tuple(exhaustion.r for exhaustion in exhaustions) != _EXPECTED_R_VALUES:
+        raise ValueError("Task 3A evidence exhaustion ranks changed")
+    if {
+        exhaustion.decision for exhaustion in exhaustions
+    } != {TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED}:
+        raise ValueError("Task 3A evidence exhaustion decision changed")
+    schedule = _schedule_binding(root)
+    provisional = CandidateCInconclusiveTerminalRecord(
+        schema=INCONCLUSIVE_TERMINAL_SCHEMA,
+        canonical_version=CANONICAL_VERSION,
+        canonical_domain=INCONCLUSIVE_TERMINAL_DOMAIN,
+        classification="INCONCLUSIVE",
+        decision=TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED,
+        replay_status=SKIPPED_NO_REGISTERED_OPERATOR,
+        task4_status=SKIPPED_NO_REGISTERED_OPERATOR,
+        conversion_status="EVIDENCE_EXHAUSTED",
+        r_values=_EXPECTED_R_VALUES,
+        evidence_exhaustions=exhaustions,
+        schedule_hash=schedule.schedule_hash,
+        schedule_event_digest=schedule.schedule_event_digest,
+        state_edge_digest=schedule.state_edge_digest,
+        h=schedule.h,
+        monomial_calls=schedule.monomial_calls,
+        r_prec=schedule.r_prec,
+        in_N=schedule.in_N,
+        selector_events=schedule.selector_events,
+        ncmux_events=schedule.ncmux_events,
+        cmux_events=schedule.cmux_events,
+        butterfly_boundaries=schedule.butterfly_boundaries,
+        monomial_boundaries=schedule.monomial_boundaries,
+        sub_a_boundaries=schedule.sub_a_boundaries,
+        record_hash="",
+    )
+    return replace(
+        provisional,
+        record_hash=provisional.recomputed_hash(),
+    )
+
+
+def _build_terminal_record(
+    root: Path | str,
+) -> CandidateCTerminalRecord | CandidateCInconclusiveTerminalRecord:
+    results = tuple(
+        run_c1_operator_gate(root, r, RING_MODULUS)
+        for r in _EXPECTED_R_VALUES
+    )
+    if all(type(result) is OperatorGateResult for result in results):
+        return _build_rejection_terminal_record(root, results)
+    if all(type(result) is Task3AEvidenceExhaustion for result in results):
+        return _build_inconclusive_terminal_record(root, results)
+    raise TypeError("recomputed Task 3A result types differ")
 
 
 def _validate_terminal_record(
@@ -1098,9 +1313,73 @@ def _validate_terminal_record(
         raise ValueError("terminal record hash changed")
 
 
+def _validate_inconclusive_terminal_record(
+    record: CandidateCInconclusiveTerminalRecord,
+    root: Path | str,
+) -> None:
+    _validate_inconclusive_terminal_types(record, require_hash=True)
+    if (
+        record.schema != INCONCLUSIVE_TERMINAL_SCHEMA
+        or record.canonical_version != CANONICAL_VERSION
+        or record.canonical_domain != INCONCLUSIVE_TERMINAL_DOMAIN
+    ):
+        raise ValueError("inconclusive terminal canonical contract changed")
+    if (
+        record.classification != "INCONCLUSIVE"
+        or record.decision
+        != TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED
+        or record.replay_status != SKIPPED_NO_REGISTERED_OPERATOR
+        or record.task4_status != SKIPPED_NO_REGISTERED_OPERATOR
+        or record.conversion_status != "EVIDENCE_EXHAUSTED"
+        or record.r_values != _EXPECTED_R_VALUES
+    ):
+        raise ValueError("inconclusive terminal fields changed")
+
+    schedule = _schedule_binding(root)
+    schedule_fields = (
+        "schedule_hash",
+        "schedule_event_digest",
+        "state_edge_digest",
+        "h",
+        "monomial_calls",
+        "r_prec",
+        "in_N",
+        "selector_events",
+        "ncmux_events",
+        "cmux_events",
+        "butterfly_boundaries",
+        "monomial_boundaries",
+        "sub_a_boundaries",
+    )
+    if any(
+        getattr(record, field) != getattr(schedule, field)
+        for field in schedule_fields
+    ):
+        raise ValueError("inconclusive Task 3 schedule binding changed")
+
+    recomputed = tuple(
+        run_c1_operator_gate(root, r, RING_MODULUS)
+        for r in _EXPECTED_R_VALUES
+    )
+    if (
+        any(
+            type(result) is not Task3AEvidenceExhaustion
+            for result in recomputed
+        )
+        or record.evidence_exhaustions != recomputed
+        or not all(
+            verify_task3a_evidence_exhaustion(result, root)
+            for result in record.evidence_exhaustions
+        )
+    ):
+        raise ValueError("Task 3A evidence exhaustion changed")
+    if record.record_hash != record.recomputed_hash():
+        raise ValueError("inconclusive terminal record hash changed")
+
+
 def terminal_record_for_task5(
     root: Path | str,
-) -> CandidateCTerminalRecord:
+) -> CandidateCTerminalRecord | CandidateCInconclusiveTerminalRecord:
     """Return the canonical scoped terminal record for Candidate C Task 5."""
 
     return _build_terminal_record(root)

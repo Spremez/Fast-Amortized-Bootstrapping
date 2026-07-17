@@ -45,6 +45,32 @@ def candidate_b_state(state, status):
     return state
 
 
+def candidate_c_state(state, status, *, terminal=False):
+    state["goal_status"] = (
+        "RESEARCH_CAMPAIGN_EXHAUSTED"
+        if status == "REJECTED"
+        else (
+            "RESEARCH_CAMPAIGN_INCONCLUSIVE"
+            if status == "INCONCLUSIVE"
+            else "ACTIVE"
+        )
+    )
+    state["paper_gate"] = "BLOCKED"
+    state["production_hot_path_permission"] = False
+    state["active_candidate"] = "C"
+    state["last_decision"] = "TEST_CANDIDATE_C_STATE"
+    state["candidates"]["A"]["status"] = "REJECTED"
+    state["candidates"]["B"]["status"] = "REJECTED"
+    state["candidates"]["C"]["status"] = status
+    for candidate in state["candidates"].values():
+        candidate["equation_revisions_used"] = 0
+        candidate["kernel_layouts_used"] = 0
+        candidate["full_sab_integrations_used"] = 0
+    if terminal:
+        state["candidates"]["C"]["equation_revisions_used"] = 1
+    return state
+
+
 class ResearchStateTests(unittest.TestCase):
     def test_candidate_state_helpers_normalize_all_mutable_fields(self):
         cases = (
@@ -309,6 +335,7 @@ class ResearchStateTests(unittest.TestCase):
         state["candidates"]["A"]["status"] = "REJECTED"
         state["candidates"]["B"]["status"] = "REJECTED"
         state["candidates"]["C"]["status"] = "INCONCLUSIVE"
+        state["candidates"]["C"]["equation_revisions_used"] = 1
         state["paper_gate"] = "BLOCKED"
         state["production_hot_path_permission"] = False
         validate_state(state)
@@ -331,6 +358,7 @@ class ResearchStateTests(unittest.TestCase):
                 state["candidates"]["A"]["status"] = "REJECTED"
                 state["candidates"]["B"]["status"] = "REJECTED"
                 state["candidates"]["C"]["status"] = "INCONCLUSIVE"
+                state["candidates"]["C"]["equation_revisions_used"] = 1
                 state["paper_gate"] = "BLOCKED"
                 state["production_hot_path_permission"] = False
                 if field.startswith("candidate_"):
@@ -347,6 +375,7 @@ class ResearchStateTests(unittest.TestCase):
         state["candidates"]["A"]["status"] = "REJECTED"
         state["candidates"]["B"]["status"] = "REJECTED"
         state["candidates"]["C"]["status"] = "INTAKE"
+        state["candidates"]["C"]["equation_revisions_used"] = 0
         state["paper_gate"] = "BLOCKED"
         state["production_hot_path_permission"] = False
         changed = transition_candidate(
@@ -361,9 +390,83 @@ class ResearchStateTests(unittest.TestCase):
         )
         self.assertEqual(changed["active_candidate"], "C")
         self.assertEqual(changed["candidates"]["C"]["status"], "INCONCLUSIVE")
+        self.assertEqual(
+            changed["candidates"]["C"]["equation_revisions_used"],
+            1,
+        )
         self.assertEqual(changed["paper_gate"], "BLOCKED")
         self.assertFalse(changed["production_hot_path_permission"])
         validate_state(changed)
+
+    def test_candidate_c_precloseout_states_require_zero_equation_revisions(self):
+        for status in ("INTAKE", "TECHGRAPH_ANCHORED", "EQUATIONS_DEFINED"):
+            with self.subTest(status=status):
+                state = candidate_c_state(
+                    load_state(ROOT / "research_state.yaml"),
+                    status,
+                )
+                validate_state(state)
+                state["candidates"]["C"]["equation_revisions_used"] = 1
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "Candidate C equation revision",
+                ):
+                    validate_state(state)
+
+    def test_candidate_c_terminal_states_require_one_equation_revision(self):
+        for status in (
+            "ADVERSARIAL_CHECKER_PASS",
+            "KEY_SECURITY_NOISE_PREFLIGHT_PASS",
+            "AMDAHL_PROJECTION_PASS",
+            "ISOLATED_KERNEL_PASS",
+            "FULL_SAB_PASS",
+            "PAPER_GATE_PASS",
+            "REJECTED",
+            "INCONCLUSIVE",
+        ):
+            with self.subTest(status=status):
+                state = candidate_c_state(
+                    load_state(ROOT / "research_state.yaml"),
+                    status,
+                    terminal=True,
+                )
+                if status == "PAPER_GATE_PASS":
+                    state["goal_status"] = "PAPER_READY"
+                    state["paper_gate"] = "PASS"
+                validate_state(state)
+                state["candidates"]["C"]["equation_revisions_used"] = 0
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "Candidate C equation revision",
+                ):
+                    validate_state(state)
+
+    def test_candidate_c_closeout_transitions_consume_exactly_one_revision(self):
+        for status in (
+            "ADVERSARIAL_CHECKER_PASS",
+            "REJECTED",
+            "INCONCLUSIVE",
+        ):
+            with self.subTest(status=status):
+                state = candidate_c_state(
+                    load_state(ROOT / "research_state.yaml"),
+                    "EQUATIONS_DEFINED",
+                )
+                changed = transition_candidate(
+                    state,
+                    "C",
+                    status,
+                    f"TEST_CANDIDATE_C_{status}",
+                )
+                self.assertEqual(
+                    state["candidates"]["C"]["equation_revisions_used"],
+                    0,
+                )
+                self.assertEqual(
+                    changed["candidates"]["C"]["equation_revisions_used"],
+                    1,
+                )
+                validate_state(changed)
 
     def test_json_valid_yaml_round_trip(self):
         state = load_state(ROOT / "research_state.yaml")

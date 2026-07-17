@@ -56,6 +56,7 @@ EXPECTED_ARTIFACTS = {
     "proof_gate.csv",
     "decision_evidence.json",
     "input_manifest.csv",
+    "closeout_executable_manifest.csv",
     "environment.csv",
     "artifact_index.csv",
     "reproduction_commands.md",
@@ -72,6 +73,8 @@ EXPECTED_COMPUTATIONAL_INPUTS = (
     "research/mat_sab/finite_linear.py",
     "research/mat_sab/rank_bounded_state_model.py",
     "research/mat_sab/star_cycle_model.py",
+    "scripts/apply_candidate_c_rank_bounded_gate.py",
+    "scripts/mat_sab_research_state.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
     "src/mosfhet/Makefile.def",
     "src/mosfhet/src/mattrgsw.c",
@@ -936,6 +939,18 @@ class CandidateCGateTests(unittest.TestCase):
                         allow_fixture=True,
                     )
 
+    def test_unknown_task3c_exception_is_not_converted_to_inconclusive(self):
+        with patch.object(
+            self.gate,
+            "terminal_record_for_task5",
+            side_effect=RuntimeError("unexpected programmer failure"),
+        ):
+            with self.assertRaisesRegex(
+                RuntimeError,
+                "unexpected programmer failure",
+            ):
+                self.gate._evaluate_verified_terminal(ROOT)
+
     def test_terminal_labels_hash_and_task4_fields_are_fresh_bound(self):
         mutations = {
             "decision": self.gate.ADMIT,
@@ -1142,6 +1157,14 @@ class CandidateCGateTests(unittest.TestCase):
             "research/mat_sab/finite_linear.py",
             self.gate.COMPUTATIONAL_INPUTS,
         )
+        self.assertIn(
+            "scripts/apply_candidate_c_rank_bounded_gate.py",
+            self.gate.COMPUTATIONAL_INPUTS,
+        )
+        self.assertIn(
+            "scripts/mat_sab_research_state.py",
+            self.gate.COMPUTATIONAL_INPUTS,
+        )
 
     def test_generator_emits_complete_byte_identical_pack(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -1230,17 +1253,32 @@ class CandidateCGateTests(unittest.TestCase):
                 encoding="ascii",
             ) as handle:
                 manifest = {
-                    row["path"]: row["sha256"]
+                    row["path"]: (row["availability"], row["sha256"])
                     for row in csv.DictReader(handle)
                 }
             self.assertEqual(set(manifest), set(EXPECTED_COMPUTATIONAL_INPUTS))
-            for relative, digest in manifest.items():
+            for relative, (availability, digest) in manifest.items():
+                self.assertEqual(availability, "PRESENT")
                 committed = self.gate._git_regular_blob(
                     ROOT,
                     self.input_commit,
                     relative,
                 )
                 self.assertEqual(hashlib.sha256(committed).hexdigest(), digest)
+            with (generated / "closeout_executable_manifest.csv").open(
+                newline="",
+                encoding="ascii",
+            ) as handle:
+                executables = tuple(csv.DictReader(handle))
+            self.assertEqual(
+                {row["path"] for row in executables},
+                set(self.gate.CLOSEOUT_EXECUTABLE_INPUTS),
+            )
+            for row in executables:
+                self.assertEqual(
+                    row["sha256"],
+                    manifest[row["path"]][1],
+                )
             documents = (
                 generated / "reproduction_commands.md",
                 destination / "docs/candidate_c_rank_bounded_mechanism_gate.md",
@@ -1253,6 +1291,22 @@ class CandidateCGateTests(unittest.TestCase):
                         self.input_commit,
                         document.read_text(encoding="ascii"),
                     )
+            reproduction = (
+                generated / "reproduction_commands.md"
+            ).read_text(encoding="ascii")
+            self.assertNotIn(
+                "build_mat_sab_selector_techgraph.py",
+                reproduction,
+            )
+            for script in (
+                "scripts/run_candidate_c_rank_bounded_gate.py",
+                "scripts/apply_candidate_c_rank_bounded_gate.py",
+            ):
+                self.assertIn(
+                    f"python {script} --input-commit "
+                    f"{self.input_commit}",
+                    reproduction,
+                )
 
     @unittest.skipUnless(
         hasattr(os, "symlink"),

@@ -5,7 +5,9 @@ import inspect
 import json
 import re
 import shlex
+import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -27,6 +29,13 @@ PREDECESSOR = "REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C"
 C1_ADMIT = "ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY"
 C2_ADMIT = "ADMIT_C2_RELINEARIZATION_TO_SCHEDULE_REPLAY"
 C1_PHASE_REJECTION = "REJECT_C1_PHASE_IDENTITY_TERMINAL"
+WORKING_IMPLEMENTATION_PATHS = (
+    "research/mat_sab/candidate_c_operator_tensor.py",
+    "research/mat_sab/candidate_c_registered_replay.py",
+    "scripts/apply_candidate_c_rank_bounded_gate.py",
+    "scripts/mat_sab_research_state.py",
+    "scripts/run_candidate_c_rank_bounded_gate.py",
+)
 
 
 def load_closeout():
@@ -229,6 +238,7 @@ class CandidateCCloseoutTests(unittest.TestCase):
         state["candidates"]["A"]["status"] = "REJECTED"
         state["candidates"]["B"]["status"] = "REJECTED"
         state["candidates"]["C"]["status"] = "INTAKE"
+        state["candidates"]["C"]["equation_revisions_used"] = 0
         state["last_decision"] = PREDECESSOR
         state_path = root / "research_state.yaml"
         state_path.write_text(
@@ -243,6 +253,107 @@ class CandidateCCloseoutTests(unittest.TestCase):
             newline="\n",
         )
         return root, state_path
+
+    @staticmethod
+    def _remove_bounded_block(path, start, end):
+        text = path.read_text(encoding="ascii")
+        pattern = re.compile(
+            rf"(?m)^{re.escape(start)}\r?\n.*?^{re.escape(end)}(?:\r?\n)?",
+            re.DOTALL,
+        )
+        path.write_text(
+            pattern.sub("", text),
+            encoding="ascii",
+            newline="\n",
+        )
+
+    @classmethod
+    def _make_committed_missing_evidence_root(cls, directory):
+        root = Path(directory) / "root"
+        subprocess.run(
+            ["git", "clone", "--shared", "-q", str(ROOT), str(root)],
+            check=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "Candidate C Test"],
+            cwd=root,
+            check=True,
+        )
+        subprocess.run(
+            [
+                "git",
+                "config",
+                "user.email",
+                "candidate-c-test@example.invalid",
+            ],
+            cwd=root,
+            check=True,
+        )
+        for relative in WORKING_IMPLEMENTATION_PATHS:
+            shutil.copyfile(ROOT / relative, root / relative)
+
+        state_path = root / "research_state.yaml"
+        state = json.loads(state_path.read_text(encoding="ascii"))
+        state["goal_status"] = "ACTIVE"
+        state["paper_gate"] = "BLOCKED"
+        state["production_hot_path_permission"] = False
+        state["active_candidate"] = "C"
+        state["candidates"]["A"]["status"] = "REJECTED"
+        state["candidates"]["B"]["status"] = "REJECTED"
+        state["candidates"]["C"]["status"] = "INTAKE"
+        state["candidates"]["C"]["equation_revisions_used"] = 0
+        state["last_decision"] = PREDECESSOR
+        state_path.write_text(
+            json.dumps(state, indent=2) + "\n",
+            encoding="ascii",
+            newline="\n",
+        )
+
+        cls._remove_bounded_block(
+            root / "hypotheses/hypothesis_register.yaml",
+            HYPOTHESIS_START,
+            HYPOTHESIS_END,
+        )
+        cls._remove_bounded_block(
+            root / "repro/artifact_manifest.md",
+            MANIFEST_START,
+            MANIFEST_END,
+        )
+        cls._remove_bounded_block(
+            root / "repro/reproduction_checklist.md",
+            CHECKLIST_START,
+            CHECKLIST_END,
+        )
+        run_log = root / "repro/run_log.csv"
+        with run_log.open(newline="", encoding="ascii") as handle:
+            rows = list(csv.reader(handle, strict=True))
+        with run_log.open("w", newline="", encoding="ascii") as handle:
+            writer = csv.writer(handle, lineterminator="\n")
+            writer.writerows(
+                row for row in rows
+                if not row or row[0] != RUN_MARKER
+            )
+
+        missing = (
+            root
+            / "repro/stage203_production_selector_equation_probe/"
+            "equation_map.csv"
+        )
+        missing.unlink()
+        subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+        subprocess.run(
+            ["git", "commit", "-q", "-m", "missing Task 3A evidence"],
+            cwd=root,
+            check=True,
+        )
+        commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        return root, state_path, missing, commit
 
     def _write_fixture_pack(self, root, raw):
         result = gate.gate_result_from_decision_evidence(
@@ -344,6 +455,10 @@ class CandidateCCloseoutTests(unittest.TestCase):
         self.assertEqual(state["paper_gate"], "BLOCKED")
         self.assertFalse(state["production_hot_path_permission"])
         self.assertEqual(state["last_decision"], gate.ADMIT)
+        self.assertEqual(
+            state["candidates"]["C"]["equation_revisions_used"],
+            1,
+        )
         validate_state(state)
 
     def test_matching_c1_and_c2_admit_fixture_packs_advance(self):
@@ -359,6 +474,10 @@ class CandidateCCloseoutTests(unittest.TestCase):
                 self.assertEqual(
                     state["candidates"]["C"]["status"],
                     "ADVERSARIAL_CHECKER_PASS",
+                )
+                self.assertEqual(
+                    state["candidates"]["C"]["equation_revisions_used"],
+                    1,
                 )
                 self.assertEqual(state["last_decision"], gate.ADMIT)
                 validate_state(state)
@@ -379,6 +498,10 @@ class CandidateCCloseoutTests(unittest.TestCase):
         self.assertEqual(state["paper_gate"], "BLOCKED")
         self.assertFalse(state["production_hot_path_permission"])
         self.assertEqual(state["last_decision"], gate.REJECT)
+        self.assertEqual(
+            state["candidates"]["C"]["equation_revisions_used"],
+            1,
+        )
         validate_state(state)
 
     def test_inconclusive_fixture_pack_closes_without_external_blocked(self):
@@ -399,7 +522,296 @@ class CandidateCCloseoutTests(unittest.TestCase):
         self.assertEqual(state["paper_gate"], "BLOCKED")
         self.assertFalse(state["production_hot_path_permission"])
         self.assertEqual(state["last_decision"], gate.INCONCLUSIVE)
+        self.assertEqual(
+            state["candidates"]["C"]["equation_revisions_used"],
+            1,
+        )
         validate_state(state)
+
+    def test_actual_committed_missing_evidence_generator_and_closeout(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path, _missing, input_commit = (
+                self._make_committed_missing_evidence_root(tmp)
+            )
+            generator = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/run_candidate_c_rank_bounded_gate.py",
+                    "--root",
+                    str(root),
+                    "--input-commit",
+                    input_commit,
+                ],
+                cwd=root,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(generator.returncode, 0, generator.stderr)
+            self.assertEqual(
+                generator.stdout.strip(),
+                gate.INCONCLUSIVE,
+            )
+            summary = (
+                root / "repro/candidate_c_rank_bounded_gate/summary.csv"
+            )
+            with summary.open(newline="", encoding="ascii") as handle:
+                summary_row = next(csv.DictReader(handle))
+            self.assertEqual(summary_row["decision"], gate.INCONCLUSIVE)
+            self.assertEqual(
+                summary_row["terminal_classification"],
+                "INCONCLUSIVE",
+            )
+            self.assertRegex(
+                summary_row["terminal_record_hash"],
+                r"^[0-9a-f]{64}$",
+            )
+            with (
+                root
+                / "repro/candidate_c_rank_bounded_gate/input_manifest.csv"
+            ).open(newline="", encoding="ascii") as handle:
+                input_rows = {
+                    row["path"]: row for row in csv.DictReader(handle)
+                }
+            missing_row = input_rows[
+                "repro/stage203_production_selector_equation_probe/"
+                "equation_map.csv"
+            ]
+            self.assertEqual(
+                missing_row["availability"],
+                "MISSING_RECOGNIZED_EVIDENCE",
+            )
+            self.assertEqual(
+                missing_row["sha256"],
+                gate.MISSING_STAGE203_EVIDENCE_HASH,
+            )
+            with (
+                root
+                / "repro/candidate_c_rank_bounded_gate/"
+                "closeout_executable_manifest.csv"
+            ).open(newline="", encoding="ascii") as handle:
+                executable_rows = tuple(csv.DictReader(handle))
+            self.assertEqual(
+                tuple(row["path"] for row in executable_rows),
+                gate.CLOSEOUT_EXECUTABLE_INPUTS,
+            )
+
+            commands = (
+                [
+                    sys.executable,
+                    "scripts/apply_candidate_c_rank_bounded_gate.py",
+                    "--root",
+                    str(root),
+                    "--input-commit",
+                    input_commit,
+                ],
+            ) * 2
+            before_second = None
+            for index, command in enumerate(commands):
+                completed = subprocess.run(
+                    command,
+                    cwd=root,
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertEqual(completed.returncode, 0, completed.stderr)
+                self.assertEqual(
+                    completed.stdout.strip(),
+                    gate.INCONCLUSIVE,
+                )
+                if index == 0:
+                    before_second = self._tracked(root, state_path)
+                else:
+                    self.assertEqual(
+                        before_second,
+                        self._tracked(root, state_path),
+                    )
+            state = json.loads(state_path.read_text(encoding="ascii"))
+            self.assertEqual(state["candidates"]["C"]["status"], "INCONCLUSIVE")
+            self.assertEqual(
+                state["candidates"]["C"]["equation_revisions_used"],
+                1,
+            )
+            self.assertEqual(
+                state["goal_status"],
+                "RESEARCH_CAMPAIGN_INCONCLUSIVE",
+            )
+            validate_state(state)
+
+    def test_stale_and_wrong_committed_closeout_executables_are_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for relative in gate.CLOSEOUT_EXECUTABLE_INPUTS:
+                destination = root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_bytes((ROOT / relative).read_bytes())
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.name", "Candidate C Test"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                [
+                    "git",
+                    "config",
+                    "user.email",
+                    "candidate-c-test@example.invalid",
+                ],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-q", "-m", "closeout executables"],
+                cwd=root,
+                check=True,
+            )
+            first_commit = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            _, first_rows = gate._validated_input_rows(
+                root,
+                first_commit,
+                gate.CLOSEOUT_EXECUTABLE_INPUTS,
+            )
+            pack = root / "pack"
+            pack.mkdir()
+            with (pack / "input_manifest.csv").open(
+                "w",
+                newline="",
+                encoding="ascii",
+            ) as handle:
+                writer = csv.DictWriter(
+                    handle,
+                    fieldnames=("path", "availability", "sha256"),
+                    lineterminator="\n",
+                )
+                writer.writeheader()
+                writer.writerows(first_rows)
+            with (pack / "closeout_executable_manifest.csv").open(
+                "w",
+                newline="",
+                encoding="ascii",
+            ) as handle:
+                writer = csv.DictWriter(
+                    handle,
+                    fieldnames=("role", "path", "sha256"),
+                    lineterminator="\n",
+                )
+                writer.writeheader()
+                writer.writerows(gate._closeout_executable_rows(first_rows))
+
+            state_script = root / "scripts/mat_sab_research_state.py"
+            original_state_script = state_script.read_bytes()
+            state_script.write_bytes(original_state_script + b"\n")
+            with self.assertRaisesRegex(
+                gate.GateEvidenceError,
+                "does not match implementation-input commit",
+            ):
+                gate._validated_input_rows(
+                    root,
+                    first_commit,
+                    gate.CLOSEOUT_EXECUTABLE_INPUTS,
+                )
+            state_script.write_bytes(original_state_script)
+
+            apply_script = (
+                root / "scripts/apply_candidate_c_rank_bounded_gate.py"
+            )
+            apply_script.write_bytes(
+                apply_script.read_bytes()
+                + b"\n# committed executable mismatch probe\n"
+            )
+            subprocess.run(
+                ["git", "add", str(apply_script.relative_to(root))],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "commit", "-q", "-m", "changed executable"],
+                cwd=root,
+                check=True,
+            )
+            second_commit = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            sentinel = root / "state-ledger-sentinel"
+            sentinel.write_text("unchanged\n", encoding="ascii", newline="\n")
+            before = sentinel.read_bytes()
+            with (
+                patch.object(
+                    self.closeout,
+                    "_input_paths",
+                    return_value=gate.CLOSEOUT_EXECUTABLE_INPUTS,
+                ),
+                self.assertRaisesRegex(
+                    ValueError,
+                    "published input manifest",
+                ),
+            ):
+                self.closeout._validate_published_manifests(
+                    root,
+                    pack,
+                    second_commit,
+                    object(),
+                )
+            self.assertEqual(sentinel.read_bytes(), before)
+
+    def test_actual_manifest_failure_precedes_state_and_ledger_mutation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            fixture = fixture_raw_evidence(gate.REJECT)
+            summary, evidence = self._write_fixture_pack(root, fixture)
+            actual = replace(fixture, binding_kind=gate.ACTUAL_EVIDENCE)
+            result = replace(
+                gate.gate_result_from_decision_evidence(
+                    fixture,
+                    allow_fixture=True,
+                ),
+                decision_evidence=actual,
+            )
+            before = self._tracked(root, state_path)
+            with (
+                patch.object(
+                    self.closeout,
+                    "load_decision_evidence",
+                    return_value=actual,
+                ),
+                patch.object(
+                    self.closeout,
+                    "evaluate_candidate_c",
+                    return_value=result,
+                ),
+                patch.object(
+                    self.closeout,
+                    "_validate_published_manifests",
+                    side_effect=ValueError("published executable mismatch"),
+                ),
+                patch.object(self.closeout, "load_state") as load_state_mock,
+                self.assertRaisesRegex(
+                    ValueError,
+                    "published executable mismatch",
+                ),
+            ):
+                self.closeout.apply_gate(
+                    root,
+                    state_path,
+                    summary,
+                    input_commit=self.input_commit,
+                    evidence_path=evidence,
+                )
+            load_state_mock.assert_not_called()
+            self.assertEqual(before, self._tracked(root, state_path))
 
     def test_unrelated_noncanonical_legacy_row_is_preserved(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -871,6 +1283,11 @@ class CandidateCCloseoutTests(unittest.TestCase):
                         allow_fixture=True,
                     )
             self.assertEqual(before, self._tracked(root, state_path))
+            rolled_back = json.loads(state_path.read_text(encoding="ascii"))
+            self.assertEqual(
+                rolled_back["candidates"]["C"]["equation_revisions_used"],
+                0,
+            )
 
     def test_closeout_outputs_are_ascii(self):
         with tempfile.TemporaryDirectory() as tmp:

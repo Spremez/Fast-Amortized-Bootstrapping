@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import shutil
+import tempfile
 import unittest
 from dataclasses import replace
 from functools import lru_cache
@@ -601,6 +603,66 @@ class TerminalRoutingTests(unittest.TestCase):
             self.record.canonical_bytes(),
         )
         self.assertEqual(repeated.record_hash, self.record.record_hash)
+
+    def test_real_missing_stage203_route_is_typed_inconclusive_and_hash_bound(self):
+        required = (
+            "main.c",
+            "src/sparse_amortized_bootstrap.c",
+            "src/sab_pvw.c",
+            "src/mosfhet/Makefile.def",
+            "src/mosfhet/src/mattrgsw.c",
+            "research/mat_sab/star_cycle_model.py",
+            "research/mat_sab/candidate_c_schedule.py",
+            "repro/stage222_isolated_compact_ep_integration/proof_gate.csv",
+            "repro/stage345_binary_matrix_synthesis/proof_gate.csv",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for relative in required:
+                destination = root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT / relative, destination)
+            first = terminal_record_for_task5(root)
+            second = terminal_record_for_task5(root)
+
+            self.assertIsInstance(
+                first,
+                registered_replay.CandidateCInconclusiveTerminalRecord,
+            )
+            self.assertEqual(first.classification, "INCONCLUSIVE")
+            self.assertEqual(
+                first.decision,
+                registered_replay.TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED,
+            )
+            self.assertEqual(first.conversion_status, "EVIDENCE_EXHAUSTED")
+            self.assertEqual(first.r_values, (2, 4, 6))
+            self.assertEqual(
+                tuple(item.r for item in first.evidence_exhaustions),
+                (2, 4, 6),
+            )
+            self.assertEqual(first, second)
+            self.assertEqual(first.canonical_bytes(), second.canonical_bytes())
+            self.assertTrue(first.verify(root))
+            exhaustion = first.evidence_exhaustions[0]
+            for changed in (
+                replace(exhaustion, condition="UNKNOWN_MISSING_EVIDENCE"),
+                replace(exhaustion, missing_evidence_hash="0" * 64),
+                replace(exhaustion, record_hash="0" * 64),
+            ):
+                forged = replace(
+                    first,
+                    evidence_exhaustions=(
+                        changed,
+                        *first.evidence_exhaustions[1:],
+                    ),
+                )
+                with self.subTest(changed=changed):
+                    with self.assertRaisesRegex(
+                        ValueError,
+                        "evidence exhaustion",
+                    ):
+                        forged.validate(root)
+                    self.assertFalse(forged.verify(root))
 
 
 if __name__ == "__main__":

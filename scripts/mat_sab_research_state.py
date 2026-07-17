@@ -37,6 +37,12 @@ PIPELINE = (
     "FULL_SAB_PASS",
     "PAPER_GATE_PASS",
 )
+CANDIDATE_C_PRE_REVISION_STATUSES = {
+    "QUEUED",
+    "INTAKE",
+    "TECHGRAPH_ANCHORED",
+    "EQUATIONS_DEFINED",
+}
 
 
 def load_state(path: Path = DEFAULT_STATE) -> dict[str, object]:
@@ -87,6 +93,21 @@ def validate_state(state: Mapping[str, object]) -> None:
             value = candidate.get(field)
             if type(value) is not int or value < 0 or value > limit:
                 raise ValueError(f"invalid {field} for candidate {name}")
+    candidate_c = candidates["C"]
+    expected_candidate_c_revisions = (
+        0
+        if candidate_c["status"] in CANDIDATE_C_PRE_REVISION_STATUSES
+        else 1
+    )
+    if (
+        candidate_c["equation_revisions_used"]
+        != expected_candidate_c_revisions
+    ):
+        raise ValueError(
+            "Candidate C equation revision count must be "
+            f"{expected_candidate_c_revisions} at "
+            f"{candidate_c['status']}"
+        )
     active_index = ORDER.index(state["active_candidate"])
     if state.get("goal_status") == "RESEARCH_CAMPAIGN_EXHAUSTED":
         if state.get("active_candidate") != "C" or any(
@@ -159,6 +180,11 @@ def transition_candidate(
     if not allowed:
         raise ValueError(f"invalid transition {candidate}: {current} -> {to_status}")
     changed["candidates"][candidate]["status"] = to_status
+    if (
+        candidate == "C"
+        and to_status not in CANDIDATE_C_PRE_REVISION_STATUSES
+    ):
+        changed["candidates"]["C"]["equation_revisions_used"] = 1
     changed["last_decision"] = decision
     if to_status == "REJECTED":
         index = ORDER.index(candidate)

@@ -23,6 +23,7 @@ from scripts.mat_sab_research_state import (
 from scripts.run_candidate_c_rank_bounded_gate import (
     ACTUAL_EVIDENCE,
     ADMIT,
+    CLOSEOUT_EXECUTABLE_INPUTS,
     INCONCLUSIVE,
     REJECT,
     SUMMARY_FIELDS,
@@ -30,6 +31,9 @@ from scripts.run_candidate_c_rank_bounded_gate import (
     evaluate_candidate_c,
     gate_result_from_decision_evidence,
     load_decision_evidence,
+    _closeout_executable_rows,
+    _input_paths,
+    _validated_input_rows,
 )
 
 RUN_MARKER = "candidate-c-rank-bounded-gate-001"
@@ -199,6 +203,76 @@ def _summary_record(path: Path) -> dict[str, str]:
             "blank pessimistic Amdahl projection requires skipped Task 4"
         )
     return record
+
+
+def _strict_csv_rows(
+    path: Path,
+    fields: tuple[str, ...],
+    label: str,
+) -> tuple[dict[str, str], ...]:
+    try:
+        with path.open(newline="", encoding="ascii") as handle:
+            records = list(csv.reader(handle, strict=True))
+    except (csv.Error, UnicodeError) as error:
+        raise ValueError(f"{label} is malformed") from error
+    if (
+        not records
+        or tuple(records[0]) != fields
+        or len(records[0]) != len(set(records[0]))
+        or any(len(row) != len(fields) for row in records[1:])
+    ):
+        raise ValueError(f"{label} is malformed")
+    return tuple(dict(zip(fields, row)) for row in records[1:])
+
+
+def _validate_published_manifests(
+    root: Path,
+    pack: Path,
+    input_commit: str,
+    recomputed_result,
+) -> None:
+    _resolved_commit, expected_inputs = _validated_input_rows(
+        root,
+        input_commit,
+        _input_paths(root, recomputed_result),
+    )
+    input_manifest = _resolved_under_root(
+        root,
+        pack / "input_manifest.csv",
+        "published input manifest",
+        strict=True,
+    )
+    actual_inputs = _strict_csv_rows(
+        input_manifest,
+        ("path", "availability", "sha256"),
+        "published input manifest",
+    )
+    if actual_inputs != expected_inputs:
+        raise ValueError(
+            "published input manifest does not match committed inputs"
+        )
+
+    executable_manifest = _resolved_under_root(
+        root,
+        pack / "closeout_executable_manifest.csv",
+        "published closeout executable manifest",
+        strict=True,
+    )
+    actual_executables = _strict_csv_rows(
+        executable_manifest,
+        ("role", "path", "sha256"),
+        "published closeout executable manifest",
+    )
+    expected_executables = _closeout_executable_rows(expected_inputs)
+    if (
+        tuple(row["path"] for row in actual_executables)
+        != CLOSEOUT_EXECUTABLE_INPUTS
+        or actual_executables != expected_executables
+    ):
+        raise ValueError(
+            "published closeout executable manifest does not match "
+            "committed executables"
+        )
 
 
 def _generator_command(input_commit: str) -> str:
@@ -470,6 +544,7 @@ def _validate_pre_state(state: dict[str, object]) -> None:
         and candidates["A"]["status"] == "REJECTED"
         and candidates["B"]["status"] == "REJECTED"
         and candidates["C"]["status"] == "INTAKE"
+        and candidates["C"]["equation_revisions_used"] == 0
     ):
         raise ValueError("state is not at the Candidate C mechanism gate")
 
@@ -486,6 +561,7 @@ def _validate_applied_state(
         and state.get("last_decision") == decision
         and candidates["A"]["status"] == "REJECTED"
         and candidates["B"]["status"] == "REJECTED"
+        and candidates["C"]["equation_revisions_used"] == 1
     )
     if decision == ADMIT:
         branch = (
@@ -606,6 +682,12 @@ def apply_gate(
             raise ValueError(
                 "decision evidence does not match fresh repository evidence"
             )
+        _validate_published_manifests(
+            resolved_root,
+            summary.parent,
+            input_commit,
+            recomputed_result,
+        )
     else:
         recomputed_result = gate_result_from_decision_evidence(
             raw_evidence,
