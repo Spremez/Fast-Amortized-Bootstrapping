@@ -204,7 +204,7 @@ anchors.
   ```text
   shared_state -> rho=0
   one nonshared lane pattern -> rho=1
-  two independent patterns -> rho=2
+  two independent patterns -> rho=min(2,r-1)
   identity lane patterns -> rho=r-1
   ```
 
