@@ -3,5 +3,5 @@ source_and_support,PASS,Stage203 equals the 4r star-cycle support
 phase_zero_one,PASS,P M = mu P for r=2/4/6 and mu=0/1
 dense_control,PASS,dense support retains one PVW kernel degree per column
 negative_controls,PASS,generic dense and omitted-term controls cover expected failure modes
-standard_pvw_randomization,FAIL,star support retains one PVW kernel degree per column
+standard_pvw_randomization,FAIL,star support fails to retain one PVW kernel degree per column
 production_code,FAIL,later security/noise/Amdahl gates are required

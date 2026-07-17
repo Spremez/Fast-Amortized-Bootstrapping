@@ -381,7 +381,7 @@ def write_gate_artifacts(
         (
             "standard_pvw_randomization",
             result.randomization_gate,
-            "star support retains one PVW kernel degree per column",
+            "star support fails to retain one PVW kernel degree per column",
         ),
         (
             "production_code",

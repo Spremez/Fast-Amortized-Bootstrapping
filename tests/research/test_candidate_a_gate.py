@@ -1,3 +1,4 @@
+import csv
 import unittest
 from pathlib import Path
 
@@ -34,6 +35,19 @@ class CandidateAGateTests(unittest.TestCase):
         result = evaluate_candidate_a(ROOT)
         dense = [row for row in result.randomization_rows if row["support"] == "dense"]
         self.assertTrue(all(row["full_pvw_randomization"] == "PASS" for row in dense))
+
+    def test_failed_randomization_gate_records_failure_interpretation(self):
+        result = evaluate_candidate_a(ROOT)
+        paths = write_gate_artifacts(ROOT, result)
+        proof = next(path for path in paths if path.name == "proof_gate.csv")
+        with proof.open(newline="", encoding="ascii") as handle:
+            rows = {row["gate"]: row for row in csv.DictReader(handle)}
+        row = rows["standard_pvw_randomization"]
+        self.assertEqual(row["status"], "FAIL")
+        self.assertEqual(
+            row["interpretation"],
+            "star support fails to retain one PVW kernel degree per column",
+        )
 
     def test_generated_artifacts_are_idempotent(self):
         result = evaluate_candidate_a(ROOT)
