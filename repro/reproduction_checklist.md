@@ -553,7 +553,7 @@
 - [x] Candidate C records `REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED` from hash-bound source,
   equation, symbolic-independence, phase, schedule, rank, compression,
   complete-cost, and Amdahl fields. Reproduce with
-  `python scripts/run_candidate_c_rank_bounded_gate.py` followed by
-  `python scripts/apply_candidate_c_rank_bounded_gate.py`; production hot-path
+  `python scripts/run_candidate_c_rank_bounded_gate.py --input-commit 1907fce4c6435ed9f3e483dc3521895bf5351c34` followed by
+  `python scripts/apply_candidate_c_rank_bounded_gate.py --input-commit 1907fce4c6435ed9f3e483dc3521895bf5351c34`; production hot-path
   permission remains false.
 <!-- candidate-c-rank-bounded-gate-checklist-end -->

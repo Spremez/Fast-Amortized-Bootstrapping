@@ -61,6 +61,6 @@ flowchart TD
 ## Reproduction
 
 ```powershell
-python scripts/build_mat_sab_selector_techgraph.py --input-commit a05e86113384a5c6cf6927d3f1e1127b43fe0366
+python scripts/build_mat_sab_selector_techgraph.py --input-commit 1907fce4c6435ed9f3e483dc3521895bf5351c34
 python -m unittest discover -s tests/research -p "test_*.py" -v
 ```
