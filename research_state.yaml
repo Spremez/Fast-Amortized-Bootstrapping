@@ -9,11 +9,15 @@
     "B1": "exact_dense_PVW_MAT_SAB_current_head"
   },
   "active_candidate": "A",
-  "candidate_order": ["A", "B", "C"],
+  "candidate_order": [
+    "A",
+    "B",
+    "C"
+  ],
   "candidates": {
     "A": {
       "name": "Star-Cycle Sparse MAT-GGSW",
-      "status": "INTAKE",
+      "status": "TECHGRAPH_ANCHORED",
       "equation_revisions_used": 0,
       "kernel_layouts_used": 0,
       "full_sab_integrations_used": 0
@@ -35,5 +39,5 @@
   },
   "paper_gate": "BLOCKED",
   "production_hot_path_permission": false,
-  "last_decision": "CONTRACT_APPROVED"
+  "last_decision": "CANDIDATE_A_TECHGRAPH_ANCHORED"
 }
