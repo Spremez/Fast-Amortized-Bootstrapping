@@ -1,10 +1,18 @@
 import json
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.build_mat_sab_selector_techgraph import build_graph, write_outputs
+from scripts.build_mat_sab_selector_techgraph import (
+    _campaign_markdown,
+    _campaign_view,
+    build_graph,
+    write_outputs,
+)
+from scripts.mat_sab_research_state import load_state
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -20,6 +28,31 @@ REPRODUCTION_SECTION = "\n".join([
     DISCOVERY_COMMAND,
     "```",
 ])
+TRACKED_OUTPUTS = (
+    "2025_686_mat_sab_selector.yaml",
+    "2025_686_mat_sab_selector_graph.md",
+    "2025_686_mat_sab_selector_gaps.md",
+)
+
+
+def synthetic_campaign_state(active_candidate):
+    statuses = {"A": "QUEUED", "B": "QUEUED", "C": "QUEUED"}
+    for candidate in ("A", "B", "C"):
+        if candidate == active_candidate:
+            statuses[candidate] = "INTAKE"
+            break
+        statuses[candidate] = "REJECTED"
+    return {
+        "goal_status": "ACTIVE",
+        "paper_gate": "BLOCKED",
+        "production_hot_path_permission": False,
+        "active_candidate": active_candidate,
+        "candidates": {
+            candidate: {"status": status}
+            for candidate, status in statuses.items()
+        },
+        "last_decision": f"TEST_ROUTE_TO_{active_candidate}",
+    }
 
 
 class SelectorTechgraphTests(unittest.TestCase):
@@ -42,37 +75,49 @@ class SelectorTechgraphTests(unittest.TestCase):
 
     def test_graph_consumes_the_current_campaign_state(self):
         graph = build_graph(ROOT)
+        state = load_state(ROOT / "research_state.yaml")
         self.assertEqual(
             graph["campaign_state"],
             {
-                "goal_status": "ACTIVE",
-                "paper_gate": "BLOCKED",
-                "active_candidate": "B",
-                "active_candidate_status": "INTAKE",
-                "candidate_a_status": "REJECTED",
-                "candidate_b_status": "INTAKE",
-                "last_decision": (
-                    "REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B"
-                ),
+                "goal_status": state["goal_status"],
+                "paper_gate": state["paper_gate"],
+                "active_candidate": state["active_candidate"],
+                "active_candidate_status": state["candidates"][
+                    state["active_candidate"]
+                ]["status"],
+                "candidate_a_status": state["candidates"]["A"]["status"],
+                "candidate_b_status": state["candidates"]["B"]["status"],
+                "candidate_c_status": state["candidates"]["C"]["status"],
+                "last_decision": state["last_decision"],
             },
         )
-        self.assertNotIn(
-            "standard PVW randomization dimension",
-            graph["open_gaps"],
-        )
+
+    def test_campaign_routes_mark_the_active_candidate(self):
+        for active_candidate in ("A", "B", "C"):
+            with self.subTest(active_candidate=active_candidate):
+                graph = _campaign_view(synthetic_campaign_state(active_candidate))
+                campaign = "\n".join(_campaign_markdown(graph))
+                self.assertIn(
+                    f"Candidate {active_candidate}: `INTAKE` (active)",
+                    campaign,
+                )
+                self.assertEqual(campaign.count("(active)"), 1)
 
     def test_graph_records_the_stable_reproduction_command(self):
         graph = build_graph(ROOT)
         self.assertEqual(graph["reproduction_command"], REPRODUCTION_COMMAND)
 
     def test_reproduction_command_executes_from_the_repository_root(self):
-        completed = subprocess.run(
-            [sys.executable, "scripts/build_mat_sab_selector_techgraph.py"],
-            cwd=ROOT,
-            check=False,
-            capture_output=True,
-            text=True,
-        )
+        with tempfile.TemporaryDirectory() as tmp:
+            copied_root = Path(tmp) / "repository"
+            shutil.copytree(ROOT, copied_root, ignore=shutil.ignore_patterns(".git"))
+            completed = subprocess.run(
+                [sys.executable, "scripts/build_mat_sab_selector_techgraph.py"],
+                cwd=copied_root,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
         self.assertEqual(completed.returncode, 0, completed.stderr)
         self.assertEqual(
             completed.stdout.strip(),
@@ -81,36 +126,41 @@ class SelectorTechgraphTests(unittest.TestCase):
 
     def test_markdown_outputs_record_exact_reproduction_commands(self):
         graph = build_graph(ROOT)
-        paths = write_outputs(ROOT, graph)
-        for path in paths[1:]:
-            with self.subTest(path=path.name):
-                self.assertIn(
-                    REPRODUCTION_SECTION,
-                    path.read_text(encoding="ascii"),
-                )
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = write_outputs(Path(tmp), graph)
+            for path in paths[1:]:
+                with self.subTest(path=path.name):
+                    self.assertIn(
+                        REPRODUCTION_SECTION,
+                        path.read_text(encoding="ascii"),
+                    )
 
-    def test_markdown_outputs_render_current_route_without_reopening_a(self):
+    def test_markdown_outputs_render_current_campaign_state(self):
         graph = build_graph(ROOT)
-        paths = write_outputs(ROOT, graph)
-        for path in paths[1:]:
-            content = path.read_text(encoding="ascii")
-            with self.subTest(path=path.name):
-                self.assertIn("Candidate A: `REJECTED`", content)
-                self.assertIn("Candidate B: `INTAKE` (active)", content)
-                self.assertIn(
-                    "Candidate B is active at `INTAKE`; its equations and "
-                    "implementation have not begun.",
-                    content,
-                )
-                self.assertNotIn(
-                    "The next gate tests `P M = mu P` and the standard PVW "
-                    "randomization",
-                    content,
-                )
+        state = load_state(ROOT / "research_state.yaml")
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = write_outputs(Path(tmp), graph)
+            for path in paths[1:]:
+                content = path.read_text(encoding="ascii")
+                with self.subTest(path=path.name):
+                    for candidate in ("A", "B", "C"):
+                        active = " (active)" if candidate == state["active_candidate"] else ""
+                        self.assertIn(
+                            f"Candidate {candidate}: `"
+                            f"{state['candidates'][candidate]['status']}`{active}",
+                            content,
+                        )
+                    self.assertIn(graph["next_step"], content)
+                    self.assertNotIn(
+                        "The next gate tests `P M = mu P` and the standard PVW "
+                        "randomization",
+                        content,
+                    )
 
     def test_gaps_document_preserves_the_finite_field_claim_boundary(self):
         graph = build_graph(ROOT)
-        gaps = write_outputs(ROOT, graph)[2].read_text(encoding="ascii")
+        with tempfile.TemporaryDirectory() as tmp:
+            gaps = write_outputs(Path(tmp), graph)[2].read_text(encoding="ascii")
         self.assertIn(
             "does not infer cryptographic security or complete-SAB performance",
             gaps,
@@ -118,12 +168,26 @@ class SelectorTechgraphTests(unittest.TestCase):
 
     def test_outputs_are_json_valid_and_deterministic(self):
         graph = build_graph(ROOT)
-        first = write_outputs(ROOT, graph)
-        before = [path.read_bytes() for path in first]
-        second = write_outputs(ROOT, graph)
-        self.assertEqual(before, [path.read_bytes() for path in second])
-        parsed = json.loads(first[0].read_text(encoding="ascii"))
+        with tempfile.TemporaryDirectory() as tmp:
+            first = write_outputs(Path(tmp), graph)
+            before = [path.read_bytes() for path in first]
+            second = write_outputs(Path(tmp), graph)
+            self.assertEqual(before, [path.read_bytes() for path in second])
+            parsed = json.loads(first[0].read_text(encoding="ascii"))
         self.assertEqual(parsed["schema_version"], 1)
+
+    def test_tracked_outputs_match_a_fresh_render(self):
+        graph = build_graph(ROOT)
+        with tempfile.TemporaryDirectory() as tmp:
+            fresh_paths = write_outputs(Path(tmp), graph)
+            for fresh_path in fresh_paths:
+                tracked_path = ROOT / "paper_techgraphs" / fresh_path.name
+                with self.subTest(path=fresh_path.name):
+                    self.assertIn(fresh_path.name, TRACKED_OUTPUTS)
+                    self.assertEqual(
+                        tracked_path.read_bytes(),
+                        fresh_path.read_bytes(),
+                    )
 
 
 if __name__ == "__main__":

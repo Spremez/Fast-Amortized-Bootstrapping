@@ -66,6 +66,13 @@ POST_A_REJECTION_OPEN_GAPS = (
     "Amdahl projection against exact-dense complete SAB",
     "isolated kernel and complete-SAB evidence",
 )
+POST_B_REJECTION_OPEN_GAPS = (
+    "Candidate C rank-bounded shared-mask state equation gate (not begun)",
+    "phase and rank-growth checks for the admitted accumulator state",
+    "public relinearization cost and lane-phase preservation",
+    "Amdahl projection against exact-dense complete SAB",
+    "isolated kernel and complete-SAB evidence",
+)
 
 
 def _node(root: Path, spec: tuple[str, str, str, str]) -> dict[str, object]:
@@ -93,6 +100,7 @@ def _campaign_view(state: Mapping[str, object]) -> dict[str, object]:
         "active_candidate_status": active_status,
         "candidate_a_status": candidates["A"]["status"],
         "candidate_b_status": candidates["B"]["status"],
+        "candidate_c_status": candidates["C"]["status"],
         "last_decision": state["last_decision"],
     }
     if (
@@ -108,6 +116,20 @@ def _campaign_view(state: Mapping[str, object]) -> dict[str, object]:
             "implementation have not begun."
         )
         open_gaps = POST_A_REJECTION_OPEN_GAPS
+    elif (
+        candidates["A"]["status"] == "REJECTED"
+        and candidates["B"]["status"] == "REJECTED"
+        and active_candidate == "C"
+    ):
+        disposition = (
+            "Candidate B is closed after failing the exact standard-PVW "
+            "factorization gate."
+        )
+        next_step = (
+            f"Candidate C is active at `{active_status}`; its equations and "
+            "implementation have not begun."
+        )
+        open_gaps = POST_B_REJECTION_OPEN_GAPS
     else:
         disposition = (
             f"Candidate A remains at `{candidates['A']['status']}`."
@@ -161,12 +183,27 @@ def _campaign_markdown(graph: Mapping[str, object]) -> list[str]:
         "",
         f'- Goal: `{state["goal_status"]}`',
         f'- Paper gate: `{state["paper_gate"]}`',
-        f'- Candidate A: `{state["candidate_a_status"]}`',
+        (
+            f'- Candidate A: `{state["candidate_a_status"]}`'
+            + (
+                " (active)"
+                if state["active_candidate"] == "A"
+                else ""
+            )
+        ),
         (
             f'- Candidate B: `{state["candidate_b_status"]}`'
             + (
                 " (active)"
                 if state["active_candidate"] == "B"
+                else ""
+            )
+        ),
+        (
+            f'- Candidate C: `{state["candidate_c_status"]}`'
+            + (
+                " (active)"
+                if state["active_candidate"] == "C"
                 else ""
             )
         ),

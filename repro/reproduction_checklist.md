@@ -542,3 +542,10 @@
   `python scripts/run_candidate_a_star_cycle_gate.py` followed by
   `python scripts/apply_mat_sab_candidate_gate.py`.
 <!-- candidate-a-star-cycle-gate-checklist-end -->
+<!-- candidate-b-factorized-gate-checklist-start -->
+- [x] Candidate B records `REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C` from source, phase, mutation,
+  multiplicative-image rank, factor-cost, and concrete-mechanism gates;
+  production hot-path permission remains false. Reproduce with
+  `python scripts/run_candidate_b_factorized_gate.py` followed by
+  `python scripts/apply_candidate_b_factorized_gate.py`.
+<!-- candidate-b-factorized-gate-checklist-end -->

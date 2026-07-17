@@ -5,11 +5,12 @@
 - Goal: `ACTIVE`
 - Paper gate: `BLOCKED`
 - Candidate A: `REJECTED`
-- Candidate B: `INTAKE` (active)
-- Last decision: `REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B`
-- Disposition: Candidate A is closed after failing the standard-PVW randomization necessary condition.
+- Candidate B: `REJECTED`
+- Candidate C: `INTAKE` (active)
+- Last decision: `REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C`
+- Disposition: Candidate B is closed after failing the exact standard-PVW factorization gate.
 
-Candidate B is active at `INTAKE`; its equations and implementation have not begun.
+Candidate C is active at `INTAKE`; its equations and implementation have not begun.
 
 ```mermaid
 flowchart TD

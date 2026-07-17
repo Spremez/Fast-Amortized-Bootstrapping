@@ -1,0 +1,11 @@
+claim,kind,path,token,status
+pvw_sampling,code,src/mosfhet/src/pvwtmlwe.c,void pvmtmlwe_sample(,PASS
+torus_error_coefficients,code,src/mosfhet/src/misc.c,out[i] = double2torus(generate_normal_random(sigma));,PASS
+torus64_scale,code,src/mosfhet/src/misc.c,#define TORUS_SCALE 18446744073709551616.0,PASS
+pvw_phase,code,src/mosfhet/src/pvwtmlwe.c,void pvmtmlwe_phase(,PASS
+mat_selector_keygen,code,src/mosfhet/src/mattrgsw.c,void mat_trgsw_monomial_sample(,PASS
+mat_dense_external_product,code,src/mosfhet/src/mattrgsw.c,static void mat_trgsw_mul_pvmtmlwe_DFT_from_dec(,PASS
+sab_pvw_cmux,code,src/sab_pvw.c,void sab_pvw_CMUX(,PASS
+target_default_parameters,code,main.c,static SAB_PVW_Target_Params sab_pvw_target_params(void){,PASS
+candidate_a_terminal_evidence,evidence,repro/candidate_a_star_cycle_gate/summary.csv,REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B,PASS
+candidate_b_contract,design,docs/superpowers/specs/2026-07-17-candidate-b-factorized-gate-design.md,C = mu h I_m + v w^T + [0 | E],PASS

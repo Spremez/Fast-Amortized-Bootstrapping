@@ -154,18 +154,19 @@
   "campaign_state": {
     "goal_status": "ACTIVE",
     "paper_gate": "BLOCKED",
-    "active_candidate": "B",
+    "active_candidate": "C",
     "active_candidate_status": "INTAKE",
     "candidate_a_status": "REJECTED",
-    "candidate_b_status": "INTAKE",
-    "last_decision": "REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B"
+    "candidate_b_status": "REJECTED",
+    "candidate_c_status": "INTAKE",
+    "last_decision": "REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C"
   },
-  "candidate_a_disposition": "Candidate A is closed after failing the standard-PVW randomization necessary condition.",
-  "next_step": "Candidate B is active at `INTAKE`; its equations and implementation have not begun.",
+  "candidate_a_disposition": "Candidate B is closed after failing the exact standard-PVW factorization gate.",
+  "next_step": "Candidate C is active at `INTAKE`; its equations and implementation have not begun.",
   "open_gaps": [
-    "Candidate B factorized-operator equation gate (not begun)",
-    "production key distribution and assumption comparison for an admitted representation",
-    "noise recurrence under an admitted selector representation",
+    "Candidate C rank-bounded shared-mask state equation gate (not begun)",
+    "phase and rank-growth checks for the admitted accumulator state",
+    "public relinearization cost and lane-phase preservation",
     "Amdahl projection against exact-dense complete SAB",
     "isolated kernel and complete-SAB evidence"
   ]

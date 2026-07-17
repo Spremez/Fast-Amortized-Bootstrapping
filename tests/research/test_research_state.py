@@ -18,13 +18,70 @@ def candidate_a_state(state, status):
     state["paper_gate"] = "BLOCKED"
     state["production_hot_path_permission"] = False
     state["active_candidate"] = "A"
+    state["last_decision"] = "TEST_CANDIDATE_A_STATE"
     state["candidates"]["A"]["status"] = status
     state["candidates"]["B"]["status"] = "QUEUED"
     state["candidates"]["C"]["status"] = "QUEUED"
+    for candidate in state["candidates"].values():
+        candidate["equation_revisions_used"] = 0
+        candidate["kernel_layouts_used"] = 0
+        candidate["full_sab_integrations_used"] = 0
+    return state
+
+
+def candidate_b_state(state, status):
+    state["goal_status"] = "ACTIVE"
+    state["paper_gate"] = "BLOCKED"
+    state["production_hot_path_permission"] = False
+    state["active_candidate"] = "B"
+    state["last_decision"] = "TEST_CANDIDATE_B_STATE"
+    state["candidates"]["A"]["status"] = "REJECTED"
+    state["candidates"]["B"]["status"] = status
+    state["candidates"]["C"]["status"] = "QUEUED"
+    for candidate in state["candidates"].values():
+        candidate["equation_revisions_used"] = 0
+        candidate["kernel_layouts_used"] = 0
+        candidate["full_sab_integrations_used"] = 0
     return state
 
 
 class ResearchStateTests(unittest.TestCase):
+    def test_candidate_state_helpers_normalize_all_mutable_fields(self):
+        cases = (
+            (candidate_a_state, "INTAKE", ("INTAKE", "QUEUED", "QUEUED"), "TEST_CANDIDATE_A_STATE"),
+            (candidate_b_state, "INTAKE", ("REJECTED", "INTAKE", "QUEUED"), "TEST_CANDIDATE_B_STATE"),
+        )
+        for helper, status, expected_statuses, expected_decision in cases:
+            with self.subTest(helper=helper.__name__):
+                state = load_state(ROOT / "research_state.yaml")
+                state["goal_status"] = "PAPER_READY"
+                state["paper_gate"] = "PASS"
+                state["production_hot_path_permission"] = True
+                state["last_decision"] = "CLOSEOUT_MUTATION"
+                for candidate in state["candidates"].values():
+                    candidate["status"] = "REJECTED"
+                    candidate["equation_revisions_used"] = 1
+                    candidate["kernel_layouts_used"] = 1
+                    candidate["full_sab_integrations_used"] = 1
+
+                normalized = helper(state, status)
+
+                self.assertEqual(normalized["goal_status"], "ACTIVE")
+                self.assertEqual(normalized["paper_gate"], "BLOCKED")
+                self.assertFalse(normalized["production_hot_path_permission"])
+                self.assertEqual(normalized["last_decision"], expected_decision)
+                self.assertEqual(
+                    tuple(
+                        normalized["candidates"][candidate]["status"]
+                        for candidate in ("A", "B", "C")
+                    ),
+                    expected_statuses,
+                )
+                for candidate in normalized["candidates"].values():
+                    self.assertEqual(candidate["equation_revisions_used"], 0)
+                    self.assertEqual(candidate["kernel_layouts_used"], 0)
+                    self.assertEqual(candidate["full_sab_integrations_used"], 0)
+
     def test_repository_state_is_valid_and_locked_to_primary_metric(self):
         state = load_state(ROOT / "research_state.yaml")
         validate_state(state)
@@ -210,10 +267,11 @@ class ResearchStateTests(unittest.TestCase):
                 paper_gate=paper_gate,
                 active_status=active_status,
             ):
-                state = load_state(ROOT / "research_state.yaml")
+                state = candidate_b_state(
+                    load_state(ROOT / "research_state.yaml"), active_status
+                )
                 state["goal_status"] = goal_status
                 state["paper_gate"] = paper_gate
-                state["candidates"]["B"]["status"] = active_status
                 with self.assertRaisesRegex(
                     ValueError,
                     "paper terminal state mismatch",
@@ -221,8 +279,9 @@ class ResearchStateTests(unittest.TestCase):
                     validate_state(state)
 
     def test_paper_gate_transition_and_accepted_state_are_valid(self):
-        state = load_state(ROOT / "research_state.yaml")
-        state["candidates"]["B"]["status"] = "FULL_SAB_PASS"
+        state = candidate_b_state(
+            load_state(ROOT / "research_state.yaml"), "FULL_SAB_PASS"
+        )
 
         changed = transition_candidate(
             state,

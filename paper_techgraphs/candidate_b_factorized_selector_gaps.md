@@ -1,15 +1,16 @@
 # Candidate B Factorized Selector Gaps
 
-## Frozen And Active Scope
+## Frozen And Historical Scope
 
 Candidate A is frozen only for the direct `4r` star-cycle support combined
 with the current independently randomized PVW row mechanism. Its semantic
 equations remain evidence.
 
-Candidate B is active at repository state `INTAKE`. Task 1 validates the
-source graph and advances only an in-memory view through
+Candidate B evidence is a historical pre-closeout INTAKE snapshot. Task 1
+validates the source graph and advances only an in-memory view through
 `TECHGRAPH_ANCHORED` and `EQUATIONS_DEFINED`. No repository campaign state or
 production source is changed.
+Current campaign disposition is recorded elsewhere.
 
 ## Established
 

@@ -1,0 +1,10 @@
+r,mu,prime,oracle,actual,expected,status
+2,0,257,algebraic_identity,132;198,132;198,PASS
+2,1,257,hand_derived_r2,120;174,120;174,PASS
+4,0,257,algebraic_identity,193;161;129;97,193;161;129;97,PASS
+4,1,257,algebraic_identity,181;137;93;49,181;137;93;49,PASS
+6,0,257,algebraic_identity,36;54;72;90;108;126,36;54;72;90;108;126,PASS
+6,1,257,algebraic_identity,24;30;36;42;48;54,24;30;36;42;48;54,PASS
+2,mutation,257,increment_error_row0_last_lane,0;7,0;7,PASS
+4,mutation,257,increment_error_row0_last_lane,0;0;0;7,0;0;0;7,PASS
+6,mutation,257,increment_error_row0_last_lane,0;0;0;0;0;7,0;0;0;0;0;7,PASS

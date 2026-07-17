@@ -1,0 +1,12 @@
+key,value
+date,2026-07-17
+input_head,1b1716615531e0b87f03b195d4fb44d30974e8a2
+python_version,3.12.4
+platform,Windows-11-10.0.26200-SP0
+target_out_k,1
+target_T,1
+target_N,2048
+target_sigma,2^-50
+torus_bits,64
+phase_field,GF(257)
+rank_image,"GF(2), phi(f)=f(1) mod 2"

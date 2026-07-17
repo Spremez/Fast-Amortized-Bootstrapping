@@ -5,11 +5,12 @@
 - Goal: `ACTIVE`
 - Paper gate: `BLOCKED`
 - Candidate A: `REJECTED`
-- Candidate B: `INTAKE` (active)
-- Last decision: `REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B`
-- Disposition: Candidate A is closed after failing the standard-PVW randomization necessary condition.
+- Candidate B: `REJECTED`
+- Candidate C: `INTAKE` (active)
+- Last decision: `REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C`
+- Disposition: Candidate B is closed after failing the exact standard-PVW factorization gate.
 
-Candidate B is active at `INTAKE`; its equations and implementation have not begun.
+Candidate C is active at `INTAKE`; its equations and implementation have not begun.
 
 Production code permission: `false`.
 
@@ -17,9 +18,9 @@ The closed Candidate A result is a finite-field necessary-condition rejection; i
 
 ## Open Obligations
 
-- Candidate B factorized-operator equation gate (not begun)
-- production key distribution and assumption comparison for an admitted representation
-- noise recurrence under an admitted selector representation
+- Candidate C rank-bounded shared-mask state equation gate (not begun)
+- phase and rank-growth checks for the admitted accumulator state
+- public relinearization cost and lane-phase preservation
 - Amdahl projection against exact-dense complete SAB
 - isolated kernel and complete-SAB evidence
 

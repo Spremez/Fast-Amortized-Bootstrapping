@@ -4570,3 +4570,19 @@ H_candidate_a_star_cycle_mechanism:
     randomization gate. The finite-field checker makes no security, noise,
     production-readiness, or performance claim.
 # candidate-a-star-cycle-gate-hypothesis-end
+# candidate-b-factorized-gate-hypothesis-start
+H_candidate_b_factorized_mechanism:
+  status: REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C
+  primary_metric: complete_sab_T_bootstrap_over_r
+  evidence:
+    - repro/candidate_b_factorized_gate/summary.csv
+    - repro/candidate_b_factorized_gate/phase_identity.csv
+    - repro/candidate_b_factorized_gate/rank_controls.csv
+    - repro/candidate_b_factorized_gate/factor_cost.csv
+    - repro/candidate_b_factorized_gate/mechanism_matrix.csv
+    - theory_checks/candidate_b_factorized_standard_pvw_model.md
+  conclusion: >
+    Candidate B is decided by source-anchored phase, multiplicative-image
+    rank, complete-distribution, and full-cost gates. This result makes no
+    general impossibility, security, noise, production, or speedup claim.
+# candidate-b-factorized-gate-hypothesis-end

@@ -552,6 +552,42 @@ class CandidateBCloseoutTests(unittest.TestCase):
 
             self.assertEqual(before, self._tracked_outputs(root, state_path))
 
+    def test_unrelated_legacy_run_log_row_is_preserved_and_ignored(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            result = self._gate_result(root, gate.REJECT)
+            summary = self._write_summary(root, [result])
+            run_log = root / "repro/run_log.csv"
+            original = (
+                b"run_id,date,commit_or_state,stage,backend,command,params,"
+                b"seed,status,summary,artifacts\n"
+                b"stage318-legacy,2026-07-01,state,Stage318,legacy,"
+                b"legacy-command,legacy-params,legacy-seed\r\n"
+            )
+            run_log.write_bytes(original)
+
+            self.assertEqual(
+                apply_gate(root, state_path, summary),
+                gate.REJECT,
+            )
+            after_first = run_log.read_bytes()
+
+            self.assertTrue(after_first.startswith(original))
+            with run_log.open(newline="", encoding="ascii") as handle:
+                rows = list(csv.reader(handle, strict=True))
+            candidate_rows = [
+                row
+                for row in rows[1:]
+                if len(row) == len(rows[0]) and row[0] == RUN_MARKER
+            ]
+            self.assertEqual(len(candidate_rows), 1)
+
+            self.assertEqual(
+                apply_gate(root, state_path, summary),
+                gate.REJECT,
+            )
+            self.assertEqual(run_log.read_bytes(), after_first)
+
     def test_surplus_unheaded_run_marker_column_is_rejected_before_mutation(self):
         with tempfile.TemporaryDirectory() as tmp:
             root, state_path = self._make_root(tmp)
@@ -576,7 +612,7 @@ class CandidateBCloseoutTests(unittest.TestCase):
 
             self.assertEqual(before, self._tracked_outputs(root, state_path))
 
-    def test_missing_run_log_column_is_rejected_before_mutation(self):
+    def test_canonical_marker_outside_run_id_is_rejected_before_mutation(self):
         with tempfile.TemporaryDirectory() as tmp:
             root, state_path = self._make_root(tmp)
             result = self._gate_result(root, gate.REJECT)
@@ -586,6 +622,30 @@ class CandidateBCloseoutTests(unittest.TestCase):
                 "run_id,date,commit_or_state,stage,backend,command,params,seed,"
                 "status,summary,artifacts\n"
                 "ordinary-run,2026-07-17,commit,stage,backend,command,params,"
+                f"seed,PASS,{RUN_MARKER},artifacts\n",
+                encoding="ascii",
+                newline="\n",
+            )
+            before = self._tracked_outputs(root, state_path)
+
+            with self.assertRaisesRegex(
+                ValueError,
+                "run log rows must match canonical schema",
+            ):
+                apply_gate(root, state_path, summary)
+
+            self.assertEqual(before, self._tracked_outputs(root, state_path))
+
+    def test_missing_run_log_column_is_rejected_before_mutation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            result = self._gate_result(root, gate.REJECT)
+            summary = self._write_summary(root, [result])
+            run_log = root / "repro/run_log.csv"
+            run_log.write_text(
+                "run_id,date,commit_or_state,stage,backend,command,params,seed,"
+                "status,summary,artifacts\n"
+                f"{RUN_MARKER},2026-07-17,commit,stage,backend,command,params,"
                 "seed,PASS,summary\n",
                 encoding="ascii",
                 newline="\n",

@@ -1,0 +1,13 @@
+r,q,dense_products,generic_left_products,generic_right_products,separate_diagonal_products,generic_dense_factor_products,generic_dense_factor_beats_dense,retained_dense_error_products,retained_dense_error_order
+2,1,9,3,2,3,8,yes,6,Theta(r^2)
+2,2,9,6,4,3,13,no,6,Theta(r^2)
+4,1,25,5,4,5,14,yes,20,Theta(r^2)
+4,2,25,10,8,5,23,yes,20,Theta(r^2)
+4,3,25,15,12,5,32,no,20,Theta(r^2)
+4,4,25,20,16,5,41,no,20,Theta(r^2)
+6,1,49,7,6,7,20,yes,42,Theta(r^2)
+6,2,49,14,12,7,33,yes,42,Theta(r^2)
+6,3,49,21,18,7,46,yes,42,Theta(r^2)
+6,4,49,28,24,7,59,no,42,Theta(r^2)
+6,5,49,35,30,7,72,no,42,Theta(r^2)
+6,6,49,42,36,7,85,no,42,Theta(r^2)

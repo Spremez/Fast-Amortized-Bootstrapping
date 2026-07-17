@@ -3419,3 +3419,13 @@ Repro artifacts:
   - `scripts/apply_mat_sab_candidate_gate.py`
   - `repro/candidate_a_star_cycle_gate/`
 <!-- candidate-a-star-cycle-gate-manifest-end -->
+<!-- candidate-b-factorized-gate-manifest-start -->
+- candidate_b_factorized_gate:
+  - `research/mat_sab/factorized_selector_model.py`
+  - `theory_checks/candidate_b_factorized_standard_pvw_model.md`
+  - `paper_techgraphs/candidate_b_factorized_selector.yaml`
+  - `docs/candidate_b_factorized_mechanism_gate.md`
+  - `scripts/run_candidate_b_factorized_gate.py`
+  - `scripts/apply_candidate_b_factorized_gate.py`
+  - `repro/candidate_b_factorized_gate/`
+<!-- candidate-b-factorized-gate-manifest-end -->

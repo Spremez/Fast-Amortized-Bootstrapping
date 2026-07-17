@@ -246,9 +246,17 @@ def _run_log_plan(root: Path, decision: str) -> tuple[Path, list[str], bool]:
     if fields != expected_fields or len(fields) != len(set(fields)):
         raise ValueError("run log header must match canonical schema")
     physical_rows = records[1:]
-    if any(len(row) != len(fields) for row in physical_rows):
-        raise ValueError("run log rows must match canonical schema")
-    rows = [dict(zip(fields, row)) for row in physical_rows]
+    rows = []
+    for row in physical_rows:
+        marker_positions = [
+            index for index, value in enumerate(row) if value == RUN_MARKER
+        ]
+        if len(row) == len(fields):
+            if any(index != 0 for index in marker_positions):
+                raise ValueError("run log rows must match canonical schema")
+            rows.append(dict(zip(fields, row)))
+        elif marker_positions:
+            raise ValueError("run log rows must match canonical schema")
     matches = [row for row in rows if row.get("run_id") == RUN_MARKER]
     if len(matches) > 1:
         raise ValueError(f"duplicate run-log marker: {RUN_MARKER}")

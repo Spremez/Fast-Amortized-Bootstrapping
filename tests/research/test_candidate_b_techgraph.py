@@ -98,12 +98,9 @@ class CandidateBTechgraphTests(unittest.TestCase):
             )
         )
 
-    def test_graph_records_in_memory_state_progression_only(self):
+    def test_graph_records_historical_intake_snapshot_only(self):
         graph = load_graph()
         state = graph["candidate_state"]
-        repository_state = json.loads(
-            (ROOT / "research_state.yaml").read_text(encoding="ascii")
-        )
         self.assertEqual(state["candidate"], "B")
         self.assertEqual(state["repository_status"], "INTAKE")
         self.assertEqual(
@@ -112,11 +109,6 @@ class CandidateBTechgraphTests(unittest.TestCase):
         )
         self.assertFalse(state["repository_state_mutated"])
         self.assertFalse(graph["production_hot_path_permission"])
-        self.assertEqual(repository_state["active_candidate"], "B")
-        self.assertEqual(repository_state["candidates"]["A"]["status"], "REJECTED")
-        self.assertEqual(repository_state["candidates"]["B"]["status"], "INTAKE")
-        self.assertEqual(repository_state["candidates"]["C"]["status"], "QUEUED")
-        self.assertFalse(repository_state["production_hot_path_permission"])
 
     def test_source_behavior_and_target_cost_assumptions_are_anchored(self):
         pvw = (ROOT / "src/mosfhet/src/pvwtmlwe.c").read_text(
@@ -237,7 +229,11 @@ class CandidateBTechgraphTests(unittest.TestCase):
             "encrypted selector distribution.",
             graph_md,
         )
-        self.assertIn("Candidate B: `INTAKE` in repository state", graph_md)
+        for content in (graph_md, gaps):
+            self.assertIn("historical pre-closeout INTAKE snapshot", content)
+            self.assertIn("Current campaign disposition is recorded elsewhere.", content)
+            self.assertNotIn("active at repository state", content)
+            self.assertNotIn("in repository state", content)
         self.assertIn(
             "`INTAKE -> TECHGRAPH_ANCHORED -> EQUATIONS_DEFINED` in memory",
             graph_md,

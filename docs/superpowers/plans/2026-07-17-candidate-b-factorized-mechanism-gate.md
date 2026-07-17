@@ -1,5 +1,8 @@
 # Candidate B Factorized Mechanism Gate Implementation Plan
 
+Status: `COMPLETED` with
+`REJECT_CANDIDATE_B_EXACT_STANDARD_PVW_FACTORIZATION_ROUTE_TO_C`.
+
 > **Execution:** Use subagent-driven development task by task. Every task
 > requires tests before implementation, a focused review, and a clean
 > research-suite run before commit.
@@ -48,17 +51,17 @@ python -m unittest discover -s tests/research -p "test_*.py" -v
 
 **Steps:**
 
-- [ ] Write tests that require source anchors for `PVW_TMLWE`,
+- [x] Write tests that require source anchors for `PVW_TMLWE`,
   `pvmtmlwe_sample`, `pvmtmlwe_phase`, `mat_trgsw_monomial_sample`, the dense
   external product, and `sab_pvw_CMUX`.
-- [ ] Require the graph to distinguish semantic star-cycle support from the
+- [x] Require the graph to distinguish semantic star-cycle support from the
   complete encrypted selector distribution.
-- [ ] Require the equations document to contain the general-`k` matrix, the
+- [x] Require the equations document to contain the general-`k` matrix, the
   target `k=1` reduction, phase identity, error-rank boundary, and complete
   work-count policy.
-- [ ] Implement the artifacts.
-- [ ] Run the focused tests.
-- [ ] Transition an in-memory Candidate B state through
+- [x] Implement the artifacts.
+- [x] Run the focused tests.
+- [x] Transition an in-memory Candidate B state through
   `TECHGRAPH_ANCHORED` and `EQUATIONS_DEFINED`; do not mutate repository state
   until the closeout gate validates all evidence.
 
@@ -88,23 +91,23 @@ factor_cost(r, q)
 
 **Steps:**
 
-- [ ] Write tests for shape validation and ragged-input rejection.
-- [ ] Write phase-identity tests for `r=2,4,6`, `mu=0,1`, and deterministic
+- [x] Write tests for shape validation and ragged-input rejection.
+- [x] Write phase-identity tests for `r=2,4,6`, `mu=0,1`, and deterministic
   nonzero masks, digits, and errors.
-- [ ] Add a mutation test that changes one body error and requires the expected
+- [x] Add a mutation test that changes one body error and requires the expected
   phase to change.
-- [ ] Write a full-rank positive control for the multiplicative map
+- [x] Write a full-rank positive control for the multiplicative map
   `phi(f)=f(1) mod 2`, with image rank exactly `r`.
-- [ ] Write low-rank image controls with rank exactly `q` for every
+- [x] Write low-rank image controls with rank exactly `q` for every
   `q<r`.
-- [ ] Require the image-rank gate to reject each full-rank witness for `q<r`
+- [x] Require the image-rank gate to reject each full-rank witness for `q<r`
   and admit each constructed rank-`q` image control.
-- [ ] Require one hard-coded hand-derived selector/output/phase oracle.
-- [ ] Require the cost model to count polynomial components, not only vector
+- [x] Require one hard-coded hand-derived selector/output/phase oracle.
+- [x] Require the cost model to count polynomial components, not only vector
   objects, and label dense two-sided factor counts as generic implementation
   counts rather than universal lower bounds.
-- [ ] Implement the minimum model that passes the tests.
-- [ ] Run focused and full research tests.
+- [x] Implement the minimum model that passes the tests.
+- [x] Run focused and full research tests.
 
 **Gate:** Algebra, rank, mutation, and cost controls all pass.
 
@@ -139,22 +142,22 @@ reproduction_commands.md
 
 **Steps:**
 
-- [ ] Write tests that recompute every decision field from source and model
+- [x] Write tests that recompute every decision field from source and model
   evidence.
-- [ ] Require missing source anchors or failed positive/negative controls to
+- [x] Require missing source anchors or failed positive/negative controls to
   raise an inconclusive evidence error, never an admit/reject result.
-- [ ] Require coverage of `r=2,4,6`, `mu=0,1`, and every `q<r`.
-- [ ] Require B0 exact-standard factorization to fail when a supported
+- [x] Require coverage of `r=2,4,6`, `mu=0,1`, and every `q<r`.
+- [x] Require B0 exact-standard factorization to fail when a supported
   full-rank homomorphic image cannot be represented with `q=O(1)`.
-- [ ] Require B1 noiseless-only factorization to fail the complete-cost gate
+- [x] Require B1 noiseless-only factorization to fail the complete-cost gate
   when dense error work remains.
-- [ ] Record B2 as a changed-distribution route to C, not as standard-PVW
+- [x] Record B2 as a changed-distribution route to C, not as standard-PVW
   admission.
-- [ ] Require B3/B4 to stay unregistered unless a concrete complete mechanism
+- [x] Require B3/B4 to stay unregistered unless a concrete complete mechanism
   and cost accounting artifact exists, is hash-bound, and passes a
   mechanism-specific semantic checker registered in code.
-- [ ] Generate all human- and machine-readable artifacts.
-- [ ] Verify byte-identical output on two consecutive runs.
+- [x] Generate all human- and machine-readable artifacts.
+- [x] Verify byte-identical output on two consecutive runs.
 
 **Decision:** With current evidence, either
 
@@ -187,19 +190,19 @@ No other terminal string is accepted.
 
 **Steps:**
 
-- [ ] Write temporary-root tests for both admitted and rejected outcomes.
-- [ ] Require the repository pre-state to be Candidate B `INTAKE`, Candidate A
+- [x] Write temporary-root tests for both admitted and rejected outcomes.
+- [x] Require the repository pre-state to be Candidate B `INTAKE`, Candidate A
   `REJECTED`, Candidate C `QUEUED`, Goal `ACTIVE`, and permission `false`.
-- [ ] Recompute gate evidence before any mutation.
-- [ ] Validate source/equation prerequisites, then transition B in memory
+- [x] Recompute gate evidence before any mutation.
+- [x] Validate source/equation prerequisites, then transition B in memory
   through `TECHGRAPH_ANCHORED` and `EQUATIONS_DEFINED`.
-- [ ] On rejection, set B `REJECTED`, C `INTAKE`, active candidate C, Goal
+- [x] On rejection, set B `REJECTED`, C `INTAKE`, active candidate C, Goal
   `ACTIVE`, paper gate `BLOCKED`, and permission `false`.
-- [ ] On admission, set B `ADVERSARIAL_CHECKER_PASS` and leave C queued.
-- [ ] Reject malformed, duplicated, fabricated, stale, or path-escaping
+- [x] On admission, set B `ADVERSARIAL_CHECKER_PASS` and leave C queued.
+- [x] Reject malformed, duplicated, fabricated, stale, or path-escaping
   summaries before mutation.
-- [ ] Append bounded ledger blocks and one run-log row.
-- [ ] Verify a second closeout run changes no bytes.
+- [x] Append bounded ledger blocks and one run-log row.
+- [x] Verify a second closeout run changes no bytes.
 
 **Gate:** State and ledgers agree exactly with recomputed evidence.
 
@@ -207,16 +210,16 @@ No other terminal string is accepted.
 
 **Steps:**
 
-- [ ] Run the Candidate B generator twice and compare checksums.
-- [ ] Run the Candidate B closeout twice and verify idempotence.
-- [ ] Run all research tests.
-- [ ] Run `python scripts/mat_sab_research_state.py validate`.
-- [ ] Verify no C/C++ source, header, `main.c`, or `Makefile` changed from
+- [x] Run the Candidate B generator twice and compare checksums.
+- [x] Run the Candidate B closeout twice and verify idempotence.
+- [x] Run all research tests.
+- [x] Run `python scripts/mat_sab_research_state.py validate`.
+- [x] Verify no C/C++ source, header, `main.c`, or `Makefile` changed from
   Candidate A's terminal commit.
-- [ ] Verify `production_hot_path_permission` remains `false`.
-- [ ] Update the concise active Goal with B's disposition and Candidate C's
+- [x] Verify `production_hot_path_permission` remains `false`.
+- [x] Update the concise active Goal with B's disposition and Candidate C's
   exact next question if B is rejected.
-- [ ] Run a final branch review focused on overclaiming, state-machine
+- [x] Run a final branch review focused on overclaiming, state-machine
   consistency, deterministic artifacts, and test independence.
 
 **Completion:** Candidate B has one reproducible disposition. If rejected,

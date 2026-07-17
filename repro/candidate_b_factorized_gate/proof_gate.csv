@@ -1,0 +1,13 @@
+gate,status,classification,interpretation
+source_anchors,PASS,evidence_prerequisite,"code, predecessor evidence, and design anchored"
+literature_scope,PASS,evidence_prerequisite,full-text and metadata-only support levels are separated
+phase_identity,PASS,evidence_prerequisite,exact current selector phase equation holds
+sampler_parity_support,PASS,evidence_prerequisite,explicit uniform-word pairs produce even and odd errors
+mutation_control,PASS,evidence_prerequisite,one error mutation changes one predicted lane
+full_rank_control,PASS,evidence_prerequisite,a supported parity-pattern witness maps to rank r under phi(f)=f(1) mod 2
+low_rank_control,PASS,evidence_prerequisite,constructed rank-q images are admitted
+cost_accounting,PASS,evidence_prerequisite,generic factor products and retained dense errors are counted
+exact_standard_q_lt_r_factorization,FAIL,mechanism_rejection,full-rank homomorphic image cannot fit q below r
+noiseless_only_linear,FAIL,mechanism_rejection,retained dense error work is Theta(r^2)
+concrete_alternative,FAIL,mechanism_gate,hash-bound artifacts and a registered semantic checker are both required
+production_hot_path_permission,NO,permission,mechanism gate cannot authorize production code

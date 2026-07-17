@@ -3,7 +3,7 @@
 ## State
 
 - Candidate A: `REJECTED` and narrowly frozen.
-- Candidate B: `INTAKE` in repository state.
+- Candidate B evidence is a historical pre-closeout INTAKE snapshot.
 - Task 1 validation: `INTAKE -> TECHGRAPH_ANCHORED -> EQUATIONS_DEFINED` in memory.
 - Repository state mutation: `false`.
 - Production hot-path permission: `false`.
@@ -11,6 +11,7 @@
 The in-memory progression records that the source graph and equation
 obligations are ready for the executable gate. It does not pre-approve a
 factorized mechanism and does not modify `research_state.yaml`.
+Current campaign disposition is recorded elsewhere.
 
 ## Controlling Question
 
