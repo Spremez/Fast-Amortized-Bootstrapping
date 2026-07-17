@@ -342,6 +342,13 @@ class ResearchStateTests(unittest.TestCase):
 
     def test_transition_candidate_c_to_inconclusive_is_terminal(self):
         state = load_state(ROOT / "research_state.yaml")
+        state["goal_status"] = "ACTIVE"
+        state["active_candidate"] = "C"
+        state["candidates"]["A"]["status"] = "REJECTED"
+        state["candidates"]["B"]["status"] = "REJECTED"
+        state["candidates"]["C"]["status"] = "INTAKE"
+        state["paper_gate"] = "BLOCKED"
+        state["production_hot_path_permission"] = False
         changed = transition_candidate(
             state,
             "C",
