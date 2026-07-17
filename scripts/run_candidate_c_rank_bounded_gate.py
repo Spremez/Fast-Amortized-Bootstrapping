@@ -866,6 +866,15 @@ def _matches_registered_rejection(
 
 
 def _derive_decision(raw: RawDecisionEvidence) -> str:
+    registered = tuple(
+        mechanism
+        for mechanism in raw.mechanisms
+        if mechanism.registered
+    )
+    if len(registered) > 1:
+        raise GateEvidenceError(
+            "decision evidence must contain one unique registered mechanism"
+        )
     admitted = tuple(
         mechanism
         for mechanism in raw.mechanisms
@@ -886,7 +895,8 @@ def _derive_decision(raw: RawDecisionEvidence) -> str:
         and not raw.terminal_evidence_exhausted
         and raw.replay_status == "PASS"
         and raw.task4_status == "PASS"
-        and admitted
+        and len(registered) == 1
+        and admitted == registered
         and not failed
     ):
         return ADMIT
@@ -894,7 +904,8 @@ def _derive_decision(raw: RawDecisionEvidence) -> str:
         raw.terminal_classification == "REJECT"
         and raw.terminal_decision in _REGISTERED_REJECTION_RULES
         and not raw.terminal_evidence_exhausted
-        and failed
+        and len(registered) == 1
+        and failed == registered
         and not admitted
     ):
         return REJECT
@@ -920,6 +931,7 @@ def _derive_decision(raw: RawDecisionEvidence) -> str:
         in {NO_VERIFIED_TASK3B_RESULT, "EVIDENCE_EXHAUSTED"}
         and no_numerics
         and task4_skipped
+        and not registered
         and not admitted
         and not failed
     ):
@@ -1130,13 +1142,47 @@ def verify_decision_evidence(
     )
 
 
+def _decision_mechanism(
+    raw: RawDecisionEvidence,
+    decision: str,
+) -> MechanismEvaluation:
+    if decision == ADMIT:
+        selected = tuple(
+            mechanism
+            for mechanism in raw.mechanisms
+            if _mechanism_admits(mechanism)
+        )
+    elif decision == REJECT:
+        selected = tuple(
+            mechanism
+            for mechanism in raw.mechanisms
+            if _matches_registered_rejection(raw, mechanism)
+        )
+    elif decision == INCONCLUSIVE:
+        selected = tuple(
+            mechanism
+            for mechanism in raw.mechanisms
+            if mechanism.registered
+        )
+        if selected:
+            raise GateEvidenceError(
+                "inconclusive evidence cannot contain a registered mechanism"
+            )
+        return raw.mechanisms[0]
+    else:
+        raise GateEvidenceError("unknown verified Candidate C decision")
+    if len(selected) != 1 or not selected[0].registered:
+        raise GateEvidenceError(
+            "verified decision must select one unique registered mechanism"
+        )
+    return selected[0]
+
+
 def _primary_mechanism(result: GateResult) -> MechanismEvaluation:
-    registered = [
-        mechanism for mechanism in result.mechanisms if mechanism.registered
-    ]
-    if not registered:
-        return result.mechanisms[0]
-    return registered[0]
+    return _decision_mechanism(
+        result.decision_evidence,
+        result.decision,
+    )
 
 
 def _gate_result_from_verified(
@@ -1145,14 +1191,7 @@ def _gate_result_from_verified(
     terminal: CandidateCTerminalRecord | None,
 ) -> GateResult:
     raw = verified.raw
-    primary = next(
-        (
-            mechanism
-            for mechanism in raw.mechanisms
-            if mechanism.registered
-        ),
-        raw.mechanisms[0],
-    )
+    primary = _decision_mechanism(raw, verified.decision)
     result = GateResult(
         decision_evidence=raw,
         terminal_record=terminal,

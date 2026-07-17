@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import io
 from pathlib import Path
 import sys
 
@@ -72,7 +73,13 @@ def _bounded_block(start: str, end: str, content: str) -> str:
     return f"{start}\n{content.rstrip()}\n{end}"
 
 
-def _check_append(path: Path, start: str, end: str, content: str) -> bool:
+def _check_append(
+    path: Path,
+    start: str,
+    end: str,
+    content: str,
+    accepted_previous: tuple[str, ...] = (),
+) -> str:
     current = _read_text(path)
     lines = current.splitlines()
     if any(
@@ -84,19 +91,54 @@ def _check_append(path: Path, start: str, end: str, content: str) -> bool:
     starts = [index for index, line in enumerate(lines) if line == start]
     ends = [index for index, line in enumerate(lines) if line == end]
     if not starts and not ends:
-        return True
+        return "append"
     if len(starts) != 1 or len(ends) != 1 or ends[0] < starts[0]:
         raise ValueError(f"ledger block marker mismatch in {path}: {start}")
     actual = "\n".join(lines[starts[0] : ends[0] + 1])
-    if actual != _bounded_block(start, end, content):
-        raise ValueError(f"ledger block/content mismatch in {path}: {start}")
-    return False
+    if actual == _bounded_block(start, end, content):
+        return "unchanged"
+    if any(
+        actual == _bounded_block(start, end, previous)
+        for previous in accepted_previous
+    ):
+        return "replace"
+    raise ValueError(f"ledger block/content mismatch in {path}: {start}")
 
 
-def _append_once(path: Path, start: str, end: str, content: str) -> None:
-    if not _check_append(path, start, end, content):
+def _append_once(
+    path: Path,
+    start: str,
+    end: str,
+    content: str,
+    accepted_previous: tuple[str, ...] = (),
+) -> None:
+    action = _check_append(
+        path,
+        start,
+        end,
+        content,
+        accepted_previous,
+    )
+    if action == "unchanged":
         return
     current = _read_text(path)
+    if action == "replace":
+        previous = next(
+            previous
+            for previous in accepted_previous
+            if _bounded_block(start, end, previous) in current
+        )
+        current = current.replace(
+            _bounded_block(start, end, previous),
+            _bounded_block(start, end, content),
+            1,
+        )
+        path.write_text(
+            current,
+            encoding="ascii",
+            newline="\n",
+        )
+        return
     separator = "" if not current or current.endswith("\n") else "\n"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -153,14 +195,28 @@ def _summary_record(path: Path) -> dict[str, str]:
     return record
 
 
-def _run_row(decision: str) -> dict[str, str]:
+def _generator_command(input_commit: str) -> str:
+    return (
+        "python scripts/run_candidate_c_rank_bounded_gate.py "
+        f"--input-commit {input_commit}"
+    )
+
+
+def _closeout_command(input_commit: str) -> str:
+    return (
+        "python scripts/apply_candidate_c_rank_bounded_gate.py "
+        f"--input-commit {input_commit}"
+    )
+
+
+def _run_row(decision: str, input_commit: str) -> dict[str, str]:
     return {
         "run_id": RUN_MARKER,
         "date": "2026-07-17",
         "commit_or_state": "candidate-c-rank-bounded-mechanism-gate",
         "stage": "Candidate C mechanism gate",
         "backend": "exact-finite-ring-symbolic",
-        "command": "python scripts/run_candidate_c_rank_bounded_gate.py",
+        "command": _generator_command(input_commit),
         "params": "C1/C2;r=2/4/6;rho<=2;Task4=registered-only",
         "seed": "deterministic",
         "status": decision,
@@ -172,10 +228,17 @@ def _run_row(decision: str) -> dict[str, str]:
     }
 
 
+def _legacy_run_row(decision: str) -> dict[str, str]:
+    row = _run_row(decision, "")
+    row["command"] = "python scripts/run_candidate_c_rank_bounded_gate.py"
+    return row
+
+
 def _run_log_plan(
     root: Path,
     decision: str,
-) -> tuple[Path, list[str], bool]:
+    input_commit: str,
+) -> tuple[Path, list[str], str]:
     path = _resolved_under_root(
         root,
         root / "repro/run_log.csv",
@@ -188,7 +251,7 @@ def _run_log_plan(
     except (csv.Error, UnicodeError) as error:
         raise ValueError("run log header must match canonical schema") from error
     fields = records[0] if records else []
-    expected = list(_run_row(decision))
+    expected = list(_run_row(decision, input_commit))
     if fields != expected or len(fields) != len(set(fields)):
         raise ValueError("run log header must match canonical schema")
     rows = []
@@ -207,20 +270,56 @@ def _run_log_plan(
     if len(matches) > 1:
         raise ValueError(f"duplicate run-log marker: {RUN_MARKER}")
     if matches:
-        expected_row = _run_row(decision)
-        if matches[0] != expected_row:
-            raise ValueError(f"run-log marker/content mismatch: {RUN_MARKER}")
-        return path, fields, False
-    return path, fields, True
+        if matches[0] == _run_row(decision, input_commit):
+            return path, fields, "unchanged"
+        if matches[0] == _legacy_run_row(decision):
+            return path, fields, "replace"
+        raise ValueError(f"run-log marker/content mismatch: {RUN_MARKER}")
+    return path, fields, "append"
+
+
+def _serialized_run_row(
+    fields: list[str],
+    row: dict[str, str],
+) -> str:
+    buffer = io.StringIO(newline="")
+    writer = csv.DictWriter(
+        buffer,
+        fieldnames=fields,
+        lineterminator="\n",
+    )
+    writer.writerow(row)
+    return buffer.getvalue()
 
 
 def _append_run(
     path: Path,
     fields: list[str],
     decision: str,
-    needed: bool,
+    input_commit: str,
+    action: str,
 ) -> None:
-    if not needed:
+    if action == "unchanged":
+        return
+    if action == "replace":
+        current = path.read_text(encoding="ascii")
+        legacy = _serialized_run_row(fields, _legacy_run_row(decision))
+        if current.count(legacy) != 1:
+            raise ValueError(
+                f"run-log legacy row bytes changed: {RUN_MARKER}"
+            )
+        path.write_text(
+            current.replace(
+                legacy,
+                _serialized_run_row(
+                    fields,
+                    _run_row(decision, input_commit),
+                ),
+                1,
+            ),
+            encoding="ascii",
+            newline="\n",
+        )
         return
     if path.stat().st_size:
         with path.open("rb") as handle:
@@ -235,12 +334,23 @@ def _append_run(
             fieldnames=fields,
             lineterminator="\n",
         )
-        writer.writerow(_run_row(decision))
+        writer.writerow(_run_row(decision, input_commit))
+
+
+def _legacy_checklist(decision: str) -> str:
+    return f"""- [x] Candidate C records `{decision}` from hash-bound source,
+  equation, symbolic-independence, phase, schedule, rank, compression,
+  complete-cost, and Amdahl fields. Reproduce with
+  `python scripts/run_candidate_c_rank_bounded_gate.py` followed by
+  `python scripts/apply_candidate_c_rank_bounded_gate.py`; production hot-path
+  permission remains false.
+"""
 
 
 def _ledger_entries(
     decision: str,
-) -> tuple[tuple[str, str, str, str], ...]:
+    input_commit: str,
+) -> tuple[tuple[str, str, str, str, tuple[str, ...]], ...]:
     hypothesis = f"""H_candidate_c_rank_bounded_mechanism:
   status: {decision}
   primary_metric: complete_sab_T_bootstrap_over_r
@@ -269,8 +379,8 @@ def _ledger_entries(
     checklist = f"""- [x] Candidate C records `{decision}` from hash-bound source,
   equation, symbolic-independence, phase, schedule, rank, compression,
   complete-cost, and Amdahl fields. Reproduce with
-  `python scripts/run_candidate_c_rank_bounded_gate.py` followed by
-  `python scripts/apply_candidate_c_rank_bounded_gate.py`; production hot-path
+  `{_generator_command(input_commit)}` followed by
+  `{_closeout_command(input_commit)}`; production hot-path
   permission remains false.
 """
     return (
@@ -279,18 +389,21 @@ def _ledger_entries(
             HYPOTHESIS_START,
             HYPOTHESIS_END,
             hypothesis,
+            (),
         ),
         (
             "repro/artifact_manifest.md",
             MANIFEST_START,
             MANIFEST_END,
             manifest,
+            (),
         ),
         (
             "repro/reproduction_checklist.md",
             CHECKLIST_START,
             CHECKLIST_END,
             checklist,
+            (_legacy_checklist(decision),),
         ),
     )
 
@@ -469,14 +582,23 @@ def apply_gate(
             start,
             end,
             content,
+            accepted_previous,
         )
-        for relative, start, end, content in _ledger_entries(decision)
+        for relative, start, end, content, accepted_previous
+        in _ledger_entries(decision, input_commit)
     )
-    for path, start, end, content in entries:
-        _check_append(path, start, end, content)
-    run_path, run_fields, append_run = _run_log_plan(
+    for path, start, end, content, accepted_previous in entries:
+        _check_append(
+            path,
+            start,
+            end,
+            content,
+            accepted_previous,
+        )
+    run_path, run_fields, run_action = _run_log_plan(
         resolved_root,
         decision,
+        input_commit,
     )
 
     current = current_state["candidates"]["C"]["status"]
@@ -494,16 +616,32 @@ def apply_gate(
 
     outputs = (
         state,
-        *(path for path, _start, _end, _content in entries),
+        *(
+            path
+            for path, _start, _end, _content, _accepted_previous
+            in entries
+        ),
         run_path,
     )
     snapshot = _snapshot_outputs(outputs)
     try:
         if changed is not None:
             write_state(state, changed)
-        for path, start, end, content in entries:
-            _append_once(path, start, end, content)
-        _append_run(run_path, run_fields, decision, append_run)
+        for path, start, end, content, accepted_previous in entries:
+            _append_once(
+                path,
+                start,
+                end,
+                content,
+                accepted_previous,
+            )
+        _append_run(
+            run_path,
+            run_fields,
+            decision,
+            input_commit,
+            run_action,
+        )
     except Exception:
         _restore_outputs(snapshot)
         raise

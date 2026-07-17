@@ -272,6 +272,24 @@ def registered_rejection_evidence(gate, label):
     )
 
 
+def multiple_registered_phase_rejection_evidence(gate):
+    raw = registered_rejection_evidence(gate, C1_PHASE_REJECTION)
+    c1_failure = raw.mechanisms[0]
+    c2_pass = replace(
+        c1_failure,
+        mechanism_id="C2",
+        phase_status="PASS",
+        failure_reason="",
+    )
+    return gate.bind_fixture_decision_evidence(
+        replace(
+            raw,
+            terminal_record_hash="",
+            mechanisms=(c2_pass, c1_failure),
+        )
+    )
+
+
 def relabel_fixture_rejection(gate, raw, label, *, mechanism_id=None):
     mechanism = replace(
         raw.mechanisms[0],
@@ -355,6 +373,54 @@ class CandidateCDecisionVerifierTests(unittest.TestCase):
                     allow_fixture=True,
                 )
                 self.assertEqual(verified.decision, self.gate.REJECT)
+
+    def test_decision_evidence_rejects_multiple_registered_mechanisms(self):
+        raw = multiple_registered_phase_rejection_evidence(self.gate)
+        with self.assertRaisesRegex(
+            self.gate.GateEvidenceError,
+            "unique registered mechanism",
+        ):
+            self.gate.verify_decision_evidence(
+                raw,
+                allow_fixture=True,
+            )
+        with self.assertRaisesRegex(
+            self.gate.GateEvidenceError,
+            "unique registered mechanism",
+        ):
+            self.gate.gate_result_from_decision_evidence(
+                raw,
+                allow_fixture=True,
+            )
+
+    def test_rejection_result_selects_exact_verified_mechanism(self):
+        raw = registered_rejection_evidence(
+            self.gate,
+            C2_CLOSURE_REJECTION,
+        )
+        unregistered = replace(
+            fixture_mechanism(self.gate),
+            registered=False,
+            fully_evaluated=False,
+        )
+        raw = self.gate.bind_fixture_decision_evidence(
+            replace(
+                raw,
+                terminal_record_hash="",
+                mechanisms=(unregistered, raw.mechanisms[0]),
+            )
+        )
+        result = self.gate.gate_result_from_decision_evidence(
+            raw,
+            allow_fixture=True,
+        )
+        selected = self.gate._primary_mechanism(result)
+        self.assertEqual(selected, raw.mechanisms[1])
+        self.assertEqual(selected.mechanism_id, "C2")
+        self.assertEqual(
+            selected.compression_status,
+            C2_CLOSURE_REJECTION,
+        )
 
     def test_each_rejection_label_requires_its_exact_failure_fields(self):
         repairs = {

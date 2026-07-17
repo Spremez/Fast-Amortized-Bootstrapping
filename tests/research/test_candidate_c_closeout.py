@@ -3,6 +3,8 @@ from dataclasses import replace
 import importlib
 import inspect
 import json
+import re
+import shlex
 import subprocess
 import tempfile
 import unittest
@@ -133,6 +135,39 @@ def relabel_fixture_rejection(raw, label):
             terminal_decision=label,
             terminal_record_hash="",
             mechanisms=(mechanism,),
+        )
+    )
+
+
+def multiple_registered_phase_rejection_evidence():
+    admitted = fixture_raw_evidence(gate.ADMIT)
+    c1_failure = replace(
+        admitted.mechanisms[0],
+        phase_status="FAIL",
+        complete_cost_status=gate.SKIPPED,
+        complete_cost=None,
+        amdahl_status=gate.SKIPPED,
+        amdahl_projection=None,
+        amdahl_pessimistic_projection=None,
+        failure_reason=C1_PHASE_REJECTION,
+    )
+    c2_pass = replace(
+        c1_failure,
+        mechanism_id="C2",
+        phase_status="PASS",
+        failure_reason="",
+    )
+    return gate.bind_fixture_decision_evidence(
+        replace(
+            admitted,
+            claimed_decision=gate.REJECT,
+            terminal_classification="REJECT",
+            terminal_decision=C1_PHASE_REJECTION,
+            terminal_record_hash="",
+            replay_status=gate.SKIPPED,
+            task3b_status=gate.NO_VERIFIED_TASK3B_RESULT,
+            task4_status=gate.SKIPPED,
+            mechanisms=(c2_pass, c1_failure),
         )
     )
 
@@ -436,6 +471,202 @@ class CandidateCCloseoutTests(unittest.TestCase):
                     allow_fixture=True,
                 )
             self.assertEqual(before, self._tracked(root, state_path))
+
+    def test_apply_rejects_multiple_registered_mechanisms_before_transition(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            probe = multiple_registered_phase_rejection_evidence()
+            valid_raw = gate.bind_fixture_decision_evidence(
+                replace(
+                    probe,
+                    terminal_record_hash="",
+                    mechanisms=(probe.mechanisms[1],),
+                )
+            )
+            valid_result = gate.gate_result_from_decision_evidence(
+                valid_raw,
+                allow_fixture=True,
+            )
+            forged_result = replace(
+                valid_result,
+                decision_evidence=probe,
+                mechanisms=probe.mechanisms,
+                terminal_record_hash=probe.terminal_record_hash,
+            )
+            summary = root / "summary.csv"
+            with summary.open("w", newline="", encoding="ascii") as handle:
+                writer = csv.DictWriter(
+                    handle,
+                    fieldnames=gate.SUMMARY_FIELDS,
+                    lineterminator="\n",
+                )
+                writer.writeheader()
+                writer.writerow(
+                    gate._summary_from_verified_result(forged_result)
+                )
+            evidence = root / "decision_evidence.json"
+            evidence.write_text(
+                gate.decision_evidence_json(probe),
+                encoding="ascii",
+                newline="\n",
+            )
+            before = self._tracked(root, state_path)
+            with (
+                patch.object(
+                    self.closeout,
+                    "_transition_initial_state",
+                    wraps=self.closeout._transition_initial_state,
+                ) as transition,
+                self.assertRaisesRegex(
+                    gate.GateEvidenceError,
+                    "unique registered mechanism",
+                ),
+            ):
+                self.closeout.apply_gate(
+                    root,
+                    state_path,
+                    summary,
+                    input_commit=self.input_commit,
+                    evidence_path=evidence,
+                    allow_fixture=True,
+                )
+            transition.assert_not_called()
+            self.assertEqual(before, self._tracked(root, state_path))
+
+    def test_closeout_provenance_commands_pin_exact_input_commit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            self._apply_twice(
+                root,
+                state_path,
+                fixture_raw_evidence(gate.REJECT),
+            )
+            with (root / "repro/run_log.csv").open(
+                newline="",
+                encoding="ascii",
+            ) as handle:
+                row = next(
+                    record
+                    for record in csv.DictReader(handle)
+                    if record["run_id"] == RUN_MARKER
+                )
+            checklist = (
+                root / "repro/reproduction_checklist.md"
+            ).read_text(encoding="ascii")
+
+        commands = [row["command"], *re.findall(r"`(python [^`]+)`", checklist)]
+        expected_scripts = {
+            "scripts/run_candidate_c_rank_bounded_gate.py",
+            "scripts/apply_candidate_c_rank_bounded_gate.py",
+        }
+        self.assertEqual(
+            {shlex.split(command)[1] for command in commands},
+            expected_scripts,
+        )
+        for command in commands:
+            with self.subTest(command=command):
+                tokens = shlex.split(command)
+                self.assertEqual(
+                    tokens[-2:],
+                    ["--input-commit", self.input_commit],
+                )
+                self.assertEqual(command.count(self.input_commit), 1)
+
+    def test_closeout_refreshes_exact_legacy_unpinned_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            summary, evidence = self._write_fixture_pack(
+                root,
+                fixture_raw_evidence(gate.REJECT),
+            )
+            legacy_checklist = f"""{CHECKLIST_START}
+- [x] Candidate C records `{gate.REJECT}` from hash-bound source,
+  equation, symbolic-independence, phase, schedule, rank, compression,
+  complete-cost, and Amdahl fields. Reproduce with
+  `python scripts/run_candidate_c_rank_bounded_gate.py` followed by
+  `python scripts/apply_candidate_c_rank_bounded_gate.py`; production hot-path
+  permission remains false.
+{CHECKLIST_END}
+"""
+            (root / "repro/reproduction_checklist.md").write_text(
+                legacy_checklist,
+                encoding="ascii",
+                newline="\n",
+            )
+            with (root / "repro/run_log.csv").open(
+                "a",
+                newline="",
+                encoding="ascii",
+            ) as handle:
+                writer = csv.DictWriter(
+                    handle,
+                    fieldnames=(
+                        "run_id",
+                        "date",
+                        "commit_or_state",
+                        "stage",
+                        "backend",
+                        "command",
+                        "params",
+                        "seed",
+                        "status",
+                        "summary",
+                        "artifacts",
+                    ),
+                    lineterminator="\n",
+                )
+                writer.writerow(
+                    {
+                        "run_id": RUN_MARKER,
+                        "date": "2026-07-17",
+                        "commit_or_state": (
+                            "candidate-c-rank-bounded-mechanism-gate"
+                        ),
+                        "stage": "Candidate C mechanism gate",
+                        "backend": "exact-finite-ring-symbolic",
+                        "command": (
+                            "python scripts/"
+                            "run_candidate_c_rank_bounded_gate.py"
+                        ),
+                        "params": (
+                            "C1/C2;r=2/4/6;rho<=2;"
+                            "Task4=registered-only"
+                        ),
+                        "seed": "deterministic",
+                        "status": gate.REJECT,
+                        "summary": (
+                            "Hash-bound source, equation, symbolic, phase, "
+                            "schedule, rank, compression, complete-cost, and "
+                            "Amdahl gates close Candidate C."
+                        ),
+                        "artifacts": (
+                            "repro/candidate_c_rank_bounded_gate/"
+                        ),
+                    }
+                )
+
+            self.closeout.apply_gate(
+                root,
+                state_path,
+                summary,
+                input_commit=self.input_commit,
+                evidence_path=evidence,
+                allow_fixture=True,
+            )
+            run_log = (root / "repro/run_log.csv").read_text(
+                encoding="ascii"
+            )
+            checklist = (
+                root / "repro/reproduction_checklist.md"
+            ).read_text(encoding="ascii")
+
+        pinned = f"--input-commit {self.input_commit}"
+        self.assertEqual(run_log.count(pinned), 1)
+        self.assertEqual(checklist.count(pinned), 2)
+        self.assertNotIn(
+            "`python scripts/run_candidate_c_rank_bounded_gate.py`",
+            checklist,
+        )
 
     def test_write_failure_rolls_back_every_closeout_output(self):
         with tempfile.TemporaryDirectory() as tmp:
