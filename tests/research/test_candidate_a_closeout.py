@@ -189,6 +189,33 @@ class CandidateACloseoutTests(unittest.TestCase):
                         (root / "repro/run_log.csv").read_text(encoding="ascii"),
                     )
 
+    def test_unterminated_quoted_summary_is_rejected_before_mutation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, state_path = self._make_root(tmp)
+            summary = self._write_raw_summary(
+                root,
+                f'decision\n"{REJECT}',
+            )
+            state_before = state_path.read_bytes()
+            run_log_before = (root / "repro/run_log.csv").read_bytes()
+
+            with self.assertRaisesRegex(
+                ValueError,
+                "summary must contain one recognized decision",
+            ):
+                apply_gate(root, state_path, summary)
+
+            self.assertEqual(state_path.read_bytes(), state_before)
+            self.assertEqual(
+                (root / "repro/run_log.csv").read_bytes(),
+                run_log_before,
+            )
+            self.assertFalse(
+                (root / "hypotheses/hypothesis_register.yaml").exists()
+            )
+            self.assertFalse((root / "repro/artifact_manifest.md").exists())
+            self.assertFalse((root / "repro/reproduction_checklist.md").exists())
+
     def test_summary_allows_real_gate_extra_named_columns(self):
         with tempfile.TemporaryDirectory() as tmp:
             root, state_path = self._make_root(tmp)
@@ -336,6 +363,43 @@ class CandidateACloseoutTests(unittest.TestCase):
                 apply_gate(root, state_path, summary)
 
             self.assertEqual(state_path.read_bytes(), state_before)
+
+    def test_marker_substrings_in_larger_lines_are_rejected(self):
+        alterations = (
+            (
+                HYPOTHESIS_START,
+                "prefix-" + HYPOTHESIS_START,
+            ),
+            (
+                HYPOTHESIS_END,
+                HYPOTHESIS_END + "-suffix",
+            ),
+        )
+        for marker, replacement in alterations:
+            with self.subTest(marker=marker):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root, state_path = self._make_root(tmp)
+                    summary = self._write_summary(root, [REJECT])
+                    apply_gate(root, state_path, summary)
+                    hypothesis = root / "hypotheses/hypothesis_register.yaml"
+                    current = hypothesis.read_text(encoding="ascii")
+                    hypothesis.write_text(
+                        current.replace(marker, replacement),
+                        encoding="ascii",
+                        newline="\n",
+                    )
+                    before = self._tracked_outputs(root, state_path)
+
+                    with self.assertRaisesRegex(
+                        ValueError,
+                        "ledger block marker mismatch",
+                    ):
+                        apply_gate(root, state_path, summary)
+
+                    self.assertEqual(
+                        self._tracked_outputs(root, state_path),
+                        before,
+                    )
 
     def test_state_decision_mismatch_is_rejected_before_ledger_updates(self):
         with tempfile.TemporaryDirectory() as tmp:

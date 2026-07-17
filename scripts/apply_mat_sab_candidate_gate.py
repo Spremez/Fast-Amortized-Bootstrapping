@@ -60,17 +60,24 @@ def _bounded_block(start: str, end: str, content: str) -> str:
 
 def _check_append(path: Path, start: str, end: str, content: str) -> bool:
     current = _read_text(path)
-    start_count = current.count(start)
-    end_count = current.count(end)
-    if start_count == 0 and end_count == 0:
-        return True
-    if start_count != 1 or end_count != 1:
+    lines = current.splitlines()
+    if any(
+        marker in line and line != marker
+        for marker in (start, end)
+        for line in lines
+    ):
         raise ValueError(f"ledger block marker mismatch in {path}: {start}")
-    start_index = current.index(start)
-    end_index = current.index(end)
+    start_lines = [index for index, line in enumerate(lines) if line == start]
+    end_lines = [index for index, line in enumerate(lines) if line == end]
+    if not start_lines and not end_lines:
+        return True
+    if len(start_lines) != 1 or len(end_lines) != 1:
+        raise ValueError(f"ledger block marker mismatch in {path}: {start}")
+    start_index = start_lines[0]
+    end_index = end_lines[0]
     if end_index < start_index:
         raise ValueError(f"ledger block marker mismatch in {path}: {start}")
-    actual = current[start_index : end_index + len(end)]
+    actual = "\n".join(lines[start_index : end_index + 1])
     if actual != _bounded_block(start, end, content):
         raise ValueError(f"ledger block/content mismatch in {path}: {start}")
     return False
@@ -90,8 +97,13 @@ def _append_once(path: Path, start: str, end: str, content: str) -> None:
 
 
 def _decision(summary_path: Path) -> str:
-    with summary_path.open(newline="", encoding="ascii") as handle:
-        records = list(csv.reader(handle))
+    try:
+        with summary_path.open(newline="", encoding="ascii") as handle:
+            records = list(csv.reader(handle, strict=True))
+    except csv.Error as error:
+        raise ValueError(
+            "summary must contain one recognized decision"
+        ) from error
     if len(records) != 2:
         raise ValueError("summary must contain one recognized decision")
     fields, row = records
