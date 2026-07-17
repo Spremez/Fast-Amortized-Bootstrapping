@@ -87,7 +87,9 @@ class ResearchStateTests(unittest.TestCase):
         validate_state(state)
         self.assertIn(state["goal_status"], {
             "ACTIVE", "PAPER_READY", "ACCEPTED",
-            "RESEARCH_CAMPAIGN_EXHAUSTED", "EXTERNAL_BLOCKED",
+            "RESEARCH_CAMPAIGN_EXHAUSTED",
+            "RESEARCH_CAMPAIGN_INCONCLUSIVE",
+            "EXTERNAL_BLOCKED",
         })
         self.assertEqual(
             state["contract"],
@@ -298,6 +300,62 @@ class ResearchStateTests(unittest.TestCase):
         )
         validate_state(changed)
         changed["goal_status"] = "ACCEPTED"
+        validate_state(changed)
+
+    def test_candidate_c_inconclusive_terminal_state_is_valid(self):
+        state = load_state(ROOT / "research_state.yaml")
+        state["goal_status"] = "RESEARCH_CAMPAIGN_INCONCLUSIVE"
+        state["active_candidate"] = "C"
+        state["candidates"]["A"]["status"] = "REJECTED"
+        state["candidates"]["B"]["status"] = "REJECTED"
+        state["candidates"]["C"]["status"] = "INCONCLUSIVE"
+        state["paper_gate"] = "BLOCKED"
+        state["production_hot_path_permission"] = False
+        validate_state(state)
+
+    def test_candidate_c_inconclusive_state_is_tightly_constrained(self):
+        mutations = (
+            ("goal_status", "ACTIVE"),
+            ("active_candidate", "B"),
+            ("paper_gate", "PASS"),
+            ("production_hot_path_permission", True),
+            ("candidate_a", "INTAKE"),
+            ("candidate_b", "INTAKE"),
+            ("candidate_c", "REJECTED"),
+        )
+        for field, value in mutations:
+            with self.subTest(field=field):
+                state = load_state(ROOT / "research_state.yaml")
+                state["goal_status"] = "RESEARCH_CAMPAIGN_INCONCLUSIVE"
+                state["active_candidate"] = "C"
+                state["candidates"]["A"]["status"] = "REJECTED"
+                state["candidates"]["B"]["status"] = "REJECTED"
+                state["candidates"]["C"]["status"] = "INCONCLUSIVE"
+                state["paper_gate"] = "BLOCKED"
+                state["production_hot_path_permission"] = False
+                if field.startswith("candidate_"):
+                    state["candidates"][field[-1].upper()]["status"] = value
+                else:
+                    state[field] = value
+                with self.assertRaises(ValueError):
+                    validate_state(state)
+
+    def test_transition_candidate_c_to_inconclusive_is_terminal(self):
+        state = load_state(ROOT / "research_state.yaml")
+        changed = transition_candidate(
+            state,
+            "C",
+            "INCONCLUSIVE",
+            "INCONCLUSIVE_CANDIDATE_C_EVIDENCE_EXHAUSTED",
+        )
+        self.assertEqual(
+            changed["goal_status"],
+            "RESEARCH_CAMPAIGN_INCONCLUSIVE",
+        )
+        self.assertEqual(changed["active_candidate"], "C")
+        self.assertEqual(changed["candidates"]["C"]["status"], "INCONCLUSIVE")
+        self.assertEqual(changed["paper_gate"], "BLOCKED")
+        self.assertFalse(changed["production_hot_path_permission"])
         validate_state(changed)
 
     def test_json_valid_yaml_round_trip(self):

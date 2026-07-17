@@ -59,7 +59,12 @@ def validate_state(state: Mapping[str, object]) -> None:
     if state.get("baselines") != APPROVED_BASELINES:
         raise ValueError("baselines changed")
     if state.get("goal_status") not in {
-        "ACTIVE", "PAPER_READY", "ACCEPTED", "RESEARCH_CAMPAIGN_EXHAUSTED", "EXTERNAL_BLOCKED"
+        "ACTIVE",
+        "PAPER_READY",
+        "ACCEPTED",
+        "RESEARCH_CAMPAIGN_EXHAUSTED",
+        "RESEARCH_CAMPAIGN_INCONCLUSIVE",
+        "EXTERNAL_BLOCKED",
     }:
         raise ValueError("invalid goal_status")
     if state.get("active_candidate") not in ORDER:
@@ -67,7 +72,7 @@ def validate_state(state: Mapping[str, object]) -> None:
     candidates = state.get("candidates")
     if not isinstance(candidates, Mapping) or set(candidates) != set(ORDER):
         raise ValueError("candidates must contain A, B, C")
-    allowed = set(PIPELINE) | {"QUEUED", "REJECTED"}
+    allowed = set(PIPELINE) | {"QUEUED", "REJECTED", "INCONCLUSIVE"}
     for name in ORDER:
         candidate = candidates[name]
         if not isinstance(candidate, Mapping) or candidate.get("status") not in allowed:
@@ -88,8 +93,25 @@ def validate_state(state: Mapping[str, object]) -> None:
             candidates[name]["status"] != "REJECTED" for name in ORDER
         ):
             raise ValueError("exhausted campaign must have A, B, C rejected")
+    elif state.get("goal_status") == "RESEARCH_CAMPAIGN_INCONCLUSIVE":
+        if not (
+            state.get("active_candidate") == "C"
+            and candidates["A"]["status"] == "REJECTED"
+            and candidates["B"]["status"] == "REJECTED"
+            and candidates["C"]["status"] == "INCONCLUSIVE"
+            and state.get("paper_gate") == "BLOCKED"
+            and state.get("production_hot_path_permission") is False
+        ):
+            raise ValueError(
+                "inconclusive campaign must have A and B rejected and C "
+                "active inconclusive"
+            )
     else:
-        if candidates[state["active_candidate"]]["status"] in {"QUEUED", "REJECTED"}:
+        if candidates[state["active_candidate"]]["status"] in {
+            "QUEUED",
+            "REJECTED",
+            "INCONCLUSIVE",
+        }:
             raise ValueError("active candidate is not active")
         if any(candidates[name]["status"] != "REJECTED" for name in ORDER[:active_index]):
             raise ValueError("candidates before the active candidate must be rejected")
@@ -127,8 +149,10 @@ def transition_candidate(
         raise ValueError(f"unknown candidate {candidate}")
     changed = copy.deepcopy(dict(state))
     current = changed["candidates"][candidate]["status"]
-    if to_status == "REJECTED":
+    if to_status in {"REJECTED", "INCONCLUSIVE"}:
         allowed = current in PIPELINE and current != "PAPER_GATE_PASS"
+        if to_status == "INCONCLUSIVE":
+            allowed = allowed and candidate == "C"
     else:
         allowed = current in PIPELINE and PIPELINE.index(current) + 1 < len(PIPELINE)
         allowed = allowed and PIPELINE[PIPELINE.index(current) + 1] == to_status
@@ -146,6 +170,11 @@ def transition_candidate(
             changed["active_candidate"] = next_candidate
             changed["candidates"][next_candidate]["status"] = "INTAKE"
             changed["production_hot_path_permission"] = False
+    elif to_status == "INCONCLUSIVE":
+        changed["active_candidate"] = "C"
+        changed["goal_status"] = "RESEARCH_CAMPAIGN_INCONCLUSIVE"
+        changed["paper_gate"] = "BLOCKED"
+        changed["production_hot_path_permission"] = False
     elif to_status == "PAPER_GATE_PASS":
         changed["paper_gate"] = "PASS"
         changed["goal_status"] = "PAPER_READY"
