@@ -17,7 +17,7 @@
   "candidates": {
     "A": {
       "name": "Star-Cycle Sparse MAT-GGSW",
-      "status": "TECHGRAPH_ANCHORED",
+      "status": "EQUATIONS_DEFINED",
       "equation_revisions_used": 0,
       "kernel_layouts_used": 0,
       "full_sab_integrations_used": 0
@@ -39,5 +39,5 @@
   },
   "paper_gate": "BLOCKED",
   "production_hot_path_permission": false,
-  "last_decision": "CANDIDATE_A_TECHGRAPH_ANCHORED"
+  "last_decision": "CANDIDATE_A_PRODUCTION_EQUATIONS_DEFINED"
 }
