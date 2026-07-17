@@ -24,3 +24,12 @@ Task 4 is exactly `SKIPPED_NO_REGISTERED_OPERATOR`. No complete-cost or Amdahl n
 This is a finite mechanism rejection, not a general impossibility, security,
 noise, production, or bootstrapping-speedup claim. The exact-dense PVW/MAT-SAB
 implementation and its scoped measured result remain unchanged.
+
+## Reproduction
+
+Implementation-input commit: `6a3004cdf0fb5c35aeffe3984512657f8d2856ce`
+
+```text
+python scripts/run_candidate_c_rank_bounded_gate.py --input-commit 6a3004cdf0fb5c35aeffe3984512657f8d2856ce
+python scripts/apply_candidate_c_rank_bounded_gate.py --input-commit 6a3004cdf0fb5c35aeffe3984512657f8d2856ce
+```
