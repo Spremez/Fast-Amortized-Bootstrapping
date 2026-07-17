@@ -27,9 +27,9 @@ implementation and its scoped measured result remain unchanged.
 
 ## Reproduction
 
-Implementation-input commit: `6a3004cdf0fb5c35aeffe3984512657f8d2856ce`
+Implementation-input commit: `61b511feb39a261e3a404ee8108d7e6d05a5b1de`
 
 ```text
-python scripts/run_candidate_c_rank_bounded_gate.py --input-commit 6a3004cdf0fb5c35aeffe3984512657f8d2856ce
-python scripts/apply_candidate_c_rank_bounded_gate.py --input-commit 6a3004cdf0fb5c35aeffe3984512657f8d2856ce
+python scripts/run_candidate_c_rank_bounded_gate.py --input-commit 61b511feb39a261e3a404ee8108d7e6d05a5b1de
+python scripts/apply_candidate_c_rank_bounded_gate.py --input-commit 61b511feb39a261e3a404ee8108d7e6d05a5b1de
 ```
