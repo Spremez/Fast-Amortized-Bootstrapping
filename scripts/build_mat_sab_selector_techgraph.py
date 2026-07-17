@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -12,15 +13,20 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.mat_sab_research_state import load_state
+from scripts.run_candidate_c_rank_bounded_gate import _validated_input_rows
 
 
 OUT_DIR = ROOT / "paper_techgraphs"
 JSON_OUT = OUT_DIR / "2025_686_mat_sab_selector.yaml"
 GRAPH_OUT = OUT_DIR / "2025_686_mat_sab_selector_graph.md"
 GAPS_OUT = OUT_DIR / "2025_686_mat_sab_selector_gaps.md"
-REPRODUCTION_COMMAND = "python scripts/build_mat_sab_selector_techgraph.py"
 DISCOVERY_COMMAND = (
     'python -m unittest discover -s tests/research -p "test_*.py" -v'
+)
+SELECTOR_IMPLEMENTATION_INPUTS = (
+    "scripts/build_mat_sab_selector_techgraph.py",
+    "scripts/mat_sab_research_state.py",
+    "scripts/run_candidate_c_rank_bounded_gate.py",
 )
 
 NODE_SPECS = (
@@ -178,14 +184,27 @@ def _campaign_view(state: Mapping[str, object]) -> dict[str, object]:
     }
 
 
-def build_graph(root: Path = ROOT) -> dict[str, object]:
+def build_graph(
+    root: Path = ROOT,
+    *,
+    input_commit: str,
+) -> dict[str, object]:
+    resolved_commit, _input_rows = _validated_input_rows(
+        root,
+        input_commit,
+        SELECTOR_IMPLEMENTATION_INPUTS,
+    )
     state = load_state(root / "research_state.yaml")
     graph = {
         "schema_version": 1,
         "contract": state["contract"],
         "candidate": "A",
         "production_code_permission": state["production_hot_path_permission"],
-        "reproduction_command": REPRODUCTION_COMMAND,
+        "implementation_input_commit": resolved_commit,
+        "reproduction_command": (
+            "python scripts/build_mat_sab_selector_techgraph.py "
+            f"--input-commit {resolved_commit}"
+        ),
         "nodes": [_node(root, spec) for spec in NODE_SPECS],
         "edges": [
             {"from": source, "to": target, "relation": relation}
@@ -310,12 +329,20 @@ def write_outputs(root: Path, graph: Mapping[str, object]) -> tuple[Path, Path, 
 
 
 def main() -> int:
-    graph = build_graph(ROOT)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", type=Path, default=ROOT)
+    parser.add_argument("--destination-root", type=Path)
+    parser.add_argument("--input-commit", required=True)
+    args = parser.parse_args()
+    graph = build_graph(
+        args.root,
+        input_commit=args.input_commit,
+    )
     failed = [node["id"] for node in graph["nodes"] if node["anchor_status"] != "PASS"]
     if failed:
         print("FAIL_TECHGRAPH_ANCHORS:" + ",".join(failed))
         return 1
-    write_outputs(ROOT, graph)
+    write_outputs(args.destination_root or args.root, graph)
     print("PASS_CANDIDATE_A_TECHGRAPH_ANCHORED")
     return 0
 

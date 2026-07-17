@@ -1,5 +1,5 @@
+import csv
 import json
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -16,23 +16,48 @@ from scripts.mat_sab_research_state import load_state
 
 
 ROOT = Path(__file__).resolve().parents[2]
-REPRODUCTION_COMMAND = "python scripts/build_mat_sab_selector_techgraph.py"
+UNIT_INPUT_COMMIT = subprocess.run(
+    ["git", "rev-parse", "HEAD"],
+    cwd=ROOT,
+    check=True,
+    capture_output=True,
+    text=True,
+).stdout.strip()
 DISCOVERY_COMMAND = (
     'python -m unittest discover -s tests/research -p "test_*.py" -v'
 )
-REPRODUCTION_SECTION = "\n".join([
-    "## Reproduction",
-    "",
-    "```powershell",
-    REPRODUCTION_COMMAND,
-    DISCOVERY_COMMAND,
-    "```",
-])
 TRACKED_OUTPUTS = (
     "2025_686_mat_sab_selector.yaml",
     "2025_686_mat_sab_selector_graph.md",
     "2025_686_mat_sab_selector_gaps.md",
 )
+
+
+def reproduction_command(commit):
+    return (
+        "python scripts/build_mat_sab_selector_techgraph.py "
+        f"--input-commit {commit}"
+    )
+
+
+def reproduction_section(commit):
+    return "\n".join([
+        "## Reproduction",
+        "",
+        "```powershell",
+        reproduction_command(commit),
+        DISCOVERY_COMMAND,
+        "```",
+    ])
+
+
+def published_input_commit():
+    path = ROOT / "repro/candidate_c_rank_bounded_gate/environment.csv"
+    with path.open(newline="", encoding="ascii") as handle:
+        environment = {
+            row["key"]: row["value"] for row in csv.DictReader(handle)
+        }
+    return environment["input_head"]
 
 
 def synthetic_campaign_state(active_candidate):
@@ -73,11 +98,11 @@ def terminal_rejected_campaign_state():
 
 class SelectorTechgraphTests(unittest.TestCase):
     def test_all_source_and_artifact_anchors_resolve(self):
-        graph = build_graph(ROOT)
+        graph = build_graph(ROOT, input_commit=UNIT_INPUT_COMMIT)
         self.assertTrue(all(node["anchor_status"] == "PASS" for node in graph["nodes"]))
 
     def test_required_mechanism_nodes_are_present(self):
-        graph = build_graph(ROOT)
+        graph = build_graph(ROOT, input_commit=UNIT_INPUT_COMMIT)
         node_ids = {node["id"] for node in graph["nodes"]}
         self.assertTrue({
             "sab_schedule", "pvw_phase", "pvw_randomization", "dense_keygen",
@@ -86,11 +111,11 @@ class SelectorTechgraphTests(unittest.TestCase):
         }.issubset(node_ids))
 
     def test_graph_records_the_production_code_boundary(self):
-        graph = build_graph(ROOT)
+        graph = build_graph(ROOT, input_commit=UNIT_INPUT_COMMIT)
         self.assertFalse(graph["production_code_permission"])
 
     def test_graph_consumes_the_current_campaign_state(self):
-        graph = build_graph(ROOT)
+        graph = build_graph(ROOT, input_commit=UNIT_INPUT_COMMIT)
         state = load_state(ROOT / "research_state.yaml")
         self.assertEqual(
             graph["campaign_state"],
@@ -145,16 +170,30 @@ class SelectorTechgraphTests(unittest.TestCase):
                 self.assertNotIn(forbidden, rendered)
 
     def test_graph_records_the_stable_reproduction_command(self):
-        graph = build_graph(ROOT)
-        self.assertEqual(graph["reproduction_command"], REPRODUCTION_COMMAND)
+        graph = build_graph(ROOT, input_commit=UNIT_INPUT_COMMIT)
+        self.assertEqual(
+            graph["reproduction_command"],
+            reproduction_command(UNIT_INPUT_COMMIT),
+        )
+        self.assertEqual(
+            graph["implementation_input_commit"],
+            UNIT_INPUT_COMMIT,
+        )
 
     def test_reproduction_command_executes_from_the_repository_root(self):
         with tempfile.TemporaryDirectory() as tmp:
-            copied_root = Path(tmp) / "repository"
-            shutil.copytree(ROOT, copied_root, ignore=shutil.ignore_patterns(".git"))
             completed = subprocess.run(
-                [sys.executable, "scripts/build_mat_sab_selector_techgraph.py"],
-                cwd=copied_root,
+                [
+                    sys.executable,
+                    str(ROOT / "scripts/build_mat_sab_selector_techgraph.py"),
+                    "--root",
+                    str(ROOT),
+                    "--destination-root",
+                    tmp,
+                    "--input-commit",
+                    UNIT_INPUT_COMMIT,
+                ],
+                cwd=tmp,
                 check=False,
                 capture_output=True,
                 text=True,
@@ -166,18 +205,18 @@ class SelectorTechgraphTests(unittest.TestCase):
         )
 
     def test_markdown_outputs_record_exact_reproduction_commands(self):
-        graph = build_graph(ROOT)
+        graph = build_graph(ROOT, input_commit=UNIT_INPUT_COMMIT)
         with tempfile.TemporaryDirectory() as tmp:
             paths = write_outputs(Path(tmp), graph)
             for path in paths[1:]:
                 with self.subTest(path=path.name):
                     self.assertIn(
-                        REPRODUCTION_SECTION,
+                        reproduction_section(UNIT_INPUT_COMMIT),
                         path.read_text(encoding="ascii"),
                     )
 
     def test_markdown_outputs_render_current_campaign_state(self):
-        graph = build_graph(ROOT)
+        graph = build_graph(ROOT, input_commit=UNIT_INPUT_COMMIT)
         state = load_state(ROOT / "research_state.yaml")
         with tempfile.TemporaryDirectory() as tmp:
             paths = write_outputs(Path(tmp), graph)
@@ -199,7 +238,7 @@ class SelectorTechgraphTests(unittest.TestCase):
                     )
 
     def test_gaps_document_preserves_the_finite_field_claim_boundary(self):
-        graph = build_graph(ROOT)
+        graph = build_graph(ROOT, input_commit=UNIT_INPUT_COMMIT)
         with tempfile.TemporaryDirectory() as tmp:
             gaps = write_outputs(Path(tmp), graph)[2].read_text(encoding="ascii")
         self.assertIn(
@@ -208,7 +247,7 @@ class SelectorTechgraphTests(unittest.TestCase):
         )
 
     def test_outputs_are_json_valid_and_deterministic(self):
-        graph = build_graph(ROOT)
+        graph = build_graph(ROOT, input_commit=UNIT_INPUT_COMMIT)
         with tempfile.TemporaryDirectory() as tmp:
             first = write_outputs(Path(tmp), graph)
             before = [path.read_bytes() for path in first]
@@ -218,7 +257,8 @@ class SelectorTechgraphTests(unittest.TestCase):
         self.assertEqual(parsed["schema_version"], 1)
 
     def test_tracked_outputs_match_a_fresh_render(self):
-        graph = build_graph(ROOT)
+        bound_commit = published_input_commit()
+        graph = build_graph(ROOT, input_commit=bound_commit)
         with tempfile.TemporaryDirectory() as tmp:
             fresh_paths = write_outputs(Path(tmp), graph)
             for fresh_path in fresh_paths:

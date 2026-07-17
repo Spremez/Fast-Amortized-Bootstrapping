@@ -390,6 +390,8 @@ def apply_gate(
     root: Path,
     state_path: Path,
     summary_path: Path,
+    *,
+    input_commit: str,
 ) -> str:
     resolved_root = _resolved_root(root)
     state = _resolved_under_root(
@@ -405,7 +407,15 @@ def apply_gate(
         strict=True,
     )
     summary_record = _summary_record(summary)
-    recomputed = canonical_summary_record(evaluate_candidate_c(resolved_root))
+    recomputed_result = evaluate_candidate_c(
+        resolved_root,
+        input_commit=input_commit,
+    )
+    recomputed = canonical_summary_record(
+        recomputed_result,
+        root=resolved_root,
+        input_commit=input_commit,
+    )
     if summary_record != recomputed:
         raise ValueError("summary does not match recomputed gate evidence")
     decision = summary_record["decision"]
@@ -468,13 +478,21 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--state", type=Path)
     parser.add_argument("--summary", type=Path)
+    parser.add_argument("--input-commit", required=True)
     args = parser.parse_args()
     state = args.state or args.root / "research_state.yaml"
     summary = (
         args.summary
         or args.root / "repro/candidate_c_rank_bounded_gate/summary.csv"
     )
-    print(apply_gate(args.root, state, summary))
+    print(
+        apply_gate(
+            args.root,
+            state,
+            summary,
+            input_commit=args.input_commit,
+        )
+    )
     return 0
 
 

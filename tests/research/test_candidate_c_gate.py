@@ -2,11 +2,14 @@ import csv
 from dataclasses import replace
 import hashlib
 import importlib
+import inspect
+import os
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -33,163 +36,388 @@ EXPECTED_ARTIFACTS = {
     "artifact_index.csv",
     "reproduction_commands.md",
 }
+EXPECTED_COMPUTATIONAL_INPUTS = (
+    "main.c",
+    "paper_techgraphs/candidate_c_rank_bounded_state.yaml",
+    "repro/stage203_production_selector_equation_probe/equation_map.csv",
+    "repro/stage222_isolated_compact_ep_integration/proof_gate.csv",
+    "repro/stage345_binary_matrix_synthesis/proof_gate.csv",
+    "research/mat_sab/candidate_c_operator_tensor.py",
+    "research/mat_sab/candidate_c_registered_replay.py",
+    "research/mat_sab/candidate_c_schedule.py",
+    "research/mat_sab/finite_linear.py",
+    "research/mat_sab/rank_bounded_state_model.py",
+    "research/mat_sab/star_cycle_model.py",
+    "scripts/run_candidate_c_rank_bounded_gate.py",
+    "src/mosfhet/Makefile.def",
+    "src/mosfhet/src/mattrgsw.c",
+    "src/sab_pvw.c",
+    "src/sparse_amortized_bootstrap.c",
+    "theory_checks/candidate_c_rank_bounded_state_model.md",
+)
 
 
 def load_gate():
-    try:
-        return importlib.import_module("scripts.run_candidate_c_rank_bounded_gate")
-    except ModuleNotFoundError:
-        return None
+    return importlib.import_module("scripts.run_candidate_c_rank_bounded_gate")
+
+
+def git_head(root=ROOT):
+    return subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+
+
+def published_input_commit():
+    path = ROOT / "repro/candidate_c_rank_bounded_gate/environment.csv"
+    with path.open(newline="", encoding="ascii") as handle:
+        environment = {
+            row["key"]: row["value"] for row in csv.DictReader(handle)
+        }
+    return environment["input_head"]
 
 
 class CandidateCGateTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.gate = load_gate()
-        cls.result = (
-            cls.gate.evaluate_candidate_c(ROOT)
-            if cls.gate is not None
-            else None
+        cls.input_commit = git_head()
+        cls.result = cls.gate.evaluate_candidate_c(
+            ROOT,
+            input_commit=cls.input_commit,
         )
 
-    def setUp(self):
-        self.assertIsNotNone(
+    def _summary(self, result=None):
+        selected = self.result if result is None else result
+        with patch.object(
             self.gate,
-            "Task 5 Candidate C gate module has not been implemented",
-        )
+            "evaluate_candidate_c",
+            return_value=self.result,
+        ):
+            return self.gate.canonical_summary_record(
+                selected,
+                root=ROOT,
+                input_commit=self.input_commit,
+            )
+
+    def _write(self, destination, *, result=None, input_commit=None):
+        selected = self.result if result is None else result
+        commit = self.input_commit if input_commit is None else input_commit
+        with patch.object(
+            self.gate,
+            "evaluate_candidate_c",
+            return_value=self.result,
+        ):
+            return self.gate.write_gate_artifacts(
+                ROOT,
+                selected,
+                input_commit=commit,
+                destination_root=destination,
+            )
 
     def test_actual_terminal_route_is_scoped_reject(self):
-        gate = self.gate
         result = self.result
-        self.assertEqual(result.decision, gate.REJECT)
+        self.assertEqual(result.decision, self.gate.REJECT)
         self.assertEqual(result.terminal_classification, "REJECT")
         self.assertEqual(
             result.terminal_decision,
             "REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL",
         )
         self.assertEqual(result.terminal_record_hash, APPROVED_TERMINAL_HASH)
-        self.assertEqual(result.task4_status, gate.SKIPPED)
-        self.assertEqual(result.complete_cost_status, gate.SKIPPED)
-        self.assertEqual(result.amdahl_status, gate.SKIPPED)
+        self.assertEqual(result.task4_status, self.gate.SKIPPED)
+        self.assertEqual(result.complete_cost_status, self.gate.SKIPPED)
+        self.assertEqual(result.amdahl_status, self.gate.SKIPPED)
         self.assertIsNone(result.complete_cost)
         self.assertIsNone(result.amdahl_projection)
         self.assertFalse(result.production_hot_path_permission)
+        self.assertEqual(
+            tuple(operator.r for operator in result.terminal_record.operator_results),
+            (2, 4, 6),
+        )
+        self.assertTrue(
+            all(
+                operator.decision
+                == "REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL"
+                and not operator.structural_improvement
+                for operator in result.terminal_record.operator_results
+            )
+        )
 
     def test_canonical_summary_has_every_required_gate(self):
-        summary = self.gate.canonical_summary_record(self.result)
-        required = {
-            "decision",
-            "source_status",
-            "equation_status",
-            "symbolic_independence_status",
-            "phase_status",
-            "schedule_status",
-            "rank_status",
-            "compression_status",
-            "complete_cost_status",
-            "complete_cost",
-            "amdahl_status",
-            "amdahl_projection",
-            "terminal_decision",
-            "terminal_record_hash",
-        }
-        self.assertTrue(required.issubset(summary))
+        summary = self._summary()
         self.assertEqual(tuple(summary), self.gate.SUMMARY_FIELDS)
+        self.assertEqual(summary["phase_status"], "PASS")
+        self.assertEqual(summary["rank_status"], "PASS")
+        self.assertEqual(
+            summary["compression_status"],
+            "REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL",
+        )
+        self.assertEqual(summary["closed_next_state_consumption"], "no")
         self.assertEqual(summary["complete_cost_status"], self.gate.SKIPPED)
         self.assertEqual(summary["amdahl_status"], self.gate.SKIPPED)
         self.assertEqual(summary["complete_cost"], "")
         self.assertEqual(summary["amdahl_projection"], "")
 
-    def test_decision_cannot_be_changed_independently(self):
-        fabricated = replace(self.result, decision=self.gate.ADMIT)
-        with self.assertRaisesRegex(
-            ValueError,
-            "decision does not match mechanism and terminal evidence",
-        ):
-            self.gate.canonical_summary_record(fabricated)
-
-    def test_terminal_hash_cannot_be_changed_independently(self):
-        fabricated = replace(self.result, terminal_record_hash="0" * 64)
-        with self.assertRaisesRegex(ValueError, "terminal record"):
-            self.gate.canonical_summary_record(fabricated)
-
-    def test_admit_requires_every_mechanism_gate_and_numeric_task4(self):
-        admitted = self.gate.synthetic_gate_result(self.result, self.gate.ADMIT)
+    def test_every_mechanism_field_is_bound_to_fresh_terminal_evidence(self):
+        mechanism = self.result.mechanisms[0]
+        mutations = {
+            "mechanism_id": "C9",
+            "registered": False,
+            "source_status": "FAIL",
+            "equation_status": "FAIL",
+            "symbolic_independence_status": "PASS",
+            "phase_status": "FAIL",
+            "schedule_status": "FAIL",
+            "rank_status": "FAIL",
+            "max_rho": mechanism.max_rho + 1,
+            "compression_status": "PASS",
+            "compression_interval": 1,
+            "b_min": 2,
+            "closed_next_state_consumption": True,
+            "structural_cost_status": "PASS",
+            "complete_cost_status": "PASS",
+            "complete_cost": 1.0,
+            "amdahl_status": "PASS",
+            "amdahl_projection": 1.01,
+            "fully_evaluated": False,
+            "failure_reason": "FORGED",
+            "object_hashes": ("0" * 64,),
+        }
         self.assertEqual(
-            self.gate.canonical_summary_record(admitted)["decision"],
-            self.gate.ADMIT,
+            set(mutations),
+            set(mechanism.__dataclass_fields__),
         )
-        mechanism = admitted.mechanisms[0]
-        cases = (
-            replace(mechanism, max_rho=3),
-            replace(
-                mechanism,
-                compression_interval=mechanism.b_min - 1,
-            ),
-            replace(mechanism, phase_status="FAIL"),
-            replace(mechanism, closed_next_state_consumption=False),
-            replace(mechanism, amdahl_projection=0.0),
-        )
-        for failed in cases:
-            with self.subTest(failed=failed):
-                forged = replace(admitted, mechanisms=(failed,))
+        for field, value in mutations.items():
+            with self.subTest(field=field):
+                changed = replace(mechanism, **{field: value})
+                forged = replace(
+                    self.result,
+                    mechanisms=(changed, *self.result.mechanisms[1:]),
+                )
                 with self.assertRaisesRegex(
                     ValueError,
-                    (
-                        "decision does not match mechanism and terminal "
-                        "evidence|terminal record"
-                    ),
+                    "freshly verified",
                 ):
-                    self.gate.canonical_summary_record(forged)
+                    self._summary(forged)
 
-    def test_inconclusive_requires_hash_bound_evidence_exhaustion(self):
-        inconclusive = self.gate.synthetic_gate_result(
-            self.result,
-            self.gate.INCONCLUSIVE,
-        )
-        self.assertEqual(
-            self.gate.canonical_summary_record(inconclusive)["decision"],
-            self.gate.INCONCLUSIVE,
-        )
-        forged = replace(
-            inconclusive,
-            terminal_decision="MISSING_UNBOUND_EVIDENCE",
-        )
-        with self.assertRaisesRegex(ValueError, "terminal record"):
-            self.gate.canonical_summary_record(forged)
+    def test_terminal_labels_hash_and_task4_fields_are_fresh_bound(self):
+        mutations = {
+            "decision": self.gate.ADMIT,
+            "terminal_classification": "INCONCLUSIVE",
+            "terminal_decision": "FORGED_TERMINAL",
+            "terminal_record_hash": "0" * 64,
+            "task4_status": "PASS",
+            "complete_cost_status": "PASS",
+            "complete_cost": 1.0,
+            "amdahl_status": "PASS",
+            "amdahl_projection": 1.01,
+            "production_hot_path_permission": True,
+        }
+        for field, value in mutations.items():
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "freshly verified",
+                ):
+                    self._summary(replace(self.result, **{field: value}))
 
-    def test_reject_after_task4_preserves_numeric_cost_and_amdahl(self):
-        builder = getattr(self.gate, "synthetic_reject_after_cost", None)
-        self.assertIsNotNone(builder)
-        rejected = builder(self.result)
-        summary = self.gate.canonical_summary_record(rejected)
-        self.assertEqual(summary["decision"], self.gate.REJECT)
-        self.assertEqual(summary["complete_cost_status"], "PASS")
-        self.assertEqual(
-            summary["amdahl_status"],
-            "FAIL_NONPOSITIVE_CENTRAL_PROJECTION",
+    def test_terminal_mechanism_sources_are_independently_mutation_checked(self):
+        terminal = self.result.terminal_record
+        first = terminal.operator_results[0]
+        operator_mutations = {
+            "phase_identity_passed": False,
+            "joint_ranks": (first.joint_ranks[0] + 1, first.joint_ranks[1]),
+            "joint_rank_passed": False,
+            "structural_improvement": True,
+            "decision": "FORGED_OPERATOR_DECISION",
+            "result_hash": "0" * 64,
+        }
+        for field, value in operator_mutations.items():
+            with self.subTest(operator_field=field):
+                changed_operator = replace(first, **{field: value})
+                changed_terminal = replace(
+                    terminal,
+                    operator_results=(
+                        changed_operator,
+                        *terminal.operator_results[1:],
+                    ),
+                )
+                forged = replace(
+                    self.result,
+                    terminal_record=changed_terminal,
+                )
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "freshly verified",
+                ):
+                    self._summary(forged)
+
+        terminal_mutations = {
+            "classification": "INCONCLUSIVE",
+            "decision": "FORGED_TERMINAL_DECISION",
+            "replay_status": "PASS",
+            "task4_status": "PASS",
+            "conversion_status": "FORGED_TASK3B",
+            "record_hash": "f" * 64,
+        }
+        for field, value in terminal_mutations.items():
+            with self.subTest(terminal_field=field):
+                forged = replace(
+                    self.result,
+                    terminal_record=replace(
+                        terminal,
+                        **{field: value},
+                    ),
+                )
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "freshly verified",
+                ):
+                    self._summary(forged)
+
+    def test_generator_api_and_cli_require_explicit_input_commit(self):
+        parameter = inspect.signature(
+            self.gate.evaluate_candidate_c
+        ).parameters["input_commit"]
+        self.assertEqual(parameter.default, inspect.Parameter.empty)
+        with self.assertRaises(TypeError):
+            self.gate.evaluate_candidate_c(ROOT)
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/run_candidate_c_rank_bounded_gate.py"),
+                "--root",
+                str(ROOT),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
         )
-        self.assertNotEqual(summary["complete_cost"], "")
-        self.assertNotEqual(summary["amdahl_projection"], "")
-        self.assertNotEqual(summary["task4_status"], self.gate.SKIPPED)
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn("--input-commit", completed.stderr)
+
+    def test_invalid_and_nonancestor_commits_are_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.name", "Candidate C Test"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                [
+                    "git",
+                    "config",
+                    "user.email",
+                    "candidate-c-test@example.invalid",
+                ],
+                cwd=root,
+                check=True,
+            )
+            tracked = root / "input.txt"
+            tracked.write_text("input\n", encoding="ascii", newline="\n")
+            subprocess.run(["git", "add", "input.txt"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-q", "-m", "input"],
+                cwd=root,
+                check=True,
+            )
+            with self.assertRaisesRegex(
+                self.gate.GateEvidenceError,
+                "invalid implementation-input commit",
+            ):
+                self.gate._resolve_input_commit(root, "not-a-commit")
+            tree = subprocess.run(
+                ["git", "write-tree"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            side = subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "user.name=Candidate C Test",
+                    "-c",
+                    "user.email=candidate-c-test@example.invalid",
+                    "commit-tree",
+                    tree,
+                ],
+                cwd=root,
+                input="independent test commit\n",
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            with self.assertRaisesRegex(
+                self.gate.GateEvidenceError,
+                "not an ancestor",
+            ):
+                self.gate._resolve_input_commit(root, side)
+
+    def test_manifest_blob_mismatch_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.name", "Candidate C Test"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                [
+                    "git",
+                    "config",
+                    "user.email",
+                    "candidate-c-test@example.invalid",
+                ],
+                cwd=root,
+                check=True,
+            )
+            path = root / "input.txt"
+            path.write_text("committed\n", encoding="ascii", newline="\n")
+            subprocess.run(["git", "add", "input.txt"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-q", "-m", "input"],
+                cwd=root,
+                check=True,
+            )
+            commit = git_head(root)
+            path.write_text("mutated\n", encoding="ascii", newline="\n")
+            with self.assertRaisesRegex(
+                self.gate.GateEvidenceError,
+                "does not match implementation-input commit",
+            ):
+                self.gate._validated_input_rows(
+                    root,
+                    commit,
+                    ("input.txt",),
+                )
+
+    def test_manifest_is_the_complete_internal_dependency_set(self):
+        self.assertEqual(
+            self.gate.COMPUTATIONAL_INPUTS,
+            EXPECTED_COMPUTATIONAL_INPUTS,
+        )
+        self.assertIn(
+            "research/mat_sab/finite_linear.py",
+            self.gate.COMPUTATIONAL_INPUTS,
+        )
 
     def test_generator_emits_complete_byte_identical_pack(self):
         with tempfile.TemporaryDirectory() as tmp:
             destination = Path(tmp)
-            first = self.gate.write_gate_artifacts(
-                ROOT,
-                self.result,
-                destination_root=destination,
-            )
+            first = self._write(destination)
             before = {
                 path.relative_to(destination).as_posix(): path.read_bytes()
                 for path in first
             }
-            second = self.gate.write_gate_artifacts(
-                ROOT,
-                self.result,
-                destination_root=destination,
-            )
+            second = self._write(destination)
             after = {
                 path.relative_to(destination).as_posix(): path.read_bytes()
                 for path in second
@@ -201,14 +429,52 @@ class CandidateCGateTests(unittest.TestCase):
             )
             self.assertEqual(before, after)
 
-    def test_artifact_index_and_input_manifest_are_hash_bound(self):
+    def test_staged_publish_failure_restores_all_outputs(self):
         with tempfile.TemporaryDirectory() as tmp:
             destination = Path(tmp)
-            self.gate.write_gate_artifacts(
-                ROOT,
-                self.result,
-                destination_root=destination,
+            paths = self._write(destination)
+            before = {
+                path.relative_to(destination).as_posix(): path.read_bytes()
+                for path in paths
+            }
+            original_replace = os.replace
+
+            def fail_on_variant(source, target):
+                if Path(target) == (
+                    destination
+                    / "algorithm_variants/candidate_c_rank_bounded_state.md"
+                ):
+                    raise OSError("injected staged publish failure")
+                return original_replace(source, target)
+
+            with (
+                patch.object(
+                    self.gate.os,
+                    "replace",
+                    side_effect=fail_on_variant,
+                ),
+                self.assertRaisesRegex(
+                    OSError,
+                    "injected staged publish failure",
+                ),
+            ):
+                self._write(destination)
+            after = {
+                path.relative_to(destination).as_posix(): path.read_bytes()
+                for path in paths
+            }
+            self.assertEqual(before, after)
+            self.assertFalse(
+                any(
+                    path.name.startswith(".candidate-c-stage-")
+                    for path in destination.iterdir()
+                )
             )
+
+    def test_manifest_index_and_docs_bind_explicit_commit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            destination = Path(tmp)
+            self._write(destination)
             generated = destination / "repro/candidate_c_rank_bounded_gate"
             with (generated / "artifact_index.csv").open(
                 newline="",
@@ -220,7 +486,9 @@ class CandidateCGateTests(unittest.TestCase):
                 }
             for relative, digest in index.items():
                 self.assertEqual(
-                    hashlib.sha256((destination / relative).read_bytes()).hexdigest(),
+                    hashlib.sha256(
+                        (destination / relative).read_bytes()
+                    ).hexdigest(),
                     digest,
                 )
             with (generated / "input_manifest.csv").open(
@@ -231,22 +499,83 @@ class CandidateCGateTests(unittest.TestCase):
                     row["path"]: row["sha256"]
                     for row in csv.DictReader(handle)
                 }
-            script = "scripts/run_candidate_c_rank_bounded_gate.py"
-            self.assertEqual(
-                manifest[script],
-                hashlib.sha256((ROOT / script).read_bytes()).hexdigest(),
+            self.assertEqual(set(manifest), set(EXPECTED_COMPUTATIONAL_INPUTS))
+            for relative, digest in manifest.items():
+                committed = self.gate._git_regular_blob(
+                    ROOT,
+                    self.input_commit,
+                    relative,
+                )
+                self.assertEqual(hashlib.sha256(committed).hexdigest(), digest)
+            documents = (
+                generated / "reproduction_commands.md",
+                destination / "docs/candidate_c_rank_bounded_mechanism_gate.md",
+                destination / "algorithm_variants/candidate_c_rank_bounded_state.md",
+                destination / "experiments/candidate_c_rank_bounded_gate_plan.md",
             )
-            self.assertNotIn("research_state.yaml", manifest)
+            for document in documents:
+                with self.subTest(document=document.name):
+                    self.assertIn(
+                        self.input_commit,
+                        document.read_text(encoding="ascii"),
+                    )
+
+    @unittest.skipUnless(
+        hasattr(os, "symlink"),
+        "symbolic links are not supported",
+    )
+    def test_source_symlink_escape_is_rejected_without_fallback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root = base / "root"
+            root.mkdir()
+            outside = base / "outside.txt"
+            outside.write_text("outside\n", encoding="ascii", newline="\n")
+            try:
+                os.symlink(outside, root / "input.txt")
+            except OSError as error:
+                self.skipTest(f"symbolic links unavailable: {error}")
+            with self.assertRaisesRegex(
+                self.gate.GateEvidenceError,
+                "escapes declared root",
+            ):
+                self.gate._resolve_under_root(
+                    root,
+                    root / "input.txt",
+                    "manifest source input.txt",
+                    strict=False,
+                )
+            self.assertEqual(outside.read_text(encoding="ascii"), "outside\n")
+
+    @unittest.skipUnless(
+        hasattr(os, "symlink"),
+        "symbolic links are not supported",
+    )
+    def test_destination_symlink_escape_is_rejected_without_fallback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            destination = base / "destination"
+            outside = base / "outside"
+            destination.mkdir()
+            outside.mkdir()
+            try:
+                os.symlink(
+                    outside,
+                    destination / "repro",
+                    target_is_directory=True,
+                )
+            except OSError as error:
+                self.skipTest(f"symbolic links unavailable: {error}")
+            with self.assertRaisesRegex(
+                self.gate.GateEvidenceError,
+                "escapes declared root",
+            ):
+                self._write(destination)
+            self.assertEqual(tuple(outside.iterdir()), ())
 
     def test_generated_pack_is_ascii(self):
         with tempfile.TemporaryDirectory() as tmp:
-            destination = Path(tmp)
-            paths = self.gate.write_gate_artifacts(
-                ROOT,
-                self.result,
-                destination_root=destination,
-            )
-            for path in paths:
+            for path in self._write(Path(tmp)):
                 with self.subTest(path=path.name):
                     path.read_bytes().decode("ascii")
 
@@ -268,11 +597,26 @@ class CandidateCGateTests(unittest.TestCase):
                         capture_output=True,
                         text=True,
                     )
-                self.assertEqual(
-                    completed.returncode,
-                    0,
-                    completed.stderr,
-                )
+                self.assertEqual(completed.returncode, 0, completed.stderr)
+
+    def test_final_head_fresh_render_matches_all_tracked_artifacts(self):
+        bound_commit = published_input_commit()
+        result = self.gate.evaluate_candidate_c(
+            ROOT,
+            input_commit=bound_commit,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            destination = Path(tmp)
+            paths = self.gate.write_gate_artifacts(
+                ROOT,
+                result,
+                input_commit=bound_commit,
+                destination_root=destination,
+            )
+            for fresh in paths:
+                tracked = ROOT / fresh.relative_to(destination)
+                with self.subTest(path=fresh.relative_to(destination)):
+                    self.assertEqual(tracked.read_bytes(), fresh.read_bytes())
 
 
 if __name__ == "__main__":
