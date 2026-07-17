@@ -1,8 +1,9 @@
-"""Source-derived finite schedule replay metadata for Candidate C.
+"""Exact source-derived SAB schedule events for the Candidate C gate.
 
-This module records finite-field mechanism evidence only. It does not claim
-polynomial-module correctness, security, noise, performance, or a production
-bootstrapping construction.
+Candidate C has no registered numeric compact-operator or public-lambda
+mapping. The replay can therefore decide source structure, schedule counts,
+explicit controls, and public boundary policy only. Candidate rank, closure,
+phase, and compression admissibility remain inconclusive.
 """
 
 from __future__ import annotations
@@ -11,21 +12,25 @@ import csv
 import re
 from dataclasses import dataclass, replace
 from pathlib import Path
+from typing import Iterator
 
 from .rank_bounded_state_model import (
     append_mask_directions,
-    compress_state,
     excess_rank,
-    lane_difference_matrix,
     linear_combine_states,
-    phase_vector,
-    rotate_state,
     shared_state,
 )
 
 
+INCONCLUSIVE_OPERATOR = (
+    "INCONCLUSIVE_MISSING_NUMERIC_OPERATOR_MAPPING"
+)
+_C2_BLOCK_LENGTHS = frozenset((1, 2, 4, 8, 16, 32, 64))
+_SELECTOR_KINDS = frozenset(("ncmux", "cmux"))
+
+
 class ScheduleInconclusiveError(ValueError):
-    """Raised when the audited C source no longer has the required shape."""
+    """Raised when audited source no longer has the required structure."""
 
 
 @dataclass(frozen=True)
@@ -37,7 +42,17 @@ class BinaryTargetSchedule:
     monomial_calls: int
     butterfly_steps: int
     selector_applications: int
+    dual_sub_enabled: bool
     source_anchors: tuple[tuple[str, str], ...]
+
+
+@dataclass(frozen=True, slots=True)
+class ScheduleEvent:
+    kind: str
+    monomial: int
+    bit: int | None = None
+    index: int | None = None
+    branch: str = "schedule"
 
 
 @dataclass(frozen=True)
@@ -46,33 +61,50 @@ class ScheduleTrace:
     r: int
     modulus: int
     rho_bound: int
-    max_rho: int
+    max_rho: int | None
     first_rank_overflow: int | None
     first_missing_edge: str | None
     steps_before_compression: int | None
     compressions: int
+    compression_boundaries_checked: int
+    first_boundary_mismatch: int | None
     completed_butterflies: int
     selector_applications: int
     selector_boundaries_checked: int
+    ncmux_events_checked: int
+    cmux_events_checked: int
+    butterfly_boundaries_checked: int
     monomial_boundaries_checked: int
     sub_a_boundaries_checked: int
+    events_traversed: int
     phase_gate: str
     closure_gate: str
     boundary_gate: str
     provenance_gate: str
+    operator_mapping_gate: str
 
 
 @dataclass(frozen=True)
-class _CycleEdge:
-    row: int
-    column: int
+class _CBlock:
+    start: int
+    opening: int
+    end: int
+    body: str
 
-    @property
-    def label(self) -> str:
-        return (
-            "lane_neighbor_body_interaction:"
-            f"row={self.row},col={self.column}"
-        )
+
+@dataclass
+class _ReplayCounts:
+    events: int = 0
+    selectors: int = 0
+    ncmux: int = 0
+    cmux: int = 0
+    butterflies: int = 0
+    monomials: int = 0
+    sub_a: int = 0
+    compression_boundaries: int = 0
+    first_boundary_mismatch: int | None = None
+    first_actual_boundary: int | None = None
+    provenance_gate: str = INCONCLUSIVE_OPERATOR
 
 
 _SOURCE_ANCHORS = (
@@ -82,6 +114,7 @@ _SOURCE_ANCHORS = (
     ("src/sab_pvw.c", "sab_pvw_RGSW_monomial_mul_state"),
     ("src/sab_pvw.c", "sab_pvw_sparse_mul_binary"),
     ("src/sab_pvw.c", "sab_pvw_sub_a_binary_to"),
+    ("src/mosfhet/Makefile.def", "SAB_PVW_DUAL_SUB_CMUX"),
 )
 
 
@@ -121,6 +154,188 @@ def _split_initializer(initializer: str) -> tuple[str, ...]:
     return tuple(values)
 
 
+def _sanitize_c(source: str) -> str:
+    """Remove comments and literals while preserving offsets and braces."""
+
+    output = list(source)
+    state = "code"
+    index = 0
+    while index < len(source):
+        current = source[index]
+        following = source[index + 1] if index + 1 < len(source) else ""
+        if state == "code":
+            if current == "/" and following == "/":
+                output[index] = output[index + 1] = " "
+                state = "line_comment"
+                index += 2
+                continue
+            if current == "/" and following == "*":
+                output[index] = output[index + 1] = " "
+                state = "block_comment"
+                index += 2
+                continue
+            if current == '"':
+                output[index] = " "
+                state = "string"
+            elif current == "'":
+                output[index] = " "
+                state = "character"
+        elif state == "line_comment":
+            if current == "\n":
+                state = "code"
+            else:
+                output[index] = " "
+        elif state == "block_comment":
+            if current == "*" and following == "/":
+                output[index] = output[index + 1] = " "
+                state = "code"
+                index += 2
+                continue
+            if current != "\n":
+                output[index] = " "
+        elif state in {"string", "character"}:
+            quote = '"' if state == "string" else "'"
+            if current == "\\" and following:
+                output[index] = " "
+                if following != "\n":
+                    output[index + 1] = " "
+                index += 2
+                continue
+            if current == quote:
+                output[index] = " "
+                state = "code"
+            elif current != "\n":
+                output[index] = " "
+        index += 1
+    if state in {"block_comment", "string", "character"}:
+        raise ScheduleInconclusiveError(
+            "unterminated C comment or literal in required source"
+        )
+    return "".join(output)
+
+
+def _balanced_end(source: str, opening: int, label: str) -> int:
+    depth = 0
+    for index in range(opening, len(source)):
+        if source[index] == "{":
+            depth += 1
+        elif source[index] == "}":
+            depth -= 1
+            if depth == 0:
+                return index
+    raise ScheduleInconclusiveError(f"{label} has unbalanced braces")
+
+
+def _extract_function(source: str, signature: str) -> str:
+    sanitized = _sanitize_c(source)
+    start = sanitized.find(signature)
+    if start < 0:
+        name = signature.split("(")[0]
+        raise ScheduleInconclusiveError(
+            f"required source function {name} not found"
+        )
+    opening = sanitized.find("{", start + len(signature))
+    if opening < 0:
+        raise ScheduleInconclusiveError(
+            f"required source function {signature!r} has no body"
+        )
+    end = _balanced_end(sanitized, opening, signature)
+    return sanitized[start : end + 1]
+
+
+def _find_blocks(
+    source: str,
+    pattern: str,
+    label: str,
+) -> tuple[_CBlock, ...]:
+    blocks: list[_CBlock] = []
+    for match in re.finditer(pattern, source, flags=re.DOTALL):
+        opening = source.find("{", match.start(), match.end())
+        if opening < 0:
+            continue
+        end = _balanced_end(source, opening, label)
+        blocks.append(
+            _CBlock(
+                start=match.start(),
+                opening=opening,
+                end=end,
+                body=source[opening + 1 : end],
+            )
+        )
+    return tuple(blocks)
+
+
+def _one_block(source: str, pattern: str, label: str) -> _CBlock:
+    blocks = _find_blocks(source, pattern, label)
+    if len(blocks) != 1:
+        raise ScheduleInconclusiveError(
+            f"{label} source shape changed; expected one nested block"
+        )
+    return blocks[0]
+
+
+def _brace_depth_at(source: str, position: int) -> int:
+    return source[:position].count("{") - source[:position].count("}")
+
+
+def _top_level_calls(
+    source: str,
+    names: tuple[str, ...],
+) -> tuple[tuple[int, str], ...]:
+    alternatives = "|".join(re.escape(name) for name in names)
+    calls: list[tuple[int, str]] = []
+    for match in re.finditer(
+        rf"\b(?P<name>{alternatives})\s*\(",
+        source,
+    ):
+        if _brace_depth_at(source, match.start()) == 0:
+            calls.append((match.start(), match.group("name")))
+    return tuple(calls)
+
+
+def _require_top_level_call(
+    block: _CBlock,
+    names: tuple[str, ...],
+    label: str,
+) -> None:
+    if not _top_level_calls(block.body, names):
+        raise ScheduleInconclusiveError(
+            f"{label} source shape changed; call is not nested in loop"
+        )
+
+
+def _require_ordered_calls(
+    block: _CBlock,
+    first: tuple[str, ...],
+    second: tuple[str, ...],
+    label: str,
+) -> None:
+    first_calls = _top_level_calls(block.body, first)
+    second_calls = _top_level_calls(block.body, second)
+    if (
+        not first_calls
+        or not second_calls
+        or first_calls[0][0] >= second_calls[0][0]
+    ):
+        raise ScheduleInconclusiveError(
+            f"{label} must contain ordered monomial/sub_a calls"
+        )
+
+
+def _require_call_after(
+    source: str,
+    block: _CBlock,
+    names: tuple[str, ...],
+    limit: int | None,
+    label: str,
+) -> None:
+    tail = source[block.end + 1 : limit]
+    if not _top_level_calls(tail, names):
+        raise ScheduleInconclusiveError(
+            f"{label} final monomial call is not associated with its loop"
+        )
+
+
 def _parse_default_target(source: str) -> dict[str, str]:
     declaration = re.search(
         r"typedef\s+struct\s*\{(?P<body>.*?)\}"
@@ -141,7 +356,6 @@ def _parse_default_target(source: str) -> dict[str, str]:
         raise ScheduleInconclusiveError(
             "SAB_PVW_Target_Params fields are missing or duplicated"
         )
-
     function = _extract_function(
         source,
         "static SAB_PVW_Target_Params sab_pvw_target_params(void)",
@@ -164,179 +378,255 @@ def _parse_default_target(source: str) -> dict[str, str]:
     return dict(zip(fields, values, strict=True))
 
 
-def _extract_function(source: str, signature: str) -> str:
-    start = source.find(signature)
-    if start < 0:
-        raise ScheduleInconclusiveError(
-            f"required source function {signature.split('(')[0]} not found"
-        )
-    opening = source.find("{", start + len(signature))
-    if opening < 0:
-        raise ScheduleInconclusiveError(
-            f"required source function {signature.split('(')[0]} has no body"
-        )
-    depth = 0
-    for index in range(opening, len(source)):
-        if source[index] == "{":
-            depth += 1
-        elif source[index] == "}":
-            depth -= 1
-            if depth == 0:
-                return source[start : index + 1]
-    raise ScheduleInconclusiveError(
-        f"required source function {signature.split('(')[0]} is unbalanced"
-    )
-
-
-def _require_tokens(body: str, label: str, tokens: tuple[str, ...]) -> None:
-    missing = tuple(token for token in tokens if token not in body)
-    if missing:
-        raise ScheduleInconclusiveError(
-            f"{label} source shape changed; missing {missing[0]!r}"
-        )
-
-
-def _validate_scalar_schedule(source: str) -> None:
-    monomial = _extract_function(
-        source,
-        "void RGSW_monomial_mul(",
-    )
-    _require_tokens(
-        monomial,
-        "RGSW_monomial_mul",
-        (
-            "const uint32_t r_prec = sab->r_prec, in_N = sab->in_N;",
-            "for (size_t i = 0; i < r_prec; i++){",
-            "const uint64_t power = 1ULL << i;",
-            "for (size_t j = 0; j < power; j++){",
-            "NCMUX(",
-            "for (size_t j = 0; j < in_N - power; j++){",
-            "CMUX(",
-        ),
-    )
-    sparse = _extract_function(source, "void sparse_mul(")
-    _require_tokens(
-        sparse,
-        "sparse_mul",
-        (
-            "for (size_t i = 0; i < sab->h; i++){",
-            "RGSW_monomial_mul(p, sab->s[a_idx][i], sab);",
-            "sub_a(p, a, i, sab);",
-            "RGSW_monomial_mul(p, sab->s[a_idx][sab->h], sab);",
-        ),
-    )
-
-
-def _validate_pvw_schedule(source: str) -> None:
-    monomial = _extract_function(
-        source,
-        "static uint64_t sab_pvw_RGSW_monomial_mul_state(",
-    )
-    _require_tokens(
-        monomial,
-        "sab_pvw_RGSW_monomial_mul_state",
-        (
-            "const uint32_t r_prec = sab->r_prec, in_N = sab->in_N;",
-            "for (size_t bit = 0; bit < r_prec; bit++){",
-            "const uint64_t power = 1ULL << bit;",
-            "if(2 * power <= in_N){",
-            "sab_pvw_schedule_dual_sub_pair(",
-            "direct_start = power;",
-            "for (size_t j = 0; j < power; j++){",
-            "sab_pvw_schedule_NCMUX(",
-            "sab_pvw_NCMUX(",
-            "for (size_t j = direct_start; j < in_N - power; j++){",
-            "sab_pvw_schedule_CMUX(",
-            "sab_pvw_CMUX(",
-        ),
-    )
-    dual_pair = _extract_function(
-        source,
-        "static void sab_pvw_schedule_dual_sub_pair(",
-    )
-    if dual_pair.count("sab_pvw_CMUX_from_sub_internal(") != 2:
-        raise ScheduleInconclusiveError(
-            "sab_pvw_schedule_dual_sub_pair source shape changed; "
-            "expected two selector applications"
-        )
-    sparse = _extract_function(source, "void sab_pvw_sparse_mul_binary(")
-    _require_tokens(
-        sparse,
-        "sab_pvw_sparse_mul_binary",
-        (
-            "for (size_t step = 0; step < sab->h; step++){",
-            "sab_pvw_RGSW_monomial_mul_state(",
-            "sab_pvw_sub_a_binary_to(",
-            "sab_pvw_sub_a_binary(",
-            "sab->s[a_idx][sab->h]",
-        ),
-    )
-    sub_a = _extract_function(
-        source,
-        "static void sab_pvw_sub_a_binary_to(",
-    )
-    _require_tokens(
-        sub_a,
-        "sab_pvw_sub_a_binary_to",
-        (
-            "for (size_t idx = 0; idx < sab->in_N; idx++){",
-            "pvmtmlwe_mul_by_xai(out[idx], in[idx], a[idx]);",
-        ),
-    )
-
-
 def _parse_int(target: dict[str, str], field: str) -> int:
     value = target.get(field)
-    if value is None or re.fullmatch(r"(?:0[xX][0-9a-fA-F]+|\d+)", value) is None:
+    if (
+        value is None
+        or re.fullmatch(r"(?:0[xX][0-9a-fA-F]+|\d+)", value) is None
+    ):
         raise ScheduleInconclusiveError(
             f"default target field {field} is not an integer literal"
         )
     return int(value, 0)
 
 
-def load_binary_target_schedule(root: Path | str) -> BinaryTargetSchedule:
-    """Parse the default target and exact binary SAB schedule source shape."""
-
-    root_path = Path(root)
-    main_source = _read_source(root_path, "main.c")
-    scalar_source = _read_source(
-        root_path,
-        "src/sparse_amortized_bootstrap.c",
+def _parse_make_default(source: str, name: str) -> bool:
+    match = re.search(
+        rf"^{re.escape(name)}\s*\?=\s*(true|false)\s*$",
+        source,
+        flags=re.MULTILINE,
     )
-    pvw_source = _read_source(root_path, "src/sab_pvw.c")
-
-    target = _parse_default_target(main_source)
-    _validate_scalar_schedule(scalar_source)
-    _validate_pvw_schedule(pvw_source)
-
-    h = _parse_int(target, "h")
-    r_prec = _parse_int(target, "r_prec")
-    in_N = _parse_int(target, "in_N")
-    if min(h, r_prec, in_N) <= 0:
+    if match is None:
         raise ScheduleInconclusiveError(
-            "default binary target dimensions must be positive"
+            f"default build flag {name} not found"
+        )
+    return match.group(1) == "true"
+
+
+def _validate_scalar_schedule(source: str) -> None:
+    monomial = _extract_function(source, "void RGSW_monomial_mul(")
+    bit_loop = _one_block(
+        monomial,
+        r"for\s*\(\s*size_t\s+i\s*=\s*0\s*;\s*"
+        r"i\s*<\s*r_prec\s*;\s*i\+\+\s*\)\s*\{",
+        "scalar monomial bit loop",
+    )
+    wrap_loop = _one_block(
+        bit_loop.body,
+        r"for\s*\(\s*size_t\s+j\s*=\s*0\s*;\s*"
+        r"j\s*<\s*power\s*;\s*j\+\+\s*\)\s*\{",
+        "scalar wrap loop",
+    )
+    _require_top_level_call(
+        wrap_loop,
+        ("NCMUX",),
+        "scalar wrap loop",
+    )
+    direct_loop = _one_block(
+        bit_loop.body,
+        r"for\s*\(\s*size_t\s+j\s*=\s*0\s*;\s*"
+        r"j\s*<\s*in_N\s*-\s*power\s*;\s*j\+\+\s*\)\s*\{",
+        "scalar direct loop",
+    )
+    _require_top_level_call(
+        direct_loop,
+        ("CMUX",),
+        "scalar direct loop",
+    )
+
+    sparse = _extract_function(source, "void sparse_mul(")
+    round_loop = _one_block(
+        sparse,
+        r"for\s*\(\s*size_t\s+i\s*=\s*0\s*;\s*"
+        r"i\s*<\s*sab->h\s*;\s*i\+\+\s*\)\s*\{",
+        "scalar sparse round loop",
+    )
+    _require_ordered_calls(
+        round_loop,
+        ("RGSW_monomial_mul",),
+        ("sub_a",),
+        "scalar sparse round loop",
+    )
+    _require_call_after(
+        sparse,
+        round_loop,
+        ("RGSW_monomial_mul",),
+        None,
+        "scalar sparse round loop",
+    )
+
+
+def _validate_pvw_monomial(source: str) -> None:
+    monomial = _extract_function(
+        source,
+        "static uint64_t sab_pvw_RGSW_monomial_mul_state(",
+    )
+    bit_loop = _one_block(
+        monomial,
+        r"for\s*\(\s*size_t\s+bit\s*=\s*0\s*;\s*"
+        r"bit\s*<\s*r_prec\s*;\s*bit\+\+\s*\)\s*\{",
+        "PVW monomial bit loop",
+    )
+    wrap_loops = _find_blocks(
+        bit_loop.body,
+        r"for\s*\(\s*size_t\s+j\s*=\s*0\s*;\s*"
+        r"j\s*<\s*power\s*;\s*j\+\+\s*\)\s*\{",
+        "PVW wrap loop",
+    )
+    if len(wrap_loops) != 2:
+        raise ScheduleInconclusiveError(
+            "PVW wrap loop source shape changed"
+        )
+    _require_top_level_call(
+        wrap_loops[0],
+        ("sab_pvw_schedule_dual_sub_pair",),
+        "PVW dual-sub wrap loop",
+    )
+    _require_top_level_call(
+        wrap_loops[1],
+        ("sab_pvw_schedule_NCMUX",),
+        "PVW normal wrap loop",
+    )
+    _require_top_level_call(
+        wrap_loops[1],
+        ("sab_pvw_NCMUX",),
+        "PVW normal wrap loop",
+    )
+    direct_loop = _one_block(
+        bit_loop.body,
+        r"for\s*\(\s*size_t\s+j\s*=\s*direct_start\s*;\s*"
+        r"j\s*<\s*in_N\s*-\s*power\s*;\s*j\+\+\s*\)\s*\{",
+        "PVW direct loop",
+    )
+    _require_top_level_call(
+        direct_loop,
+        ("sab_pvw_schedule_CMUX",),
+        "PVW direct loop",
+    )
+    _require_top_level_call(
+        direct_loop,
+        ("sab_pvw_CMUX",),
+        "PVW direct loop",
+    )
+    dual_if = _one_block(
+        bit_loop.body,
+        r"if\s*\(\s*2\s*\*\s*power\s*<=\s*in_N\s*\)\s*\{",
+        "PVW dual-sub branch",
+    )
+    dual_nested = _find_blocks(
+        dual_if.body,
+        r"for\s*\(\s*size_t\s+j\s*=\s*0\s*;\s*"
+        r"j\s*<\s*power\s*;\s*j\+\+\s*\)\s*\{",
+        "PVW dual-sub wrap loop",
+    )
+    if len(dual_nested) != 1:
+        raise ScheduleInconclusiveError(
+            "PVW dual-sub call changed loop association"
+        )
+    assignment = re.search(
+        r"\bdirect_start\s*=\s*power\s*;",
+        dual_if.body,
+    )
+    if (
+        assignment is None
+        or _brace_depth_at(dual_if.body, assignment.start()) != 0
+        or assignment.start() <= dual_nested[0].end
+    ):
+        raise ScheduleInconclusiveError(
+            "PVW dual-sub direct_start changed association"
         )
 
-    monomial_calls = h + 1
-    butterfly_steps = monomial_calls * r_prec
-    selector_applications = butterfly_steps * in_N
-    return BinaryTargetSchedule(
-        target="SET_2_3_2048",
-        h=h,
-        r_prec=r_prec,
-        in_N=in_N,
-        monomial_calls=monomial_calls,
-        butterfly_steps=butterfly_steps,
-        selector_applications=selector_applications,
-        source_anchors=_SOURCE_ANCHORS,
+    dual_pair = _extract_function(
+        source,
+        "static void sab_pvw_schedule_dual_sub_pair(",
+    )
+    pair_calls = _top_level_calls(
+        dual_pair[
+            dual_pair.find("{") + 1 : dual_pair.rfind("}")
+        ],
+        ("sab_pvw_CMUX_from_sub_internal",),
+    )
+    if len(pair_calls) != 2:
+        raise ScheduleInconclusiveError(
+            "PVW dual-sub pair must contain two selector calls"
+        )
+
+
+def _validate_pvw_sparse(source: str) -> None:
+    sparse = _extract_function(source, "void sab_pvw_sparse_mul_binary(")
+    round_loops = _find_blocks(
+        sparse,
+        r"for\s*\(\s*size_t\s+step\s*=\s*0\s*;\s*"
+        r"step\s*<\s*sab->h\s*;\s*step\+\+\s*\)\s*\{",
+        "PVW sparse round loop",
+    )
+    if len(round_loops) != 2:
+        raise ScheduleInconclusiveError(
+            "PVW sparse source must contain both binary round branches"
+        )
+    active_loop, fallback_loop = round_loops
+    _require_ordered_calls(
+        active_loop,
+        ("sab_pvw_RGSW_monomial_mul_state",),
+        ("sab_pvw_sub_a_binary_to", "sab_pvw_sub_a_binary"),
+        "PVW active sparse round loop",
+    )
+    _require_ordered_calls(
+        fallback_loop,
+        ("sab_pvw_RGSW_monomial_mul",),
+        ("sab_pvw_sub_a_binary",),
+        "PVW fallback sparse round loop",
+    )
+    _require_call_after(
+        sparse,
+        active_loop,
+        ("sab_pvw_RGSW_monomial_mul_state",),
+        fallback_loop.start,
+        "PVW active sparse round loop",
+    )
+    _require_call_after(
+        sparse,
+        fallback_loop,
+        ("sab_pvw_RGSW_monomial_mul",),
+        None,
+        "PVW fallback sparse round loop",
+    )
+
+    sub_a_to = _extract_function(
+        source,
+        "static void sab_pvw_sub_a_binary_to(",
+    )
+    to_loop = _one_block(
+        sub_a_to,
+        r"for\s*\(\s*size_t\s+idx\s*=\s*0\s*;\s*"
+        r"idx\s*<\s*sab->in_N\s*;\s*idx\+\+\s*\)\s*\{",
+        "PVW sub_a output loop",
+    )
+    _require_top_level_call(
+        to_loop,
+        ("pvmtmlwe_mul_by_xai",),
+        "PVW sub_a output loop",
+    )
+    sub_a = _extract_function(source, "void sab_pvw_sub_a_binary(")
+    loop = _one_block(
+        sub_a,
+        r"for\s*\(\s*size_t\s+idx\s*=\s*0\s*;\s*"
+        r"idx\s*<\s*sab->in_N\s*;\s*idx\+\+\s*\)\s*\{",
+        "PVW sub_a loop",
+    )
+    _require_top_level_call(
+        loop,
+        ("pvmtmlwe_mul_by_xai",),
+        "PVW sub_a loop",
     )
 
 
-def _default_root() -> Path:
-    return Path(__file__).resolve().parents[2]
+def _validate_pvw_schedule(source: str) -> None:
+    _validate_pvw_monomial(source)
+    _validate_pvw_sparse(source)
 
 
-def _load_cycle_edges(root: Path, r: int) -> tuple[_CycleEdge, ...]:
+def _validate_stage203_support(root: Path, r: int) -> bool:
     relative_path = (
         "repro/stage203_production_selector_equation_probe/"
         "equation_map.csv"
@@ -354,14 +644,10 @@ def _load_cycle_edges(root: Path, r: int) -> tuple[_CycleEdge, ...]:
     ]
     if reader.fieldnames != expected_fields:
         raise ScheduleInconclusiveError(
-            "Stage203 equation map header changed"
+            "Stage203 support-only equation map header changed"
         )
     try:
-        selected = [
-            row
-            for row in reader
-            if int(row["r"]) == r
-        ]
+        selected = [row for row in reader if int(row["r"]) == r]
     except (KeyError, TypeError, ValueError) as error:
         raise ScheduleInconclusiveError(
             "Stage203 equation map contains malformed rows"
@@ -370,354 +656,259 @@ def _load_cycle_edges(root: Path, r: int) -> tuple[_CycleEdge, ...]:
         raise ScheduleInconclusiveError(
             f"Stage203 r={r} equation map shape changed"
         )
-
     neighbors = [
         row
         for row in selected
         if row["equation_class"] == "lane_neighbor_body_interaction"
     ]
-    edges: list[_CycleEdge] = []
-    for row in neighbors:
-        try:
-            source_lane = int(row["row"])
-            target_lane = int(row["col"])
-        except (TypeError, ValueError) as error:
-            raise ScheduleInconclusiveError(
-                "Stage203 neighbor edge is malformed"
-            ) from error
+    if len(neighbors) != r:
+        raise ScheduleInconclusiveError(
+            f"Stage203 r={r} cycle support is incomplete"
+        )
+    for lane, row in enumerate(neighbors, start=1):
         if (
-            not 1 <= source_lane <= r
-            or target_lane != 1 + (source_lane % r)
+            int(row["row"]) != lane
+            or int(row["col"]) != 1 + (lane % r)
             or row["semantic_role"] != "active"
             or row["is_public_row"] != "1"
             or row["may_skip_after_proof"] != "0"
         ):
             raise ScheduleInconclusiveError(
-                f"Stage203 r={r} cycle edge shape changed"
+                f"Stage203 r={r} cycle support changed"
             )
-        edges.append(_CycleEdge(source_lane, target_lane))
-    if len(edges) != r or [edge.row for edge in edges] != list(
-        range(1, r + 1)
-    ):
+    return False
+
+
+def load_binary_target_schedule(
+    root: Path | str,
+) -> BinaryTargetSchedule:
+    """Parse default parameters and validate exact binary control flow."""
+
+    root_path = Path(root)
+    main_source = _read_source(root_path, "main.c")
+    scalar_source = _read_source(
+        root_path,
+        "src/sparse_amortized_bootstrap.c",
+    )
+    pvw_source = _read_source(root_path, "src/sab_pvw.c")
+    make_source = _read_source(
+        root_path,
+        "src/mosfhet/Makefile.def",
+    )
+    target = _parse_default_target(main_source)
+    _validate_scalar_schedule(scalar_source)
+    _validate_pvw_schedule(pvw_source)
+
+    h = _parse_int(target, "h")
+    r_prec = _parse_int(target, "r_prec")
+    in_N = _parse_int(target, "in_N")
+    if min(h, r_prec, in_N) <= 0:
         raise ScheduleInconclusiveError(
-            f"Stage203 r={r} cycle is incomplete"
+            "default binary target dimensions must be positive"
         )
-    return tuple(edges)
+    monomial_calls = h + 1
+    butterfly_steps = monomial_calls * r_prec
+    selectors_per_monomial = sum(
+        (1 << bit) + (in_N - (1 << bit))
+        for bit in range(r_prec)
+    )
+    if selectors_per_monomial != r_prec * in_N:
+        raise ScheduleInconclusiveError(
+            "binary butterfly loops no longer cover in_N selectors per bit"
+        )
+    return BinaryTargetSchedule(
+        target="SET_2_3_2048",
+        h=h,
+        r_prec=r_prec,
+        in_N=in_N,
+        monomial_calls=monomial_calls,
+        butterfly_steps=butterfly_steps,
+        selector_applications=(
+            monomial_calls * selectors_per_monomial
+        ),
+        dual_sub_enabled=_parse_make_default(
+            make_source,
+            "SAB_PVW_DUAL_SUB_CMUX",
+        ),
+        source_anchors=_SOURCE_ANCHORS,
+    )
 
 
-def _cycle_direction_matrix(
-    edges: tuple[_CycleEdge, ...],
-    r: int,
-    modulus: int,
-) -> tuple[tuple[int, ...], ...]:
-    columns: list[tuple[int, ...]] = []
-    for edge in edges:
-        raw = [
-            (
-                (1 if lane == edge.row - 1 else 0)
-                - (1 if lane == edge.column - 1 else 0)
+def iter_binary_schedule_events(
+    schedule: BinaryTargetSchedule,
+    *,
+    dual_sub_enabled: bool | None = None,
+) -> Iterator[ScheduleEvent]:
+    """Yield the exact binary schedule without retaining its event history."""
+
+    dual_sub = (
+        schedule.dual_sub_enabled
+        if dual_sub_enabled is None
+        else dual_sub_enabled
+    )
+    if type(dual_sub) is not bool:
+        raise ValueError("dual_sub_enabled must be boolean")
+    for monomial in range(schedule.monomial_calls):
+        for bit in range(schedule.r_prec):
+            power = 1 << bit
+            if dual_sub and 2 * power <= schedule.in_N:
+                for index in range(power):
+                    yield ScheduleEvent(
+                        "ncmux",
+                        monomial,
+                        bit,
+                        index,
+                        "dual_sub_pair",
+                    )
+                    yield ScheduleEvent(
+                        "cmux",
+                        monomial,
+                        bit,
+                        index + power,
+                        "dual_sub_pair",
+                    )
+                direct_start = power
+            else:
+                for index in range(power):
+                    yield ScheduleEvent(
+                        "ncmux",
+                        monomial,
+                        bit,
+                        index,
+                        "wrap",
+                    )
+                direct_start = 0
+            for index in range(
+                direct_start,
+                schedule.in_N - power,
+            ):
+                yield ScheduleEvent(
+                    "cmux",
+                    monomial,
+                    bit,
+                    index + power,
+                    "direct",
+                )
+            yield ScheduleEvent(
+                "butterfly_boundary",
+                monomial,
+                bit,
             )
-            % modulus
-            for lane in range(r)
-        ]
-        reference = raw[0]
-        columns.append(
-            tuple((value - reference) % modulus for value in raw)
+        yield ScheduleEvent("monomial_boundary", monomial)
+        if monomial < schedule.h:
+            yield ScheduleEvent("sub_a_boundary", monomial)
+
+
+def _default_root() -> Path:
+    return Path(__file__).resolve().parents[2]
+
+
+def _independent_control_state(r: int, modulus: int):
+    directions = tuple(
+        tuple(
+            1 if lane == column + 1 else 0
+            for column in range(r - 1)
         )
-    return tuple(
-        tuple(columns[column][lane] for column in range(len(columns)))
         for lane in range(r)
     )
-
-
-def _cycle_rank(
-    edges: tuple[_CycleEdge, ...],
-    r: int,
-    modulus: int,
-) -> int:
-    state = append_mask_directions(
+    return append_mask_directions(
         shared_state(r, modulus),
-        _cycle_direction_matrix(edges, r, modulus),
-    )
-    return excess_rank(state)
-
-
-def _replay_c1(
-    r: int,
-    modulus: int,
-    root: Path,
-    schedule: BinaryTargetSchedule,
-) -> ScheduleTrace:
-    edges = _load_cycle_edges(root, r)
-    observed_rho = _cycle_rank(edges, r, modulus)
-    rho_bound = min(2, r - 1)
-    missing_edge = None
-    for length in range(1, len(edges) + 1):
-        if _cycle_rank(edges[:length], r, modulus) > rho_bound:
-            missing_edge = edges[length - 1]
-            break
-
-    closure_gate = (
-        "PASS_FINITE_CLOSURE"
-        if missing_edge is None
-        else "FAIL_MINIMUM_CYCLE_RANK"
-    )
-    if missing_edge is None:
-        state = append_mask_directions(
-            shared_state(r, modulus),
-            _cycle_direction_matrix(edges, r, modulus),
-        )
-        for exponent in range(1, schedule.h + 1):
-            rotated = rotate_state(state, exponent)
-            if excess_rank(rotated) != observed_rho:
-                raise AssertionError("public sub_a rotation changed rho")
-            state = rotated
-    return ScheduleTrace(
-        variant="C1",
-        r=r,
-        modulus=modulus,
-        rho_bound=rho_bound,
-        max_rho=observed_rho,
-        first_rank_overflow=None if missing_edge is None else 1,
-        first_missing_edge=(
-            None
-            if missing_edge is None
-            else (
-                f"{missing_edge.label};"
-                "butterfly=NCMUX:bit=0,j=0"
-            )
-        ),
-        steps_before_compression=None,
-        compressions=0,
-        completed_butterflies=(
-            schedule.selector_applications
-            if missing_edge is None
-            else 0
-        ),
-        selector_applications=schedule.selector_applications,
-        selector_boundaries_checked=(
-            schedule.selector_applications
-            if missing_edge is None
-            else 1
-        ),
-        monomial_boundaries_checked=(
-            schedule.monomial_calls if missing_edge is None else 0
-        ),
-        sub_a_boundaries_checked=(
-            schedule.h if missing_edge is None else 0
-        ),
-        phase_gate="INCONCLUSIVE_MISSING_OPERATOR_MAPPING",
-        closure_gate=closure_gate,
-        boundary_gate="NOT_APPLICABLE",
-        provenance_gate="PASS",
+        directions,
     )
 
 
-_C2_BLOCK_LENGTHS = frozenset((1, 2, 4, 8, 16, 32, 64))
-
-
-def _replay_c2(
+def _exercise_live_provenance_mutation(
     r: int,
     modulus: int,
-    root: Path,
-    schedule: BinaryTargetSchedule,
-    block_length: int | None,
-) -> ScheduleTrace:
-    if (
-        type(block_length) is not int
-        or block_length not in _C2_BLOCK_LENGTHS
-    ):
-        raise ValueError(
-            "C2 block length must be one of 1, 2, 4, 8, 16, 32, 64"
-        )
-
-    edges = _load_cycle_edges(root, r)
-    directions = _cycle_direction_matrix(edges, r, modulus)
-    state = shared_state(r, modulus)
-    for _ in range(block_length):
-        state = append_mask_directions(state, directions)
-
-    observed_rho = excess_rank(state)
-    rho_bound = min(2, r - 1)
-    first_overflow = 1 if observed_rho > rho_bound else None
-    missing_edge = None
-    if first_overflow is not None:
-        for length in range(1, len(edges) + 1):
-            if _cycle_rank(edges[:length], r, modulus) > rho_bound:
-                missing_edge = edges[length - 1]
-                break
-
-    differences = lane_difference_matrix(state)
-    projection = tuple(differences[:rho_bound])
-    compression_preserved = False
-    try:
-        before = phase_vector(
-            state,
-            tuple(range(2, r + 2)),
-            modulus,
-        )
-        result = compress_state(state, projection)
-        after = phase_vector(
-            result.compressed_state,
-            tuple(range(2, r + 2)),
-            modulus,
-        )
-        compression_preserved = result.phase_preserved and before == after
-        if compression_preserved:
-            rotated = result.compressed_state
-            for exponent in range(1, schedule.h + 1):
-                rotated = rotate_state(rotated, exponent)
-                if excess_rank(rotated) != observed_rho:
-                    raise AssertionError(
-                        "public sub_a rotation changed compressed rho"
-                    )
-    except ValueError as error:
-        if "phase-active direction" not in str(error):
-            raise
-
-    if block_length == 1:
-        boundary_gate = "REJECT_PER_CMUX_CONTROL"
-        closure_gate = "REJECT_FORBIDDEN_BOUNDARY"
-        compressions = 1
-        completed = 1
-    elif observed_rho <= rho_bound and compression_preserved:
-        boundary_gate = "PASS"
-        closure_gate = "PASS_FINITE_CLOSURE"
-        compressions = (
-            schedule.selector_applications + block_length - 1
-        ) // block_length
-        completed = schedule.selector_applications
-    else:
-        boundary_gate = "PASS"
-        closure_gate = "FAIL_MINIMUM_CYCLE_RANK"
-        compressions = 1
-        completed = block_length
-
-    return ScheduleTrace(
-        variant="C2",
-        r=r,
-        modulus=modulus,
-        rho_bound=rho_bound,
-        max_rho=observed_rho,
-        first_rank_overflow=first_overflow,
-        first_missing_edge=(
-            None
-            if missing_edge is None
-            else (
-                f"{missing_edge.label};"
-                "butterfly=NCMUX:bit=0,j=0"
-            )
-        ),
-        steps_before_compression=block_length,
-        compressions=compressions,
-        completed_butterflies=completed,
-        selector_applications=schedule.selector_applications,
-        selector_boundaries_checked=completed,
-        monomial_boundaries_checked=(
-            schedule.monomial_calls
-            if completed == schedule.selector_applications
-            else 0
-        ),
-        sub_a_boundaries_checked=(
-            schedule.h
-            if completed == schedule.selector_applications
-            else 0
-        ),
-        phase_gate="INCONCLUSIVE_MISSING_OPERATOR_MAPPING",
-        closure_gate=closure_gate,
-        boundary_gate=boundary_gate,
-        provenance_gate="PASS",
+    selector_index: int,
+) -> str:
+    lhs = append_mask_directions(
+        shared_state(r, modulus),
+        tuple((0,) if lane == 0 else (1,) for lane in range(r)),
     )
-
-
-def _cycle_coefficient_mutation_detected(
-    root: Path,
-    r: int,
-    modulus: int,
-) -> bool:
-    edges = _load_cycle_edges(root, r)
-    expected = _cycle_direction_matrix(edges, r, modulus)
-    mutated = [list(row) for row in expected]
-    mutated[1][0] = (mutated[1][0] + 1) % modulus
-    return tuple(tuple(row) for row in mutated) != expected
-
-
-def _provenance_mutation_rejected(
-    root: Path,
-    r: int,
-    modulus: int,
-) -> bool:
-    edge = _load_cycle_edges(root, r)[:1]
-    directions = _cycle_direction_matrix(edge, r, modulus)
-    lhs = append_mask_directions(shared_state(r, modulus), directions)
-    rhs = append_mask_directions(shared_state(r, modulus), directions)
+    rhs = append_mask_directions(
+        shared_state(r, modulus),
+        tuple((0,) if lane == 0 else (1,) for lane in range(r)),
+    )
     mutated_rhs = replace(rhs, provenance=lhs.provenance)
     try:
         linear_combine_states(lhs, mutated_rhs, 1, 1)
     except ValueError as error:
-        return "independent provenance" in str(error)
-    return False
-
-
-def _apply_mutation(
-    trace: ScheduleTrace,
-    mutation: str | None,
-    root: Path,
-    block_length: int | None,
-) -> ScheduleTrace:
-    if mutation is None:
-        return trace
-    if mutation == "cycle_coefficient":
-        if not _cycle_coefficient_mutation_detected(
-            root,
-            trace.r,
-            trace.modulus,
-        ):
-            raise AssertionError("cycle coefficient mutation was ineffective")
-        first_edge = _load_cycle_edges(root, trace.r)[0]
-        return replace(
-            trace,
-            first_missing_edge=(
-                f"{first_edge.label};mutation=cycle_coefficient"
-            ),
-            completed_butterflies=0,
-            closure_gate="FAIL_CYCLE_COEFFICIENT",
-        )
-    if mutation == "compression_boundary":
-        if trace.variant != "C2" or block_length is None:
-            raise ValueError(
-                "compression boundary mutation requires C2 block length"
+        if "independent provenance" in str(error):
+            return (
+                "FAIL_MUTATED_PROVENANCE_AT_SELECTOR_"
+                f"{selector_index}"
             )
-        mutated_boundary = (
-            block_length - 1 if block_length > 1 else block_length + 1
+        return "FAIL_UNEXPECTED_PROVENANCE_VALIDATION_ERROR"
+    return "FAIL_PROVENANCE_MUTATION_NOT_REJECTED"
+
+
+def _actual_boundary(
+    selector_index: int,
+    block_length: int,
+    mutated: bool,
+) -> bool:
+    if not mutated:
+        return selector_index % block_length == 0
+    if selector_index == block_length:
+        return False
+    if selector_index == block_length + 1:
+        return True
+    return selector_index % block_length == 0
+
+
+def _stream_replay(
+    schedule: BinaryTargetSchedule,
+    r: int,
+    modulus: int,
+    *,
+    block_length: int | None,
+    boundary_mutated: bool,
+    provenance_mutated: bool,
+) -> _ReplayCounts:
+    counts = _ReplayCounts()
+    for event in iter_binary_schedule_events(schedule):
+        counts.events += 1
+        if event.kind == "ncmux":
+            counts.ncmux += 1
+        elif event.kind == "cmux":
+            counts.cmux += 1
+        elif event.kind == "butterfly_boundary":
+            counts.butterflies += 1
+        elif event.kind == "monomial_boundary":
+            counts.monomials += 1
+        elif event.kind == "sub_a_boundary":
+            counts.sub_a += 1
+        if event.kind not in _SELECTOR_KINDS:
+            continue
+
+        counts.selectors += 1
+        if provenance_mutated and counts.selectors == 1:
+            counts.provenance_gate = (
+                _exercise_live_provenance_mutation(
+                    r,
+                    modulus,
+                    counts.selectors,
+                )
+            )
+        if block_length is None:
+            continue
+        expected = counts.selectors % block_length == 0
+        actual = _actual_boundary(
+            counts.selectors,
+            block_length,
+            boundary_mutated,
         )
-        if mutated_boundary == block_length:
-            raise AssertionError("compression boundary mutation was ineffective")
-        return replace(
-            trace,
-            steps_before_compression=mutated_boundary,
-            compressions=0,
-            completed_butterflies=mutated_boundary,
-            selector_boundaries_checked=mutated_boundary,
-            monomial_boundaries_checked=0,
-            sub_a_boundaries_checked=0,
-            closure_gate="INCONCLUSIVE_AFTER_BOUNDARY_FAILURE",
-            boundary_gate="FAIL_MUTATED_COMPRESSION_BOUNDARY",
-        )
-    if mutation == "provenance_identifier":
-        if not _provenance_mutation_rejected(
-            root,
-            trace.r,
-            trace.modulus,
+        if actual:
+            counts.compression_boundaries += 1
+            if counts.first_actual_boundary is None:
+                counts.first_actual_boundary = counts.selectors
+        if (
+            expected != actual
+            and counts.first_boundary_mismatch is None
         ):
-            raise AssertionError("provenance mutation was not rejected")
-        return replace(
-            trace,
-            phase_gate="FAIL_PROVENANCE_IDENTITY",
-            closure_gate="INCONCLUSIVE_AFTER_PROVENANCE_FAILURE",
-            provenance_gate="FAIL_MUTATED_PROVENANCE",
-        )
-    raise ValueError(f"unknown schedule mutation: {mutation!r}")
+            counts.first_boundary_mismatch = counts.selectors
+    return counts
 
 
 def replay_variant_schedule(
@@ -729,67 +920,142 @@ def replay_variant_schedule(
     block_length: int | None = None,
     mutation: str | None = None,
 ) -> ScheduleTrace:
-    """Replay one registered finite variant over the source-derived schedule."""
+    """Stream one exact schedule and evaluate only registered gate facts."""
 
     root_path = _default_root() if root is None else Path(root)
     schedule = load_binary_target_schedule(root_path)
-    if variant == "C1":
-        return _apply_mutation(
-            _replay_c1(r, modulus, root_path, schedule),
-            mutation,
-            root_path,
-            block_length,
+    if variant not in {"C0", "C1", "C2"}:
+        raise ValueError(
+            f"unknown Candidate C schedule variant: {variant!r}"
         )
+    if type(r) is not int or r not in {2, 4, 6}:
+        raise ValueError("r must be one of 2, 4, 6")
     if variant == "C2":
-        return _apply_mutation(
-            _replay_c2(
-                r,
-                modulus,
-                root_path,
-                schedule,
-                block_length,
-            ),
-            mutation,
-            root_path,
-            block_length,
+        if (
+            type(block_length) is not int
+            or block_length not in _C2_BLOCK_LENGTHS
+        ):
+            raise ValueError(
+                "C2 block length must be one of "
+                "1, 2, 4, 8, 16, 32, 64"
+            )
+    elif block_length is not None:
+        raise ValueError("block length is registered only for C2")
+    if mutation not in {
+        None,
+        "cycle_coefficient",
+        "compression_boundary",
+        "provenance_identifier",
+    }:
+        raise ValueError(f"unknown schedule mutation: {mutation!r}")
+    if mutation == "compression_boundary" and variant != "C2":
+        raise ValueError(
+            "compression boundary mutation requires C2"
         )
-    if variant != "C0":
-        raise ValueError(f"unknown Candidate C schedule variant: {variant!r}")
+    if mutation == "cycle_coefficient" and variant == "C0":
+        raise ValueError(
+            "cycle coefficient mutation requires C1 or C2"
+        )
 
-    state = shared_state(r, modulus)
-    independent = tuple(
-        tuple(
-            1 if lane == column + 1 else 0
-            for column in range(r - 1)
+    numeric_mapping_registered = (
+        True if variant == "C0" else _validate_stage203_support(
+            root_path,
+            r,
         )
-        for lane in range(r)
     )
-    state = append_mask_directions(state, independent)
-    observed_rho = excess_rank(state)
-    rho_bound = min(2, r - 1)
-    trace = ScheduleTrace(
+    operator_gate = (
+        "PASS_EXPLICIT_NEGATIVE_CONTROL"
+        if variant == "C0"
+        else INCONCLUSIVE_OPERATOR
+    )
+    if mutation == "cycle_coefficient":
+        if numeric_mapping_registered:
+            operator_gate = "FAIL_CYCLE_COEFFICIENT_MUTATION"
+        else:
+            operator_gate = (
+                "FAIL_UNREGISTERED_CYCLE_COEFFICIENT_MUTATION"
+            )
+
+    counts = _stream_replay(
+        schedule,
+        r,
+        modulus,
+        block_length=block_length,
+        boundary_mutated=mutation == "compression_boundary",
+        provenance_mutated=mutation == "provenance_identifier",
+    )
+    if counts.selectors != schedule.selector_applications:
+        raise ScheduleInconclusiveError(
+            "streamed selector count does not match parsed schedule"
+        )
+    if counts.monomials != schedule.monomial_calls:
+        raise ScheduleInconclusiveError(
+            "streamed monomial boundary count is incomplete"
+        )
+    if counts.sub_a != schedule.h:
+        raise ScheduleInconclusiveError(
+            "streamed sub_a boundary count is incomplete"
+        )
+
+    if variant == "C0":
+        control_state = _independent_control_state(r, modulus)
+        max_rho = excess_rank(control_state)
+        first_rank_overflow = (
+            1 if max_rho > min(2, r - 1) else None
+        )
+        phase_gate = "NOT_APPLICABLE_NEGATIVE_CONTROL"
+        closure_gate = "REJECT_EXPECTED"
+        boundary_gate = "PASS_STRUCTURAL_SCHEDULE"
+        provenance_gate = (
+            counts.provenance_gate
+            if mutation == "provenance_identifier"
+            else "PASS_EXPLICIT_CONTROL"
+        )
+    else:
+        max_rho = None
+        first_rank_overflow = None
+        phase_gate = INCONCLUSIVE_OPERATOR
+        closure_gate = INCONCLUSIVE_OPERATOR
+        provenance_gate = (
+            counts.provenance_gate
+            if mutation == "provenance_identifier"
+            else INCONCLUSIVE_OPERATOR
+        )
+        if variant == "C1":
+            boundary_gate = "PASS_STRUCTURAL_SCHEDULE"
+        elif counts.first_boundary_mismatch is not None:
+            boundary_gate = "FAIL_MUTATED_COMPRESSION_BOUNDARY"
+        elif block_length == 1:
+            boundary_gate = "REJECT_PER_CMUX_CONTROL"
+        else:
+            boundary_gate = "PASS_STRUCTURAL_BOUNDARIES"
+
+    return ScheduleTrace(
         variant=variant,
         r=r,
         modulus=modulus,
-        rho_bound=rho_bound,
-        max_rho=observed_rho,
-        first_rank_overflow=1 if observed_rho > rho_bound else None,
+        rho_bound=min(2, r - 1),
+        max_rho=max_rho,
+        first_rank_overflow=first_rank_overflow,
         first_missing_edge=None,
-        steps_before_compression=None,
+        steps_before_compression=counts.first_actual_boundary,
         compressions=0,
-        completed_butterflies=1,
+        compression_boundaries_checked=(
+            counts.compression_boundaries
+        ),
+        first_boundary_mismatch=counts.first_boundary_mismatch,
+        completed_butterflies=counts.selectors,
         selector_applications=schedule.selector_applications,
-        selector_boundaries_checked=1,
-        monomial_boundaries_checked=0,
-        sub_a_boundaries_checked=0,
-        phase_gate="NOT_APPLICABLE_NEGATIVE_CONTROL",
-        closure_gate="REJECT_EXPECTED",
-        boundary_gate="NOT_APPLICABLE",
-        provenance_gate="PASS",
-    )
-    return _apply_mutation(
-        trace,
-        mutation,
-        root_path,
-        block_length,
+        selector_boundaries_checked=counts.selectors,
+        ncmux_events_checked=counts.ncmux,
+        cmux_events_checked=counts.cmux,
+        butterfly_boundaries_checked=counts.butterflies,
+        monomial_boundaries_checked=counts.monomials,
+        sub_a_boundaries_checked=counts.sub_a,
+        events_traversed=counts.events,
+        phase_gate=phase_gate,
+        closure_gate=closure_gate,
+        boundary_gate=boundary_gate,
+        provenance_gate=provenance_gate,
+        operator_mapping_gate=operator_gate,
     )
