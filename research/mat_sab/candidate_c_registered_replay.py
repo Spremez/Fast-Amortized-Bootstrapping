@@ -50,6 +50,9 @@ TERMINAL_DOMAIN = "candidate-c/terminal-record"
 
 SKIPPED_NO_REGISTERED_OPERATOR = "SKIPPED_NO_REGISTERED_OPERATOR"
 NO_VERIFIED_TASK3B_RESULT = "NO_VERIFIED_TASK3B_RESULT"
+NO_VERIFIED_ARTIFACT_NO_PER_EVENT_TENSOR_EXECUTOR = (
+    "NO_VERIFIED_ARTIFACT_NO_PER_EVENT_TENSOR_EXECUTOR"
+)
 _EXPECTED_R_VALUES = (2, 4, 6)
 _EXPECTED_COUNTS = {
     "h": 39,
@@ -873,8 +876,8 @@ def registered_operator_for_task4(
     decisions = tuple(result.decision for result in results)
     if len(set(decisions)) == 1 and decisions[0] in _C1_NONADMITTED_DECISIONS:
         raise NoRegisteredCandidateCOperator(decisions[0])
-    raise AdmittedReplayNotImplemented(
-        "Task 4 authorization requires a genuine per-event tensor executor"
+    raise NoRegisteredCandidateCOperator(
+        NO_VERIFIED_ARTIFACT_NO_PER_EVENT_TENSOR_EXECUTOR
     )
 
 

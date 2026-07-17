@@ -20,6 +20,7 @@ from research.mat_sab.candidate_c_registered_replay import (
     CandidateCTerminalRecord,
     ConversionBoundaryMutation,
     ConversionKeyIdentityMutation,
+    NO_VERIFIED_ARTIFACT_NO_PER_EVENT_TENSOR_EXECUTOR,
     NoRegisteredCandidateCOperator,
     RegisteredScheduleTrace,
     RejectedConversionEnvelope,
@@ -139,25 +140,42 @@ class RegisteredReplayInputTests(unittest.TestCase):
                         )
                 events.assert_not_called()
 
-    def test_internally_consistent_admission_cannot_authorize_task4(self):
-        admitted = replace(
-            self.results[0],
-            decision=ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY,
+    def test_task4_uses_public_no_operator_exception_without_executor(self):
+        decision_sets = (
+            (ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY,) * 3,
+            (ROUTE_PHASE_CORRECT_HIGH_RANK_OPERATOR_TO_C2,) * 3,
+            (
+                ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY,
+                REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL,
+                ROUTE_PHASE_CORRECT_HIGH_RANK_OPERATOR_TO_C2,
+            ),
         )
-        with (
-            patch.object(
-                registered_replay,
-                "run_c1_operator_gate",
-                return_value=admitted,
-            ),
-            patch.object(
-                registered_replay,
-                "verify_operator_gate_result",
-                return_value=True,
-            ),
-        ):
-            with self.assertRaises(AdmittedReplayNotImplemented):
-                registered_operator_for_task4(ROOT)
+        for decisions in decision_sets:
+            with self.subTest(decisions=decisions):
+                results = tuple(
+                    replace(result, decision=decision)
+                    for result, decision in zip(self.results, decisions)
+                )
+                with (
+                    patch.object(
+                        registered_replay,
+                        "run_c1_operator_gate",
+                        side_effect=results,
+                    ),
+                    patch.object(
+                        registered_replay,
+                        "verify_operator_gate_result",
+                        return_value=True,
+                    ),
+                ):
+                    with self.assertRaises(
+                        NoRegisteredCandidateCOperator
+                    ) as caught:
+                        registered_operator_for_task4(ROOT)
+                self.assertEqual(
+                    caught.exception.reason,
+                    NO_VERIFIED_ARTIFACT_NO_PER_EVENT_TENSOR_EXECUTOR,
+                )
 
     def test_one_tensor_coefficient_mutation_fails_distinct_gate(self):
         result = self.results[0]
