@@ -151,10 +151,21 @@
       "relation": "finite algebra is not a distribution proof"
     }
   ],
+  "campaign_state": {
+    "goal_status": "ACTIVE",
+    "paper_gate": "BLOCKED",
+    "active_candidate": "B",
+    "active_candidate_status": "INTAKE",
+    "candidate_a_status": "REJECTED",
+    "candidate_b_status": "INTAKE",
+    "last_decision": "REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B"
+  },
+  "candidate_a_disposition": "Candidate A is closed after failing the standard-PVW randomization necessary condition.",
+  "next_step": "Candidate B is active at `INTAKE`; its equations and implementation have not begun.",
   "open_gaps": [
-    "standard PVW randomization dimension",
-    "production key distribution and assumption comparison",
-    "noise recurrence under the admitted selector representation",
+    "Candidate B factorized-operator equation gate (not begun)",
+    "production key distribution and assumption comparison for an admitted representation",
+    "noise recurrence under an admitted selector representation",
     "Amdahl projection against exact-dense complete SAB",
     "isolated kernel and complete-SAB evidence"
   ]

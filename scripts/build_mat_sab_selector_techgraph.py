@@ -2,11 +2,18 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Mapping
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.mat_sab_research_state import load_state
+
+
 OUT_DIR = ROOT / "paper_techgraphs"
 JSON_OUT = OUT_DIR / "2025_686_mat_sab_selector.yaml"
 GRAPH_OUT = OUT_DIR / "2025_686_mat_sab_selector_graph.md"
@@ -45,10 +52,17 @@ EDGES = (
     ("finite_semantic_zero", "distribution_blocker", "finite algebra is not a distribution proof"),
 )
 
-OPEN_GAPS = (
+PRE_GATE_OPEN_GAPS = (
     "standard PVW randomization dimension",
     "production key distribution and assumption comparison",
     "noise recurrence under the admitted selector representation",
+    "Amdahl projection against exact-dense complete SAB",
+    "isolated kernel and complete-SAB evidence",
+)
+POST_A_REJECTION_OPEN_GAPS = (
+    "Candidate B factorized-operator equation gate (not begun)",
+    "production key distribution and assumption comparison for an admitted representation",
+    "noise recurrence under an admitted selector representation",
     "Amdahl projection against exact-dense complete SAB",
     "isolated kernel and complete-SAB evidence",
 )
@@ -68,20 +82,64 @@ def _node(root: Path, spec: tuple[str, str, str, str]) -> dict[str, object]:
     }
 
 
-def build_graph(root: Path = ROOT) -> dict[str, object]:
+def _campaign_view(state: Mapping[str, object]) -> dict[str, object]:
+    candidates = state["candidates"]
+    active_candidate = str(state["active_candidate"])
+    active_status = str(candidates[active_candidate]["status"])
+    campaign_state = {
+        "goal_status": state["goal_status"],
+        "paper_gate": state["paper_gate"],
+        "active_candidate": active_candidate,
+        "active_candidate_status": active_status,
+        "candidate_a_status": candidates["A"]["status"],
+        "candidate_b_status": candidates["B"]["status"],
+        "last_decision": state["last_decision"],
+    }
+    if (
+        candidates["A"]["status"] == "REJECTED"
+        and active_candidate == "B"
+    ):
+        disposition = (
+            "Candidate A is closed after failing the standard-PVW "
+            "randomization necessary condition."
+        )
+        next_step = (
+            f"Candidate B is active at `{active_status}`; its equations and "
+            "implementation have not begun."
+        )
+        open_gaps = POST_A_REJECTION_OPEN_GAPS
+    else:
+        disposition = (
+            f"Candidate A remains at `{candidates['A']['status']}`."
+        )
+        next_step = (
+            f"Candidate {active_candidate} is active at `{active_status}`."
+        )
+        open_gaps = PRE_GATE_OPEN_GAPS
     return {
+        "campaign_state": campaign_state,
+        "candidate_a_disposition": disposition,
+        "next_step": next_step,
+        "open_gaps": list(open_gaps),
+    }
+
+
+def build_graph(root: Path = ROOT) -> dict[str, object]:
+    state = load_state(root / "research_state.yaml")
+    graph = {
         "schema_version": 1,
-        "contract": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
+        "contract": state["contract"],
         "candidate": "A",
-        "production_code_permission": False,
+        "production_code_permission": state["production_hot_path_permission"],
         "reproduction_command": REPRODUCTION_COMMAND,
         "nodes": [_node(root, spec) for spec in NODE_SPECS],
         "edges": [
             {"from": source, "to": target, "relation": relation}
             for source, target, relation in EDGES
         ],
-        "open_gaps": list(OPEN_GAPS),
     }
+    graph.update(_campaign_view(state))
+    return graph
 
 
 def _reproduction_markdown(graph: Mapping[str, object]) -> list[str]:
@@ -96,13 +154,40 @@ def _reproduction_markdown(graph: Mapping[str, object]) -> list[str]:
     ]
 
 
+def _campaign_markdown(graph: Mapping[str, object]) -> list[str]:
+    state = graph["campaign_state"]
+    return [
+        "## Campaign State",
+        "",
+        f'- Goal: `{state["goal_status"]}`',
+        f'- Paper gate: `{state["paper_gate"]}`',
+        f'- Candidate A: `{state["candidate_a_status"]}`',
+        (
+            f'- Candidate B: `{state["candidate_b_status"]}`'
+            + (
+                " (active)"
+                if state["active_candidate"] == "B"
+                else ""
+            )
+        ),
+        f'- Last decision: `{state["last_decision"]}`',
+        f'- Disposition: {graph["candidate_a_disposition"]}',
+        "",
+        str(graph["next_step"]),
+    ]
+
+
 def _graph_markdown(graph: Mapping[str, object]) -> str:
     lines = [
         "# 2025/686 MAT-SAB Selector And State Graph",
         "",
+    ]
+    lines.extend(_campaign_markdown(graph))
+    lines.extend([
+        "",
         "```mermaid",
         "flowchart TD",
-    ]
+    ])
     for node in graph["nodes"]:
         lines.append(f'  {node["id"]}["{node["id"]}: {node["role"]}"]')
     for edge in graph["edges"]:
@@ -116,17 +201,27 @@ def _graph_markdown(graph: Mapping[str, object]) -> str:
 
 def _gaps_markdown(graph: Mapping[str, object]) -> str:
     lines = [
-        "# Candidate A Pre-Production Gaps",
-        "",
-        "Production code permission: `false`.",
+        "# MAT-SAB Campaign Gaps",
         "",
     ]
-    lines.extend(f"- {gap}" for gap in graph["open_gaps"])
+    lines.extend(_campaign_markdown(graph))
     lines.extend([
         "",
-        "The next gate tests `P M = mu P` and the standard PVW randomization",
-        "dimension. It does not infer cryptographic security from finite arithmetic.",
+        (
+            "Production code permission: "
+            f'`{str(graph["production_code_permission"]).lower()}`.'
+        ),
+        "",
+        (
+            "The closed Candidate A result is a finite-field "
+            "necessary-condition rejection; it does not infer cryptographic "
+            "security or complete-SAB performance."
+        ),
+        "",
+        "## Open Obligations",
+        "",
     ])
+    lines.extend(f"- {gap}" for gap in graph["open_gaps"])
     lines.extend(_reproduction_markdown(graph))
     return "\n".join(lines) + "\n"
 

@@ -195,6 +195,52 @@ class ResearchStateTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "invalid paper_gate"):
             validate_state(state)
 
+    def test_paper_terminal_conditions_must_be_equivalent(self):
+        mismatches = (
+            ("ACTIVE", "BLOCKED", "PAPER_GATE_PASS"),
+            ("ACTIVE", "PASS", "INTAKE"),
+            ("ACTIVE", "PASS", "PAPER_GATE_PASS"),
+            ("PAPER_READY", "BLOCKED", "INTAKE"),
+            ("PAPER_READY", "BLOCKED", "PAPER_GATE_PASS"),
+            ("PAPER_READY", "PASS", "INTAKE"),
+        )
+        for goal_status, paper_gate, active_status in mismatches:
+            with self.subTest(
+                goal_status=goal_status,
+                paper_gate=paper_gate,
+                active_status=active_status,
+            ):
+                state = load_state(ROOT / "research_state.yaml")
+                state["goal_status"] = goal_status
+                state["paper_gate"] = paper_gate
+                state["candidates"]["B"]["status"] = active_status
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "paper terminal state mismatch",
+                ):
+                    validate_state(state)
+
+    def test_paper_gate_transition_and_accepted_state_are_valid(self):
+        state = load_state(ROOT / "research_state.yaml")
+        state["candidates"]["B"]["status"] = "FULL_SAB_PASS"
+
+        changed = transition_candidate(
+            state,
+            "B",
+            "PAPER_GATE_PASS",
+            "CANDIDATE_B_PAPER_GATE_PASS",
+        )
+
+        self.assertEqual(changed["goal_status"], "PAPER_READY")
+        self.assertEqual(changed["paper_gate"], "PASS")
+        self.assertEqual(
+            changed["candidates"]["B"]["status"],
+            "PAPER_GATE_PASS",
+        )
+        validate_state(changed)
+        changed["goal_status"] = "ACCEPTED"
+        validate_state(changed)
+
     def test_json_valid_yaml_round_trip(self):
         state = load_state(ROOT / "research_state.yaml")
         with tempfile.TemporaryDirectory() as tmp:

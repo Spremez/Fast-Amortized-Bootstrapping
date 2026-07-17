@@ -98,14 +98,17 @@ def validate_state(state: Mapping[str, object]) -> None:
     paper_gate = state.get("paper_gate")
     if paper_gate not in {"BLOCKED", "PASS"}:
         raise ValueError("invalid paper_gate")
-    if paper_gate == "PASS" and state.get("goal_status") not in {"PAPER_READY", "ACCEPTED"}:
-        raise ValueError("paper gate and goal status disagree")
-    if state.get("goal_status") in {"PAPER_READY", "ACCEPTED"} and paper_gate != "PASS":
-        raise ValueError("completed paper state requires paper gate pass")
+    active_status = candidates[state["active_candidate"]]["status"]
+    terminal_flags = (
+        state.get("goal_status") in {"PAPER_READY", "ACCEPTED"},
+        paper_gate == "PASS",
+        active_status == "PAPER_GATE_PASS",
+    )
+    if len(set(terminal_flags)) != 1:
+        raise ValueError("paper terminal state mismatch")
     permission = state.get("production_hot_path_permission")
     if not isinstance(permission, bool):
         raise ValueError("production_hot_path_permission must be boolean")
-    active_status = candidates[state["active_candidate"]]["status"]
     amdahl_index = PIPELINE.index("AMDAHL_PROJECTION_PASS")
     if permission and (
         active_status not in PIPELINE

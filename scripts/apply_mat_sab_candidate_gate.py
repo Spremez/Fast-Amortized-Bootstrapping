@@ -5,6 +5,7 @@ import argparse
 import csv
 import sys
 from pathlib import Path
+from typing import Callable
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,7 +18,14 @@ from scripts.mat_sab_research_state import (
     validate_state,
     write_state,
 )
-from scripts.run_candidate_a_star_cycle_gate import ADMIT, REJECT
+from scripts.run_candidate_a_star_cycle_gate import (
+    ADMIT,
+    REJECT,
+    SUMMARY_FIELDS,
+    GateResult,
+    canonical_summary_record,
+    evaluate_candidate_a,
+)
 
 
 RUN_MARKER = "candidate-a-star-cycle-gate-001"
@@ -96,7 +104,7 @@ def _append_once(path: Path, start: str, end: str, content: str) -> None:
     )
 
 
-def _decision(summary_path: Path) -> str:
+def _summary_record(summary_path: Path) -> dict[str, str]:
     try:
         with summary_path.open(newline="", encoding="ascii") as handle:
             records = list(csv.reader(handle, strict=True))
@@ -108,9 +116,7 @@ def _decision(summary_path: Path) -> str:
         raise ValueError("summary must contain one recognized decision")
     fields, row = records
     structurally_valid = (
-        fields.count("decision") == 1
-        and len(set(fields)) == len(fields)
-        and all(fields)
+        tuple(fields) == SUMMARY_FIELDS
         and len(row) == len(fields)
         and all(value != "" for value in row)
     )
@@ -119,7 +125,7 @@ def _decision(summary_path: Path) -> str:
     decision = row[fields.index("decision")]
     if decision not in {ADMIT, REJECT}:
         raise ValueError("summary must contain one recognized decision")
-    return decision
+    return dict(zip(fields, row))
 
 
 def _run_row(decision: str) -> dict[str, str]:
@@ -277,7 +283,13 @@ def _validate_applied_state(state: dict[str, object], decision: str) -> None:
     validate_state(state)
 
 
-def apply_gate(root: Path, state_path: Path, summary_path: Path) -> str:
+def apply_gate(
+    root: Path,
+    state_path: Path,
+    summary_path: Path,
+    *,
+    evaluator: Callable[[Path], GateResult] = evaluate_candidate_a,
+) -> str:
     root = _resolved_root(root)
     state_path = _resolved_under_root(
         root,
@@ -291,7 +303,11 @@ def apply_gate(root: Path, state_path: Path, summary_path: Path) -> str:
         "summary path",
         strict=True,
     )
-    decision = _decision(summary_path)
+    summary_record = _summary_record(summary_path)
+    recomputed_record = canonical_summary_record(evaluator(root))
+    if summary_record != recomputed_record:
+        raise ValueError("summary does not match recomputed gate evidence")
+    decision = summary_record["decision"]
     state = load_state(state_path)
     target = "ADVERSARIAL_CHECKER_PASS" if decision == ADMIT else "REJECTED"
     current = state["candidates"]["A"]["status"]

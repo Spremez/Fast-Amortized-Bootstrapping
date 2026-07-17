@@ -32,6 +32,48 @@ SECRETS = {
     4: (2, 3, 5, 7),
     6: (2, 3, 5, 7, 11, 13),
 }
+SOURCE_SPECS = (
+    ("phase_map", "src/mosfhet/src/pvwtmlwe.c", "void pvmtmlwe_phase("),
+    (
+        "pvw_randomization",
+        "src/mosfhet/src/pvwtmlwe.c",
+        "void pvmtmlwe_sample(",
+    ),
+    (
+        "dense_keygen",
+        "src/mosfhet/src/mattrgsw.c",
+        "void mat_trgsw_monomial_sample(",
+    ),
+    (
+        "dense_evaluator",
+        "src/mosfhet/src/mattrgsw.c",
+        "static void mat_trgsw_mul_pvmtmlwe_DFT_from_dec(",
+    ),
+    (
+        "star_support",
+        "repro/stage203_production_selector_equation_probe/equation_map.csv",
+        "lane_neighbor_body_interaction",
+    ),
+)
+SUMMARY_FIELDS = (
+    "decision",
+    "support_gate",
+    "phase_gate",
+    "dense_control_gate",
+    "negative_control_gate",
+    "standard_pvw_randomization_gate",
+    "production_code_permission",
+    "route",
+)
+
+
+class GateEvidenceError(RuntimeError):
+    def __init__(self, failed_gates: Iterable[str]):
+        self.failed_gates = tuple(failed_gates)
+        super().__init__(
+            "inconclusive Candidate A gate evidence: "
+            + ",".join(self.failed_gates)
+        )
 
 
 @dataclass(frozen=True)
@@ -53,8 +95,45 @@ def _zero_count(matrix: Iterable[Iterable[int]]) -> int:
     return sum(value != 0 for row in matrix for value in row)
 
 
+def removal_control_expected_outcome(
+    r: int,
+    removed: tuple[int, int],
+) -> str:
+    if r not in SECRETS or removed not in star_cycle_support(r):
+        raise ValueError("removal control is outside the registered star support")
+    output_row, input_column = removed
+    if input_column == 0:
+        return "inconsistent"
+    if output_row == input_column and r > 2:
+        return "inconsistent"
+    return "consistent"
+
+
+def _source_rows(root: Path) -> tuple[dict[str, object], ...]:
+    rows = []
+    for claim, relative, token in SOURCE_SPECS:
+        path = root / relative
+        present = (
+            path.is_file()
+            and token in path.read_text(encoding="utf-8", errors="replace")
+        )
+        rows.append(
+            {
+                "claim": claim,
+                "path": relative,
+                "token": token,
+                "status": "PASS" if present else "FAIL",
+            }
+        )
+    return tuple(rows)
+
+
 def evaluate_candidate_a(root: Path = ROOT) -> GateResult:
     stage203 = root / "repro/stage203_production_selector_equation_probe/equation_map.csv"
+    source_rows = _source_rows(root)
+    if not all(row["status"] == "PASS" for row in source_rows):
+        raise GateEvidenceError(("source_and_support",))
+
     phase_rows: list[dict[str, object]] = []
     randomization_rows: list[dict[str, object]] = []
     negative_rows: list[dict[str, object]] = []
@@ -62,11 +141,13 @@ def evaluate_candidate_a(root: Path = ROOT) -> GateResult:
     phase_gate = True
     dense_control_gate = True
     randomization_gate = True
-    removal_outcomes: dict[int, set[str]] = {r: set() for r in SECRETS}
 
     for r, secret in SECRETS.items():
         star = star_cycle_support(r)
-        declared = support_from_stage203(stage203, r)
+        try:
+            declared = support_from_stage203(stage203, r)
+        except (csv.Error, KeyError, OSError, TypeError, ValueError) as error:
+            raise GateEvidenceError(("source_and_support",)) from error
         support_match = star == declared and len(star) == 4 * r
         support_gate &= support_match
         for mu in (0, 1):
@@ -151,72 +232,40 @@ def evaluate_candidate_a(root: Path = ROOT) -> GateResult:
                 PRIME,
             )
             observed = "consistent" if reduced.consistent else "inconsistent"
-            removal_outcomes[r].add(observed)
+            expected = removal_control_expected_outcome(r, removed)
             negative_rows.append(
                 {
                     "r": r,
                     "control": f"remove_{removed[0]}_{removed[1]}",
                     "observed": observed,
-                    "expected": "coverage_contains_consistent_and_inconsistent",
-                    "status": "PASS",
+                    "expected": expected,
+                    "status": "PASS" if observed == expected else "FAIL",
                 }
             )
 
-    source_specs = (
-        ("phase_map", "src/mosfhet/src/pvwtmlwe.c", "void pvmtmlwe_phase("),
-        (
-            "pvw_randomization",
-            "src/mosfhet/src/pvwtmlwe.c",
-            "void pvmtmlwe_sample(",
-        ),
-        (
-            "dense_keygen",
-            "src/mosfhet/src/mattrgsw.c",
-            "void mat_trgsw_monomial_sample(",
-        ),
-        (
-            "dense_evaluator",
-            "src/mosfhet/src/mattrgsw.c",
-            "static void mat_trgsw_mul_pvmtmlwe_DFT_from_dec(",
-        ),
-        (
-            "star_support",
-            "repro/stage203_production_selector_equation_probe/equation_map.csv",
-            "lane_neighbor_body_interaction",
-        ),
+    expected_negative_rows = sum(
+        1 + len(star_cycle_support(r))
+        for r in SECRETS
     )
-    source_rows = []
-    for claim, relative, token in source_specs:
-        path = root / relative
-        present = (
-            path.is_file()
-            and token in path.read_text(encoding="utf-8", errors="replace")
+    negative_gate = (
+        len(negative_rows) == expected_negative_rows
+        and all(row["status"] == "PASS" for row in negative_rows)
+    )
+    failed_prerequisites = [
+        name
+        for name, passed in (
+            ("source_and_support", support_gate),
+            ("phase_zero_one", phase_gate),
+            ("dense_control", dense_control_gate),
+            ("negative_controls", negative_gate),
         )
-        source_rows.append(
-            {
-                "claim": claim,
-                "path": relative,
-                "token": token,
-                "status": "PASS" if present else "FAIL",
-            }
-        )
-    source_gate = all(row["status"] == "PASS" for row in source_rows)
-    support_gate &= source_gate
-    generic_rows = [
-        row
-        for row in negative_rows
-        if row["control"] == "generic_dense_randomizer_outside_star"
+        if not passed
     ]
-    generic_gate = len(generic_rows) == len(SECRETS) and all(
-        row["status"] == "PASS" for row in generic_rows
-    )
-    negative_gate = generic_gate and all(
-        outcomes == {"consistent", "inconsistent"}
-        for outcomes in removal_outcomes.values()
-    )
-    admitted = support_gate and phase_gate and dense_control_gate and negative_gate and randomization_gate
+    if failed_prerequisites:
+        raise GateEvidenceError(failed_prerequisites)
+
     return GateResult(
-        decision=ADMIT if admitted else REJECT,
+        decision=ADMIT if randomization_gate else REJECT,
         support_gate=support_gate,
         phase_gate=phase_gate,
         dense_control_gate=dense_control_gate,
@@ -226,7 +275,7 @@ def evaluate_candidate_a(root: Path = ROOT) -> GateResult:
         phase_rows=tuple(phase_rows),
         randomization_rows=tuple(randomization_rows),
         negative_rows=tuple(negative_rows),
-        source_rows=tuple(source_rows),
+        source_rows=source_rows,
     )
 
 
@@ -259,6 +308,31 @@ def _write_text(path: Path, content: str) -> None:
     )
 
 
+def canonical_summary_record(result: GateResult) -> dict[str, str]:
+    return {
+        "decision": result.decision,
+        "support_gate": "PASS" if result.support_gate else "FAIL",
+        "phase_gate": "PASS" if result.phase_gate else "FAIL",
+        "dense_control_gate": (
+            "PASS" if result.dense_control_gate else "FAIL"
+        ),
+        "negative_control_gate": (
+            "PASS" if result.negative_control_gate else "FAIL"
+        ),
+        "standard_pvw_randomization_gate": (
+            "PASS" if result.randomization_gate else "FAIL"
+        ),
+        "production_code_permission": (
+            "yes" if result.production_code_permission else "no"
+        ),
+        "route": (
+            "candidate_a_keygen_preflight"
+            if result.decision == ADMIT
+            else "candidate_b_factorized_star_cycle"
+        ),
+    }
+
+
 def write_gate_artifacts(
     root: Path,
     result: GateResult,
@@ -279,40 +353,8 @@ def write_gate_artifacts(
 
     _write_csv(
         summary,
-        [
-            {
-                "decision": result.decision,
-                "support_gate": "PASS" if result.support_gate else "FAIL",
-                "phase_gate": "PASS" if result.phase_gate else "FAIL",
-                "dense_control_gate": (
-                    "PASS" if result.dense_control_gate else "FAIL"
-                ),
-                "negative_control_gate": (
-                    "PASS" if result.negative_control_gate else "FAIL"
-                ),
-                "standard_pvw_randomization_gate": (
-                    "PASS" if result.randomization_gate else "FAIL"
-                ),
-                "production_code_permission": (
-                    "yes" if result.production_code_permission else "no"
-                ),
-                "route": (
-                    "candidate_a_keygen_preflight"
-                    if result.decision == ADMIT
-                    else "candidate_b_factorized_star_cycle"
-                ),
-            }
-        ],
-        [
-            "decision",
-            "support_gate",
-            "phase_gate",
-            "dense_control_gate",
-            "negative_control_gate",
-            "standard_pvw_randomization_gate",
-            "production_code_permission",
-            "route",
-        ],
+        [canonical_summary_record(result)],
+        list(SUMMARY_FIELDS),
     )
     _write_csv(
         phase,
@@ -376,7 +418,7 @@ def write_gate_artifacts(
         (
             "negative_controls",
             result.negative_control_gate,
-            "generic dense and omitted-term controls cover expected failure modes",
+            "generic dense and every omitted-term outcome match registered oracles",
         ),
         (
             "standard_pvw_randomization",
@@ -423,6 +465,10 @@ the standard PVW randomization gate is `{'PASS' if result.randomization_gate els
 Dense support is the positive control. Production code permission remains
 `false`; finite-field linear algebra is not an RLWE security proof.
 
+The omitted-term oracle is structural. Mask-input body removal is inconsistent;
+body-column mask-row and cycle-predecessor removals are consistent. Body-column
+diagonal removal is consistent for r=2 and inconsistent for r=4/6.
+
 Failure of the direct sparse standard-PVW representation routes the finite
 campaign to Candidate B, Factorized Star-Cycle. Existing scalar and exact-dense
 SAB paths are unchanged.
@@ -451,6 +497,9 @@ SAB paths are unchanged.
 - Secrets: deterministic nonzero vectors registered in the gate source
 - Positive control: unrestricted dense support
 - Negative control: generic dense kernel randomizer outside star support
+- Omitted-term oracle: mask-input body removal is inconsistent; body-column
+  mask-row and cycle-predecessor removals are consistent; body-column diagonal removal is consistent for r=2 and inconsistent for r=4/6
+- Negative-control gate: every observed outcome must equal its registered oracle
 - Primary gate: at least one kernel-randomization degree per input column
 - Failure action: reject the direct sparse standard-PVW route and activate B
 - C hot-path changes: prohibited
@@ -488,7 +537,15 @@ SAB paths are unchanged.
 
 
 def main() -> int:
-    result = evaluate_candidate_a(ROOT)
+    try:
+        result = evaluate_candidate_a(ROOT)
+    except GateEvidenceError as error:
+        print(
+            "INVALID_CANDIDATE_A_GATE_EVIDENCE:"
+            + ",".join(error.failed_gates),
+            file=sys.stderr,
+        )
+        return 2
     write_gate_artifacts(ROOT, result)
     print(result.decision)
     return 0

@@ -1,5 +1,16 @@
 # 2025/686 MAT-SAB Selector And State Graph
 
+## Campaign State
+
+- Goal: `ACTIVE`
+- Paper gate: `BLOCKED`
+- Candidate A: `REJECTED`
+- Candidate B: `INTAKE` (active)
+- Last decision: `REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B`
+- Disposition: Candidate A is closed after failing the standard-PVW randomization necessary condition.
+
+Candidate B is active at `INTAKE`; its equations and implementation have not begun.
+
 ```mermaid
 flowchart TD
   sab_schedule["sab_schedule: scalar SAB butterfly and sparse schedule"]
