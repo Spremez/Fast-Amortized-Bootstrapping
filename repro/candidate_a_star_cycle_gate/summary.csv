@@ -1,0 +1,2 @@
+decision,support_gate,phase_gate,dense_control_gate,negative_control_gate,standard_pvw_randomization_gate,production_code_permission,route
+REJECT_CANDIDATE_A_STANDARD_PVW_RANDOMIZATION_ROUTE_TO_B,PASS,PASS,PASS,PASS,FAIL,no,candidate_b_factorized_star_cycle

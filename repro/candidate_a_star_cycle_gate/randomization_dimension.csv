@@ -1,0 +1,7 @@
+r,support,support_terms,affine_dimension,column_dimensions,full_pvw_randomization
+2,star_cycle,8,2,0;1;1,FAIL
+2,dense,9,3,1;1;1,PASS
+4,star_cycle,16,0,0;0;0;0;0,FAIL
+4,dense,25,5,1;1;1;1;1,PASS
+6,star_cycle,24,0,0;0;0;0;0;0;0,FAIL
+6,dense,49,7,1;1;1;1;1;1;1,PASS
