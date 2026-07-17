@@ -25,6 +25,6 @@ The closed Candidate A result is a finite-field necessary-condition rejection; i
 ## Reproduction
 
 ```powershell
-python scripts/build_mat_sab_selector_techgraph.py --input-commit 61b511feb39a261e3a404ee8108d7e6d05a5b1de
+python scripts/build_mat_sab_selector_techgraph.py --input-commit a05e86113384a5c6cf6927d3f1e1127b43fe0366
 python -m unittest discover -s tests/research -p "test_*.py" -v
 ```

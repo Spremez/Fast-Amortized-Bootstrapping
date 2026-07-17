@@ -10,5 +10,5 @@ C2 has no verified Task 3B conversion material. Task 4 therefore remains
 `SKIPPED_NO_REGISTERED_OPERATOR` with blank numeric cost and Amdahl fields. Production permission
 is false.
 
-Reproduce from implementation-input commit `61b511feb39a261e3a404ee8108d7e6d05a5b1de` with
-`python scripts/run_candidate_c_rank_bounded_gate.py --input-commit 61b511feb39a261e3a404ee8108d7e6d05a5b1de`.
+Reproduce from implementation-input commit `a05e86113384a5c6cf6927d3f1e1127b43fe0366` with
+`python scripts/run_candidate_c_rank_bounded_gate.py --input-commit a05e86113384a5c6cf6927d3f1e1127b43fe0366`.
