@@ -10,5 +10,5 @@
 This plan closes the finite Candidate C mechanism budget. It does not authorize
 production work and does not create Candidate D.
 
-Implementation-input commit: `d47f2db2f85362125d96bb584d658d7466028662`. Reproduce with
-`python scripts/run_candidate_c_rank_bounded_gate.py --input-commit d47f2db2f85362125d96bb584d658d7466028662`.
+Implementation-input commit: `d0095120442e4a1dfdb9c1410bddae9ce74a9bf9`. Reproduce with
+`python scripts/run_candidate_c_rank_bounded_gate.py --input-commit d0095120442e4a1dfdb9c1410bddae9ce74a9bf9`.
