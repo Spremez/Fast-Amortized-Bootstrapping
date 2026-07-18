@@ -3,13 +3,16 @@ from __future__ import annotations
 
 import argparse
 import ast
+import atexit
 import csv
 import importlib
 import io
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,6 +41,10 @@ CLOSEOUT_EXECUTABLE_INPUTS = (
 )
 _LOCAL_IMPORT_PREFIXES = ("research", "scripts")
 _LOCAL_DEPENDENCIES_LOADED = False
+_LOCAL_CACHE_PREFIX: Path | None = None
+_BINDING_IMPORTLIB_MODULE = "IMPORTLIB_MODULE"
+_BINDING_BUILTINS_MODULE = "BUILTINS_MODULE"
+_BINDING_IMPORT_CALLABLE = "IMPORT_CALLABLE"
 
 RUN_MARKER = "candidate-c-rank-bounded-gate-001"
 HYPOTHESIS_START = "# candidate-c-rank-bounded-gate-hypothesis-start"
@@ -73,6 +80,15 @@ def _preflight_root(root: Path) -> Path:
         raise _local_import_error("source root cannot be resolved") from error
     if not resolved.is_dir():
         raise _local_import_error("source root is not a directory")
+    return resolved
+
+
+def _preflight_launcher_root(root: Path) -> Path:
+    resolved = _preflight_root(root)
+    if resolved != ROOT:
+        raise _local_import_error(
+            "requested root does not match launcher checkout root"
+        )
     return resolved
 
 
@@ -210,33 +226,176 @@ def _committed_module_source(
     return found[0] if found else None
 
 
+def _record_dynamic_import_binding(
+    bindings: dict[str, str],
+    name: str,
+    kind: str,
+    relative: str,
+) -> bool:
+    previous = bindings.get(name)
+    if previous is not None and previous != kind:
+        raise _local_import_error(
+            f"ambiguous dynamic import binding in {relative}: {name}"
+        )
+    if previous == kind:
+        return False
+    bindings[name] = kind
+    return True
+
+
+def _dynamic_import_binding_kind(
+    expression: ast.AST,
+    bindings: dict[str, str],
+) -> str | None:
+    if isinstance(expression, ast.Name):
+        return bindings.get(expression.id)
+    if isinstance(expression, ast.Attribute):
+        owner = _dynamic_import_binding_kind(
+            expression.value,
+            bindings,
+        )
+        if (
+            owner == _BINDING_IMPORTLIB_MODULE
+            and expression.attr == "import_module"
+        ):
+            return _BINDING_IMPORT_CALLABLE
+        if (
+            owner == _BINDING_BUILTINS_MODULE
+            and expression.attr == "__import__"
+        ):
+            return _BINDING_IMPORT_CALLABLE
+        return None
+    if (
+        isinstance(expression, ast.Call)
+        and isinstance(expression.func, ast.Name)
+        and expression.func.id == "getattr"
+        and len(expression.args) == 2
+        and not expression.keywords
+        and isinstance(expression.args[1], ast.Constant)
+        and isinstance(expression.args[1].value, str)
+    ):
+        owner = _dynamic_import_binding_kind(
+            expression.args[0],
+            bindings,
+        )
+        attribute = expression.args[1].value
+        if (
+            owner == _BINDING_IMPORTLIB_MODULE
+            and attribute == "import_module"
+        ):
+            return _BINDING_IMPORT_CALLABLE
+        if (
+            owner == _BINDING_BUILTINS_MODULE
+            and attribute == "__import__"
+        ):
+            return _BINDING_IMPORT_CALLABLE
+    return None
+
+
+def _dynamic_import_bindings(
+    tree: ast.AST,
+    relative: str,
+) -> dict[str, str]:
+    bindings = {"__import__": _BINDING_IMPORT_CALLABLE}
+    nodes = tuple(ast.walk(tree))
+    for node in nodes:
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name == "importlib":
+                    _record_dynamic_import_binding(
+                        bindings,
+                        alias.asname or "importlib",
+                        _BINDING_IMPORTLIB_MODULE,
+                        relative,
+                    )
+                elif (
+                    alias.name.startswith("importlib.")
+                    and alias.asname is None
+                ):
+                    _record_dynamic_import_binding(
+                        bindings,
+                        "importlib",
+                        _BINDING_IMPORTLIB_MODULE,
+                        relative,
+                    )
+                elif alias.name == "builtins":
+                    _record_dynamic_import_binding(
+                        bindings,
+                        alias.asname or "builtins",
+                        _BINDING_BUILTINS_MODULE,
+                        relative,
+                    )
+            continue
+        if (
+            not isinstance(node, ast.ImportFrom)
+            or node.level
+            or node.module not in {"builtins", "importlib"}
+        ):
+            continue
+        for alias in node.names:
+            if alias.name == "*":
+                raise _local_import_error(
+                    f"wildcard dynamic import binding in {relative}"
+                )
+            if (
+                node.module == "importlib"
+                and alias.name == "import_module"
+            ) or (
+                node.module == "builtins"
+                and alias.name == "__import__"
+            ):
+                _record_dynamic_import_binding(
+                    bindings,
+                    alias.asname or alias.name,
+                    _BINDING_IMPORT_CALLABLE,
+                    relative,
+                )
+
+    assignments = []
+    for node in nodes:
+        if isinstance(node, ast.Assign):
+            assignments.append((node.targets, node.value))
+        elif isinstance(node, ast.AnnAssign) and node.value is not None:
+            assignments.append(((node.target,), node.value))
+        elif isinstance(node, ast.NamedExpr):
+            assignments.append(((node.target,), node.value))
+    changed = True
+    while changed:
+        changed = False
+        for targets, value in assignments:
+            kind = _dynamic_import_binding_kind(value, bindings)
+            if kind is None:
+                continue
+            for target in targets:
+                if not isinstance(target, ast.Name):
+                    raise _local_import_error(
+                        "unsupported dynamic import alias target in "
+                        f"{relative}"
+                    )
+                changed = (
+                    _record_dynamic_import_binding(
+                        bindings,
+                        target.id,
+                        kind,
+                        relative,
+                    )
+                    or changed
+                )
+    return bindings
+
+
 def _literal_dynamic_imports(
     tree: ast.AST,
     relative: str,
 ) -> tuple[str, ...]:
+    bindings = _dynamic_import_bindings(tree, relative)
     imports = []
     for node in ast.walk(tree):
-        is_import_module = (
-            isinstance(node, ast.Call)
-            and (
-                (
-                    isinstance(node.func, ast.Attribute)
-                    and isinstance(node.func.value, ast.Name)
-                    and node.func.value.id == "importlib"
-                    and node.func.attr == "import_module"
-                )
-                or (
-                    isinstance(node.func, ast.Name)
-                    and node.func.id == "import_module"
-                )
-            )
-        )
-        is_dunder_import = (
-            isinstance(node, ast.Call)
-            and isinstance(node.func, ast.Name)
-            and node.func.id == "__import__"
-        )
-        if not is_import_module and not is_dunder_import:
+        if (
+            not isinstance(node, ast.Call)
+            or _dynamic_import_binding_kind(node.func, bindings)
+            != _BINDING_IMPORT_CALLABLE
+        ):
             continue
         if (
             not node.args
@@ -432,6 +591,35 @@ def _preflight_local_import_closure(
                 f"{relative}"
             )
     return derived
+
+
+def _activate_local_import_cache_isolation() -> Path:
+    global _LOCAL_CACHE_PREFIX
+    if _LOCAL_DEPENDENCIES_LOADED:
+        raise _local_import_error(
+            "cache isolation must precede repository-local imports"
+        )
+    if _LOCAL_CACHE_PREFIX is not None:
+        return _LOCAL_CACHE_PREFIX
+    try:
+        prefix = Path(
+            tempfile.mkdtemp(prefix="candidate-c-closeout-pycache-")
+        ).resolve(strict=True)
+    except OSError as error:
+        raise _local_import_error(
+            "cannot create isolated local-module cache prefix"
+        ) from error
+    if not prefix.is_dir() or any(prefix.iterdir()):
+        shutil.rmtree(prefix, ignore_errors=True)
+        raise _local_import_error(
+            "local-module cache prefix is not an empty directory"
+        )
+    sys.pycache_prefix = str(prefix)
+    sys.dont_write_bytecode = True
+    importlib.invalidate_caches()
+    atexit.register(shutil.rmtree, prefix, ignore_errors=True)
+    _LOCAL_CACHE_PREFIX = prefix
+    return prefix
 
 
 def _load_local_dependencies() -> None:
@@ -1224,21 +1412,24 @@ def main() -> int:
     parser.add_argument("--evidence", type=Path)
     parser.add_argument("--input-commit", required=True)
     args = parser.parse_args()
+    source_root = _preflight_launcher_root(args.root)
     _preflight_local_import_closure(
-        args.root,
+        source_root,
         args.input_commit,
         CLOSEOUT_LOCAL_IMPORT_ROOTS,
         CLOSEOUT_EXECUTABLE_INPUTS,
     )
+    _activate_local_import_cache_isolation()
     _load_local_dependencies()
-    state = args.state or args.root / "research_state.yaml"
+    state = args.state or source_root / "research_state.yaml"
     summary = (
         args.summary
-        or args.root / "repro/candidate_c_rank_bounded_gate/summary.csv"
+        or source_root
+        / "repro/candidate_c_rank_bounded_gate/summary.csv"
     )
     print(
         apply_gate(
-            args.root,
+            source_root,
             state,
             summary,
             input_commit=args.input_commit,

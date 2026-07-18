@@ -4,10 +4,12 @@ from dataclasses import replace
 import importlib
 import inspect
 import json
+import marshal
 import os
 import re
 import shlex
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
@@ -50,6 +52,42 @@ CLOSEOUT_LOCAL_IMPORT_CLOSURE = (
     "scripts/mat_sab_research_state.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
 )
+
+
+def _install_valid_timestamp_cache(source, marker_name):
+    stat = source.stat()
+    marker_source = "\n".join(
+        (
+            "from pathlib import Path",
+            (
+                f"Path({marker_name!r}).write_text("
+                "'stale cache executed\\n', encoding='ascii')"
+            ),
+            "",
+        )
+    )
+    code = compile(marker_source, str(source), "exec")
+    cache = (
+        source.parent
+        / "__pycache__"
+        / f"{source.stem}.{sys.implementation.cache_tag}.pyc"
+    )
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    header = importlib.util.MAGIC_NUMBER + struct.pack(
+        "<III",
+        0,
+        int(stat.st_mtime) & 0xFFFFFFFF,
+        stat.st_size & 0xFFFFFFFF,
+    )
+    cache.write_bytes(header + marshal.dumps(code))
+    return cache
+
+
+def _adjacent_cache_snapshot(root):
+    return {
+        path.relative_to(root).as_posix(): path.read_bytes()
+        for path in sorted(root.rglob("*.pyc"))
+    }
 
 
 def load_closeout():
@@ -267,6 +305,54 @@ class CandidateCCloseoutTests(unittest.TestCase):
             newline="\n",
         )
         return root, state_path
+
+    @staticmethod
+    def _clone_working_closeout(directory):
+        root = Path(directory) / "root"
+        subprocess.run(
+            ["git", "clone", "--shared", "-q", str(ROOT), str(root)],
+            check=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "Candidate C Test"],
+            cwd=root,
+            check=True,
+        )
+        subprocess.run(
+            [
+                "git",
+                "config",
+                "user.email",
+                "candidate-c-test@example.invalid",
+            ],
+            cwd=root,
+            check=True,
+        )
+        for relative in CLOSEOUT_LOCAL_IMPORT_CLOSURE:
+            destination = root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / relative, destination)
+        subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+        subprocess.run(
+            [
+                "git",
+                "commit",
+                "--allow-empty",
+                "-q",
+                "-m",
+                "working closeout launcher",
+            ],
+            cwd=root,
+            check=True,
+        )
+        commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        return root, commit
 
     @staticmethod
     def _remove_bounded_block(path, start, end):
@@ -780,6 +866,284 @@ class CandidateCCloseoutTests(unittest.TestCase):
                     object(),
                 )
             self.assertEqual(sentinel.read_bytes(), before)
+
+    def test_dynamic_import_binding_model_tracks_aliases(self):
+        tree = ast.parse(
+            "\n".join(
+                (
+                    "import importlib as module_alias",
+                    (
+                        "from importlib import import_module "
+                        "as imported_loader"
+                    ),
+                    "import builtins as builtins_alias",
+                    (
+                        "from builtins import __import__ "
+                        "as imported_builtin"
+                    ),
+                    "assigned_loader = module_alias.import_module",
+                    "copied_loader = imported_loader",
+                    "assigned_loader('research.alias_one')",
+                    "copied_loader('research.alias_two')",
+                    "builtins_alias.__import__('research.alias_three')",
+                    "imported_builtin('research.alias_four')",
+                )
+            )
+        )
+        self.assertEqual(
+            self.closeout._literal_dynamic_imports(tree, "alias_probe.py"),
+            (
+                "research.alias_one",
+                "research.alias_two",
+                "research.alias_three",
+                "research.alias_four",
+            ),
+        )
+        nonliteral = ast.parse(
+            "\n".join(
+                (
+                    "import importlib as module_alias",
+                    "loader = module_alias.import_module",
+                    "target = 'research.alias_probe'",
+                    "loader(target)",
+                )
+            )
+        )
+        with self.assertRaisesRegex(
+            self.closeout.LocalImportPreflightError,
+            "nonliteral dynamic import",
+        ):
+            self.closeout._literal_dynamic_imports(
+                nonliteral,
+                "alias_probe.py",
+            )
+
+    def test_real_cli_rejects_aliased_dynamic_imports_before_mutation(self):
+        cases = (
+            (
+                "module_alias_literal",
+                "\n".join(
+                    (
+                        "import importlib as closeout_importlib",
+                        (
+                            "closeout_importlib.import_module("
+                            "'research.mat_sab.closeout_alias_probe')"
+                        ),
+                        "",
+                    )
+                ),
+                "executable registry does not match recursive import closure",
+            ),
+            (
+                "callable_alias_nonliteral",
+                "\n".join(
+                    (
+                        (
+                            "from importlib import import_module "
+                            "as closeout_loader"
+                        ),
+                        (
+                            "closeout_target = "
+                            "'research.mat_sab.closeout_alias_probe'"
+                        ),
+                        "closeout_loader(closeout_target)",
+                        "",
+                    )
+                ),
+                "nonliteral dynamic import",
+            ),
+        )
+        for name, source, expected_error in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                root, _ = self._clone_working_closeout(tmp)
+                dependency = root / "research/mat_sab/finite_linear.py"
+                dependency.write_text(
+                    dependency.read_text(encoding="ascii") + "\n" + source,
+                    encoding="ascii",
+                    newline="\n",
+                )
+                marker = root / "UNVERIFIED_CLOSEOUT_ALIAS_EXECUTED"
+                probe = root / "research/mat_sab/closeout_alias_probe.py"
+                probe.write_text(
+                    "\n".join(
+                        (
+                            "from pathlib import Path",
+                            (
+                                "Path('UNVERIFIED_CLOSEOUT_ALIAS_EXECUTED')"
+                                ".write_text('executed\\n', encoding='ascii')"
+                            ),
+                            "",
+                        )
+                    ),
+                    encoding="ascii",
+                    newline="\n",
+                )
+                subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+                subprocess.run(
+                    ["git", "commit", "-q", "-m", name],
+                    cwd=root,
+                    check=True,
+                )
+                commit = subprocess.run(
+                    ["git", "rev-parse", "HEAD"],
+                    cwd=root,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout.strip()
+                state_path = root / "research_state.yaml"
+                before = self._tracked(root, state_path)
+                environment = os.environ.copy()
+                environment["PYTHONDONTWRITEBYTECODE"] = "1"
+                completed = subprocess.run(
+                    [
+                        sys.executable,
+                        "scripts/apply_candidate_c_rank_bounded_gate.py",
+                        "--input-commit",
+                        commit,
+                    ],
+                    cwd=root,
+                    env=environment,
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertNotEqual(completed.returncode, 0)
+                self.assertIn(expected_error, completed.stderr)
+                self.assertFalse(marker.exists())
+                self.assertEqual(before, self._tracked(root, state_path))
+
+    def test_real_cli_rejects_cross_checkout_root_before_mutation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            other_root = Path(tmp) / "other-root"
+            subprocess.run(
+                [
+                    "git",
+                    "clone",
+                    "--shared",
+                    "-q",
+                    str(ROOT),
+                    str(other_root),
+                ],
+                check=True,
+            )
+            commit = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=other_root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            state_path = other_root / "research_state.yaml"
+            before = self._tracked(other_root, state_path)
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        ROOT
+                        / "scripts/apply_candidate_c_rank_bounded_gate.py"
+                    ),
+                    "--root",
+                    str(other_root),
+                    "--input-commit",
+                    commit,
+                ],
+                cwd=ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn(
+                "requested root does not match launcher checkout root",
+                completed.stderr,
+            )
+            self.assertEqual(before, self._tracked(other_root, state_path))
+
+    def test_real_cli_ignores_valid_adjacent_timestamp_cache(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, commit = self._clone_working_closeout(tmp)
+            no_write_environment = os.environ.copy()
+            no_write_environment["PYTHONDONTWRITEBYTECODE"] = "1"
+            generator = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/run_candidate_c_rank_bounded_gate.py",
+                    "--input-commit",
+                    commit,
+                ],
+                cwd=root,
+                env=no_write_environment,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(generator.returncode, 0, generator.stderr)
+            baseline = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/apply_candidate_c_rank_bounded_gate.py",
+                    "--input-commit",
+                    commit,
+                ],
+                cwd=root,
+                env=no_write_environment,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(baseline.returncode, 0, baseline.stderr)
+
+            for cache_dir in sorted(
+                root.rglob("__pycache__"),
+                reverse=True,
+            ):
+                shutil.rmtree(cache_dir)
+            marker = root / "STALE_CLOSEOUT_CACHE_EXECUTED"
+            source = root / "research/__init__.py"
+            _install_valid_timestamp_cache(source, marker.name)
+            environment = os.environ.copy()
+            environment.pop("PYTHONDONTWRITEBYTECODE", None)
+            environment.pop("PYTHONPYCACHEPREFIX", None)
+            control = subprocess.run(
+                [sys.executable, "-c", "import research"],
+                cwd=root,
+                env=environment,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(control.returncode, 0, control.stderr)
+            self.assertTrue(marker.exists())
+            marker.unlink()
+
+            state_path = root / "research_state.yaml"
+            before_outputs = self._tracked(root, state_path)
+            before_caches = _adjacent_cache_snapshot(root)
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/apply_candidate_c_rank_bounded_gate.py",
+                    "--input-commit",
+                    commit,
+                ],
+                cwd=root,
+                env=environment,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertEqual(completed.stdout.strip(), gate.REJECT)
+            self.assertFalse(marker.exists())
+            self.assertEqual(
+                before_outputs,
+                self._tracked(root, state_path),
+            )
+            self.assertEqual(
+                before_caches,
+                _adjacent_cache_snapshot(root),
+            )
 
     def test_closeout_registry_matches_recursive_local_import_closure(self):
         tree = ast.parse(

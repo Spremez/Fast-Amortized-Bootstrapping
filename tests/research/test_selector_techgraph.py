@@ -1,7 +1,11 @@
 import ast
 import csv
+import importlib.util
 import json
+import marshal
 import os
+import shutil
+import struct
 import subprocess
 import sys
 import tempfile
@@ -47,6 +51,42 @@ SELECTOR_LOCAL_IMPORT_CLOSURE = (
     "scripts/mat_sab_research_state.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
 )
+
+
+def _install_valid_timestamp_cache(source, marker_name):
+    stat = source.stat()
+    marker_source = "\n".join(
+        (
+            "from pathlib import Path",
+            (
+                f"Path({marker_name!r}).write_text("
+                "'stale cache executed\\n', encoding='ascii')"
+            ),
+            "",
+        )
+    )
+    code = compile(marker_source, str(source), "exec")
+    cache = (
+        source.parent
+        / "__pycache__"
+        / f"{source.stem}.{sys.implementation.cache_tag}.pyc"
+    )
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    header = importlib.util.MAGIC_NUMBER + struct.pack(
+        "<III",
+        0,
+        int(stat.st_mtime) & 0xFFFFFFFF,
+        stat.st_size & 0xFFFFFFFF,
+    )
+    cache.write_bytes(header + marshal.dumps(code))
+    return cache
+
+
+def _adjacent_cache_snapshot(root):
+    return {
+        path.relative_to(root).as_posix(): path.read_bytes()
+        for path in sorted(root.rglob("*.pyc"))
+    }
 
 
 def reproduction_command(commit):
@@ -113,6 +153,54 @@ def terminal_rejected_campaign_state():
 
 
 class SelectorTechgraphTests(unittest.TestCase):
+    @staticmethod
+    def _clone_working_selector(directory):
+        root = Path(directory) / "root"
+        subprocess.run(
+            ["git", "clone", "--shared", "-q", str(ROOT), str(root)],
+            check=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "Selector Test"],
+            cwd=root,
+            check=True,
+        )
+        subprocess.run(
+            [
+                "git",
+                "config",
+                "user.email",
+                "selector@example.invalid",
+            ],
+            cwd=root,
+            check=True,
+        )
+        for relative in SELECTOR_LOCAL_IMPORT_CLOSURE:
+            destination = root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / relative, destination)
+        subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+        subprocess.run(
+            [
+                "git",
+                "commit",
+                "--allow-empty",
+                "-q",
+                "-m",
+                "working selector launcher",
+            ],
+            cwd=root,
+            check=True,
+        )
+        commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        return root, commit
+
     def test_all_source_and_artifact_anchors_resolve(self):
         graph = build_graph(
             ROOT, source_state_commit=UNIT_INPUT_COMMIT
@@ -515,6 +603,288 @@ class SelectorTechgraphTests(unittest.TestCase):
                             source_state_commit=commit,
                         )
                 path.write_bytes(original)
+
+    def test_dynamic_import_binding_model_tracks_aliases(self):
+        tree = ast.parse(
+            "\n".join(
+                (
+                    "import importlib as module_alias",
+                    (
+                        "from importlib import import_module "
+                        "as imported_loader"
+                    ),
+                    "import builtins as builtins_alias",
+                    (
+                        "from builtins import __import__ "
+                        "as imported_builtin"
+                    ),
+                    "assigned_loader = module_alias.import_module",
+                    "copied_loader = imported_loader",
+                    "assigned_loader('research.alias_one')",
+                    "copied_loader('research.alias_two')",
+                    "builtins_alias.__import__('research.alias_three')",
+                    "imported_builtin('research.alias_four')",
+                )
+            )
+        )
+        self.assertEqual(
+            selector._literal_dynamic_imports(tree, "alias_probe.py"),
+            (
+                "research.alias_one",
+                "research.alias_two",
+                "research.alias_three",
+                "research.alias_four",
+            ),
+        )
+        nonliteral = ast.parse(
+            "\n".join(
+                (
+                    "from importlib import import_module as imported_loader",
+                    "loader = imported_loader",
+                    "target = 'research.alias_probe'",
+                    "loader(target)",
+                )
+            )
+        )
+        with self.assertRaisesRegex(
+            selector.LocalImportPreflightError,
+            "nonliteral dynamic import",
+        ):
+            selector._literal_dynamic_imports(
+                nonliteral,
+                "alias_probe.py",
+            )
+
+    def test_real_cli_rejects_aliased_dynamic_imports_before_outputs(self):
+        cases = (
+            (
+                "assigned_alias_literal",
+                "\n".join(
+                    (
+                        "import importlib as selector_importlib",
+                        (
+                            "selector_loader = "
+                            "selector_importlib.import_module"
+                        ),
+                        (
+                            "selector_loader("
+                            "'research.mat_sab.selector_alias_probe')"
+                        ),
+                        "",
+                    )
+                ),
+                "executable registry does not match recursive import closure",
+            ),
+            (
+                "copied_alias_nonliteral",
+                "\n".join(
+                    (
+                        (
+                            "from importlib import import_module "
+                            "as imported_selector_loader"
+                        ),
+                        "selector_loader = imported_selector_loader",
+                        (
+                            "selector_target = "
+                            "'research.mat_sab.selector_alias_probe'"
+                        ),
+                        "selector_loader(selector_target)",
+                        "",
+                    )
+                ),
+                "nonliteral dynamic import",
+            ),
+        )
+        for name, source, expected_error in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                root, _ = self._clone_working_selector(tmp)
+                dependency = root / "research/mat_sab/finite_linear.py"
+                dependency.write_text(
+                    dependency.read_text(encoding="ascii") + "\n" + source,
+                    encoding="ascii",
+                    newline="\n",
+                )
+                marker = root / "UNVERIFIED_SELECTOR_ALIAS_EXECUTED"
+                probe = root / "research/mat_sab/selector_alias_probe.py"
+                probe.write_text(
+                    "\n".join(
+                        (
+                            "from pathlib import Path",
+                            (
+                                "Path('UNVERIFIED_SELECTOR_ALIAS_EXECUTED')"
+                                ".write_text('executed\\n', encoding='ascii')"
+                            ),
+                            "",
+                        )
+                    ),
+                    encoding="ascii",
+                    newline="\n",
+                )
+                subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+                subprocess.run(
+                    ["git", "commit", "-q", "-m", name],
+                    cwd=root,
+                    check=True,
+                )
+                commit = subprocess.run(
+                    ["git", "rev-parse", "HEAD"],
+                    cwd=root,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout.strip()
+                destination = root / "selector-alias-output"
+                destination.mkdir()
+                environment = os.environ.copy()
+                environment["PYTHONDONTWRITEBYTECODE"] = "1"
+                completed = subprocess.run(
+                    [
+                        sys.executable,
+                        "scripts/build_mat_sab_selector_techgraph.py",
+                        "--destination-root",
+                        str(destination),
+                        "--source-state-commit",
+                        commit,
+                    ],
+                    cwd=root,
+                    env=environment,
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertNotEqual(completed.returncode, 0)
+                self.assertIn(expected_error, completed.stderr)
+                self.assertFalse(marker.exists())
+                self.assertFalse(any(destination.rglob("*")))
+
+    def test_real_cli_rejects_cross_checkout_root_before_outputs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            other_root = Path(tmp) / "other-root"
+            subprocess.run(
+                [
+                    "git",
+                    "clone",
+                    "--shared",
+                    "-q",
+                    str(ROOT),
+                    str(other_root),
+                ],
+                check=True,
+            )
+            commit = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=other_root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            destination = Path(tmp) / "selector-output"
+            destination.mkdir()
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        ROOT
+                        / "scripts/build_mat_sab_selector_techgraph.py"
+                    ),
+                    "--root",
+                    str(other_root),
+                    "--destination-root",
+                    str(destination),
+                    "--source-state-commit",
+                    commit,
+                ],
+                cwd=ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn(
+                "requested root does not match launcher checkout root",
+                completed.stderr,
+            )
+            self.assertFalse(any(destination.rglob("*")))
+
+    def test_real_cli_ignores_valid_adjacent_timestamp_cache(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, commit = self._clone_working_selector(tmp)
+            no_write_environment = os.environ.copy()
+            no_write_environment["PYTHONDONTWRITEBYTECODE"] = "1"
+            baseline = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/build_mat_sab_selector_techgraph.py",
+                    "--source-state-commit",
+                    commit,
+                ],
+                cwd=root,
+                env=no_write_environment,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(baseline.returncode, 0, baseline.stderr)
+            outputs = tuple(
+                root / "paper_techgraphs" / name
+                for name in TRACKED_OUTPUTS
+            )
+            before_outputs = {
+                path: path.read_bytes()
+                for path in outputs
+            }
+
+            for cache_dir in sorted(
+                root.rglob("__pycache__"),
+                reverse=True,
+            ):
+                shutil.rmtree(cache_dir)
+            marker = root / "STALE_SELECTOR_CACHE_EXECUTED"
+            source = root / "research/__init__.py"
+            _install_valid_timestamp_cache(source, marker.name)
+            environment = os.environ.copy()
+            environment.pop("PYTHONDONTWRITEBYTECODE", None)
+            environment.pop("PYTHONPYCACHEPREFIX", None)
+            control = subprocess.run(
+                [sys.executable, "-c", "import research"],
+                cwd=root,
+                env=environment,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(control.returncode, 0, control.stderr)
+            self.assertTrue(marker.exists())
+            marker.unlink()
+
+            before_caches = _adjacent_cache_snapshot(root)
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/build_mat_sab_selector_techgraph.py",
+                    "--source-state-commit",
+                    commit,
+                ],
+                cwd=root,
+                env=environment,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertEqual(
+                completed.stdout.strip(),
+                "PASS_CANDIDATE_A_TECHGRAPH_ANCHORED",
+            )
+            self.assertFalse(marker.exists())
+            self.assertEqual(
+                before_outputs,
+                {path: path.read_bytes() for path in outputs},
+            )
+            self.assertEqual(
+                before_caches,
+                _adjacent_cache_snapshot(root),
+            )
 
     def test_executable_registry_matches_recursive_local_import_closure(self):
         tree = ast.parse(
