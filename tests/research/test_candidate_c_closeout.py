@@ -1,8 +1,10 @@
 import csv
+import ast
 from dataclasses import replace
 import importlib
 import inspect
 import json
+import os
 import re
 import shlex
 import shutil
@@ -32,6 +34,18 @@ C1_PHASE_REJECTION = "REJECT_C1_PHASE_IDENTITY_TERMINAL"
 WORKING_IMPLEMENTATION_PATHS = (
     "research/mat_sab/candidate_c_operator_tensor.py",
     "research/mat_sab/candidate_c_registered_replay.py",
+    "scripts/apply_candidate_c_rank_bounded_gate.py",
+    "scripts/mat_sab_research_state.py",
+    "scripts/run_candidate_c_rank_bounded_gate.py",
+)
+CLOSEOUT_LOCAL_IMPORT_CLOSURE = (
+    "research/__init__.py",
+    "research/mat_sab/__init__.py",
+    "research/mat_sab/candidate_c_operator_tensor.py",
+    "research/mat_sab/candidate_c_registered_replay.py",
+    "research/mat_sab/candidate_c_schedule.py",
+    "research/mat_sab/finite_linear.py",
+    "research/mat_sab/rank_bounded_state_model.py",
     "scripts/apply_candidate_c_rank_bounded_gate.py",
     "scripts/mat_sab_research_state.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
@@ -766,6 +780,125 @@ class CandidateCCloseoutTests(unittest.TestCase):
                     object(),
                 )
             self.assertEqual(sentinel.read_bytes(), before)
+
+    def test_closeout_registry_matches_recursive_local_import_closure(self):
+        tree = ast.parse(
+            (
+                ROOT / "scripts/apply_candidate_c_rank_bounded_gate.py"
+            ).read_text(encoding="ascii")
+        )
+        local_imports = []
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                local_imports.extend(
+                    alias.name
+                    for alias in node.names
+                    if alias.name.startswith(("research", "scripts"))
+                )
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                if node.module.startswith(("research", "scripts")):
+                    local_imports.append(node.module)
+        self.assertEqual(local_imports, [])
+        derived = self.closeout._derive_local_import_closure(
+            ROOT,
+            self.input_commit,
+            self.closeout.CLOSEOUT_LOCAL_IMPORT_ROOTS,
+        )
+        self.assertEqual(derived, CLOSEOUT_LOCAL_IMPORT_CLOSURE)
+        self.assertEqual(derived, gate.CLOSEOUT_EXECUTABLE_INPUTS)
+
+    def test_real_cli_preflights_initializers_and_transitive_imports(self):
+        probes = (
+            "research/__init__.py",
+            "research/mat_sab/__init__.py",
+            "research/mat_sab/finite_linear.py",
+            "research/mat_sab/rank_bounded_state_model.py",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "root"
+            subprocess.run(
+                ["git", "clone", "--shared", "-q", str(ROOT), str(root)],
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Candidate C Test"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                [
+                    "git",
+                    "config",
+                    "user.email",
+                    "candidate-c-test@example.invalid",
+                ],
+                cwd=root,
+                check=True,
+            )
+            for relative in CLOSEOUT_LOCAL_IMPORT_CLOSURE:
+                destination = root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT / relative, destination)
+            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "commit",
+                    "--allow-empty",
+                    "-q",
+                    "-m",
+                    "closeout preflight inputs",
+                ],
+                cwd=root,
+                check=True,
+            )
+            commit = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            state_path = root / "research_state.yaml"
+            before = self._tracked(root, state_path)
+            marker = root / "UNVERIFIED_CLOSEOUT_IMPORT_EXECUTED"
+            environment = os.environ.copy()
+            environment["PYTHONDONTWRITEBYTECODE"] = "1"
+            for relative in probes:
+                path = root / relative
+                original = path.read_bytes()
+                path.write_bytes(
+                    original
+                    + (
+                        b"\nopen('UNVERIFIED_CLOSEOUT_IMPORT_EXECUTED', "
+                        b"'w').write('executed')\n"
+                    )
+                )
+                with self.subTest(relative=relative):
+                    completed = subprocess.run(
+                        [
+                            sys.executable,
+                            "scripts/apply_candidate_c_rank_bounded_gate.py",
+                            "--root",
+                            str(root),
+                            "--input-commit",
+                            commit,
+                        ],
+                        cwd=root,
+                        env=environment,
+                        check=False,
+                        capture_output=True,
+                        text=True,
+                    )
+                    self.assertNotEqual(completed.returncode, 0)
+                    self.assertIn(
+                        "local import preflight",
+                        completed.stderr,
+                    )
+                    self.assertFalse(marker.exists())
+                    self.assertEqual(before, self._tracked(root, state_path))
+                path.write_bytes(original)
+                marker.unlink(missing_ok=True)
 
     def test_actual_manifest_failure_precedes_state_and_ledger_mutation(self):
         with tempfile.TemporaryDirectory() as tmp:

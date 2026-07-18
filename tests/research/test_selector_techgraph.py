@@ -1,3 +1,4 @@
+import ast
 import csv
 import json
 import os
@@ -33,6 +34,18 @@ TRACKED_OUTPUTS = (
     "2025_686_mat_sab_selector.yaml",
     "2025_686_mat_sab_selector_graph.md",
     "2025_686_mat_sab_selector_gaps.md",
+)
+SELECTOR_LOCAL_IMPORT_CLOSURE = (
+    "research/__init__.py",
+    "research/mat_sab/__init__.py",
+    "research/mat_sab/candidate_c_operator_tensor.py",
+    "research/mat_sab/candidate_c_registered_replay.py",
+    "research/mat_sab/candidate_c_schedule.py",
+    "research/mat_sab/finite_linear.py",
+    "research/mat_sab/rank_bounded_state_model.py",
+    "scripts/build_mat_sab_selector_techgraph.py",
+    "scripts/mat_sab_research_state.py",
+    "scripts/run_candidate_c_rank_bounded_gate.py",
 )
 
 
@@ -202,6 +215,14 @@ class SelectorTechgraphTests(unittest.TestCase):
             set(manifest),
             set(selector.SELECTOR_SOURCE_STATE_INPUTS),
         )
+        self.assertEqual(
+            graph["selector_executable_manifest"],
+            [
+                row
+                for row in graph["selector_source_manifest"]
+                if row["path"] in selector.SELECTOR_EXECUTABLE_INPUTS
+            ],
+        )
         for node in graph["nodes"]:
             self.assertEqual(node["sha256"], manifest[node["path"]])
 
@@ -287,7 +308,7 @@ class SelectorTechgraphTests(unittest.TestCase):
             second = write_outputs(Path(tmp), graph)
             self.assertEqual(before, [path.read_bytes() for path in second])
             parsed = json.loads(first[0].read_text(encoding="ascii"))
-        self.assertEqual(parsed["schema_version"], 2)
+        self.assertEqual(parsed["schema_version"], 3)
 
     @unittest.skipUnless(
         hasattr(os, "symlink"),
@@ -494,6 +515,126 @@ class SelectorTechgraphTests(unittest.TestCase):
                             source_state_commit=commit,
                         )
                 path.write_bytes(original)
+
+    def test_executable_registry_matches_recursive_local_import_closure(self):
+        tree = ast.parse(
+            (
+                ROOT / "scripts/build_mat_sab_selector_techgraph.py"
+            ).read_text(encoding="ascii")
+        )
+        local_imports = []
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                local_imports.extend(
+                    alias.name
+                    for alias in node.names
+                    if alias.name.startswith(("research", "scripts"))
+                )
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                if node.module.startswith(("research", "scripts")):
+                    local_imports.append(node.module)
+        self.assertEqual(local_imports, [])
+        derived = selector._derive_local_import_closure(
+            ROOT,
+            UNIT_INPUT_COMMIT,
+            selector.SELECTOR_LOCAL_IMPORT_ROOTS,
+        )
+        self.assertEqual(derived, SELECTOR_LOCAL_IMPORT_CLOSURE)
+        self.assertEqual(derived, selector.SELECTOR_EXECUTABLE_INPUTS)
+
+    def test_real_cli_preflights_every_local_dependency_class(self):
+        probes = tuple(
+            relative
+            for relative in SELECTOR_LOCAL_IMPORT_CLOSURE
+            if relative != "scripts/build_mat_sab_selector_techgraph.py"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "root"
+            subprocess.run(
+                ["git", "clone", "--shared", "-q", str(ROOT), str(root)],
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Selector Test"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                [
+                    "git",
+                    "config",
+                    "user.email",
+                    "selector@example.invalid",
+                ],
+                cwd=root,
+                check=True,
+            )
+            for relative in SELECTOR_LOCAL_IMPORT_CLOSURE:
+                destination = root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_bytes((ROOT / relative).read_bytes())
+            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "commit",
+                    "--allow-empty",
+                    "-q",
+                    "-m",
+                    "selector preflight inputs",
+                ],
+                cwd=root,
+                check=True,
+            )
+            commit = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            marker = root / "UNVERIFIED_SELECTOR_IMPORT_EXECUTED"
+            environment = os.environ.copy()
+            environment["PYTHONDONTWRITEBYTECODE"] = "1"
+            for index, relative in enumerate(probes):
+                path = root / relative
+                original = path.read_bytes()
+                path.write_bytes(
+                    original
+                    + (
+                        b"\nopen('UNVERIFIED_SELECTOR_IMPORT_EXECUTED', "
+                        b"'w').write('executed')\n"
+                    )
+                )
+                destination = root / f"selector-probe-output-{index}"
+                destination.mkdir()
+                with self.subTest(relative=relative):
+                    completed = subprocess.run(
+                        [
+                            sys.executable,
+                            "scripts/build_mat_sab_selector_techgraph.py",
+                            "--root",
+                            str(root),
+                            "--destination-root",
+                            str(destination),
+                            "--source-state-commit",
+                            commit,
+                        ],
+                        cwd=root,
+                        env=environment,
+                        check=False,
+                        capture_output=True,
+                        text=True,
+                    )
+                    self.assertNotEqual(completed.returncode, 0)
+                    self.assertIn(
+                        "local import preflight",
+                        completed.stderr,
+                    )
+                    self.assertFalse(marker.exists())
+                    self.assertFalse(any(destination.rglob("*")))
+                path.write_bytes(original)
+                marker.unlink(missing_ok=True)
 
 
 if __name__ == "__main__":

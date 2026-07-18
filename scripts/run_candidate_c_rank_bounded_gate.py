@@ -102,6 +102,8 @@ COMPUTATIONAL_INPUTS = (
     "repro/stage203_production_selector_equation_probe/equation_map.csv",
     "repro/stage222_isolated_compact_ep_integration/proof_gate.csv",
     "repro/stage345_binary_matrix_synthesis/proof_gate.csv",
+    "research/__init__.py",
+    "research/mat_sab/__init__.py",
     "research/mat_sab/candidate_c_operator_tensor.py",
     "research/mat_sab/candidate_c_registered_replay.py",
     "research/mat_sab/candidate_c_schedule.py",
@@ -118,14 +120,20 @@ COMPUTATIONAL_INPUTS = (
     "theory_checks/candidate_c_rank_bounded_state_model.md",
 )
 CLOSEOUT_EXECUTABLE_INPUTS = (
+    "research/__init__.py",
+    "research/mat_sab/__init__.py",
     "research/mat_sab/candidate_c_operator_tensor.py",
     "research/mat_sab/candidate_c_registered_replay.py",
     "research/mat_sab/candidate_c_schedule.py",
+    "research/mat_sab/finite_linear.py",
+    "research/mat_sab/rank_bounded_state_model.py",
     "scripts/apply_candidate_c_rank_bounded_gate.py",
     "scripts/mat_sab_research_state.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
 )
 CLOSEOUT_EXECUTABLE_ROLES = {
+    "research/__init__.py": "research_package_initializer",
+    "research/mat_sab/__init__.py": "mat_sab_package_initializer",
     "research/mat_sab/candidate_c_operator_tensor.py": (
         "task3a_evidence_verifier"
     ),
@@ -133,6 +141,10 @@ CLOSEOUT_EXECUTABLE_ROLES = {
         "task3c_terminal_verifier"
     ),
     "research/mat_sab/candidate_c_schedule.py": "schedule_binding_verifier",
+    "research/mat_sab/finite_linear.py": "finite_linear_algebra",
+    "research/mat_sab/rank_bounded_state_model.py": (
+        "rank_bounded_state_model"
+    ),
     "scripts/apply_candidate_c_rank_bounded_gate.py": "atomic_closeout",
     "scripts/mat_sab_research_state.py": "state_transition_validator",
     "scripts/run_candidate_c_rank_bounded_gate.py": "decision_verifier",

@@ -67,6 +67,8 @@ EXPECTED_COMPUTATIONAL_INPUTS = (
     "repro/stage203_production_selector_equation_probe/equation_map.csv",
     "repro/stage222_isolated_compact_ep_integration/proof_gate.csv",
     "repro/stage345_binary_matrix_synthesis/proof_gate.csv",
+    "research/__init__.py",
+    "research/mat_sab/__init__.py",
     "research/mat_sab/candidate_c_operator_tensor.py",
     "research/mat_sab/candidate_c_registered_replay.py",
     "research/mat_sab/candidate_c_schedule.py",
