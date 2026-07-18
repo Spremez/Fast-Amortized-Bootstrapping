@@ -1,9 +1,9 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "contract": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
   "candidate": "A",
   "production_code_permission": false,
-  "selector_source_state_commit": "8da7571de52ff42d56f061bb0fc7111824dabd04",
+  "selector_source_state_commit": "9b4b461bc44c51db2b07f6c1e0eac0a063150dcb",
   "selector_source_manifest": [
     {
       "path": "repro/stage134_generalized_lane_pair_input_ep_gate/summary.csv",
@@ -41,6 +41,41 @@
       "sha256": "6b0ffeb6384e99c5b9f99191e59e8194c7aa0a784e674a8acca6e7b7c9b09998"
     },
     {
+      "path": "research/__init__.py",
+      "availability": "PRESENT",
+      "sha256": "98eb8593797a37c72b36bd94b8150767464623835dede5786ef9e05ed543551e"
+    },
+    {
+      "path": "research/mat_sab/__init__.py",
+      "availability": "PRESENT",
+      "sha256": "420b88063feb409c0ced6de4e3a2eb5a589f64913755e58b09448e263bf03353"
+    },
+    {
+      "path": "research/mat_sab/candidate_c_operator_tensor.py",
+      "availability": "PRESENT",
+      "sha256": "880e4c515a9bff1c03de4ad69c1cb7ab46b4981e7a5dbb550d8491218e323695"
+    },
+    {
+      "path": "research/mat_sab/candidate_c_registered_replay.py",
+      "availability": "PRESENT",
+      "sha256": "d64b918b95e53d6980b993fb89a4660336e8e68c9a60db66f3adff2bf45fc6ee"
+    },
+    {
+      "path": "research/mat_sab/candidate_c_schedule.py",
+      "availability": "PRESENT",
+      "sha256": "4f07b3d1a8dcb55cdb2f0b7ea55d39d7d7c4184152f3ab56c04478dc618ada71"
+    },
+    {
+      "path": "research/mat_sab/finite_linear.py",
+      "availability": "PRESENT",
+      "sha256": "1975572c15000f3ff639318c0823358228b74389176561032e8d0b7d2e924ed0"
+    },
+    {
+      "path": "research/mat_sab/rank_bounded_state_model.py",
+      "availability": "PRESENT",
+      "sha256": "6d32fa9e091a1642cafa4f415840e685447410c4515558c80853899019f12acd"
+    },
+    {
       "path": "research_state.yaml",
       "availability": "PRESENT",
       "sha256": "00d1354d93639f501712e9e218870da14bcc22c6bb9f8cf577b26b1487f1d182"
@@ -48,7 +83,7 @@
     {
       "path": "scripts/build_mat_sab_selector_techgraph.py",
       "availability": "PRESENT",
-      "sha256": "0139ce7f32542a85e5ba169119f4e160e33acf60669e97fafb8263f2ede01bb6"
+      "sha256": "de1945f9684bad0b251fbe1b196c78df3f2566a2a7ae0af134ebe624e9f56223"
     },
     {
       "path": "scripts/mat_sab_research_state.py",
@@ -58,7 +93,7 @@
     {
       "path": "scripts/run_candidate_c_rank_bounded_gate.py",
       "availability": "PRESENT",
-      "sha256": "5c8b1bb19a941ac9e07c2b10f52bd084f0b2fba1e6481bbf577f19fd7b6d4f4c"
+      "sha256": "ad82225f7cef97c20224dccb2d95a500fb55ea7e383634d1246b307e4c84b548"
     },
     {
       "path": "src/mosfhet/src/mattrgsw.c",
@@ -76,8 +111,60 @@
       "sha256": "8c0953caca8c87fe6fe5a12334d1bdfb320ddadf2dbf12379c221361a9b28d82"
     }
   ],
+  "selector_executable_manifest": [
+    {
+      "path": "research/__init__.py",
+      "availability": "PRESENT",
+      "sha256": "98eb8593797a37c72b36bd94b8150767464623835dede5786ef9e05ed543551e"
+    },
+    {
+      "path": "research/mat_sab/__init__.py",
+      "availability": "PRESENT",
+      "sha256": "420b88063feb409c0ced6de4e3a2eb5a589f64913755e58b09448e263bf03353"
+    },
+    {
+      "path": "research/mat_sab/candidate_c_operator_tensor.py",
+      "availability": "PRESENT",
+      "sha256": "880e4c515a9bff1c03de4ad69c1cb7ab46b4981e7a5dbb550d8491218e323695"
+    },
+    {
+      "path": "research/mat_sab/candidate_c_registered_replay.py",
+      "availability": "PRESENT",
+      "sha256": "d64b918b95e53d6980b993fb89a4660336e8e68c9a60db66f3adff2bf45fc6ee"
+    },
+    {
+      "path": "research/mat_sab/candidate_c_schedule.py",
+      "availability": "PRESENT",
+      "sha256": "4f07b3d1a8dcb55cdb2f0b7ea55d39d7d7c4184152f3ab56c04478dc618ada71"
+    },
+    {
+      "path": "research/mat_sab/finite_linear.py",
+      "availability": "PRESENT",
+      "sha256": "1975572c15000f3ff639318c0823358228b74389176561032e8d0b7d2e924ed0"
+    },
+    {
+      "path": "research/mat_sab/rank_bounded_state_model.py",
+      "availability": "PRESENT",
+      "sha256": "6d32fa9e091a1642cafa4f415840e685447410c4515558c80853899019f12acd"
+    },
+    {
+      "path": "scripts/build_mat_sab_selector_techgraph.py",
+      "availability": "PRESENT",
+      "sha256": "de1945f9684bad0b251fbe1b196c78df3f2566a2a7ae0af134ebe624e9f56223"
+    },
+    {
+      "path": "scripts/mat_sab_research_state.py",
+      "availability": "PRESENT",
+      "sha256": "f5133f58dfe904c3300e60ba7cd8874a422a771968c317b424a15bb43594f20d"
+    },
+    {
+      "path": "scripts/run_candidate_c_rank_bounded_gate.py",
+      "availability": "PRESENT",
+      "sha256": "ad82225f7cef97c20224dccb2d95a500fb55ea7e383634d1246b307e4c84b548"
+    }
+  ],
   "research_state_sha256": "00d1354d93639f501712e9e218870da14bcc22c6bb9f8cf577b26b1487f1d182",
-  "reproduction_command": "python scripts/build_mat_sab_selector_techgraph.py --source-state-commit 8da7571de52ff42d56f061bb0fc7111824dabd04",
+  "reproduction_command": "python scripts/build_mat_sab_selector_techgraph.py --source-state-commit 9b4b461bc44c51db2b07f6c1e0eac0a063150dcb",
   "nodes": [
     {
       "id": "sab_schedule",
