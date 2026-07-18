@@ -18,8 +18,6 @@ from typing import Mapping
 
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 OUT_DIR = ROOT / "paper_techgraphs"
 JSON_OUT = OUT_DIR / "2025_686_mat_sab_selector.yaml"
@@ -39,6 +37,7 @@ SELECTOR_EXECUTABLE_INPUTS = (
     "research/mat_sab/candidate_c_schedule.py",
     "research/mat_sab/finite_linear.py",
     "research/mat_sab/rank_bounded_state_model.py",
+    "scripts/__init__.py",
     "scripts/build_mat_sab_selector_techgraph.py",
     "scripts/mat_sab_research_state.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
@@ -635,6 +634,84 @@ def _activate_local_import_cache_isolation() -> Path:
     return prefix
 
 
+def _module_name_for_path(relative: str) -> str:
+    path = Path(relative)
+    if path.name == "__init__.py":
+        parts = path.parent.parts
+    else:
+        parts = path.with_suffix("").parts
+    if not parts:
+        raise _local_import_error(
+            f"cannot derive local module name: {relative}"
+        )
+    return ".".join(parts)
+
+
+def _preflight_launcher_file_origin(
+    root: Path,
+    launcher_relative: str,
+) -> None:
+    expected = (root / launcher_relative).resolve(strict=True)
+    try:
+        actual = Path(__file__).resolve(strict=True)
+    except OSError as error:
+        raise _local_import_error(
+            "launcher file cannot be resolved"
+        ) from error
+    if actual != expected:
+        raise _local_import_error(
+            "launcher file does not belong to requested root"
+        )
+
+
+def _reject_preloaded_local_modules(
+    expected_paths: tuple[str, ...],
+) -> None:
+    for relative in expected_paths:
+        module_name = _module_name_for_path(relative)
+        if module_name in sys.modules:
+            raise _local_import_error(
+                f"declared local module already loaded: {module_name}"
+            )
+
+
+def _activate_verified_import_root(root: Path) -> None:
+    retained = []
+    for entry in sys.path:
+        try:
+            resolved = Path(entry or Path.cwd()).resolve()
+        except OSError:
+            retained.append(entry)
+            continue
+        if resolved != root:
+            retained.append(entry)
+    sys.path[:] = [str(root), *retained]
+    importlib.invalidate_caches()
+
+
+def _validate_loaded_local_module_origins(
+    root: Path,
+    expected_paths: tuple[str, ...],
+) -> None:
+    for relative in expected_paths:
+        module_name = _module_name_for_path(relative)
+        module = sys.modules.get(module_name)
+        if module is None:
+            continue
+        origin = getattr(module, "__file__", None)
+        try:
+            actual = Path(origin).resolve(strict=True)
+            expected = (root / relative).resolve(strict=True)
+        except (OSError, TypeError) as error:
+            raise _local_import_error(
+                f"loaded local module origin mismatch: {module_name}"
+            ) from error
+        if actual != expected:
+            raise _local_import_error(
+                f"loaded local module origin mismatch: {module_name}"
+            )
+
+
 def _load_local_dependencies() -> None:
     global _LOCAL_DEPENDENCIES_LOADED
     if _LOCAL_DEPENDENCIES_LOADED:
@@ -1111,8 +1188,18 @@ def main() -> int:
         SELECTOR_LOCAL_IMPORT_ROOTS,
         SELECTOR_EXECUTABLE_INPUTS,
     )
+    _preflight_launcher_file_origin(
+        source_root,
+        "scripts/build_mat_sab_selector_techgraph.py",
+    )
+    _reject_preloaded_local_modules(SELECTOR_EXECUTABLE_INPUTS)
+    _activate_verified_import_root(source_root)
     _activate_local_import_cache_isolation()
     _load_local_dependencies()
+    _validate_loaded_local_module_origins(
+        source_root,
+        SELECTOR_EXECUTABLE_INPUTS,
+    )
     graph = build_graph(
         source_root,
         source_state_commit=args.source_state_commit,

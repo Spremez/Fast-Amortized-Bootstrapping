@@ -2,9 +2,12 @@
 from __future__ import annotations
 
 import argparse
+import ast
+import atexit
 import csv
 from dataclasses import asdict, dataclass, replace
 import hashlib
+import importlib
 import json
 import math
 import os
@@ -19,33 +22,12 @@ from typing import Iterable, Mapping
 
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from research.mat_sab.candidate_c_operator_tensor import (
-    MISSING_STAGE203_EVIDENCE_HASH,
-    MISSING_STAGE203_SUPPORT_MAP,
-    REGISTERED_SHORT_ERROR_RELATION_FAIL,
-    REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL,
-    REJECT_C1_PHASE_IDENTITY_TERMINAL,
-    REJECT_C1_REGISTERED_SHORT_ERROR_RELATION_TERMINAL,
-    STAGE203_SUPPORT_MAP_PATH,
-    Task3AEvidenceExhaustion,
-)
-from research.mat_sab.candidate_c_registered_replay import (
-    CandidateCInconclusiveTerminalRecord,
-    NO_VERIFIED_TASK3B_RESULT,
-    SKIPPED_NO_REGISTERED_OPERATOR,
-    TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED,
-    CandidateCTerminalRecord,
-    terminal_record_for_task5,
-)
 
 OUT = Path("repro/candidate_c_rank_bounded_gate")
 ADMIT = "ADMIT_CANDIDATE_C_KEY_SECURITY_NOISE_PREFLIGHT"
 REJECT = "REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED"
 INCONCLUSIVE = "INCONCLUSIVE_CANDIDATE_C_EVIDENCE_EXHAUSTED"
-SKIPPED = SKIPPED_NO_REGISTERED_OPERATOR
+SKIPPED = "SKIPPED_NO_REGISTERED_OPERATOR"
 APPROVED_TASK3C_HASH = (
     "8ad876708aa4a736c0f0f9adae33bab766272f411e90fbc23a5ac23e10a73cb6"
 )
@@ -110,6 +92,7 @@ COMPUTATIONAL_INPUTS = (
     "research/mat_sab/finite_linear.py",
     "research/mat_sab/rank_bounded_state_model.py",
     "research/mat_sab/star_cycle_model.py",
+    "scripts/__init__.py",
     "scripts/apply_candidate_c_rank_bounded_gate.py",
     "scripts/mat_sab_research_state.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
@@ -127,8 +110,23 @@ CLOSEOUT_EXECUTABLE_INPUTS = (
     "research/mat_sab/candidate_c_schedule.py",
     "research/mat_sab/finite_linear.py",
     "research/mat_sab/rank_bounded_state_model.py",
+    "scripts/__init__.py",
     "scripts/apply_candidate_c_rank_bounded_gate.py",
     "scripts/mat_sab_research_state.py",
+    "scripts/run_candidate_c_rank_bounded_gate.py",
+)
+GENERATOR_LOCAL_IMPORT_ROOTS = (
+    "scripts.run_candidate_c_rank_bounded_gate",
+)
+GENERATOR_EXECUTABLE_INPUTS = (
+    "research/__init__.py",
+    "research/mat_sab/__init__.py",
+    "research/mat_sab/candidate_c_operator_tensor.py",
+    "research/mat_sab/candidate_c_registered_replay.py",
+    "research/mat_sab/candidate_c_schedule.py",
+    "research/mat_sab/finite_linear.py",
+    "research/mat_sab/rank_bounded_state_model.py",
+    "scripts/__init__.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
 )
 CLOSEOUT_EXECUTABLE_ROLES = {
@@ -145,6 +143,7 @@ CLOSEOUT_EXECUTABLE_ROLES = {
     "research/mat_sab/rank_bounded_state_model.py": (
         "rank_bounded_state_model"
     ),
+    "scripts/__init__.py": "scripts_package_initializer",
     "scripts/apply_candidate_c_rank_bounded_gate.py": "atomic_closeout",
     "scripts/mat_sab_research_state.py": "state_transition_validator",
     "scripts/run_candidate_c_rank_bounded_gate.py": "decision_verifier",
@@ -158,8 +157,23 @@ DECISION_EVIDENCE_SCHEMA = "candidate-c-task5-decision-evidence-v1"
 ACTUAL_EVIDENCE = "ACTUAL_TASK3C"
 FIXTURE_EVIDENCE = "VERIFIED_FIXTURE"
 _FIXTURE_HASH_DOMAIN = "candidate-c/task5/verified-fixture/v1"
+_LOCAL_IMPORT_PREFIXES = ("research", "scripts")
+_LOCAL_DEPENDENCIES_LOADED = False
+_LOCAL_CACHE_PREFIX: Path | None = None
+_BINDING_IMPORTLIB_MODULE = "IMPORTLIB_MODULE"
+_BINDING_BUILTINS_MODULE = "BUILTINS_MODULE"
+_BINDING_IMPORT_CALLABLE = "IMPORT_CALLABLE"
 REJECT_C1_NEGATIVE_PESSIMISTIC_AMDAHL_PROJECTION_TERMINAL = (
     "REJECT_C1_NEGATIVE_PESSIMISTIC_AMDAHL_PROJECTION_TERMINAL"
+)
+REJECT_C1_PHASE_IDENTITY_TERMINAL = (
+    "REJECT_C1_PHASE_IDENTITY_TERMINAL"
+)
+REJECT_C1_REGISTERED_SHORT_ERROR_RELATION_TERMINAL = (
+    "REJECT_C1_REGISTERED_SHORT_ERROR_RELATION_TERMINAL"
+)
+REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL = (
+    "REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL"
 )
 ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY = (
     "ADMIT_C1_OPERATOR_TO_SCHEDULE_REPLAY"
@@ -180,6 +194,610 @@ _APPROVED_C1_RESULT_HASHES = (
 
 class GateEvidenceError(RuntimeError):
     pass
+
+
+class LocalImportPreflightError(RuntimeError):
+    pass
+
+
+def _local_import_error(message: str) -> LocalImportPreflightError:
+    return LocalImportPreflightError(f"local import preflight: {message}")
+
+
+def _preflight_root(root: Path) -> Path:
+    try:
+        resolved = Path(root).resolve(strict=True)
+    except OSError as error:
+        raise _local_import_error("source root cannot be resolved") from error
+    if not resolved.is_dir():
+        raise _local_import_error("source root is not a directory")
+    return resolved
+
+
+def _preflight_launcher_root(root: Path) -> Path:
+    resolved = _preflight_root(root)
+    if resolved != ROOT:
+        raise _local_import_error(
+            "requested root does not match launcher checkout root"
+        )
+    return resolved
+
+
+def _preflight_commit(root: Path, input_commit: str) -> str:
+    if re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", input_commit) is None:
+        raise _local_import_error(
+            "commit must be one lowercase 40-or-64-hex SHA"
+        )
+    try:
+        resolved = _resolve_input_commit(root, input_commit)
+    except GateEvidenceError as error:
+        raise _local_import_error("cannot resolve commit") from error
+    if resolved != input_commit:
+        raise _local_import_error("commit must be fully resolved")
+    return resolved
+
+
+def _preflight_git_blob(
+    root: Path,
+    commit: str,
+    relative: str,
+    *,
+    allow_absent: bool,
+) -> bytes | None:
+    try:
+        return _git_regular_blob(
+            root,
+            commit,
+            relative,
+            allow_absent=allow_absent,
+        )
+    except GateEvidenceError as error:
+        raise _local_import_error(
+            f"cannot read committed local module: {relative}"
+        ) from error
+
+
+def _is_local_module(module: str) -> bool:
+    return any(
+        module == prefix or module.startswith(prefix + ".")
+        for prefix in _LOCAL_IMPORT_PREFIXES
+    )
+
+
+def _committed_module_source(
+    root: Path,
+    commit: str,
+    module: str,
+) -> tuple[str, bytes, bool] | None:
+    stem = module.replace(".", "/")
+    candidates = (
+        (f"{stem}.py", False),
+        (f"{stem}/__init__.py", True),
+    )
+    found = []
+    for relative, is_package in candidates:
+        content = _preflight_git_blob(
+            root,
+            commit,
+            relative,
+            allow_absent=True,
+        )
+        if content is not None:
+            found.append((relative, content, is_package))
+    if len(found) > 1:
+        raise _local_import_error(f"ambiguous local module: {module}")
+    return found[0] if found else None
+
+
+def _record_dynamic_import_binding(
+    bindings: dict[str, str],
+    name: str,
+    kind: str,
+    relative: str,
+) -> bool:
+    previous = bindings.get(name)
+    if previous is not None and previous != kind:
+        raise _local_import_error(
+            f"ambiguous dynamic import binding in {relative}: {name}"
+        )
+    if previous == kind:
+        return False
+    bindings[name] = kind
+    return True
+
+
+def _dynamic_import_binding_kind(
+    expression: ast.AST,
+    bindings: dict[str, str],
+) -> str | None:
+    if isinstance(expression, ast.Name):
+        return bindings.get(expression.id)
+    if isinstance(expression, ast.Attribute):
+        owner = _dynamic_import_binding_kind(
+            expression.value,
+            bindings,
+        )
+        if (
+            owner == _BINDING_IMPORTLIB_MODULE
+            and expression.attr == "import_module"
+        ):
+            return _BINDING_IMPORT_CALLABLE
+        if (
+            owner == _BINDING_BUILTINS_MODULE
+            and expression.attr == "__import__"
+        ):
+            return _BINDING_IMPORT_CALLABLE
+        return None
+    if (
+        isinstance(expression, ast.Call)
+        and isinstance(expression.func, ast.Name)
+        and expression.func.id == "getattr"
+        and len(expression.args) == 2
+        and not expression.keywords
+        and isinstance(expression.args[1], ast.Constant)
+        and isinstance(expression.args[1].value, str)
+    ):
+        owner = _dynamic_import_binding_kind(
+            expression.args[0],
+            bindings,
+        )
+        attribute = expression.args[1].value
+        if (
+            owner == _BINDING_IMPORTLIB_MODULE
+            and attribute == "import_module"
+        ):
+            return _BINDING_IMPORT_CALLABLE
+        if (
+            owner == _BINDING_BUILTINS_MODULE
+            and attribute == "__import__"
+        ):
+            return _BINDING_IMPORT_CALLABLE
+    return None
+
+
+def _dynamic_import_bindings(
+    tree: ast.AST,
+    relative: str,
+) -> dict[str, str]:
+    bindings = {"__import__": _BINDING_IMPORT_CALLABLE}
+    nodes = tuple(ast.walk(tree))
+    for node in nodes:
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name == "importlib":
+                    _record_dynamic_import_binding(
+                        bindings,
+                        alias.asname or "importlib",
+                        _BINDING_IMPORTLIB_MODULE,
+                        relative,
+                    )
+                elif (
+                    alias.name.startswith("importlib.")
+                    and alias.asname is None
+                ):
+                    _record_dynamic_import_binding(
+                        bindings,
+                        "importlib",
+                        _BINDING_IMPORTLIB_MODULE,
+                        relative,
+                    )
+                elif alias.name == "builtins":
+                    _record_dynamic_import_binding(
+                        bindings,
+                        alias.asname or "builtins",
+                        _BINDING_BUILTINS_MODULE,
+                        relative,
+                    )
+            continue
+        if (
+            not isinstance(node, ast.ImportFrom)
+            or node.level
+            or node.module not in {"builtins", "importlib"}
+        ):
+            continue
+        for alias in node.names:
+            if alias.name == "*":
+                raise _local_import_error(
+                    f"wildcard dynamic import binding in {relative}"
+                )
+            if (
+                node.module == "importlib"
+                and alias.name == "import_module"
+            ) or (
+                node.module == "builtins"
+                and alias.name == "__import__"
+            ):
+                _record_dynamic_import_binding(
+                    bindings,
+                    alias.asname or alias.name,
+                    _BINDING_IMPORT_CALLABLE,
+                    relative,
+                )
+
+    assignments = []
+    for node in nodes:
+        if isinstance(node, ast.Assign):
+            assignments.append((node.targets, node.value))
+        elif isinstance(node, ast.AnnAssign) and node.value is not None:
+            assignments.append(((node.target,), node.value))
+        elif isinstance(node, ast.NamedExpr):
+            assignments.append(((node.target,), node.value))
+    changed = True
+    while changed:
+        changed = False
+        for targets, value in assignments:
+            kind = _dynamic_import_binding_kind(value, bindings)
+            if kind is None:
+                continue
+            for target in targets:
+                if not isinstance(target, ast.Name):
+                    raise _local_import_error(
+                        "unsupported dynamic import alias target in "
+                        f"{relative}"
+                    )
+                changed = (
+                    _record_dynamic_import_binding(
+                        bindings,
+                        target.id,
+                        kind,
+                        relative,
+                    )
+                    or changed
+                )
+    return bindings
+
+
+def _literal_dynamic_imports(
+    tree: ast.AST,
+    relative: str,
+) -> tuple[str, ...]:
+    bindings = _dynamic_import_bindings(tree, relative)
+    imports = []
+    for node in ast.walk(tree):
+        if (
+            not isinstance(node, ast.Call)
+            or _dynamic_import_binding_kind(node.func, bindings)
+            != _BINDING_IMPORT_CALLABLE
+        ):
+            continue
+        if (
+            not node.args
+            or not isinstance(node.args[0], ast.Constant)
+            or not isinstance(node.args[0].value, str)
+        ):
+            raise _local_import_error(
+                f"nonliteral dynamic import in {relative}"
+            )
+        imports.append(node.args[0].value)
+    return tuple(imports)
+
+
+def _local_imports_from_source(
+    module: str,
+    relative: str,
+    content: bytes,
+    *,
+    is_package: bool,
+    source_for,
+) -> tuple[str, ...]:
+    try:
+        tree = ast.parse(content, filename=relative)
+    except (SyntaxError, UnicodeError) as error:
+        raise _local_import_error(
+            f"cannot parse committed local module: {relative}"
+        ) from error
+    package = module if is_package else module.rpartition(".")[0]
+    imports = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            imports.update(
+                alias.name
+                for alias in node.names
+                if _is_local_module(alias.name)
+            )
+            continue
+        if not isinstance(node, ast.ImportFrom):
+            continue
+        if node.level:
+            if not package:
+                raise _local_import_error(
+                    f"relative import without package in {relative}"
+                )
+            requested = "." * node.level + (node.module or "")
+            try:
+                base = importlib.util.resolve_name(requested, package)
+            except (ImportError, ValueError) as error:
+                raise _local_import_error(
+                    f"invalid relative import in {relative}"
+                ) from error
+        else:
+            base = node.module or ""
+        if not _is_local_module(base):
+            continue
+        base_source = source_for(base)
+        if base_source is not None:
+            imports.add(base)
+        if base_source is None or not base_source[2]:
+            continue
+        for alias in node.names:
+            if alias.name == "*":
+                continue
+            candidate = f"{base}.{alias.name}"
+            if source_for(candidate) is not None:
+                imports.add(candidate)
+    imports.update(
+        name
+        for name in _literal_dynamic_imports(tree, relative)
+        if _is_local_module(name)
+    )
+    return tuple(sorted(imports))
+
+
+def _derive_local_import_closure(
+    root: Path,
+    input_commit: str,
+    root_modules: tuple[str, ...],
+) -> tuple[str, ...]:
+    source_root = _preflight_root(root)
+    commit = _preflight_commit(source_root, input_commit)
+    cache: dict[str, tuple[str, bytes, bool] | None] = {}
+
+    def source_for(module: str) -> tuple[str, bytes, bool] | None:
+        if module not in cache:
+            cache[module] = _committed_module_source(
+                source_root,
+                commit,
+                module,
+            )
+        return cache[module]
+
+    pending = list(root_modules)
+    seen = set()
+    paths = set()
+    while pending:
+        module = pending.pop()
+        if module in seen:
+            continue
+        seen.add(module)
+        source = source_for(module)
+        if source is None:
+            raise _local_import_error(f"cannot resolve local module: {module}")
+        relative, content, is_package = source
+        paths.add(relative)
+        parts = module.split(".")
+        for index in range(1, len(parts)):
+            package = ".".join(parts[:index])
+            if source_for(package) is not None:
+                pending.append(package)
+        pending.extend(
+            _local_imports_from_source(
+                module,
+                relative,
+                content,
+                is_package=is_package,
+                source_for=source_for,
+            )
+        )
+    return tuple(sorted(paths))
+
+
+def _preflight_local_import_closure(
+    root: Path,
+    input_commit: str,
+    root_modules: tuple[str, ...],
+    expected_paths: tuple[str, ...],
+) -> tuple[str, ...]:
+    source_root = _preflight_root(root)
+    commit = _preflight_commit(source_root, input_commit)
+    if (
+        expected_paths != tuple(sorted(expected_paths))
+        or len(expected_paths) != len(set(expected_paths))
+    ):
+        raise _local_import_error("executable registry must be sorted")
+    derived = _derive_local_import_closure(
+        source_root,
+        commit,
+        root_modules,
+    )
+    if derived != expected_paths:
+        raise _local_import_error(
+            "executable registry does not match recursive import closure"
+        )
+    for relative in derived:
+        path = source_root / relative
+        try:
+            resolved = path.resolve(strict=True)
+        except OSError as error:
+            raise _local_import_error(
+                f"working local module cannot be resolved: {relative}"
+            ) from error
+        if (
+            path.is_symlink()
+            or not resolved.is_relative_to(source_root)
+            or not resolved.is_file()
+        ):
+            raise _local_import_error(
+                f"working local module is not a regular file: {relative}"
+            )
+        committed = _preflight_git_blob(
+            source_root,
+            commit,
+            relative,
+            allow_absent=False,
+        )
+        if path.read_bytes() != committed:
+            raise _local_import_error(
+                f"working local module does not match commit: {relative}"
+            )
+    shadow_candidates = set()
+    for relative in derived:
+        parts = Path(relative).parts
+        package_parts = parts[:-1]
+        for index in range(1, len(package_parts) + 1):
+            shadow_candidates.add(
+                Path(*package_parts[:index], "__init__.py").as_posix()
+            )
+        if parts[-1] != "__init__.py":
+            shadow_candidates.add(
+                (Path(relative).with_suffix("") / "__init__.py").as_posix()
+            )
+    for relative in sorted(shadow_candidates.difference(derived)):
+        committed = _preflight_git_blob(
+            source_root,
+            commit,
+            relative,
+            allow_absent=True,
+        )
+        if committed is not None or (source_root / relative).exists():
+            raise _local_import_error(
+                "unregistered package initializer shadows closure: "
+                f"{relative}"
+            )
+    return derived
+
+
+def _activate_local_import_cache_isolation() -> Path:
+    global _LOCAL_CACHE_PREFIX
+    if _LOCAL_DEPENDENCIES_LOADED:
+        raise _local_import_error(
+            "cache isolation must precede repository-local imports"
+        )
+    if _LOCAL_CACHE_PREFIX is not None:
+        return _LOCAL_CACHE_PREFIX
+    try:
+        prefix = Path(
+            tempfile.mkdtemp(prefix="candidate-c-generator-pycache-")
+        ).resolve(strict=True)
+    except OSError as error:
+        raise _local_import_error(
+            "cannot create isolated local-module cache prefix"
+        ) from error
+    if not prefix.is_dir() or any(prefix.iterdir()):
+        shutil.rmtree(prefix, ignore_errors=True)
+        raise _local_import_error(
+            "local-module cache prefix is not an empty directory"
+        )
+    sys.pycache_prefix = str(prefix)
+    sys.dont_write_bytecode = True
+    importlib.invalidate_caches()
+    atexit.register(shutil.rmtree, prefix, ignore_errors=True)
+    _LOCAL_CACHE_PREFIX = prefix
+    return prefix
+
+
+def _module_name_for_path(relative: str) -> str:
+    path = Path(relative)
+    if path.name == "__init__.py":
+        parts = path.parent.parts
+    else:
+        parts = path.with_suffix("").parts
+    if not parts:
+        raise _local_import_error(
+            f"cannot derive local module name: {relative}"
+        )
+    return ".".join(parts)
+
+
+def _preflight_launcher_file_origin(
+    root: Path,
+    launcher_relative: str,
+) -> None:
+    expected = (root / launcher_relative).resolve(strict=True)
+    try:
+        actual = Path(__file__).resolve(strict=True)
+    except OSError as error:
+        raise _local_import_error(
+            "launcher file cannot be resolved"
+        ) from error
+    if actual != expected:
+        raise _local_import_error(
+            "launcher file does not belong to requested root"
+        )
+
+
+def _reject_preloaded_local_modules(
+    expected_paths: tuple[str, ...],
+) -> None:
+    for relative in expected_paths:
+        module_name = _module_name_for_path(relative)
+        if module_name in sys.modules:
+            raise _local_import_error(
+                f"declared local module already loaded: {module_name}"
+            )
+
+
+def _activate_verified_import_root(root: Path) -> None:
+    retained = []
+    for entry in sys.path:
+        try:
+            resolved = Path(entry or Path.cwd()).resolve()
+        except OSError:
+            retained.append(entry)
+            continue
+        if resolved != root:
+            retained.append(entry)
+    sys.path[:] = [str(root), *retained]
+    importlib.invalidate_caches()
+
+
+def _validate_loaded_local_module_origins(
+    root: Path,
+    expected_paths: tuple[str, ...],
+) -> None:
+    for relative in expected_paths:
+        module_name = _module_name_for_path(relative)
+        module = sys.modules.get(module_name)
+        if module is None:
+            continue
+        origin = getattr(module, "__file__", None)
+        try:
+            actual = Path(origin).resolve(strict=True)
+            expected = (root / relative).resolve(strict=True)
+        except (OSError, TypeError) as error:
+            raise _local_import_error(
+                f"loaded local module origin mismatch: {module_name}"
+            ) from error
+        if actual != expected:
+            raise _local_import_error(
+                f"loaded local module origin mismatch: {module_name}"
+            )
+
+
+def _load_local_dependencies() -> None:
+    global _LOCAL_DEPENDENCIES_LOADED
+    if _LOCAL_DEPENDENCIES_LOADED:
+        return
+    operator_module = importlib.import_module(
+        "research.mat_sab.candidate_c_operator_tensor"
+    )
+    replay_module = importlib.import_module(
+        "research.mat_sab.candidate_c_registered_replay"
+    )
+    operator_names = (
+        "MISSING_STAGE203_EVIDENCE_HASH",
+        "MISSING_STAGE203_SUPPORT_MAP",
+        "REGISTERED_SHORT_ERROR_RELATION_FAIL",
+        "REJECT_C1_NONPOSITIVE_STRUCTURAL_COST_TERMINAL",
+        "REJECT_C1_PHASE_IDENTITY_TERMINAL",
+        "REJECT_C1_REGISTERED_SHORT_ERROR_RELATION_TERMINAL",
+        "STAGE203_SUPPORT_MAP_PATH",
+        "Task3AEvidenceExhaustion",
+    )
+    replay_names = (
+        "CandidateCInconclusiveTerminalRecord",
+        "NO_VERIFIED_TASK3B_RESULT",
+        "SKIPPED_NO_REGISTERED_OPERATOR",
+        "TERMINAL_INCONCLUSIVE_C1_EVIDENCE_EXHAUSTED",
+        "CandidateCTerminalRecord",
+        "terminal_record_for_task5",
+    )
+    for name in operator_names:
+        globals()[name] = getattr(operator_module, name)
+    for name in replay_names:
+        globals()[name] = getattr(replay_module, name)
+    if SKIPPED_NO_REGISTERED_OPERATOR != SKIPPED:
+        raise RuntimeError("Candidate C skipped-status constant mismatch")
+    _LOCAL_DEPENDENCIES_LOADED = True
 
 
 @dataclass(frozen=True)
@@ -2531,12 +3149,31 @@ def main() -> int:
     parser.add_argument("--destination-root", type=Path)
     parser.add_argument("--input-commit", required=True)
     args = parser.parse_args()
+    source_root = _preflight_launcher_root(args.root)
+    _preflight_local_import_closure(
+        source_root,
+        args.input_commit,
+        GENERATOR_LOCAL_IMPORT_ROOTS,
+        GENERATOR_EXECUTABLE_INPUTS,
+    )
+    _preflight_launcher_file_origin(
+        source_root,
+        "scripts/run_candidate_c_rank_bounded_gate.py",
+    )
+    _reject_preloaded_local_modules(GENERATOR_EXECUTABLE_INPUTS)
+    _activate_verified_import_root(source_root)
+    _activate_local_import_cache_isolation()
+    _load_local_dependencies()
+    _validate_loaded_local_module_origins(
+        source_root,
+        GENERATOR_EXECUTABLE_INPUTS,
+    )
     result = evaluate_candidate_c(
-        args.root,
+        source_root,
         input_commit=args.input_commit,
     )
     write_gate_artifacts(
-        args.root,
+        source_root,
         result,
         input_commit=args.input_commit,
         destination_root=args.destination_root,
@@ -2545,5 +3182,7 @@ def main() -> int:
     return 0
 
 
-if __name__ == "__main__":
+if __name__ != "__main__":
+    _load_local_dependencies()
+else:
     raise SystemExit(main())

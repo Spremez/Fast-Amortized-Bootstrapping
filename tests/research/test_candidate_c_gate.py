@@ -1,10 +1,14 @@
+import ast
 import csv
 from dataclasses import replace
 import hashlib
 import importlib
 import inspect
+import marshal
 import os
+import shutil
 import subprocess
+import struct
 import sys
 import tempfile
 import unittest
@@ -75,6 +79,7 @@ EXPECTED_COMPUTATIONAL_INPUTS = (
     "research/mat_sab/finite_linear.py",
     "research/mat_sab/rank_bounded_state_model.py",
     "research/mat_sab/star_cycle_model.py",
+    "scripts/__init__.py",
     "scripts/apply_candidate_c_rank_bounded_gate.py",
     "scripts/mat_sab_research_state.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
@@ -83,6 +88,23 @@ EXPECTED_COMPUTATIONAL_INPUTS = (
     "src/sab_pvw.c",
     "src/sparse_amortized_bootstrap.c",
     "theory_checks/candidate_c_rank_bounded_state_model.md",
+)
+GENERATOR_LOCAL_IMPORT_CLOSURE = (
+    "research/__init__.py",
+    "research/mat_sab/__init__.py",
+    "research/mat_sab/candidate_c_operator_tensor.py",
+    "research/mat_sab/candidate_c_registered_replay.py",
+    "research/mat_sab/candidate_c_schedule.py",
+    "research/mat_sab/finite_linear.py",
+    "research/mat_sab/rank_bounded_state_model.py",
+    "scripts/__init__.py",
+    "scripts/run_candidate_c_rank_bounded_gate.py",
+)
+WORKING_CLI_PATHS = (
+    "scripts/__init__.py",
+    "scripts/apply_candidate_c_rank_bounded_gate.py",
+    "scripts/build_mat_sab_selector_techgraph.py",
+    "scripts/run_candidate_c_rank_bounded_gate.py",
 )
 
 
@@ -107,6 +129,42 @@ def published_input_commit():
             row["key"]: row["value"] for row in csv.DictReader(handle)
         }
     return environment["input_head"]
+
+
+def _install_valid_timestamp_cache(source, marker_name):
+    stat = source.stat()
+    marker_source = "\n".join(
+        (
+            "from pathlib import Path",
+            (
+                f"Path({marker_name!r}).write_text("
+                "'stale cache executed\\n', encoding='ascii')"
+            ),
+            "",
+        )
+    )
+    code = compile(marker_source, str(source), "exec")
+    cache = (
+        source.parent
+        / "__pycache__"
+        / f"{source.stem}.{sys.implementation.cache_tag}.pyc"
+    )
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    header = importlib.util.MAGIC_NUMBER + struct.pack(
+        "<III",
+        0,
+        int(stat.st_mtime) & 0xFFFFFFFF,
+        stat.st_size & 0xFFFFFFFF,
+    )
+    cache.write_bytes(header + marshal.dumps(code))
+    return cache
+
+
+def _adjacent_cache_snapshot(root):
+    return {
+        path.relative_to(root).as_posix(): path.read_bytes()
+        for path in sorted(root.rglob("*.pyc"))
+    }
 
 
 def fixture_mechanism(gate):
@@ -702,6 +760,75 @@ class CandidateCGateTests(unittest.TestCase):
             input_commit=cls.input_commit,
         )
 
+    @staticmethod
+    def _clone_working_generator(directory):
+        root = Path(directory) / "root"
+        subprocess.run(
+            ["git", "clone", "--shared", "-q", str(ROOT), str(root)],
+            check=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "Candidate C Test"],
+            cwd=root,
+            check=True,
+        )
+        subprocess.run(
+            [
+                "git",
+                "config",
+                "user.email",
+                "candidate-c-test@example.invalid",
+            ],
+            cwd=root,
+            check=True,
+        )
+        for relative in WORKING_CLI_PATHS:
+            source = ROOT / relative
+            if not source.exists():
+                continue
+            destination = root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, destination)
+        subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+        subprocess.run(
+            [
+                "git",
+                "commit",
+                "--allow-empty",
+                "-q",
+                "-m",
+                "working generator launcher",
+            ],
+            cwd=root,
+            check=True,
+        )
+        commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        return root, commit
+
+    @staticmethod
+    def _run_generator(root, commit, destination, *, environment=None):
+        return subprocess.run(
+            [
+                sys.executable,
+                "scripts/run_candidate_c_rank_bounded_gate.py",
+                "--destination-root",
+                str(destination),
+                "--input-commit",
+                commit,
+            ],
+            cwd=root,
+            env=environment,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
     def _summary(self, result=None):
         selected = self.result if result is None else result
         with patch.object(
@@ -1167,6 +1294,286 @@ class CandidateCGateTests(unittest.TestCase):
             "scripts/mat_sab_research_state.py",
             self.gate.COMPUTATIONAL_INPUTS,
         )
+        self.assertIn(
+            "scripts/__init__.py",
+            self.gate.COMPUTATIONAL_INPUTS,
+        )
+
+    def _check_generator_registry_matches_recursive_local_import_closure(self):
+        tree = ast.parse(
+            (
+                ROOT / "scripts/run_candidate_c_rank_bounded_gate.py"
+            ).read_text(encoding="ascii")
+        )
+        local_imports = []
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                local_imports.extend(
+                    alias.name
+                    for alias in node.names
+                    if alias.name.startswith(("research", "scripts"))
+                )
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                if node.module.startswith(("research", "scripts")):
+                    local_imports.append(node.module)
+        self.assertEqual(local_imports, [])
+        with tempfile.TemporaryDirectory() as tmp:
+            root, commit = self._clone_working_generator(tmp)
+            derived = self.gate._derive_local_import_closure(
+                root,
+                commit,
+                self.gate.GENERATOR_LOCAL_IMPORT_ROOTS,
+            )
+        self.assertEqual(derived, GENERATOR_LOCAL_IMPORT_CLOSURE)
+        self.assertEqual(
+            derived,
+            self.gate.GENERATOR_EXECUTABLE_INPUTS,
+        )
+
+    def _check_generator_dynamic_import_binding_model_tracks_aliases(self):
+        tree = ast.parse(
+            "\n".join(
+                (
+                    "import importlib as module_alias",
+                    (
+                        "from importlib import import_module "
+                        "as imported_loader"
+                    ),
+                    "assigned_loader = module_alias.import_module",
+                    "copied_loader = imported_loader",
+                    "assigned_loader('research.alias_one')",
+                    "copied_loader('research.alias_two')",
+                )
+            )
+        )
+        self.assertEqual(
+            self.gate._literal_dynamic_imports(
+                tree,
+                "generator_alias_probe.py",
+            ),
+            ("research.alias_one", "research.alias_two"),
+        )
+        nonliteral = ast.parse(
+            "\n".join(
+                (
+                    "import importlib as module_alias",
+                    "loader = module_alias.import_module",
+                    "target = 'research.alias_probe'",
+                    "loader(target)",
+                )
+            )
+        )
+        with self.assertRaisesRegex(
+            self.gate.LocalImportPreflightError,
+            "nonliteral dynamic import",
+        ):
+            self.gate._literal_dynamic_imports(
+                nonliteral,
+                "generator_alias_probe.py",
+            )
+
+    def _check_real_generator_cli_current_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, commit = self._clone_working_generator(tmp)
+            destination = Path(tmp) / "output"
+            destination.mkdir()
+            completed = self._run_generator(
+                root,
+                commit,
+                destination,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertEqual(completed.stdout.strip(), self.gate.REJECT)
+            self.assertEqual(
+                {
+                    path.name
+                    for path in (
+                        destination
+                        / "repro/candidate_c_rank_bounded_gate"
+                    ).iterdir()
+                },
+                EXPECTED_ARTIFACTS,
+            )
+
+    def _check_real_generator_cli_rejects_cross_checkout_root(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, commit = self._clone_working_generator(tmp)
+            destination = Path(tmp) / "output"
+            destination.mkdir()
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        ROOT
+                        / "scripts/run_candidate_c_rank_bounded_gate.py"
+                    ),
+                    "--root",
+                    str(root),
+                    "--destination-root",
+                    str(destination),
+                    "--input-commit",
+                    commit,
+                ],
+                cwd=ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn(
+                "requested root does not match launcher checkout root",
+                completed.stderr,
+            )
+            self.assertFalse(any(destination.rglob("*")))
+
+    def _check_real_generator_cli_rejects_aliased_dynamic_imports(self):
+        cases = (
+            (
+                "literal_alias",
+                "\n".join(
+                    (
+                        "import importlib as generator_importlib",
+                        (
+                            "generator_loader = "
+                            "generator_importlib.import_module"
+                        ),
+                        (
+                            "generator_loader("
+                            "'research.mat_sab.generator_alias_probe')"
+                        ),
+                        "",
+                    )
+                ),
+                "executable registry does not match recursive import closure",
+            ),
+            (
+                "nonliteral_alias",
+                "\n".join(
+                    (
+                        (
+                            "from importlib import import_module "
+                            "as imported_generator_loader"
+                        ),
+                        "generator_loader = imported_generator_loader",
+                        (
+                            "generator_target = "
+                            "'research.mat_sab.generator_alias_probe'"
+                        ),
+                        "generator_loader(generator_target)",
+                        "",
+                    )
+                ),
+                "nonliteral dynamic import",
+            ),
+        )
+        for name, source, expected_error in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                root, _ = self._clone_working_generator(tmp)
+                dependency = root / "research/mat_sab/finite_linear.py"
+                dependency.write_text(
+                    dependency.read_text(encoding="ascii") + "\n" + source,
+                    encoding="ascii",
+                    newline="\n",
+                )
+                marker = root / "UNVERIFIED_GENERATOR_ALIAS_EXECUTED"
+                probe = root / "research/mat_sab/generator_alias_probe.py"
+                probe.write_text(
+                    "\n".join(
+                        (
+                            "from pathlib import Path",
+                            (
+                                "Path('UNVERIFIED_GENERATOR_ALIAS_EXECUTED')"
+                                ".write_text('executed\\n', encoding='ascii')"
+                            ),
+                            "",
+                        )
+                    ),
+                    encoding="ascii",
+                    newline="\n",
+                )
+                subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+                subprocess.run(
+                    ["git", "commit", "-q", "-m", name],
+                    cwd=root,
+                    check=True,
+                )
+                commit = git_head(root)
+                destination = Path(tmp) / "output"
+                destination.mkdir()
+                completed = self._run_generator(
+                    root,
+                    commit,
+                    destination,
+                )
+                self.assertNotEqual(completed.returncode, 0)
+                self.assertIn(expected_error, completed.stderr)
+                self.assertFalse(marker.exists())
+                self.assertFalse(any(destination.rglob("*")))
+
+    def _check_real_generator_cli_ignores_valid_adjacent_timestamp_cache(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, commit = self._clone_working_generator(tmp)
+            destination = Path(tmp) / "output"
+            destination.mkdir()
+            no_write_environment = os.environ.copy()
+            no_write_environment["PYTHONDONTWRITEBYTECODE"] = "1"
+            baseline = self._run_generator(
+                root,
+                commit,
+                destination,
+                environment=no_write_environment,
+            )
+            self.assertEqual(baseline.returncode, 0, baseline.stderr)
+            generated = (
+                destination / "repro/candidate_c_rank_bounded_gate"
+            )
+            before_outputs = {
+                path.name: path.read_bytes()
+                for path in generated.iterdir()
+            }
+            for cache_dir in sorted(
+                root.rglob("__pycache__"),
+                reverse=True,
+            ):
+                shutil.rmtree(cache_dir)
+            marker = root / "STALE_GENERATOR_CACHE_EXECUTED"
+            source = root / "research/__init__.py"
+            _install_valid_timestamp_cache(source, marker.name)
+            environment = os.environ.copy()
+            environment.pop("PYTHONDONTWRITEBYTECODE", None)
+            environment.pop("PYTHONPYCACHEPREFIX", None)
+            control = subprocess.run(
+                [sys.executable, "-c", "import research"],
+                cwd=root,
+                env=environment,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(control.returncode, 0, control.stderr)
+            self.assertTrue(marker.exists())
+            marker.unlink()
+            before_caches = _adjacent_cache_snapshot(root)
+            completed = self._run_generator(
+                root,
+                commit,
+                destination,
+                environment=environment,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertEqual(completed.stdout.strip(), self.gate.REJECT)
+            self.assertFalse(marker.exists())
+            self.assertEqual(
+                before_outputs,
+                {
+                    path.name: path.read_bytes()
+                    for path in generated.iterdir()
+                },
+            )
+            self.assertEqual(
+                before_caches,
+                _adjacent_cache_snapshot(root),
+            )
 
     def test_generator_emits_complete_byte_identical_pack(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -1411,6 +1818,37 @@ class CandidateCGateTests(unittest.TestCase):
                 tracked = ROOT / fresh.relative_to(destination)
                 with self.subTest(path=fresh.relative_to(destination)):
                     self.assertEqual(tracked.read_bytes(), fresh.read_bytes())
+
+
+class CandidateCGeneratorBootstrapTests(unittest.TestCase):
+    gate = load_gate()
+    _clone_working_generator = staticmethod(
+        CandidateCGateTests._clone_working_generator
+    )
+    _run_generator = staticmethod(CandidateCGateTests._run_generator)
+    test_generator_registry_matches_recursive_local_import_closure = (
+        CandidateCGateTests
+        ._check_generator_registry_matches_recursive_local_import_closure
+    )
+    test_generator_dynamic_import_binding_model_tracks_aliases = (
+        CandidateCGateTests
+        ._check_generator_dynamic_import_binding_model_tracks_aliases
+    )
+    test_real_generator_cli_current_path = (
+        CandidateCGateTests._check_real_generator_cli_current_path
+    )
+    test_real_generator_cli_rejects_cross_checkout_root = (
+        CandidateCGateTests
+        ._check_real_generator_cli_rejects_cross_checkout_root
+    )
+    test_real_generator_cli_rejects_aliased_dynamic_imports = (
+        CandidateCGateTests
+        ._check_real_generator_cli_rejects_aliased_dynamic_imports
+    )
+    test_real_generator_cli_ignores_valid_adjacent_timestamp_cache = (
+        CandidateCGateTests
+        ._check_real_generator_cli_ignores_valid_adjacent_timestamp_cache
+    )
 
 
 if __name__ == "__main__":

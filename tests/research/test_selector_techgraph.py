@@ -47,6 +47,7 @@ SELECTOR_LOCAL_IMPORT_CLOSURE = (
     "research/mat_sab/candidate_c_schedule.py",
     "research/mat_sab/finite_linear.py",
     "research/mat_sab/rank_bounded_state_model.py",
+    "scripts/__init__.py",
     "scripts/build_mat_sab_selector_techgraph.py",
     "scripts/mat_sab_research_state.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
@@ -904,11 +905,13 @@ class SelectorTechgraphTests(unittest.TestCase):
                 if node.module.startswith(("research", "scripts")):
                     local_imports.append(node.module)
         self.assertEqual(local_imports, [])
-        derived = selector._derive_local_import_closure(
-            ROOT,
-            UNIT_INPUT_COMMIT,
-            selector.SELECTOR_LOCAL_IMPORT_ROOTS,
-        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root, commit = self._clone_working_selector(tmp)
+            derived = selector._derive_local_import_closure(
+                root,
+                commit,
+                selector.SELECTOR_LOCAL_IMPORT_ROOTS,
+            )
         self.assertEqual(derived, SELECTOR_LOCAL_IMPORT_CLOSURE)
         self.assertEqual(derived, selector.SELECTOR_EXECUTABLE_INPUTS)
 

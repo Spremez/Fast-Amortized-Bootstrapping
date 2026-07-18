@@ -48,6 +48,7 @@ CLOSEOUT_LOCAL_IMPORT_CLOSURE = (
     "research/mat_sab/candidate_c_schedule.py",
     "research/mat_sab/finite_linear.py",
     "research/mat_sab/rank_bounded_state_model.py",
+    "scripts/__init__.py",
     "scripts/apply_candidate_c_rank_bounded_gate.py",
     "scripts/mat_sab_research_state.py",
     "scripts/run_candidate_c_rank_bounded_gate.py",
@@ -1163,11 +1164,13 @@ class CandidateCCloseoutTests(unittest.TestCase):
                 if node.module.startswith(("research", "scripts")):
                     local_imports.append(node.module)
         self.assertEqual(local_imports, [])
-        derived = self.closeout._derive_local_import_closure(
-            ROOT,
-            self.input_commit,
-            self.closeout.CLOSEOUT_LOCAL_IMPORT_ROOTS,
-        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root, commit = self._clone_working_closeout(tmp)
+            derived = self.closeout._derive_local_import_closure(
+                root,
+                commit,
+                self.closeout.CLOSEOUT_LOCAL_IMPORT_ROOTS,
+            )
         self.assertEqual(derived, CLOSEOUT_LOCAL_IMPORT_CLOSURE)
         self.assertEqual(derived, gate.CLOSEOUT_EXECUTABLE_INPUTS)
 
