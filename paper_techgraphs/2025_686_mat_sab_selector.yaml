@@ -3,7 +3,7 @@
   "contract": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
   "candidate": "A",
   "production_code_permission": false,
-  "selector_source_state_commit": "9b4b461bc44c51db2b07f6c1e0eac0a063150dcb",
+  "selector_source_state_commit": "cf810a718befb0930c22501b35a76749145ead4a",
   "selector_source_manifest": [
     {
       "path": "repro/stage134_generalized_lane_pair_input_ep_gate/summary.csv",
@@ -83,7 +83,7 @@
     {
       "path": "scripts/build_mat_sab_selector_techgraph.py",
       "availability": "PRESENT",
-      "sha256": "de1945f9684bad0b251fbe1b196c78df3f2566a2a7ae0af134ebe624e9f56223"
+      "sha256": "2264f696f682db234b8f59029363d3c92de7dd5a28629117f9d009fad09e6266"
     },
     {
       "path": "scripts/mat_sab_research_state.py",
@@ -150,7 +150,7 @@
     {
       "path": "scripts/build_mat_sab_selector_techgraph.py",
       "availability": "PRESENT",
-      "sha256": "de1945f9684bad0b251fbe1b196c78df3f2566a2a7ae0af134ebe624e9f56223"
+      "sha256": "2264f696f682db234b8f59029363d3c92de7dd5a28629117f9d009fad09e6266"
     },
     {
       "path": "scripts/mat_sab_research_state.py",
@@ -164,7 +164,7 @@
     }
   ],
   "research_state_sha256": "00d1354d93639f501712e9e218870da14bcc22c6bb9f8cf577b26b1487f1d182",
-  "reproduction_command": "python scripts/build_mat_sab_selector_techgraph.py --source-state-commit 9b4b461bc44c51db2b07f6c1e0eac0a063150dcb",
+  "reproduction_command": "python scripts/build_mat_sab_selector_techgraph.py --source-state-commit cf810a718befb0930c22501b35a76749145ead4a",
   "nodes": [
     {
       "id": "sab_schedule",
