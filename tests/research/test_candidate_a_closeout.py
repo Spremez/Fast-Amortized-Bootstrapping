@@ -57,6 +57,7 @@ class CandidateACloseoutTests(unittest.TestCase):
         state["candidates"]["A"]["status"] = "EQUATIONS_DEFINED"
         state["candidates"]["B"]["status"] = "QUEUED"
         state["candidates"]["C"]["status"] = "QUEUED"
+        state["candidates"]["C"]["equation_revisions_used"] = 0
         state["last_decision"] = "CANDIDATE_A_PRODUCTION_EQUATIONS_DEFINED"
         state_path = root / "research_state.yaml"
         state_path.write_text(
