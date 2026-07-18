@@ -9,5 +9,5 @@ Task 3A records for `r=2,4,6` all end at
 C2 status is `NO_VERIFIED_TASK3B_RESULT`. Task 4 therefore remains `SKIPPED_NO_REGISTERED_OPERATOR` with
 blank numeric cost and Amdahl fields. Production permission is false.
 
-Reproduce from implementation-input commit `cca8c7127575767448d5caf99a2b66f4299e8332` with
-`python scripts/run_candidate_c_rank_bounded_gate.py --input-commit cca8c7127575767448d5caf99a2b66f4299e8332`.
+Reproduce from implementation-input commit `b9289d5b2adae07568888961743848ccb06b3571` with
+`python scripts/run_candidate_c_rank_bounded_gate.py --input-commit b9289d5b2adae07568888961743848ccb06b3571`.
