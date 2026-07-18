@@ -3,7 +3,7 @@
   "contract": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
   "candidate": "A",
   "production_code_permission": false,
-  "selector_source_state_commit": "cf810a718befb0930c22501b35a76749145ead4a",
+  "selector_source_state_commit": "eaf3d58528a90d537aab9d4e2eb6cfc558769558",
   "selector_source_manifest": [
     {
       "path": "repro/stage134_generalized_lane_pair_input_ep_gate/summary.csv",
@@ -81,9 +81,14 @@
       "sha256": "00d1354d93639f501712e9e218870da14bcc22c6bb9f8cf577b26b1487f1d182"
     },
     {
+      "path": "scripts/__init__.py",
+      "availability": "PRESENT",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
       "path": "scripts/build_mat_sab_selector_techgraph.py",
       "availability": "PRESENT",
-      "sha256": "2264f696f682db234b8f59029363d3c92de7dd5a28629117f9d009fad09e6266"
+      "sha256": "83040f304db1f0e28dc3f837558798d1a7f6615886404ec32d118720f2e4c04f"
     },
     {
       "path": "scripts/mat_sab_research_state.py",
@@ -93,7 +98,7 @@
     {
       "path": "scripts/run_candidate_c_rank_bounded_gate.py",
       "availability": "PRESENT",
-      "sha256": "ad82225f7cef97c20224dccb2d95a500fb55ea7e383634d1246b307e4c84b548"
+      "sha256": "01d854a9104bc4c604d9d4e81096d7b3d1d1901ef13656d66dbf7697a51c5e74"
     },
     {
       "path": "src/mosfhet/src/mattrgsw.c",
@@ -148,9 +153,14 @@
       "sha256": "6d32fa9e091a1642cafa4f415840e685447410c4515558c80853899019f12acd"
     },
     {
+      "path": "scripts/__init__.py",
+      "availability": "PRESENT",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
       "path": "scripts/build_mat_sab_selector_techgraph.py",
       "availability": "PRESENT",
-      "sha256": "2264f696f682db234b8f59029363d3c92de7dd5a28629117f9d009fad09e6266"
+      "sha256": "83040f304db1f0e28dc3f837558798d1a7f6615886404ec32d118720f2e4c04f"
     },
     {
       "path": "scripts/mat_sab_research_state.py",
@@ -160,11 +170,11 @@
     {
       "path": "scripts/run_candidate_c_rank_bounded_gate.py",
       "availability": "PRESENT",
-      "sha256": "ad82225f7cef97c20224dccb2d95a500fb55ea7e383634d1246b307e4c84b548"
+      "sha256": "01d854a9104bc4c604d9d4e81096d7b3d1d1901ef13656d66dbf7697a51c5e74"
     }
   ],
   "research_state_sha256": "00d1354d93639f501712e9e218870da14bcc22c6bb9f8cf577b26b1487f1d182",
-  "reproduction_command": "python scripts/build_mat_sab_selector_techgraph.py --source-state-commit cf810a718befb0930c22501b35a76749145ead4a",
+  "reproduction_command": "python scripts/build_mat_sab_selector_techgraph.py --source-state-commit eaf3d58528a90d537aab9d4e2eb6cfc558769558",
   "nodes": [
     {
       "id": "sab_schedule",
