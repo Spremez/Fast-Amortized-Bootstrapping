@@ -43,8 +43,8 @@
     },
     "D": {
       "name": "LUT-Late-Binding Operator SAB",
-      "status": "PLAN_APPROVED",
-      "last_reached_status": "PLAN_APPROVED",
+      "status": "D0_BASELINE_FROZEN",
+      "last_reached_status": "D0_BASELINE_FROZEN",
       "research_envelope": "internal_semantics_may_change_standard_RLWE_Module_LWE_reduction_required",
       "equation_revisions_used": 0,
       "kernel_layouts_used": 0,
@@ -61,6 +61,6 @@
   },
   "paper_gate": "BLOCKED",
   "production_hot_path_permission": false,
-  "last_decision": "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED",
-  "last_decision_source_status": "DESIGN_APPROVED_PENDING_WRITTEN_SPEC_REVIEW"
+  "last_decision": "PASS_D0_CANDIDATE_D_BASELINES_FROZEN",
+  "last_decision_source_status": "PLAN_APPROVED"
 }

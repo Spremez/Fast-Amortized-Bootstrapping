@@ -1,0 +1,12 @@
+key,value,unit,evidence_class,source
+parameter_set,BINARY/include-zero SET_2_3_2048,,SOURCE_PARSED,main.c
+in_N,2048,coefficients,SOURCE_PARSED,main.c
+out_N,2048,coefficients,SOURCE_PARSED,main.c
+sigma_out,2^-50,torus,SOURCE_PARSED,main.c
+H,573440,selector_events,DERIVED_EXACT,H=(h+1)*r_prec*in_N
+historical_highstat_backend,spqlios_avx512-wsl,,FROZEN_HISTORICAL_HIGHSTAT,repro/stage345_binary_matrix_synthesis/binary_matrix.csv
+formal_performance_environment,NATIVE_LINUX_REQUIRED_NOT_YET_LOCAL,,CLAIM_BOUNDARY,docs/superpowers/specs/2026-07-20-lut-late-binding-operator-sab-design.md
+wsl_smoke_claim_scope,CORRECTNESS_AND_SMOKE_ONLY_NOT_FORMAL_PERFORMANCE,,CLAIM_BOUNDARY,reproduction_commands.md
+wsl_smoke_disposition,ENVIRONMENT_BLOCKED,,D0_EXECUTION_RECORD,task_2_execution
+wsl_smoke_failure_reason,ATTEMPT_INTERRUPTED_AFTER_TRACKED_STAGE33_OUTPUT_WRITE;NO_VALID_ISOLATED_SMOKE_RESULT,,D0_EXECUTION_RECORD,task_2_execution
+stage33_restoration,VERIFIED_1164B3F_GIT_BLOB_IDENTITY,,D0_EXECUTION_RECORD,repro/stage33_current_smoke/pvw_target_SET_2_3_2048/build.log;repro/stage33_current_smoke/scalar_binary_SET_2_3_2048/run.log
