@@ -211,11 +211,15 @@ class ResearchStateTests(unittest.TestCase):
         self.assertEqual(state["active_candidate"], "D")
         self.assertEqual(
             state["last_decision_source_status"],
-            "DESIGN_APPROVED_PENDING_WRITTEN_SPEC_REVIEW",
+            "PLAN_APPROVED",
+        )
+        self.assertEqual(
+            state["last_decision"],
+            "PASS_D0_CANDIDATE_D_BASELINES_FROZEN",
         )
         self.assertEqual(
             state["candidates"]["D"]["last_reached_status"],
-            "PLAN_APPROVED",
+            "D0_BASELINE_FROZEN",
         )
         self.assertEqual(
             state["candidates"]["E"]["last_reached_status"],
@@ -505,7 +509,10 @@ class ResearchStateTests(unittest.TestCase):
     def test_activate_candidate_d_plan_reaches_wrong_gate_guard(self):
         state = load_state(ROOT / "research_state.yaml")
         self.assertEqual(state["goal_status"], "ACTIVE")
-        self.assertEqual(state["candidates"]["D"]["status"], "PLAN_APPROVED")
+        self.assertEqual(
+            state["candidates"]["D"]["status"],
+            "D0_BASELINE_FROZEN",
+        )
 
         with self.assertRaisesRegex(
             ValueError,

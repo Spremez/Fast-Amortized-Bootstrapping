@@ -280,7 +280,7 @@ class SelectorTechgraphTests(unittest.TestCase):
             "Candidate A: `REJECTED`",
             "Candidate B: `REJECTED`",
             "Candidate C: `REJECTED`",
-            "Candidate D: `PLAN_APPROVED` (active)",
+            "Candidate D: `D0_BASELINE_FROZEN` (active)",
             "Candidate E: `RESERVED_FALLBACK_NOT_STARTED`",
         )
         for text in expected:

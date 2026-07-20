@@ -1,4 +1,5 @@
 import csv
+from decimal import ROUND_DOWN, localcontext
 import hashlib
 import shutil
 import tempfile
@@ -314,6 +315,31 @@ class CandidateDBaselineTests(unittest.TestCase):
                 ):
                     baseline.build_d0_artifacts(root, root / "out")
 
+    def test_missing_trailing_csv_cell_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._copy_inputs(root)
+            path = (
+                root
+                / "repro/candidate_c_rank_bounded_gate/terminal_record.csv"
+            )
+            with path.open("r", encoding="ascii", newline="") as handle:
+                rows = list(csv.reader(handle, strict=True))
+            rows[1] = rows[1][:-1]
+            with path.open("w", encoding="ascii", newline="") as handle:
+                writer = csv.writer(handle, lineterminator="\n")
+                writer.writerows(rows)
+            with patch.object(
+                baseline,
+                "EXPECTED_ANCHORS",
+                self._patched_hashes(root),
+            ):
+                with self.assertRaisesRegex(
+                    baseline.BaselineEvidenceError,
+                    "malformed artifact row",
+                ):
+                    baseline.build_d0_artifacts(root, root / "out")
+
     def test_artifacts_are_ascii_lf_only_and_byte_deterministic(self):
         with tempfile.TemporaryDirectory() as first_tmp:
             with tempfile.TemporaryDirectory() as second_tmp:
@@ -335,6 +361,29 @@ class CandidateDBaselineTests(unittest.TestCase):
                         first_bytes.decode("ascii")
                         self.assertNotIn(b"\r", first_bytes)
                         self.assertTrue(first_bytes.endswith(b"\n"))
+
+    def test_artifacts_ignore_hostile_decimal_context(self):
+        with tempfile.TemporaryDirectory() as expected_tmp:
+            with tempfile.TemporaryDirectory() as hostile_tmp:
+                expected = Path(expected_tmp)
+                hostile = Path(hostile_tmp)
+                baseline.build_d0_artifacts(ROOT, expected)
+                with localcontext() as context:
+                    context.prec = 6
+                    context.rounding = ROUND_DOWN
+                    baseline.build_d0_artifacts(ROOT, hostile)
+                relatives = (
+                    "docs/candidate_d_d0_baseline.md",
+                    "repro/candidate_d_admission/baseline_manifest.csv",
+                    "repro/candidate_d_admission/environment.csv",
+                    "repro/candidate_d_admission/reproduction_commands.md",
+                )
+                for relative in relatives:
+                    with self.subTest(relative=relative):
+                        self.assertEqual(
+                            (expected / relative).read_bytes(),
+                            (hostile / relative).read_bytes(),
+                        )
 
     def test_reproduction_commands_separate_smoke_from_performance(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -224,6 +224,7 @@ class CandidateCCliRuntimeTests(unittest.TestCase):
             self.assertEqual(generated.returncode, 0, generated.stderr)
             self.assertEqual(generated.stdout.strip(), gate.REJECT)
 
+            before_closeout = self._snapshot(root)
             applied = self._run(
                 root,
                 (
@@ -233,8 +234,12 @@ class CandidateCCliRuntimeTests(unittest.TestCase):
                 ),
                 environment=environment,
             )
-            self.assertEqual(applied.returncode, 0, applied.stderr)
-            self.assertEqual(applied.stdout.strip(), gate.REJECT)
+            self.assertNotEqual(applied.returncode, 0)
+            self.assertIn(
+                f"state/decision mismatch: REJECTED and {gate.REJECT}",
+                applied.stderr,
+            )
+            self.assertEqual(self._snapshot(root), before_closeout)
             self.assertFalse(alternate_research_marker.exists())
             self.assertFalse(alternate_scripts_marker.exists())
 

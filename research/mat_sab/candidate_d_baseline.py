@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import csv
 from dataclasses import dataclass
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_EVEN, localcontext
 import hashlib
 from pathlib import Path, PurePosixPath
 import re
@@ -240,7 +240,11 @@ def _read_csv(root: Path, relative: str) -> tuple[dict[str, str], ...]:
             rows = []
             signatures = set()
             for row in reader:
-                if None in row or set(row) != set(fieldnames):
+                if (
+                    None in row
+                    or any(value is None for value in row.values())
+                    or set(row) != set(fieldnames)
+                ):
                     raise BaselineEvidenceError(
                         f"malformed artifact row: {relative}"
                     )
@@ -469,14 +473,17 @@ def _metric_rows(
     n_active = Decimal("2048")
     b1_over_r = Decimal(summary["t_bootstrap_over_r_mean_us"])
     b0a_over_r = Decimal(summary["scalar_t_bootstrap_over_r_mean_us"])
-    b1_total = b1_over_r * r
-    b0a_total = b0a_over_r * r
-    quantum = Decimal("0.000000001")
-    b1_primary = (b1_over_r / n_active).quantize(quantum)
-    b0a_primary = (b0a_over_r / n_active).quantize(quantum)
-    calculated_speedup = (b0a_over_r / b1_over_r).quantize(
-        Decimal("0.000001")
-    )
+    with localcontext() as context:
+        context.prec = 50
+        context.rounding = ROUND_HALF_EVEN
+        b1_total = b1_over_r * r
+        b0a_total = b0a_over_r * r
+        quantum = Decimal("0.000000001")
+        b1_primary = (b1_over_r / n_active).quantize(quantum)
+        b0a_primary = (b0a_over_r / n_active).quantize(quantum)
+        calculated_speedup = (b0a_over_r / b1_over_r).quantize(
+            Decimal("0.000001")
+        )
     if calculated_speedup != Decimal(
         summary["speedup_vs_repeated_scalar_mean"]
     ):

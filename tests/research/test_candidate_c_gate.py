@@ -1802,14 +1802,32 @@ class CandidateCGateTests(unittest.TestCase):
 
     def test_final_head_fresh_render_matches_all_tracked_artifacts(self):
         bound_commit = published_input_commit()
-        result = self.gate.evaluate_candidate_c(
-            ROOT,
-            input_commit=bound_commit,
-        )
         with tempfile.TemporaryDirectory() as tmp:
-            destination = Path(tmp)
+            source_root = Path(tmp) / "source"
+            subprocess.run(
+                [
+                    "git",
+                    "clone",
+                    "--shared",
+                    "-q",
+                    str(ROOT),
+                    str(source_root),
+                ],
+                check=True,
+            )
+            subprocess.run(
+                ["git", "checkout", "--detach", "-q", bound_commit],
+                cwd=source_root,
+                check=True,
+            )
+            result = self.gate.evaluate_candidate_c(
+                source_root,
+                input_commit=bound_commit,
+            )
+            destination = Path(tmp) / "rendered"
+            destination.mkdir()
             paths = self.gate.write_gate_artifacts(
-                ROOT,
+                source_root,
                 result,
                 input_commit=bound_commit,
                 destination_root=destination,
