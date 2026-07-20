@@ -300,6 +300,7 @@ class SelectorTechgraphTests(unittest.TestCase):
         state = load_state(ROOT / "research_state.yaml")
         state["candidates"]["D"]["status"] = "D2_OPERATOR_CLOSURE_PASS"
         state["last_decision"] = "PASS_D2_OPERATOR_CLOSURE_G_LE_4"
+        state["last_decision_source_status"] = "D1_NOVELTY_AUDIT_PASS"
         validate_state(state)
         state = transition_candidate(
             state,

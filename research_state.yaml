@@ -59,5 +59,6 @@
   },
   "paper_gate": "BLOCKED",
   "production_hot_path_permission": false,
-  "last_decision": "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED"
+  "last_decision": "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED",
+  "last_decision_source_status": "DESIGN_APPROVED_PENDING_WRITTEN_SPEC_REVIEW"
 }

@@ -92,6 +92,7 @@ CURRENT_D_PREPLAN_GOAL = "CANDIDATE_D_DESIGN_APPROVED_PLAN_BLOCKED"
 CURRENT_D_ACTIVATION_DECISION = (
     "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED"
 )
+CURRENT_D_PREPLAN_DECISION_SOURCE_STATUS = "RESEARCH_CAMPAIGN_EXHAUSTED"
 CURRENT_D_DECISIONS_BY_STATUS = {
     CURRENT_D_PREPLAN_STATUS: (
         "AUTHORIZE_CANDIDATE_D_STANDARD_RLWE_MODULE_LWE_"
@@ -107,6 +108,14 @@ CURRENT_D_DECISIONS_BY_STATUS = {
         "ADMIT_CANDIDATE_D_TO_ISOLATED_ENCRYPTED_OPERATOR_IMPLEMENTATION"
     ),
 }
+CURRENT_D_DECISION_SOURCES_BY_STATUS = {
+    CURRENT_D_PREPLAN_STATUS: CURRENT_D_PREPLAN_DECISION_SOURCE_STATUS,
+    "PLAN_APPROVED": CURRENT_D_PREPLAN_STATUS,
+    "D0_BASELINE_FROZEN": "PLAN_APPROVED",
+    "D1_NOVELTY_AUDIT_PASS": "D0_BASELINE_FROZEN",
+    "D2_OPERATOR_CLOSURE_PASS": "D1_NOVELTY_AUDIT_PASS",
+    "D3_ADMISSION_PASS": "D2_OPERATOR_CLOSURE_PASS",
+}
 CURRENT_D_REJECTION_DECISIONS_BY_SOURCE = {
     "D0_BASELINE_FROZEN": (
         "REJECT_CANDIDATE_D_PRIOR_ART_SUBSUMPTION_ROUTE_E",
@@ -119,11 +128,6 @@ CURRENT_D_REJECTION_DECISIONS_BY_SOURCE = {
         "REJECT_CANDIDATE_D_NONPOSITIVE_COMPLETE_COST_ROUTE_E",
     ),
 }
-CURRENT_D_REJECTION_DECISIONS = frozenset(
-    decision
-    for decisions in CURRENT_D_REJECTION_DECISIONS_BY_SOURCE.values()
-    for decision in decisions
-)
 CURRENT_E_PREFLIGHT_REJECTION_DECISION = (
     "REJECT_CANDIDATE_E_SECURITY_NOVELTY_PREFLIGHT_CAMPAIGN_EXHAUSTED"
 )
@@ -378,7 +382,13 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
         raise ValueError("active current campaign must have ACTIVE goal")
 
     last_decision = state.get("last_decision")
+    last_decision_source_status = state.get(
+        "last_decision_source_status"
+    )
     expected_decision = CURRENT_D_DECISIONS_BY_STATUS.get(d_status)
+    expected_source_status = CURRENT_D_DECISION_SOURCES_BY_STATUS.get(
+        d_status
+    )
     if (
         expected_decision is not None
         and last_decision != expected_decision
@@ -387,13 +397,26 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
             f"last_decision must be {expected_decision} at {d_status}"
         )
     if (
-        d_status == "REJECTED"
-        and e_status == "SECURITY_NOVELTY_PREFLIGHT"
-        and last_decision not in CURRENT_D_REJECTION_DECISIONS
+        expected_source_status is not None
+        and last_decision_source_status != expected_source_status
     ):
         raise ValueError(
-            "last_decision must be a documented Candidate D rejection"
+            "last_decision_source_status must be "
+            f"{expected_source_status} at {d_status}"
         )
+    if (
+        d_status == "REJECTED"
+        and e_status == "SECURITY_NOVELTY_PREFLIGHT"
+    ):
+        source_decisions = CURRENT_D_REJECTION_DECISIONS_BY_SOURCE.get(
+            last_decision_source_status,
+            (),
+        )
+        if last_decision not in source_decisions:
+            raise ValueError(
+                "last_decision must be documented for "
+                "last_decision_source_status at Candidate D rejection"
+            )
     if (
         d_status == "REJECTED"
         and e_status == "REJECTED"
@@ -401,6 +424,15 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
     ):
         raise ValueError(
             "last_decision must be the Candidate E preflight rejection"
+        )
+    if (
+        d_status == "REJECTED"
+        and e_status == "REJECTED"
+        and last_decision_source_status != "SECURITY_NOVELTY_PREFLIGHT"
+    ):
+        raise ValueError(
+            "last_decision_source_status must be "
+            "SECURITY_NOVELTY_PREFLIGHT at Candidate E rejection"
         )
 
     permission = state.get("production_hot_path_permission")
@@ -548,6 +580,7 @@ def _transition_current_candidate(
 
     changed["candidates"][candidate]["status"] = to_status
     changed["last_decision"] = decision
+    changed["last_decision_source_status"] = current
     if to_status == "REJECTED" and candidate == "D":
         changed["active_candidate"] = "E"
         changed["candidates"]["E"][
@@ -607,6 +640,7 @@ def activate_candidate_d_plan(
     changed["goal_status"] = "ACTIVE"
     changed["candidates"]["D"]["status"] = "PLAN_APPROVED"
     changed["last_decision"] = decision
+    changed["last_decision_source_status"] = CURRENT_D_PREPLAN_STATUS
     validate_state(changed)
     return changed
 
