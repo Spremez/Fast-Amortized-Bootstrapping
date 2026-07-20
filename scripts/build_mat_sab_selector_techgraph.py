@@ -783,6 +783,16 @@ TERMINAL_CAMPAIGN_BOUNDARIES = (
         "a separately approved research design."
     ),
 )
+CURRENT_TERMINAL_CAMPAIGN_BOUNDARIES = (
+    (
+        "Candidate E was the only reserved fallback and is now closed; no "
+        "additional mechanism is opened automatically."
+    ),
+    (
+        "The exact-dense PVW/MAT-SAB implementation and any completed "
+        "Candidate D/E evidence remain preserved."
+    ),
+)
 
 
 def _safe_source_file(root: Path, relative: str, label: str) -> Path:
@@ -844,11 +854,21 @@ def _campaign_view(state: Mapping[str, object]) -> dict[str, object]:
     candidate_order = tuple(state["candidate_order"])
     active_candidate = str(state["active_candidate"])
     active_status = str(candidates[active_candidate]["status"])
+    candidate_e_exhausted = (
+        state["goal_status"] == "RESEARCH_CAMPAIGN_EXHAUSTED"
+        and active_candidate == "E"
+        and candidates.get("D", {}).get("status") == "REJECTED"
+        and candidates.get("E", {}).get("status") == "REJECTED"
+    )
     campaign_state = {
         "goal_status": state["goal_status"],
         "paper_gate": state["paper_gate"],
-        "active_candidate": active_candidate,
-        "active_candidate_status": active_status,
+        "active_candidate": (
+            None if candidate_e_exhausted else active_candidate
+        ),
+        "active_candidate_status": (
+            None if candidate_e_exhausted else active_status
+        ),
     }
     campaign_state.update(
         {
@@ -876,6 +896,16 @@ def _campaign_view(state: Mapping[str, object]) -> dict[str, object]:
             "evidence is preserved; no Candidate D is opened automatically."
         )
         open_gaps = TERMINAL_CAMPAIGN_BOUNDARIES
+    elif candidate_e_exhausted:
+        disposition = (
+            "Candidate D is rejected and Candidate E is rejected; the "
+            "current Candidate D/E campaign is exhausted."
+        )
+        next_step = (
+            "No active candidate remains; preserve the completed evidence "
+            "and require a separately approved design for any continuation."
+        )
+        open_gaps = CURRENT_TERMINAL_CAMPAIGN_BOUNDARIES
     elif (
         all(
             candidates[candidate]["status"] == "REJECTED"

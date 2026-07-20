@@ -20,7 +20,11 @@ from scripts.build_mat_sab_selector_techgraph import (
     build_graph,
     write_outputs,
 )
-from scripts.mat_sab_research_state import load_state
+from scripts.mat_sab_research_state import (
+    load_state,
+    transition_candidate,
+    validate_state,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -291,6 +295,49 @@ class SelectorTechgraphTests(unittest.TestCase):
             )
         self.assertNotIn("Candidate D:", campaign)
         self.assertNotIn("Candidate E:", campaign)
+
+    def test_exhausted_candidate_e_renders_no_active_candidate_or_open_gates(self):
+        state = load_state(ROOT / "research_state.yaml")
+        state["candidates"]["D"]["status"] = "D2_OPERATOR_CLOSURE_PASS"
+        state["last_decision"] = "PASS_D2_OPERATOR_CLOSURE_G_LE_4"
+        validate_state(state)
+        state = transition_candidate(
+            state,
+            "D",
+            "REJECTED",
+            "REJECT_CANDIDATE_D_BINDING_NOISE_SECURITY_ROUTE_E",
+        )
+        state = transition_candidate(
+            state,
+            "E",
+            "REJECTED",
+            "TEST_CANDIDATE_E_REJECTION",
+        )
+
+        graph = _campaign_view(state)
+        campaign = "\n".join(_campaign_markdown(graph))
+        rendered = "\n".join(
+            (
+                campaign,
+                str(graph["candidate_a_disposition"]),
+                str(graph["next_step"]),
+                *graph["open_gaps"],
+            )
+        )
+
+        self.assertIsNone(graph["campaign_state"]["active_candidate"])
+        self.assertIsNone(
+            graph["campaign_state"]["active_candidate_status"]
+        )
+        self.assertNotIn("(active)", campaign)
+        self.assertIn("Candidate E is rejected", rendered)
+        self.assertIn("current Candidate D/E campaign is exhausted", rendered)
+        self.assertNotIn("Candidate E is active", rendered)
+        self.assertTrue(
+            set(graph["open_gaps"]).isdisjoint(
+                selector.PRE_GATE_OPEN_GAPS
+            )
+        )
 
     def test_terminal_campaign_records_candidate_c_closeout_boundary(self):
         graph = _campaign_view(terminal_rejected_campaign_state())

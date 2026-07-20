@@ -15,6 +15,19 @@ ROOT = Path(__file__).resolve().parents[2]
 PREDECESSOR_STATE = (
     ROOT / "tests/research/fixtures/predecessor_research_state.json"
 )
+CURRENT_D_DECISIONS = {
+    "PLAN_APPROVED": (
+        "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED"
+    ),
+    "D0_BASELINE_FROZEN": "PASS_D0_CANDIDATE_D_BASELINES_FROZEN",
+    "D1_NOVELTY_AUDIT_PASS": (
+        "PASS_D1_DISTINCT_SAB_OPERATOR_CLAIM_REMAINS_TESTABLE"
+    ),
+    "D2_OPERATOR_CLOSURE_PASS": "PASS_D2_OPERATOR_CLOSURE_G_LE_4",
+    "D3_ADMISSION_PASS": (
+        "ADMIT_CANDIDATE_D_TO_ISOLATED_ENCRYPTED_OPERATOR_IMPLEMENTATION"
+    ),
+}
 
 
 def candidate_a_state(state, status):
@@ -81,7 +94,10 @@ def candidate_d_state(status):
     state["paper_gate"] = "BLOCKED"
     state["production_hot_path_permission"] = False
     state["active_candidate"] = "D"
-    state["last_decision"] = "TEST_CANDIDATE_D_STATE"
+    state["last_decision"] = CURRENT_D_DECISIONS.get(
+        status,
+        "TEST_CANDIDATE_D_STATE",
+    )
     state["candidates"]["D"]["status"] = status
     state["candidates"]["E"]["status"] = "RESERVED_FALLBACK_NOT_STARTED"
     for candidate in ("D", "E"):
@@ -198,7 +214,10 @@ class ResearchStateTests(unittest.TestCase):
     def test_candidate_d_rejection_routes_only_to_e(self):
         state = candidate_d_state("D2_OPERATOR_CLOSURE_PASS")
         changed = transition_candidate(
-            state, "D", "REJECTED", "REJECT_D_ROUTE_E"
+            state,
+            "D",
+            "REJECTED",
+            "REJECT_CANDIDATE_D_BINDING_NOISE_SECURITY_ROUTE_E",
         )
         self.assertEqual(changed["active_candidate"], "E")
         self.assertEqual(
@@ -230,6 +249,13 @@ class ResearchStateTests(unittest.TestCase):
             "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED",
         )
 
+    def test_activate_candidate_d_plan_rejects_an_unbound_decision(self):
+        with self.assertRaisesRegex(ValueError, "decision"):
+            state_controller.activate_candidate_d_plan(
+                candidate_d_preplan_state(),
+                "OPAQUE_PLAN_APPROVAL",
+            )
+
     def test_activate_candidate_d_plan_rejects_other_start_states(self):
         mutations = (
             ("goal_status", "ACTIVE"),
@@ -246,6 +272,44 @@ class ResearchStateTests(unittest.TestCase):
                     state_controller.activate_candidate_d_plan(
                         state,
                         "TEST_DECISION",
+                    )
+
+    def test_current_contract_binds_status_derived_decisions(self):
+        states = (
+            candidate_d_preplan_state(),
+            candidate_d_state("PLAN_APPROVED"),
+            candidate_d_state("D0_BASELINE_FROZEN"),
+            candidate_d_state("D1_NOVELTY_AUDIT_PASS"),
+            candidate_d_state("D2_OPERATOR_CLOSURE_PASS"),
+            candidate_d_state("D3_ADMISSION_PASS"),
+        )
+        for state in states:
+            status = state["candidates"]["D"]["status"]
+            with self.subTest(status=status):
+                validate_state(state)
+                state["last_decision"] = "OPAQUE_LAST_DECISION_MUTATION"
+                with self.assertRaisesRegex(ValueError, "last_decision"):
+                    validate_state(state)
+
+    def test_current_transitions_reject_unbound_decisions(self):
+        cases = (
+            (
+                candidate_d_state("PLAN_APPROVED"),
+                "D0_BASELINE_FROZEN",
+            ),
+            (
+                candidate_d_state("D2_OPERATOR_CLOSURE_PASS"),
+                "REJECTED",
+            ),
+        )
+        for state, to_status in cases:
+            with self.subTest(to_status=to_status):
+                with self.assertRaisesRegex(ValueError, "decision"):
+                    transition_candidate(
+                        state,
+                        "D",
+                        to_status,
+                        "OPAQUE_TRANSITION_DECISION",
                     )
 
     def test_current_contract_rejects_unknown_contracts(self):
@@ -305,7 +369,7 @@ class ResearchStateTests(unittest.TestCase):
             candidate_d_state("D2_OPERATOR_CLOSURE_PASS"),
             "D",
             "REJECTED",
-            "REJECT_D_ROUTE_E",
+            "REJECT_CANDIDATE_D_BINDING_NOISE_SECURITY_ROUTE_E",
         )
         changed = transition_candidate(
             state,

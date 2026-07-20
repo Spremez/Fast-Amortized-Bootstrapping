@@ -92,6 +92,27 @@ CURRENT_D_PREPLAN_GOAL = "CANDIDATE_D_DESIGN_APPROVED_PLAN_BLOCKED"
 CURRENT_D_ACTIVATION_DECISION = (
     "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED"
 )
+CURRENT_D_DECISIONS_BY_STATUS = {
+    CURRENT_D_PREPLAN_STATUS: (
+        "AUTHORIZE_CANDIDATE_D_STANDARD_RLWE_MODULE_LWE_"
+        "INTERNAL_SEMANTICS_CAMPAIGN"
+    ),
+    "PLAN_APPROVED": CURRENT_D_ACTIVATION_DECISION,
+    "D0_BASELINE_FROZEN": "PASS_D0_CANDIDATE_D_BASELINES_FROZEN",
+    "D1_NOVELTY_AUDIT_PASS": (
+        "PASS_D1_DISTINCT_SAB_OPERATOR_CLAIM_REMAINS_TESTABLE"
+    ),
+    "D2_OPERATOR_CLOSURE_PASS": "PASS_D2_OPERATOR_CLOSURE_G_LE_4",
+    "D3_ADMISSION_PASS": (
+        "ADMIT_CANDIDATE_D_TO_ISOLATED_ENCRYPTED_OPERATOR_IMPLEMENTATION"
+    ),
+}
+CURRENT_D_REJECTION_DECISIONS = (
+    "REJECT_CANDIDATE_D_PRIOR_ART_SUBSUMPTION_ROUTE_E",
+    "REJECT_CANDIDATE_D_OPERATOR_CLOSURE_ROUTE_E",
+    "REJECT_CANDIDATE_D_BINDING_NOISE_SECURITY_ROUTE_E",
+    "REJECT_CANDIDATE_D_NONPOSITIVE_COMPLETE_COST_ROUTE_E",
+)
 CURRENT_D_RESEARCH_ENVELOPE = (
     "internal_semantics_may_change_standard_RLWE_"
     "Module_LWE_reduction_required"
@@ -344,6 +365,24 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
     elif not terminal_status and goal_status != "ACTIVE":
         raise ValueError("active current campaign must have ACTIVE goal")
 
+    last_decision = state.get("last_decision")
+    expected_decision = CURRENT_D_DECISIONS_BY_STATUS.get(d_status)
+    if (
+        expected_decision is not None
+        and last_decision != expected_decision
+    ):
+        raise ValueError(
+            f"last_decision must be {expected_decision} at {d_status}"
+        )
+    if (
+        d_status == "REJECTED"
+        and e_status == "SECURITY_NOVELTY_PREFLIGHT"
+        and last_decision not in CURRENT_D_REJECTION_DECISIONS
+    ):
+        raise ValueError(
+            "last_decision must be a documented Candidate D rejection"
+        )
+
     permission = state.get("production_hot_path_permission")
     if not isinstance(permission, bool):
         raise ValueError(
@@ -509,6 +548,8 @@ def activate_candidate_d_plan(
     decision: str,
 ) -> dict[str, object]:
     validate_state(state)
+    if decision != CURRENT_D_ACTIVATION_DECISION:
+        raise ValueError("invalid Candidate D plan activation decision")
     candidates = state["candidates"]
     if (
         state["contract"] != CURRENT_CONTRACT
