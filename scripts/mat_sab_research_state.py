@@ -344,6 +344,27 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
     if e_status not in allowed_e:
         raise ValueError("invalid status for candidate E")
 
+    d_last_reached_status = candidates["D"].get("last_reached_status")
+    e_last_reached_status = candidates["E"].get("last_reached_status")
+    if d_status == "REJECTED":
+        if d_last_reached_status not in CURRENT_D_REJECTION_DECISIONS_BY_SOURCE:
+            raise ValueError(
+                "Candidate D last_reached_status must be a rejectable source"
+            )
+    elif d_last_reached_status != d_status:
+        raise ValueError(
+            "Candidate D last_reached_status must equal its live status"
+        )
+    if e_status == "REJECTED":
+        if e_last_reached_status != "SECURITY_NOVELTY_PREFLIGHT":
+            raise ValueError(
+                "Candidate E last_reached_status must be a rejectable source"
+            )
+    elif e_last_reached_status != e_status:
+        raise ValueError(
+            "Candidate E last_reached_status must equal its live status"
+        )
+
     active_candidate = state.get("active_candidate")
     if d_status == "REJECTED":
         if active_candidate != "E":
@@ -408,8 +429,13 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
         d_status == "REJECTED"
         and e_status == "SECURITY_NOVELTY_PREFLIGHT"
     ):
+        if last_decision_source_status != d_last_reached_status:
+            raise ValueError(
+                "last_decision_source_status must equal "
+                "Candidate D last_reached_status"
+            )
         source_decisions = CURRENT_D_REJECTION_DECISIONS_BY_SOURCE.get(
-            last_decision_source_status,
+            d_last_reached_status,
             (),
         )
         if last_decision not in source_decisions:
@@ -420,19 +446,19 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
     if (
         d_status == "REJECTED"
         and e_status == "REJECTED"
-        and last_decision != CURRENT_E_PREFLIGHT_REJECTION_DECISION
+        and last_decision_source_status != e_last_reached_status
     ):
         raise ValueError(
-            "last_decision must be the Candidate E preflight rejection"
+            "last_decision_source_status must equal "
+            "Candidate E last_reached_status"
         )
     if (
         d_status == "REJECTED"
         and e_status == "REJECTED"
-        and last_decision_source_status != "SECURITY_NOVELTY_PREFLIGHT"
+        and last_decision != CURRENT_E_PREFLIGHT_REJECTION_DECISION
     ):
         raise ValueError(
-            "last_decision_source_status must be "
-            "SECURITY_NOVELTY_PREFLIGHT at Candidate E rejection"
+            "last_decision must be the Candidate E preflight rejection"
         )
 
     permission = state.get("production_hot_path_permission")
@@ -579,12 +605,19 @@ def _transition_current_candidate(
         )
 
     changed["candidates"][candidate]["status"] = to_status
+    if to_status != "REJECTED":
+        changed["candidates"][candidate][
+            "last_reached_status"
+        ] = to_status
     changed["last_decision"] = decision
     changed["last_decision_source_status"] = current
     if to_status == "REJECTED" and candidate == "D":
         changed["active_candidate"] = "E"
         changed["candidates"]["E"][
             "status"
+        ] = "SECURITY_NOVELTY_PREFLIGHT"
+        changed["candidates"]["E"][
+            "last_reached_status"
         ] = "SECURITY_NOVELTY_PREFLIGHT"
         changed["goal_status"] = "ACTIVE"
         changed["paper_gate"] = "BLOCKED"
@@ -639,6 +672,7 @@ def activate_candidate_d_plan(
     changed = copy.deepcopy(dict(state))
     changed["goal_status"] = "ACTIVE"
     changed["candidates"]["D"]["status"] = "PLAN_APPROVED"
+    changed["candidates"]["D"]["last_reached_status"] = "PLAN_APPROVED"
     changed["last_decision"] = decision
     changed["last_decision_source_status"] = CURRENT_D_PREPLAN_STATUS
     validate_state(changed)

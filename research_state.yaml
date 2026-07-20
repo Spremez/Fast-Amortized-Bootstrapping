@@ -44,6 +44,7 @@
     "D": {
       "name": "LUT-Late-Binding Operator SAB",
       "status": "PLAN_APPROVED",
+      "last_reached_status": "PLAN_APPROVED",
       "research_envelope": "internal_semantics_may_change_standard_RLWE_Module_LWE_reduction_required",
       "equation_revisions_used": 0,
       "kernel_layouts_used": 0,
@@ -52,6 +53,7 @@
     "E": {
       "name": "Extension-Ring Tensor Lane-Packed SAB",
       "status": "RESERVED_FALLBACK_NOT_STARTED",
+      "last_reached_status": "RESERVED_FALLBACK_NOT_STARTED",
       "equation_revisions_used": 0,
       "kernel_layouts_used": 0,
       "full_sab_integrations_used": 0

@@ -189,6 +189,10 @@ class SelectorTechgraphTests(unittest.TestCase):
             destination = root / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / relative, destination)
+        shutil.copyfile(
+            ROOT / "research_state.yaml",
+            root / "research_state.yaml",
+        )
         subprocess.run(["git", "add", "-A"], cwd=root, check=True)
         subprocess.run(
             [
@@ -299,6 +303,9 @@ class SelectorTechgraphTests(unittest.TestCase):
     def test_exhausted_candidate_e_renders_no_active_candidate_or_open_gates(self):
         state = load_state(ROOT / "research_state.yaml")
         state["candidates"]["D"]["status"] = "D2_OPERATOR_CLOSURE_PASS"
+        state["candidates"]["D"][
+            "last_reached_status"
+        ] = "D2_OPERATOR_CLOSURE_PASS"
         state["last_decision"] = "PASS_D2_OPERATOR_CLOSURE_G_LE_4"
         state["last_decision_source_status"] = "D1_NOVELTY_AUDIT_PASS"
         validate_state(state)

@@ -125,7 +125,11 @@ def candidate_d_state(status):
         "TEST_CANDIDATE_D_SOURCE_STATUS",
     )
     state["candidates"]["D"]["status"] = status
+    state["candidates"]["D"]["last_reached_status"] = status
     state["candidates"]["E"]["status"] = "RESERVED_FALLBACK_NOT_STARTED"
+    state["candidates"]["E"][
+        "last_reached_status"
+    ] = "RESERVED_FALLBACK_NOT_STARTED"
     for candidate in ("D", "E"):
         state["candidates"][candidate]["equation_revisions_used"] = 0
         state["candidates"][candidate]["kernel_layouts_used"] = 0
@@ -209,6 +213,14 @@ class ResearchStateTests(unittest.TestCase):
             state["last_decision_source_status"],
             "DESIGN_APPROVED_PENDING_WRITTEN_SPEC_REVIEW",
         )
+        self.assertEqual(
+            state["candidates"]["D"]["last_reached_status"],
+            "PLAN_APPROVED",
+        )
+        self.assertEqual(
+            state["candidates"]["E"]["last_reached_status"],
+            "RESERVED_FALLBACK_NOT_STARTED",
+        )
         self.assertFalse(state["production_hot_path_permission"])
 
     def test_predecessor_state_is_valid_and_locked_to_primary_metric(self):
@@ -251,7 +263,7 @@ class ResearchStateTests(unittest.TestCase):
                 state, "D", "D3_ADMISSION_PASS", "SKIP_D0_D2"
             )
 
-    def test_candidate_d_forward_transitions_record_source_status(self):
+    def test_candidate_d_forward_transitions_record_gate_history(self):
         for to_status in (
             "D0_BASELINE_FROZEN",
             "D1_NOVELTY_AUDIT_PASS",
@@ -263,19 +275,31 @@ class ResearchStateTests(unittest.TestCase):
                 source_status=source_status,
                 to_status=to_status,
             ):
+                state = candidate_d_state(source_status)
+                original = json.loads(json.dumps(state))
                 changed = transition_candidate(
-                    candidate_d_state(source_status),
+                    state,
                     "D",
                     to_status,
                     CURRENT_D_DECISIONS[to_status],
                 )
+                self.assertEqual(state, original)
                 self.assertEqual(
                     changed["last_decision_source_status"],
                     source_status,
                 )
+                self.assertEqual(
+                    changed["candidates"]["D"]["last_reached_status"],
+                    to_status,
+                )
+                self.assertEqual(
+                    changed["candidates"]["E"]["last_reached_status"],
+                    "RESERVED_FALLBACK_NOT_STARTED",
+                )
 
     def test_candidate_d_rejection_routes_only_to_e(self):
         state = candidate_d_state("D2_OPERATOR_CLOSURE_PASS")
+        original = json.loads(json.dumps(state))
         changed = transition_candidate(
             state,
             "D",
@@ -285,6 +309,15 @@ class ResearchStateTests(unittest.TestCase):
         self.assertEqual(changed["active_candidate"], "E")
         self.assertEqual(
             changed["candidates"]["E"]["status"],
+            "SECURITY_NOVELTY_PREFLIGHT",
+        )
+        self.assertEqual(state, original)
+        self.assertEqual(
+            changed["candidates"]["D"]["last_reached_status"],
+            "D2_OPERATOR_CLOSURE_PASS",
+        )
+        self.assertEqual(
+            changed["candidates"]["E"]["last_reached_status"],
             "SECURITY_NOVELTY_PREFLIGHT",
         )
         self.assertFalse(changed["production_hot_path_permission"])
@@ -312,27 +345,26 @@ class ResearchStateTests(unittest.TestCase):
                         changed["last_decision_source_status"],
                         source_status,
                     )
+                    self.assertEqual(
+                        changed["candidates"]["D"]["last_reached_status"],
+                        source_status,
+                    )
+                    self.assertEqual(
+                        changed["candidates"]["E"]["last_reached_status"],
+                        "SECURITY_NOVELTY_PREFLIGHT",
+                    )
                     validate_state(changed)
 
     def test_persisted_candidate_d_rejections_bind_exact_source_and_decision(
         self,
     ):
-        all_decisions = tuple(
-            decision
-            for decisions in CURRENT_D_REJECTIONS_BY_SOURCE.values()
-            for decision in decisions
-        )
         for source_status, decisions in CURRENT_D_REJECTIONS_BY_SOURCE.items():
             other_source = next(
                 status
                 for status in CURRENT_D_REJECTIONS_BY_SOURCE
                 if status != source_status
             )
-            other_decision = next(
-                decision
-                for decision in all_decisions
-                if decision not in decisions
-            )
+            other_decision = CURRENT_D_REJECTIONS_BY_SOURCE[other_source][0]
             for decision in decisions:
                 with self.subTest(
                     source_status=source_status,
@@ -359,16 +391,26 @@ class ResearchStateTests(unittest.TestCase):
                     ):
                         validate_state(source_only)
 
-                    impossible_pair = json.loads(json.dumps(persisted))
-                    impossible_pair["last_decision"] = other_decision
-                    impossible_pair[
+                    coordinated_rewrite = json.loads(json.dumps(persisted))
+                    coordinated_rewrite["last_decision"] = other_decision
+                    coordinated_rewrite[
                         "last_decision_source_status"
-                    ] = "PLAN_APPROVED"
+                    ] = other_source
                     with self.assertRaisesRegex(
                         ValueError,
                         "last_decision_source_status",
                     ):
-                        validate_state(impossible_pair)
+                        validate_state(coordinated_rewrite)
+
+                    gate_history_only = json.loads(json.dumps(persisted))
+                    gate_history_only["candidates"]["D"][
+                        "last_reached_status"
+                    ] = other_source
+                    with self.assertRaisesRegex(
+                        ValueError,
+                        "last_decision_source_status",
+                    ):
+                        validate_state(gate_history_only)
 
     def test_candidate_d_rejection_matrix_rejects_wrong_pairs(self):
         source_statuses = (
@@ -400,12 +442,14 @@ class ResearchStateTests(unittest.TestCase):
 
     def test_activate_candidate_d_plan_is_exact_and_does_not_mutate_input(self):
         state = candidate_d_preplan_state()
+        original = json.loads(json.dumps(state))
 
         changed = state_controller.activate_candidate_d_plan(
             state,
             "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED",
         )
 
+        self.assertEqual(state, original)
         self.assertEqual(
             state["goal_status"],
             "CANDIDATE_D_DESIGN_APPROVED_PLAN_BLOCKED",
@@ -423,6 +467,14 @@ class ResearchStateTests(unittest.TestCase):
         self.assertEqual(
             changed["last_decision_source_status"],
             "DESIGN_APPROVED_PENDING_WRITTEN_SPEC_REVIEW",
+        )
+        self.assertEqual(
+            changed["candidates"]["D"]["last_reached_status"],
+            "PLAN_APPROVED",
+        )
+        self.assertEqual(
+            changed["candidates"]["E"]["last_reached_status"],
+            "RESERVED_FALLBACK_NOT_STARTED",
         )
 
     def test_activate_candidate_d_plan_rejects_an_unbound_decision(self):
@@ -487,6 +539,31 @@ class ResearchStateTests(unittest.TestCase):
                     mutated = json.loads(json.dumps(state))
                     mutated[field] = value
                     with self.assertRaisesRegex(ValueError, field):
+                        validate_state(mutated)
+
+    def test_non_rejected_current_candidates_bind_history_to_live_status(self):
+        for state in (
+            candidate_d_preplan_state(),
+            candidate_d_state("PLAN_APPROVED"),
+            candidate_d_state("D0_BASELINE_FROZEN"),
+            candidate_d_state("D1_NOVELTY_AUDIT_PASS"),
+            candidate_d_state("D2_OPERATOR_CLOSURE_PASS"),
+            candidate_d_state("D3_ADMISSION_PASS"),
+            candidate_e_preflight_state(),
+        ):
+            for candidate in ("D", "E"):
+                status = state["candidates"][candidate]["status"]
+                if status == "REJECTED":
+                    continue
+                with self.subTest(candidate=candidate, status=status):
+                    mutated = json.loads(json.dumps(state))
+                    mutated["candidates"][candidate][
+                        "last_reached_status"
+                    ] = "OTHER_REACHED_STATUS"
+                    with self.assertRaisesRegex(
+                        ValueError,
+                        "last_reached_status",
+                    ):
                         validate_state(mutated)
 
     def test_current_contract_rejects_unreviewed_future_d_states(self):
@@ -617,9 +694,18 @@ class ResearchStateTests(unittest.TestCase):
 
     def test_candidate_e_rejection_uses_canonical_preflight_decision(self):
         preflight = candidate_e_preflight_state()
+        original = json.loads(json.dumps(preflight))
         self.assertEqual(
             preflight["last_decision_source_status"],
             "D2_OPERATOR_CLOSURE_PASS",
+        )
+        self.assertEqual(
+            preflight["candidates"]["D"]["last_reached_status"],
+            "D2_OPERATOR_CLOSURE_PASS",
+        )
+        self.assertEqual(
+            preflight["candidates"]["E"]["last_reached_status"],
+            "SECURITY_NOVELTY_PREFLIGHT",
         )
         changed = transition_candidate(
             preflight,
@@ -628,6 +714,7 @@ class ResearchStateTests(unittest.TestCase):
             CURRENT_E_PREFLIGHT_REJECTION_DECISION,
         )
 
+        self.assertEqual(preflight, original)
         self.assertEqual(
             changed["goal_status"],
             "RESEARCH_CAMPAIGN_EXHAUSTED",
@@ -638,6 +725,14 @@ class ResearchStateTests(unittest.TestCase):
         )
         self.assertEqual(
             changed["last_decision_source_status"],
+            "SECURITY_NOVELTY_PREFLIGHT",
+        )
+        self.assertEqual(
+            changed["candidates"]["D"]["last_reached_status"],
+            "D2_OPERATOR_CLOSURE_PASS",
+        )
+        self.assertEqual(
+            changed["candidates"]["E"]["last_reached_status"],
             "SECURITY_NOVELTY_PREFLIGHT",
         )
 
@@ -660,13 +755,29 @@ class ResearchStateTests(unittest.TestCase):
         mutations = (
             ("last_decision", "OPAQUE_LAST_DECISION_MUTATION"),
             ("last_decision_source_status", "D2_OPERATOR_CLOSURE_PASS"),
+            ("candidate_e_last_reached_status", "D2_OPERATOR_CLOSURE_PASS"),
         )
         for field, value in mutations:
             with self.subTest(field=field):
                 state = json.loads(json.dumps(exhausted))
-                state[field] = value
-                with self.assertRaisesRegex(ValueError, field):
+                if field == "candidate_e_last_reached_status":
+                    state["candidates"]["E"]["last_reached_status"] = value
+                    error_field = "last_reached_status"
+                else:
+                    state[field] = value
+                    error_field = field
+                with self.assertRaisesRegex(ValueError, error_field):
                     validate_state(state)
+
+        coordinated_rewrite = json.loads(json.dumps(exhausted))
+        coordinated_rewrite["last_decision"] = (
+            "REJECT_CANDIDATE_D_PRIOR_ART_SUBSUMPTION_ROUTE_E"
+        )
+        coordinated_rewrite[
+            "last_decision_source_status"
+        ] = "D0_BASELINE_FROZEN"
+        with self.assertRaises(ValueError):
+            validate_state(coordinated_rewrite)
 
     def test_valid_transition_does_not_mutate_input(self):
         state = candidate_a_state(load_state(PREDECESSOR_STATE), "INTAKE")
