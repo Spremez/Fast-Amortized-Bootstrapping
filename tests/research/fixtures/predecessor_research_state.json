@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "contract": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
+  "goal_status": "RESEARCH_CAMPAIGN_EXHAUSTED",
+  "target_venue": "CCS_USENIX_SECURITY",
+  "primary_metric": "complete_sab_T_bootstrap_over_r",
+  "baselines": {
+    "B0": "repeated_scalar_SAB",
+    "B1": "exact_dense_PVW_MAT_SAB_current_head"
+  },
+  "active_candidate": "C",
+  "candidate_order": [
+    "A",
+    "B",
+    "C"
+  ],
+  "candidates": {
+    "A": {
+      "name": "Star-Cycle Sparse MAT-GGSW",
+      "status": "REJECTED",
+      "equation_revisions_used": 0,
+      "kernel_layouts_used": 0,
+      "full_sab_integrations_used": 0
+    },
+    "B": {
+      "name": "Factorized Star-Cycle",
+      "status": "REJECTED",
+      "equation_revisions_used": 0,
+      "kernel_layouts_used": 0,
+      "full_sab_integrations_used": 0
+    },
+    "C": {
+      "name": "Rank-Bounded Shared-Mask State",
+      "status": "REJECTED",
+      "equation_revisions_used": 1,
+      "kernel_layouts_used": 0,
+      "full_sab_integrations_used": 0
+    }
+  },
+  "paper_gate": "BLOCKED",
+  "production_hot_path_permission": false,
+  "last_decision": "REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED"
+}

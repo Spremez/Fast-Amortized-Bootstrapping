@@ -13,6 +13,9 @@ import scripts.run_candidate_b_factorized_gate as gate
 
 
 ROOT = Path(__file__).resolve().parents[2]
+PREDECESSOR_STATE = (
+    ROOT / "tests/research/fixtures/predecessor_research_state.json"
+)
 RUN_MARKER = "candidate-b-factorized-gate-001"
 HYPOTHESIS_KEY = "H_candidate_b_factorized_mechanism:"
 HYPOTHESIS_START = "# candidate-b-factorized-gate-hypothesis-start"
@@ -56,7 +59,7 @@ class CandidateBCloseoutTests(unittest.TestCase):
             shutil.copyfile(ROOT / relative, destination)
 
         state = json.loads(
-            (ROOT / "research_state.yaml").read_text(encoding="ascii")
+            PREDECESSOR_STATE.read_text(encoding="ascii")
         )
         state["goal_status"] = "ACTIVE"
         state["paper_gate"] = "BLOCKED"

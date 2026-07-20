@@ -3,6 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import scripts.mat_sab_research_state as state_controller
 from scripts.mat_sab_research_state import (
     load_state,
     transition_candidate,
@@ -11,6 +12,9 @@ from scripts.mat_sab_research_state import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
+PREDECESSOR_STATE = (
+    ROOT / "tests/research/fixtures/predecessor_research_state.json"
+)
 
 
 def candidate_a_state(state, status):
@@ -71,6 +75,34 @@ def candidate_c_state(state, status, *, terminal=False):
     return state
 
 
+def candidate_d_state(status):
+    state = load_state(ROOT / "research_state.yaml")
+    state["goal_status"] = "ACTIVE"
+    state["paper_gate"] = "BLOCKED"
+    state["production_hot_path_permission"] = False
+    state["active_candidate"] = "D"
+    state["last_decision"] = "TEST_CANDIDATE_D_STATE"
+    state["candidates"]["D"]["status"] = status
+    state["candidates"]["E"]["status"] = "RESERVED_FALLBACK_NOT_STARTED"
+    for candidate in ("D", "E"):
+        state["candidates"][candidate]["equation_revisions_used"] = 0
+        state["candidates"][candidate]["kernel_layouts_used"] = 0
+        state["candidates"][candidate]["full_sab_integrations_used"] = 0
+    return state
+
+
+def candidate_d_preplan_state():
+    state = candidate_d_state(
+        "DESIGN_APPROVED_PENDING_WRITTEN_SPEC_REVIEW"
+    )
+    state["goal_status"] = "CANDIDATE_D_DESIGN_APPROVED_PLAN_BLOCKED"
+    state["last_decision"] = (
+        "AUTHORIZE_CANDIDATE_D_STANDARD_RLWE_MODULE_LWE_"
+        "INTERNAL_SEMANTICS_CAMPAIGN"
+    )
+    return state
+
+
 class ResearchStateTests(unittest.TestCase):
     def test_candidate_state_helpers_normalize_all_mutable_fields(self):
         cases = (
@@ -79,7 +111,7 @@ class ResearchStateTests(unittest.TestCase):
         )
         for helper, status, expected_statuses, expected_decision in cases:
             with self.subTest(helper=helper.__name__):
-                state = load_state(ROOT / "research_state.yaml")
+                state = load_state(PREDECESSOR_STATE)
                 state["goal_status"] = "PAPER_READY"
                 state["paper_gate"] = "PASS"
                 state["production_hot_path_permission"] = True
@@ -108,8 +140,23 @@ class ResearchStateTests(unittest.TestCase):
                     self.assertEqual(candidate["kernel_layouts_used"], 0)
                     self.assertEqual(candidate["full_sab_integrations_used"], 0)
 
-    def test_repository_state_is_valid_and_locked_to_primary_metric(self):
+    def test_current_repository_state_uses_candidate_d_contract(self):
         state = load_state(ROOT / "research_state.yaml")
+        self.assertEqual(
+            state["contract"],
+            "docs/superpowers/specs/"
+            "2026-07-20-lut-late-binding-operator-sab-design.md",
+        )
+        self.assertEqual(
+            state["primary_metric"],
+            "complete_sab_T_bootstrap_div_rN_active",
+        )
+        self.assertEqual(state["candidate_order"], ["A", "B", "C", "D", "E"])
+        self.assertEqual(state["active_candidate"], "D")
+        self.assertFalse(state["production_hot_path_permission"])
+
+    def test_predecessor_state_is_valid_and_locked_to_primary_metric(self):
+        state = load_state(PREDECESSOR_STATE)
         validate_state(state)
         self.assertIn(state["goal_status"], {
             "ACTIVE", "PAPER_READY", "ACCEPTED",
@@ -141,8 +188,139 @@ class ResearchStateTests(unittest.TestCase):
         if active in {"INTAKE", "TECHGRAPH_ANCHORED", "EQUATIONS_DEFINED"}:
             self.assertFalse(state["production_hot_path_permission"])
 
+    def test_candidate_d_cannot_skip_d0_d3(self):
+        state = candidate_d_state("PLAN_APPROVED")
+        with self.assertRaisesRegex(ValueError, "invalid transition"):
+            transition_candidate(
+                state, "D", "D3_ADMISSION_PASS", "SKIP_D0_D2"
+            )
+
+    def test_candidate_d_rejection_routes_only_to_e(self):
+        state = candidate_d_state("D2_OPERATOR_CLOSURE_PASS")
+        changed = transition_candidate(
+            state, "D", "REJECTED", "REJECT_D_ROUTE_E"
+        )
+        self.assertEqual(changed["active_candidate"], "E")
+        self.assertEqual(
+            changed["candidates"]["E"]["status"],
+            "SECURITY_NOVELTY_PREFLIGHT",
+        )
+        self.assertFalse(changed["production_hot_path_permission"])
+
+    def test_activate_candidate_d_plan_is_exact_and_does_not_mutate_input(self):
+        state = candidate_d_preplan_state()
+
+        changed = state_controller.activate_candidate_d_plan(
+            state,
+            "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED",
+        )
+
+        self.assertEqual(
+            state["goal_status"],
+            "CANDIDATE_D_DESIGN_APPROVED_PLAN_BLOCKED",
+        )
+        self.assertEqual(
+            state["candidates"]["D"]["status"],
+            "DESIGN_APPROVED_PENDING_WRITTEN_SPEC_REVIEW",
+        )
+        self.assertEqual(changed["goal_status"], "ACTIVE")
+        self.assertEqual(changed["candidates"]["D"]["status"], "PLAN_APPROVED")
+        self.assertEqual(
+            changed["last_decision"],
+            "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED",
+        )
+
+    def test_activate_candidate_d_plan_rejects_other_start_states(self):
+        mutations = (
+            ("goal_status", "ACTIVE"),
+            ("candidate_d_status", "PLAN_APPROVED"),
+        )
+        for field, value in mutations:
+            with self.subTest(field=field):
+                state = candidate_d_preplan_state()
+                if field == "candidate_d_status":
+                    state["candidates"]["D"]["status"] = value
+                else:
+                    state[field] = value
+                with self.assertRaises(ValueError):
+                    state_controller.activate_candidate_d_plan(
+                        state,
+                        "TEST_DECISION",
+                    )
+
+    def test_current_contract_rejects_unknown_contracts(self):
+        state = candidate_d_state("PLAN_APPROVED")
+        state["contract"] = "docs/superpowers/specs/unknown.md"
+        with self.assertRaisesRegex(ValueError, "contract"):
+            validate_state(state)
+
+    def test_current_contract_requires_rejected_predecessors(self):
+        for candidate in ("A", "B", "C"):
+            with self.subTest(candidate=candidate):
+                state = candidate_d_state("PLAN_APPROVED")
+                state["candidates"][candidate]["status"] = "QUEUED"
+                with self.assertRaisesRegex(ValueError, "A, B, and C"):
+                    validate_state(state)
+
+    def test_current_contract_requires_candidate_c_revision(self):
+        state = candidate_d_state("PLAN_APPROVED")
+        state["candidates"]["C"]["equation_revisions_used"] = 0
+        with self.assertRaisesRegex(ValueError, "Candidate C equation revision"):
+            validate_state(state)
+
+    def test_candidate_d_and_e_budgets_are_binary_integers(self):
+        fields = (
+            "equation_revisions_used",
+            "kernel_layouts_used",
+            "full_sab_integrations_used",
+        )
+        for candidate in ("D", "E"):
+            for field in fields:
+                for value in (-1, 2, False, True):
+                    with self.subTest(
+                        candidate=candidate,
+                        field=field,
+                        value=value,
+                    ):
+                        state = candidate_d_state("PLAN_APPROVED")
+                        state["candidates"][candidate][field] = value
+                        with self.assertRaisesRegex(
+                            ValueError,
+                            f"invalid {field}",
+                        ):
+                            validate_state(state)
+
+    def test_current_hot_path_permission_starts_at_d3(self):
+        state = candidate_d_state("D2_OPERATOR_CLOSURE_PASS")
+        state["production_hot_path_permission"] = True
+        with self.assertRaisesRegex(ValueError, "production hot path"):
+            validate_state(state)
+
+        state = candidate_d_state("D3_ADMISSION_PASS")
+        state["production_hot_path_permission"] = True
+        validate_state(state)
+
+    def test_candidate_e_advances_in_its_own_pipeline(self):
+        state = transition_candidate(
+            candidate_d_state("D2_OPERATOR_CLOSURE_PASS"),
+            "D",
+            "REJECTED",
+            "REJECT_D_ROUTE_E",
+        )
+        changed = transition_candidate(
+            state,
+            "E",
+            "EQUATIONS_DEFINED",
+            "CANDIDATE_E_EQUATIONS_DEFINED",
+        )
+        self.assertEqual(
+            changed["candidates"]["E"]["status"],
+            "EQUATIONS_DEFINED",
+        )
+        self.assertEqual(changed["active_candidate"], "E")
+
     def test_valid_transition_does_not_mutate_input(self):
-        state = candidate_a_state(load_state(ROOT / "research_state.yaml"), "INTAKE")
+        state = candidate_a_state(load_state(PREDECESSOR_STATE), "INTAKE")
         changed = transition_candidate(
             state, "A", "TECHGRAPH_ANCHORED", "CANDIDATE_A_TECHGRAPH_ANCHORED"
         )
@@ -151,7 +329,7 @@ class ResearchStateTests(unittest.TestCase):
         self.assertEqual(changed["last_decision"], "CANDIDATE_A_TECHGRAPH_ANCHORED")
 
     def test_transition_records_an_opaque_decision(self):
-        state = candidate_a_state(load_state(ROOT / "research_state.yaml"), "INTAKE")
+        state = candidate_a_state(load_state(PREDECESSOR_STATE), "INTAKE")
         try:
             changed = transition_candidate(
                 state, "A", "TECHGRAPH_ANCHORED", "OPAQUE_TEST_DECISION"
@@ -161,7 +339,7 @@ class ResearchStateTests(unittest.TestCase):
         self.assertEqual(changed["last_decision"], "OPAQUE_TEST_DECISION")
 
     def test_skipping_a_gate_is_rejected(self):
-        state = candidate_a_state(load_state(ROOT / "research_state.yaml"), "INTAKE")
+        state = candidate_a_state(load_state(PREDECESSOR_STATE), "INTAKE")
         with self.assertRaisesRegex(ValueError, "invalid transition"):
             transition_candidate(
                 state,
@@ -171,7 +349,10 @@ class ResearchStateTests(unittest.TestCase):
             )
 
     def test_rejection_routes_to_next_candidate(self):
-        state = candidate_a_state(load_state(ROOT / "research_state.yaml"), "EQUATIONS_DEFINED")
+        state = candidate_a_state(
+            load_state(PREDECESSOR_STATE),
+            "EQUATIONS_DEFINED",
+        )
         changed = transition_candidate(
             state,
             "A",
@@ -190,7 +371,7 @@ class ResearchStateTests(unittest.TestCase):
         )
         for field, value in mutations:
             with self.subTest(field=field):
-                state = load_state(ROOT / "research_state.yaml")
+                state = load_state(PREDECESSOR_STATE)
                 state[field] = value
                 with self.assertRaises(ValueError):
                     validate_state(state)
@@ -207,7 +388,7 @@ class ResearchStateTests(unittest.TestCase):
         )
         for baselines in mutations:
             with self.subTest(baselines=baselines):
-                state = load_state(ROOT / "research_state.yaml")
+                state = load_state(PREDECESSOR_STATE)
                 state["baselines"] = baselines
                 with self.assertRaisesRegex(ValueError, "baselines changed"):
                     validate_state(state)
@@ -220,7 +401,7 @@ class ResearchStateTests(unittest.TestCase):
         }
         for candidate, name in expected.items():
             with self.subTest(candidate=candidate):
-                state = load_state(ROOT / "research_state.yaml")
+                state = load_state(PREDECESSOR_STATE)
                 state["candidates"][candidate]["name"] = f"{name} changed"
                 with self.assertRaisesRegex(ValueError, "candidate name changed"):
                     validate_state(state)
@@ -237,7 +418,7 @@ class ResearchStateTests(unittest.TestCase):
                     with self.subTest(
                         candidate=candidate, field=field, value=value
                     ):
-                        state = load_state(ROOT / "research_state.yaml")
+                        state = load_state(PREDECESSOR_STATE)
                         state["candidates"][candidate][field] = value
                         with self.assertRaisesRegex(ValueError, f"invalid {field}"):
                             validate_state(state)
@@ -253,7 +434,7 @@ class ResearchStateTests(unittest.TestCase):
         for status in before_amdahl:
             with self.subTest(status=status):
                 state = candidate_a_state(
-                    load_state(ROOT / "research_state.yaml"), status
+                    load_state(PREDECESSOR_STATE), status
                 )
                 state["production_hot_path_permission"] = True
                 with self.assertRaisesRegex(ValueError, "production hot path"):
@@ -261,7 +442,8 @@ class ResearchStateTests(unittest.TestCase):
 
     def test_hot_path_permission_is_allowed_at_amdahl_projection_pass(self):
         state = candidate_a_state(
-            load_state(ROOT / "research_state.yaml"), "AMDAHL_PROJECTION_PASS"
+            load_state(PREDECESSOR_STATE),
+            "AMDAHL_PROJECTION_PASS",
         )
         state["production_hot_path_permission"] = True
         validate_state(state)
@@ -269,13 +451,13 @@ class ResearchStateTests(unittest.TestCase):
     def test_hot_path_permission_requires_a_strict_boolean(self):
         for permission in (0, 1):
             with self.subTest(permission=permission):
-                state = load_state(ROOT / "research_state.yaml")
+                state = load_state(PREDECESSOR_STATE)
                 state["production_hot_path_permission"] = permission
                 with self.assertRaisesRegex(ValueError, "must be boolean"):
                     validate_state(state)
 
     def test_paper_gate_rejects_unknown_values(self):
-        state = load_state(ROOT / "research_state.yaml")
+        state = load_state(PREDECESSOR_STATE)
         state["paper_gate"] = "pending-anything"
         with self.assertRaisesRegex(ValueError, "invalid paper_gate"):
             validate_state(state)
@@ -296,7 +478,7 @@ class ResearchStateTests(unittest.TestCase):
                 active_status=active_status,
             ):
                 state = candidate_b_state(
-                    load_state(ROOT / "research_state.yaml"), active_status
+                    load_state(PREDECESSOR_STATE), active_status
                 )
                 state["goal_status"] = goal_status
                 state["paper_gate"] = paper_gate
@@ -308,7 +490,7 @@ class ResearchStateTests(unittest.TestCase):
 
     def test_paper_gate_transition_and_accepted_state_are_valid(self):
         state = candidate_b_state(
-            load_state(ROOT / "research_state.yaml"), "FULL_SAB_PASS"
+            load_state(PREDECESSOR_STATE), "FULL_SAB_PASS"
         )
 
         changed = transition_candidate(
@@ -329,7 +511,7 @@ class ResearchStateTests(unittest.TestCase):
         validate_state(changed)
 
     def test_candidate_c_inconclusive_terminal_state_is_valid(self):
-        state = load_state(ROOT / "research_state.yaml")
+        state = load_state(PREDECESSOR_STATE)
         state["goal_status"] = "RESEARCH_CAMPAIGN_INCONCLUSIVE"
         state["active_candidate"] = "C"
         state["candidates"]["A"]["status"] = "REJECTED"
@@ -352,7 +534,7 @@ class ResearchStateTests(unittest.TestCase):
         )
         for field, value in mutations:
             with self.subTest(field=field):
-                state = load_state(ROOT / "research_state.yaml")
+                state = load_state(PREDECESSOR_STATE)
                 state["goal_status"] = "RESEARCH_CAMPAIGN_INCONCLUSIVE"
                 state["active_candidate"] = "C"
                 state["candidates"]["A"]["status"] = "REJECTED"
@@ -369,7 +551,7 @@ class ResearchStateTests(unittest.TestCase):
                     validate_state(state)
 
     def test_transition_candidate_c_to_inconclusive_is_terminal(self):
-        state = load_state(ROOT / "research_state.yaml")
+        state = load_state(PREDECESSOR_STATE)
         state["goal_status"] = "ACTIVE"
         state["active_candidate"] = "C"
         state["candidates"]["A"]["status"] = "REJECTED"
@@ -402,7 +584,7 @@ class ResearchStateTests(unittest.TestCase):
         for status in ("INTAKE", "TECHGRAPH_ANCHORED", "EQUATIONS_DEFINED"):
             with self.subTest(status=status):
                 state = candidate_c_state(
-                    load_state(ROOT / "research_state.yaml"),
+                    load_state(PREDECESSOR_STATE),
                     status,
                 )
                 validate_state(state)
@@ -426,7 +608,7 @@ class ResearchStateTests(unittest.TestCase):
         ):
             with self.subTest(status=status):
                 state = candidate_c_state(
-                    load_state(ROOT / "research_state.yaml"),
+                    load_state(PREDECESSOR_STATE),
                     status,
                     terminal=True,
                 )
@@ -449,7 +631,7 @@ class ResearchStateTests(unittest.TestCase):
         ):
             with self.subTest(status=status):
                 state = candidate_c_state(
-                    load_state(ROOT / "research_state.yaml"),
+                    load_state(PREDECESSOR_STATE),
                     "EQUATIONS_DEFINED",
                 )
                 changed = transition_candidate(

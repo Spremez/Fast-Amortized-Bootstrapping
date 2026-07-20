@@ -14,6 +14,9 @@ import scripts.run_candidate_a_star_cycle_gate as gate
 
 
 ROOT = Path(__file__).resolve().parents[2]
+PREDECESSOR_STATE = (
+    ROOT / "tests/research/fixtures/predecessor_research_state.json"
+)
 RUN_MARKER = "candidate-a-star-cycle-gate-001"
 HYPOTHESIS_KEY = "H_candidate_a_star_cycle_mechanism:"
 HYPOTHESIS_START = "# candidate-a-star-cycle-gate-hypothesis-start"
@@ -49,7 +52,7 @@ class CandidateACloseoutTests(unittest.TestCase):
             destination = root / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / relative, destination)
-        state = json.loads((ROOT / "research_state.yaml").read_text(encoding="ascii"))
+        state = json.loads(PREDECESSOR_STATE.read_text(encoding="ascii"))
         state["goal_status"] = "ACTIVE"
         state["paper_gate"] = "BLOCKED"
         state["production_hot_path_permission"] = False

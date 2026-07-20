@@ -24,6 +24,9 @@ from scripts.mat_sab_research_state import load_state
 
 
 ROOT = Path(__file__).resolve().parents[2]
+PREDECESSOR_STATE = (
+    ROOT / "tests/research/fixtures/predecessor_research_state.json"
+)
 UNIT_INPUT_COMMIT = subprocess.run(
     ["git", "rev-parse", "HEAD"],
     cwd=ROOT,
@@ -129,6 +132,7 @@ def synthetic_campaign_state(active_candidate):
         "paper_gate": "BLOCKED",
         "production_hot_path_permission": False,
         "active_candidate": active_candidate,
+        "candidate_order": ["A", "B", "C"],
         "candidates": {
             candidate: {"status": status}
             for candidate, status in statuses.items()
@@ -143,6 +147,7 @@ def terminal_rejected_campaign_state():
         "paper_gate": "BLOCKED",
         "production_hot_path_permission": False,
         "active_candidate": "C",
+        "candidate_order": ["A", "B", "C"],
         "candidates": {
             candidate: {"status": "REJECTED"}
             for candidate in ("A", "B", "C")
@@ -230,21 +235,24 @@ class SelectorTechgraphTests(unittest.TestCase):
             ROOT, source_state_commit=UNIT_INPUT_COMMIT
         )
         state = load_state(ROOT / "research_state.yaml")
-        self.assertEqual(
-            graph["campaign_state"],
+        expected = {
+            "goal_status": state["goal_status"],
+            "paper_gate": state["paper_gate"],
+            "active_candidate": state["active_candidate"],
+            "active_candidate_status": state["candidates"][
+                state["active_candidate"]
+            ]["status"],
+        }
+        expected.update(
             {
-                "goal_status": state["goal_status"],
-                "paper_gate": state["paper_gate"],
-                "active_candidate": state["active_candidate"],
-                "active_candidate_status": state["candidates"][
-                    state["active_candidate"]
-                ]["status"],
-                "candidate_a_status": state["candidates"]["A"]["status"],
-                "candidate_b_status": state["candidates"]["B"]["status"],
-                "candidate_c_status": state["candidates"]["C"]["status"],
-                "last_decision": state["last_decision"],
-            },
+                f"candidate_{candidate.lower()}_status": (
+                    state["candidates"][candidate]["status"]
+                )
+                for candidate in state["candidate_order"]
+            }
         )
+        expected["last_decision"] = state["last_decision"]
+        self.assertEqual(graph["campaign_state"], expected)
 
     def test_campaign_routes_mark_the_active_candidate(self):
         for active_candidate in ("A", "B", "C"):
@@ -256,6 +264,33 @@ class SelectorTechgraphTests(unittest.TestCase):
                     campaign,
                 )
                 self.assertEqual(campaign.count("(active)"), 1)
+
+    def test_current_campaign_renders_all_five_candidates(self):
+        state = load_state(ROOT / "research_state.yaml")
+        campaign = "\n".join(_campaign_markdown(_campaign_view(state)))
+        expected = (
+            "Candidate A: `REJECTED`",
+            "Candidate B: `REJECTED`",
+            "Candidate C: `REJECTED`",
+            "Candidate D: `PLAN_APPROVED` (active)",
+            "Candidate E: `RESERVED_FALLBACK_NOT_STARTED`",
+        )
+        for text in expected:
+            with self.subTest(text=text):
+                self.assertIn(text, campaign)
+        self.assertEqual(campaign.count("(active)"), 1)
+
+    def test_predecessor_campaign_fixture_still_renders_three_candidates(self):
+        state = load_state(PREDECESSOR_STATE)
+        campaign = "\n".join(_campaign_markdown(_campaign_view(state)))
+        for candidate in ("A", "B", "C"):
+            active = " (active)" if candidate == "C" else ""
+            self.assertIn(
+                f"Candidate {candidate}: `REJECTED`{active}",
+                campaign,
+            )
+        self.assertNotIn("Candidate D:", campaign)
+        self.assertNotIn("Candidate E:", campaign)
 
     def test_terminal_campaign_records_candidate_c_closeout_boundary(self):
         graph = _campaign_view(terminal_rejected_campaign_state())
@@ -362,7 +397,7 @@ class SelectorTechgraphTests(unittest.TestCase):
             for path in paths[1:]:
                 content = path.read_text(encoding="ascii")
                 with self.subTest(path=path.name):
-                    for candidate in ("A", "B", "C"):
+                    for candidate in state["candidate_order"]:
                         active = " (active)" if candidate == state["active_candidate"] else ""
                         self.assertIn(
                             f"Candidate {candidate}: `"
@@ -538,9 +573,32 @@ class SelectorTechgraphTests(unittest.TestCase):
 
     def test_tracked_outputs_match_a_fresh_render(self):
         bound_commit = published_input_commit()
-        graph = build_graph(ROOT, source_state_commit=bound_commit)
         with tempfile.TemporaryDirectory() as tmp:
-            fresh_paths = write_outputs(Path(tmp), graph)
+            base = Path(tmp)
+            historical_root = base / "historical-root"
+            subprocess.run(
+                [
+                    "git",
+                    "clone",
+                    "--shared",
+                    "-q",
+                    str(ROOT),
+                    str(historical_root),
+                ],
+                check=True,
+            )
+            subprocess.run(
+                ["git", "checkout", "--detach", "-q", bound_commit],
+                cwd=historical_root,
+                check=True,
+            )
+            graph = build_graph(
+                historical_root,
+                source_state_commit=bound_commit,
+            )
+            fresh_root = base / "fresh"
+            fresh_root.mkdir()
+            fresh_paths = write_outputs(fresh_root, graph)
             for fresh_path in fresh_paths:
                 tracked_path = ROOT / "paper_techgraphs" / fresh_path.name
                 with self.subTest(path=fresh_path.name):

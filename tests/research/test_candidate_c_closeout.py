@@ -22,6 +22,9 @@ import scripts.run_candidate_c_rank_bounded_gate as gate
 
 
 ROOT = Path(__file__).resolve().parents[2]
+PREDECESSOR_STATE = (
+    ROOT / "tests/research/fixtures/predecessor_research_state.json"
+)
 RUN_MARKER = "candidate-c-rank-bounded-gate-001"
 HYPOTHESIS_START = "# candidate-c-rank-bounded-gate-hypothesis-start"
 HYPOTHESIS_END = "# candidate-c-rank-bounded-gate-hypothesis-end"
@@ -282,7 +285,7 @@ class CandidateCCloseoutTests(unittest.TestCase):
         (root / "hypotheses").mkdir(parents=True)
         (root / "repro").mkdir()
         state = json.loads(
-            (ROOT / "research_state.yaml").read_text(encoding="ascii")
+            PREDECESSOR_STATE.read_text(encoding="ascii")
         )
         state["goal_status"] = "ACTIVE"
         state["paper_gate"] = "BLOCKED"
@@ -333,6 +336,7 @@ class CandidateCCloseoutTests(unittest.TestCase):
             destination = root / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / relative, destination)
+        shutil.copyfile(PREDECESSOR_STATE, root / "research_state.yaml")
         subprocess.run(["git", "add", "-A"], cwd=root, check=True)
         subprocess.run(
             [
@@ -394,7 +398,7 @@ class CandidateCCloseoutTests(unittest.TestCase):
             shutil.copyfile(ROOT / relative, root / relative)
 
         state_path = root / "research_state.yaml"
-        state = json.loads(state_path.read_text(encoding="ascii"))
+        state = json.loads(PREDECESSOR_STATE.read_text(encoding="ascii"))
         state["goal_status"] = "ACTIVE"
         state["paper_gate"] = "BLOCKED"
         state["production_hot_path_permission"] = False
@@ -1206,6 +1210,7 @@ class CandidateCCloseoutTests(unittest.TestCase):
                 destination = root / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(ROOT / relative, destination)
+            shutil.copyfile(PREDECESSOR_STATE, root / "research_state.yaml")
             subprocess.run(["git", "add", "-A"], cwd=root, check=True)
             subprocess.run(
                 [

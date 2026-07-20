@@ -10,23 +10,65 @@ from typing import Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_STATE = ROOT / "research_state.yaml"
-ORDER = ("A", "B", "C")
-APPROVED_CONTRACT = (
+PREDECESSOR_CONTRACT = (
     "docs/superpowers/specs/"
     "2026-07-16-ccs-usenix-mat-sab-research-contract-design.md"
 )
+CURRENT_CONTRACT = (
+    "docs/superpowers/specs/"
+    "2026-07-20-lut-late-binding-operator-sab-design.md"
+)
+PREDECESSOR_ORDER = ("A", "B", "C")
+CURRENT_ORDER = ("A", "B", "C", "D", "E")
+CURRENT_PRIMARY_METRIC = "complete_sab_T_bootstrap_div_rN_active"
+D_PIPELINE = (
+    "PLAN_APPROVED",
+    "D0_BASELINE_FROZEN",
+    "D1_NOVELTY_AUDIT_PASS",
+    "D2_OPERATOR_CLOSURE_PASS",
+    "D3_ADMISSION_PASS",
+    "D4_ISOLATED_OPERATOR_PASS",
+    "D5_FULL_SAB_PASS",
+    "D6_OPTIMIZATION_COMPLETE",
+    "D7_EVIDENCE_MATRIX_PASS",
+    "D8_PAPER_GATE_PASS",
+)
+E_PIPELINE = (
+    "SECURITY_NOVELTY_PREFLIGHT",
+    "EQUATIONS_DEFINED",
+    "ADVERSARIAL_CHECKER_PASS",
+    "KEY_SECURITY_NOISE_PREFLIGHT_PASS",
+    "AMDAHL_PROJECTION_PASS",
+    "ISOLATED_KERNEL_PASS",
+    "FULL_SAB_PASS",
+    "PAPER_GATE_PASS",
+)
+CURRENT_BASELINES = {
+    "B0a": "repeated_scalar_SAB",
+    "B0b": (
+        "shared_output_key_independent_mask_"
+        "repeated_scalar_control_required"
+    ),
+    "B1": "exact_dense_PVW_MAT_SAB_current_head",
+    "B2": "BatchBoot_same_backend_local_reproduction_required",
+}
 APPROVED_VENUE = "CCS_USENIX_SECURITY"
-PRIMARY_METRIC = "complete_sab_T_bootstrap_over_r"
-APPROVED_BASELINES = {
+PREDECESSOR_PRIMARY_METRIC = "complete_sab_T_bootstrap_over_r"
+PREDECESSOR_BASELINES = {
     "B0": "repeated_scalar_SAB",
     "B1": "exact_dense_PVW_MAT_SAB_current_head",
 }
-APPROVED_CANDIDATE_NAMES = {
+PREDECESSOR_CANDIDATE_NAMES = {
     "A": "Star-Cycle Sparse MAT-GGSW",
     "B": "Factorized Star-Cycle",
     "C": "Rank-Bounded Shared-Mask State",
 }
-PIPELINE = (
+CURRENT_CANDIDATE_NAMES = {
+    **PREDECESSOR_CANDIDATE_NAMES,
+    "D": "LUT-Late-Binding Operator SAB",
+    "E": "Extension-Ring Tensor Lane-Packed SAB",
+}
+PREDECESSOR_PIPELINE = (
     "INTAKE",
     "TECHGRAPH_ANCHORED",
     "EQUATIONS_DEFINED",
@@ -43,6 +85,17 @@ CANDIDATE_C_PRE_REVISION_STATUSES = {
     "TECHGRAPH_ANCHORED",
     "EQUATIONS_DEFINED",
 }
+CURRENT_D_PREPLAN_STATUS = (
+    "DESIGN_APPROVED_PENDING_WRITTEN_SPEC_REVIEW"
+)
+CURRENT_D_PREPLAN_GOAL = "CANDIDATE_D_DESIGN_APPROVED_PLAN_BLOCKED"
+CURRENT_D_ACTIVATION_DECISION = (
+    "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED"
+)
+CURRENT_D_RESEARCH_ENVELOPE = (
+    "internal_semantics_may_change_standard_RLWE_"
+    "Module_LWE_reduction_required"
+)
 
 
 def load_state(path: Path = DEFAULT_STATE) -> dict[str, object]:
@@ -51,18 +104,18 @@ def load_state(path: Path = DEFAULT_STATE) -> dict[str, object]:
     return state
 
 
-def validate_state(state: Mapping[str, object]) -> None:
+def _validate_predecessor_state(state: Mapping[str, object]) -> None:
     if state.get("schema_version") != 1:
         raise ValueError("schema_version must be 1")
-    if state.get("contract") != APPROVED_CONTRACT:
+    if state.get("contract") != PREDECESSOR_CONTRACT:
         raise ValueError("contract changed")
     if state.get("target_venue") != APPROVED_VENUE:
         raise ValueError("target venue changed")
-    if state.get("candidate_order") != list(ORDER):
+    if state.get("candidate_order") != list(PREDECESSOR_ORDER):
         raise ValueError("candidate_order must be A, B, C")
-    if state.get("primary_metric") != PRIMARY_METRIC:
+    if state.get("primary_metric") != PREDECESSOR_PRIMARY_METRIC:
         raise ValueError("primary metric changed")
-    if state.get("baselines") != APPROVED_BASELINES:
+    if state.get("baselines") != PREDECESSOR_BASELINES:
         raise ValueError("baselines changed")
     if state.get("goal_status") not in {
         "ACTIVE",
@@ -73,17 +126,24 @@ def validate_state(state: Mapping[str, object]) -> None:
         "EXTERNAL_BLOCKED",
     }:
         raise ValueError("invalid goal_status")
-    if state.get("active_candidate") not in ORDER:
+    if state.get("active_candidate") not in PREDECESSOR_ORDER:
         raise ValueError("invalid active_candidate")
     candidates = state.get("candidates")
-    if not isinstance(candidates, Mapping) or set(candidates) != set(ORDER):
+    if (
+        not isinstance(candidates, Mapping)
+        or set(candidates) != set(PREDECESSOR_ORDER)
+    ):
         raise ValueError("candidates must contain A, B, C")
-    allowed = set(PIPELINE) | {"QUEUED", "REJECTED", "INCONCLUSIVE"}
-    for name in ORDER:
+    allowed = set(PREDECESSOR_PIPELINE) | {
+        "QUEUED",
+        "REJECTED",
+        "INCONCLUSIVE",
+    }
+    for name in PREDECESSOR_ORDER:
         candidate = candidates[name]
         if not isinstance(candidate, Mapping) or candidate.get("status") not in allowed:
             raise ValueError(f"invalid status for candidate {name}")
-        if candidate.get("name") != APPROVED_CANDIDATE_NAMES[name]:
+        if candidate.get("name") != PREDECESSOR_CANDIDATE_NAMES[name]:
             raise ValueError(f"candidate name changed for {name}")
         for field, limit in (
             ("equation_revisions_used", 2),
@@ -108,10 +168,11 @@ def validate_state(state: Mapping[str, object]) -> None:
             f"{expected_candidate_c_revisions} at "
             f"{candidate_c['status']}"
         )
-    active_index = ORDER.index(state["active_candidate"])
+    active_index = PREDECESSOR_ORDER.index(state["active_candidate"])
     if state.get("goal_status") == "RESEARCH_CAMPAIGN_EXHAUSTED":
         if state.get("active_candidate") != "C" or any(
-            candidates[name]["status"] != "REJECTED" for name in ORDER
+            candidates[name]["status"] != "REJECTED"
+            for name in PREDECESSOR_ORDER
         ):
             raise ValueError("exhausted campaign must have A, B, C rejected")
     elif state.get("goal_status") == "RESEARCH_CAMPAIGN_INCONCLUSIVE":
@@ -134,9 +195,15 @@ def validate_state(state: Mapping[str, object]) -> None:
             "INCONCLUSIVE",
         }:
             raise ValueError("active candidate is not active")
-        if any(candidates[name]["status"] != "REJECTED" for name in ORDER[:active_index]):
+        if any(
+            candidates[name]["status"] != "REJECTED"
+            for name in PREDECESSOR_ORDER[:active_index]
+        ):
             raise ValueError("candidates before the active candidate must be rejected")
-        if any(candidates[name]["status"] != "QUEUED" for name in ORDER[active_index + 1:]):
+        if any(
+            candidates[name]["status"] != "QUEUED"
+            for name in PREDECESSOR_ORDER[active_index + 1:]
+        ):
             raise ValueError("candidates after the active candidate must be queued")
     paper_gate = state.get("paper_gate")
     if paper_gate not in {"BLOCKED", "PASS"}:
@@ -152,31 +219,188 @@ def validate_state(state: Mapping[str, object]) -> None:
     permission = state.get("production_hot_path_permission")
     if not isinstance(permission, bool):
         raise ValueError("production_hot_path_permission must be boolean")
-    amdahl_index = PIPELINE.index("AMDAHL_PROJECTION_PASS")
+    amdahl_index = PREDECESSOR_PIPELINE.index(
+        "AMDAHL_PROJECTION_PASS"
+    )
     if permission and (
-        active_status not in PIPELINE
-        or PIPELINE.index(active_status) < amdahl_index
+        active_status not in PREDECESSOR_PIPELINE
+        or PREDECESSOR_PIPELINE.index(active_status) < amdahl_index
     ):
         raise ValueError(
             "production hot path permission requires AMDAHL_PROJECTION_PASS"
         )
 
 
-def transition_candidate(
+def _validate_current_state(state: Mapping[str, object]) -> None:
+    if state.get("schema_version") != 1:
+        raise ValueError("schema_version must be 1")
+    if state.get("contract") != CURRENT_CONTRACT:
+        raise ValueError("contract changed")
+    if state.get("predecessor_contract") != PREDECESSOR_CONTRACT:
+        raise ValueError("predecessor contract changed")
+    if state.get("target_venue") != APPROVED_VENUE:
+        raise ValueError("target venue changed")
+    if state.get("candidate_order") != list(CURRENT_ORDER):
+        raise ValueError("candidate_order must be A, B, C, D, E")
+    if state.get("primary_metric") != CURRENT_PRIMARY_METRIC:
+        raise ValueError("primary metric changed")
+    if state.get("baselines") != CURRENT_BASELINES:
+        raise ValueError("baselines changed")
+
+    candidates = state.get("candidates")
+    if (
+        not isinstance(candidates, Mapping)
+        or set(candidates) != set(CURRENT_ORDER)
+    ):
+        raise ValueError("candidates must contain A, B, C, D, E")
+    for name in CURRENT_ORDER:
+        candidate = candidates[name]
+        if not isinstance(candidate, Mapping):
+            raise ValueError(f"invalid candidate {name}")
+        if candidate.get("name") != CURRENT_CANDIDATE_NAMES[name]:
+            raise ValueError(f"candidate name changed for {name}")
+    if any(
+        candidates[name].get("status") != "REJECTED"
+        for name in PREDECESSOR_ORDER
+    ):
+        raise ValueError("Candidates A, B, and C must be REJECTED")
+    for name in PREDECESSOR_ORDER:
+        for field, limit in (
+            ("equation_revisions_used", 2),
+            ("kernel_layouts_used", 2),
+            ("full_sab_integrations_used", 1),
+        ):
+            value = candidates[name].get(field)
+            if type(value) is not int or value < 0 or value > limit:
+                raise ValueError(f"invalid {field} for candidate {name}")
+    if candidates["C"].get("equation_revisions_used") != 1:
+        raise ValueError(
+            "Candidate C equation revision count must be 1"
+        )
+    for name in ("D", "E"):
+        for field in (
+            "equation_revisions_used",
+            "kernel_layouts_used",
+            "full_sab_integrations_used",
+        ):
+            value = candidates[name].get(field)
+            if type(value) is not int or value < 0 or value > 1:
+                raise ValueError(f"invalid {field} for candidate {name}")
+    if (
+        candidates["D"].get("research_envelope")
+        != CURRENT_D_RESEARCH_ENVELOPE
+    ):
+        raise ValueError("Candidate D research envelope changed")
+
+    d_status = candidates["D"].get("status")
+    e_status = candidates["E"].get("status")
+    allowed_d = set(D_PIPELINE) | {
+        CURRENT_D_PREPLAN_STATUS,
+        "REJECTED",
+    }
+    allowed_e = set(E_PIPELINE) | {
+        "RESERVED_FALLBACK_NOT_STARTED",
+        "REJECTED",
+    }
+    if d_status not in allowed_d:
+        raise ValueError("invalid status for candidate D")
+    if e_status not in allowed_e:
+        raise ValueError("invalid status for candidate E")
+
+    active_candidate = state.get("active_candidate")
+    if d_status == "REJECTED":
+        if active_candidate != "E":
+            raise ValueError("Candidate E must be active after D rejection")
+        if e_status == "RESERVED_FALLBACK_NOT_STARTED":
+            raise ValueError("Candidate E must start after D rejection")
+    else:
+        if active_candidate != "D":
+            raise ValueError("Candidate D must remain active")
+        if e_status != "RESERVED_FALLBACK_NOT_STARTED":
+            raise ValueError("Candidate E must remain reserved")
+
+    paper_gate = state.get("paper_gate")
+    if paper_gate not in {"BLOCKED", "PASS"}:
+        raise ValueError("invalid paper_gate")
+    goal_status = state.get("goal_status")
+    active_status = candidates[active_candidate]["status"]
+    terminal_status = (
+        active_status == "D8_PAPER_GATE_PASS"
+        or active_status == "PAPER_GATE_PASS"
+    )
+    terminal_flags = (
+        goal_status in {"PAPER_READY", "ACCEPTED"},
+        paper_gate == "PASS",
+        terminal_status,
+    )
+    if len(set(terminal_flags)) != 1:
+        raise ValueError("paper terminal state mismatch")
+    if d_status == CURRENT_D_PREPLAN_STATUS:
+        if goal_status != CURRENT_D_PREPLAN_GOAL:
+            raise ValueError("invalid Candidate D pre-plan goal status")
+    elif e_status == "REJECTED":
+        if goal_status != "RESEARCH_CAMPAIGN_EXHAUSTED":
+            raise ValueError("rejected Candidate E must exhaust campaign")
+    elif not terminal_status and goal_status != "ACTIVE":
+        raise ValueError("active current campaign must have ACTIVE goal")
+
+    permission = state.get("production_hot_path_permission")
+    if not isinstance(permission, bool):
+        raise ValueError(
+            "production_hot_path_permission must be boolean"
+        )
+    d3_index = D_PIPELINE.index("D3_ADMISSION_PASS")
+    if permission and (
+        active_candidate != "D"
+        or d_status not in D_PIPELINE
+        or D_PIPELINE.index(d_status) < d3_index
+    ):
+        raise ValueError(
+            "production hot path permission requires D3_ADMISSION_PASS"
+        )
+    if active_candidate == "E" and permission:
+        raise ValueError(
+            "production hot path permission is disabled for Candidate E"
+        )
+
+
+def validate_state(state: Mapping[str, object]) -> None:
+    contract = state.get("contract")
+    if contract == PREDECESSOR_CONTRACT:
+        _validate_predecessor_state(state)
+    elif contract == CURRENT_CONTRACT:
+        _validate_current_state(state)
+    else:
+        raise ValueError("contract changed")
+
+
+def _transition_predecessor_candidate(
     state: Mapping[str, object], candidate: str, to_status: str, decision: str
 ) -> dict[str, object]:
-    validate_state(state)
-    if candidate not in ORDER:
+    if candidate not in PREDECESSOR_ORDER:
         raise ValueError(f"unknown candidate {candidate}")
     changed = copy.deepcopy(dict(state))
     current = changed["candidates"][candidate]["status"]
     if to_status in {"REJECTED", "INCONCLUSIVE"}:
-        allowed = current in PIPELINE and current != "PAPER_GATE_PASS"
+        allowed = (
+            current in PREDECESSOR_PIPELINE
+            and current != "PAPER_GATE_PASS"
+        )
         if to_status == "INCONCLUSIVE":
             allowed = allowed and candidate == "C"
     else:
-        allowed = current in PIPELINE and PIPELINE.index(current) + 1 < len(PIPELINE)
-        allowed = allowed and PIPELINE[PIPELINE.index(current) + 1] == to_status
+        allowed = (
+            current in PREDECESSOR_PIPELINE
+            and PREDECESSOR_PIPELINE.index(current) + 1
+            < len(PREDECESSOR_PIPELINE)
+        )
+        allowed = (
+            allowed
+            and PREDECESSOR_PIPELINE[
+                PREDECESSOR_PIPELINE.index(current) + 1
+            ]
+            == to_status
+        )
     if not allowed:
         raise ValueError(f"invalid transition {candidate}: {current} -> {to_status}")
     changed["candidates"][candidate]["status"] = to_status
@@ -187,12 +411,12 @@ def transition_candidate(
         changed["candidates"]["C"]["equation_revisions_used"] = 1
     changed["last_decision"] = decision
     if to_status == "REJECTED":
-        index = ORDER.index(candidate)
-        if index + 1 == len(ORDER):
+        index = PREDECESSOR_ORDER.index(candidate)
+        if index + 1 == len(PREDECESSOR_ORDER):
             changed["goal_status"] = "RESEARCH_CAMPAIGN_EXHAUSTED"
             changed["production_hot_path_permission"] = False
         else:
-            next_candidate = ORDER[index + 1]
+            next_candidate = PREDECESSOR_ORDER[index + 1]
             changed["active_candidate"] = next_candidate
             changed["candidates"][next_candidate]["status"] = "INTAKE"
             changed["production_hot_path_permission"] = False
@@ -208,6 +432,98 @@ def transition_candidate(
     return changed
 
 
+def _transition_current_candidate(
+    state: Mapping[str, object],
+    candidate: str,
+    to_status: str,
+    decision: str,
+) -> dict[str, object]:
+    if candidate not in ("D", "E"):
+        raise ValueError(f"unknown candidate {candidate}")
+    if state["active_candidate"] != candidate:
+        current = state["candidates"][candidate]["status"]
+        raise ValueError(
+            f"invalid transition {candidate}: {current} -> {to_status}"
+        )
+    pipeline = D_PIPELINE if candidate == "D" else E_PIPELINE
+    changed = copy.deepcopy(dict(state))
+    current = changed["candidates"][candidate]["status"]
+    if to_status == "REJECTED":
+        allowed = current in pipeline and current != pipeline[-1]
+    else:
+        allowed = (
+            current in pipeline
+            and pipeline.index(current) + 1 < len(pipeline)
+            and pipeline[pipeline.index(current) + 1] == to_status
+        )
+    if not allowed:
+        raise ValueError(
+            f"invalid transition {candidate}: {current} -> {to_status}"
+        )
+
+    changed["candidates"][candidate]["status"] = to_status
+    changed["last_decision"] = decision
+    if to_status == "REJECTED" and candidate == "D":
+        changed["active_candidate"] = "E"
+        changed["candidates"]["E"][
+            "status"
+        ] = "SECURITY_NOVELTY_PREFLIGHT"
+        changed["goal_status"] = "ACTIVE"
+        changed["paper_gate"] = "BLOCKED"
+        changed["production_hot_path_permission"] = False
+    elif to_status == "REJECTED":
+        changed["goal_status"] = "RESEARCH_CAMPAIGN_EXHAUSTED"
+        changed["paper_gate"] = "BLOCKED"
+        changed["production_hot_path_permission"] = False
+    elif to_status == pipeline[-1]:
+        changed["paper_gate"] = "PASS"
+        changed["goal_status"] = "PAPER_READY"
+    validate_state(changed)
+    return changed
+
+
+def transition_candidate(
+    state: Mapping[str, object],
+    candidate: str,
+    to_status: str,
+    decision: str,
+) -> dict[str, object]:
+    validate_state(state)
+    if state["contract"] == PREDECESSOR_CONTRACT:
+        return _transition_predecessor_candidate(
+            state,
+            candidate,
+            to_status,
+            decision,
+        )
+    return _transition_current_candidate(
+        state,
+        candidate,
+        to_status,
+        decision,
+    )
+
+
+def activate_candidate_d_plan(
+    state: Mapping[str, object],
+    decision: str,
+) -> dict[str, object]:
+    validate_state(state)
+    candidates = state["candidates"]
+    if (
+        state["contract"] != CURRENT_CONTRACT
+        or state["goal_status"] != CURRENT_D_PREPLAN_GOAL
+        or candidates["D"]["status"] != CURRENT_D_PREPLAN_STATUS
+    ):
+        raise ValueError("state is not at the Candidate D plan gate")
+    changed = copy.deepcopy(dict(state))
+    changed["goal_status"] = "ACTIVE"
+    changed["candidates"]["D"]["status"] = "PLAN_APPROVED"
+    changed["last_decision"] = decision
+    validate_state(changed)
+    return changed
+
+
 def write_state(path: Path, state: Mapping[str, object]) -> None:
     validate_state(state)
     path.write_text(json.dumps(state, indent=2) + "\n", encoding="ascii", newline="\n")
@@ -219,7 +535,7 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("validate")
     transition = sub.add_parser("transition")
-    transition.add_argument("candidate", choices=ORDER)
+    transition.add_argument("candidate", choices=CURRENT_ORDER)
     transition.add_argument("to_status")
     transition.add_argument("--decision", required=True)
     args = parser.parse_args()

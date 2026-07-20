@@ -841,6 +841,7 @@ def _node(
 
 def _campaign_view(state: Mapping[str, object]) -> dict[str, object]:
     candidates = state["candidates"]
+    candidate_order = tuple(state["candidate_order"])
     active_candidate = str(state["active_candidate"])
     active_status = str(candidates[active_candidate]["status"])
     campaign_state = {
@@ -848,11 +849,16 @@ def _campaign_view(state: Mapping[str, object]) -> dict[str, object]:
         "paper_gate": state["paper_gate"],
         "active_candidate": active_candidate,
         "active_candidate_status": active_status,
-        "candidate_a_status": candidates["A"]["status"],
-        "candidate_b_status": candidates["B"]["status"],
-        "candidate_c_status": candidates["C"]["status"],
-        "last_decision": state["last_decision"],
     }
+    campaign_state.update(
+        {
+            f"candidate_{candidate.lower()}_status": (
+                candidates[candidate]["status"]
+            )
+            for candidate in candidate_order
+        }
+    )
+    campaign_state["last_decision"] = state["last_decision"]
     if (
         state["goal_status"] == "RESEARCH_CAMPAIGN_EXHAUSTED"
         and active_candidate == "C"
@@ -870,6 +876,36 @@ def _campaign_view(state: Mapping[str, object]) -> dict[str, object]:
             "evidence is preserved; no Candidate D is opened automatically."
         )
         open_gaps = TERMINAL_CAMPAIGN_BOUNDARIES
+    elif (
+        all(
+            candidates[candidate]["status"] == "REJECTED"
+            for candidate in ("A", "B", "C")
+        )
+        and active_candidate == "D"
+    ):
+        disposition = (
+            "Candidates A, B, and C are closed under the predecessor "
+            "contract."
+        )
+        next_step = (
+            f"Candidate D is active at `{active_status}` under the current "
+            "contract."
+        )
+        open_gaps = PRE_GATE_OPEN_GAPS
+    elif (
+        "D" in candidates
+        and candidates["D"]["status"] == "REJECTED"
+        and active_candidate == "E"
+    ):
+        disposition = (
+            "Candidate D is rejected; the reserved Candidate E fallback "
+            "is now active."
+        )
+        next_step = (
+            f"Candidate E is active at `{active_status}` under the current "
+            "contract."
+        )
+        open_gaps = PRE_GATE_OPEN_GAPS
     elif (
         candidates["A"]["status"] == "REJECTED"
         and active_candidate == "B"
@@ -976,40 +1012,26 @@ def _reproduction_markdown(graph: Mapping[str, object]) -> list[str]:
 
 def _campaign_markdown(graph: Mapping[str, object]) -> list[str]:
     state = graph["campaign_state"]
-    return [
+    lines = [
         "## Campaign State",
         "",
         f'- Goal: `{state["goal_status"]}`',
         f'- Paper gate: `{state["paper_gate"]}`',
-        (
-            f'- Candidate A: `{state["candidate_a_status"]}`'
-            + (
-                " (active)"
-                if state["active_candidate"] == "A"
-                else ""
-            )
-        ),
-        (
-            f'- Candidate B: `{state["candidate_b_status"]}`'
-            + (
-                " (active)"
-                if state["active_candidate"] == "B"
-                else ""
-            )
-        ),
-        (
-            f'- Candidate C: `{state["candidate_c_status"]}`'
-            + (
-                " (active)"
-                if state["active_candidate"] == "C"
-                else ""
-            )
-        ),
+    ]
+    for key, status in state.items():
+        match = re.fullmatch(r"candidate_([a-z]+)_status", key)
+        if match is None:
+            continue
+        candidate = match.group(1).upper()
+        active = " (active)" if state["active_candidate"] == candidate else ""
+        lines.append(f"- Candidate {candidate}: `{status}`{active}")
+    lines.extend([
         f'- Last decision: `{state["last_decision"]}`',
         f'- Disposition: {graph["candidate_a_disposition"]}',
         "",
         str(graph["next_step"]),
-    ]
+    ])
+    return lines
 
 
 def _graph_markdown(graph: Mapping[str, object]) -> str:
