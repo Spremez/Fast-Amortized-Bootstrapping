@@ -1,36 +1,44 @@
 # Current MAT-SAB CCS/USENIX Goal
 
-The controlling contract is
-`docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md`.
+The controlling design is:
 
-The objective is a source-testable r-body MAT-RLWE SAB algorithm whose complete
-bootstrapping latency per plaintext lane, `T_bootstrap/r`, beats both repeated
-scalar SAB and the current exact-dense PVW/MAT-SAB baseline under the contract's
-correctness, security-scope, noise, resource, statistical, literature, and
-artifact gates.
+`docs/superpowers/specs/2026-07-20-lut-late-binding-operator-sab-design.md`
 
-The exact-dense implementation and its measured speedups remain a baseline,
-not Goal completion. Candidate A is frozen as rejected for direct `4r`
-star-cycle support under current standard-PVW independent row randomization.
-Candidate B is frozen as rejected for exact `q<r` factorization of the same
-distribution: a supported parity-evaluation image has rank `r`, and factoring
-only the noiseless term leaves Theta(r^2) dense error work. These are scoped
-mechanism rejections, not general compact-MAT impossibility results.
+The active research candidate is Candidate D, LUT-Late-Binding Operator SAB.
+Its objective is to evaluate the sparse SAB schedule once as a bounded,
+LUT-independent encrypted operator and bind `r` public LUTs after the hot
+schedule. The target is to remove or reduce the exact-dense `Theta(r^2)`
+selector work while retaining standard RLWE/GGSW security objects.
 
-Candidate C (Rank-Bounded Shared-Mask State) is the sole active candidate. Its
-finite question is whether
+The external workload remains one SAB input and `r` independent LUT/output
+lanes. The primary metric is:
 
 ```text
-a_q = a_shared + sum_{t=1..rho} lambda[q,t] * delta_a[t]
+T_complete_bootstrap / (r * N_active)
 ```
 
-with fixed `rho<=2` remains closed across enough CMUX/NCMUX, RGSW monomial,
-`sparse_mul`, and `sub_a` steps that a public-schedule batched
-relinearization amortizes, preserves every lane phase, and leaves a positive
-complete-SAB `T_bootstrap/r` projection against exact-dense PVW/MAT-SAB.
-Immediate rank growth to `r`, per-CMUX relinearization, or a nonpositive
-complete-cost projection rejects C before production implementation.
+The existing result remains an immutable baseline:
 
-No production hot-path change is allowed before the active candidate passes
-the mechanism, key/security/noise, and Amdahl gates. Conference acceptance is
-external; the repository-controlled success state is `PAPER_READY`.
+- complete exact-dense PVW/MAT-SAB is implemented;
+- six binary r=2/r=4 rows report `1.612100x` to `1.747647x` over repeated
+  scalar SAB;
+- this is a supported systems result, not a new asymptotic algorithm or
+  theoretical-optimality result.
+
+Candidates A, B, and C are frozen as rejected under their registered gates.
+Their negative results are scoped and do not imply a general impossibility
+theorem.
+
+Candidate D is admitted only if:
+
+- the binary SAB operator closure has at most four channels;
+- all channels and selector keys reduce to standard RLWE/GGSW objects;
+- exact basis-vector and negative-control checkers pass;
+- covariance-aware late-binding noise remains decodable;
+- complete r=4 cost projection is at least 10% better than B1; and
+- complete measured `T/(r*N_active)` improves over exact-dense MAT-SAB.
+
+No algorithm hot-path code is permitted until the written design and
+implementation plan are reviewed and the D2/D3 admission gates pass.
+Conference acceptance is external; the repository-controlled success state
+is `PAPER_READY`.

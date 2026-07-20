@@ -1,18 +1,23 @@
 {
   "schema_version": 1,
-  "contract": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
-  "goal_status": "RESEARCH_CAMPAIGN_EXHAUSTED",
+  "contract": "docs/superpowers/specs/2026-07-20-lut-late-binding-operator-sab-design.md",
+  "predecessor_contract": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
+  "goal_status": "CANDIDATE_D_DESIGN_APPROVED_PLAN_BLOCKED",
   "target_venue": "CCS_USENIX_SECURITY",
-  "primary_metric": "complete_sab_T_bootstrap_over_r",
+  "primary_metric": "complete_sab_T_bootstrap_div_rN_active",
   "baselines": {
-    "B0": "repeated_scalar_SAB",
-    "B1": "exact_dense_PVW_MAT_SAB_current_head"
+    "B0a": "repeated_scalar_SAB",
+    "B0b": "shared_output_key_independent_mask_repeated_scalar_control_required",
+    "B1": "exact_dense_PVW_MAT_SAB_current_head",
+    "B2": "BatchBoot_same_backend_local_reproduction_required"
   },
-  "active_candidate": "C",
+  "active_candidate": "D",
   "candidate_order": [
     "A",
     "B",
-    "C"
+    "C",
+    "D",
+    "E"
   ],
   "candidates": {
     "A": {
@@ -35,9 +40,24 @@
       "equation_revisions_used": 1,
       "kernel_layouts_used": 0,
       "full_sab_integrations_used": 0
+    },
+    "D": {
+      "name": "LUT-Late-Binding Operator SAB",
+      "status": "DESIGN_APPROVED_PENDING_WRITTEN_SPEC_REVIEW",
+      "research_envelope": "internal_semantics_may_change_standard_RLWE_Module_LWE_reduction_required",
+      "equation_revisions_used": 0,
+      "kernel_layouts_used": 0,
+      "full_sab_integrations_used": 0
+    },
+    "E": {
+      "name": "Extension-Ring Tensor Lane-Packed SAB",
+      "status": "RESERVED_FALLBACK_NOT_STARTED",
+      "equation_revisions_used": 0,
+      "kernel_layouts_used": 0,
+      "full_sab_integrations_used": 0
     }
   },
   "paper_gate": "BLOCKED",
   "production_hot_path_permission": false,
-  "last_decision": "REJECT_CANDIDATE_C_RANK_BOUNDED_STATE_CAMPAIGN_EXHAUSTED"
+  "last_decision": "AUTHORIZE_CANDIDATE_D_STANDARD_RLWE_MODULE_LWE_INTERNAL_SEMANTICS_CAMPAIGN"
 }
