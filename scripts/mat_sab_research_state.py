@@ -107,11 +107,25 @@ CURRENT_D_DECISIONS_BY_STATUS = {
         "ADMIT_CANDIDATE_D_TO_ISOLATED_ENCRYPTED_OPERATOR_IMPLEMENTATION"
     ),
 }
-CURRENT_D_REJECTION_DECISIONS = (
-    "REJECT_CANDIDATE_D_PRIOR_ART_SUBSUMPTION_ROUTE_E",
-    "REJECT_CANDIDATE_D_OPERATOR_CLOSURE_ROUTE_E",
-    "REJECT_CANDIDATE_D_BINDING_NOISE_SECURITY_ROUTE_E",
-    "REJECT_CANDIDATE_D_NONPOSITIVE_COMPLETE_COST_ROUTE_E",
+CURRENT_D_REJECTION_DECISIONS_BY_SOURCE = {
+    "D0_BASELINE_FROZEN": (
+        "REJECT_CANDIDATE_D_PRIOR_ART_SUBSUMPTION_ROUTE_E",
+    ),
+    "D1_NOVELTY_AUDIT_PASS": (
+        "REJECT_CANDIDATE_D_OPERATOR_CLOSURE_ROUTE_E",
+    ),
+    "D2_OPERATOR_CLOSURE_PASS": (
+        "REJECT_CANDIDATE_D_BINDING_NOISE_SECURITY_ROUTE_E",
+        "REJECT_CANDIDATE_D_NONPOSITIVE_COMPLETE_COST_ROUTE_E",
+    ),
+}
+CURRENT_D_REJECTION_DECISIONS = frozenset(
+    decision
+    for decisions in CURRENT_D_REJECTION_DECISIONS_BY_SOURCE.values()
+    for decision in decisions
+)
+CURRENT_E_PREFLIGHT_REJECTION_DECISION = (
+    "REJECT_CANDIDATE_E_SECURITY_NOVELTY_PREFLIGHT_CAMPAIGN_EXHAUSTED"
 )
 CURRENT_D_RESEARCH_ENVELOPE = (
     "internal_semantics_may_change_standard_RLWE_"
@@ -315,12 +329,10 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
 
     d_status = candidates["D"].get("status")
     e_status = candidates["E"].get("status")
-    allowed_d = set(D_PIPELINE) | {
-        CURRENT_D_PREPLAN_STATUS,
-        "REJECTED",
-    }
-    allowed_e = set(E_PIPELINE) | {
+    allowed_d = set(CURRENT_D_DECISIONS_BY_STATUS) | {"REJECTED"}
+    allowed_e = {
         "RESERVED_FALLBACK_NOT_STARTED",
+        "SECURITY_NOVELTY_PREFLIGHT",
         "REJECTED",
     }
     if d_status not in allowed_d:
@@ -381,6 +393,14 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
     ):
         raise ValueError(
             "last_decision must be a documented Candidate D rejection"
+        )
+    if (
+        d_status == "REJECTED"
+        and e_status == "REJECTED"
+        and last_decision != CURRENT_E_PREFLIGHT_REJECTION_DECISION
+    ):
+        raise ValueError(
+            "last_decision must be the Candidate E preflight rejection"
         )
 
     permission = state.get("production_hot_path_permission")
@@ -488,16 +508,42 @@ def _transition_current_candidate(
     changed = copy.deepcopy(dict(state))
     current = changed["candidates"][candidate]["status"]
     if to_status == "REJECTED":
-        allowed = current in pipeline and current != pipeline[-1]
+        if candidate == "D":
+            expected_decisions = (
+                CURRENT_D_REJECTION_DECISIONS_BY_SOURCE.get(current, ())
+            )
+        else:
+            expected_decisions = (
+                (CURRENT_E_PREFLIGHT_REJECTION_DECISION,)
+                if current == "SECURITY_NOVELTY_PREFLIGHT"
+                else ()
+            )
+        if decision not in expected_decisions:
+            raise ValueError(
+                f"invalid transition decision {candidate}: "
+                f"{current} -> {to_status}"
+            )
+        allowed = bool(expected_decisions)
     else:
+        expected_decision = (
+            CURRENT_D_DECISIONS_BY_STATUS.get(to_status)
+            if candidate == "D"
+            else None
+        )
         allowed = (
             current in pipeline
             and pipeline.index(current) + 1 < len(pipeline)
             and pipeline[pipeline.index(current) + 1] == to_status
+            and expected_decision is not None
         )
     if not allowed:
         raise ValueError(
             f"invalid transition {candidate}: {current} -> {to_status}"
+        )
+    if to_status != "REJECTED" and decision != expected_decision:
+        raise ValueError(
+            f"invalid transition decision {candidate}: "
+            f"{current} -> {to_status}"
         )
 
     changed["candidates"][candidate]["status"] = to_status

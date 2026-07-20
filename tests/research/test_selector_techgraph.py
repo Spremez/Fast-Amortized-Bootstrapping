@@ -311,7 +311,8 @@ class SelectorTechgraphTests(unittest.TestCase):
             state,
             "E",
             "REJECTED",
-            "TEST_CANDIDATE_E_REJECTION",
+            "REJECT_CANDIDATE_E_SECURITY_NOVELTY_PREFLIGHT_"
+            "CAMPAIGN_EXHAUSTED",
         )
 
         graph = _campaign_view(state)

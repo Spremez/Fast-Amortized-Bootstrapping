@@ -28,6 +28,21 @@ CURRENT_D_DECISIONS = {
         "ADMIT_CANDIDATE_D_TO_ISOLATED_ENCRYPTED_OPERATOR_IMPLEMENTATION"
     ),
 }
+CURRENT_D_REJECTIONS_BY_SOURCE = {
+    "D0_BASELINE_FROZEN": (
+        "REJECT_CANDIDATE_D_PRIOR_ART_SUBSUMPTION_ROUTE_E",
+    ),
+    "D1_NOVELTY_AUDIT_PASS": (
+        "REJECT_CANDIDATE_D_OPERATOR_CLOSURE_ROUTE_E",
+    ),
+    "D2_OPERATOR_CLOSURE_PASS": (
+        "REJECT_CANDIDATE_D_BINDING_NOISE_SECURITY_ROUTE_E",
+        "REJECT_CANDIDATE_D_NONPOSITIVE_COMPLETE_COST_ROUTE_E",
+    ),
+}
+CURRENT_E_PREFLIGHT_REJECTION_DECISION = (
+    "REJECT_CANDIDATE_E_SECURITY_NOVELTY_PREFLIGHT_CAMPAIGN_EXHAUSTED"
+)
 
 
 def candidate_a_state(state, status):
@@ -117,6 +132,15 @@ def candidate_d_preplan_state():
         "INTERNAL_SEMANTICS_CAMPAIGN"
     )
     return state
+
+
+def candidate_e_preflight_state():
+    return transition_candidate(
+        candidate_d_state("D2_OPERATOR_CLOSURE_PASS"),
+        "D",
+        "REJECTED",
+        "REJECT_CANDIDATE_D_BINDING_NOISE_SECURITY_ROUTE_E",
+    )
 
 
 class ResearchStateTests(unittest.TestCase):
@@ -226,6 +250,54 @@ class ResearchStateTests(unittest.TestCase):
         )
         self.assertFalse(changed["production_hot_path_permission"])
 
+    def test_candidate_d_rejection_matrix_accepts_legitimate_pairs(self):
+        for source_status, decisions in CURRENT_D_REJECTIONS_BY_SOURCE.items():
+            for decision in decisions:
+                with self.subTest(
+                    source_status=source_status,
+                    decision=decision,
+                ):
+                    changed = transition_candidate(
+                        candidate_d_state(source_status),
+                        "D",
+                        "REJECTED",
+                        decision,
+                    )
+                    self.assertEqual(changed["active_candidate"], "E")
+                    self.assertEqual(
+                        changed["candidates"]["E"]["status"],
+                        "SECURITY_NOVELTY_PREFLIGHT",
+                    )
+                    self.assertEqual(changed["last_decision"], decision)
+
+    def test_candidate_d_rejection_matrix_rejects_wrong_pairs(self):
+        source_statuses = (
+            "PLAN_APPROVED",
+            *CURRENT_D_REJECTIONS_BY_SOURCE,
+            "D3_ADMISSION_PASS",
+        )
+        all_decisions = tuple(
+            decision
+            for decisions in CURRENT_D_REJECTIONS_BY_SOURCE.values()
+            for decision in decisions
+        )
+        for source_status in source_statuses:
+            legitimate = CURRENT_D_REJECTIONS_BY_SOURCE.get(source_status, ())
+            for decision in all_decisions:
+                if decision in legitimate:
+                    continue
+                with self.subTest(
+                    source_status=source_status,
+                    decision=decision,
+                ):
+                    with self.assertRaisesRegex(ValueError, "decision"):
+                        transition_candidate(
+                            candidate_d_state(source_status),
+                            "D",
+                            "REJECTED",
+                            decision,
+                        )
+
     def test_activate_candidate_d_plan_is_exact_and_does_not_mutate_input(self):
         state = candidate_d_preplan_state()
 
@@ -271,7 +343,7 @@ class ResearchStateTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     state_controller.activate_candidate_d_plan(
                         state,
-                        "TEST_DECISION",
+                        "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED",
                     )
 
     def test_current_contract_binds_status_derived_decisions(self):
@@ -289,6 +361,34 @@ class ResearchStateTests(unittest.TestCase):
                 validate_state(state)
                 state["last_decision"] = "OPAQUE_LAST_DECISION_MUTATION"
                 with self.assertRaisesRegex(ValueError, "last_decision"):
+                    validate_state(state)
+
+    def test_current_contract_rejects_unreviewed_future_d_states(self):
+        for status in state_controller.D_PIPELINE[5:]:
+            with self.subTest(status=status):
+                state = candidate_d_state(status)
+                if status == "D8_PAPER_GATE_PASS":
+                    state["goal_status"] = "PAPER_READY"
+                    state["paper_gate"] = "PASS"
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "invalid status for candidate D",
+                ):
+                    validate_state(state)
+
+    def test_current_contract_rejects_unreviewed_future_e_states(self):
+        for status in state_controller.E_PIPELINE[1:]:
+            with self.subTest(status=status):
+                state = candidate_e_preflight_state()
+                state["candidates"]["E"]["status"] = status
+                state["last_decision"] = "OPAQUE_CANDIDATE_E_DECISION"
+                if status == "PAPER_GATE_PASS":
+                    state["goal_status"] = "PAPER_READY"
+                    state["paper_gate"] = "PASS"
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "invalid status for candidate E",
+                ):
                     validate_state(state)
 
     def test_current_transitions_reject_unbound_decisions(self):
@@ -364,24 +464,68 @@ class ResearchStateTests(unittest.TestCase):
         state["production_hot_path_permission"] = True
         validate_state(state)
 
-    def test_candidate_e_advances_in_its_own_pipeline(self):
-        state = transition_candidate(
-            candidate_d_state("D2_OPERATOR_CLOSURE_PASS"),
-            "D",
-            "REJECTED",
-            "REJECT_CANDIDATE_D_BINDING_NOISE_SECURITY_ROUTE_E",
+    def test_unreviewed_future_d_and_e_transitions_fail_closed(self):
+        cases = (
+            (
+                candidate_d_state("D3_ADMISSION_PASS"),
+                "D",
+                "D4_ISOLATED_OPERATOR_PASS",
+                "PASS_D4_UNREVIEWED",
+            ),
+            (
+                candidate_e_preflight_state(),
+                "E",
+                "EQUATIONS_DEFINED",
+                "CANDIDATE_E_EQUATIONS_DEFINED",
+            ),
         )
+        for state, candidate, to_status, decision in cases:
+            with self.subTest(candidate=candidate, to_status=to_status):
+                with self.assertRaisesRegex(ValueError, "invalid transition"):
+                    transition_candidate(
+                        state,
+                        candidate,
+                        to_status,
+                        decision,
+                    )
+
+    def test_candidate_e_rejection_uses_canonical_preflight_decision(self):
         changed = transition_candidate(
-            state,
+            candidate_e_preflight_state(),
             "E",
-            "EQUATIONS_DEFINED",
-            "CANDIDATE_E_EQUATIONS_DEFINED",
+            "REJECTED",
+            CURRENT_E_PREFLIGHT_REJECTION_DECISION,
+        )
+
+        self.assertEqual(
+            changed["goal_status"],
+            "RESEARCH_CAMPAIGN_EXHAUSTED",
         )
         self.assertEqual(
-            changed["candidates"]["E"]["status"],
-            "EQUATIONS_DEFINED",
+            changed["last_decision"],
+            CURRENT_E_PREFLIGHT_REJECTION_DECISION,
         )
-        self.assertEqual(changed["active_candidate"], "E")
+
+    def test_candidate_e_rejection_rejects_other_decisions(self):
+        with self.assertRaisesRegex(ValueError, "decision"):
+            transition_candidate(
+                candidate_e_preflight_state(),
+                "E",
+                "REJECTED",
+                "OPAQUE_CANDIDATE_E_REJECTION",
+            )
+
+    def test_exhausted_candidate_e_decision_cannot_be_mutated(self):
+        state = transition_candidate(
+            candidate_e_preflight_state(),
+            "E",
+            "REJECTED",
+            CURRENT_E_PREFLIGHT_REJECTION_DECISION,
+        )
+        state["last_decision"] = "OPAQUE_LAST_DECISION_MUTATION"
+
+        with self.assertRaisesRegex(ValueError, "last_decision"):
+            validate_state(state)
 
     def test_valid_transition_does_not_mutate_input(self):
         state = candidate_a_state(load_state(PREDECESSOR_STATE), "INTAKE")
