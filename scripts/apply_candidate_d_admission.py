@@ -39,11 +39,14 @@ from scripts.run_candidate_d_admission import (  # noqa: E402
     REJECT_PRIOR_ART,
     AdmissionEvidenceError,
     AdmissionResult,
+    _authoritative_task9_command,
     _git_blob,
     _resolve_input_commit,
     _safe_path,
     _sha256_bytes,
     _strict_csv_bytes,
+    _validate_predecessor_decision_evidence_v3,
+    _validate_predecessor_decision_evidence_v4,
     validate_decision_evidence,
     verify_candidate_d_artifacts,
 )
@@ -191,27 +194,39 @@ def _plan_superseding_erratum(
 
 
 def _generator_command(result: AdmissionResult) -> str:
-    return (
-        "python scripts/run_candidate_d_admission.py --input-commit "
-        + result.input_commit
-        + " --controller-commit "
-        + result.controller_commit
-        + " --run-date "
-        + result.run_date
-        + " --execution-platform "
-        + json.dumps(result.execution_platform, ensure_ascii=True)
+    return _authoritative_task9_command(
+        "run",
+        input_commit=result.input_commit,
+        controller_commit=result.controller_commit,
+        run_date=result.run_date,
+        execution_platform=result.execution_platform,
     )
 
 
 def _apply_command(result: AdmissionResult) -> str:
+    return _authoritative_task9_command(
+        "apply",
+        input_commit=result.input_commit,
+        controller_commit=result.controller_commit,
+        run_date=result.run_date,
+        execution_platform=result.execution_platform,
+    )
+
+
+def _legacy_plain_generator_command(result: AdmissionResult) -> str:
+    return (
+        "python scripts/run_candidate_d_admission.py --input-commit "
+        f"{result.input_commit} --controller-commit {result.controller_commit} "
+        f"--run-date {result.run_date} --execution-platform "
+        + json.dumps(result.execution_platform, ensure_ascii=True)
+    )
+
+
+def _legacy_plain_apply_command(result: AdmissionResult) -> str:
     return (
         "python scripts/apply_candidate_d_admission.py --input-commit "
-        + result.input_commit
-        + " --controller-commit "
-        + result.controller_commit
-        + " --run-date "
-        + result.run_date
-        + " --execution-platform "
+        f"{result.input_commit} --controller-commit {result.controller_commit} "
+        f"--run-date {result.run_date} --execution-platform "
         + json.dumps(result.execution_platform, ensure_ascii=True)
     )
 
@@ -356,6 +371,47 @@ def _erratum_contents(
     hypothesis = f"""candidate_d_admission_historical_erratum:
   supersedes: candidate-d-admission-001 command and priority-chain wording
   old_command_status: historical and superseded
+  plain_worktree_entrypoints: historical and non-authoritative
+  authoritative_entrypoint: commit-pinned launcher blob under python -I -S
+  corrected_status: D0 PASS; D1 BLOCK; D2/D3 SKIPPED/NOT_REACHED
+  production_permission: false
+  report: docs/candidate_d_admission_report.md
+  generator_command: {json.dumps(generator, ensure_ascii=True)}
+  apply_command: {json.dumps(apply, ensure_ascii=True)}
+"""
+    checklist = f"""- [x] Candidate D historical erratum: the old Task 9 command is
+  historical, superseded, and non-authoritative; only the commit-pinned launcher
+  commands below are authoritative. Correct status: D0 PASS; D1 BLOCK; D2/D3
+  SKIPPED/NOT_REACHED; production permission is false. See
+  `docs/candidate_d_admission_report.md`. Current verified generator command:
+  `{generator}`. Current verified apply command: `{apply}`.
+"""
+    return (
+        (
+            "hypotheses/hypothesis_register.yaml",
+            ERRATUM_HYPOTHESIS_START,
+            ERRATUM_HYPOTHESIS_END,
+            hypothesis,
+        ),
+        (
+            "repro/reproduction_checklist.md",
+            ERRATUM_CHECKLIST_START,
+            ERRATUM_CHECKLIST_END,
+            checklist,
+        ),
+    )
+
+
+def _predecessor_erratum_contents(
+    result: AdmissionResult,
+) -> tuple[tuple[str, str, str, str], ...]:
+    if not _is_historical_erratum_result(result):
+        raise ValueError("predecessor erratum does not carry the required BLOCK")
+    generator = _legacy_plain_generator_command(result)
+    apply = _legacy_plain_apply_command(result)
+    hypothesis = f"""candidate_d_admission_historical_erratum:
+  supersedes: candidate-d-admission-001 command and priority-chain wording
+  old_command_status: historical and superseded
   corrected_status: D0 PASS; D1 BLOCK; D2/D3 SKIPPED/NOT_REACHED
   production_permission: false
   report: docs/candidate_d_admission_report.md
@@ -435,7 +491,13 @@ def _verified_erratum_predecessor(
         if _sha256_bytes(evidence_bytes) != ERRATUM_PREDECESSOR_EVIDENCE_SHA256:
             raise ValueError("predecessor decision evidence hash changed")
         payload = json.loads(evidence_bytes.decode("ascii"))
-        predecessor = validate_decision_evidence(payload)
+        schema = payload.get("schema") if isinstance(payload, Mapping) else None
+        if schema == "candidate-d-task9-decision-evidence-v3":
+            predecessor = _validate_predecessor_decision_evidence_v3(payload)
+        elif schema == "candidate-d-task9-decision-evidence-v4":
+            predecessor = _validate_predecessor_decision_evidence_v4(payload)
+        else:
+            raise ValueError("predecessor decision evidence schema is unsupported")
         index_rows = _strict_csv_bytes(
             _git_blob(
                 root,
@@ -813,30 +875,43 @@ def _plan_errata(
     result: AdmissionResult,
 ) -> None:
     entries = _erratum_contents(result)
-    predecessor = None
+    actual_blocks = {}
+    current_blocks = {}
     for relative, start, end, content in entries:
-        try:
-            _plan_bounded_append(
-                planned[paths[relative]],
-                start,
-                end,
-                content,
-                relative,
+        current = planned[paths[relative]]
+        actual_blocks[relative] = _exact_marker_block(current, start, end)
+        current_blocks[relative] = _bounded_block(start, end, content)
+    if all(
+        actual_blocks[relative] == current_blocks[relative]
+        and planned[paths[relative]].count(current_blocks[relative]) == 1
+        for relative, *_unused in entries
+    ):
+        return
+    predecessor = _verified_erratum_predecessor(root, result)
+    predecessor_entries = {
+        relative: (start, end, content)
+        for relative, start, end, content in _predecessor_erratum_contents(
+            predecessor
+        )
+    }
+    for relative, start, end, content in entries:
+        prior_start, prior_end, prior_content = predecessor_entries[relative]
+        if (prior_start, prior_end) != (start, end):
+            raise ValueError("authenticated predecessor erratum markers changed")
+        predecessor_block = _bounded_block(start, end, prior_content)
+        current = planned[paths[relative]]
+        if (
+            actual_blocks[relative] != predecessor_block
+            or current.count(predecessor_block) != 1
+        ):
+            raise ValueError(
+                "erratum marker pair is mixed or not an authenticated predecessor"
             )
-        except ValueError as error:
-            if "ledger content mismatch" not in str(error):
-                raise
-            predecessor = _verified_erratum_predecessor(root, result)
-            break
-    for relative, start, end, content in entries:
-        planned[paths[relative]] = _plan_superseding_erratum(
-            planned[paths[relative]],
-            start,
-            end,
-            content,
-            relative,
-            result,
-            predecessor_result=predecessor,
+    for relative, _start, _end, _content in entries:
+        current = planned[paths[relative]]
+        predecessor_block = actual_blocks[relative]
+        planned[paths[relative]] = current.replace(
+            predecessor_block, current_blocks[relative], 1
         )
 
 

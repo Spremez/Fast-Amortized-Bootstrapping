@@ -159,6 +159,44 @@ class CandidateDReplayContractTests(unittest.TestCase):
             self.assertFalse(result.scientific_authority)
             self.assertEqual(result.output_hashes[0][0], "fixture/output.txt")
 
+    def test_stage_child_disables_site_startup(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._repo(directory)
+            _write(root, "scripts/__init__.py", "")
+            _write(
+                root,
+                "scripts/fixture_replayer.py",
+                _fixture_runner(
+                    body=(
+                        "if sys.flags.no_site != 1 or 'site' in sys.modules:\n"
+                        "    raise SystemExit('site startup is enabled')"
+                    )
+                ),
+            )
+            _write(root, "fixture/output.txt", "derived fixture output\n")
+            commit = _commit(root, "fixture: require no-site child")
+
+            try:
+                result = replay.execute_stage_replay(
+                    root,
+                    _fixture_contract("scripts/__init__.py"),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+            except replay.StageReplayError as error:
+                self.fail(str(error))
+
+            self.assertEqual(result.decision, "PASS_FIXTURE_CONTROLLER_MECHANICS")
+
+    def test_stage_bootstrap_trusts_only_explicit_stdlib_roots(self):
+        bootstrap = replay._RUNTIME_BOOTSTRAP
+
+        self.assertIn("import sysconfig", bootstrap)
+        self.assertIn('(\"stdlib\", \"platstdlib\")', bootstrap)
+        self.assertIn('(\"purelib\", \"platlib\")', bootstrap)
+        self.assertIn("excluded_roots", bootstrap)
+        self.assertNotIn("for entry in sys.path", bootstrap)
+
     def test_rejects_undeclared_direct_and_transitive_local_imports(self):
         cases = (
             (

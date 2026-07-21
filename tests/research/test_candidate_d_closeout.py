@@ -32,6 +32,10 @@ CONTROLLER_COMMIT = subprocess.run(
         "--",
         "scripts/run_candidate_d_admission.py",
         "scripts/apply_candidate_d_admission.py",
+        "scripts/candidate_d_task9_launcher.py",
+        "scripts/__init__.py",
+        "research/__init__.py",
+        "research/mat_sab/__init__.py",
         "research/mat_sab/candidate_d_stage_replay.py",
         "docs/candidate_d_task9_replay_contract.md",
         "docs/candidate_d_task9_threat_model.md",
@@ -192,6 +196,17 @@ class CandidateDCloseoutTests(unittest.TestCase):
             "repro/run_log.csv",
         )
         return {path: (root / path).read_bytes() for path in paths}
+
+    @staticmethod
+    def _clone_repository(directory: str) -> Path:
+        clone = Path(directory) / "repo"
+        subprocess.run(
+            ["git", "clone", "--no-local", "-q", str(ROOT), str(clone)],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        return clone
 
     def test_block_preserves_d0_and_does_not_activate_e(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -585,6 +600,90 @@ class CandidateDCloseoutTests(unittest.TestCase):
             self.assertIn(("--controller-commit " + "b" * 40).encode(), updated)
             self.assertNotIn(prior.controller_commit.encode(), updated)
 
+    def test_plan_closeout_rejects_deleted_erratum_marker(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._clone_repository(directory)
+            relative, start, end, _content = closeout._erratum_contents(
+                self.result
+            )[0]
+            path = root / relative
+            current = path.read_bytes()
+            block = closeout._exact_marker_block(current, start, end)
+            path.write_bytes(current.replace(block, b"", 1))
+
+            with self.assertRaisesRegex(ValueError, "marker|erratum"):
+                closeout._plan_closeout(root, self.result)
+
+    def test_plan_closeout_rejects_mixed_current_and_predecessor_errata(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._clone_repository(directory)
+            predecessor = closeout._verified_erratum_predecessor(
+                root, self.result
+            )
+            current_entries = {
+                relative: (start, end, content)
+                for relative, start, end, content in closeout._erratum_contents(
+                    self.result
+                )
+            }
+            predecessor_entries = {
+                relative: (start, end, content)
+                for relative, start, end, content
+                in closeout._predecessor_erratum_contents(predecessor)
+            }
+            for index, relative in enumerate(current_entries):
+                start, end, current_content = current_entries[relative]
+                _prior_start, _prior_end, prior_content = predecessor_entries[
+                    relative
+                ]
+                desired = closeout._bounded_block(
+                    start,
+                    end,
+                    current_content if index == 0 else prior_content,
+                )
+                path = root / relative
+                original = path.read_bytes()
+                actual = closeout._exact_marker_block(original, start, end)
+                path.write_bytes(original.replace(actual, desired, 1))
+
+            with self.assertRaisesRegex(ValueError, "mixed|erratum"):
+                closeout._plan_closeout(root, self.result)
+
+    def test_plan_closeout_accepts_both_authenticated_predecessor_errata(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._clone_repository(directory)
+            predecessor = closeout._verified_erratum_predecessor(
+                root, self.result
+            )
+            predecessor_entries = {
+                relative: (start, end, content)
+                for relative, start, end, content
+                in closeout._predecessor_erratum_contents(predecessor)
+            }
+            for relative, start, end, _content in closeout._erratum_contents(
+                self.result
+            ):
+                _prior_start, _prior_end, prior_content = predecessor_entries[
+                    relative
+                ]
+                desired = closeout._bounded_block(start, end, prior_content)
+                path = root / relative
+                original = path.read_bytes()
+                actual = closeout._exact_marker_block(original, start, end)
+                path.write_bytes(original.replace(actual, desired, 1))
+
+            planned = closeout._plan_closeout(root, self.result)
+
+            for relative, start, end, content in closeout._erratum_contents(
+                self.result
+            ):
+                self.assertEqual(
+                    closeout._exact_marker_block(
+                        planned[root / relative], start, end
+                    ),
+                    closeout._bounded_block(start, end, content),
+                )
+
     def test_erratum_supersession_rejects_arbitrary_controller_in_both_commands(self):
         prior = replace(
             self.result,
@@ -635,7 +734,7 @@ class CandidateDCloseoutTests(unittest.TestCase):
 
         self.assertEqual(
             predecessor.controller_commit,
-            "8a953a54b8799089d2e7fef6d3951581b4cf8fd4",
+            "fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0",
         )
         with self.assertRaisesRegex(ValueError, "ancestor"):
             closeout._verified_erratum_predecessor(ROOT, predecessor)

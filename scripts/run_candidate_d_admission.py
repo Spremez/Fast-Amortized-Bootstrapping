@@ -43,17 +43,18 @@ import scripts.run_candidate_d_d1_literature as d1_literature  # noqa: E402
 
 CURRENT_INPUT_COMMIT = "c8221ad0fcd8413753ca4c3072f49460972de454"
 HISTORICAL_BLOCK_COMMIT = "fba794ce8820fb2ab167bf928c9cdae67ed508b9"
+TASK9_LAUNCHER_PATH = "scripts/candidate_d_task9_launcher.py"
 ERRATUM_PREDECESSOR_EVIDENCE_COMMIT = (
-    "95bc17959e6bfa25e8504481cbd26ee265bbe9c7"
+    "2e2508a4716f83a92d9b53e7b716569c642c1033"
 )
 ERRATUM_PREDECESSOR_CONTROLLER_COMMIT = (
-    "8a953a54b8799089d2e7fef6d3951581b4cf8fd4"
+    "fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0"
 )
 ERRATUM_PREDECESSOR_EVIDENCE_PATH = (
     "repro/candidate_d_admission/decision_evidence.json"
 )
 ERRATUM_PREDECESSOR_EVIDENCE_SHA256 = (
-    "7287a6d11ca0a61ff4abb8371fd4d6c24a0fe005781e38d53e3964cbd5506036"
+    "48ac5ee01f3a24037a5ea0a9781c7528158498c4605f81985b8a722482f4277e"
 )
 OUT = Path("repro/candidate_d_admission")
 REPORT = Path("docs/candidate_d_admission_report.md")
@@ -192,16 +193,36 @@ D3_REPLAY_CONTRACT = StageReplayContract(
 )
 
 
-def _task9_command(input_placeholder: str, controller_commit: str) -> str:
-    metadata = (
-        "--run-date <YYYY-MM-DD> "
-        "--execution-platform <audited-evidence-platform>"
-    )
+def _authoritative_task9_command(
+    mode: str,
+    *,
+    input_commit: str,
+    controller_commit: str,
+    run_date: str,
+    execution_platform: str,
+) -> str:
+    if mode not in {"run", "apply"}:
+        raise ValueError("Task 9 launcher mode must be run or apply")
     return (
-        "python scripts/run_candidate_d_admission.py --input-commit "
-        f"{input_placeholder} --controller-commit {controller_commit} {metadata}; "
-        "python scripts/apply_candidate_d_admission.py --input-commit "
-        f"{input_placeholder} --controller-commit {controller_commit} {metadata}"
+        f"git show {controller_commit}:{TASK9_LAUNCHER_PATH} | "
+        f"python -I -S - --mode {mode} --root . --input-commit {input_commit} "
+        f"--controller-commit {controller_commit} --run-date {run_date} "
+        "--execution-platform "
+        + json.dumps(execution_platform, ensure_ascii=True)
+    )
+
+
+def _task9_command(input_placeholder: str, controller_commit: str) -> str:
+    metadata = {
+        "input_commit": input_placeholder,
+        "controller_commit": controller_commit,
+        "run_date": "<YYYY-MM-DD>",
+        "execution_platform": "<audited-evidence-platform>",
+    }
+    return (
+        _authoritative_task9_command("run", **metadata)
+        + "; "
+        + _authoritative_task9_command("apply", **metadata)
     )
 
 
@@ -467,6 +488,10 @@ RUNTIME_SOURCES = (
     "research/mat_sab/candidate_d_stage_replay.py",
     "docs/candidate_d_task9_replay_contract.md",
     "docs/candidate_d_task9_threat_model.md",
+    TASK9_LAUNCHER_PATH,
+    "scripts/__init__.py",
+    "research/__init__.py",
+    "research/mat_sab/__init__.py",
 )
 DECISION_EVIDENCE_V3_RUNTIME_SOURCES = (
     "scripts/run_candidate_d_admission.py",
@@ -475,6 +500,22 @@ DECISION_EVIDENCE_V3_RUNTIME_SOURCES = (
     "research/mat_sab/candidate_d_stage_replay.py",
     "docs/candidate_d_task9_replay_contract.md",
 )
+DECISION_EVIDENCE_PREDECESSOR_V4_RUNTIME_SOURCES = (
+    "scripts/run_candidate_d_admission.py",
+    "scripts/apply_candidate_d_admission.py",
+    "scripts/mat_sab_research_state.py",
+    "research/mat_sab/candidate_d_stage_replay.py",
+    "docs/candidate_d_task9_replay_contract.md",
+    "docs/candidate_d_task9_threat_model.md",
+)
+DECISION_EVIDENCE_PREDECESSOR_V4_BINDING = {
+    "evidence_commit": "95bc17959e6bfa25e8504481cbd26ee265bbe9c7",
+    "controller_commit": "8a953a54b8799089d2e7fef6d3951581b4cf8fd4",
+    "decision_evidence_path": "repro/candidate_d_admission/decision_evidence.json",
+    "decision_evidence_sha256": (
+        "7287a6d11ca0a61ff4abb8371fd4d6c24a0fe005781e38d53e3964cbd5506036"
+    ),
+}
 GENERATED_OUTPUTS = (
     REPORT.as_posix(),
     (OUT / "summary.csv").as_posix(),
@@ -802,14 +843,16 @@ def _controller_source_hashes(
     return tuple(rows)
 
 
-def _validate_module_origins(root: Path) -> None:
+def _validate_module_origins(execution_root: Path) -> None:
     expected = {
         d0_baseline: "research/mat_sab/candidate_d_baseline.py",
         d1_literature: "scripts/run_candidate_d_d1_literature.py",
     }
     for module, relative in expected.items():
         origin = getattr(module, "__file__", None)
-        if origin is None or Path(origin).resolve() != (root / relative).resolve():
+        if origin is None or Path(origin).resolve() != (
+            execution_root / relative
+        ).resolve():
             raise AdmissionEvidenceError(
                 f"local module origin mismatch: {relative}"
             )
@@ -1719,7 +1762,7 @@ def evaluate_candidate_d_admission(
     root = _resolved_root(root)
     _validate_run_metadata(run_date, execution_platform)
     runtime_hashes = _controller_source_hashes(root, controller_commit)
-    _validate_module_origins(root)
+    _validate_module_origins(ROOT)
     d0_decision = _recompute_d0(root)
     if d0_decision != d0_baseline.D0_DECISION:
         raise AdmissionEvidenceError("D0 returned an unknown decision")
@@ -1965,7 +2008,11 @@ def canonical_summary_record(result: AdmissionResult) -> dict[str, str]:
     }
 
 
-def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
+def _result_from_evidence(
+    payload: Mapping[str, object],
+    *,
+    runtime_sources: tuple[str, ...],
+) -> AdmissionResult:
     gates = payload.get("gate_evidence")
     if not isinstance(gates, Mapping):
         raise ValueError("decision evidence gate_evidence is malformed")
@@ -2043,12 +2090,7 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
     if payload.get("input_commit") != CURRENT_INPUT_COMMIT:
         expected_source_paths = (*expected_source_paths, *RESUME_PINNED_INPUTS)
     source_hashes = hashes("source_hashes", expected_source_paths)
-    runtime_paths = (
-        DECISION_EVIDENCE_V3_RUNTIME_SOURCES
-        if payload.get("schema") == "candidate-d-task9-decision-evidence-v3"
-        else RUNTIME_SOURCES
-    )
-    runtime_hashes = hashes("runtime_source_hashes", runtime_paths)
+    runtime_hashes = hashes("runtime_source_hashes", runtime_sources)
     string_fields = expected_gate_keys - {
         "d1_missing_evidence",
         "gamma_count",
@@ -2112,32 +2154,38 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
     )
 
 
-def validate_decision_evidence(payload: object) -> AdmissionResult:
+_DECISION_EVIDENCE_BASE_KEYS = {
+    "schema",
+    "input_commit",
+    "controller_commit",
+    "historical_block_commit",
+    "run_date",
+    "execution_platform",
+    "claimed_decision",
+    "gate_evidence",
+    "source_hashes",
+    "runtime_source_hashes",
+    "resume_condition",
+    "binding_sha256",
+}
+
+
+def _validate_bound_decision_evidence(
+    payload: object,
+    *,
+    schema: str,
+    runtime_sources: tuple[str, ...],
+    predecessor_binding: Mapping[str, str] | None,
+) -> AdmissionResult:
     if not isinstance(payload, Mapping):
         raise ValueError("decision evidence must be an object")
-    base_keys = {
-        "schema",
-        "input_commit",
-        "controller_commit",
-        "historical_block_commit",
-        "run_date",
-        "execution_platform",
-        "claimed_decision",
-        "gate_evidence",
-        "source_hashes",
-        "runtime_source_hashes",
-        "resume_condition",
-        "binding_sha256",
-    }
-    schema = payload.get("schema")
-    if schema == "candidate-d-task9-decision-evidence-v3":
-        expected_keys = base_keys
-    elif schema == "candidate-d-task9-decision-evidence-v4":
-        expected_keys = {*base_keys, "predecessor_evidence"}
-        if payload.get("predecessor_evidence") != _predecessor_evidence_record():
-            raise ValueError("decision evidence predecessor binding is malformed")
-    else:
+    if payload.get("schema") != schema:
         raise ValueError("decision evidence schema is malformed")
+    expected_keys = set(_DECISION_EVIDENCE_BASE_KEYS)
+    if predecessor_binding is not None:
+        expected_keys.add("predecessor_evidence")
+        if payload.get("predecessor_evidence") != predecessor_binding:
+            raise ValueError("decision evidence predecessor binding is malformed")
     if set(payload) != expected_keys:
         raise ValueError("decision evidence schema is malformed")
     binding = payload.get("binding_sha256")
@@ -2147,10 +2195,45 @@ def validate_decision_evidence(payload: object) -> AdmissionResult:
     del unbound["binding_sha256"]
     if _sha256_bytes(_canonical_json(unbound)) != binding:
         raise ValueError("decision evidence binding is stale")
-    result = _result_from_evidence(payload)
+    result = _result_from_evidence(payload, runtime_sources=runtime_sources)
     if result.decision != derive_candidate_d_decision(result):
         raise ValueError("decision evidence decision does not match gates")
     return result
+
+
+def _validate_predecessor_decision_evidence_v3(payload: object) -> AdmissionResult:
+    """Validate only the fixed legacy predecessor format; never current artifacts."""
+
+    return _validate_bound_decision_evidence(
+        payload,
+        schema="candidate-d-task9-decision-evidence-v3",
+        runtime_sources=DECISION_EVIDENCE_V3_RUNTIME_SOURCES,
+        predecessor_binding=None,
+    )
+
+
+def _validate_predecessor_decision_evidence_v4(payload: object) -> AdmissionResult:
+    """Validate the fixed prior-v4 layout used only by erratum authentication."""
+
+    return _validate_bound_decision_evidence(
+        payload,
+        schema="candidate-d-task9-decision-evidence-v4",
+        runtime_sources=DECISION_EVIDENCE_PREDECESSOR_V4_RUNTIME_SOURCES,
+        predecessor_binding=DECISION_EVIDENCE_PREDECESSOR_V4_BINDING,
+    )
+
+
+def validate_decision_evidence(payload: object) -> AdmissionResult:
+    if not isinstance(payload, Mapping) or payload.get("schema") != (
+        "candidate-d-task9-decision-evidence-v4"
+    ):
+        raise ValueError("current decision evidence must use v4 schema")
+    return _validate_bound_decision_evidence(
+        payload,
+        schema="candidate-d-task9-decision-evidence-v4",
+        runtime_sources=RUNTIME_SOURCES,
+        predecessor_binding=_predecessor_evidence_record(),
+    )
 
 
 def _proof_rows(result: AdmissionResult) -> tuple[dict[str, str], ...]:
@@ -2379,7 +2462,13 @@ skipped or hand-written values are never promoted.
 
 This controller authenticates reviewed deterministic execution, not arbitrary
 untrusted code. Mandatory source review of the canonical runner and its exact
-recursive local closure is a prerequisite for scientific authority. The
+recursive local closure is a prerequisite for scientific authority. Task 9
+authority begins with the launcher blob read from the controller commit and
+executed under `python -I -S`. It authenticates a composite tree based at the
+input commit with the complete controller execution closure overlaid before
+any repository import; the caller root remains an untrusted evidence/output
+destination. Plain mutable-worktree run/apply entrypoints are not
+authoritative. The
 import guard, execution audit, checkout snapshot, output-tree validation, and
 completion attestation are defense in depth, not a hostile-code sandbox. A
 malicious commit-pinned runner and arbitrary native code are out of scope; see

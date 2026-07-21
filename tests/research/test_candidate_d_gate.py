@@ -41,6 +41,10 @@ CONTROLLER_COMMIT = subprocess.run(
         "--",
         "scripts/run_candidate_d_admission.py",
         "scripts/apply_candidate_d_admission.py",
+        "scripts/candidate_d_task9_launcher.py",
+        "scripts/__init__.py",
+        "research/__init__.py",
+        "research/mat_sab/__init__.py",
         "research/mat_sab/candidate_d_stage_replay.py",
         "docs/candidate_d_task9_replay_contract.md",
         "docs/candidate_d_task9_threat_model.md",
@@ -861,13 +865,13 @@ class CandidateDGateTests(unittest.TestCase):
         result = current_d1_block_result()
         payload = gate._decision_evidence_payload(result)
         expected = {
-            "evidence_commit": "95bc17959e6bfa25e8504481cbd26ee265bbe9c7",
-            "controller_commit": "8a953a54b8799089d2e7fef6d3951581b4cf8fd4",
+            "evidence_commit": "2e2508a4716f83a92d9b53e7b716569c642c1033",
+            "controller_commit": "fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0",
             "decision_evidence_path": (
                 "repro/candidate_d_admission/decision_evidence.json"
             ),
             "decision_evidence_sha256": (
-                "7287a6d11ca0a61ff4abb8371fd4d6c24a0fe005781e38d53e3964cbd5506036"
+                "48ac5ee01f3a24037a5ea0a9781c7528158498c4605f81985b8a722482f4277e"
             ),
         }
         self.assertEqual(
@@ -885,6 +889,24 @@ class CandidateDGateTests(unittest.TestCase):
         self.assertEqual(
             summary["predecessor_decision_evidence_sha256"],
             expected["decision_evidence_sha256"],
+        )
+
+    def test_v3_evidence_is_private_predecessor_only_compatibility(self):
+        payload = json.loads(
+            gate._git_blob(
+                ROOT,
+                "95bc17959e6bfa25e8504481cbd26ee265bbe9c7",
+                "repro/candidate_d_admission/decision_evidence.json",
+            ).decode("ascii")
+        )
+
+        with self.assertRaisesRegex(ValueError, "v4"):
+            validate_decision_evidence(payload)
+        predecessor = gate._validate_predecessor_decision_evidence_v3(payload)
+
+        self.assertEqual(
+            predecessor.controller_commit,
+            "8a953a54b8799089d2e7fef6d3951581b4cf8fd4",
         )
 
     def test_summary_is_one_canonical_nonpermissive_record(self):

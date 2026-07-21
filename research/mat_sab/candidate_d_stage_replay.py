@@ -32,6 +32,7 @@ import os
 from pathlib import Path
 import runpy
 import sys
+import sysconfig
 
 config = json.loads(sys.stdin.read())
 sys.stdin.close()
@@ -46,12 +47,21 @@ expected = {
 local_modules = set(config["local_modules"])
 allowed_paths = set(expected.values()) | {runner}
 trusted_roots = []
-for entry in sys.path:
+stdlib_paths = sysconfig.get_paths()
+excluded_roots = []
+for key in ("purelib", "platlib"):
     try:
-        candidate = Path(entry).resolve(strict=True)
-    except OSError:
+        candidate = Path(stdlib_paths[key]).resolve(strict=True)
+    except (KeyError, OSError):
         continue
-    if candidate.is_dir():
+    if candidate.is_dir() and candidate not in excluded_roots:
+        excluded_roots.append(candidate)
+for key in ("stdlib", "platstdlib"):
+    try:
+        candidate = Path(stdlib_paths[key]).resolve(strict=True)
+    except (KeyError, OSError):
+        continue
+    if candidate.is_dir() and candidate not in trusted_roots:
         trusted_roots.append(candidate)
 records = {}
 violations = []
@@ -159,6 +169,12 @@ def audit(event, arguments):
             actual.relative_to(trusted_root)
         except ValueError:
             continue
+        for excluded_root in excluded_roots:
+            try:
+                actual.relative_to(excluded_root)
+            except ValueError:
+                continue
+            fail(f"import audit outside trusted path: {actual}")
         return
     fail(f"import audit outside trusted path: {actual}")
 
@@ -995,6 +1011,7 @@ def execute_stage_replay(
         command = (
             sys.executable,
             "-I",
+            "-S",
             "-c",
             _RUNTIME_BOOTSTRAP,
             "--root",
