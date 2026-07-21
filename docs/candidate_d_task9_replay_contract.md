@@ -44,15 +44,17 @@ of the following hold:
    execution audit rejects unregistered checkout code. Every loaded local
    module must originate at its exact authenticated closure path. The audit
    record survives `sys.modules` removal; mutable `__file__` or `__spec__`
-   values cannot authenticate a source. Preloaded, shadowed, or unregistered
-   repository-local modules fail.
+   values cannot authenticate a source. Executed code outside the checkout is
+   accepted only from interpreter paths fixed before runner execution.
+   Preloaded, shadowed, or unregistered repository-local modules fail.
 5. The runner receives an empty temporary `--output-root`, explicit full
    `--input-commit`, and explicit full `--controller-commit`.
 6. The child writes a parent-nonce-bound completion attestation through a
    separate control file only after runner return and final import-integrity
    checks. The parent validates its exact schema, nonce, and audited immutable
-   origins. Successful early termination, including `os._exit(0)`, has no
-   attestation and fails.
+   origins. Control configuration is consumed once from stdin and is absent
+   from child command-line arguments. Successful early termination, including
+   `os._exit(0)`, has no attestation and fails.
 7. Before and after execution, both Git status including all untracked files
    and a byte/type snapshot including ignored files and the complete `.git`
    directory must match. Any checkout or Git metadata write fails; the

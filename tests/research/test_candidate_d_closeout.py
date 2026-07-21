@@ -523,11 +523,11 @@ class CandidateDCloseoutTests(unittest.TestCase):
 
         for relative, start, end, content in contents:
             before = (ROOT / relative).read_bytes()
-            first = closeout._plan_bounded_append(
-                before, start, end, content, relative
+            first = closeout._plan_superseding_erratum(
+                before, start, end, content, relative, self.result
             )
-            second = closeout._plan_bounded_append(
-                first, start, end, content, relative
+            second = closeout._plan_superseding_erratum(
+                first, start, end, content, relative, self.result
             )
             self.assertEqual(first, second)
             self.assertEqual(first.count(start.encode("ascii")), 1)
