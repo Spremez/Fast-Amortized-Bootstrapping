@@ -1,5 +1,7 @@
 import csv
 from dataclasses import replace
+from decimal import Decimal
+from hashlib import sha256
 import json
 import os
 from pathlib import Path
@@ -78,6 +80,42 @@ def _write(root: Path, relative: str, content: str) -> None:
     path.write_text(content, encoding="ascii", newline="")
 
 
+def _write_csv(
+    root: Path,
+    relative: str,
+    fields: tuple[str, ...],
+    rows: list[dict[str, object]],
+) -> None:
+    path = root / relative
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="ascii", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def _digest(value: str) -> str:
+    return sha256(value.encode("ascii")).hexdigest()
+
+
+def _mutate_csv(
+    path: Path,
+    *,
+    row_index: int,
+    field: str,
+    value: str,
+) -> None:
+    with path.open("r", encoding="ascii", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fields = tuple(reader.fieldnames or ())
+        rows = list(reader)
+    rows[row_index][field] = value
+    with path.open("w", encoding="ascii", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def write_d2_fixture(
     root: Path,
     *,
@@ -86,24 +124,128 @@ def write_d2_fixture(
     negative_control_status: str = "DETECTED",
 ) -> None:
     _write(root, gate.D2_OUTPUTS[0], "# fixture operator closure\n")
-    _write(root, gate.D2_OUTPUTS[1], f"decision\n{decision}\n")
-    _write(
-        root,
-        gate.D2_OUTPUTS[2],
-        "basis_index,status\n"
-        + "".join(f"{index},PASS\n" for index in range(gamma_count)),
+    search_status = "FOUND"
+    closure_status = "PASS"
+    if decision == D2_BLOCK:
+        search_status = "INCOMPLETE"
+        closure_status = "BLOCK"
+    elif gamma_count > 4:
+        search_status = "OVERFLOW"
+        closure_status = "REJECT"
+    closure_rows = [
+        {
+            "basis_index": index,
+            "automorphism_label": (1, 15, 3, 5, 7, 9, 11, 13)[index],
+            "gamma_count": gamma_count,
+            "equation_revision": 0,
+            "search_status": search_status,
+            "status": closure_status,
+        }
+        for index in range(gamma_count)
+    ]
+    _write_csv(root, gate.D2_OUTPUTS[2], gate.D2_CLOSURE_FIELDS, closure_rows)
+
+    phase_rows = []
+    reject_phase = decision == D2_REJECT
+    block_phase = decision == D2_BLOCK
+    for n, schedule_case in gate._d2_required_cases():
+        selector = (
+            "0"
+            if "all_zero" in schedule_case or schedule_case.endswith("mu0")
+            else "1"
+            if "all_one" in schedule_case or schedule_case.endswith("mu1")
+            else "mixed"
+        )
+        for basis_index in range(n):
+            expected = _digest(f"{n}:{schedule_case}:{basis_index}")
+            status = "PASS"
+            actual = expected
+            if reject_phase and not phase_rows:
+                status = "REJECT"
+                actual = "f" * 64 if expected != "f" * 64 else "e" * 64
+            elif block_phase and not phase_rows:
+                status = "BLOCK"
+                actual = ""
+            phase_rows.append(
+                {
+                    "N": n,
+                    "schedule_case": schedule_case,
+                    "basis_index": basis_index,
+                    "operation": "final_bind",
+                    "accumulator_index": "final",
+                    "selector_bit": selector,
+                    "gamma_count": gamma_count,
+                    "matrix_rank": gamma_count,
+                    "expected_hash": expected,
+                    "actual_hash": actual,
+                    "status": status,
+                }
+            )
+    _write_csv(root, gate.D2_OUTPUTS[3], gate.D2_PHASE_FIELDS, phase_rows)
+
+    negative_rows = [
+        {
+            "control": control,
+            "failed_invariant": invariant,
+            "status": negative_control_status,
+        }
+        for control, invariant in gate.D2_NEGATIVE_CONTROLS.items()
+    ]
+    _write_csv(
+        root, gate.D2_OUTPUTS[4], gate.D2_NEGATIVE_FIELDS, negative_rows
     )
-    _write(root, gate.D2_OUTPUTS[3], "case,status\nphase,PASS\n")
-    _write(
+
+    schedule_rows = []
+    for n, schedule_case in gate._d2_required_cases():
+        for step, operation in enumerate(gate.D2_TRACE_OPERATIONS):
+            schedule_rows.append(
+                {
+                    "N": n,
+                    "schedule_case": schedule_case,
+                    "step": step,
+                    "operation": operation,
+                    "accumulator_index": "final" if operation == "final_bind" else step,
+                    "selector_bit": "public" if operation in {"setup", "sub_a", "final_bind"} else "mixed",
+                    "status": "PASS",
+                }
+            )
+    _write_csv(root, gate.D2_OUTPUTS[5], gate.D2_SCHEDULE_FIELDS, schedule_rows)
+
+    if reject_phase:
+        derived_decision = D2_REJECT
+        phase_status = "REJECT"
+    elif gamma_count > 4:
+        derived_decision = "REJECT_D2_CLOSURE_GT_4"
+        phase_status = "PASS"
+    elif negative_control_status == "MISSED":
+        derived_decision = "REJECT_D2_NEGATIVE_CONTROL"
+        phase_status = "PASS"
+    elif decision == D2_BLOCK:
+        derived_decision = D2_BLOCK
+        phase_status = "BLOCK"
+    else:
+        derived_decision = D2_PASS
+        phase_status = "PASS"
+    negative_status = {
+        "DETECTED": "PASS",
+        "MISSED": "REJECT",
+        "INCOMPLETE": "BLOCK",
+    }[negative_control_status]
+    _write_csv(
         root,
-        gate.D2_OUTPUTS[4],
-        "control,status\nwrong_phase,"
-        + negative_control_status
-        + "\nwrong_basis,"
-        + negative_control_status
-        + "\n",
+        gate.D2_OUTPUTS[1],
+        gate.D2_SUMMARY_FIELDS,
+        [
+            {
+                "decision": derived_decision,
+                "gamma_count": gamma_count,
+                "phase_status": phase_status,
+                "negative_controls_status": negative_status,
+                "schedule_status": "PASS",
+                "equation_revisions_used": 0,
+            }
+        ],
     )
-    _write(root, gate.D2_OUTPUTS[5], "case,status\nschedule,PASS\n")
 
 
 def _d3_decision(
@@ -147,23 +289,201 @@ def write_d3_fixture(
     selected = decision or _d3_decision(
         binding, security, noise, cost, resource, projection
     )
+    derived_cost = (
+        "BLOCK"
+        if cost == "BLOCK" or not projection
+        else "REJECT"
+        if Decimal(projection) < Decimal("1.10")
+        else "PASS"
+    )
     _write(root, gate.D3_OUTPUTS[0], "# fixture security and noise\n")
     _write(root, gate.D3_OUTPUTS[1], "# fixture complete cost\n")
-    _write(root, gate.D3_OUTPUTS[2], f"case,status\ninteger,{binding}\n")
-    _write(root, gate.D3_OUTPUTS[3], f"object,status\nstandard,{security}\n")
-    _write(root, gate.D3_OUTPUTS[4], f"case,status\ndecode,{noise}\n")
-    _write(root, gate.D3_OUTPUTS[5], "case,value\ncomplete,1\n")
-    _write(
+    binding_rows = []
+    for bits in (2, 3, 5, 8):
+        valid = not (binding == "REJECT" and bits == 3)
+        binding_rows.append(
+            {
+                "plaintext_bits": bits,
+                "delta_integer": 2 ** (64 - bits),
+                "delta_torus": f"2^-{bits}",
+                "coefficient_min": -(2 ** (bits - 1)),
+                "coefficient_max": 2 ** (bits - 1) - 1,
+                "checker_min": -128,
+                "checker_max": 128,
+                "binder_operation": gate.D3_BINDER if valid else "torus_by_torus_multiplication",
+                "status": "PASS" if valid else "REJECT",
+            }
+        )
+    _write_csv(root, gate.D3_OUTPUTS[2], gate.D3_BINDING_FIELDS, binding_rows)
+
+    security_rows = []
+    for name, (realization, assumption) in gate.D3_SECURITY_OBJECTS.items():
+        valid = not (security == "REJECT" and name == "selector_bit")
+        security_rows.append(
+            {
+                "object": name,
+                "realization": realization,
+                "assumption": assumption if valid else "correlated_selector_errors",
+                "status": "PASS" if valid else "REJECT",
+            }
+        )
+    _write_csv(root, gate.D3_OUTPUTS[3], gate.D3_SECURITY_FIELDS, security_rows)
+
+    noise_rows = [
+        {
+            "case": "external_product_lemma",
+            "value": "MISSING" if noise == "BLOCK" else "ANCHORED",
+            "limit": "REQUIRED",
+            "source_anchor": "fixture:lemma",
+            "status": "BLOCK" if noise == "BLOCK" else "PASS",
+        }
+    ]
+    numeric_noise = {
+        "covariance_lambda_max": ("1", "2"),
+        "deterministic_l1": ("1", "2"),
+        "deterministic_linf": ("1", "2"),
+        "decode_margin": ("10", "5"),
+        "union_failure_bound": ("0.001", "0.01"),
+        "scalar_failure_bound": ("0.02", "0.02"),
+        "b1_failure_bound": ("0.02", "0.02"),
+        "target_failure_bound": ("0.01", "0.01"),
+    }
+    for case, (value, limit) in numeric_noise.items():
+        status = "PASS"
+        if noise == "REJECT" and case == "union_failure_bound":
+            value = "0.02"
+            status = "REJECT"
+        noise_rows.append(
+            {
+                "case": case,
+                "value": value,
+                "limit": limit,
+                "source_anchor": f"fixture:{case}",
+                "status": status,
+            }
+        )
+    _write_csv(root, gate.D3_OUTPUTS[4], gate.D3_NOISE_FIELDS, noise_rows)
+
+    structural_rows = []
+    h = 573440
+    for variant in (
+        "B1_exact_dense",
+        "D_operator_generic",
+        "D_operator_coeff_one_fast",
+    ):
+        for r in (1, 2, 4, 8):
+            if variant == "B1_exact_dense":
+                g = ""
+                events = h
+                products = (1 + r) ** 2
+                materialized = 1 + r
+                binding_products = 0
+            else:
+                g = 2
+                events = h + 79872 if variant == "D_operator_generic" else h
+                products = 8
+                materialized = 4
+                binding_products = 4 * r
+            structural_rows.append(
+                {
+                    "variant": variant,
+                    "r": r,
+                    "g": g,
+                    "selector_events": events,
+                    "products_per_event": products,
+                    "selector_ring_products": events * products,
+                    "materialized_components": materialized,
+                    "late_binding_products": binding_products,
+                    "ncmux_events": 5080,
+                    "sub_a_calls": 39,
+                    "status": "PASS",
+                }
+            )
+    _write_csv(root, gate.D3_OUTPUTS[5], gate.D3_STRUCTURAL_FIELDS, structural_rows)
+
+    if cost == "BLOCK":
+        pessimistic = {
+            "scenario": "pessimistic",
+            "complete_ratio_vs_b1": "",
+            "speedup_vs_b1": "",
+            "ep_ratio": "",
+            "materialization_ratio": "",
+            "automorphism_ratio": "",
+            "late_binding_us": "",
+            "status": "BLOCK",
+        }
+    else:
+        p = Decimal(projection)
+        pessimistic = {
+            "scenario": "pessimistic",
+            "complete_ratio_vs_b1": format(Decimal(1) / p, "f"),
+            "speedup_vs_b1": projection,
+            "ep_ratio": "0.40",
+            "materialization_ratio": "1.00",
+            "automorphism_ratio": "1.00",
+            "late_binding_us": "1",
+            "status": "PASS" if p >= Decimal("1.10") else "REJECT",
+        }
+    projection_rows = [
+        {
+            "scenario": "central",
+            "complete_ratio_vs_b1": "0.8",
+            "speedup_vs_b1": "1.25",
+            "ep_ratio": "0.32",
+            "materialization_ratio": "0.80",
+            "automorphism_ratio": "1.00",
+            "late_binding_us": "1",
+            "status": "PASS",
+        },
+        pessimistic,
+    ]
+    _write_csv(root, gate.D3_OUTPUTS[6], gate.D3_AMDAHL_FIELDS, projection_rows)
+
+    resource_rows = []
+    for variant in gate.D3_RESOURCE_VARIANTS:
+        if variant in {"B0b", "B2"}:
+            row = {field: "" for field in gate.D3_RESOURCE_FIELDS}
+            row.update({"variant": variant, "status": "REQUIRED_NOT_YET_LOCAL"})
+        else:
+            scale = 3 if variant == "D" and resource == "REJECT" else 1
+            row = {
+                "variant": variant,
+                "selector_key_bytes": 100 * scale,
+                "automorphism_key_bytes": 100 * scale,
+                "operator_state_bytes": 100 * scale,
+                "scratch_bytes": 100 * scale,
+                "output_bytes": 100 * scale,
+                "rerandomization_bytes": 0,
+                "keygen_work": 1,
+                "late_binding_transforms": 1,
+                "status": (
+                    "REFERENCE"
+                    if variant in {"B0a", "B1"}
+                    else resource
+                ),
+            }
+            if variant == "D" and resource == "BLOCK":
+                for field in gate.D3_RESOURCE_FIELDS[1:-1]:
+                    row[field] = ""
+        resource_rows.append(row)
+    _write_csv(root, gate.D3_OUTPUTS[7], gate.D3_RESOURCE_FIELDS, resource_rows)
+
+    _write_csv(
         root,
-        gate.D3_OUTPUTS[6],
-        "scenario,speedup_vs_b1,status\npessimistic,"
-        + projection
-        + ","
-        + cost
-        + "\n",
+        gate.D3_OUTPUTS[8],
+        gate.D3_SUMMARY_FIELDS,
+        [
+            {
+                "decision": selected,
+                "binding_status": binding,
+                "security_status": security,
+                "noise_status": noise,
+                "complete_cost_status": derived_cost,
+                "resource_status": resource,
+                "pessimistic_projection": projection,
+            }
+        ],
     )
-    _write(root, gate.D3_OUTPUTS[7], f"case,status\ncomplete,{resource}\n")
-    _write(root, gate.D3_OUTPUTS[8], f"decision\n{selected}\n")
 
 
 def source_route_result(
@@ -191,7 +511,11 @@ def source_route_result(
                 gamma_count=gamma_count,
                 negative_control_status=negative_control_status,
             )
-            if d2_decision == D2_PASS:
+            if (
+                d2_decision == D2_PASS
+                and gamma_count <= 4
+                and negative_control_status == "DETECTED"
+            ):
                 write_d3_fixture(
                     root,
                     binding=binding,
@@ -242,6 +566,80 @@ def source_route_result(
 
 
 class CandidateDGateTests(unittest.TestCase):
+    def test_d2_summary_is_assertion_not_authority(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            write_d2_fixture(root)
+            _mutate_csv(
+                root / gate.D2_OUTPUTS[1],
+                row_index=0,
+                field="decision",
+                value=D2_REJECT,
+            )
+            with self.assertRaisesRegex(
+                gate.AdmissionEvidenceError, "summary does not match"
+            ):
+                gate._recompute_d2(root)
+
+    def test_d2_exact_sets_and_status_hash_semantics_are_enforced(self):
+        mutations = (
+            (gate.D2_OUTPUTS[2], 1, "basis_index", "0"),
+            (gate.D2_OUTPUTS[3], 0, "status", "REJECT"),
+            (gate.D2_OUTPUTS[4], 0, "control", "unregistered_control"),
+            (gate.D2_OUTPUTS[5], 0, "operation", "changed_operation"),
+        )
+        for relative, row_index, field, value in mutations:
+            with self.subTest(relative=relative, field=field):
+                with tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    write_d2_fixture(root)
+                    _mutate_csv(
+                        root / relative,
+                        row_index=row_index,
+                        field=field,
+                        value=value,
+                    )
+                    with self.assertRaises(gate.AdmissionEvidenceError):
+                        gate._recompute_d2(root)
+
+    def test_d3_summary_is_assertion_not_authority(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            write_d3_fixture(root)
+            _mutate_csv(
+                root / gate.D3_OUTPUTS[8],
+                row_index=0,
+                field="decision",
+                value=D3_COST_REJECT,
+            )
+            with self.assertRaisesRegex(
+                gate.AdmissionEvidenceError, "summary does not match"
+            ):
+                gate._recompute_d3(root)
+
+    def test_d3_each_canonical_map_is_mutation_sensitive(self):
+        mutations = (
+            (gate.D3_OUTPUTS[2], 1, "delta_integer", "1"),
+            (gate.D3_OUTPUTS[3], 2, "assumption", "correlated_errors"),
+            (gate.D3_OUTPUTS[4], 1, "value", "3"),
+            (gate.D3_OUTPUTS[5], 0, "selector_ring_products", "1"),
+            (gate.D3_OUTPUTS[6], 0, "ep_ratio", "0.31"),
+            (gate.D3_OUTPUTS[7], 2, "status", "PASS"),
+        )
+        for relative, row_index, field, value in mutations:
+            with self.subTest(relative=relative, field=field):
+                with tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    write_d3_fixture(root)
+                    _mutate_csv(
+                        root / relative,
+                        row_index=row_index,
+                        field=field,
+                        value=value,
+                    )
+                    with self.assertRaises(gate.AdmissionEvidenceError):
+                        gate._recompute_d3(root)
+
     def test_source_artifacts_derive_all_six_terminal_routes(self):
         cases = (
             ("D1 block", {"d1_decision": gate.BLOCK_D1}, BLOCK),
@@ -422,7 +820,10 @@ class CandidateDGateTests(unittest.TestCase):
         )
         self.assertIn("git commit", result.resume_condition)
         self.assertIn("REQUIRED_SOURCE_BINDINGS", result.resume_condition)
-        self.assertIn("--input-commit <new-D1-commit>", result.resume_condition)
+        self.assertIn("--input-commit <new-D3-commit>", result.resume_condition)
+        self.assertIn("run_candidate_d_d2_closure.py", result.resume_condition)
+        self.assertIn("run_candidate_d_d3_admission.py", result.resume_condition)
+        self.assertIn("historical Task 9 ledgers", result.resume_condition)
         self.assertIn("latest second revision", result.resume_condition)
         self.assertIn("2026-07-16", result.resume_condition)
         self.assertIn("not the archived January", result.resume_condition)
@@ -544,7 +945,12 @@ class CandidateDGateTests(unittest.TestCase):
         )
 
     def test_admit_recheck_recovers_original_false_permission_evidence(self):
-        source_paths = (*gate.PINNED_INPUTS, *gate.D2_OUTPUTS, *gate.D3_OUTPUTS)
+        source_paths = (
+            *gate.PINNED_INPUTS,
+            *gate.D2_OUTPUTS,
+            *gate.D3_OUTPUTS,
+            *gate.RESUME_PINNED_INPUTS,
+        )
         source_hashes = tuple((path, "0" * 64) for path in source_paths)
         runtime_hashes = tuple((path, "1" * 64) for path in gate.RUNTIME_SOURCES)
         result = passing_result(

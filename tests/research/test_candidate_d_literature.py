@@ -2,6 +2,8 @@ import csv
 from io import StringIO
 import json
 import os
+import shutil
+import subprocess
 from contextlib import contextmanager
 from dataclasses import replace
 from hashlib import sha256
@@ -124,16 +126,146 @@ class CandidateDLiteratureTests(unittest.TestCase):
         self.assertEqual(rendered["same_operator"], "")
         self.assertEqual(rendered["same_complete_complexity"], "")
 
-    def test_fetch_script_uses_registry_and_preserves_verified_cache(self):
+    def test_fetch_script_uses_registry_and_prioritizes_explicit_override(self):
         script = (ROOT / "scripts/fetch_candidate_d_primary_sources.sh").read_text(
             encoding="utf-8"
         )
         self.assertIn("fetch-manifest", script)
         self.assertIn("validate-output-root", script)
         self.assertIn("CACHE_VERIFIED", script)
+        self.assertIn("EXPLICIT_OVERRIDE_VERIFIED", script)
+        self.assertIn("STALE_NTRU_REVISION_REJECTED", script)
+        self.assertLess(
+            script.index('override="$(explicit_override'),
+            script.index('elif is_pdf "${pdf}"'),
+        )
+        self.assertIn('rm -f "${text}" "${pdf}"', script)
         self.assertNotIn('rm -f "${pdf}"', script)
         for url in REQUIRED_FULLTEXT_URLS.values():
             self.assertNotIn(url, script)
+
+    def test_explicit_ntru_override_replaces_cache_and_rejects_old_revision(self):
+        if os.name == "nt" and shutil.which("wsl") is None:
+            self.skipTest("WSL is unavailable")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            scripts = root / "scripts"
+            literature = root / "literature"
+            output = root / "references/candidate_d_fulltext"
+            bin_dir = root / "test-bin"
+            for path in (scripts, literature, output, bin_dir):
+                path.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(
+                ROOT / "scripts/fetch_candidate_d_primary_sources.sh",
+                scripts / "fetch_candidate_d_primary_sources.sh",
+            )
+            (literature / "candidate_d_source_registry.json").write_text(
+                "{}\n", encoding="ascii"
+            )
+            fake_python = bin_dir / "python3"
+            fake_python.write_text(
+                "#!/usr/bin/env bash\n"
+                "if [[ \"$*\" == *fetch-manifest* ]]; then\n"
+                "  printf 'NTRU_AMORT_2026_068\\thttps://example.invalid/current.pdf\\t-\\t-\\t-\\t-\\n'\n"
+                "fi\n",
+                encoding="ascii",
+                newline="\n",
+            )
+            (bin_dir / "curl").write_text(
+                "#!/usr/bin/env bash\nexit 1\n", encoding="ascii", newline="\n"
+            )
+            (bin_dir / "pdfinfo").write_text(
+                "#!/usr/bin/env bash\nprintf 'Pages: 1\\n'\n",
+                encoding="ascii",
+                newline="\n",
+            )
+            (bin_dir / "pdftotext").write_text(
+                "#!/usr/bin/env bash\nprintf '%s\\n' \"${FAKE_PDF_TEXT}\" > \"$3\"\n",
+                encoding="ascii",
+                newline="\n",
+            )
+            for path in bin_dir.iterdir():
+                path.chmod(0o755)
+
+            cached_pdf = output / "NTRU_AMORT_2026_068.pdf"
+            cached_text = output / "NTRU_AMORT_2026_068.txt"
+            cached_pdf.write_bytes(b"%PDF archived January cache\n")
+            cached_text.write_text(
+                "Revisiting Polynomial NTRU for FHE: Amortized Bootstrapping with Sparse Keys\n",
+                encoding="ascii",
+            )
+            latest = root / "latest.pdf"
+            latest.write_bytes(b"%PDF official second revision\n")
+
+            def platform_path(path: Path) -> str:
+                if os.name != "nt":
+                    return str(path)
+                drive, tail = os.path.splitdrive(str(path.resolve()))
+                if not drive:
+                    raise AssertionError("Windows test path has no drive")
+                return f"/mnt/{drive[0].lower()}/{tail.lstrip('\\/').replace('\\', '/')}"
+
+            script_path = platform_path(
+                scripts / "fetch_candidate_d_primary_sources.sh"
+            )
+            fake_bin_path = platform_path(bin_dir)
+            latest_path = platform_path(latest)
+            env_args = [
+                f"PATH={fake_bin_path}:/usr/bin:/bin",
+                "CANDIDATE_D_OFFLINE=1",
+                f"NTRU_AMORT_FULLTEXT_PATH={latest_path}",
+                "FAKE_PDF_TEXT=Practical Amortized Bootstrapping for NTRU-Based FHE",
+            ]
+            command = (
+                ["wsl", "env", *env_args, "bash", script_path]
+                if os.name == "nt"
+                else ["env", *env_args, "bash", script_path]
+            )
+            completed = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertEqual(cached_pdf.read_bytes(), latest.read_bytes())
+            self.assertIn(
+                "Practical Amortized Bootstrapping",
+                cached_text.read_text(encoding="ascii"),
+            )
+            self.assertIn(
+                "EXPLICIT_OVERRIDE_VERIFIED",
+                (output / "source_hashes.csv").read_text(encoding="ascii"),
+            )
+
+            stale = root / "stale.pdf"
+            stale.write_bytes(b"%PDF archived first revision\n")
+            stale_args = [
+                f"PATH={fake_bin_path}:/usr/bin:/bin",
+                "CANDIDATE_D_OFFLINE=1",
+                f"NTRU_AMORT_FULLTEXT_PATH={platform_path(stale)}",
+                "FAKE_PDF_TEXT=Revisiting Polynomial NTRU for FHE: Amortized Bootstrapping with Sparse Keys",
+            ]
+            stale_command = (
+                ["wsl", "env", *stale_args, "bash", script_path]
+                if os.name == "nt"
+                else ["env", *stale_args, "bash", script_path]
+            )
+            rejected = subprocess.run(
+                stale_command,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertNotEqual(rejected.returncode, 0)
+            self.assertFalse(cached_pdf.exists())
+            self.assertFalse(cached_text.exists())
+            self.assertIn(
+                "STALE_NTRU_REVISION_REJECTED",
+                (output / "source_hashes.csv").read_text(encoding="ascii"),
+            )
 
     def test_fdfb2_is_a_mandatory_novelty_kill_gate(self):
         records = load_source_registry(REGISTRY)

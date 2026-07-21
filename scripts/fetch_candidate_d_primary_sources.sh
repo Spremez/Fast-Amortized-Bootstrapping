@@ -64,18 +64,29 @@ try_local_import() {
   if [[ -n "${CANDIDATE_D_SOURCE_DIR:-}" ]]; then
     candidate="${CANDIDATE_D_SOURCE_DIR}/${source_id}.pdf"
   fi
-  if [[ "${source_id}" == "FAB_2025_686" && -n "${FAB686_FULLTEXT_PATH:-}" ]]; then
-    candidate="${FAB686_FULLTEXT_PATH}"
-  fi
-  if [[ "${source_id}" == "NTRU_AMORT_2026_068" && -n "${NTRU_AMORT_FULLTEXT_PATH:-}" ]]; then
-    candidate="${NTRU_AMORT_FULLTEXT_PATH}"
-  fi
   if [[ -n "${candidate}" ]] && is_pdf "${candidate}" && \
       matches_expected_hash "${candidate}" "${expected}"; then
     cp "${candidate}" "${destination}"
     return 0
   fi
   return 1
+}
+
+explicit_override() {
+  local source_id="$1"
+  if [[ "${source_id}" == "FAB_2025_686" ]]; then
+    printf '%s' "${FAB686_FULLTEXT_PATH:-}"
+  elif [[ "${source_id}" == "NTRU_AMORT_2026_068" ]]; then
+    printf '%s' "${NTRU_AMORT_FULLTEXT_PATH:-}"
+  fi
+}
+
+is_latest_ntru_revision_text() {
+  local path="$1"
+  local normalized
+  normalized="$(tr '\n' ' ' < "${path}" | tr -s '[:space:]' ' ')"
+  [[ "${normalized}" == *"Practical Amortized Bootstrapping for NTRU-Based FHE"* ]] && \
+    [[ "${normalized}" != *"Revisiting Polynomial NTRU for FHE: Amortized Bootstrapping with Sparse Keys"* ]]
 }
 
 failures=0
@@ -97,7 +108,26 @@ for entry in "${sources[@]}"; do
   rm -f "${pdf_part}" "${text_part}"
 
   cache_valid=false
-  if is_pdf "${pdf}" && matches_expected_hash "${pdf}" "${expected_sha}"; then
+  force_text_extract=false
+  override="$(explicit_override "${source_id}")"
+  if [[ -n "${override}" ]]; then
+    if is_pdf "${override}" && \
+        matches_expected_hash "${override}" "${expected_sha}"; then
+      cp "${override}" "${pdf_part}"
+      mv -f "${pdf_part}" "${pdf}"
+      rm -f "${text}"
+      selected_url="EXPLICIT_OVERRIDE"
+      fetch_status="EXPLICIT_OVERRIDE_VERIFIED"
+      cache_valid=true
+      force_text_extract=true
+    else
+      printf '%s\n' \
+        "${source_id},EXPLICIT_OVERRIDE,OVERRIDE_PDF_OR_HASH_FAILED,,,,NOT_RUN,," \
+        >> "${HASHES_PART}"
+      failures=$((failures + 1))
+      continue
+    fi
+  elif is_pdf "${pdf}" && matches_expected_hash "${pdf}" "${expected_sha}"; then
     cache_valid=true
   fi
 
@@ -167,7 +197,8 @@ for entry in "${sources[@]}"; do
   fi
 
   text_valid=false
-  if [[ -s "${text}" ]] && matches_expected_hash "${text}" "${expected_text_sha}"; then
+  if [[ "${force_text_extract}" != true && -s "${text}" ]] && \
+      matches_expected_hash "${text}" "${expected_text_sha}"; then
     text_valid=true
     pdftotext_status="CACHE_VERIFIED"
   elif pdftotext -layout "${pdf}" "${text_part}" >/dev/null 2>&1 && \
@@ -179,13 +210,24 @@ for entry in "${sources[@]}"; do
   fi
 
   if [[ "${text_valid}" == true ]]; then
+    if [[ "${source_id}" == "NTRU_AMORT_2026_068" ]] && \
+        ! is_latest_ntru_revision_text "${text}"; then
+      text_valid=false
+      pdftotext_status="STALE_NTRU_REVISION_REJECTED"
+      rm -f "${text}" "${pdf}"
+    fi
+  fi
+
+  if [[ "${text_valid}" == true ]]; then
     text_sha256="$(sha256sum "${text}" | awk '{print $1}')"
     text_bytes="$(wc -c < "${text}" | tr -d '[:space:]')"
   else
     rm -f "${text_part}"
     text_sha256=""
     text_bytes=""
-    pdftotext_status="EXTRACTION_OR_TEXT_HASH_FAILED"
+    if [[ "${pdftotext_status}" != "STALE_NTRU_REVISION_REJECTED" ]]; then
+      pdftotext_status="EXTRACTION_OR_TEXT_HASH_FAILED"
+    fi
     failures=$((failures + 1))
   fi
 

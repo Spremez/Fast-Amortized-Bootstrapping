@@ -65,6 +65,29 @@ LEDGER_PATHS = (
 )
 STATE_PATH = "research_state.yaml"
 RUN_LOG_PATH = "repro/run_log.csv"
+TASK9_PLATFORM = (
+    "Windows-NT-10.0.26200.0 CPython-3.12.4; "
+    "WSL2-Linux-5.15.167.4-x86_64 cross-check; "
+    "formal-performance=native-Linux-required"
+)
+
+
+def _is_resume_result(result: AdmissionResult) -> bool:
+    return result.input_commit != CURRENT_INPUT_COMMIT
+
+
+def _marker_for(result: AdmissionResult, marker: str) -> str:
+    if not _is_resume_result(result):
+        return marker
+    if marker.startswith("<!--") and marker.endswith("-->"):
+        return f"{marker[:-3]}-{result.input_commit[:12]} -->"
+    return f"{marker}-{result.input_commit[:12]}"
+
+
+def _run_marker_for(result: AdmissionResult) -> str:
+    if not _is_resume_result(result):
+        return RUN_MARKER
+    return f"candidate-d-admission-{result.input_commit[:12]}"
 
 
 def _resolved_destination(root: Path, relative: str) -> Path:
@@ -217,20 +240,20 @@ def _ledger_contents(
     return (
         (
             "hypotheses/hypothesis_register.yaml",
-            HYPOTHESIS_START,
-            HYPOTHESIS_END,
+            _marker_for(result, HYPOTHESIS_START),
+            _marker_for(result, HYPOTHESIS_END),
             hypothesis,
         ),
         (
             "repro/artifact_manifest.md",
-            MANIFEST_START,
-            MANIFEST_END,
+            _marker_for(result, MANIFEST_START),
+            _marker_for(result, MANIFEST_END),
             manifest,
         ),
         (
             "repro/reproduction_checklist.md",
-            CHECKLIST_START,
-            CHECKLIST_END,
+            _marker_for(result, CHECKLIST_START),
+            _marker_for(result, CHECKLIST_END),
             checklist,
         ),
     )
@@ -245,10 +268,11 @@ def _run_row(result: AdmissionResult) -> dict[str, str]:
         f"noise={result.noise_status};cost={result.complete_cost_status};"
         f"resource={result.resource_status};"
         f"pessimistic_projection={result.pessimistic_projection or 'none'};"
-        f"pre_permission={'yes' if result.pre_application_permission else 'no'}"
+        f"pre_permission={'yes' if result.pre_application_permission else 'no'};"
+        f"execution_platform={TASK9_PLATFORM}"
     )
     return {
-        "run_id": RUN_MARKER,
+        "run_id": _run_marker_for(result),
         "date": "2026-07-21",
         "commit_or_state": result.input_commit,
         "stage": "Candidate D atomic D0-D3 admission closeout",
@@ -291,25 +315,26 @@ def _plan_run_log(current: bytes, result: AdmissionResult) -> bytes:
         or tuple(records[0]) != RUN_FIELDS
     ):
         raise ValueError("run log header changed")
+    marker = _run_marker_for(result)
     for row in records[1:]:
         for index, value in enumerate(row):
-            if RUN_MARKER in value and (
-                value != RUN_MARKER or index != 0 or len(row) != len(RUN_FIELDS)
+            if marker in value and (
+                value != marker or index != 0 or len(row) != len(RUN_FIELDS)
             ):
                 raise ValueError(
-                    f"run-log marker is outside its canonical row: {RUN_MARKER}"
+                    f"run-log marker is outside its canonical row: {marker}"
                 )
     matches = [
         row
         for row in records[1:]
-        if len(row) == len(RUN_FIELDS) and row[0] == RUN_MARKER
+        if len(row) == len(RUN_FIELDS) and row[0] == marker
     ]
     expected = _run_row(result)
     if len(matches) > 1:
-        raise ValueError(f"duplicate run-log marker: {RUN_MARKER}")
+        raise ValueError(f"duplicate run-log marker: {marker}")
     if matches:
         if dict(zip(RUN_FIELDS, matches[0])) != expected:
-            raise ValueError(f"run-log marker/content mismatch: {RUN_MARKER}")
+            raise ValueError(f"run-log marker/content mismatch: {marker}")
         return current
     separator = b"" if current.endswith((b"\n", b"\r")) else b"\n"
     return current + separator + _serialized_run_row(expected)
@@ -399,6 +424,121 @@ def _transition_state(
     return changed
 
 
+def _validate_resume_base_state(state: dict[str, object]) -> None:
+    validate_state(state)
+    candidates = state["candidates"]
+    if not (
+        state["goal_status"] == "EXTERNAL_BLOCKED"
+        and state["active_candidate"] == "D"
+        and state["paper_gate"] == "BLOCKED"
+        and state["production_hot_path_permission"] is False
+        and state["last_decision"] == BLOCK
+        and candidates["D"]["status"]
+        in {
+            "PLAN_APPROVED",
+            "D0_BASELINE_FROZEN",
+            "D1_NOVELTY_AUDIT_PASS",
+            "D2_OPERATOR_CLOSURE_PASS",
+        }
+        and candidates["D"]["last_reached_status"]
+        == candidates["D"]["status"]
+        and state["last_decision_source_status"]
+        == candidates["D"]["status"]
+        and candidates["E"]["status"] == "RESERVED_FALLBACK_NOT_STARTED"
+        and candidates["E"]["last_reached_status"]
+        == "RESERVED_FALLBACK_NOT_STARTED"
+    ):
+        raise ValueError("state is not an exact Candidate D external BLOCK")
+
+
+def _validate_historical_block_ledgers(current: dict[str, bytes]) -> None:
+    marker_specs = (
+        ("hypotheses/hypothesis_register.yaml", HYPOTHESIS_START, HYPOTHESIS_END),
+        ("repro/artifact_manifest.md", MANIFEST_START, MANIFEST_END),
+        ("repro/reproduction_checklist.md", CHECKLIST_START, CHECKLIST_END),
+    )
+    for relative, start, end in marker_specs:
+        try:
+            lines = current[relative].decode("ascii").splitlines()
+        except UnicodeError as error:
+            raise ValueError("historical Candidate D ledger is not ASCII") from error
+        starts = [index for index, line in enumerate(lines) if line == start]
+        ends = [index for index, line in enumerate(lines) if line == end]
+        if len(starts) != 1 or len(ends) != 1 or ends[0] <= starts[0]:
+            raise ValueError("historical Candidate D BLOCK marker is missing")
+        body = "\n".join(lines[starts[0] + 1 : ends[0]])
+        if relative.endswith("hypothesis_register.yaml") and (
+            BLOCK not in body or "production permission is false" not in body
+        ):
+            raise ValueError("historical Candidate D BLOCK hypothesis changed")
+        if relative.endswith("reproduction_checklist.md") and (
+            BLOCK not in body or CURRENT_INPUT_COMMIT not in body
+        ):
+            raise ValueError("historical Candidate D BLOCK checklist changed")
+        if relative.endswith("artifact_manifest.md") and (
+            "scripts/run_candidate_d_admission.py" not in body
+            or "repro/candidate_d_admission/" not in body
+        ):
+            raise ValueError("historical Candidate D BLOCK manifest changed")
+
+    try:
+        rows = list(
+            csv.DictReader(
+                StringIO(current[RUN_LOG_PATH].decode("ascii"), newline=""),
+                strict=True,
+            )
+        )
+    except (UnicodeError, csv.Error) as error:
+        raise ValueError("historical Candidate D run log is malformed") from error
+    matches = [row for row in rows if row.get("run_id") == RUN_MARKER]
+    if len(matches) != 1 or not (
+        matches[0].get("commit_or_state") == CURRENT_INPUT_COMMIT
+        and matches[0].get("status") == BLOCK
+        and CURRENT_INPUT_COMMIT in matches[0].get("command", "")
+    ):
+        raise ValueError("historical Candidate D BLOCK run record changed")
+
+
+def _transition_resumed_state(
+    state: dict[str, object], result: AdmissionResult
+) -> dict[str, object]:
+    _validate_resume_base_state(state)
+    changed = json.loads(json.dumps(state))
+    candidates = changed["candidates"]
+    source = _expected_last_reached(result)
+    changed["paper_gate"] = "BLOCKED"
+    changed["production_hot_path_permission"] = False
+    changed["last_decision"] = result.decision
+    changed["last_decision_source_status"] = source
+    if result.decision == ADMIT:
+        candidates["D"]["status"] = "D3_ADMISSION_PASS"
+        candidates["D"]["last_reached_status"] = "D3_ADMISSION_PASS"
+        changed["active_candidate"] = "D"
+        changed["goal_status"] = "ACTIVE"
+        changed["production_hot_path_permission"] = True
+    elif result.decision in {
+        REJECT_PRIOR_ART,
+        REJECT_CLOSURE,
+        REJECT_BINDING_NOISE_SECURITY,
+        REJECT_COMPLETE_COST,
+    }:
+        candidates["D"]["status"] = "REJECTED"
+        candidates["D"]["last_reached_status"] = source
+        candidates["E"]["status"] = "SECURITY_NOVELTY_PREFLIGHT"
+        candidates["E"]["last_reached_status"] = "SECURITY_NOVELTY_PREFLIGHT"
+        changed["active_candidate"] = "E"
+        changed["goal_status"] = "ACTIVE"
+    elif result.decision == BLOCK:
+        candidates["D"]["status"] = source
+        candidates["D"]["last_reached_status"] = source
+        changed["active_candidate"] = "D"
+        changed["goal_status"] = "EXTERNAL_BLOCKED"
+    else:
+        raise ValueError("unknown Candidate D resume decision")
+    validate_state(changed)
+    return changed
+
+
 def _validate_applied_state(
     state: dict[str, object], result: AdmissionResult
 ) -> None:
@@ -451,6 +591,10 @@ def _plan_closeout(
         for relative in (*LEDGER_PATHS, STATE_PATH, RUN_LOG_PATH)
     }
     current = {relative: path.read_bytes() for relative, path in paths.items()}
+    try:
+        state = json.loads(current[STATE_PATH].decode("ascii"))
+    except (UnicodeError, json.JSONDecodeError) as error:
+        raise ValueError("research state is malformed") from error
     planned: dict[Path, bytes] = {}
     for relative, start, end, content in _ledger_contents(result):
         planned[paths[relative]] = _plan_bounded_append(
@@ -459,12 +603,17 @@ def _plan_closeout(
     planned[paths[RUN_LOG_PATH]] = _plan_run_log(
         current[RUN_LOG_PATH], result
     )
-    try:
-        state = json.loads(current[STATE_PATH].decode("ascii"))
-    except (UnicodeError, json.JSONDecodeError) as error:
-        raise ValueError("research state is malformed") from error
     candidates = state.get("candidates")
     current_decision = state.get("last_decision")
+    applied = False
+    try:
+        _validate_applied_state(state, result)
+        planned[paths[STATE_PATH]] = current[STATE_PATH]
+        applied = True
+    except ValueError:
+        pass
+    if applied:
+        return planned
     if (
         isinstance(candidates, dict)
         and candidates.get("D", {}).get("status")
@@ -479,9 +628,12 @@ def _plan_closeout(
     ):
         changed = _transition_state(state, result)
         planned[paths[STATE_PATH]] = _state_bytes(changed)
+    elif _is_resume_result(result) and state.get("goal_status") == "EXTERNAL_BLOCKED":
+        _validate_historical_block_ledgers(current)
+        changed = _transition_resumed_state(state, result)
+        planned[paths[STATE_PATH]] = _state_bytes(changed)
     else:
-        _validate_applied_state(state, result)
-        planned[paths[STATE_PATH]] = current[STATE_PATH]
+        raise ValueError("state cannot apply or replay this Candidate D decision")
     return planned
 
 

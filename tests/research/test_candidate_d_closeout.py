@@ -241,6 +241,81 @@ class CandidateDCloseoutTests(unittest.TestCase):
             self._apply(root, result)
             self.assertEqual(self._snapshot(root), first)
 
+    def test_committed_block_resumes_by_appending_a_new_terminal_record(self):
+        resumed = replace(
+            self._route_result(ADMIT),
+            input_commit="a" * 40,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._root(directory)
+            self._apply(root)
+            historical = self._snapshot(root)
+
+            self._apply(root, resumed)
+            first_resumed = self._snapshot(root)
+            state = load_state(root / "research_state.yaml")
+            self.assertEqual(state["goal_status"], "ACTIVE")
+            self.assertEqual(state["active_candidate"], "D")
+            self.assertTrue(state["production_hot_path_permission"])
+            self.assertEqual(
+                state["candidates"]["D"]["status"], "D3_ADMISSION_PASS"
+            )
+            for relative in closeout.LEDGER_PATHS:
+                before = historical[relative]
+                after = first_resumed[relative]
+                self.assertIn(before, after)
+                self.assertIn(resumed.input_commit[:12].encode("ascii"), after)
+            run_log = first_resumed[closeout.RUN_LOG_PATH].decode("ascii")
+            self.assertIn(closeout.RUN_MARKER, run_log)
+            self.assertIn(
+                closeout._run_marker_for(resumed),
+                run_log,
+            )
+
+            self._apply(root, resumed)
+            self.assertEqual(self._snapshot(root), first_resumed)
+
+    def test_resumed_same_input_divergence_and_old_replay_are_rejected(self):
+        resumed = replace(
+            self._route_result(ADMIT),
+            input_commit="b" * 40,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._root(directory)
+            self._apply(root)
+            self._apply(root, resumed)
+            before = self._snapshot(root)
+
+            divergent = replace(
+                resumed,
+                complete_cost_status="REJECT",
+                pessimistic_projection="1.09",
+                decision=REJECT_COMPLETE_COST,
+            )
+            with self.assertRaises(ValueError):
+                self._apply(root, divergent)
+            with self.assertRaises(ValueError):
+                self._apply(root, self.result)
+            self.assertEqual(self._snapshot(root), before)
+
+    def test_resume_rejects_unrelated_external_block_state(self):
+        resumed = replace(
+            self._route_result(ADMIT),
+            input_commit="c" * 40,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._root(directory)
+            self._apply(root)
+            state = load_state(root / "research_state.yaml")
+            state["last_decision_source_status"] = "PLAN_APPROVED"
+            (root / "research_state.yaml").write_text(
+                json.dumps(state, indent=2) + "\n", encoding="ascii"
+            )
+            before = self._snapshot(root)
+            with self.assertRaises(ValueError):
+                self._apply(root, resumed)
+            self.assertEqual(self._snapshot(root), before)
+
     def test_admit_divergent_second_apply_is_rejected_without_mutation(self):
         result = self._route_result(ADMIT)
         with tempfile.TemporaryDirectory() as directory:

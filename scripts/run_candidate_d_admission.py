@@ -72,11 +72,19 @@ RESUME_CONDITION = (
     "NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; "
     "update its REQUIRED_SOURCE_BINDINGS entry in "
     "research/mat_sab/candidate_d_literature.py; then run python "
-    "scripts/run_candidate_d_d1_literature.py; commit the "
-    "corrected registry, binding, and regenerated D1 artifacts with git commit; "
-    "finally run python scripts/run_candidate_d_admission.py --input-commit "
-    "<new-D1-commit> and python scripts/apply_candidate_d_admission.py "
-    "--input-commit <new-D1-commit>"
+    "scripts/run_candidate_d_d1_literature.py and commit with git commit the corrected D1 "
+    "registry, binding, and artifacts as <new-D1-commit>; without changing "
+    "research_state.yaml or the historical Task 9 ledgers, execute Tasks 4-6 "
+    "from the reviewed Candidate D plan, run python "
+    "scripts/run_candidate_d_d2_closure.py, and commit the complete canonical "
+    "D2 evidence as <new-D2-commit>; if D2 passes, execute Tasks 7-8, run "
+    "python scripts/run_candidate_d_d3_admission.py, and commit the complete "
+    "canonical D3 evidence as <new-D3-commit>; finally run python "
+    "scripts/run_candidate_d_admission.py --input-commit <new-D3-commit> and "
+    "python scripts/apply_candidate_d_admission.py --input-commit "
+    "<new-D3-commit>. Each commit must be a strict descendant of the frozen "
+    "BLOCK input, and Task 9 appends a new terminal record instead of "
+    "rewriting the historical BLOCK record"
 )
 
 D2_PASS_DECISION = "PASS_D2_OPERATOR_CLOSURE_G_LE_4"
@@ -133,6 +141,173 @@ D3_OUTPUTS = (
     "repro/candidate_d_admission/amdahl_projection.csv",
     "repro/candidate_d_admission/resource_projection.csv",
     "repro/candidate_d_admission/d3_summary.csv",
+)
+
+D2_SUMMARY_FIELDS = (
+    "decision",
+    "gamma_count",
+    "phase_status",
+    "negative_controls_status",
+    "schedule_status",
+    "equation_revisions_used",
+)
+D2_CLOSURE_FIELDS = (
+    "basis_index",
+    "automorphism_label",
+    "gamma_count",
+    "equation_revision",
+    "search_status",
+    "status",
+)
+D2_PHASE_FIELDS = (
+    "N",
+    "schedule_case",
+    "basis_index",
+    "operation",
+    "accumulator_index",
+    "selector_bit",
+    "gamma_count",
+    "matrix_rank",
+    "expected_hash",
+    "actual_hash",
+    "status",
+)
+D2_NEGATIVE_FIELDS = ("control", "failed_invariant", "status")
+D2_SCHEDULE_FIELDS = (
+    "N",
+    "schedule_case",
+    "step",
+    "operation",
+    "accumulator_index",
+    "selector_bit",
+    "status",
+)
+D2_NEGATIVE_CONTROLS = {
+    "remove_tau_minus_one_channel": "operator_basis_closure",
+    "omit_tau_minus_one_swap": "ncmux_channel_permutation",
+    "positive_negacyclic_wrap": "negacyclic_wrap_sign",
+    "skip_sub_a_rotation": "sub_a_phase_equivalence",
+    "coeff_one_fast_with_zero_selector": "include_zero_fast_path_guard",
+    "wrong_butterfly_source_index": "rgsw_butterfly_schedule",
+}
+D2_TRACE_OPERATIONS = (
+    "setup",
+    "cmux_mu0",
+    "cmux_mu1",
+    "ncmux_mu0",
+    "ncmux_mu1",
+    "rgsw_monomial",
+    "sub_a",
+    "final_bind",
+)
+
+D3_SUMMARY_FIELDS = (
+    "decision",
+    "binding_status",
+    "security_status",
+    "noise_status",
+    "complete_cost_status",
+    "resource_status",
+    "pessimistic_projection",
+)
+D3_BINDING_FIELDS = (
+    "plaintext_bits",
+    "delta_integer",
+    "delta_torus",
+    "coefficient_min",
+    "coefficient_max",
+    "checker_min",
+    "checker_max",
+    "binder_operation",
+    "status",
+)
+D3_SECURITY_FIELDS = ("object", "realization", "assumption", "status")
+D3_NOISE_FIELDS = ("case", "value", "limit", "source_anchor", "status")
+D3_STRUCTURAL_FIELDS = (
+    "variant",
+    "r",
+    "g",
+    "selector_events",
+    "products_per_event",
+    "selector_ring_products",
+    "materialized_components",
+    "late_binding_products",
+    "ncmux_events",
+    "sub_a_calls",
+    "status",
+)
+D3_AMDAHL_FIELDS = (
+    "scenario",
+    "complete_ratio_vs_b1",
+    "speedup_vs_b1",
+    "ep_ratio",
+    "materialization_ratio",
+    "automorphism_ratio",
+    "late_binding_us",
+    "status",
+)
+D3_RESOURCE_FIELDS = (
+    "variant",
+    "selector_key_bytes",
+    "automorphism_key_bytes",
+    "operator_state_bytes",
+    "scratch_bytes",
+    "output_bytes",
+    "rerandomization_bytes",
+    "keygen_work",
+    "late_binding_transforms",
+    "status",
+)
+D3_BINDER = "public_bounded_integer_polynomial_multiplication"
+D3_SECURITY_OBJECTS = {
+    "initial_operator_basis": (
+        "public_trivial_rlwe_encoding_of_scaled_monomials",
+        "public_setup_no_hidden_secret",
+    ),
+    "operator_channel": (
+        "ordinary_trlwe_under_one_output_secret",
+        "standard_rlwe",
+    ),
+    "selector_bit": (
+        "existing_scalar_trgsw_sample",
+        "standard_ggsw",
+    ),
+    "ncmux_automorphism": (
+        "existing_trlwe_automorphism_key_switch",
+        "standard_rlwe_key_switching",
+    ),
+    "rotation": ("public_monomial_multiplication", "public_linear_map"),
+    "late_binding": (
+        D3_BINDER,
+        "public_integer_polynomial_linear_map",
+    ),
+    "extraction_packing": (
+        "existing_extraction_and_key_switching",
+        "standard_lwe_rlwe_key_switching",
+    ),
+    "vector_of_outputs": (
+        "public_post_processing_with_d4_rerandomization_if_required",
+        "semantic_security_not_independent_ciphertext_distribution",
+    ),
+}
+D3_NOISE_CASES = (
+    "external_product_lemma",
+    "covariance_lambda_max",
+    "deterministic_l1",
+    "deterministic_linf",
+    "decode_margin",
+    "union_failure_bound",
+    "scalar_failure_bound",
+    "b1_failure_bound",
+    "target_failure_bound",
+)
+D3_RESOURCE_VARIANTS = ("B0a", "B0b", "B1", "B2", "D")
+RESUME_PINNED_INPUTS = (
+    "hypotheses/hypothesis_register.yaml",
+    "repro/artifact_manifest.md",
+    "repro/reproduction_checklist.md",
+    "repro/run_log.csv",
+    "research_state.yaml",
 )
 
 PINNED_INPUTS = (
@@ -402,6 +577,17 @@ def _pinned_source_hashes(
     paths: tuple[str, ...] = PINNED_INPUTS,
 ) -> tuple[tuple[str, str], ...]:
     commit = _resolve_input_commit(root, input_commit)
+    if input_commit != CURRENT_INPUT_COMMIT:
+        if subprocess.run(
+            ["git", "merge-base", "--is-ancestor", CURRENT_INPUT_COMMIT, input_commit],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+        ).returncode != 0:
+            raise AdmissionEvidenceError(
+                "resume input commit is not a strict descendant of the frozen BLOCK input"
+            )
     rows = []
     for relative in paths:
         path = _safe_path(
@@ -546,7 +732,7 @@ def _require_source_artifacts(root: Path, paths: tuple[str, ...]) -> None:
 def _source_csv_rows(
     root: Path,
     relative: str,
-    required_fields: tuple[str, ...],
+    fields: tuple[str, ...],
 ) -> tuple[dict[str, str], ...]:
     path = _safe_path(
         root,
@@ -565,8 +751,7 @@ def _source_csv_rows(
         ) from error
     if not records or len(records[0]) != len(set(records[0])):
         raise AdmissionEvidenceError(f"source artifact is malformed: {relative}")
-    fields = tuple(records[0])
-    if any(field not in fields for field in required_fields) or any(
+    if tuple(records[0]) != fields or any(
         len(row) != len(fields) for row in records[1:]
     ):
         raise AdmissionEvidenceError(f"source artifact is malformed: {relative}")
@@ -599,56 +784,256 @@ def _aggregate_status(rows: tuple[dict[str, str], ...], label: str) -> str:
     return "PASS"
 
 
+def _parse_int(
+    value: str,
+    label: str,
+    *,
+    minimum: int | None = None,
+    maximum: int | None = None,
+) -> int:
+    if re.fullmatch(r"-?[0-9]+", value) is None:
+        raise AdmissionEvidenceError(f"{label} is not an integer")
+    parsed = int(value)
+    if minimum is not None and parsed < minimum:
+        raise AdmissionEvidenceError(f"{label} is below its minimum")
+    if maximum is not None and parsed > maximum:
+        raise AdmissionEvidenceError(f"{label} is above its maximum")
+    return parsed
+
+
+def _parse_decimal(
+    value: str,
+    label: str,
+    *,
+    positive: bool = False,
+    nonnegative: bool = False,
+) -> Decimal:
+    try:
+        parsed = Decimal(value)
+    except InvalidOperation as error:
+        raise AdmissionEvidenceError(f"{label} is not numeric") from error
+    if not parsed.is_finite():
+        raise AdmissionEvidenceError(f"{label} is not finite")
+    if positive and parsed <= 0:
+        raise AdmissionEvidenceError(f"{label} must be positive")
+    if nonnegative and parsed < 0:
+        raise AdmissionEvidenceError(f"{label} must be nonnegative")
+    return parsed
+
+
+def _d2_required_cases() -> tuple[tuple[int, str], ...]:
+    cases: list[tuple[int, str]] = []
+    for n, r_prec in ((8, 3), (16, 4)):
+        names = [
+            "binary_all_zero",
+            "binary_all_one",
+            "binary_alternating",
+            *(f"binary_one_hot_{index}" for index in range(r_prec)),
+            "binary_source_mixed",
+            "include_zero_mu0",
+            "include_zero_mu1",
+            "coeff_one_fast_mu1",
+        ]
+        cases.extend((n, name) for name in names)
+    return tuple(cases)
+
+
+def _aggregate_d2_rows(statuses: Iterable[str], label: str) -> str:
+    values = tuple(statuses)
+    if not values or any(value not in {"PASS", "REJECT", "BLOCK"} for value in values):
+        raise AdmissionEvidenceError(f"{label} contains an invalid status")
+    if "REJECT" in values:
+        return "REJECT"
+    if "BLOCK" in values:
+        return "BLOCK"
+    return "PASS"
+
+
 def _recompute_d2(root: Path) -> D2Evidence:
     _require_source_artifacts(root, D2_OUTPUTS)
-    summary = _one_source_row(
-        root, "repro/candidate_d_admission/d2_summary.csv", ("decision",)
-    )
-    decision = summary["decision"]
-    if decision == D2_PASS_DECISION:
-        status = "PASS"
-    elif decision in D2_REJECT_DECISIONS:
-        status = "REJECT"
-    elif decision in D2_BLOCK_DECISIONS:
-        status = "BLOCK"
-    else:
-        raise AdmissionEvidenceError("D2 summary contains an unknown decision")
-
     basis_rows = _source_csv_rows(
         root,
         "repro/candidate_d_admission/closure_basis.csv",
-        ("basis_index", "status"),
+        D2_CLOSURE_FIELDS,
     )
-    basis_indices = [row["basis_index"] for row in basis_rows]
-    if len(basis_indices) != len(set(basis_indices)) or any(
-        row["status"] not in {"PASS", "REJECT", "BLOCK"}
+    if not basis_rows:
+        raise AdmissionEvidenceError("D2 closure basis contains no rows")
+    basis_indices = [
+        _parse_int(row["basis_index"], "D2 basis_index", minimum=0)
         for row in basis_rows
+    ]
+    gamma_values = [
+        _parse_int(row["gamma_count"], "D2 gamma_count", minimum=1, maximum=32)
+        for row in basis_rows
+    ]
+    revisions = [
+        _parse_int(row["equation_revision"], "D2 equation revision", minimum=0, maximum=1)
+        for row in basis_rows
+    ]
+    labels = [
+        _parse_int(row["automorphism_label"], "D2 automorphism label", minimum=0)
+        for row in basis_rows
+    ]
+    if (
+        len(set(gamma_values)) != 1
+        or len(set(revisions)) != 1
+        or len(set(row["search_status"] for row in basis_rows)) != 1
+        or basis_indices != list(range(len(basis_rows)))
+        or len(set(labels)) != len(labels)
+        or gamma_values[0] != len(basis_rows)
     ):
-        raise AdmissionEvidenceError("D2 closure basis is malformed")
-    gamma_count = len(basis_rows) or None
+        raise AdmissionEvidenceError("D2 closure basis is inconsistent")
+    gamma_count = gamma_values[0]
+    search_status = basis_rows[0]["search_status"]
+    closure_expected = {
+        "FOUND": "PASS" if gamma_count <= 4 else "REJECT",
+        "OVERFLOW": "REJECT",
+        "REVISION_EXHAUSTED": "REJECT",
+        "INCOMPLETE": "BLOCK",
+    }.get(search_status)
+    if closure_expected is None or any(
+        row["status"] != closure_expected for row in basis_rows
+    ):
+        raise AdmissionEvidenceError("D2 closure search status is inconsistent")
+    if search_status == "FOUND" and gamma_count > 4:
+        raise AdmissionEvidenceError("D2 FOUND closure exceeds four channels")
+    if search_status == "OVERFLOW" and gamma_count <= 4:
+        raise AdmissionEvidenceError("D2 OVERFLOW closure does not exceed four channels")
+
+    phase_rows = _source_csv_rows(
+        root,
+        "repro/candidate_d_admission/phase_equivalence.csv",
+        D2_PHASE_FIELDS,
+    )
+    expected_phase_keys = {
+        (n, case, basis_index)
+        for n, case in _d2_required_cases()
+        for basis_index in range(n)
+    }
+    phase_keys: set[tuple[int, str, int]] = set()
+    phase_statuses = []
+    for row in phase_rows:
+        n = _parse_int(row["N"], "D2 phase N")
+        basis_index = _parse_int(
+            row["basis_index"], "D2 phase basis_index", minimum=0
+        )
+        key = (n, row["schedule_case"], basis_index)
+        if key in phase_keys:
+            raise AdmissionEvidenceError("D2 phase evidence contains a duplicate row")
+        phase_keys.add(key)
+        if (
+            row["operation"] != "final_bind"
+            or row["accumulator_index"] != "final"
+            or row["selector_bit"] not in {"0", "1", "mixed", "public"}
+            or _parse_int(row["gamma_count"], "D2 phase gamma_count") != gamma_count
+            or not 1 <= _parse_int(row["matrix_rank"], "D2 matrix_rank") <= gamma_count
+            or re.fullmatch(r"[0-9a-f]{64}", row["expected_hash"]) is None
+            or row["status"] not in {"PASS", "REJECT", "BLOCK"}
+        ):
+            raise AdmissionEvidenceError("D2 phase evidence is malformed")
+        if row["status"] == "PASS":
+            if row["actual_hash"] != row["expected_hash"]:
+                raise AdmissionEvidenceError("D2 PASS phase row has unequal hashes")
+        elif row["status"] == "REJECT":
+            if (
+                re.fullmatch(r"[0-9a-f]{64}", row["actual_hash"]) is None
+                or row["actual_hash"] == row["expected_hash"]
+            ):
+                raise AdmissionEvidenceError("D2 REJECT phase row lacks a mismatch")
+        elif row["actual_hash"]:
+            raise AdmissionEvidenceError("D2 BLOCK phase row must omit actual_hash")
+        phase_statuses.append(row["status"])
+    if phase_keys != expected_phase_keys:
+        raise AdmissionEvidenceError("D2 phase evidence does not cover the exact case set")
+    phase_status = _aggregate_d2_rows(phase_statuses, "D2 phase evidence")
 
     control_rows = _source_csv_rows(
         root,
         "repro/candidate_d_admission/negative_controls.csv",
-        ("control", "status"),
+        D2_NEGATIVE_FIELDS,
     )
-    controls = [row["control"] for row in control_rows]
+    controls = {row["control"]: row for row in control_rows}
+    if len(controls) != len(control_rows) or set(controls) != set(D2_NEGATIVE_CONTROLS):
+        raise AdmissionEvidenceError("D2 negative controls do not match the exact set")
+    for name, invariant in D2_NEGATIVE_CONTROLS.items():
+        row = controls[name]
+        if (
+            row["failed_invariant"] != invariant
+            or row["status"] not in {"DETECTED", "MISSED", "INCOMPLETE"}
+        ):
+            raise AdmissionEvidenceError("D2 negative-control evidence is inconsistent")
     control_statuses = [row["status"] for row in control_rows]
-    if (
-        not controls
-        or len(controls) != len(set(controls))
-        or any(
-            value not in {"DETECTED", "MISSED", "INCOMPLETE"}
-            for value in control_statuses
-        )
-    ):
-        raise AdmissionEvidenceError("D2 negative controls are malformed")
     if "MISSED" in control_statuses:
         negative_status = "REJECT"
     elif "INCOMPLETE" in control_statuses:
         negative_status = "BLOCK"
     else:
         negative_status = "PASS"
+
+    schedule_rows = _source_csv_rows(
+        root,
+        "repro/candidate_d_admission/schedule_trace.csv",
+        D2_SCHEDULE_FIELDS,
+    )
+    expected_trace_keys = {
+        (n, case, step)
+        for n, case in _d2_required_cases()
+        for step in range(len(D2_TRACE_OPERATIONS))
+    }
+    trace_keys: set[tuple[int, str, int]] = set()
+    schedule_statuses = []
+    for row in schedule_rows:
+        n = _parse_int(row["N"], "D2 schedule N")
+        step = _parse_int(row["step"], "D2 schedule step", minimum=0)
+        key = (n, row["schedule_case"], step)
+        if key in trace_keys:
+            raise AdmissionEvidenceError("D2 schedule contains a duplicate row")
+        trace_keys.add(key)
+        if (
+            step >= len(D2_TRACE_OPERATIONS)
+            or row["operation"] != D2_TRACE_OPERATIONS[step]
+            or re.fullmatch(r"(?:final|[0-9]+)", row["accumulator_index"]) is None
+            or row["selector_bit"] not in {"0", "1", "mixed", "public"}
+            or row["status"] not in {"PASS", "REJECT", "BLOCK"}
+        ):
+            raise AdmissionEvidenceError("D2 schedule evidence is malformed")
+        schedule_statuses.append(row["status"])
+    if trace_keys != expected_trace_keys:
+        raise AdmissionEvidenceError("D2 schedule does not cover the exact trace set")
+    schedule_status = _aggregate_d2_rows(schedule_statuses, "D2 schedule")
+
+    if phase_status == "REJECT" or schedule_status == "REJECT":
+        decision = "REJECT_D2_PHASE_EQUIVALENCE"
+        status = "REJECT"
+    elif search_status == "OVERFLOW" or gamma_count > 4:
+        decision = "REJECT_D2_CLOSURE_GT_4"
+        status = "REJECT"
+    elif negative_status == "REJECT":
+        decision = "REJECT_D2_NEGATIVE_CONTROL"
+        status = "REJECT"
+    elif search_status == "REVISION_EXHAUSTED":
+        decision = "REJECT_D2_REVISION_EXHAUSTED"
+        status = "REJECT"
+    elif "BLOCK" in {phase_status, schedule_status, negative_status, closure_expected}:
+        decision = "BLOCK_D2_SOURCE_OR_EXACT_CHECKER_INCOMPLETE"
+        status = "BLOCK"
+    else:
+        decision = D2_PASS_DECISION
+        status = "PASS"
+
+    summary = _one_source_row(
+        root, "repro/candidate_d_admission/d2_summary.csv", D2_SUMMARY_FIELDS
+    )
+    expected_summary = {
+        "decision": decision,
+        "gamma_count": str(gamma_count),
+        "phase_status": phase_status,
+        "negative_controls_status": negative_status,
+        "schedule_status": schedule_status,
+        "equation_revisions_used": str(revisions[0]),
+    }
+    if summary != expected_summary:
+        raise AdmissionEvidenceError("D2 summary does not match recomputed evidence")
     return D2Evidence(status, decision, gamma_count, negative_status)
 
 
@@ -678,85 +1063,265 @@ def _d3_expected_decisions(
 
 def _recompute_d3(root: Path) -> D3Evidence:
     _require_source_artifacts(root, D3_OUTPUTS)
-    summary = _one_source_row(
-        root, "repro/candidate_d_admission/d3_summary.csv", ("decision",)
+    binding_rows = _source_csv_rows(
+        root, "repro/candidate_d_admission/binding_domain.csv", D3_BINDING_FIELDS
     )
-    decision = summary["decision"]
-    if decision not in {
-        D3_PASS_DECISION,
-        *D3_REJECT_DECISIONS,
-        *D3_BLOCK_DECISIONS,
-    }:
-        raise AdmissionEvidenceError("D3 summary contains an unknown decision")
-
-    binding = _aggregate_status(
-        _source_csv_rows(
-            root,
-            "repro/candidate_d_admission/binding_domain.csv",
-            ("status",),
-        ),
-        "D3 binding evidence",
-    )
-    security = _aggregate_status(
-        _source_csv_rows(
-            root,
-            "repro/candidate_d_admission/security_object_map.csv",
-            ("status",),
-        ),
-        "D3 security-object evidence",
-    )
-    noise = _aggregate_status(
-        _source_csv_rows(
-            root,
-            "repro/candidate_d_admission/noise_bound.csv",
-            ("status",),
-        ),
-        "D3 noise/decode evidence",
-    )
-    resource = _aggregate_status(
-        _source_csv_rows(
-            root,
-            "repro/candidate_d_admission/resource_projection.csv",
-            ("status",),
-        ),
-        "D3 resource evidence",
-    )
-    projection_rows = _source_csv_rows(
-        root,
-        "repro/candidate_d_admission/amdahl_projection.csv",
-        ("scenario", "speedup_vs_b1", "status"),
-    )
-    pessimistic = [
-        row for row in projection_rows if row["scenario"] == "pessimistic"
-    ]
-    if len(pessimistic) != 1:
-        raise AdmissionEvidenceError(
-            "D3 projection must contain one pessimistic row"
+    binding_by_bits: dict[int, dict[str, str]] = {}
+    binding_statuses = []
+    for row in binding_rows:
+        bits = _parse_int(row["plaintext_bits"], "D3 plaintext_bits")
+        if bits in binding_by_bits:
+            raise AdmissionEvidenceError("D3 binding evidence contains duplicates")
+        binding_by_bits[bits] = row
+        valid = (
+            _parse_int(row["delta_integer"], "D3 delta_integer") == 2 ** (64 - bits)
+            and row["delta_torus"] == f"2^-{bits}"
+            and _parse_int(row["coefficient_min"], "D3 coefficient_min") == -(2 ** (bits - 1))
+            and _parse_int(row["coefficient_max"], "D3 coefficient_max") == 2 ** (bits - 1) - 1
+            and row["checker_min"] == "-128"
+            and row["checker_max"] == "128"
+            and row["binder_operation"] == D3_BINDER
         )
-    projection = pessimistic[0]["speedup_vs_b1"]
-    cost = _aggregate_status((pessimistic[0],), "D3 complete-cost evidence")
-    if projection:
-        try:
-            numeric_projection = Decimal(projection)
-        except InvalidOperation as error:
-            raise AdmissionEvidenceError(
-                "D3 pessimistic projection is malformed"
-            ) from error
-        if not numeric_projection.is_finite() or numeric_projection <= 0:
-            raise AdmissionEvidenceError(
-                "D3 pessimistic projection is malformed"
+        expected = "PASS" if valid else "REJECT"
+        if row["status"] != expected:
+            raise AdmissionEvidenceError("D3 binding status is not source-derived")
+        binding_statuses.append(expected)
+    if set(binding_by_bits) != {2, 3, 5, 8}:
+        raise AdmissionEvidenceError("D3 binding evidence has the wrong domain set")
+    binding = "REJECT" if "REJECT" in binding_statuses else "PASS"
+
+    security_rows = _source_csv_rows(
+        root, "repro/candidate_d_admission/security_object_map.csv", D3_SECURITY_FIELDS
+    )
+    security_by_object = {row["object"]: row for row in security_rows}
+    if len(security_by_object) != len(security_rows) or set(security_by_object) != set(D3_SECURITY_OBJECTS):
+        raise AdmissionEvidenceError("D3 security evidence has the wrong object set")
+    security_statuses = []
+    for name, (realization, assumption) in D3_SECURITY_OBJECTS.items():
+        row = security_by_object[name]
+        valid = row["realization"] == realization and row["assumption"] == assumption
+        expected = "PASS" if valid else "REJECT"
+        if row["status"] != expected:
+            raise AdmissionEvidenceError("D3 security status is not source-derived")
+        security_statuses.append(expected)
+    security = "REJECT" if "REJECT" in security_statuses else "PASS"
+
+    noise_rows = _source_csv_rows(
+        root, "repro/candidate_d_admission/noise_bound.csv", D3_NOISE_FIELDS
+    )
+    noise_by_case = {row["case"]: row for row in noise_rows}
+    if len(noise_by_case) != len(noise_rows) or tuple(noise_by_case) != D3_NOISE_CASES:
+        raise AdmissionEvidenceError("D3 noise evidence has the wrong case set or order")
+    lemma = noise_by_case["external_product_lemma"]
+    noise_reason = ""
+    if lemma["value"] == "MISSING":
+        expected_lemma = "BLOCK"
+        noise_reason = "BLOCK_D3_NOISE_LEMMA_INCOMPLETE"
+    elif lemma["value"] == "ANCHORED" and lemma["limit"] == "REQUIRED" and lemma["source_anchor"]:
+        expected_lemma = "PASS"
+    else:
+        raise AdmissionEvidenceError("D3 external-product lemma row is malformed")
+    if lemma["status"] != expected_lemma:
+        raise AdmissionEvidenceError("D3 external-product lemma status is inconsistent")
+    numeric_noise: dict[str, Decimal] = {}
+    for case in D3_NOISE_CASES[1:]:
+        row = noise_by_case[case]
+        if not row["source_anchor"]:
+            raise AdmissionEvidenceError("D3 noise row lacks a source anchor")
+        if not row["value"] or not row["limit"]:
+            if row["status"] != "BLOCK":
+                raise AdmissionEvidenceError("D3 missing noise input is not blocked")
+            if case == "target_failure_bound":
+                noise_reason = "BLOCK_D3_NOISE_TARGET_UNANCHORED"
+            elif not noise_reason:
+                noise_reason = "BLOCK_D3_NOISE_LEMMA_INCOMPLETE"
+            continue
+        value = _parse_decimal(row["value"], f"D3 noise {case}", nonnegative=True)
+        limit = _parse_decimal(row["limit"], f"D3 noise limit {case}", nonnegative=True)
+        numeric_noise[case] = value
+        valid = value >= limit if case == "decode_margin" else value <= limit
+        expected = "PASS" if valid else "REJECT"
+        if row["status"] != expected:
+            raise AdmissionEvidenceError("D3 noise status is not source-derived")
+    if noise_reason:
+        noise = "BLOCK"
+    elif any(row["status"] == "REJECT" for row in noise_rows):
+        noise = "REJECT"
+    else:
+        required_bounds = (
+            "union_failure_bound",
+            "scalar_failure_bound",
+            "b1_failure_bound",
+            "target_failure_bound",
+        )
+        if any(case not in numeric_noise for case in required_bounds):
+            raise AdmissionEvidenceError("D3 noise comparison inputs are incomplete")
+        union = numeric_noise["union_failure_bound"]
+        if any(union > numeric_noise[case] for case in required_bounds[1:]):
+            raise AdmissionEvidenceError("D3 union failure bound exceeds a reference bound")
+        noise = "PASS"
+
+    structural_rows = _source_csv_rows(
+        root, "repro/candidate_d_admission/structural_cost.csv", D3_STRUCTURAL_FIELDS
+    )
+    structural_by_key = {(row["variant"], row["r"]): row for row in structural_rows}
+    expected_keys = {
+        (variant, str(r))
+        for variant in ("B1_exact_dense", "D_operator_generic", "D_operator_coeff_one_fast")
+        for r in (1, 2, 4, 8)
+    }
+    if len(structural_by_key) != len(structural_rows) or set(structural_by_key) != expected_keys:
+        raise AdmissionEvidenceError("D3 structural cost has the wrong row set")
+    h = 573440
+    generic_h = h + 79872
+    d_gamma: int | None = None
+    for (variant, r_text), row in structural_by_key.items():
+        r = int(r_text)
+        if variant == "B1_exact_dense":
+            expected = (h, (1 + r) ** 2, h * (1 + r) ** 2, 1 + r, 0)
+            if row["g"]:
+                raise AdmissionEvidenceError("D3 B1 structural row has a gamma value")
+        else:
+            g = _parse_int(row["g"], "D3 structural gamma", minimum=1, maximum=4)
+            if d_gamma is None:
+                d_gamma = g
+            elif d_gamma != g:
+                raise AdmissionEvidenceError("D3 structural rows disagree on gamma")
+            events = generic_h if variant == "D_operator_generic" else h
+            expected = (events, 4 * g, events * 4 * g, 2 * g, 2 * g * r)
+        actual = tuple(
+            _parse_int(row[field], f"D3 structural {field}", minimum=0)
+            for field in (
+                "selector_events",
+                "products_per_event",
+                "selector_ring_products",
+                "materialized_components",
+                "late_binding_products",
             )
-        if numeric_projection < Decimal("1.10"):
-            cost = "REJECT"
-    elif cost != "BLOCK":
-        raise AdmissionEvidenceError(
-            "D3 non-block cost evidence requires a pessimistic projection"
         )
+        if (
+            actual != expected
+            or row["ncmux_events"] != "5080"
+            or row["sub_a_calls"] != "39"
+            or row["status"] != "PASS"
+        ):
+            raise AdmissionEvidenceError("D3 structural cost arithmetic is inconsistent")
+    if d_gamma is None:
+        raise AdmissionEvidenceError("D3 structural cost lacks Candidate D rows")
 
-    if decision not in _d3_expected_decisions(
-        binding, security, noise, cost, resource
-    ):
-        raise AdmissionEvidenceError("D3 decision does not match source gates")
+    projection_rows = _source_csv_rows(
+        root, "repro/candidate_d_admission/amdahl_projection.csv", D3_AMDAHL_FIELDS
+    )
+    projection_by_scenario = {row["scenario"]: row for row in projection_rows}
+    if len(projection_by_scenario) != len(projection_rows) or tuple(projection_by_scenario) != ("central", "pessimistic"):
+        raise AdmissionEvidenceError("D3 projection has the wrong scenario set or order")
+    central_ep = Decimal(4 * d_gamma) / Decimal(25)
+    central_materialization = Decimal(2 * d_gamma) / Decimal(5)
+    cost = "PASS"
+    projection = ""
+    for scenario in ("central", "pessimistic"):
+        row = projection_by_scenario[scenario]
+        if row["status"] == "BLOCK":
+            if any(row[field] for field in D3_AMDAHL_FIELDS[1:-1]):
+                raise AdmissionEvidenceError("D3 blocked projection contains numeric claims")
+            cost = "BLOCK"
+            continue
+        ratio = _parse_decimal(row["complete_ratio_vs_b1"], f"D3 {scenario} complete ratio", positive=True)
+        speedup = _parse_decimal(row["speedup_vs_b1"], f"D3 {scenario} speedup", positive=True)
+        ep_ratio = _parse_decimal(row["ep_ratio"], f"D3 {scenario} EP ratio", positive=True)
+        materialization = _parse_decimal(row["materialization_ratio"], f"D3 {scenario} materialization ratio", positive=True)
+        automorphism = _parse_decimal(row["automorphism_ratio"], f"D3 {scenario} automorphism ratio", positive=True)
+        _parse_decimal(row["late_binding_us"], f"D3 {scenario} late binding", positive=True)
+        if abs(ratio * speedup - Decimal(1)) > Decimal("0.000001"):
+            raise AdmissionEvidenceError("D3 projection ratio and speedup disagree")
+        if scenario == "central":
+            if ep_ratio != central_ep or materialization != central_materialization:
+                raise AdmissionEvidenceError("D3 central structural ratios disagree")
+            expected_status = "PASS"
+        else:
+            if ep_ratio < central_ep or materialization < central_materialization or automorphism < 1:
+                raise AdmissionEvidenceError("D3 pessimistic ratios are optimistic")
+            projection = row["speedup_vs_b1"]
+            expected_status = "PASS" if speedup >= Decimal("1.10") else "REJECT"
+            cost = expected_status
+        if row["status"] != expected_status:
+            raise AdmissionEvidenceError("D3 projection status is not source-derived")
+
+    resource_rows = _source_csv_rows(
+        root, "repro/candidate_d_admission/resource_projection.csv", D3_RESOURCE_FIELDS
+    )
+    resource_by_variant = {row["variant"]: row for row in resource_rows}
+    if len(resource_by_variant) != len(resource_rows) or tuple(resource_by_variant) != D3_RESOURCE_VARIANTS:
+        raise AdmissionEvidenceError("D3 resource projection has the wrong variant set or order")
+    resource_values: dict[str, tuple[int, ...]] = {}
+    numeric_resource_fields = D3_RESOURCE_FIELDS[1:-1]
+    for variant in D3_RESOURCE_VARIANTS:
+        row = resource_by_variant[variant]
+        if variant in {"B0b", "B2"}:
+            if row["status"] != "REQUIRED_NOT_YET_LOCAL" or any(row[field] for field in numeric_resource_fields):
+                raise AdmissionEvidenceError("D3 required baseline resource row is malformed")
+            continue
+        if any(not row[field] for field in numeric_resource_fields):
+            if variant != "D" or row["status"] != "BLOCK":
+                raise AdmissionEvidenceError("D3 resource row has missing numeric inputs")
+            continue
+        values = tuple(
+            _parse_int(row[field], f"D3 resource {field}", minimum=0)
+            for field in numeric_resource_fields
+        )
+        resource_values[variant] = values
+        if variant in {"B0a", "B1"} and row["status"] != "REFERENCE":
+            raise AdmissionEvidenceError("D3 resource baseline status is malformed")
+    if "D" not in resource_values:
+        resource = "BLOCK"
+    else:
+        if "B1" not in resource_values:
+            raise AdmissionEvidenceError("D3 resource projection lacks B1 values")
+        d_values = resource_values["D"]
+        b1_values = resource_values["B1"]
+        d_key = d_values[0] + d_values[1]
+        b1_key = b1_values[0] + b1_values[1]
+        d_memory = sum(d_values[2:6])
+        b1_memory = sum(b1_values[2:6])
+        resource = (
+            "PASS"
+            if d_key <= 2 * max(1, b1_key) and d_memory <= 2 * max(1, b1_memory)
+            else "REJECT"
+        )
+        if resource_by_variant["D"]["status"] != resource:
+            raise AdmissionEvidenceError("D3 resource status is not source-derived")
+
+    if binding == "REJECT":
+        decision = "REJECT_D3_ILLEGAL_BINDING_DOMAIN"
+    elif security == "REJECT":
+        decision = "REJECT_D3_NONSTANDARD_SECURITY_OBJECT"
+    elif noise == "REJECT":
+        decision = "REJECT_D3_DECODING_MARGIN"
+    elif noise == "BLOCK":
+        decision = noise_reason or "BLOCK_D3_NOISE_LEMMA_INCOMPLETE"
+    elif cost == "REJECT":
+        decision = "REJECT_D3_COMPLETE_PROJECTION_LT_1_10"
+    elif resource == "REJECT":
+        decision = "REJECT_D3_RESOURCE_OVERHEAD"
+    elif "BLOCK" in {cost, resource}:
+        decision = "BLOCK_D3_COST_INPUT_INCOMPLETE"
+    else:
+        decision = D3_PASS_DECISION
+
+    summary = _one_source_row(
+        root, "repro/candidate_d_admission/d3_summary.csv", D3_SUMMARY_FIELDS
+    )
+    expected_summary = {
+        "decision": decision,
+        "binding_status": binding,
+        "security_status": security,
+        "noise_status": noise,
+        "complete_cost_status": cost,
+        "resource_status": resource,
+        "pessimistic_projection": projection,
+    }
+    if summary != expected_summary:
+        raise AdmissionEvidenceError("D3 summary does not match recomputed evidence")
     return D3Evidence(
         decision,
         binding,
@@ -946,6 +1511,8 @@ def evaluate_candidate_d_admission(
                 "explicitly to both Task 9 commands with --input-commit."
             )
 
+    if input_commit != CURRENT_INPUT_COMMIT:
+        pinned_paths = (*pinned_paths, *RESUME_PINNED_INPUTS)
     source_hashes = _pinned_source_hashes(root, input_commit, pinned_paths)
     runtime_hashes = _runtime_source_hashes(root)
     state = load_state(root / "research_state.yaml")
@@ -1017,6 +1584,8 @@ def _pinned_inputs_for_result(result: AdmissionResult) -> tuple[str, ...]:
         paths = (*paths, *D2_OUTPUTS)
     if result.d2_status == "PASS":
         paths = (*paths, *D3_OUTPUTS)
+    if result.input_commit != CURRENT_INPUT_COMMIT:
+        paths = (*paths, *RESUME_PINNED_INPUTS)
     return paths
 
 
@@ -1136,6 +1705,8 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
         expected_source_paths = (*expected_source_paths, *D2_OUTPUTS)
     if gates["d2_status"] == "PASS":
         expected_source_paths = (*expected_source_paths, *D3_OUTPUTS)
+    if payload.get("input_commit") != CURRENT_INPUT_COMMIT:
+        expected_source_paths = (*expected_source_paths, *RESUME_PINNED_INPUTS)
     source_hashes = hashes("source_hashes", expected_source_paths)
     runtime_hashes = hashes("runtime_source_hashes", RUNTIME_SOURCES)
     string_fields = expected_gate_keys - {
