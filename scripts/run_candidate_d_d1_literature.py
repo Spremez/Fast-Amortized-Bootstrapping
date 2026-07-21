@@ -55,7 +55,9 @@ def _csv_bytes(
     return stream.getvalue().encode("utf-8")
 
 
-def _bool(value: bool) -> str:
+def _bool(value: bool | None) -> str:
+    if value is None:
+        return ""
     return "yes" if value else "no"
 
 

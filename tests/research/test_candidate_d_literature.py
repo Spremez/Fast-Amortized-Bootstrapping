@@ -1,3 +1,5 @@
+import csv
+from io import StringIO
 import json
 import os
 from contextlib import contextmanager
@@ -51,6 +53,8 @@ def complete_fixture_reviews() -> dict[str, FullTextReview]:
                 text_sha256="2" * 64,
                 page_range="1-1",
                 anchors=(anchor,),
+                same_operator=False,
+                same_complexity=False,
                 distinct_sab_theorem=True,
                 distinct_complete_result=True,
                 falsifiable_full_sab_endpoint=True,
@@ -94,6 +98,31 @@ class CandidateDLiteratureTests(unittest.TestCase):
             path.write_text(json.dumps(payload), encoding="utf-8")
             with self.assertRaises(SourceRegistryError):
                 load_source_registry(path)
+
+    def test_missing_ntru_source_uses_official_title_and_unknown_comparisons(self):
+        records = load_source_registry(REGISTRY)
+        ntru = next(row for row in records if row.id == "NTRU_AMORT_2026_068")
+        self.assertEqual(
+            ntru.title,
+            "Practical Amortized Bootstrapping for NTRU-Based FHE",
+        )
+        self.assertEqual(ntru.review_status, "FULLTEXT_MISSING")
+        self.assertIsNone(ntru.same_operator)
+        self.assertIsNone(ntru.same_complexity)
+
+        _, artifacts = build_candidate_d_d1_artifacts(ROOT)
+        rows = csv.DictReader(
+            StringIO(
+                artifacts[
+                    Path("repro/candidate_d_admission/claim_overlap.csv")
+                ].decode("utf-8")
+            )
+        )
+        rendered = next(
+            row for row in rows if row["source_id"] == "NTRU_AMORT_2026_068"
+        )
+        self.assertEqual(rendered["same_operator"], "")
+        self.assertEqual(rendered["same_complete_complexity"], "")
 
     def test_fetch_script_uses_registry_and_preserves_verified_cache(self):
         script = (ROOT / "scripts/fetch_candidate_d_primary_sources.sh").read_text(
@@ -342,6 +371,25 @@ class CandidateDLiteratureTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             review = verify_fulltext(missing_record, Path(directory))
         self.assertEqual(review.review_status, "FULLTEXT_MISSING")
+
+    def test_missing_registry_source_ignores_archived_first_revision_cache(self):
+        record = next(
+            row
+            for row in load_source_registry(REGISTRY)
+            if row.id == "NTRU_AMORT_2026_068"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / f"{record.id}.pdf").write_bytes(b"%PDF archived first revision")
+            (root / f"{record.id}.txt").write_text(
+                "Revisiting Polynomial NTRU first revision\n",
+                encoding="utf-8",
+            )
+            review = verify_fulltext(record, root)
+        self.assertEqual(review.review_status, "FULLTEXT_MISSING")
+        self.assertIsNone(review.pdf_sha256)
+        self.assertIsNone(review.text_sha256)
+        self.assertIn("latest second revision", review.validation_errors[0])
 
     def test_output_root_rejects_directory_and_file_symlinks(self):
         with tempfile.TemporaryDirectory() as directory:

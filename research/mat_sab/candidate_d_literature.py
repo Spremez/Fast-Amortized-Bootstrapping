@@ -50,7 +50,7 @@ REQUIRED_SOURCE_BINDINGS = {
     "FDFB2_2024_1376": "5cd2ec371cd3c0c259ac3c8a3ebc2fed094545e5f1aedfd11a6060d5aebd6b4f",
     "MULTIVALUE_2018_622": "fb0fc67387d559ec32e773fde6e419caf63128e1ac122dc6e3e2b90dea925d02",
     "MOSFHET_2022_515": "22f944637c3225cca712fbaf873144cff38d6418d8e575cff86a32629019530f",
-    "NTRU_AMORT_2026_068": "3b2a42e403de6a95d48257cd6657054d9c1d9113b854c97db856ea94cfdf7d1c",
+    "NTRU_AMORT_2026_068": "aa982c2f1ba7751c8702489c4911ebfcb7c59ae58f93a2252c10e6879d483358",
     "BATCH_BOOT_I": "f74477d28b0cca384135d38fb35d6a3000d5a659facfbab6c725e3fa0f2424ef",
     "BATCH_BOOT_II": "ae2b2af6bab115ac3a6d5191798db928dc4fa75ccb91b3d6e3a5b809a9579677",
 }
@@ -138,8 +138,8 @@ class SourceRecord:
     anchors: tuple[ClaimAnchor, ...]
     claim_classification: str
     candidate_d_distinct_claim: DistinctCandidateClaim | None
-    same_operator: bool
-    same_complexity: bool
+    same_operator: bool | None
+    same_complexity: bool | None
     distinct_sab_theorem: bool
     distinct_complete_result: bool
     falsifiable_full_sab_endpoint: bool
@@ -193,8 +193,8 @@ class FullTextReview:
     page_range: str | None
     anchors: tuple[ClaimAnchor, ...]
     review_status: str
-    same_operator: bool
-    same_complexity: bool
+    same_operator: bool | None
+    same_complexity: bool | None
     distinct_sab_theorem: bool
     distinct_complete_result: bool = False
     falsifiable_full_sab_endpoint: bool = False
@@ -315,8 +315,8 @@ class FullTextReview:
 class ClaimComparison:
     source_id: str
     review_status: str
-    same_operator: bool
-    same_complexity: bool
+    same_operator: bool | None
+    same_complexity: bool | None
     distinct_sab_theorem: bool
     distinct_complete_result: bool
     falsifiable_full_sab_endpoint: bool
@@ -443,8 +443,6 @@ def _parse_source(value: Any) -> SourceRecord:
         ),
     )
     for field in (
-        "same_operator",
-        "same_complexity",
         "distinct_sab_theorem",
         "distinct_complete_result",
         "falsifiable_full_sab_endpoint",
@@ -464,6 +462,9 @@ def _parse_source(value: Any) -> SourceRecord:
         if not url.startswith("https://"):
             raise SourceRegistryError(f"{source_id} contains a non-HTTPS source URL")
     if record.review_status == "FULLTEXT_REVIEWED":
+        for field in ("same_operator", "same_complexity"):
+            if not isinstance(getattr(record, field), bool):
+                raise SourceRegistryError(f"{source_id}.{field} must be boolean")
         for field_name, digest in (
             ("pdf_sha256", record.pdf_sha256),
             ("text_sha256", record.text_sha256),
@@ -477,6 +478,10 @@ def _parse_source(value: Any) -> SourceRecord:
         if not record.anchors:
             raise SourceRegistryError(f"{source_id} has no reviewed anchors")
     elif record.review_status == "FULLTEXT_MISSING":
+        if record.same_operator is not None or record.same_complexity is not None:
+            raise SourceRegistryError(
+                f"{source_id} missing review must not assert overlap comparisons"
+            )
         if any(
             value is not None
             for value in (record.pdf_sha256, record.text_sha256, record.page_range)
@@ -554,6 +559,10 @@ def verify_fulltext(record: SourceRecord, root: Path) -> FullTextReview:
     pdf_path = (root / f"{record.id}.pdf").resolve()
     text_path = (root / f"{record.id}.txt").resolve()
     review = FullTextReview.from_record(record)
+    if record.review_status == "FULLTEXT_MISSING":
+        return review.missing(
+            "latest second revision full text and claim review are missing"
+        )
     if not _inside(pdf_path, root) or not _inside(text_path, root):
         return replace(
             review,
@@ -627,11 +636,12 @@ def _comparison(review: FullTextReview) -> ClaimComparison:
     )
     if review.validation_errors:
         evidence = "; ".join(review.validation_errors)
+    comparison_is_known = review.is_complete_and_bound()
     return ClaimComparison(
         source_id=review.source.id,
         review_status=review.review_status,
-        same_operator=review.same_operator,
-        same_complexity=review.same_complexity,
+        same_operator=(review.same_operator if comparison_is_known else None),
+        same_complexity=(review.same_complexity if comparison_is_known else None),
         distinct_sab_theorem=review.distinct_sab_theorem,
         distinct_complete_result=review.distinct_complete_result,
         falsifiable_full_sab_endpoint=review.falsifiable_full_sab_endpoint,
