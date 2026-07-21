@@ -558,13 +558,8 @@
   permission remains false.
 <!-- candidate-c-rank-bounded-gate-checklist-end -->
 <!-- candidate-d-admission-checklist-start -->
-- [x] Candidate D records `BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE` after recomputing D0 and
-  D1 from pinned source evidence. D2 and D3 remain skipped, Candidate E is not
-  activated, and production hot-path permission remains false. Reproduce with
-  `python scripts/run_candidate_d_admission.py --input-commit 7ef0ef5ccd0eb99f484888ba11af27740a13182d` followed by `python scripts/apply_candidate_d_admission.py --input-commit 7ef0ef5ccd0eb99f484888ba11af27740a13182d`.
-- [ ] Resume only with the exact missing input `NTRU_AMORT_2026_068`: set
-  `NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf>`, run
-  `NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh`,
-  record its verified PDF/text hashes, page range, and claim anchors in the
-  source registry, then run `python scripts/run_candidate_d_d1_literature.py`.
+- [x] Candidate D records `BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE` from the complete
+  source-derived D0-D3 priority chain. D0 passes and D1 awaits the latest second revision of IACR ePrint 2026/068 and a hash-bound claim review. D remains at D0, E remains reserved, and production permission is false. Reproduce with
+  `python scripts/run_candidate_d_admission.py --input-commit c8221ad0fcd8413753ca4c3072f49460972de454` followed by `python scripts/apply_candidate_d_admission.py --input-commit c8221ad0fcd8413753ca4c3072f49460972de454`.
+- [ ] Resume condition: Obtain the latest second revision of IACR ePrint 2026/068 dated 2026-07-16 (not the archived January first-version PDF); set NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf>; run NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; update its REQUIRED_SOURCE_BINDINGS entry in research/mat_sab/candidate_d_literature.py; then run python scripts/run_candidate_d_d1_literature.py; commit the corrected registry, binding, and regenerated D1 artifacts with git commit; finally run python scripts/run_candidate_d_admission.py --input-commit <new-D1-commit> and python scripts/apply_candidate_d_admission.py --input-commit <new-D1-commit>
 <!-- candidate-d-admission-checklist-end -->

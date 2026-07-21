@@ -1,8 +1,16 @@
 gate,status,classification,evidence
-D0_baseline_source_recomputation,PASS,RECOMPUTED_FROM_PINNED_SOURCE,PASS_D0_CANDIDATE_D_BASELINES_FROZEN
-D1_fulltext_novelty_audit,BLOCK,RECOMPUTED_FROM_HASH_BOUND_FULLTEXT_REGISTRY,BLOCK_D1_REQUIRED_FULLTEXT_OR_REVIEW_MISSING; missing=NTRU_AMORT_2026_068
-D2_operator_closure,SKIPPED_D1_BLOCK,NO_POSITIVE_ARTIFACT_FABRICATED,D2 skipped because D1 did not pass
-D3_binding_noise_cost_resource,SKIPPED_D1_BLOCK,NO_POSITIVE_ARTIFACT_FABRICATED,D3 skipped because D1 did not pass
+D0_baseline,PASS,RECOMPUTED_FROM_PINNED_SOURCE,PASS_D0_CANDIDATE_D_BASELINES_FROZEN
+D1_novelty,BLOCK,RECOMPUTED_FROM_HASH_BOUND_FULLTEXT_REGISTRY,BLOCK_D1_REQUIRED_FULLTEXT_OR_REVIEW_MISSING; missing=NTRU_AMORT_2026_068
+D2_closure,SKIPPED_D1_BLOCK,PREDECESSOR_DID_NOT_PASS,SKIPPED_D1_BLOCK
+D2_gamma_count,MISSING,PREDECESSOR_DID_NOT_PASS,required range is 1..4
+D2_negative_controls,SKIPPED_D1_BLOCK,PREDECESSOR_DID_NOT_PASS,every control must be detected
+D3_integer_binding,SKIPPED_D1_BLOCK,PREDECESSOR_DID_NOT_PASS,SKIPPED_D1_BLOCK
+D3_standard_object_security,SKIPPED_D1_BLOCK,PREDECESSOR_DID_NOT_PASS,SKIPPED_D1_BLOCK
+D3_noise_decode,SKIPPED_D1_BLOCK,PREDECESSOR_DID_NOT_PASS,SKIPPED_D1_BLOCK
+D3_complete_cost,SKIPPED_D1_BLOCK,PREDECESSOR_DID_NOT_PASS,SKIPPED_D1_BLOCK
+D3_resource,SKIPPED_D1_BLOCK,PREDECESSOR_DID_NOT_PASS,SKIPPED_D1_BLOCK
+D3_pessimistic_projection,MISSING,PREDECESSOR_DID_NOT_PASS,admission threshold is >=1.10
+pre_application_permission,NO,PRESERVED_PRE_APPLICATION_STATE,admission requires NO
 production_hot_path_permission,NO,COMPLETION_BOUNDARY,BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE
-terminal_decision,BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE,DERIVED_PRIORITY_ORDER,de5bca1ac8e96044d4ac6b897b7992e472df49df6a9b2cf42798ee723c0e84d3
-finite_resume_condition,REQUIRED,EXACT_EXTERNAL_INPUT,"Set NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf>; run NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; then run python scripts/run_candidate_d_d1_literature.py and rerun the Candidate D admission generator and closeout"
+terminal_decision,BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE,DERIVED_PRIORITY_ORDER,c34de1cb4d48f6f49b3d1f1cc9a401e3430c4a9b9d790d80f546deeecc28fb7f
+finite_resume_condition,REQUIRED,EXACT_EXTERNAL_INPUT,"Obtain the latest second revision of IACR ePrint 2026/068 dated 2026-07-16 (not the archived January first-version PDF); set NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf>; run NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; update its REQUIRED_SOURCE_BINDINGS entry in research/mat_sab/candidate_d_literature.py; then run python scripts/run_candidate_d_d1_literature.py; commit the corrected registry, binding, and regenerated D1 artifacts with git commit; finally run python scripts/run_candidate_d_admission.py --input-commit <new-D1-commit> and python scripts/apply_candidate_d_admission.py --input-commit <new-D1-commit>"

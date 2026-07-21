@@ -1,10 +1,13 @@
 import csv
 from dataclasses import replace
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
+import scripts.run_candidate_d_admission as gate
 from scripts.run_candidate_d_admission import (
     ADMIT,
     BLOCK,
@@ -25,6 +28,19 @@ from scripts.run_candidate_d_admission import (
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "repro/candidate_d_admission"
+FIXTURE_COMMIT = "f" * 40
+
+D2_PASS = "PASS_D2_OPERATOR_CLOSURE_G_LE_4"
+D2_REJECT = "REJECT_D2_PHASE_EQUIVALENCE"
+D2_BLOCK = "BLOCK_D2_SOURCE_OR_EXACT_CHECKER_INCOMPLETE"
+D3_PASS = "PASS_D3_STANDARD_NOISE_FEASIBLE_COMPLETE_PROJECTION_GE_1_10"
+D3_BINDING_REJECT = "REJECT_D3_ILLEGAL_BINDING_DOMAIN"
+D3_SECURITY_REJECT = "REJECT_D3_NONSTANDARD_SECURITY_OBJECT"
+D3_NOISE_REJECT = "REJECT_D3_DECODING_MARGIN"
+D3_COST_REJECT = "REJECT_D3_COMPLETE_PROJECTION_LT_1_10"
+D3_RESOURCE_REJECT = "REJECT_D3_RESOURCE_OVERHEAD"
+D3_NOISE_BLOCK = "BLOCK_D3_NOISE_LEMMA_INCOMPLETE"
+D3_COST_BLOCK = "BLOCK_D3_COST_INPUT_INCOMPLETE"
 
 
 def passing_result(**changes) -> AdmissionResult:
@@ -56,7 +72,234 @@ def passing_result(**changes) -> AdmissionResult:
     return replace(result, **changes)
 
 
+def _write(root: Path, relative: str, content: str) -> None:
+    path = root / relative
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="ascii", newline="")
+
+
+def write_d2_fixture(
+    root: Path,
+    *,
+    decision: str = D2_PASS,
+    gamma_count: int = 2,
+    negative_control_status: str = "DETECTED",
+) -> None:
+    _write(root, gate.D2_OUTPUTS[0], "# fixture operator closure\n")
+    _write(root, gate.D2_OUTPUTS[1], f"decision\n{decision}\n")
+    _write(
+        root,
+        gate.D2_OUTPUTS[2],
+        "basis_index,status\n"
+        + "".join(f"{index},PASS\n" for index in range(gamma_count)),
+    )
+    _write(root, gate.D2_OUTPUTS[3], "case,status\nphase,PASS\n")
+    _write(
+        root,
+        gate.D2_OUTPUTS[4],
+        "control,status\nwrong_phase,"
+        + negative_control_status
+        + "\nwrong_basis,"
+        + negative_control_status
+        + "\n",
+    )
+    _write(root, gate.D2_OUTPUTS[5], "case,status\nschedule,PASS\n")
+
+
+def _d3_decision(
+    binding: str,
+    security: str,
+    noise: str,
+    cost: str,
+    resource: str,
+    projection: str,
+) -> str:
+    if binding == "REJECT":
+        return D3_BINDING_REJECT
+    if security == "REJECT":
+        return D3_SECURITY_REJECT
+    if noise == "REJECT":
+        return D3_NOISE_REJECT
+    if noise == "BLOCK":
+        return D3_NOISE_BLOCK
+    if cost == "REJECT" or (
+        projection and float(projection) < 1.10
+    ):
+        return D3_COST_REJECT
+    if resource == "REJECT":
+        return D3_RESOURCE_REJECT
+    if cost == "BLOCK" or resource == "BLOCK" or not projection:
+        return D3_COST_BLOCK
+    return D3_PASS
+
+
+def write_d3_fixture(
+    root: Path,
+    *,
+    binding: str = "PASS",
+    security: str = "PASS",
+    noise: str = "PASS",
+    cost: str = "PASS",
+    resource: str = "PASS",
+    projection: str = "1.10",
+    decision: str | None = None,
+) -> None:
+    selected = decision or _d3_decision(
+        binding, security, noise, cost, resource, projection
+    )
+    _write(root, gate.D3_OUTPUTS[0], "# fixture security and noise\n")
+    _write(root, gate.D3_OUTPUTS[1], "# fixture complete cost\n")
+    _write(root, gate.D3_OUTPUTS[2], f"case,status\ninteger,{binding}\n")
+    _write(root, gate.D3_OUTPUTS[3], f"object,status\nstandard,{security}\n")
+    _write(root, gate.D3_OUTPUTS[4], f"case,status\ndecode,{noise}\n")
+    _write(root, gate.D3_OUTPUTS[5], "case,value\ncomplete,1\n")
+    _write(
+        root,
+        gate.D3_OUTPUTS[6],
+        "scenario,speedup_vs_b1,status\npessimistic,"
+        + projection
+        + ","
+        + cost
+        + "\n",
+    )
+    _write(root, gate.D3_OUTPUTS[7], f"case,status\ncomplete,{resource}\n")
+    _write(root, gate.D3_OUTPUTS[8], f"decision\n{selected}\n")
+
+
+def source_route_result(
+    *,
+    d1_decision: str = gate.PASS_D1,
+    d2_decision: str = D2_PASS,
+    gamma_count: int = 2,
+    negative_control_status: str = "DETECTED",
+    binding: str = "PASS",
+    security: str = "PASS",
+    noise: str = "PASS",
+    cost: str = "PASS",
+    resource: str = "PASS",
+    projection: str = "1.10",
+    permission: bool = False,
+) -> AdmissionResult:
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        for relative in (*gate.D0_OUTPUTS, *gate.D1_OUTPUTS):
+            _write(root, relative, f"fixture:{relative}\n")
+        if d1_decision == gate.PASS_D1:
+            write_d2_fixture(
+                root,
+                decision=d2_decision,
+                gamma_count=gamma_count,
+                negative_control_status=negative_control_status,
+            )
+            if d2_decision == D2_PASS:
+                write_d3_fixture(
+                    root,
+                    binding=binding,
+                    security=security,
+                    noise=noise,
+                    cost=cost,
+                    resource=resource,
+                    projection=projection,
+                )
+        missing = (
+            ("NTRU_AMORT_2026_068",)
+            if d1_decision == gate.BLOCK_D1
+            else ()
+        )
+        source_paths = tuple(
+            dict.fromkeys((*gate.PINNED_INPUTS, *gate.D2_OUTPUTS, *gate.D3_OUTPUTS))
+        )
+        source_hashes = tuple((path, "0" * 64) for path in source_paths)
+        runtime_hashes = tuple((path, "1" * 64) for path in gate.RUNTIME_SOURCES)
+        state = {"production_hot_path_permission": permission}
+        with (
+            patch.object(gate, "_validate_module_origins"),
+            patch.object(
+                gate,
+                "_pinned_source_hashes",
+                return_value=source_hashes,
+            ),
+            patch.object(
+                gate,
+                "_runtime_source_hashes",
+                return_value=runtime_hashes,
+            ),
+            patch.object(
+                gate,
+                "_recompute_d0",
+                return_value=gate.d0_baseline.D0_DECISION,
+            ),
+            patch.object(
+                gate,
+                "_recompute_d1",
+                return_value=(d1_decision, missing),
+            ),
+            patch.object(gate, "load_state", return_value=state),
+        ):
+            return gate.evaluate_candidate_d_admission(
+                root, input_commit=FIXTURE_COMMIT
+            )
+
+
 class CandidateDGateTests(unittest.TestCase):
+    def test_source_artifacts_derive_all_six_terminal_routes(self):
+        cases = (
+            ("D1 block", {"d1_decision": gate.BLOCK_D1}, BLOCK),
+            ("D1 reject", {"d1_decision": gate.REJECT_D1}, REJECT_PRIOR_ART),
+            ("D2 reject", {"d2_decision": D2_REJECT}, REJECT_CLOSURE),
+            (
+                "D3 binding reject",
+                {"binding": "REJECT"},
+                REJECT_BINDING_NOISE_SECURITY,
+            ),
+            (
+                "D3 cost reject",
+                {"cost": "REJECT", "projection": "1.09"},
+                REJECT_COMPLETE_COST,
+            ),
+            ("all source gates pass", {}, ADMIT),
+        )
+        for label, changes, expected in cases:
+            with self.subTest(label=label):
+                self.assertEqual(source_route_result(**changes).decision, expected)
+
+    def test_source_artifacts_expose_each_downstream_priority_input(self):
+        cases = (
+            ("D2 block", {"d2_decision": D2_BLOCK}, BLOCK),
+            ("gamma overflow", {"gamma_count": 5}, REJECT_CLOSURE),
+            (
+                "negative control missed",
+                {"negative_control_status": "MISSED"},
+                REJECT_CLOSURE,
+            ),
+            (
+                "security reject",
+                {"security": "REJECT"},
+                REJECT_BINDING_NOISE_SECURITY,
+            ),
+            (
+                "noise reject",
+                {"noise": "REJECT"},
+                REJECT_BINDING_NOISE_SECURITY,
+            ),
+            ("noise block", {"noise": "BLOCK"}, BLOCK),
+            (
+                "resource reject",
+                {"resource": "REJECT"},
+                REJECT_COMPLETE_COST,
+            ),
+            ("cost block", {"cost": "BLOCK", "projection": ""}, BLOCK),
+            (
+                "subthreshold projection",
+                {"projection": "1.09"},
+                REJECT_COMPLETE_COST,
+            ),
+            ("pre-application permission", {"permission": True}, BLOCK),
+        )
+        for label, changes, expected in cases:
+            with self.subTest(label=label):
+                self.assertEqual(source_route_result(**changes).decision, expected)
+
     def test_decision_priority_is_fail_closed_and_ordered(self):
         cases = (
             ("d0 block", {"d0_status": "BLOCK"}, BLOCK),
@@ -144,7 +387,9 @@ class CandidateDGateTests(unittest.TestCase):
         )
 
     def test_current_sources_derive_only_the_incomplete_evidence_block(self):
-        result = evaluate_candidate_d_admission(ROOT)
+        result = evaluate_candidate_d_admission(
+            ROOT, input_commit=gate.CURRENT_INPUT_COMMIT
+        )
         self.assertEqual(result.d0_status, "PASS")
         self.assertEqual(
             result.d0_decision,
@@ -175,9 +420,17 @@ class CandidateDGateTests(unittest.TestCase):
             "python scripts/run_candidate_d_d1_literature.py",
             result.resume_condition,
         )
+        self.assertIn("git commit", result.resume_condition)
+        self.assertIn("REQUIRED_SOURCE_BINDINGS", result.resume_condition)
+        self.assertIn("--input-commit <new-D1-commit>", result.resume_condition)
+        self.assertIn("latest second revision", result.resume_condition)
+        self.assertIn("2026-07-16", result.resume_condition)
+        self.assertIn("not the archived January", result.resume_condition)
 
     def test_summary_is_one_canonical_nonpermissive_record(self):
-        result = evaluate_candidate_d_admission(ROOT)
+        result = evaluate_candidate_d_admission(
+            ROOT, input_commit=gate.CURRENT_INPUT_COMMIT
+        )
         record = canonical_summary_record(result)
         self.assertEqual(record["decision"], BLOCK)
         self.assertEqual(record["d1_missing_evidence"], "NTRU_AMORT_2026_068")
@@ -186,7 +439,9 @@ class CandidateDGateTests(unittest.TestCase):
         self.assertEqual(record["production_hot_path_permission"], "no")
 
     def test_summary_rejects_duplicate_rows_and_header_drift(self):
-        result = evaluate_candidate_d_admission(ROOT)
+        result = evaluate_candidate_d_admission(
+            ROOT, input_commit=gate.CURRENT_INPUT_COMMIT
+        )
         record = canonical_summary_record(result)
         fields = tuple(record)
         for mutation in ("duplicate", "header"):
@@ -246,8 +501,12 @@ class CandidateDGateTests(unittest.TestCase):
                 validate_artifact_index(ROOT, index)
 
     def test_generated_artifacts_are_fresh_ascii_and_deterministic(self):
-        first = verify_candidate_d_artifacts(ROOT)
-        second = verify_candidate_d_artifacts(ROOT)
+        first = verify_candidate_d_artifacts(
+            ROOT, input_commit=gate.CURRENT_INPUT_COMMIT
+        )
+        second = verify_candidate_d_artifacts(
+            ROOT, input_commit=gate.CURRENT_INPUT_COMMIT
+        )
         self.assertEqual(first, second)
         for path in (
             ROOT / "docs/candidate_d_admission_report.md",
@@ -260,6 +519,134 @@ class CandidateDGateTests(unittest.TestCase):
                 data = path.read_bytes()
                 data.decode("ascii")
                 self.assertNotIn(b"\r", data)
+
+    def test_proof_gate_names_every_admission_priority_input(self):
+        rows = gate._proof_rows(passing_result())
+        self.assertEqual(
+            tuple(row["gate"] for row in rows),
+            (
+                "D0_baseline",
+                "D1_novelty",
+                "D2_closure",
+                "D2_gamma_count",
+                "D2_negative_controls",
+                "D3_integer_binding",
+                "D3_standard_object_security",
+                "D3_noise_decode",
+                "D3_complete_cost",
+                "D3_resource",
+                "D3_pessimistic_projection",
+                "pre_application_permission",
+                "production_hot_path_permission",
+                "terminal_decision",
+                "finite_resume_condition",
+            ),
+        )
+
+    def test_admit_recheck_recovers_original_false_permission_evidence(self):
+        source_paths = (*gate.PINNED_INPUTS, *gate.D2_OUTPUTS, *gate.D3_OUTPUTS)
+        source_hashes = tuple((path, "0" * 64) for path in source_paths)
+        runtime_hashes = tuple((path, "1" * 64) for path in gate.RUNTIME_SOURCES)
+        result = passing_result(
+            input_commit=FIXTURE_COMMIT,
+            source_hashes=source_hashes,
+            runtime_source_hashes=runtime_hashes,
+        )
+        state = {
+            "last_decision": ADMIT,
+            "active_candidate": "D",
+            "goal_status": "ACTIVE",
+            "production_hot_path_permission": True,
+            "candidates": {"D": {"status": "D3_ADMISSION_PASS"}},
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            evidence = root / gate.OUT / "decision_evidence.json"
+            evidence.parent.mkdir(parents=True)
+            evidence.write_text(
+                json.dumps(gate._decision_evidence_payload(result)),
+                encoding="ascii",
+            )
+            self.assertFalse(
+                gate._effective_pre_application_permission(root, state, result)
+            )
+
+            divergent = replace(
+                result,
+                noise_status="BLOCK",
+                decision=BLOCK,
+                resume_condition="repair noise evidence",
+            )
+            evidence.write_text(
+                json.dumps(gate._decision_evidence_payload(divergent)),
+                encoding="ascii",
+            )
+            with self.assertRaises(gate.AdmissionEvidenceError):
+                gate._effective_pre_application_permission(root, state, result)
+
+    @unittest.skipUnless(hasattr(os, "symlink"), "symlinks unavailable")
+    def test_writer_rejects_symlinked_generated_output(self):
+        result = passing_result(input_commit=FIXTURE_COMMIT)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            outside = Path(directory) / "outside"
+            root.mkdir()
+            outside.mkdir()
+            for relative in gate.GENERATED_OUTPUTS:
+                (root / relative).parent.mkdir(parents=True, exist_ok=True)
+            victim = outside / "victim"
+            victim.write_text("unchanged", encoding="ascii")
+            report = root / gate.REPORT
+            try:
+                os.symlink(victim, report)
+            except OSError as error:
+                self.skipTest(f"file symlinks unavailable: {error}")
+            rendered = {relative: b"fixture\n" for relative in gate.GENERATED_OUTPUTS}
+            with (
+                patch.object(
+                    gate,
+                    "evaluate_candidate_d_admission",
+                    return_value=result,
+                ),
+                patch.object(gate, "_render_artifacts", return_value=rendered),
+            ):
+                with self.assertRaises(gate.AdmissionEvidenceError):
+                    gate.write_candidate_d_artifacts(
+                        root, result, input_commit=FIXTURE_COMMIT
+                    )
+            self.assertEqual(victim.read_text(encoding="ascii"), "unchanged")
+
+    def test_writer_rejects_generated_output_reported_as_symlink(self):
+        result = passing_result(input_commit=FIXTURE_COMMIT)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            root.mkdir()
+            for relative in gate.GENERATED_OUTPUTS:
+                (root / relative).parent.mkdir(parents=True, exist_ok=True)
+            report = root / gate.REPORT
+            rendered = {relative: b"fixture\n" for relative in gate.GENERATED_OUTPUTS}
+            original_is_symlink = Path.is_symlink
+
+            def reported_symlink(path):
+                return path == report or original_is_symlink(path)
+
+            with (
+                patch.object(
+                    gate,
+                    "evaluate_candidate_d_admission",
+                    return_value=result,
+                ),
+                patch.object(gate, "_render_artifacts", return_value=rendered),
+                patch.object(Path, "is_symlink", reported_symlink),
+            ):
+                with self.assertRaises(gate.AdmissionEvidenceError):
+                    gate.write_candidate_d_artifacts(
+                        root, result, input_commit=FIXTURE_COMMIT
+                    )
+
+    def test_cli_requires_explicit_input_commit(self):
+        with self.assertRaises(SystemExit):
+            gate.main([])
 
 
 if __name__ == "__main__":

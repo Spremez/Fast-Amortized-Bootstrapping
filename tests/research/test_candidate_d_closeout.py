@@ -11,6 +11,10 @@ from scripts.mat_sab_research_state import load_state, validate_state, write_sta
 from scripts.run_candidate_d_admission import (
     ADMIT,
     BLOCK,
+    REJECT_BINDING_NOISE_SECURITY,
+    REJECT_CLOSURE,
+    REJECT_COMPLETE_COST,
+    REJECT_PRIOR_ART,
     evaluate_candidate_d_admission,
 )
 
@@ -21,10 +25,77 @@ RUN_HEADER = (ROOT / "repro/run_log.csv").read_text(encoding="ascii").splitlines
 
 class CandidateDCloseoutTests(unittest.TestCase):
     def setUp(self):
-        self.result = evaluate_candidate_d_admission(ROOT)
+        self.result = evaluate_candidate_d_admission(
+            ROOT, input_commit=closeout.CURRENT_INPUT_COMMIT
+        )
         self.assertEqual(self.result.decision, BLOCK)
 
-    def _root(self, directory: str) -> Path:
+    def _route_result(self, decision: str):
+        passing = replace(
+            self.result,
+            d1_status="PASS",
+            d1_decision="PASS_D1_DISTINCT_SAB_OPERATOR_CLAIM_REMAINS_TESTABLE",
+            d1_missing_evidence=(),
+            d2_status="PASS",
+            d2_decision="PASS_D2_OPERATOR_CLOSURE_G_LE_4",
+            gamma_count=2,
+            negative_controls_status="PASS",
+            binding_status="PASS",
+            security_status="PASS",
+            noise_status="PASS",
+            complete_cost_status="PASS",
+            resource_status="PASS",
+            pessimistic_projection="1.10",
+            decision=ADMIT,
+            resume_condition="none",
+        )
+        changes = {
+            ADMIT: {},
+            REJECT_PRIOR_ART: {
+                "d1_status": "REJECT",
+                "d1_decision": "REJECT_D1_CANDIDATE_D_SUBSUMED_BY_PRIOR_WORK",
+                "d2_status": "SKIPPED_D1_REJECT",
+                "d2_decision": "",
+                "gamma_count": None,
+                "negative_controls_status": "SKIPPED_D1_REJECT",
+                "binding_status": "SKIPPED_D1_REJECT",
+                "security_status": "SKIPPED_D1_REJECT",
+                "noise_status": "SKIPPED_D1_REJECT",
+                "complete_cost_status": "SKIPPED_D1_REJECT",
+                "resource_status": "SKIPPED_D1_REJECT",
+                "pessimistic_projection": "",
+                "decision": REJECT_PRIOR_ART,
+            },
+            REJECT_CLOSURE: {
+                "d2_status": "REJECT",
+                "d2_decision": "REJECT_D2_PHASE_EQUIVALENCE",
+                "binding_status": "SKIPPED_D2_REJECT",
+                "security_status": "SKIPPED_D2_REJECT",
+                "noise_status": "SKIPPED_D2_REJECT",
+                "complete_cost_status": "SKIPPED_D2_REJECT",
+                "resource_status": "SKIPPED_D2_REJECT",
+                "pessimistic_projection": "",
+                "decision": REJECT_CLOSURE,
+            },
+            REJECT_BINDING_NOISE_SECURITY: {
+                "binding_status": "REJECT",
+                "decision": REJECT_BINDING_NOISE_SECURITY,
+            },
+            REJECT_COMPLETE_COST: {
+                "complete_cost_status": "REJECT",
+                "pessimistic_projection": "1.09",
+                "decision": REJECT_COMPLETE_COST,
+            },
+            BLOCK: {
+                "noise_status": "BLOCK",
+                "decision": BLOCK,
+                "resume_condition": "Regenerate the blocked D3 noise evidence.",
+            },
+        }
+        return replace(passing, **changes[decision])
+
+    def _root(self, directory: str, result=None) -> Path:
+        selected = self.result if result is None else result
         root = Path(directory)
         (root / "hypotheses").mkdir(parents=True)
         (root / "repro").mkdir(parents=True)
@@ -43,10 +114,25 @@ class CandidateDCloseoutTests(unittest.TestCase):
         state["active_candidate"] = "D"
         state["paper_gate"] = "BLOCKED"
         state["production_hot_path_permission"] = False
-        state["last_decision"] = "PASS_D0_CANDIDATE_D_BASELINES_FROZEN"
-        state["last_decision_source_status"] = "PLAN_APPROVED"
-        state["candidates"]["D"]["status"] = "D0_BASELINE_FROZEN"
-        state["candidates"]["D"]["last_reached_status"] = "D0_BASELINE_FROZEN"
+        last_reached = closeout._expected_last_reached(selected)
+        decisions = {
+            "PLAN_APPROVED": "CANDIDATE_D_WRITTEN_SPEC_AND_IMPLEMENTATION_PLAN_APPROVED",
+            "D0_BASELINE_FROZEN": "PASS_D0_CANDIDATE_D_BASELINES_FROZEN",
+            "D1_NOVELTY_AUDIT_PASS": (
+                "PASS_D1_DISTINCT_SAB_OPERATOR_CLAIM_REMAINS_TESTABLE"
+            ),
+            "D2_OPERATOR_CLOSURE_PASS": "PASS_D2_OPERATOR_CLOSURE_G_LE_4",
+        }
+        sources = {
+            "PLAN_APPROVED": "DESIGN_APPROVED_PENDING_WRITTEN_SPEC_REVIEW",
+            "D0_BASELINE_FROZEN": "PLAN_APPROVED",
+            "D1_NOVELTY_AUDIT_PASS": "D0_BASELINE_FROZEN",
+            "D2_OPERATOR_CLOSURE_PASS": "D1_NOVELTY_AUDIT_PASS",
+        }
+        state["last_decision"] = decisions[last_reached]
+        state["last_decision_source_status"] = sources[last_reached]
+        state["candidates"]["D"]["status"] = last_reached
+        state["candidates"]["D"]["last_reached_status"] = last_reached
         state["candidates"]["E"]["status"] = "RESERVED_FALLBACK_NOT_STARTED"
         state["candidates"]["E"]["last_reached_status"] = (
             "RESERVED_FALLBACK_NOT_STARTED"
@@ -97,6 +183,79 @@ class CandidateDCloseoutTests(unittest.TestCase):
                 "D0_BASELINE_FROZEN",
             )
             validate_state(state)
+
+    def test_all_six_terminal_routes_apply_route_specific_state_and_ledgers(self):
+        decisions = (
+            ADMIT,
+            REJECT_PRIOR_ART,
+            REJECT_CLOSURE,
+            REJECT_BINDING_NOISE_SECURITY,
+            REJECT_COMPLETE_COST,
+            BLOCK,
+        )
+        for decision in decisions:
+            with self.subTest(decision=decision):
+                result = self._route_result(decision)
+                with tempfile.TemporaryDirectory() as directory:
+                    root = self._root(directory, result)
+                    self.assertEqual(self._apply(root, result), decision)
+                    state = load_state(root / "research_state.yaml")
+                    self.assertEqual(state["last_decision"], decision)
+                    if decision == ADMIT:
+                        self.assertEqual(state["active_candidate"], "D")
+                        self.assertTrue(state["production_hot_path_permission"])
+                        self.assertEqual(
+                            state["candidates"]["D"]["status"],
+                            "D3_ADMISSION_PASS",
+                        )
+                    elif decision == BLOCK:
+                        self.assertEqual(state["active_candidate"], "D")
+                        self.assertEqual(state["goal_status"], "EXTERNAL_BLOCKED")
+                        self.assertFalse(state["production_hot_path_permission"])
+                    else:
+                        self.assertEqual(state["active_candidate"], "E")
+                        self.assertEqual(
+                            state["candidates"]["D"]["status"], "REJECTED"
+                        )
+                        self.assertEqual(
+                            state["candidates"]["E"]["status"],
+                            "SECURITY_NOVELTY_PREFLIGHT",
+                        )
+                    ledgers = "\n".join(
+                        (root / relative).read_text(encoding="ascii")
+                        for relative in (*closeout.LEDGER_PATHS, closeout.RUN_LOG_PATH)
+                    )
+                    self.assertIn(decision, ledgers)
+                    if decision != BLOCK:
+                        self.assertNotIn(
+                            "D1 is externally blocked only by the missing",
+                            ledgers,
+                        )
+
+    def test_admit_second_apply_is_byte_for_byte_idempotent(self):
+        result = self._route_result(ADMIT)
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._root(directory, result)
+            self._apply(root, result)
+            first = self._snapshot(root)
+            self._apply(root, result)
+            self.assertEqual(self._snapshot(root), first)
+
+    def test_admit_divergent_second_apply_is_rejected_without_mutation(self):
+        result = self._route_result(ADMIT)
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._root(directory, result)
+            self._apply(root, result)
+            before = self._snapshot(root)
+            divergent = replace(
+                result,
+                complete_cost_status="REJECT",
+                pessimistic_projection="1.09",
+                decision=REJECT_COMPLETE_COST,
+            )
+            with self.assertRaises(ValueError):
+                self._apply(root, divergent)
+            self.assertEqual(self._snapshot(root), before)
 
     def test_identical_second_apply_is_byte_for_byte_idempotent(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -242,7 +401,13 @@ class CandidateDCloseoutTests(unittest.TestCase):
             )
             self.assertIn("NTRU_AMORT_2026_068", joined)
             self.assertIn("NTRU_AMORT_FULLTEXT_PATH", joined)
+            self.assertIn("latest second revision", joined)
+            self.assertIn("2026-07-16", joined)
             self.assertNotIn("Candidate E is active", joined)
+
+    def test_cli_requires_explicit_input_commit(self):
+        with self.assertRaises(SystemExit):
+            closeout.main([])
 
 
 if __name__ == "__main__":

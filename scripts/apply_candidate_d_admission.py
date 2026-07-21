@@ -25,7 +25,7 @@ from scripts.mat_sab_research_state import (  # noqa: E402
 from scripts.run_candidate_d_admission import (  # noqa: E402
     ADMIT,
     BLOCK,
-    INPUT_COMMIT,
+    CURRENT_INPUT_COMMIT,
     REJECT_BINDING_NOISE_SECURITY,
     REJECT_CLOSURE,
     REJECT_COMPLETE_COST,
@@ -131,14 +131,59 @@ def _apply_command(result: AdmissionResult) -> str:
     )
 
 
+def _route_conclusion(result: AdmissionResult) -> str:
+    if result.decision == ADMIT:
+        return (
+            "All D0-D3 admission inputs pass. Candidate D advances to an "
+            "isolated opt-in D4 experiment; scalar defaults remain unchanged."
+        )
+    if result.decision == REJECT_PRIOR_ART:
+        return (
+            "The D1 source review subsumes Candidate D. D is rejected and "
+            "Candidate E enters security/novelty preflight."
+        )
+    if result.decision == REJECT_CLOSURE:
+        return (
+            "The D2 closure, gamma, or negative-control gate rejects Candidate "
+            "D. Candidate E enters security/novelty preflight."
+        )
+    if result.decision == REJECT_BINDING_NOISE_SECURITY:
+        return (
+            "The D3 binding, standard-object, or absolute noise/decode gate "
+            "rejects Candidate D. Candidate E enters security/novelty preflight."
+        )
+    if result.decision == REJECT_COMPLETE_COST:
+        return (
+            "The D3 pessimistic complete-cost or resource gate rejects Candidate "
+            "D. Candidate E enters security/novelty preflight."
+        )
+    if result.d1_status == "BLOCK":
+        return (
+            "D0 passes and D1 awaits the latest second revision of IACR ePrint "
+            "2026/068 and a hash-bound claim review. D remains at D0, E remains "
+            "reserved, and production permission is false."
+        )
+    if result.d2_status == "BLOCK":
+        return (
+            "D0-D1 pass and D2 source evidence is incomplete. D remains at D1, "
+            "E remains reserved, and production permission is false."
+        )
+    return (
+        "D0-D2 pass and D3 source evidence is incomplete. D remains at D2, E "
+        "remains reserved, and production permission is false."
+    )
+
+
 def _ledger_contents(
     result: AdmissionResult,
 ) -> tuple[tuple[str, str, str, str], ...]:
     resume = json.dumps(result.resume_condition, ensure_ascii=True)
+    last_gate = _expected_last_reached(result)
+    conclusion = _route_conclusion(result)
     hypothesis = f"""H_candidate_d_lut_late_binding_admission:
   status: {result.decision}
   primary_metric: complete_sab_T_bootstrap_div_rN_active
-  last_valid_gate: D0_BASELINE_FROZEN
+  last_valid_gate: {last_gate}
   evidence:
     - docs/candidate_d_admission_report.md
     - repro/candidate_d_admission/summary.csv
@@ -147,10 +192,7 @@ def _ledger_contents(
     - repro/candidate_d_admission/artifact_index.csv
   resume_condition: {resume}
   conclusion: >
-    D0 passes and D1 is externally blocked only by the missing hash-bound,
-    page-anchored NTRU_AMORT_2026_068 review. D2 and D3 are skipped without
-    fabricated positive or rejection evidence. Candidate D remains active at
-    D0, Candidate E remains reserved, and production permission is false.
+    {conclusion}
 """
     manifest = """- candidate_d_admission:
   - `scripts/run_candidate_d_admission.py`
@@ -164,16 +206,14 @@ def _ledger_contents(
   - `docs/candidate_d_admission_report.md`
   - `repro/candidate_d_admission/`
 """
-    checklist = f"""- [x] Candidate D records `{result.decision}` after recomputing D0 and
-  D1 from pinned source evidence. D2 and D3 remain skipped, Candidate E is not
-  activated, and production hot-path permission remains false. Reproduce with
-  `{_generator_command(result)}` followed by `{_apply_command(result)}`.
-- [ ] Resume only with the exact missing input `NTRU_AMORT_2026_068`: set
-  `NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf>`, run
-  `NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh`,
-  record its verified PDF/text hashes, page range, and claim anchors in the
-  source registry, then run `python scripts/run_candidate_d_d1_literature.py`.
+    resume_item = ""
+    if result.decision == BLOCK:
+        resume_item = f"""- [ ] Resume condition: {result.resume_condition}
 """
+    checklist = f"""- [x] Candidate D records `{result.decision}` from the complete
+  source-derived D0-D3 priority chain. {conclusion} Reproduce with
+  `{_generator_command(result)}` followed by `{_apply_command(result)}`.
+{resume_item}"""
     return (
         (
             "hypotheses/hypothesis_register.yaml",
@@ -197,6 +237,16 @@ def _ledger_contents(
 
 
 def _run_row(result: AdmissionResult) -> dict[str, str]:
+    params = (
+        f"D0={result.d0_status};D1={result.d1_status};D2={result.d2_status};"
+        f"gamma={result.gamma_count if result.gamma_count is not None else 'none'};"
+        f"negative_controls={result.negative_controls_status};"
+        f"binding={result.binding_status};security={result.security_status};"
+        f"noise={result.noise_status};cost={result.complete_cost_status};"
+        f"resource={result.resource_status};"
+        f"pessimistic_projection={result.pessimistic_projection or 'none'};"
+        f"pre_permission={'yes' if result.pre_application_permission else 'no'}"
+    )
     return {
         "run_id": RUN_MARKER,
         "date": "2026-07-21",
@@ -204,17 +254,10 @@ def _run_row(result: AdmissionResult) -> dict[str, str]:
         "stage": "Candidate D atomic D0-D3 admission closeout",
         "backend": "python-stdlib-evidence-controller",
         "command": _generator_command(result) + " && " + _apply_command(result),
-        "params": (
-            "D0=PASS;D1=BLOCK;missing=NTRU_AMORT_2026_068;"
-            "D2=SKIPPED;D3=SKIPPED"
-        ),
+        "params": params,
         "seed": "deterministic",
         "status": result.decision,
-        "summary": (
-            "D0 passes; D1 lacks only the NTRU amortized-bootstrapping "
-            "full-text review; D2/D3 are skipped; D remains active at D0; "
-            "E remains reserved; production permission is false."
-        ),
+        "summary": _route_conclusion(result),
         "artifacts": (
             "docs/candidate_d_admission_report.md; "
             "repro/candidate_d_admission/summary.csv; "
@@ -501,7 +544,7 @@ def apply_candidate_d_decision(root: Path, result: AdmissionResult) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
-    parser.add_argument("--input-commit", default=INPUT_COMMIT)
+    parser.add_argument("--input-commit", required=True)
     parser.add_argument(
         "--check",
         action="store_true",

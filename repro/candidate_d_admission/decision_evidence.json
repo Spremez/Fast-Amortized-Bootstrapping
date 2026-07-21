@@ -1,5 +1,5 @@
 {
-  "binding_sha256": "de5bca1ac8e96044d4ac6b897b7992e472df49df6a9b2cf42798ee723c0e84d3",
+  "binding_sha256": "c34de1cb4d48f6f49b3d1f1cc9a401e3430c4a9b9d790d80f546deeecc28fb7f",
   "claimed_decision": "BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE",
   "gate_evidence": {
     "binding_status": "SKIPPED_D1_BLOCK",
@@ -21,23 +21,23 @@
     "resource_status": "SKIPPED_D1_BLOCK",
     "security_status": "SKIPPED_D1_BLOCK"
   },
-  "input_commit": "7ef0ef5ccd0eb99f484888ba11af27740a13182d",
-  "resume_condition": "Set NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf>; run NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; then run python scripts/run_candidate_d_d1_literature.py and rerun the Candidate D admission generator and closeout",
+  "input_commit": "c8221ad0fcd8413753ca4c3072f49460972de454",
+  "resume_condition": "Obtain the latest second revision of IACR ePrint 2026/068 dated 2026-07-16 (not the archived January first-version PDF); set NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf>; run NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; update its REQUIRED_SOURCE_BINDINGS entry in research/mat_sab/candidate_d_literature.py; then run python scripts/run_candidate_d_d1_literature.py; commit the corrected registry, binding, and regenerated D1 artifacts with git commit; finally run python scripts/run_candidate_d_admission.py --input-commit <new-D1-commit> and python scripts/apply_candidate_d_admission.py --input-commit <new-D1-commit>",
   "runtime_source_hashes": [
     {
       "path": "scripts/run_candidate_d_admission.py",
-      "sha256": "eea88d57f5deea9667e2a725c7a9cb2a23e01957ca93b8d5ca6b6d300ca8f44a"
+      "sha256": "e9106ada0497caa8b537f2d3b596fb7339314da5c402b5a08e28edc939f3b133"
     },
     {
       "path": "scripts/apply_candidate_d_admission.py",
-      "sha256": "852c38f015ff9788b12e8a120c8db558e474f2d75d7926a290fb8590f5c57e4d"
+      "sha256": "4a86a4d734e84cd7ee349bce3b189701f446a2b8d033f867c7d8ead8fc6d4762"
     },
     {
       "path": "scripts/mat_sab_research_state.py",
       "sha256": "5c38a6331a93dd7abc926717997000d0c56a4437eaa51594cbeea81c5284be51"
     }
   ],
-  "schema": "candidate-d-task9-decision-evidence-v1",
+  "schema": "candidate-d-task9-decision-evidence-v2",
   "source_hashes": [
     {
       "path": "docs/superpowers/plans/2026-07-20-candidate-d-lut-late-binding-admission.md",
@@ -49,7 +49,7 @@
     },
     {
       "path": "literature/candidate_d_source_registry.json",
-      "sha256": "de6050cf5fc6b9e002d6a1ca148dee71f38da5555f8a9160e8c5e664ca6b7009"
+      "sha256": "f002a068bdb017dd25e20a48d0dc6f0be8bae2ae32410e3220727181b329b197"
     },
     {
       "path": "research/mat_sab/candidate_d_baseline.py",
@@ -57,7 +57,7 @@
     },
     {
       "path": "research/mat_sab/candidate_d_literature.py",
-      "sha256": "b716e0bac6bb24eca4e6319ce4ebe88a94f4042411d4e742a5e02357c6205592"
+      "sha256": "c688a4db4c0a52f439f7bed46137f928f97a1241ff0eb838ec121aadf64478d0"
     },
     {
       "path": "scripts/run_candidate_d_d0_freeze.py",
@@ -65,7 +65,7 @@
     },
     {
       "path": "scripts/run_candidate_d_d1_literature.py",
-      "sha256": "56156a2d2cb268b59aee795d8bd664d2482e470f63bf36cd4d6f1b588f481e03"
+      "sha256": "a16e7f0a0e287a14ff03b7a05652089f3dbbd9c2c9113839ed053548627628a1"
     },
     {
       "path": "docs/candidate_d_d0_baseline.md",
@@ -89,11 +89,11 @@
     },
     {
       "path": "repro/candidate_d_admission/literature_sources.csv",
-      "sha256": "8236d25c8bd6f33284cdc818678f83a7f8ef90301bebef8318936333b1bcfad2"
+      "sha256": "03ce0dc7c2a9157f91d4c45fefdd74072626cc896e65f7a6be22b53cc2c1ac9f"
     },
     {
       "path": "repro/candidate_d_admission/claim_overlap.csv",
-      "sha256": "a07509393c33fa7fe070253753585bd4ca3152ef9a14967947ff072b861350b5"
+      "sha256": "e2764338cff4fb0e606e32e1d69785315c69718b219bd773e1adcac5ea6fcaec"
     },
     {
       "path": "repro/candidate_d_admission/novelty_gate.csv",

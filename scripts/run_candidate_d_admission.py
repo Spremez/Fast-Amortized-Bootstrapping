@@ -34,7 +34,7 @@ from scripts.mat_sab_research_state import load_state  # noqa: E402
 import scripts.run_candidate_d_d1_literature as d1_literature  # noqa: E402
 
 
-INPUT_COMMIT = "7ef0ef5ccd0eb99f484888ba11af27740a13182d"
+CURRENT_INPUT_COMMIT = "c8221ad0fcd8413753ca4c3072f49460972de454"
 OUT = Path("repro/candidate_d_admission")
 REPORT = Path("docs/candidate_d_admission_report.md")
 
@@ -58,16 +58,50 @@ DECISIONS = {
 }
 
 SKIPPED_D1_BLOCK = "SKIPPED_D1_BLOCK"
+SKIPPED_D1_REJECT = "SKIPPED_D1_REJECT"
+SKIPPED_D2_BLOCK = "SKIPPED_D2_BLOCK"
+SKIPPED_D2_REJECT = "SKIPPED_D2_REJECT"
 NONE = ""
 RESUME_CONDITION = (
-    "Set NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf>; run "
-    "NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf> bash "
+    "Obtain the latest second revision of IACR ePrint 2026/068 dated "
+    "2026-07-16 (not the archived January first-version PDF); set "
+    "NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf>; run "
+    "NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf> bash "
     "scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF "
     "SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for "
     "NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; "
-    "then run python scripts/run_candidate_d_d1_literature.py and rerun the "
-    "Candidate D admission generator and closeout"
+    "update its REQUIRED_SOURCE_BINDINGS entry in "
+    "research/mat_sab/candidate_d_literature.py; then run python "
+    "scripts/run_candidate_d_d1_literature.py; commit the "
+    "corrected registry, binding, and regenerated D1 artifacts with git commit; "
+    "finally run python scripts/run_candidate_d_admission.py --input-commit "
+    "<new-D1-commit> and python scripts/apply_candidate_d_admission.py "
+    "--input-commit <new-D1-commit>"
 )
+
+D2_PASS_DECISION = "PASS_D2_OPERATOR_CLOSURE_G_LE_4"
+D2_REJECT_DECISIONS = {
+    "REJECT_D2_PHASE_EQUIVALENCE",
+    "REJECT_D2_CLOSURE_GT_4",
+    "REJECT_D2_NEGATIVE_CONTROL",
+    "REJECT_D2_REVISION_EXHAUSTED",
+}
+D2_BLOCK_DECISIONS = {"BLOCK_D2_SOURCE_OR_EXACT_CHECKER_INCOMPLETE"}
+D3_PASS_DECISION = (
+    "PASS_D3_STANDARD_NOISE_FEASIBLE_COMPLETE_PROJECTION_GE_1_10"
+)
+D3_REJECT_DECISIONS = {
+    "REJECT_D3_ILLEGAL_BINDING_DOMAIN",
+    "REJECT_D3_NONSTANDARD_SECURITY_OBJECT",
+    "REJECT_D3_DECODING_MARGIN",
+    "REJECT_D3_COMPLETE_PROJECTION_LT_1_10",
+    "REJECT_D3_RESOURCE_OVERHEAD",
+}
+D3_BLOCK_DECISIONS = {
+    "BLOCK_D3_NOISE_LEMMA_INCOMPLETE",
+    "BLOCK_D3_NOISE_TARGET_UNANCHORED",
+    "BLOCK_D3_COST_INPUT_INCOMPLETE",
+}
 
 D0_OUTPUTS = (
     "docs/candidate_d_d0_baseline.md",
@@ -190,6 +224,25 @@ class AdmissionResult:
     input_commit: str
     source_hashes: tuple[tuple[str, str], ...]
     runtime_source_hashes: tuple[tuple[str, str], ...]
+
+
+@dataclass(frozen=True)
+class D2Evidence:
+    status: str
+    decision: str
+    gamma_count: int | None
+    negative_controls_status: str
+
+
+@dataclass(frozen=True)
+class D3Evidence:
+    decision: str
+    binding_status: str
+    security_status: str
+    noise_status: str
+    complete_cost_status: str
+    resource_status: str
+    pessimistic_projection: str
 
 
 def _sha256_bytes(content: bytes) -> str:
@@ -344,11 +397,13 @@ def _git_blob(root: Path, commit: str, relative: str) -> bytes:
 
 
 def _pinned_source_hashes(
-    root: Path, input_commit: str
+    root: Path,
+    input_commit: str,
+    paths: tuple[str, ...] = PINNED_INPUTS,
 ) -> tuple[tuple[str, str], ...]:
     commit = _resolve_input_commit(root, input_commit)
     rows = []
-    for relative in PINNED_INPUTS:
+    for relative in paths:
         path = _safe_path(
             root,
             relative,
@@ -475,6 +530,244 @@ def _recompute_d1(root: Path) -> tuple[str, tuple[str, ...]]:
     return decision, missing
 
 
+def _require_source_artifacts(root: Path, paths: tuple[str, ...]) -> None:
+    for relative in paths:
+        path = _safe_path(
+            root,
+            relative,
+            f"source artifact {relative}",
+            strict=True,
+            require_file=True,
+        )
+        if not path.read_bytes():
+            raise AdmissionEvidenceError(f"source artifact is empty: {relative}")
+
+
+def _source_csv_rows(
+    root: Path,
+    relative: str,
+    required_fields: tuple[str, ...],
+) -> tuple[dict[str, str], ...]:
+    path = _safe_path(
+        root,
+        relative,
+        f"source artifact {relative}",
+        strict=True,
+        require_file=True,
+    )
+    content = path.read_bytes()
+    try:
+        text = content.decode("ascii")
+        records = list(csv.reader(StringIO(text, newline=""), strict=True))
+    except (UnicodeError, csv.Error) as error:
+        raise AdmissionEvidenceError(
+            f"source artifact is malformed: {relative}"
+        ) from error
+    if not records or len(records[0]) != len(set(records[0])):
+        raise AdmissionEvidenceError(f"source artifact is malformed: {relative}")
+    fields = tuple(records[0])
+    if any(field not in fields for field in required_fields) or any(
+        len(row) != len(fields) for row in records[1:]
+    ):
+        raise AdmissionEvidenceError(f"source artifact is malformed: {relative}")
+    return tuple(dict(zip(fields, row)) for row in records[1:])
+
+
+def _one_source_row(
+    root: Path,
+    relative: str,
+    required_fields: tuple[str, ...],
+) -> dict[str, str]:
+    rows = _source_csv_rows(root, relative, required_fields)
+    if len(rows) != 1:
+        raise AdmissionEvidenceError(
+            f"source artifact must contain one row: {relative}"
+        )
+    return rows[0]
+
+
+def _aggregate_status(rows: tuple[dict[str, str], ...], label: str) -> str:
+    if not rows:
+        raise AdmissionEvidenceError(f"{label} contains no evidence rows")
+    statuses = [row["status"] for row in rows]
+    if any(status not in {"PASS", "REJECT", "BLOCK"} for status in statuses):
+        raise AdmissionEvidenceError(f"{label} contains an unknown status")
+    if "REJECT" in statuses:
+        return "REJECT"
+    if "BLOCK" in statuses:
+        return "BLOCK"
+    return "PASS"
+
+
+def _recompute_d2(root: Path) -> D2Evidence:
+    _require_source_artifacts(root, D2_OUTPUTS)
+    summary = _one_source_row(
+        root, "repro/candidate_d_admission/d2_summary.csv", ("decision",)
+    )
+    decision = summary["decision"]
+    if decision == D2_PASS_DECISION:
+        status = "PASS"
+    elif decision in D2_REJECT_DECISIONS:
+        status = "REJECT"
+    elif decision in D2_BLOCK_DECISIONS:
+        status = "BLOCK"
+    else:
+        raise AdmissionEvidenceError("D2 summary contains an unknown decision")
+
+    basis_rows = _source_csv_rows(
+        root,
+        "repro/candidate_d_admission/closure_basis.csv",
+        ("basis_index", "status"),
+    )
+    basis_indices = [row["basis_index"] for row in basis_rows]
+    if len(basis_indices) != len(set(basis_indices)) or any(
+        row["status"] not in {"PASS", "REJECT", "BLOCK"}
+        for row in basis_rows
+    ):
+        raise AdmissionEvidenceError("D2 closure basis is malformed")
+    gamma_count = len(basis_rows) or None
+
+    control_rows = _source_csv_rows(
+        root,
+        "repro/candidate_d_admission/negative_controls.csv",
+        ("control", "status"),
+    )
+    controls = [row["control"] for row in control_rows]
+    control_statuses = [row["status"] for row in control_rows]
+    if (
+        not controls
+        or len(controls) != len(set(controls))
+        or any(
+            value not in {"DETECTED", "MISSED", "INCOMPLETE"}
+            for value in control_statuses
+        )
+    ):
+        raise AdmissionEvidenceError("D2 negative controls are malformed")
+    if "MISSED" in control_statuses:
+        negative_status = "REJECT"
+    elif "INCOMPLETE" in control_statuses:
+        negative_status = "BLOCK"
+    else:
+        negative_status = "PASS"
+    return D2Evidence(status, decision, gamma_count, negative_status)
+
+
+def _d3_expected_decisions(
+    binding: str,
+    security: str,
+    noise: str,
+    cost: str,
+    resource: str,
+) -> set[str]:
+    if binding == "REJECT":
+        return {"REJECT_D3_ILLEGAL_BINDING_DOMAIN"}
+    if security == "REJECT":
+        return {"REJECT_D3_NONSTANDARD_SECURITY_OBJECT"}
+    if noise == "REJECT":
+        return {"REJECT_D3_DECODING_MARGIN"}
+    if "BLOCK" in (binding, security, noise):
+        return D3_BLOCK_DECISIONS
+    if cost == "REJECT":
+        return {"REJECT_D3_COMPLETE_PROJECTION_LT_1_10"}
+    if resource == "REJECT":
+        return {"REJECT_D3_RESOURCE_OVERHEAD"}
+    if "BLOCK" in (cost, resource):
+        return {"BLOCK_D3_COST_INPUT_INCOMPLETE"}
+    return {D3_PASS_DECISION}
+
+
+def _recompute_d3(root: Path) -> D3Evidence:
+    _require_source_artifacts(root, D3_OUTPUTS)
+    summary = _one_source_row(
+        root, "repro/candidate_d_admission/d3_summary.csv", ("decision",)
+    )
+    decision = summary["decision"]
+    if decision not in {
+        D3_PASS_DECISION,
+        *D3_REJECT_DECISIONS,
+        *D3_BLOCK_DECISIONS,
+    }:
+        raise AdmissionEvidenceError("D3 summary contains an unknown decision")
+
+    binding = _aggregate_status(
+        _source_csv_rows(
+            root,
+            "repro/candidate_d_admission/binding_domain.csv",
+            ("status",),
+        ),
+        "D3 binding evidence",
+    )
+    security = _aggregate_status(
+        _source_csv_rows(
+            root,
+            "repro/candidate_d_admission/security_object_map.csv",
+            ("status",),
+        ),
+        "D3 security-object evidence",
+    )
+    noise = _aggregate_status(
+        _source_csv_rows(
+            root,
+            "repro/candidate_d_admission/noise_bound.csv",
+            ("status",),
+        ),
+        "D3 noise/decode evidence",
+    )
+    resource = _aggregate_status(
+        _source_csv_rows(
+            root,
+            "repro/candidate_d_admission/resource_projection.csv",
+            ("status",),
+        ),
+        "D3 resource evidence",
+    )
+    projection_rows = _source_csv_rows(
+        root,
+        "repro/candidate_d_admission/amdahl_projection.csv",
+        ("scenario", "speedup_vs_b1", "status"),
+    )
+    pessimistic = [
+        row for row in projection_rows if row["scenario"] == "pessimistic"
+    ]
+    if len(pessimistic) != 1:
+        raise AdmissionEvidenceError(
+            "D3 projection must contain one pessimistic row"
+        )
+    projection = pessimistic[0]["speedup_vs_b1"]
+    cost = _aggregate_status((pessimistic[0],), "D3 complete-cost evidence")
+    if projection:
+        try:
+            numeric_projection = Decimal(projection)
+        except InvalidOperation as error:
+            raise AdmissionEvidenceError(
+                "D3 pessimistic projection is malformed"
+            ) from error
+        if not numeric_projection.is_finite() or numeric_projection <= 0:
+            raise AdmissionEvidenceError(
+                "D3 pessimistic projection is malformed"
+            )
+        if numeric_projection < Decimal("1.10"):
+            cost = "REJECT"
+    elif cost != "BLOCK":
+        raise AdmissionEvidenceError(
+            "D3 non-block cost evidence requires a pessimistic projection"
+        )
+
+    if decision not in _d3_expected_decisions(
+        binding, security, noise, cost, resource
+    ):
+        raise AdmissionEvidenceError("D3 decision does not match source gates")
+    return D3Evidence(
+        decision,
+        binding,
+        security,
+        noise,
+        cost,
+        resource,
+        projection,
+    )
+
+
 def _require_skipped_outputs_absent(root: Path, paths: tuple[str, ...]) -> None:
     present = []
     for relative in paths:
@@ -490,6 +783,50 @@ def _require_skipped_outputs_absent(root: Path, paths: tuple[str, ...]) -> None:
         raise AdmissionEvidenceError(
             "skipped D2/D3 artifacts must not be fabricated: " + ", ".join(present)
         )
+
+
+def _effective_pre_application_permission(
+    root: Path,
+    state: Mapping[str, object],
+    expected: AdmissionResult,
+) -> bool:
+    permission = state.get("production_hot_path_permission")
+    if not isinstance(permission, bool):
+        raise AdmissionEvidenceError(
+            "pre-application production permission must be boolean"
+        )
+    if not permission:
+        return False
+    candidates = state.get("candidates")
+    applied_admit = (
+        state.get("last_decision") == ADMIT
+        and state.get("active_candidate") == "D"
+        and state.get("goal_status") == "ACTIVE"
+        and isinstance(candidates, Mapping)
+        and isinstance(candidates.get("D"), Mapping)
+        and candidates["D"].get("status") == "D3_ADMISSION_PASS"
+    )
+    if not applied_admit:
+        return True
+    evidence_path = _safe_path(
+        root,
+        OUT / "decision_evidence.json",
+        "preserved pre-application permission evidence",
+        strict=True,
+        require_file=True,
+    )
+    try:
+        payload = json.loads(evidence_path.read_text(encoding="ascii"))
+        recovered = validate_decision_evidence(payload)
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as error:
+        raise AdmissionEvidenceError(
+            "applied ADMIT lacks valid pre-application permission evidence"
+        ) from error
+    if recovered != expected or recovered.pre_application_permission:
+        raise AdmissionEvidenceError(
+            "applied ADMIT permission evidence differs from source gates"
+        )
+    return False
 
 
 def derive_candidate_d_decision(result: AdmissionResult) -> str:
@@ -544,12 +881,10 @@ def derive_candidate_d_decision(result: AdmissionResult) -> str:
 
 
 def evaluate_candidate_d_admission(
-    root: Path = ROOT, *, input_commit: str = INPUT_COMMIT
+    root: Path = ROOT, *, input_commit: str
 ) -> AdmissionResult:
     root = _resolved_root(root)
     _validate_module_origins(root)
-    source_hashes = _pinned_source_hashes(root, input_commit)
-    runtime_hashes = _runtime_source_hashes(root)
     d0_decision = _recompute_d0(root)
     if d0_decision != d0_baseline.D0_DECISION:
         raise AdmissionEvidenceError("D0 returned an unknown decision")
@@ -562,54 +897,97 @@ def evaluate_candidate_d_admission(
     if d1_decision not in d1_statuses:
         raise AdmissionEvidenceError("D1 returned an unknown decision")
 
+    pinned_paths = PINNED_INPUTS
+    resume_condition = "none"
     if d1_decision != PASS_D1:
         _require_skipped_outputs_absent(root, D2_OUTPUTS + D3_OUTPUTS)
-        d2_status = SKIPPED_D1_BLOCK
-        downstream = SKIPPED_D1_BLOCK
+        skipped = (
+            SKIPPED_D1_BLOCK if d1_decision == BLOCK_D1 else SKIPPED_D1_REJECT
+        )
+        d2 = D2Evidence(skipped, NONE, None, skipped)
+        d3 = D3Evidence(NONE, skipped, skipped, skipped, skipped, skipped, NONE)
+        if d1_decision == BLOCK_D1:
+            resume_condition = RESUME_CONDITION
     else:
-        # A PASS route must be supplied by Tasks 6-8. Missing gate records
-        # remain incomplete evidence; this closeout never invents them.
-        d2_summary = _safe_path(
-            root,
-            "repro/candidate_d_admission/d2_summary.csv",
-            "D2 summary",
-            strict=False,
-        )
-        d2_status = "BLOCK" if not d2_summary.exists() else "PASS"
-        downstream = "BLOCK"
+        d2 = _recompute_d2(root)
+        pinned_paths = (*pinned_paths, *D2_OUTPUTS)
+        if d2.status == "PASS":
+            d3 = _recompute_d3(root)
+            pinned_paths = (*pinned_paths, *D3_OUTPUTS)
+        else:
+            _require_skipped_outputs_absent(root, D3_OUTPUTS)
+            skipped = (
+                SKIPPED_D2_REJECT
+                if d2.status == "REJECT"
+                else SKIPPED_D2_BLOCK
+            )
+            d3 = D3Evidence(
+                NONE, skipped, skipped, skipped, skipped, skipped, NONE
+            )
+            if d2.status == "BLOCK":
+                resume_condition = (
+                    "Run python scripts/run_candidate_d_d2_closure.py, commit "
+                    "the corrected D2 source artifacts, then pass that commit "
+                    "explicitly to both Task 9 commands with --input-commit."
+                )
+        if d2.status == "PASS" and (
+            "BLOCK"
+            in {
+                d3.binding_status,
+                d3.security_status,
+                d3.noise_status,
+                d3.complete_cost_status,
+                d3.resource_status,
+            }
+        ):
+            resume_condition = (
+                "Run python scripts/run_candidate_d_d3_admission.py, commit "
+                "the corrected D3 source artifacts, then pass that commit "
+                "explicitly to both Task 9 commands with --input-commit."
+            )
 
+    source_hashes = _pinned_source_hashes(root, input_commit, pinned_paths)
+    runtime_hashes = _runtime_source_hashes(root)
     state = load_state(root / "research_state.yaml")
-    permission = state.get("production_hot_path_permission")
-    if not isinstance(permission, bool):
-        raise AdmissionEvidenceError(
-            "pre-application production permission must be boolean"
-        )
-    result = AdmissionResult(
+    provisional = AdmissionResult(
         d0_status="PASS",
         d0_decision=d0_decision,
         d1_status=d1_statuses[d1_decision],
         d1_decision=d1_decision,
         d1_missing_evidence=missing,
-        d2_status=d2_status,
-        d2_decision=NONE,
-        gamma_count=None,
-        negative_controls_status=(
-            SKIPPED_D1_BLOCK if d1_decision != PASS_D1 else downstream
-        ),
-        binding_status=downstream,
-        security_status=downstream,
-        noise_status=downstream,
-        complete_cost_status=downstream,
-        resource_status=downstream,
-        pessimistic_projection=NONE,
-        pre_application_permission=permission,
+        d2_status=d2.status,
+        d2_decision=d2.decision,
+        gamma_count=d2.gamma_count,
+        negative_controls_status=d2.negative_controls_status,
+        binding_status=d3.binding_status,
+        security_status=d3.security_status,
+        noise_status=d3.noise_status,
+        complete_cost_status=d3.complete_cost_status,
+        resource_status=d3.resource_status,
+        pessimistic_projection=d3.pessimistic_projection,
+        pre_application_permission=False,
         decision=BLOCK,
-        resume_condition=(RESUME_CONDITION if d1_decision == BLOCK_D1 else "none"),
+        resume_condition=resume_condition,
         input_commit=input_commit,
         source_hashes=source_hashes,
         runtime_source_hashes=runtime_hashes,
     )
-    return replace(result, decision=derive_candidate_d_decision(result))
+    provisional = replace(
+        provisional, decision=derive_candidate_d_decision(provisional)
+    )
+    permission = _effective_pre_application_permission(root, state, provisional)
+    result = replace(provisional, pre_application_permission=permission)
+    result = replace(result, decision=derive_candidate_d_decision(result))
+    if result.decision == BLOCK and result.resume_condition == "none":
+        result = replace(
+            result,
+            resume_condition=(
+                "Restore production_hot_path_permission=false in the reviewed "
+                "pre-application Candidate D state, then rerun Task 9 with the "
+                "explicit input commit."
+            ),
+        )
+    return result
 
 
 def _gate_payload(result: AdmissionResult) -> dict[str, object]:
@@ -633,9 +1011,18 @@ def _gate_payload(result: AdmissionResult) -> dict[str, object]:
     }
 
 
+def _pinned_inputs_for_result(result: AdmissionResult) -> tuple[str, ...]:
+    paths = PINNED_INPUTS
+    if result.d1_status == "PASS":
+        paths = (*paths, *D2_OUTPUTS)
+    if result.d2_status == "PASS":
+        paths = (*paths, *D3_OUTPUTS)
+    return paths
+
+
 def _decision_evidence_payload(result: AdmissionResult) -> dict[str, object]:
     payload = {
-        "schema": "candidate-d-task9-decision-evidence-v1",
+        "schema": "candidate-d-task9-decision-evidence-v2",
         "input_commit": result.input_commit,
         "claimed_decision": result.decision,
         "gate_evidence": _gate_payload(result),
@@ -744,7 +1131,12 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
             parsed.append((path, digest))
         return tuple(parsed)
 
-    source_hashes = hashes("source_hashes", PINNED_INPUTS)
+    expected_source_paths = PINNED_INPUTS
+    if gates["d1_status"] == "PASS":
+        expected_source_paths = (*expected_source_paths, *D2_OUTPUTS)
+    if gates["d2_status"] == "PASS":
+        expected_source_paths = (*expected_source_paths, *D3_OUTPUTS)
+    source_hashes = hashes("source_hashes", expected_source_paths)
     runtime_hashes = hashes("runtime_source_hashes", RUNTIME_SOURCES)
     string_fields = expected_gate_keys - {
         "d1_missing_evidence",
@@ -761,6 +1153,7 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
         or decision not in DECISIONS
         or not isinstance(resume, str)
         or not isinstance(input_commit, str)
+        or re.fullmatch(r"[0-9a-f]{40}", input_commit) is None
     ):
         raise ValueError("decision evidence terminal fields are malformed")
     return AdmissionResult(
@@ -802,7 +1195,7 @@ def validate_decision_evidence(payload: object) -> AdmissionResult:
         "binding_sha256",
     }
     if set(payload) != expected_keys or payload.get("schema") != (
-        "candidate-d-task9-decision-evidence-v1"
+        "candidate-d-task9-decision-evidence-v2"
     ):
         raise ValueError("decision evidence schema is malformed")
     binding = payload.get("binding_sha256")
@@ -819,15 +1212,22 @@ def validate_decision_evidence(payload: object) -> AdmissionResult:
 
 
 def _proof_rows(result: AdmissionResult) -> tuple[dict[str, str], ...]:
+    def source_classification(status: str, canonical: str) -> str:
+        return (
+            "PREDECESSOR_DID_NOT_PASS"
+            if status.startswith("SKIPPED_")
+            else canonical
+        )
+
     return (
         {
-            "gate": "D0_baseline_source_recomputation",
+            "gate": "D0_baseline",
             "status": result.d0_status,
             "classification": "RECOMPUTED_FROM_PINNED_SOURCE",
             "evidence": result.d0_decision,
         },
         {
-            "gate": "D1_fulltext_novelty_audit",
+            "gate": "D1_novelty",
             "status": result.d1_status,
             "classification": "RECOMPUTED_FROM_HASH_BOUND_FULLTEXT_REGISTRY",
             "evidence": result.d1_decision + "; missing=" + (
@@ -835,16 +1235,88 @@ def _proof_rows(result: AdmissionResult) -> tuple[dict[str, str], ...]:
             ),
         },
         {
-            "gate": "D2_operator_closure",
+            "gate": "D2_closure",
             "status": result.d2_status,
-            "classification": "NO_POSITIVE_ARTIFACT_FABRICATED",
-            "evidence": "D2 skipped because D1 did not pass",
+            "classification": source_classification(
+                result.d2_status, "CANONICAL_D2_SOURCE_ARTIFACT"
+            ),
+            "evidence": result.d2_decision or result.d2_status,
         },
         {
-            "gate": "D3_binding_noise_cost_resource",
+            "gate": "D2_gamma_count",
+            "status": (
+                "MISSING" if result.gamma_count is None else str(result.gamma_count)
+            ),
+            "classification": source_classification(
+                result.d2_status, "CLOSURE_BASIS_CARDINALITY"
+            ),
+            "evidence": "required range is 1..4",
+        },
+        {
+            "gate": "D2_negative_controls",
+            "status": result.negative_controls_status,
+            "classification": source_classification(
+                result.negative_controls_status,
+                "CANONICAL_NEGATIVE_CONTROL_ROWS",
+            ),
+            "evidence": "every control must be detected",
+        },
+        {
+            "gate": "D3_integer_binding",
             "status": result.binding_status,
-            "classification": "NO_POSITIVE_ARTIFACT_FABRICATED",
-            "evidence": "D3 skipped because D1 did not pass",
+            "classification": source_classification(
+                result.binding_status, "CANONICAL_BINDING_DOMAIN_ROWS"
+            ),
+            "evidence": result.binding_status,
+        },
+        {
+            "gate": "D3_standard_object_security",
+            "status": result.security_status,
+            "classification": source_classification(
+                result.security_status,
+                "CANONICAL_SECURITY_OBJECT_MAP_ROWS",
+            ),
+            "evidence": result.security_status,
+        },
+        {
+            "gate": "D3_noise_decode",
+            "status": result.noise_status,
+            "classification": source_classification(
+                result.noise_status, "CANONICAL_NOISE_BOUND_ROWS"
+            ),
+            "evidence": result.noise_status,
+        },
+        {
+            "gate": "D3_complete_cost",
+            "status": result.complete_cost_status,
+            "classification": source_classification(
+                result.complete_cost_status,
+                "CANONICAL_AMDAHL_PROJECTION_ROW",
+            ),
+            "evidence": result.complete_cost_status,
+        },
+        {
+            "gate": "D3_resource",
+            "status": result.resource_status,
+            "classification": source_classification(
+                result.resource_status,
+                "CANONICAL_RESOURCE_PROJECTION_ROWS",
+            ),
+            "evidence": result.resource_status,
+        },
+        {
+            "gate": "D3_pessimistic_projection",
+            "status": result.pessimistic_projection or "MISSING",
+            "classification": source_classification(
+                result.complete_cost_status, "B1_SPEEDUP_RATIO"
+            ),
+            "evidence": "admission threshold is >=1.10",
+        },
+        {
+            "gate": "pre_application_permission",
+            "status": "YES" if result.pre_application_permission else "NO",
+            "classification": "PRESERVED_PRE_APPLICATION_STATE",
+            "evidence": "admission requires NO",
         },
         {
             "gate": "production_hot_path_permission",
@@ -867,18 +1339,57 @@ def _proof_rows(result: AdmissionResult) -> tuple[dict[str, str], ...]:
     )
 
 
+def _last_reached_status(result: AdmissionResult) -> str:
+    if result.d0_status != "PASS":
+        return "PLAN_APPROVED"
+    if result.d1_status != "PASS":
+        return "D0_BASELINE_FROZEN"
+    if result.d2_status != "PASS":
+        return "D1_NOVELTY_AUDIT_PASS"
+    return "D2_OPERATOR_CLOSURE_PASS"
+
+
+def _decision_effect(result: AdmissionResult) -> str:
+    if result.decision == ADMIT:
+        return (
+            "Candidate D advances to D3_ADMISSION_PASS, remains active, and "
+            "receives permission only for a separate opt-in D4 isolated "
+            "encrypted-operator experiment. Scalar defaults are unchanged."
+        )
+    if result.decision == BLOCK:
+        return (
+            f"Candidate D remains active at {_last_reached_status(result)}; "
+            "the research goal is externally blocked, Candidate E remains "
+            "reserved, and production hot-path permission is false."
+        )
+    return (
+        f"Candidate D is rejected at {_last_reached_status(result)}; Candidate "
+        "E enters SECURITY_NOVELTY_PREFLIGHT and production hot-path "
+        "permission remains false."
+    )
+
+
 def _report(result: AdmissionResult) -> bytes:
     missing = "`, `".join(result.d1_missing_evidence) or "none"
+    resume = ""
+    if result.decision == BLOCK:
+        resume = f"""
+## Finite Resume Condition
+
+{result.resume_condition}
+"""
+    d3_evidence = (
+        "predecessor did not pass"
+        if result.binding_status.startswith("SKIPPED_")
+        else "canonical D3 source evidence"
+    )
     text = f"""# Candidate D Admission Report
 
 ## Decision
 
 `{result.decision}`
 
-Candidate D remains the active candidate at its last valid reached gate,
-`D0_BASELINE_FROZEN`. The research goal is externally blocked, Candidate E
-remains `RESERVED_FALLBACK_NOT_STARTED`, and production hot-path permission is
-false.
+{_decision_effect(result)}
 
 ## Recomputed Gate Chain
 
@@ -886,33 +1397,28 @@ false.
 | --- | --- | --- |
 | D0 baseline freeze | {result.d0_status} | `{result.d0_decision}` |
 | D1 novelty/full-text audit | {result.d1_status} | `{result.d1_decision}` |
-| D2 exact operator closure | {result.d2_status} | skipped; no D2 artifact exists |
-| D3 binding/noise/cost/resource | {result.binding_status} | skipped; no D3 artifact exists |
+| D2 exact operator closure | {result.d2_status} | `{result.d2_decision or result.d2_status}` |
+| D2 gamma / negative controls | {result.gamma_count if result.gamma_count is not None else 'missing'} | `{result.negative_controls_status}` |
+| D3 integer binding | {result.binding_status} | {d3_evidence} |
+| D3 standard security objects | {result.security_status} | {d3_evidence} |
+| D3 absolute noise/decode | {result.noise_status} | {d3_evidence} |
+| D3 complete cost / resource | {result.complete_cost_status} / {result.resource_status} | {d3_evidence}; pessimistic speedup `{result.pessimistic_projection or 'missing'}` |
 
 D0 was regenerated from the pinned baseline anchors and compared byte for
 byte with the tracked D0 artifacts. D1 was regenerated from the source
 registry and locally hash-bound full texts and compared byte for byte with the
-tracked D1 artifacts. The only missing review is `{missing}`. Missing evidence
-is not a mathematical rejection, and no D2/D3 pass, rejection, parameter,
-noise value, or cost value is inferred.
+tracked D1 artifacts. Missing D1 reviews: `{missing}`. D2 and D3 values above
+are parsed only when their canonical source artifacts are present after their
+predecessor passes; skipped values are never promoted to PASS.
 
 ## Scope
 
-This closeout records no Candidate D speedup, correctness theorem, security
-reduction, noise margin, resource result, or encrypted implementation
-permission. It does not activate Candidate E. The decision is bound to input
-commit `{result.input_commit}` and decision-evidence hash
-`{_decision_binding(result)}`.
-
-## Finite Resume Condition
-
-{result.resume_condition}.
-
-After that exact source input is locally hash-bound and claim-reviewed, rerun
-the D1 generator and this admission controller. Until then, D2 and D3 remain
-skipped.
+No D0-D3 terminal route is itself a complete SAB speedup or paper claim. The
+decision is bound to input commit `{result.input_commit}` and decision-evidence
+hash `{_decision_binding(result)}`.
+{resume}
 """
-    return text.encode("ascii")
+    return (text.rstrip() + "\n").encode("ascii")
 
 
 def _render_artifacts(root: Path, result: AdmissionResult) -> dict[str, bytes]:
@@ -934,7 +1440,7 @@ def _render_artifacts(root: Path, result: AdmissionResult) -> dict[str, bytes]:
         (OUT / "decision_evidence.json").as_posix(): evidence,
     }
     index_rows = []
-    for relative in INDEXED_ARTIFACTS:
+    for relative in _indexed_artifacts(result):
         if relative in generated:
             content = generated[relative]
         else:
@@ -951,6 +1457,15 @@ def _render_artifacts(root: Path, result: AdmissionResult) -> dict[str, bytes]:
         ("path", "sha256"), index_rows
     )
     return generated
+
+
+def _indexed_artifacts(result: AdmissionResult) -> tuple[str, ...]:
+    paths = set(INDEXED_ARTIFACTS)
+    if result.d1_status == "PASS":
+        paths.update(D2_OUTPUTS)
+    if result.d2_status == "PASS":
+        paths.update(D3_OUTPUTS)
+    return tuple(sorted(paths))
 
 
 def read_canonical_summary(path: Path) -> dict[str, str]:
@@ -972,7 +1487,11 @@ def read_canonical_summary(path: Path) -> dict[str, str]:
     return row
 
 
-def validate_artifact_index(root: Path, index_path: Path) -> None:
+def validate_artifact_index(
+    root: Path,
+    index_path: Path,
+    result: AdmissionResult | None = None,
+) -> None:
     root = _resolved_root(root)
     try:
         content = Path(index_path).read_bytes()
@@ -981,7 +1500,14 @@ def validate_artifact_index(root: Path, index_path: Path) -> None:
     rows = _strict_csv_bytes(
         content, ("path", "sha256"), "Candidate D artifact index"
     )
-    if tuple(row["path"] for row in rows) != INDEXED_ARTIFACTS:
+    if result is None:
+        evidence_path = root / OUT / "decision_evidence.json"
+        try:
+            payload = json.loads(evidence_path.read_text(encoding="ascii"))
+            result = validate_decision_evidence(payload)
+        except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as error:
+            raise ValueError("decision evidence is unavailable for artifact index") from error
+    if tuple(row["path"] for row in rows) != _indexed_artifacts(result):
         raise ValueError("artifact index path set or order changed")
     for row in rows:
         digest = row["sha256"]
@@ -1018,7 +1544,7 @@ def _write_bytes_atomic(path: Path, content: bytes) -> None:
 
 
 def write_candidate_d_artifacts(
-    root: Path, result: AdmissionResult, *, input_commit: str = INPUT_COMMIT
+    root: Path, result: AdmissionResult, *, input_commit: str
 ) -> None:
     root = _resolved_root(root)
     fresh = evaluate_candidate_d_admission(root, input_commit=input_commit)
@@ -1065,7 +1591,7 @@ def write_candidate_d_artifacts(
 
 
 def verify_candidate_d_artifacts(
-    root: Path = ROOT, *, input_commit: str = INPUT_COMMIT
+    root: Path = ROOT, *, input_commit: str
 ) -> AdmissionResult:
     root = _resolved_root(root)
     result = evaluate_candidate_d_admission(root, input_commit=input_commit)
@@ -1095,14 +1621,14 @@ def verify_candidate_d_artifacts(
         raise AdmissionEvidenceError(
             "summary does not match fresh repository evidence"
         )
-    validate_artifact_index(root, root / OUT / "artifact_index.csv")
+    validate_artifact_index(root, root / OUT / "artifact_index.csv", result)
     return result
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
-    parser.add_argument("--input-commit", default=INPUT_COMMIT)
+    parser.add_argument("--input-commit", required=True)
     parser.add_argument(
         "--check",
         action="store_true",
