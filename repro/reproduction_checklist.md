@@ -565,8 +565,9 @@
 <!-- candidate-d-admission-checklist-end -->
 <!-- candidate-d-admission-historical-erratum-start -->
 - [x] Candidate D historical erratum: the old Task 9 command is
-  historical and superseded. Correct status: D0 PASS; D1 BLOCK; D2/D3
+  historical, superseded, and non-authoritative; only the commit-pinned launcher
+  commands below are authoritative. Correct status: D0 PASS; D1 BLOCK; D2/D3
   SKIPPED/NOT_REACHED; production permission is false. See
   `docs/candidate_d_admission_report.md`. Current verified generator command:
-  `python scripts/run_candidate_d_admission.py --input-commit c8221ad0fcd8413753ca4c3072f49460972de454 --controller-commit fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0 --run-date 2026-07-21 --execution-platform "Windows-PowerShell; CPython-3.12; evidence-controller-only; no-performance-claim"`. Current verified apply command: `python scripts/apply_candidate_d_admission.py --input-commit c8221ad0fcd8413753ca4c3072f49460972de454 --controller-commit fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0 --run-date 2026-07-21 --execution-platform "Windows-PowerShell; CPython-3.12; evidence-controller-only; no-performance-claim"`.
+  `git show cfb8f6330e6cafecc60db48e9f341af578debe14:scripts/candidate_d_task9_launcher.py | python -I -S - --mode run --root . --input-commit c8221ad0fcd8413753ca4c3072f49460972de454 --controller-commit cfb8f6330e6cafecc60db48e9f341af578debe14 --run-date 2026-07-21 --execution-platform "Windows-PowerShell; CPython-3.12; evidence-controller-only; no-performance-claim"`. Current verified apply command: `git show cfb8f6330e6cafecc60db48e9f341af578debe14:scripts/candidate_d_task9_launcher.py | python -I -S - --mode apply --root . --input-commit c8221ad0fcd8413753ca4c3072f49460972de454 --controller-commit cfb8f6330e6cafecc60db48e9f341af578debe14 --run-date 2026-07-21 --execution-platform "Windows-PowerShell; CPython-3.12; evidence-controller-only; no-performance-claim"`.
 <!-- candidate-d-admission-historical-erratum-end -->
