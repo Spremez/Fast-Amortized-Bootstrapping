@@ -302,6 +302,7 @@ class SelectorTechgraphTests(unittest.TestCase):
 
     def test_exhausted_candidate_e_renders_no_active_candidate_or_open_gates(self):
         state = load_state(ROOT / "research_state.yaml")
+        state["goal_status"] = "ACTIVE"
         state["candidates"]["D"]["status"] = "D2_OPERATOR_CLOSURE_PASS"
         state["candidates"]["D"][
             "last_reached_status"
