@@ -2,7 +2,7 @@
   "schema_version": 1,
   "contract": "docs/superpowers/specs/2026-07-20-lut-late-binding-operator-sab-design.md",
   "predecessor_contract": "docs/superpowers/specs/2026-07-16-ccs-usenix-mat-sab-research-contract-design.md",
-  "goal_status": "ACTIVE",
+  "goal_status": "EXTERNAL_BLOCKED",
   "target_venue": "CCS_USENIX_SECURITY",
   "primary_metric": "complete_sab_T_bootstrap_div_rN_active",
   "baselines": {
@@ -61,6 +61,6 @@
   },
   "paper_gate": "BLOCKED",
   "production_hot_path_permission": false,
-  "last_decision": "PASS_D0_CANDIDATE_D_BASELINES_FROZEN",
-  "last_decision_source_status": "PLAN_APPROVED"
+  "last_decision": "BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE",
+  "last_decision_source_status": "D0_BASELINE_FROZEN"
 }

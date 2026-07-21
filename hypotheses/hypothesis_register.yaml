@@ -4602,3 +4602,21 @@ H_candidate_c_rank_bounded_mechanism:
     remains SKIPPED_NO_REGISTERED_OPERATOR on the actual route, with no
     fabricated complete-cost or Amdahl values. Production permission is false.
 # candidate-c-rank-bounded-gate-hypothesis-end
+# candidate-d-admission-hypothesis-start
+H_candidate_d_lut_late_binding_admission:
+  status: BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE
+  primary_metric: complete_sab_T_bootstrap_div_rN_active
+  last_valid_gate: D0_BASELINE_FROZEN
+  evidence:
+    - docs/candidate_d_admission_report.md
+    - repro/candidate_d_admission/summary.csv
+    - repro/candidate_d_admission/proof_gate.csv
+    - repro/candidate_d_admission/decision_evidence.json
+    - repro/candidate_d_admission/artifact_index.csv
+  resume_condition: "Set NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf>; run NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; then run python scripts/run_candidate_d_d1_literature.py and rerun the Candidate D admission generator and closeout"
+  conclusion: >
+    D0 passes and D1 is externally blocked only by the missing hash-bound,
+    page-anchored NTRU_AMORT_2026_068 review. D2 and D3 are skipped without
+    fabricated positive or rejection evidence. Candidate D remains active at
+    D0, Candidate E remains reserved, and production permission is false.
+# candidate-d-admission-hypothesis-end

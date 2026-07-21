@@ -50,6 +50,9 @@ CURRENT_D_REJECTIONS_BY_SOURCE = {
 CURRENT_E_PREFLIGHT_REJECTION_DECISION = (
     "REJECT_CANDIDATE_E_SECURITY_NOVELTY_PREFLIGHT_CAMPAIGN_EXHAUSTED"
 )
+CURRENT_D_INCOMPLETE_EVIDENCE_DECISION = (
+    "BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE"
+)
 
 
 def candidate_a_state(state, status):
@@ -159,6 +162,14 @@ def candidate_e_preflight_state():
     )
 
 
+def candidate_d_external_blocked_state(status="D0_BASELINE_FROZEN"):
+    state = candidate_d_state(status)
+    state["goal_status"] = "EXTERNAL_BLOCKED"
+    state["last_decision"] = CURRENT_D_INCOMPLETE_EVIDENCE_DECISION
+    state["last_decision_source_status"] = status
+    return state
+
+
 class ResearchStateTests(unittest.TestCase):
     def test_candidate_state_helpers_normalize_all_mutable_fields(self):
         cases = (
@@ -209,13 +220,14 @@ class ResearchStateTests(unittest.TestCase):
         )
         self.assertEqual(state["candidate_order"], ["A", "B", "C", "D", "E"])
         self.assertEqual(state["active_candidate"], "D")
+        self.assertEqual(state["goal_status"], "EXTERNAL_BLOCKED")
         self.assertEqual(
             state["last_decision_source_status"],
-            "PLAN_APPROVED",
+            "D0_BASELINE_FROZEN",
         )
         self.assertEqual(
             state["last_decision"],
-            "PASS_D0_CANDIDATE_D_BASELINES_FROZEN",
+            CURRENT_D_INCOMPLETE_EVIDENCE_DECISION,
         )
         self.assertEqual(
             state["candidates"]["D"]["last_reached_status"],
@@ -226,6 +238,44 @@ class ResearchStateTests(unittest.TestCase):
             "RESERVED_FALLBACK_NOT_STARTED",
         )
         self.assertFalse(state["production_hot_path_permission"])
+
+    def test_candidate_d_incomplete_evidence_overlay_is_valid(self):
+        for status in (
+            "PLAN_APPROVED",
+            "D0_BASELINE_FROZEN",
+            "D1_NOVELTY_AUDIT_PASS",
+            "D2_OPERATOR_CLOSURE_PASS",
+        ):
+            with self.subTest(status=status):
+                validate_state(candidate_d_external_blocked_state(status))
+
+    def test_candidate_d_incomplete_evidence_overlay_is_tightly_constrained(self):
+        mutations = (
+            ("active_candidate", "E"),
+            ("paper_gate", "PASS"),
+            ("production_hot_path_permission", True),
+            ("e_status", "SECURITY_NOVELTY_PREFLIGHT"),
+            ("d_status", "D3_ADMISSION_PASS"),
+            ("d_last_reached_status", "PLAN_APPROVED"),
+            ("last_decision", "CHANGED"),
+            ("last_decision_source_status", "PLAN_APPROVED"),
+        )
+        for field, value in mutations:
+            with self.subTest(field=field):
+                state = candidate_d_external_blocked_state()
+                if field == "e_status":
+                    state["candidates"]["E"]["status"] = value
+                    state["candidates"]["E"]["last_reached_status"] = value
+                elif field == "d_status":
+                    state["candidates"]["D"]["status"] = value
+                    state["candidates"]["D"]["last_reached_status"] = value
+                    state["last_decision_source_status"] = value
+                elif field == "d_last_reached_status":
+                    state["candidates"]["D"]["last_reached_status"] = value
+                else:
+                    state[field] = value
+                with self.assertRaises(ValueError):
+                    validate_state(state)
 
     def test_predecessor_state_is_valid_and_locked_to_primary_metric(self):
         state = load_state(PREDECESSOR_STATE)
@@ -507,7 +557,7 @@ class ResearchStateTests(unittest.TestCase):
                     )
 
     def test_activate_candidate_d_plan_reaches_wrong_gate_guard(self):
-        state = load_state(ROOT / "research_state.yaml")
+        state = candidate_d_state("D0_BASELINE_FROZEN")
         self.assertEqual(state["goal_status"], "ACTIVE")
         self.assertEqual(
             state["candidates"]["D"]["status"],

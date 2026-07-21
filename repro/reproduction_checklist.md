@@ -557,3 +557,14 @@
   `python scripts/apply_candidate_c_rank_bounded_gate.py --input-commit d0095120442e4a1dfdb9c1410bddae9ce74a9bf9`; production hot-path
   permission remains false.
 <!-- candidate-c-rank-bounded-gate-checklist-end -->
+<!-- candidate-d-admission-checklist-start -->
+- [x] Candidate D records `BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE` after recomputing D0 and
+  D1 from pinned source evidence. D2 and D3 remain skipped, Candidate E is not
+  activated, and production hot-path permission remains false. Reproduce with
+  `python scripts/run_candidate_d_admission.py --input-commit 7ef0ef5ccd0eb99f484888ba11af27740a13182d` followed by `python scripts/apply_candidate_d_admission.py --input-commit 7ef0ef5ccd0eb99f484888ba11af27740a13182d`.
+- [ ] Resume only with the exact missing input `NTRU_AMORT_2026_068`: set
+  `NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf>`, run
+  `NTRU_AMORT_FULLTEXT_PATH=<local-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh`,
+  record its verified PDF/text hashes, page range, and claim anchors in the
+  source registry, then run `python scripts/run_candidate_d_d1_literature.py`.
+<!-- candidate-d-admission-checklist-end -->

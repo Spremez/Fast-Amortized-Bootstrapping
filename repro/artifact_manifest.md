@@ -3440,3 +3440,16 @@ Repro artifacts:
   - `experiments/candidate_c_rank_bounded_gate_plan.md`
   - `repro/candidate_c_rank_bounded_gate/`
 <!-- candidate-c-rank-bounded-gate-manifest-end -->
+<!-- candidate-d-admission-manifest-start -->
+- candidate_d_admission:
+  - `scripts/run_candidate_d_admission.py`
+  - `scripts/apply_candidate_d_admission.py`
+  - `scripts/mat_sab_research_state.py`
+  - `tests/research/test_candidate_d_gate.py`
+  - `tests/research/test_candidate_d_closeout.py`
+  - `tests/research/test_research_state.py`
+  - `docs/candidate_d_d0_baseline.md`
+  - `docs/candidate_d_d1_novelty_audit.md`
+  - `docs/candidate_d_admission_report.md`
+  - `repro/candidate_d_admission/`
+<!-- candidate-d-admission-manifest-end -->

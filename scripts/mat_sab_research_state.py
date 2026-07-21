@@ -128,6 +128,15 @@ CURRENT_D_REJECTION_DECISIONS_BY_SOURCE = {
         "REJECT_CANDIDATE_D_NONPOSITIVE_COMPLETE_COST_ROUTE_E",
     ),
 }
+CURRENT_D_INCOMPLETE_EVIDENCE_DECISION = (
+    "BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE"
+)
+CURRENT_D_INCOMPLETE_EVIDENCE_STATUSES = {
+    "PLAN_APPROVED",
+    "D0_BASELINE_FROZEN",
+    "D1_NOVELTY_AUDIT_PASS",
+    "D2_OPERATOR_CLOSURE_PASS",
+}
 CURRENT_E_PREFLIGHT_REJECTION_DECISION = (
     "REJECT_CANDIDATE_E_SECURITY_NOVELTY_PREFLIGHT_CAMPAIGN_EXHAUSTED"
 )
@@ -381,6 +390,9 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
     if paper_gate not in {"BLOCKED", "PASS"}:
         raise ValueError("invalid paper_gate")
     goal_status = state.get("goal_status")
+    candidate_d_incomplete_evidence_block = (
+        goal_status == "EXTERNAL_BLOCKED"
+    )
     active_status = candidates[active_candidate]["status"]
     terminal_status = (
         active_status == "D8_PAPER_GATE_PASS"
@@ -399,6 +411,18 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
     elif e_status == "REJECTED":
         if goal_status != "RESEARCH_CAMPAIGN_EXHAUSTED":
             raise ValueError("rejected Candidate E must exhaust campaign")
+    elif candidate_d_incomplete_evidence_block:
+        if (
+            d_status not in CURRENT_D_INCOMPLETE_EVIDENCE_STATUSES
+            or d_last_reached_status != d_status
+            or active_candidate != "D"
+            or e_status != "RESERVED_FALLBACK_NOT_STARTED"
+            or e_last_reached_status != "RESERVED_FALLBACK_NOT_STARTED"
+            or paper_gate != "BLOCKED"
+        ):
+            raise ValueError(
+                "invalid Candidate D incomplete-evidence external block"
+            )
     elif not terminal_status and goal_status != "ACTIVE":
         raise ValueError("active current campaign must have ACTIVE goal")
 
@@ -411,20 +435,32 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
         d_status
     )
     if (
-        expected_decision is not None
+        not candidate_d_incomplete_evidence_block
+        and expected_decision is not None
         and last_decision != expected_decision
     ):
         raise ValueError(
             f"last_decision must be {expected_decision} at {d_status}"
         )
     if (
-        expected_source_status is not None
+        not candidate_d_incomplete_evidence_block
+        and expected_source_status is not None
         and last_decision_source_status != expected_source_status
     ):
         raise ValueError(
             "last_decision_source_status must be "
             f"{expected_source_status} at {d_status}"
         )
+    if candidate_d_incomplete_evidence_block:
+        if last_decision != CURRENT_D_INCOMPLETE_EVIDENCE_DECISION:
+            raise ValueError(
+                "invalid Candidate D incomplete-evidence decision"
+            )
+        if last_decision_source_status != d_last_reached_status:
+            raise ValueError(
+                "Candidate D incomplete-evidence decision source must equal "
+                "last_reached_status"
+            )
     if (
         d_status == "REJECTED"
         and e_status == "SECURITY_NOVELTY_PREFLIGHT"
@@ -465,6 +501,11 @@ def _validate_current_state(state: Mapping[str, object]) -> None:
     if not isinstance(permission, bool):
         raise ValueError(
             "production_hot_path_permission must be boolean"
+        )
+    if candidate_d_incomplete_evidence_block and permission:
+        raise ValueError(
+            "Candidate D incomplete-evidence block disables production "
+            "hot path permission"
         )
     d3_index = D_PIPELINE.index("D3_ADMISSION_PASS")
     if permission and (
