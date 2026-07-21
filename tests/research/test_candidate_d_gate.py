@@ -758,7 +758,7 @@ class CandidateDGateTests(unittest.TestCase):
             "python scripts/run_candidate_d_d1_literature.py",
             result.resume_condition,
         )
-        self.assertIn("git commit", result.resume_condition)
+        self.assertIn("commit as <new-D1-commit>", result.resume_condition)
         self.assertIn("REQUIRED_SOURCE_BINDINGS", result.resume_condition)
         self.assertIn("D1 REJECT/BLOCK", result.resume_condition)
         self.assertIn("do not run D2", result.resume_condition)

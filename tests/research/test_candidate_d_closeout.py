@@ -589,19 +589,27 @@ class CandidateDCloseoutTests(unittest.TestCase):
                 str(clone / "scripts/apply_candidate_d_admission.py"),
                 *common,
             ]
-            subprocess.run(generate, cwd=clone, check=True, capture_output=True)
-            subprocess.run(
-                [*apply, "--check"], cwd=clone, check=True, capture_output=True
-            )
-            subprocess.run(apply, cwd=clone, check=True, capture_output=True)
-            subprocess.run(
-                [*apply, "--check"], cwd=clone, check=True, capture_output=True
-            )
+            def run_checked(command: list[str]) -> None:
+                completed = subprocess.run(
+                    command,
+                    cwd=clone,
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertEqual(
+                    completed.returncode,
+                    0,
+                    msg=completed.stdout + completed.stderr,
+                )
+
+            run_checked(generate)
+            run_checked([*apply, "--check"])
+            run_checked(apply)
+            run_checked([*apply, "--check"])
             first = self._snapshot(clone)
-            subprocess.run(apply, cwd=clone, check=True, capture_output=True)
-            subprocess.run(
-                [*apply, "--check"], cwd=clone, check=True, capture_output=True
-            )
+            run_checked(apply)
+            run_checked([*apply, "--check"])
             self.assertEqual(self._snapshot(clone), first)
             state = load_state(clone / "research_state.yaml")
             self.assertEqual(state["active_candidate"], "E")
