@@ -90,9 +90,31 @@ The canonical Tasks 7-8 generator/model owns and must test:
 ## Finite Routing
 
 - D1 REJECT/BLOCK terminates at Task 9; D2 and D3 are not run.
-- D1 PASS runs D2.
+- D1 PASS runs D2 with:
+
+  ```text
+  python scripts/run_candidate_d_d2_closure.py \
+    --root <absolute-repository-root> \
+    --output-root <staging-output-directory> \
+    --input-commit <new-D1-commit> \
+    --controller-commit <full-controller-sha>
+  ```
+
 - D2 REJECT/BLOCK terminates at Task 9; D3 is not run.
-- D2 PASS runs D3, then Task 9.
+- D2 PASS runs D3, then Task 9:
+
+  ```text
+  python scripts/run_candidate_d_d3_admission.py \
+    --root <absolute-repository-root> \
+    --output-root <staging-output-directory> \
+    --input-commit <new-D2-commit> \
+    --controller-commit <full-controller-sha>
+  ```
+
+The stage output is installed only after the replay manifest and canonical
+outputs satisfy this contract. The installed outputs and their scientific
+sources are committed before Task 9 receives that stage commit as
+`--input-commit`.
 
 A BLOCK preserves Candidate D at the last valid gate, keeps Candidate E
 reserved, and leaves production permission false. A later terminal run appends

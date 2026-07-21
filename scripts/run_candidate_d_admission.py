@@ -206,35 +206,57 @@ def resume_condition_for(stage: str, *, controller_commit: str) -> str:
             "<new-D1-commit>. If D1 REJECT/BLOCK, do not run D2; run Task 9 "
             "with the last-stage <new-D1-commit>: "
             + _task9_command("<new-D1-commit>", controller_commit)
-            + ". If D1 PASS, implement and run the canonical Tasks 4-6 D2 "
-            "replay contract, then commit as <new-D2-commit>. If D2 "
+            + ". If D1 PASS, implement the canonical Tasks 4-6 D2 replay "
+            "contract, then run python scripts/run_candidate_d_d2_closure.py "
+            "--root <absolute-repository-root> --output-root "
+            "<staging-output-directory> --input-commit <new-D1-commit> "
+            f"--controller-commit {controller_commit}; install the verified "
+            "canonical D2 outputs and commit as <new-D2-commit>. If D2 "
             "REJECT/BLOCK, do not run D3; run Task 9 with the last-stage "
             "<new-D2-commit>: "
             + _task9_command("<new-D2-commit>", controller_commit)
-            + ". If D2 PASS, implement and run canonical Tasks 7-8 D3, "
-            "commit as <new-D3-commit>, then run Task 9: "
+            + ". If D2 PASS, implement canonical Tasks 7-8 D3, then run "
+            "python scripts/run_candidate_d_d3_admission.py --root "
+            "<absolute-repository-root> --output-root "
+            "<staging-output-directory> --input-commit <new-D2-commit> "
+            f"--controller-commit {controller_commit}; install the verified "
+            "canonical D3 outputs, commit as <new-D3-commit>, then run Task 9: "
             + _task9_command("<new-D3-commit>", controller_commit)
             + ". Every stage commit must descend from the frozen input; Task "
             "9 appends a commit-specific terminal record and never rewrites "
-            "the historical BLOCK."
+            "the historical Task 9 ledgers or BLOCK."
         )
     if stage == "D2_BLOCK":
         return (
             "Implement or repair the canonical Tasks 4-6 D2 generator and "
             "exact checker under docs/candidate_d_task9_replay_contract.md; "
-            "run it, commit the source-derived D2 artifacts as "
+            "run python scripts/run_candidate_d_d2_closure.py --root "
+            "<absolute-repository-root> --output-root "
+            "<staging-output-directory> --input-commit "
+            "<last-valid-stage-commit> --controller-commit "
+            f"{controller_commit}; install the verified outputs and commit "
+            "the source-derived D2 artifacts as "
             "<new-D2-commit>, and rerun Task 9 with "
             + _task9_command("<new-D2-commit>", controller_commit)
-            + ". If D2 REJECT/BLOCK, do not run D3; only D2 PASS may proceed "
-            "to Tasks 7-8."
+            + ". If D2 REJECT/BLOCK, do not run D3; only D2 PASS may run "
+            "python scripts/run_candidate_d_d3_admission.py --root "
+            "<absolute-repository-root> --output-root "
+            "<staging-output-directory> --input-commit <new-D2-commit> "
+            f"--controller-commit {controller_commit} and proceed to Tasks "
+            "7-8."
         )
     if stage == "D3_BLOCK":
         return (
             "Implement or repair the canonical Tasks 7-8 D3 generator, fixed "
             "noise/security anchors, frozen B1 profile binding, and complete "
             "cost/resource model under "
-            "docs/candidate_d_task9_replay_contract.md; commit the canonical "
-            "D3 artifacts as <new-D3-commit>, then rerun Task 9 with "
+            "docs/candidate_d_task9_replay_contract.md; run python "
+            "scripts/run_candidate_d_d3_admission.py --root "
+            "<absolute-repository-root> --output-root "
+            "<staging-output-directory> --input-commit "
+            "<last-valid-stage-commit> --controller-commit "
+            f"{controller_commit}; install the verified outputs, commit the "
+            "canonical D3 artifacts as <new-D3-commit>, then rerun Task 9 with "
             + _task9_command("<new-D3-commit>", controller_commit)
             + "."
         )
