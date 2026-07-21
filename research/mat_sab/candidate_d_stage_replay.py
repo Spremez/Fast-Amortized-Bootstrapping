@@ -10,6 +10,8 @@ import json
 import os
 from pathlib import Path
 import re
+import secrets
+import stat
 import subprocess
 import sys
 import tempfile
@@ -20,21 +22,145 @@ REPLAY_SCHEMA = "candidate-d-stage-replay-v1"
 _DYNAMIC_IMPORT_CALLABLE = "dynamic-import-callable"
 _IMPORTLIB_MODULE = "importlib-module"
 _BUILTINS_MODULE = "builtins-module"
+_ATTESTATION_SCHEMA = "candidate-d-stage-replay-completion-v1"
 
 _RUNTIME_BOOTSTRAP = r'''
+import importlib.abc
+import importlib.machinery
 import json
+import os
 from pathlib import Path
 import runpy
 import sys
 
-config = json.loads(sys.argv[1])
+config = json.loads(sys.stdin.read())
+sys.stdin.close()
+sys.stdin = open(os.devnull, "r", encoding="ascii")
 checkout = Path(config["checkout"]).resolve(strict=True)
+source_root = Path(config["source_root"]).resolve(strict=True)
 runner = (checkout / config["runner"]).resolve(strict=True)
 expected = {
     name: (checkout / relative).resolve(strict=True)
     for name, relative in config["modules"].items()
 }
+local_modules = set(config["local_modules"])
 allowed_paths = set(expected.values()) | {runner}
+trusted_roots = []
+for entry in sys.path:
+    try:
+        candidate = Path(entry).resolve(strict=True)
+    except OSError:
+        continue
+    if candidate.is_dir():
+        trusted_roots.append(candidate)
+records = {}
+violations = []
+guard_finder = None
+
+
+def fail(message):
+    violations.append(message)
+    raise RuntimeError(message)
+
+
+def origin_path(value):
+    if not isinstance(value, str) or value.startswith("<"):
+        return None
+    try:
+        return Path(value).resolve(strict=True)
+    except OSError:
+        return None
+
+
+def validate_spec(name, spec, loader):
+    expected_path = expected[name]
+    actual = origin_path(getattr(spec, "origin", None))
+    if actual != expected_path:
+        fail(f"import audit origin mismatch: {name}")
+    if not isinstance(loader, importlib.machinery.SourceFileLoader):
+        fail(f"import audit loader mismatch: {name}")
+    loader_path = origin_path(getattr(loader, "path", None))
+    try:
+        loader_filename = origin_path(loader.get_filename(name))
+    except (ImportError, OSError):
+        loader_filename = None
+    if loader_path != expected_path or loader_filename != expected_path:
+        fail(f"import audit loader origin mismatch: {name}")
+    return actual, loader_path
+
+
+class GuardLoader(importlib.abc.Loader):
+    def __init__(self, name, spec, delegate):
+        self.name = name
+        self.spec = spec
+        self.delegate = delegate
+
+    def create_module(self, spec):
+        create = getattr(self.delegate, "create_module", None)
+        return None if create is None else create(spec)
+
+    def exec_module(self, module):
+        if getattr(module, "__spec__", None) is not self.spec:
+            fail(f"import audit spec mismatch: {self.name}")
+        actual, loader_path = validate_spec(
+            self.name, self.spec, self.delegate
+        )
+        records[self.name] = {
+            "name": self.name,
+            "origin": str(actual),
+            "loader_origin": str(loader_path),
+        }
+        return self.delegate.exec_module(module)
+
+
+class GuardFinder(importlib.abc.MetaPathFinder):
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname not in local_modules:
+            return None
+        spec = importlib.machinery.PathFinder.find_spec(fullname, path)
+        if fullname not in expected:
+            fail(f"unregistered local module import: {fullname}")
+        if spec is None or spec.loader is None:
+            fail(f"import audit origin mismatch: {fullname}")
+        delegate = spec.loader
+        validate_spec(fullname, spec, delegate)
+        spec.loader = GuardLoader(fullname, spec, delegate)
+        return spec
+
+
+def audit(event, arguments):
+    if event != "exec" or not arguments:
+        return
+    code = arguments[0]
+    actual = origin_path(getattr(code, "co_filename", None))
+    if actual is None:
+        return
+    if guard_finder is not None and (
+        not sys.meta_path or sys.meta_path[0] is not guard_finder
+    ):
+        fail("import audit guard was displaced")
+    try:
+        actual.relative_to(checkout)
+    except ValueError:
+        pass
+    else:
+        if actual not in allowed_paths:
+            fail(f"unregistered local code execution: {actual}")
+        return
+    if source_root != checkout:
+        try:
+            actual.relative_to(source_root)
+        except ValueError:
+            pass
+        else:
+            fail(f"import audit origin mismatch: {actual}")
+    for trusted_root in trusted_roots:
+        try:
+            actual.relative_to(trusted_root)
+        except ValueError:
+            continue
+        return
+    fail(f"import audit outside trusted path: {actual}")
 
 for name in expected:
     if name in sys.modules:
@@ -43,7 +169,10 @@ for name in expected:
 sys.dont_write_bytecode = True
 sys.pycache_prefix = config["cache_root"]
 sys.path.insert(0, str(checkout))
-sys.argv = [str(runner), *sys.argv[2:]]
+guard_finder = GuardFinder()
+sys.meta_path.insert(0, guard_finder)
+sys.addaudithook(audit)
+sys.argv = [str(runner), *sys.argv[1:]]
 exit_code = 0
 try:
     runpy.run_path(str(runner), run_name="__main__")
@@ -52,34 +181,61 @@ except SystemExit as error:
     if exit_code is None:
         exit_code = 0
 
-for name, expected_path in expected.items():
+if exit_code not in (0, False):
+    raise SystemExit(exit_code)
+if violations:
+    raise RuntimeError(violations[0])
+if not sys.meta_path or sys.meta_path[0] is not guard_finder:
+    raise RuntimeError("import audit guard was displaced")
+
+for name, record in records.items():
     module = sys.modules.get(name)
     if module is None:
         continue
-    origin = getattr(module, "__file__", None)
-    try:
-        actual = Path(origin).resolve(strict=True)
-    except (OSError, TypeError) as error:
-        raise RuntimeError(
-            f"loaded local module origin mismatch: {name}"
-        ) from error
-    if actual != expected_path:
+    expected_path = expected[name]
+    module_file = origin_path(getattr(module, "__file__", None))
+    module_spec = getattr(module, "__spec__", None)
+    spec_origin = origin_path(getattr(module_spec, "origin", None))
+    if (
+        module_file != expected_path
+        or spec_origin != expected_path
+        or not isinstance(getattr(module_spec, "loader", None), GuardLoader)
+    ):
         raise RuntimeError(f"loaded local module origin mismatch: {name}")
 
 for name, module in tuple(sys.modules.items()):
-    origin = getattr(module, "__file__", None)
-    if origin is None:
+    module_spec = getattr(module, "__spec__", None)
+    actual = origin_path(getattr(module_spec, "origin", None))
+    if actual is None:
+        actual = origin_path(getattr(module, "__file__", None))
+    if actual is None:
         continue
     try:
-        actual = Path(origin).resolve(strict=True)
         actual.relative_to(checkout)
-    except (OSError, TypeError, ValueError):
+    except ValueError:
         continue
     if actual not in allowed_paths:
         raise RuntimeError(f"loaded unregistered local module: {name}")
 
-if exit_code not in (0, False):
-    raise SystemExit(exit_code)
+attestation = {
+    "audited_imports": [records[name] for name in sorted(records)],
+    "nonce": config["nonce"],
+    "runner_completed": True,
+    "schema": config["attestation_schema"],
+}
+serialized = (
+    json.dumps(attestation, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+    + "\n"
+).encode("ascii")
+descriptor = os.open(
+    config["attestation_path"],
+    os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+    0o600,
+)
+with os.fdopen(descriptor, "wb") as handle:
+    handle.write(serialized)
+    handle.flush()
+    os.fsync(handle.fileno())
 '''.lstrip()
 
 
@@ -349,6 +505,57 @@ def _dynamic_bindings(tree: ast.AST, relative: str) -> dict[str, str]:
     return bindings
 
 
+def _validate_dynamic_import_usage(
+    tree: ast.AST, relative: str, bindings: dict[str, str]
+) -> None:
+    parents = {
+        child: parent
+        for parent in ast.walk(tree)
+        for child in ast.iter_child_nodes(parent)
+    }
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id in {"eval", "exec"}
+        ):
+            raise StageReplayError(
+                f"unsupported dynamic importer acquisition in {relative}"
+            )
+        if isinstance(node, ast.Subscript):
+            key = node.slice
+            if isinstance(key, ast.Constant) and key.value in {
+                "import_module",
+                "__import__",
+            }:
+                owner = node.value
+                if (
+                    isinstance(owner, ast.Attribute)
+                    and owner.attr == "__dict__"
+                    and _binding_kind(owner.value, bindings)
+                    in {_IMPORTLIB_MODULE, _BUILTINS_MODULE}
+                ):
+                    raise StageReplayError(
+                        f"unsupported dynamic importer acquisition in {relative}"
+                    )
+        if _binding_kind(node, bindings) != _DYNAMIC_IMPORT_CALLABLE:
+            continue
+        if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store):
+            continue
+        parent = parents.get(node)
+        if isinstance(parent, ast.Call) and parent.func is node:
+            continue
+        if isinstance(parent, ast.Assign) and parent.value is node:
+            continue
+        if isinstance(parent, ast.AnnAssign) and parent.value is node:
+            continue
+        if isinstance(parent, ast.NamedExpr) and parent.value is node:
+            continue
+        raise StageReplayError(
+            f"unsupported dynamic importer acquisition in {relative}"
+        )
+
+
 def _imports_from_source(
     module: str,
     relative: str,
@@ -406,6 +613,7 @@ def _imports_from_source(
                 imports.add(candidate)
 
     bindings = _dynamic_bindings(tree, relative)
+    _validate_dynamic_import_usage(tree, relative, bindings)
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call):
             continue
@@ -496,6 +704,18 @@ def _authenticated_closure(
     return closure
 
 
+def _local_module_names(root: Path, commit: str) -> tuple[str, ...]:
+    names = set()
+    for relative in _git_paths(root, commit):
+        if not relative.endswith(".py"):
+            continue
+        try:
+            names.add(_module_name(relative))
+        except StageReplayError:
+            continue
+    return tuple(sorted(names))
+
+
 def _checkout_status(root: Path) -> bytes:
     try:
         return subprocess.run(
@@ -512,17 +732,21 @@ def _tree_snapshot(root: Path) -> tuple[tuple[str, str, str], ...]:
     entries = []
     for path in root.rglob("*"):
         relative = path.relative_to(root)
-        if relative.parts and relative.parts[0] == ".git":
-            continue
         name = relative.as_posix()
-        if path.is_symlink():
+        metadata = path.lstat()
+        file_attributes = getattr(metadata, "st_file_attributes", 0)
+        reparse_flag = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
+        is_junction = getattr(os.path, "isjunction", lambda _path: False)
+        if path.is_symlink() or is_junction(path) or (
+            reparse_flag and file_attributes & reparse_flag
+        ):
             entries.append((name, "symlink", os.readlink(path)))
-        elif path.is_dir():
+        elif stat.S_ISDIR(metadata.st_mode):
             entries.append((name, "directory", ""))
-        elif path.is_file():
+        elif stat.S_ISREG(metadata.st_mode):
             entries.append((name, "file", _sha256(path.read_bytes())))
         else:
-            entries.append((name, "other", ""))
+            entries.append((name, "other", oct(metadata.st_mode)))
     return tuple(sorted(entries))
 
 
@@ -577,14 +801,94 @@ def _clone_detached(source_root: Path, checkout: Path, commit: str) -> None:
         raise StageReplayError("clean detached replay checkout is not exact")
 
 
-def _output_files(output_root: Path) -> tuple[str, ...]:
-    files = []
+def _output_tree(output_root: Path) -> tuple[tuple[str, str], ...]:
+    entries = []
     for path in output_root.rglob("*"):
-        if path.is_symlink():
-            raise StageReplayError("stage replay output may not contain symlinks")
-        if path.is_file():
-            files.append(path.relative_to(output_root).as_posix())
-    return tuple(sorted(files))
+        relative = path.relative_to(output_root).as_posix()
+        metadata = path.lstat()
+        file_attributes = getattr(metadata, "st_file_attributes", 0)
+        reparse_flag = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
+        is_junction = getattr(os.path, "isjunction", lambda _path: False)
+        if path.is_symlink() or is_junction(path) or (
+            reparse_flag and file_attributes & reparse_flag
+        ):
+            raise StageReplayError(
+                f"stage replay emitted a non-regular output node: {relative}"
+            )
+        if stat.S_ISDIR(metadata.st_mode):
+            kind = "directory"
+        elif stat.S_ISREG(metadata.st_mode):
+            kind = "file"
+        else:
+            raise StageReplayError(
+                f"stage replay emitted a non-regular output node: {relative}"
+            )
+        entries.append((relative, kind))
+    return tuple(sorted(entries))
+
+
+def _expected_output_tree(files: tuple[str, ...]) -> tuple[tuple[str, str], ...]:
+    entries = {(relative, "file") for relative in files}
+    for relative in files:
+        parent = Path(relative).parent
+        while parent != Path("."):
+            entries.add((parent.as_posix(), "directory"))
+            parent = parent.parent
+    return tuple(sorted(entries))
+
+
+def _completion_attestation(
+    path: Path,
+    nonce: str,
+    checkout: Path,
+    module_paths: dict[str, str],
+) -> None:
+    try:
+        if path.is_symlink() or not path.is_file():
+            raise OSError("attestation is not a regular file")
+        payload = json.loads(path.read_text(encoding="ascii"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise StageReplayError(
+            "stage replay completion attestation is missing or malformed"
+        ) from error
+    if set(payload) != {
+        "audited_imports",
+        "nonce",
+        "runner_completed",
+        "schema",
+    } or (
+        payload["schema"] != _ATTESTATION_SCHEMA
+        or payload["nonce"] != nonce
+        or payload["runner_completed"] is not True
+        or not isinstance(payload["audited_imports"], list)
+    ):
+        raise StageReplayError(
+            "stage replay completion attestation is missing or malformed"
+        )
+    names = []
+    for record in payload["audited_imports"]:
+        if not isinstance(record, dict) or set(record) != {
+            "loader_origin",
+            "name",
+            "origin",
+        }:
+            raise StageReplayError("stage replay completion attestation is malformed")
+        name = record["name"]
+        if not isinstance(name, str) or name not in module_paths:
+            raise StageReplayError("stage replay completion attestation is malformed")
+        expected = (checkout / module_paths[name]).resolve(strict=True)
+        try:
+            origin = Path(record["origin"]).resolve(strict=True)
+            loader_origin = Path(record["loader_origin"]).resolve(strict=True)
+        except (OSError, TypeError) as error:
+            raise StageReplayError(
+                "stage replay completion attestation is malformed"
+            ) from error
+        if origin != expected or loader_origin != expected:
+            raise StageReplayError("stage replay completion attestation is malformed")
+        names.append(name)
+    if names != sorted(set(names)):
+        raise StageReplayError("stage replay completion attestation is malformed")
 
 
 def _manifest(
@@ -641,6 +945,8 @@ def execute_stage_replay(
         checkout = temporary_root / "checkout"
         output_root = temporary_root / "output"
         cache_root = temporary_root / "pycache"
+        attestation_path = temporary_root / "completion-attestation.json"
+        nonce = secrets.token_hex(32)
         _clone_detached(root, checkout, input_commit)
         output_root.mkdir()
         cache_root.mkdir()
@@ -658,8 +964,13 @@ def execute_stage_replay(
             {
                 "cache_root": str(cache_root),
                 "checkout": str(checkout),
+                "source_root": str(root),
                 "modules": module_paths,
+                "local_modules": _local_module_names(root, input_commit),
                 "runner": contract.runner,
+                "attestation_path": str(attestation_path),
+                "attestation_schema": _ATTESTATION_SCHEMA,
+                "nonce": nonce,
             },
             ensure_ascii=True,
             sort_keys=True,
@@ -669,7 +980,6 @@ def execute_stage_replay(
             "-I",
             "-c",
             _RUNTIME_BOOTSTRAP,
-            config,
             "--root",
             str(checkout),
             "--output-root",
@@ -683,6 +993,7 @@ def execute_stage_replay(
             completed = subprocess.run(
                 command,
                 cwd=checkout,
+                input=config,
                 check=False,
                 capture_output=True,
                 text=True,
@@ -700,18 +1011,21 @@ def execute_stage_replay(
             detail = completed.stderr.strip() or completed.stdout.strip()
             mutation = "; replay checkout was mutated" if checkout_mutated else ""
             raise StageReplayError(
-                f"{contract.stage} canonical replay failed{mutation}: {detail[:300]}"
+                f"{contract.stage} canonical replay failed{mutation}: {detail[-1000:]}"
             )
         if checkout_mutated:
             raise StageReplayError(
                 f"{contract.stage} replay checkout was mutated"
             )
+        _completion_attestation(
+            attestation_path, nonce, checkout, module_paths
+        )
         expected_files = tuple(
             sorted((*contract.canonical_outputs, REPLAY_MANIFEST))
         )
-        if _output_files(output_root) != expected_files:
+        if _output_tree(output_root) != _expected_output_tree(expected_files):
             raise StageReplayError(
-                f"{contract.stage} canonical replay emitted a noncanonical output set"
+                f"{contract.stage} canonical replay emitted a noncanonical output tree"
             )
         payload = _manifest(
             output_root, contract, input_commit, controller_commit

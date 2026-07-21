@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -34,7 +35,9 @@ def _commit(root: Path, message: str) -> str:
     return _git(root, "rev-parse", "HEAD")
 
 
-def _fixture_runner(imports: str = "", body: str = "") -> str:
+def _fixture_runner(
+    imports: str = "", body: str = "", epilogue: str = ""
+) -> str:
     return f'''import argparse
 import json
 from pathlib import Path
@@ -68,6 +71,7 @@ manifest = {{
     encoding="ascii",
     newline="",
 )
+{epilogue}
 '''
 
 
@@ -370,6 +374,258 @@ class CandidateDReplayContractTests(unittest.TestCase):
                     controller_commit=commit,
                 )
 
+    def test_unsupported_dynamic_importer_acquisition_fails_before_execution(self):
+        attacks = (
+            (
+                "subscript",
+                "module = importlib.__dict__['import_module']('research.extra')",
+            ),
+            (
+                "eval",
+                "loader = eval('importlib.import_module')\n"
+                "module = loader('research.extra')",
+            ),
+            (
+                "exec",
+                "exec('loader = importlib.import_module')\n"
+                "module = loader('research.extra')",
+            ),
+            (
+                "wrapper",
+                "def recover_importer():\n"
+                "    return importlib.import_module\n"
+                "module = recover_importer()('research.extra')",
+            ),
+        )
+        for name, attack in attacks:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                base = Path(directory)
+                root = self._repo(str(base / "repo"))
+                marker = base / "UNREGISTERED_IMPORT_EXECUTED"
+                _write(root, "scripts/__init__.py", "")
+                _write(root, "research/__init__.py", "")
+                _write(
+                    root,
+                    "research/extra.py",
+                    f"from pathlib import Path\nPath({str(marker)!r}).write_text('executed')\n",
+                )
+                imports = (
+                    "import importlib\nimport research\nimport sys\n"
+                    + attack
+                    + "\ndel sys.modules[module.__name__]"
+                )
+                _write(
+                    root,
+                    "scripts/fixture_replayer.py",
+                    _fixture_runner(imports),
+                )
+                _write(root, "fixture/output.txt", "derived fixture output\n")
+                commit = _commit(root, f"fixture: {name} importer attack")
+
+                with self.assertRaisesRegex(
+                    replay.StageReplayError,
+                    "unsupported dynamic importer acquisition",
+                ):
+                    replay.execute_stage_replay(
+                        root,
+                        _fixture_contract(
+                            "research/__init__.py", "scripts/__init__.py"
+                        ),
+                        input_commit=commit,
+                        controller_commit=commit,
+                    )
+                self.assertFalse(marker.exists())
+
+    def test_supported_literal_dynamic_import_forms_remain_available(self):
+        forms = (
+            "import importlib\nimportlib.import_module('research.dynamic_source')",
+            "__import__('research.dynamic_source')",
+        )
+        for imports in forms:
+            with self.subTest(imports=imports), tempfile.TemporaryDirectory() as directory:
+                root = self._repo(directory)
+                _write(root, "scripts/__init__.py", "")
+                _write(root, "research/__init__.py", "")
+                _write(root, "research/dynamic_source.py", "VALUE = 1\n")
+                _write(root, "scripts/fixture_replayer.py", _fixture_runner(imports))
+                _write(root, "fixture/output.txt", "derived fixture output\n")
+                commit = _commit(root, "fixture: supported literal importer")
+
+                result = replay.execute_stage_replay(
+                    root,
+                    _fixture_contract(
+                        "research/__init__.py",
+                        "research/dynamic_source.py",
+                        "scripts/__init__.py",
+                    ),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+                self.assertEqual(
+                    result.decision, "PASS_FIXTURE_CONTROLLER_MECHANICS"
+                )
+
+    def test_import_audit_blocks_unregistered_runpy_before_top_level_code(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            root = self._repo(str(base / "repo"))
+            marker = base / "UNREGISTERED_RUNPY_EXECUTED"
+            _write(root, "scripts/__init__.py", "")
+            _write(
+                root,
+                "research/extra.py",
+                f"from pathlib import Path\nPath({str(marker)!r}).write_text('executed')\n",
+            )
+            imports = (
+                "import runpy\n"
+                "runpy.run_path(str(Path(__file__).resolve().parents[1] / "
+                "'research/extra.py'), run_name='research.extra')"
+            )
+            _write(root, "scripts/fixture_replayer.py", _fixture_runner(imports))
+            _write(root, "fixture/output.txt", "derived fixture output\n")
+            commit = _commit(root, "fixture: unregistered runpy attack")
+
+            with self.assertRaisesRegex(
+                replay.StageReplayError, "unregistered local code"
+            ):
+                replay.execute_stage_replay(
+                    root,
+                    _fixture_contract("scripts/__init__.py"),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+            self.assertFalse(marker.exists())
+
+    def test_import_audit_rejects_active_root_origin_before_spoof_code(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            root = self._repo(str(base / "repo"))
+            marker = base / "ACTIVE_SHADOW_EXECUTED"
+            _write(root, "scripts/__init__.py", "")
+            _write(root, "research/__init__.py", "")
+            _write(root, "research/guarded.py", "VALUE = 'committed'\n")
+            imports = (
+                f"sys.path.insert(0, {str(root)!r})\n"
+                "import research.guarded"
+            )
+            _write(root, "scripts/fixture_replayer.py", _fixture_runner(imports))
+            _write(root, "fixture/output.txt", "derived fixture output\n")
+            commit = _commit(root, "fixture: committed guarded module")
+            spoof = (
+                "from pathlib import Path\n"
+                f"Path({str(marker)!r}).write_text('executed')\n"
+                "expected = Path.cwd() / __file__.replace('\\\\', '/').split('/research/', 1)[1]\n"
+            )
+            initializer_spoof = (
+                "from pathlib import Path\n"
+                "expected = Path.cwd() / 'research/__init__.py'\n"
+                "__file__ = str(expected)\n"
+                "__spec__.origin = str(expected)\n"
+            )
+            module_spoof = (
+                spoof
+                + "expected = Path.cwd() / 'research/guarded.py'\n"
+                "__file__ = str(expected)\n"
+                "__spec__.origin = str(expected)\n"
+            )
+            _write(root, "research/__init__.py", initializer_spoof)
+            _write(root, "research/guarded.py", module_spoof)
+
+            with self.assertRaisesRegex(
+                replay.StageReplayError, "import audit origin mismatch"
+            ):
+                replay.execute_stage_replay(
+                    root,
+                    _fixture_contract(
+                        "research/__init__.py",
+                        "research/guarded.py",
+                        "scripts/__init__.py",
+                    ),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+            self.assertFalse(marker.exists())
+
+    def test_import_audit_cannot_be_bypassed_by_module_unload(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            root = self._repo(str(base / "repo"))
+            alternate = base / "alternate"
+            marker = base / "UNLOADED_SHADOW_EXECUTED"
+            _write(alternate, "research/__init__.py", "")
+            _write(
+                alternate,
+                "research/guarded.py",
+                f"from pathlib import Path\nPath({str(marker)!r}).write_text('executed')\n",
+            )
+            _write(root, "scripts/__init__.py", "")
+            _write(root, "research/__init__.py", "")
+            _write(root, "research/guarded.py", "VALUE = 'committed'\n")
+            imports = (
+                f"sys.path.insert(0, {str(alternate)!r})\n"
+                "import research.guarded\n"
+                "del sys.modules['research.guarded']\n"
+                "del sys.modules['research']"
+            )
+            _write(root, "scripts/fixture_replayer.py", _fixture_runner(imports))
+            _write(root, "fixture/output.txt", "derived fixture output\n")
+            commit = _commit(root, "fixture: unload shadow attack")
+
+            with self.assertRaisesRegex(
+                replay.StageReplayError, "import audit origin mismatch"
+            ):
+                replay.execute_stage_replay(
+                    root,
+                    _fixture_contract(
+                        "research/__init__.py",
+                        "research/guarded.py",
+                        "scripts/__init__.py",
+                    ),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+            self.assertFalse(marker.exists())
+
+    def test_import_audit_rejects_direct_execution_from_any_outside_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            root = self._repo(str(base / "repo"))
+            alternate = base / "alternate"
+            marker = base / "OUTSIDE_RUNPY_EXECUTED"
+            _write(
+                alternate,
+                "guarded.py",
+                f"from pathlib import Path\nPath({str(marker)!r}).write_text('executed')\n",
+            )
+            _write(root, "scripts/__init__.py", "")
+            _write(root, "research/__init__.py", "")
+            _write(root, "research/guarded.py", "VALUE = 'committed'\n")
+            imports = (
+                "import runpy\n"
+                "if False:\n"
+                "    import research.guarded\n"
+                f"runpy.run_path({str(alternate / 'guarded.py')!r}, "
+                "run_name='research.guarded')"
+            )
+            _write(root, "scripts/fixture_replayer.py", _fixture_runner(imports))
+            _write(root, "fixture/output.txt", "derived fixture output\n")
+            commit = _commit(root, "fixture: arbitrary outside runpy attack")
+
+            with self.assertRaisesRegex(
+                replay.StageReplayError, "import audit outside trusted path"
+            ):
+                replay.execute_stage_replay(
+                    root,
+                    _fixture_contract(
+                        "research/__init__.py",
+                        "research/guarded.py",
+                        "scripts/__init__.py",
+                    ),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+            self.assertFalse(marker.exists())
+
     def test_runtime_module_origin_rejects_shadow_source(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)
@@ -389,7 +645,7 @@ class CandidateDReplayContractTests(unittest.TestCase):
             commit = _commit(root, "fixture: runtime shadow")
 
             with self.assertRaisesRegex(
-                replay.StageReplayError, "loaded local module origin mismatch"
+                replay.StageReplayError, "import audit origin mismatch"
             ):
                 replay.execute_stage_replay(
                     root,
@@ -416,6 +672,170 @@ class CandidateDReplayContractTests(unittest.TestCase):
 
             with self.assertRaisesRegex(
                 replay.StageReplayError, "replay checkout was mutated"
+            ):
+                replay.execute_stage_replay(
+                    root,
+                    _fixture_contract("scripts/__init__.py"),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+
+    def test_git_metadata_write_in_replay_checkout_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._repo(directory)
+            _write(root, "scripts/__init__.py", "")
+            _write(
+                root,
+                "scripts/fixture_replayer.py",
+                _fixture_runner(
+                    body="Path(args.root, '.git', 'rogue').write_text('write\\n')"
+                ),
+            )
+            _write(root, "fixture/output.txt", "derived fixture output\n")
+            commit = _commit(root, "fixture: git metadata write")
+
+            with self.assertRaisesRegex(
+                replay.StageReplayError, "replay checkout was mutated"
+            ):
+                replay.execute_stage_replay(
+                    root,
+                    _fixture_contract("scripts/__init__.py"),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+
+    def test_early_success_without_completion_attestation_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._repo(directory)
+            _write(root, "scripts/__init__.py", "")
+            _write(
+                root,
+                "scripts/fixture_replayer.py",
+                _fixture_runner(
+                    imports="import os",
+                    epilogue=(
+                        "print('candidate-d-stage-replay-completion-v1', flush=True)\n"
+                        "os._exit(0)"
+                    ),
+                ),
+            )
+            _write(root, "fixture/output.txt", "derived fixture output\n")
+            commit = _commit(root, "fixture: early successful exit")
+
+            with self.assertRaisesRegex(
+                replay.StageReplayError, "completion attestation"
+            ):
+                replay.execute_stage_replay(
+                    root,
+                    _fixture_contract("scripts/__init__.py"),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+
+    def test_import_guard_displacement_prevents_completion_attestation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._repo(directory)
+            _write(root, "scripts/__init__.py", "")
+            _write(
+                root,
+                "scripts/fixture_replayer.py",
+                _fixture_runner(epilogue="sys.meta_path.pop(0)"),
+            )
+            _write(root, "fixture/output.txt", "derived fixture output\n")
+            commit = _commit(root, "fixture: displace import guard")
+
+            with self.assertRaisesRegex(
+                replay.StageReplayError, "import audit guard was displaced"
+            ):
+                replay.execute_stage_replay(
+                    root,
+                    _fixture_contract("scripts/__init__.py"),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+
+    def test_runner_cannot_forge_attestation_from_process_arguments(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._repo(directory)
+            _write(root, "scripts/__init__.py", "")
+            forge = """raw = next((value for value in sys.orig_argv if value.startswith('{') and '\"nonce\"' in value), None)
+if raw is not None:
+    control = json.loads(raw)
+    forged = {
+        'audited_imports': [],
+        'nonce': control['nonce'],
+        'runner_completed': True,
+        'schema': control['attestation_schema'],
+    }
+    Path(control['attestation_path']).write_text(
+        json.dumps(forged, ensure_ascii=True, sort_keys=True, separators=(',', ':')) + '\\n',
+        encoding='ascii',
+        newline='',
+    )
+os._exit(0)"""
+            _write(
+                root,
+                "scripts/fixture_replayer.py",
+                _fixture_runner(imports="import os", epilogue=forge),
+            )
+            _write(root, "fixture/output.txt", "derived fixture output\n")
+            commit = _commit(root, "fixture: forge command-line attestation")
+
+            with self.assertRaisesRegex(
+                replay.StageReplayError, "completion attestation"
+            ):
+                replay.execute_stage_replay(
+                    root,
+                    _fixture_contract("scripts/__init__.py"),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+
+    def test_extra_empty_output_directory_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._repo(directory)
+            _write(root, "scripts/__init__.py", "")
+            _write(
+                root,
+                "scripts/fixture_replayer.py",
+                _fixture_runner(
+                    body="Path(args.output_root, 'extra-empty').mkdir()"
+                ),
+            )
+            _write(root, "fixture/output.txt", "derived fixture output\n")
+            commit = _commit(root, "fixture: extra empty output directory")
+
+            with self.assertRaisesRegex(
+                replay.StageReplayError, "noncanonical output tree"
+            ):
+                replay.execute_stage_replay(
+                    root,
+                    _fixture_contract("scripts/__init__.py"),
+                    input_commit=commit,
+                    controller_commit=commit,
+                )
+
+    @unittest.skipUnless(
+        hasattr(os, "mkfifo") and os.name != "nt",
+        "FIFO fixture requires POSIX mkfifo",
+    )
+    def test_special_output_node_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._repo(directory)
+            _write(root, "scripts/__init__.py", "")
+            _write(
+                root,
+                "scripts/fixture_replayer.py",
+                _fixture_runner(
+                    imports="import os",
+                    body="os.mkfifo(Path(args.output_root, 'rogue-fifo'))",
+                ),
+            )
+            _write(root, "fixture/output.txt", "derived fixture output\n")
+            commit = _commit(root, "fixture: special output node")
+
+            with self.assertRaisesRegex(
+                replay.StageReplayError, "non-regular output node"
             ):
                 replay.execute_stage_replay(
                     root,

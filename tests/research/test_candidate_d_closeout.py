@@ -533,6 +533,43 @@ class CandidateDCloseoutTests(unittest.TestCase):
             self.assertEqual(first.count(start.encode("ascii")), 1)
             self.assertEqual(first.count(end.encode("ascii")), 1)
 
+    def test_new_controller_supersedes_exact_prior_erratum_in_place(self):
+        prior = replace(
+            self.result,
+            controller_commit="47173c44729430c23d7078d8cc4368dabd0fa528",
+        )
+        current = replace(self.result, controller_commit="b" * 40)
+        prior_contents = {
+            relative: (start, end, content)
+            for relative, start, end, content in closeout._erratum_contents(prior)
+        }
+        for relative, start, end, content in closeout._erratum_contents(current):
+            prior_start, prior_end, prior_content = prior_contents[relative]
+            self.assertEqual((prior_start, prior_end), (start, end))
+            ledger = closeout._plan_bounded_append(
+                b"# ledger\n", start, end, prior_content, relative
+            )
+            updated = closeout._plan_superseding_erratum(
+                ledger,
+                start,
+                end,
+                content,
+                relative,
+                current,
+            )
+            replayed = closeout._plan_superseding_erratum(
+                updated,
+                start,
+                end,
+                content,
+                relative,
+                current,
+            )
+            self.assertEqual(updated, replayed)
+            self.assertEqual(updated.count(start.encode("ascii")), 1)
+            self.assertIn(("--controller-commit " + "b" * 40).encode(), updated)
+            self.assertNotIn(prior.controller_commit.encode(), updated)
+
     def test_erratum_plan_preserves_exact_historical_blocks_and_run_row(self):
         planned = closeout._plan_closeout(ROOT, self.result)
         current = {

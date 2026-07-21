@@ -5,10 +5,12 @@ from __future__ import annotations
 
 import argparse
 import csv
+from dataclasses import replace
 from io import StringIO
 import json
 import os
 from pathlib import Path
+import re
 import sys
 import tempfile
 from typing import Mapping
@@ -139,6 +141,49 @@ def _plan_bounded_append(
     if actual != expected:
         raise ValueError(f"ledger content mismatch in {label}: {start}")
     return current
+
+
+def _plan_superseding_erratum(
+    current: bytes,
+    start: str,
+    end: str,
+    content: str,
+    label: str,
+    result: AdmissionResult,
+) -> bytes:
+    try:
+        return _plan_bounded_append(current, start, end, content, label)
+    except ValueError as error:
+        if "ledger content mismatch" not in str(error):
+            raise
+    actual = _exact_marker_block(current, start, end)
+    try:
+        text = actual.decode("ascii")
+    except UnicodeError as error:
+        raise ValueError(f"{label} erratum is not ASCII") from error
+    commits = set(
+        re.findall(r"--controller-commit ([0-9a-f]{40})", text)
+    )
+    if len(commits) != 1:
+        raise ValueError(f"ledger content mismatch in {label}: {start}")
+    prior_result = replace(result, controller_commit=commits.pop())
+    prior_entries = {
+        relative: (prior_start, prior_end, prior_content)
+        for relative, prior_start, prior_end, prior_content in _erratum_contents(
+            prior_result
+        )
+    }
+    if label not in prior_entries:
+        raise ValueError(f"ledger content mismatch in {label}: {start}")
+    prior_start, prior_end, prior_content = prior_entries[label]
+    if (prior_start, prior_end) != (start, end):
+        raise ValueError(f"ledger content mismatch in {label}: {start}")
+    expected_prior = _bounded_block(start, end, prior_content)
+    if actual != expected_prior or current.count(expected_prior) != 1:
+        raise ValueError(f"ledger content mismatch in {label}: {start}")
+    return current.replace(
+        expected_prior, _bounded_block(start, end, content), 1
+    )
 
 
 def _generator_command(result: AdmissionResult) -> str:
@@ -683,8 +728,13 @@ def _plan_closeout(
         for relative in LEDGER_PATHS:
             planned[paths[relative]] = current[relative]
         for relative, start, end, content in _erratum_contents(result):
-            planned[paths[relative]] = _plan_bounded_append(
-                planned[paths[relative]], start, end, content, relative
+            planned[paths[relative]] = _plan_superseding_erratum(
+                planned[paths[relative]],
+                start,
+                end,
+                content,
+                relative,
+                result,
             )
         planned[paths[RUN_LOG_PATH]] = current[RUN_LOG_PATH]
     else:
@@ -694,8 +744,13 @@ def _plan_closeout(
             )
         if _is_historical_erratum_result(result):
             for relative, start, end, content in _erratum_contents(result):
-                planned[paths[relative]] = _plan_bounded_append(
-                    planned[paths[relative]], start, end, content, relative
+                planned[paths[relative]] = _plan_superseding_erratum(
+                    planned[paths[relative]],
+                    start,
+                    end,
+                    content,
+                    relative,
+                    result,
                 )
         planned[paths[RUN_LOG_PATH]] = _plan_run_log(
             current[RUN_LOG_PATH], result

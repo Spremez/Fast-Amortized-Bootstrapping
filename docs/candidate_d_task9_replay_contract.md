@@ -29,6 +29,9 @@ of the following hold:
    initializer, and literal dynamic imports are included. The sorted unique
    scientific-source registry must match that closure exactly; unresolved,
    non-literal dynamic, ambiguous, shadowed, or undeclared local imports fail.
+   Importer callables may be obtained only through the reviewed direct,
+   attribute, `getattr`, and simple alias forms. Subscript, `eval`, `exec`,
+   wrapper-return, or other unsupported importer recovery fails closed.
 2. The runner, every closure source, every required input, and every canonical
    tracked output is a regular committed file read from `input_commit`; mutable
    files in the caller's active worktree are not replay inputs.
@@ -36,20 +39,31 @@ of the following hold:
    executes the committed runner there. The checkout and the separate empty
    temporary `--output-root` are removed on success and failure.
 4. The runner executes with isolated Python startup and an external bytecode
-   cache. Every loaded repository-local module must originate at its exact
-   authenticated closure path in the detached checkout. Preloaded, shadowed,
-   or unregistered repository-local modules fail.
+   cache. An import-time finder/loader guard validates immutable spec and
+   loader origins before each repository-local module body executes, while an
+   execution audit rejects unregistered checkout code. Every loaded local
+   module must originate at its exact authenticated closure path. The audit
+   record survives `sys.modules` removal; mutable `__file__` or `__spec__`
+   values cannot authenticate a source. Preloaded, shadowed, or unregistered
+   repository-local modules fail.
 5. The runner receives an empty temporary `--output-root`, explicit full
    `--input-commit`, and explicit full `--controller-commit`.
-6. Before and after execution, both Git status including all untracked files
-   and a byte snapshot including ignored files must match. Any write anywhere
-   in the detached checkout fails; the caller's active worktree is not changed
-   or cleaned.
-7. The temporary output tree contains exactly the canonical stage outputs plus
-   `candidate_d_stage_replay.json`; no extra file or symlink is accepted.
-8. Every temporary output is byte-identical to the corresponding regular file
+6. The child writes a parent-nonce-bound completion attestation through a
+   separate control file only after runner return and final import-integrity
+   checks. The parent validates its exact schema, nonce, and audited immutable
+   origins. Successful early termination, including `os._exit(0)`, has no
+   attestation and fails.
+7. Before and after execution, both Git status including all untracked files
+   and a byte/type snapshot including ignored files and the complete `.git`
+   directory must match. Any checkout or Git metadata write fails; the
+   caller's active worktree is not changed or cleaned.
+8. The temporary output tree contains exactly the canonical stage outputs,
+   `candidate_d_stage_replay.json`, and only their necessary parent
+   directories. Extra empty directories, symlinks, junctions, FIFOs, sockets,
+   devices, and other non-regular nodes fail.
+9. Every temporary output is byte-identical to the corresponding regular file
    committed at `input_commit`.
-9. The manifest has schema `candidate-d-stage-replay-v1`, names the stage,
+10. The manifest has schema `candidate-d-stage-replay-v1`, names the stage,
    both commits, exact output list, one registered decision, and
    `scientific_authority: true`.
 
