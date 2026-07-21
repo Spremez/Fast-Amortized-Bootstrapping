@@ -46,6 +46,12 @@ MANIFEST_START = "<!-- candidate-d-admission-manifest-start -->"
 MANIFEST_END = "<!-- candidate-d-admission-manifest-end -->"
 CHECKLIST_START = "<!-- candidate-d-admission-checklist-start -->"
 CHECKLIST_END = "<!-- candidate-d-admission-checklist-end -->"
+ERRATUM_HYPOTHESIS_START = "# candidate-d-admission-historical-erratum-start"
+ERRATUM_HYPOTHESIS_END = "# candidate-d-admission-historical-erratum-end"
+ERRATUM_CHECKLIST_START = (
+    "<!-- candidate-d-admission-historical-erratum-start -->"
+)
+ERRATUM_CHECKLIST_END = "<!-- candidate-d-admission-historical-erratum-end -->"
 
 RUN_FIELDS = (
     "run_id",
@@ -261,6 +267,69 @@ def _ledger_contents(
             "repro/reproduction_checklist.md",
             _marker_for(result, CHECKLIST_START),
             _marker_for(result, CHECKLIST_END),
+            checklist,
+        ),
+    )
+
+
+def _is_historical_erratum_result(result: AdmissionResult) -> bool:
+    skipped = "SKIPPED_D1_BLOCK"
+    return (
+        result.input_commit == CURRENT_INPUT_COMMIT
+        and result.decision == BLOCK
+        and result.d0_status == "PASS"
+        and result.d1_status == "BLOCK"
+        and result.d2_status == skipped
+        and all(
+            status == skipped
+            for status in (
+                result.negative_controls_status,
+                result.binding_status,
+                result.security_status,
+                result.noise_status,
+                result.complete_cost_status,
+                result.resource_status,
+            )
+        )
+        and not result.pre_application_permission
+    )
+
+
+def _erratum_contents(
+    result: AdmissionResult,
+) -> tuple[tuple[str, str, str, str], ...]:
+    if not _is_historical_erratum_result(result):
+        raise ValueError(
+            "historical Candidate D erratum requires the verified D1 BLOCK result"
+        )
+    generator = _generator_command(result)
+    apply = _apply_command(result)
+    hypothesis = f"""candidate_d_admission_historical_erratum:
+  supersedes: candidate-d-admission-001 command and priority-chain wording
+  old_command_status: historical and superseded
+  corrected_status: D0 PASS; D1 BLOCK; D2/D3 SKIPPED/NOT_REACHED
+  production_permission: false
+  report: docs/candidate_d_admission_report.md
+  generator_command: {json.dumps(generator, ensure_ascii=True)}
+  apply_command: {json.dumps(apply, ensure_ascii=True)}
+"""
+    checklist = f"""- [x] Candidate D historical erratum: the old Task 9 command is
+  historical and superseded. Correct status: D0 PASS; D1 BLOCK; D2/D3
+  SKIPPED/NOT_REACHED; production permission is false. See
+  `docs/candidate_d_admission_report.md`. Current verified generator command:
+  `{generator}`. Current verified apply command: `{apply}`.
+"""
+    return (
+        (
+            "hypotheses/hypothesis_register.yaml",
+            ERRATUM_HYPOTHESIS_START,
+            ERRATUM_HYPOTHESIS_END,
+            hypothesis,
+        ),
+        (
+            "repro/reproduction_checklist.md",
+            ERRATUM_CHECKLIST_START,
+            ERRATUM_CHECKLIST_END,
             checklist,
         ),
     )
@@ -613,12 +682,21 @@ def _plan_closeout(
     if result.input_commit == CURRENT_INPUT_COMMIT and historical_applied:
         for relative in LEDGER_PATHS:
             planned[paths[relative]] = current[relative]
+        for relative, start, end, content in _erratum_contents(result):
+            planned[paths[relative]] = _plan_bounded_append(
+                planned[paths[relative]], start, end, content, relative
+            )
         planned[paths[RUN_LOG_PATH]] = current[RUN_LOG_PATH]
     else:
         for relative, start, end, content in _ledger_contents(result):
             planned[paths[relative]] = _plan_bounded_append(
                 current[relative], start, end, content, relative
             )
+        if _is_historical_erratum_result(result):
+            for relative, start, end, content in _erratum_contents(result):
+                planned[paths[relative]] = _plan_bounded_append(
+                    planned[paths[relative]], start, end, content, relative
+                )
         planned[paths[RUN_LOG_PATH]] = _plan_run_log(
             current[RUN_LOG_PATH], result
         )

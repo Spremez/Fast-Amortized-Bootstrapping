@@ -131,10 +131,13 @@ D2_REPLAY_CONTRACT = StageReplayContract(
     stage="D2",
     runner="scripts/run_candidate_d_d2_closure.py",
     scientific_sources=(
-        "research/mat_sab/finite_linear.py",
-        "research/mat_sab/candidate_d_source_map.py",
-        "research/mat_sab/negacyclic_operator.py",
+        "research/__init__.py",
+        "research/mat_sab/__init__.py",
         "research/mat_sab/candidate_d_operator_closure.py",
+        "research/mat_sab/candidate_d_source_map.py",
+        "research/mat_sab/finite_linear.py",
+        "research/mat_sab/negacyclic_operator.py",
+        "scripts/__init__.py",
     ),
     required_inputs=(
         "src/sparse_amortized_bootstrap.c",
@@ -151,10 +154,13 @@ D3_REPLAY_CONTRACT = StageReplayContract(
     stage="D3",
     runner="scripts/run_candidate_d_d3_admission.py",
     scientific_sources=(
+        "research/__init__.py",
+        "research/mat_sab/__init__.py",
+        "research/mat_sab/candidate_d_admission.py",
+        "research/mat_sab/candidate_d_operator_closure.py",
         "research/mat_sab/candidate_d_source_map.py",
         "research/mat_sab/negacyclic_operator.py",
-        "research/mat_sab/candidate_d_operator_closure.py",
-        "research/mat_sab/candidate_d_admission.py",
+        "scripts/__init__.py",
     ),
     required_inputs=(
         *D2_OUTPUTS,

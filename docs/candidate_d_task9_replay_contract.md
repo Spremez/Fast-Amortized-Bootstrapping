@@ -24,16 +24,32 @@ Static CSV parsing is only a consistency check. D2 or D3 may return PASS or
 REJECT only when Task 9 executes the canonical, reviewed stage runner and all
 of the following hold:
 
-1. The runner, every checker/model source, every required input, and every
-   canonical tracked output exactly match `input_commit`.
-2. The runner receives an empty temporary `--output-root`, explicit full
+1. Task 9 derives the runner's complete repository-local Python import closure
+   recursively from `input_commit`. Normal, `from`, relative, package
+   initializer, and literal dynamic imports are included. The sorted unique
+   scientific-source registry must match that closure exactly; unresolved,
+   non-literal dynamic, ambiguous, shadowed, or undeclared local imports fail.
+2. The runner, every closure source, every required input, and every canonical
+   tracked output is a regular committed file read from `input_commit`; mutable
+   files in the caller's active worktree are not replay inputs.
+3. Task 9 creates a clean detached checkout of the exact `input_commit` and
+   executes the committed runner there. The checkout and the separate empty
+   temporary `--output-root` are removed on success and failure.
+4. The runner executes with isolated Python startup and an external bytecode
+   cache. Every loaded repository-local module must originate at its exact
+   authenticated closure path in the detached checkout. Preloaded, shadowed,
+   or unregistered repository-local modules fail.
+5. The runner receives an empty temporary `--output-root`, explicit full
    `--input-commit`, and explicit full `--controller-commit`.
-3. The runner does not mutate any tracked repository file.
-4. The temporary tree contains exactly the canonical stage outputs plus
+6. Before and after execution, both Git status including all untracked files
+   and a byte snapshot including ignored files must match. Any write anywhere
+   in the detached checkout fails; the caller's active worktree is not changed
+   or cleaned.
+7. The temporary output tree contains exactly the canonical stage outputs plus
    `candidate_d_stage_replay.json`; no extra file or symlink is accepted.
-5. Every temporary output is byte-identical to the corresponding tracked
-   artifact.
-6. The manifest has schema `candidate-d-stage-replay-v1`, names the stage,
+8. Every temporary output is byte-identical to the corresponding regular file
+   committed at `input_commit`.
+9. The manifest has schema `candidate-d-stage-replay-v1`, names the stage,
    both commits, exact output list, one registered decision, and
    `scientific_authority: true`.
 

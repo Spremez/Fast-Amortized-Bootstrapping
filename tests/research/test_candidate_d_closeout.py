@@ -375,13 +375,37 @@ class CandidateDCloseoutTests(unittest.TestCase):
             first = self._snapshot(root)
             self._apply(root)
             self.assertEqual(self._snapshot(root), first)
-            for relative in (
-                "hypotheses/hypothesis_register.yaml",
-                "repro/artifact_manifest.md",
-                "repro/reproduction_checklist.md",
-            ):
+            marker_specs = (
+                (
+                    "hypotheses/hypothesis_register.yaml",
+                    closeout.HYPOTHESIS_START,
+                    closeout.HYPOTHESIS_END,
+                ),
+                (
+                    "repro/artifact_manifest.md",
+                    closeout.MANIFEST_START,
+                    closeout.MANIFEST_END,
+                ),
+                (
+                    "repro/reproduction_checklist.md",
+                    closeout.CHECKLIST_START,
+                    closeout.CHECKLIST_END,
+                ),
+                (
+                    "hypotheses/hypothesis_register.yaml",
+                    closeout.ERRATUM_HYPOTHESIS_START,
+                    closeout.ERRATUM_HYPOTHESIS_END,
+                ),
+                (
+                    "repro/reproduction_checklist.md",
+                    closeout.ERRATUM_CHECKLIST_START,
+                    closeout.ERRATUM_CHECKLIST_END,
+                ),
+            )
+            for relative, start, end in marker_specs:
                 text = (root / relative).read_text(encoding="ascii")
-                self.assertEqual(text.count("candidate-d-admission"), 2)
+                self.assertEqual(text.count(start), 1)
+                self.assertEqual(text.count(end), 1)
             run_log = (root / "repro/run_log.csv").read_text(encoding="ascii")
             self.assertEqual(run_log.count(closeout.RUN_MARKER), 1)
 
@@ -476,6 +500,57 @@ class CandidateDCloseoutTests(unittest.TestCase):
                 changed[relative] = changed[relative].replace(old, new, 1)
                 with self.assertRaises(ValueError):
                     closeout._validate_historical_block_ledgers(ROOT, changed)
+
+    def test_historical_erratum_is_complete_bounded_and_byte_idempotent(self):
+        contents = closeout._erratum_contents(self.result)
+        self.assertEqual(
+            tuple(relative for relative, *_ in contents),
+            (
+                "hypotheses/hypothesis_register.yaml",
+                "repro/reproduction_checklist.md",
+            ),
+        )
+        joined = "\n".join(content for *_, content in contents)
+        self.assertIn("historical and superseded", joined)
+        self.assertIn("D0 PASS", joined)
+        self.assertIn("D1 BLOCK", joined)
+        self.assertIn("D2/D3 SKIPPED/NOT_REACHED", joined)
+        self.assertIn("production permission is false", joined)
+        self.assertIn("docs/candidate_d_admission_report.md", joined)
+        self.assertIn(closeout._generator_command(self.result), joined)
+        self.assertIn(closeout._apply_command(self.result), joined)
+        joined.encode("ascii")
+
+        for relative, start, end, content in contents:
+            before = (ROOT / relative).read_bytes()
+            first = closeout._plan_bounded_append(
+                before, start, end, content, relative
+            )
+            second = closeout._plan_bounded_append(
+                first, start, end, content, relative
+            )
+            self.assertEqual(first, second)
+            self.assertEqual(first.count(start.encode("ascii")), 1)
+            self.assertEqual(first.count(end.encode("ascii")), 1)
+
+    def test_erratum_plan_preserves_exact_historical_blocks_and_run_row(self):
+        planned = closeout._plan_closeout(ROOT, self.result)
+        current = {
+            relative: (ROOT / relative).read_bytes()
+            for relative in (*closeout.LEDGER_PATHS, closeout.RUN_LOG_PATH)
+        }
+        after = dict(current)
+        for path, content in planned.items():
+            relative = path.relative_to(ROOT).as_posix()
+            if relative in after:
+                after[relative] = content
+        closeout._validate_historical_block_ledgers(ROOT, after)
+        self.assertEqual(after[closeout.RUN_LOG_PATH], current[closeout.RUN_LOG_PATH])
+        for relative, start, end, _content in closeout._erratum_contents(
+            self.result
+        ):
+            self.assertIn(start.encode("ascii"), after[relative])
+            self.assertIn(end.encode("ascii"), after[relative])
 
     def test_real_resumed_reject_verifier_apply_check_is_idempotent(self):
         with tempfile.TemporaryDirectory() as directory:
