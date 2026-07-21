@@ -563,3 +563,10 @@
   `python scripts/run_candidate_d_admission.py --input-commit c8221ad0fcd8413753ca4c3072f49460972de454` followed by `python scripts/apply_candidate_d_admission.py --input-commit c8221ad0fcd8413753ca4c3072f49460972de454`.
 - [ ] Resume condition: Obtain the latest second revision of IACR ePrint 2026/068 dated 2026-07-16 (not the archived January first-version PDF); set NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf>; run NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; update its REQUIRED_SOURCE_BINDINGS entry in research/mat_sab/candidate_d_literature.py; then run python scripts/run_candidate_d_d1_literature.py; commit the corrected registry, binding, and regenerated D1 artifacts with git commit; finally run python scripts/run_candidate_d_admission.py --input-commit <new-D1-commit> and python scripts/apply_candidate_d_admission.py --input-commit <new-D1-commit>
 <!-- candidate-d-admission-checklist-end -->
+<!-- candidate-d-admission-historical-erratum-start -->
+- [x] Candidate D historical erratum: the old Task 9 command is
+  historical and superseded. Correct status: D0 PASS; D1 BLOCK; D2/D3
+  SKIPPED/NOT_REACHED; production permission is false. See
+  `docs/candidate_d_admission_report.md`. Current verified generator command:
+  `python scripts/run_candidate_d_admission.py --input-commit c8221ad0fcd8413753ca4c3072f49460972de454 --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528 --run-date 2026-07-21 --execution-platform "Windows-PowerShell; CPython-3.12; evidence-controller-only; no-performance-claim"`. Current verified apply command: `python scripts/apply_candidate_d_admission.py --input-commit c8221ad0fcd8413753ca4c3072f49460972de454 --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528 --run-date 2026-07-21 --execution-platform "Windows-PowerShell; CPython-3.12; evidence-controller-only; no-performance-claim"`.
+<!-- candidate-d-admission-historical-erratum-end -->

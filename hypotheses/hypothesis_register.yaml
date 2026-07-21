@@ -4617,3 +4617,13 @@ H_candidate_d_lut_late_binding_admission:
   conclusion: >
     D0 passes and D1 awaits the latest second revision of IACR ePrint 2026/068 and a hash-bound claim review. D remains at D0, E remains reserved, and production permission is false.
 # candidate-d-admission-hypothesis-end
+# candidate-d-admission-historical-erratum-start
+candidate_d_admission_historical_erratum:
+  supersedes: candidate-d-admission-001 command and priority-chain wording
+  old_command_status: historical and superseded
+  corrected_status: D0 PASS; D1 BLOCK; D2/D3 SKIPPED/NOT_REACHED
+  production_permission: false
+  report: docs/candidate_d_admission_report.md
+  generator_command: "python scripts/run_candidate_d_admission.py --input-commit c8221ad0fcd8413753ca4c3072f49460972de454 --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528 --run-date 2026-07-21 --execution-platform \"Windows-PowerShell; CPython-3.12; evidence-controller-only; no-performance-claim\""
+  apply_command: "python scripts/apply_candidate_d_admission.py --input-commit c8221ad0fcd8413753ca4c3072f49460972de454 --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528 --run-date 2026-07-21 --execution-platform \"Windows-PowerShell; CPython-3.12; evidence-controller-only; no-performance-claim\""
+# candidate-d-admission-historical-erratum-end
