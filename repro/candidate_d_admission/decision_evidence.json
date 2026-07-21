@@ -1,7 +1,7 @@
 {
-  "binding_sha256": "d012f338d13d4a47498bf96d044b8a3de09ed1a6ff222e0d6dc19393d500fbc9",
+  "binding_sha256": "8ddb0581f14feebaa08e3e875c72cf906a9dc83ac19d6d5f5a6fec12b4b65e5d",
   "claimed_decision": "BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE",
-  "controller_commit": "47173c44729430c23d7078d8cc4368dabd0fa528",
+  "controller_commit": "8a953a54b8799089d2e7fef6d3951581b4cf8fd4",
   "execution_platform": "Windows-PowerShell; CPython-3.12; evidence-controller-only; no-performance-claim",
   "gate_evidence": {
     "binding_status": "SKIPPED_D1_BLOCK",
@@ -27,7 +27,7 @@
   },
   "historical_block_commit": "fba794ce8820fb2ab167bf928c9cdae67ed508b9",
   "input_commit": "c8221ad0fcd8413753ca4c3072f49460972de454",
-  "resume_condition": "Obtain the latest second revision of IACR ePrint 2026/068 dated 2026-07-16 (not the archived January first-version PDF); set NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf>; run NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; update REQUIRED_SOURCE_BINDINGS in research/mat_sab/candidate_d_literature.py; run python scripts/run_candidate_d_d1_literature.py and commit as <new-D1-commit>. If D1 REJECT/BLOCK, do not run D2; run Task 9 with the last-stage <new-D1-commit>: python scripts/run_candidate_d_admission.py --input-commit <new-D1-commit> --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D1-commit> --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. If D1 PASS, implement the canonical Tasks 4-6 D2 replay contract, then run python scripts/run_candidate_d_d2_closure.py --root <absolute-repository-root> --output-root <staging-output-directory> --input-commit <new-D1-commit> --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528; install the verified canonical D2 outputs and commit as <new-D2-commit>. If D2 REJECT/BLOCK, do not run D3; run Task 9 with the last-stage <new-D2-commit>: python scripts/run_candidate_d_admission.py --input-commit <new-D2-commit> --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D2-commit> --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. If D2 PASS, implement canonical Tasks 7-8 D3, then run python scripts/run_candidate_d_d3_admission.py --root <absolute-repository-root> --output-root <staging-output-directory> --input-commit <new-D2-commit> --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528; install the verified canonical D3 outputs, commit as <new-D3-commit>, then run Task 9: python scripts/run_candidate_d_admission.py --input-commit <new-D3-commit> --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D3-commit> --controller-commit 47173c44729430c23d7078d8cc4368dabd0fa528 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. Every stage commit must descend from the frozen input; Task 9 appends a commit-specific terminal record and never rewrites the historical Task 9 ledgers or BLOCK.",
+  "resume_condition": "Obtain the latest second revision of IACR ePrint 2026/068 dated 2026-07-16 (not the archived January first-version PDF); set NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf>; run NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; update REQUIRED_SOURCE_BINDINGS in research/mat_sab/candidate_d_literature.py; run python scripts/run_candidate_d_d1_literature.py and commit as <new-D1-commit>. If D1 REJECT/BLOCK, do not run D2; run Task 9 with the last-stage <new-D1-commit>: python scripts/run_candidate_d_admission.py --input-commit <new-D1-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D1-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. If D1 PASS, implement the canonical Tasks 4-6 D2 replay contract, then run python scripts/run_candidate_d_d2_closure.py --root <absolute-repository-root> --output-root <staging-output-directory> --input-commit <new-D1-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4; install the verified canonical D2 outputs and commit as <new-D2-commit>. If D2 REJECT/BLOCK, do not run D3; run Task 9 with the last-stage <new-D2-commit>: python scripts/run_candidate_d_admission.py --input-commit <new-D2-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D2-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. If D2 PASS, implement canonical Tasks 7-8 D3, then run python scripts/run_candidate_d_d3_admission.py --root <absolute-repository-root> --output-root <staging-output-directory> --input-commit <new-D2-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4; install the verified canonical D3 outputs, commit as <new-D3-commit>, then run Task 9: python scripts/run_candidate_d_admission.py --input-commit <new-D3-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D3-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. Every stage commit must descend from the frozen input; Task 9 appends a commit-specific terminal record and never rewrites the historical Task 9 ledgers or BLOCK.",
   "run_date": "2026-07-21",
   "runtime_source_hashes": [
     {
@@ -36,7 +36,7 @@
     },
     {
       "path": "scripts/apply_candidate_d_admission.py",
-      "sha256": "83755f27fe671f2b01decb7a32b01ad9d046319d5f02bb765461fedf439db635"
+      "sha256": "6ecce3eecf7172bae86dc35f39add8bc40e4c8b559e5884322fe1d0d33f900b8"
     },
     {
       "path": "scripts/mat_sab_research_state.py",
@@ -44,11 +44,11 @@
     },
     {
       "path": "research/mat_sab/candidate_d_stage_replay.py",
-      "sha256": "d7d8d231ea47d9d05d7fb3d05465c8cf4ed1422cf1d16174eb3aae7a941c79ec"
+      "sha256": "55245d0f790150630f24b0e626bbefe49a27993a79dac344cd73745554721ae2"
     },
     {
       "path": "docs/candidate_d_task9_replay_contract.md",
-      "sha256": "cdede4da7bce8ac3045175b88983a02b089c4a8a32a0a04afd255c0970a8f900"
+      "sha256": "f25fbfa3c63fabd3f0d136e9d176cd546a8c320a0f6aa882d1feb4396b0c0609"
     }
   ],
   "schema": "candidate-d-task9-decision-evidence-v3",
