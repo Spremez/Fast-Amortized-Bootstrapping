@@ -25,19 +25,35 @@ D0 was regenerated from the pinned baseline anchors and compared byte for
 byte with the tracked D0 artifacts. D1 was regenerated from the source
 registry and locally hash-bound full texts and compared byte for byte with the
 tracked D1 artifacts. Missing D1 reviews: `NTRU_AMORT_2026_068`. D2 and D3 PASS/REJECT
-values have authority only after their commit-pinned canonical runner executes
-in a temporary output root and every artifact compares byte for byte. Static
-CSV parsing is secondary; skipped or hand-written values are never promoted.
+values have authority only after their reviewed, commit-pinned canonical
+runner executes under the finite threat model in a temporary output root and
+every artifact compares byte for byte. Static CSV parsing is secondary;
+skipped or hand-written values are never promoted.
+
+## Replay Claim Boundary
+
+This controller authenticates reviewed deterministic execution, not arbitrary
+untrusted code. Mandatory source review of the canonical runner and its exact
+recursive local closure is a prerequisite for scientific authority. The
+import guard, execution audit, checkout snapshot, output-tree validation, and
+completion attestation are defense in depth, not a hostile-code sandbox. A
+malicious commit-pinned runner and arbitrary native code are out of scope; see
+`docs/candidate_d_task9_threat_model.md`.
+This D1 BLOCK is independent of D2/D3 runtime replay; D2 and D3 are SKIPPED / NOT_REACHED.
+
 
 ## Scope
 
 No D0-D3 terminal route is itself a complete SAB speedup or paper claim. The
 decision is bound to input commit `c8221ad0fcd8413753ca4c3072f49460972de454`, controller commit
-`8a953a54b8799089d2e7fef6d3951581b4cf8fd4`, immutable historical BLOCK commit
-`fba794ce8820fb2ab167bf928c9cdae67ed508b9`, run date `2026-07-21`, execution platform
-`Windows-PowerShell; CPython-3.12; evidence-controller-only; no-performance-claim`, and decision-evidence hash
-`8ddb0581f14feebaa08e3e875c72cf906a9dc83ac19d6d5f5a6fec12b4b65e5d`.
+`fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0`, immutable historical BLOCK commit
+`fba794ce8820fb2ab167bf928c9cdae67ed508b9`, predecessor evidence commit
+`95bc17959e6bfa25e8504481cbd26ee265bbe9c7` with controller
+`8a953a54b8799089d2e7fef6d3951581b4cf8fd4` and decision-evidence SHA-256
+`7287a6d11ca0a61ff4abb8371fd4d6c24a0fe005781e38d53e3964cbd5506036`, run date `2026-07-21`,
+execution platform `Windows-PowerShell; CPython-3.12; evidence-controller-only; no-performance-claim`, and decision-evidence hash
+`a6f9f7a50d16d2bde2fa288df29e423e0e6483610d4095312e5e3e0fc1e61dcf`.
 
 ## Finite Resume Condition
 
-Obtain the latest second revision of IACR ePrint 2026/068 dated 2026-07-16 (not the archived January first-version PDF); set NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf>; run NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; update REQUIRED_SOURCE_BINDINGS in research/mat_sab/candidate_d_literature.py; run python scripts/run_candidate_d_d1_literature.py and commit as <new-D1-commit>. If D1 REJECT/BLOCK, do not run D2; run Task 9 with the last-stage <new-D1-commit>: python scripts/run_candidate_d_admission.py --input-commit <new-D1-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D1-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. If D1 PASS, implement the canonical Tasks 4-6 D2 replay contract, then run python scripts/run_candidate_d_d2_closure.py --root <absolute-repository-root> --output-root <staging-output-directory> --input-commit <new-D1-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4; install the verified canonical D2 outputs and commit as <new-D2-commit>. If D2 REJECT/BLOCK, do not run D3; run Task 9 with the last-stage <new-D2-commit>: python scripts/run_candidate_d_admission.py --input-commit <new-D2-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D2-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. If D2 PASS, implement canonical Tasks 7-8 D3, then run python scripts/run_candidate_d_d3_admission.py --root <absolute-repository-root> --output-root <staging-output-directory> --input-commit <new-D2-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4; install the verified canonical D3 outputs, commit as <new-D3-commit>, then run Task 9: python scripts/run_candidate_d_admission.py --input-commit <new-D3-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D3-commit> --controller-commit 8a953a54b8799089d2e7fef6d3951581b4cf8fd4 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. Every stage commit must descend from the frozen input; Task 9 appends a commit-specific terminal record and never rewrites the historical Task 9 ledgers or BLOCK.
+Obtain the latest second revision of IACR ePrint 2026/068 dated 2026-07-16 (not the archived January first-version PDF); set NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf>; run NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf> bash scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; update REQUIRED_SOURCE_BINDINGS in research/mat_sab/candidate_d_literature.py; run python scripts/run_candidate_d_d1_literature.py and commit as <new-D1-commit>. If D1 REJECT/BLOCK, do not run D2; run Task 9 with the last-stage <new-D1-commit>: python scripts/run_candidate_d_admission.py --input-commit <new-D1-commit> --controller-commit fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D1-commit> --controller-commit fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. If D1 PASS, implement the canonical Tasks 4-6 D2 replay contract, then run python scripts/run_candidate_d_d2_closure.py --root <absolute-repository-root> --output-root <staging-output-directory> --input-commit <new-D1-commit> --controller-commit fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0; install the verified canonical D2 outputs and commit as <new-D2-commit>. If D2 REJECT/BLOCK, do not run D3; run Task 9 with the last-stage <new-D2-commit>: python scripts/run_candidate_d_admission.py --input-commit <new-D2-commit> --controller-commit fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D2-commit> --controller-commit fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. If D2 PASS, implement canonical Tasks 7-8 D3, then run python scripts/run_candidate_d_d3_admission.py --root <absolute-repository-root> --output-root <staging-output-directory> --input-commit <new-D2-commit> --controller-commit fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0; install the verified canonical D3 outputs, commit as <new-D3-commit>, then run Task 9: python scripts/run_candidate_d_admission.py --input-commit <new-D3-commit> --controller-commit fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>; python scripts/apply_candidate_d_admission.py --input-commit <new-D3-commit> --controller-commit fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0 --run-date <YYYY-MM-DD> --execution-platform <audited-evidence-platform>. Every stage commit must descend from the frozen input; Task 9 appends a commit-specific terminal record and never rewrites the historical Task 9 ledgers or BLOCK.
