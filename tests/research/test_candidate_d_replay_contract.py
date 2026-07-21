@@ -704,6 +704,28 @@ class CandidateDReplayContractTests(unittest.TestCase):
                     controller_commit=commit,
                 )
 
+    def test_detached_clone_has_self_contained_object_store(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            source = self._repo(str(base / "source"))
+            _write(source, "tracked.txt", "self-contained\n")
+            commit = _commit(source, "fixture: self-contained clone")
+            checkout = base / "checkout"
+
+            replay._clone_detached(source, checkout, commit)
+
+            alternates = checkout / ".git/objects/info/alternates"
+            self.assertFalse(alternates.exists())
+            source.rename(base / "source-moved")
+            self.assertEqual(_git(checkout, "rev-parse", "HEAD"), commit)
+            subprocess.run(
+                ["git", "fsck", "--full", "--no-dangling"],
+                cwd=checkout,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+
     def test_early_success_without_completion_attestation_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             root = self._repo(directory)

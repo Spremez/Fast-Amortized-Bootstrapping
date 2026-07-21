@@ -772,10 +772,23 @@ def _verify_checkout_files(
 def _clone_detached(source_root: Path, checkout: Path, commit: str) -> None:
     try:
         subprocess.run(
-            ["git", "clone", "--shared", "--no-checkout", "-q", str(source_root), str(checkout)],
+            [
+                "git",
+                "clone",
+                "--no-local",
+                "--no-checkout",
+                "-q",
+                str(source_root),
+                str(checkout),
+            ],
             check=True,
             capture_output=True,
         )
+        alternates = checkout / ".git/objects/info/alternates"
+        if os.path.lexists(alternates):
+            raise StageReplayError(
+                "detached replay checkout has an alternate object store"
+            )
         subprocess.run(
             ["git", "config", "core.autocrlf", "false"],
             cwd=checkout,
@@ -797,7 +810,11 @@ def _clone_detached(source_root: Path, checkout: Path, commit: str) -> None:
         ).stdout.strip()
     except (OSError, subprocess.CalledProcessError) as error:
         raise StageReplayError("clean detached replay checkout cannot be created") from error
-    if actual != commit or _checkout_status(checkout):
+    if (
+        actual != commit
+        or os.path.lexists(checkout / ".git/objects/info/alternates")
+        or _checkout_status(checkout)
+    ):
         raise StageReplayError("clean detached replay checkout is not exact")
 
 

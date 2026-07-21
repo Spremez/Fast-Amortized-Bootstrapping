@@ -10,7 +10,7 @@ from io import StringIO
 import json
 import os
 from pathlib import Path
-import re
+import subprocess
 import sys
 import tempfile
 from typing import Mapping
@@ -28,6 +28,10 @@ from scripts.run_candidate_d_admission import (  # noqa: E402
     ADMIT,
     BLOCK,
     CURRENT_INPUT_COMMIT,
+    ERRATUM_PREDECESSOR_CONTROLLER_COMMIT,
+    ERRATUM_PREDECESSOR_EVIDENCE_COMMIT,
+    ERRATUM_PREDECESSOR_EVIDENCE_PATH,
+    ERRATUM_PREDECESSOR_EVIDENCE_SHA256,
     HISTORICAL_BLOCK_COMMIT,
     REJECT_BINDING_NOISE_SECURITY,
     REJECT_CLOSURE,
@@ -36,7 +40,11 @@ from scripts.run_candidate_d_admission import (  # noqa: E402
     AdmissionEvidenceError,
     AdmissionResult,
     _git_blob,
+    _resolve_input_commit,
     _safe_path,
+    _sha256_bytes,
+    _strict_csv_bytes,
+    validate_decision_evidence,
     verify_candidate_d_artifacts,
 )
 
@@ -150,27 +158,23 @@ def _plan_superseding_erratum(
     content: str,
     label: str,
     result: AdmissionResult,
+    *,
+    predecessor_result: AdmissionResult | None = None,
 ) -> bytes:
     try:
         return _plan_bounded_append(current, start, end, content, label)
     except ValueError as error:
         if "ledger content mismatch" not in str(error):
             raise
+    if predecessor_result is None:
+        raise ValueError(
+            f"independent predecessor evidence is required for {label}: {start}"
+        )
     actual = _exact_marker_block(current, start, end)
-    try:
-        text = actual.decode("ascii")
-    except UnicodeError as error:
-        raise ValueError(f"{label} erratum is not ASCII") from error
-    commits = set(
-        re.findall(r"--controller-commit ([0-9a-f]{40})", text)
-    )
-    if len(commits) != 1:
-        raise ValueError(f"ledger content mismatch in {label}: {start}")
-    prior_result = replace(result, controller_commit=commits.pop())
     prior_entries = {
         relative: (prior_start, prior_end, prior_content)
         for relative, prior_start, prior_end, prior_content in _erratum_contents(
-            prior_result
+            predecessor_result
         )
     }
     if label not in prior_entries:
@@ -378,6 +382,100 @@ def _erratum_contents(
             checklist,
         ),
     )
+
+
+def _verified_erratum_predecessor(
+    root: Path, result: AdmissionResult
+) -> AdmissionResult:
+    try:
+        evidence_commit = _resolve_input_commit(
+            root, ERRATUM_PREDECESSOR_EVIDENCE_COMMIT
+        )
+        current_controller = _resolve_input_commit(root, result.controller_commit)
+    except AdmissionEvidenceError as error:
+        raise ValueError(str(error)) from error
+    ancestor = subprocess.run(
+        [
+            "git",
+            "merge-base",
+            "--is-ancestor",
+            evidence_commit,
+            current_controller,
+        ],
+        cwd=root,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if ancestor.returncode != 0:
+        raise ValueError(
+            "predecessor evidence is not an ancestor of the current controller"
+        )
+    try:
+        commit_line = subprocess.run(
+            ["git", "rev-list", "--parents", "-n", "1", evidence_commit],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise ValueError("predecessor evidence commit cannot be inspected") from error
+    if commit_line.split() != [
+        evidence_commit,
+        ERRATUM_PREDECESSOR_CONTROLLER_COMMIT,
+    ]:
+        raise ValueError(
+            "predecessor evidence is not a direct child of its bound controller"
+        )
+    try:
+        evidence_bytes = _git_blob(
+            root, evidence_commit, ERRATUM_PREDECESSOR_EVIDENCE_PATH
+        )
+        if _sha256_bytes(evidence_bytes) != ERRATUM_PREDECESSOR_EVIDENCE_SHA256:
+            raise ValueError("predecessor decision evidence hash changed")
+        payload = json.loads(evidence_bytes.decode("ascii"))
+        predecessor = validate_decision_evidence(payload)
+        index_rows = _strict_csv_bytes(
+            _git_blob(
+                root,
+                evidence_commit,
+                "repro/candidate_d_admission/artifact_index.csv",
+            ),
+            ("path", "sha256"),
+            "predecessor artifact index",
+        )
+        indexed_evidence = [
+            row
+            for row in index_rows
+            if row["path"] == ERRATUM_PREDECESSOR_EVIDENCE_PATH
+        ]
+        if indexed_evidence != [
+            {
+                "path": ERRATUM_PREDECESSOR_EVIDENCE_PATH,
+                "sha256": ERRATUM_PREDECESSOR_EVIDENCE_SHA256,
+            }
+        ]:
+            raise ValueError("predecessor artifact index does not bind evidence")
+        for relative, digest in predecessor.source_hashes:
+            if _sha256_bytes(
+                _git_blob(root, predecessor.input_commit, relative)
+            ) != digest:
+                raise ValueError("predecessor source evidence hash changed")
+        for relative, digest in predecessor.runtime_source_hashes:
+            if _sha256_bytes(
+                _git_blob(root, predecessor.controller_commit, relative)
+            ) != digest:
+                raise ValueError("predecessor runtime evidence hash changed")
+    except (AdmissionEvidenceError, UnicodeError, json.JSONDecodeError) as error:
+        raise ValueError("predecessor decision evidence is malformed") from error
+    if (
+        predecessor.controller_commit != ERRATUM_PREDECESSOR_CONTROLLER_COMMIT
+        or predecessor.input_commit != result.input_commit
+        or not _is_historical_erratum_result(predecessor)
+    ):
+        raise ValueError("predecessor decision evidence is not the required BLOCK")
+    return predecessor
 
 
 def _run_row(result: AdmissionResult) -> dict[str, str]:
@@ -708,6 +806,40 @@ def _state_bytes(state: dict[str, object]) -> bytes:
     return (json.dumps(state, indent=2) + "\n").encode("ascii")
 
 
+def _plan_errata(
+    root: Path,
+    paths: Mapping[str, Path],
+    planned: dict[Path, bytes],
+    result: AdmissionResult,
+) -> None:
+    entries = _erratum_contents(result)
+    predecessor = None
+    for relative, start, end, content in entries:
+        try:
+            _plan_bounded_append(
+                planned[paths[relative]],
+                start,
+                end,
+                content,
+                relative,
+            )
+        except ValueError as error:
+            if "ledger content mismatch" not in str(error):
+                raise
+            predecessor = _verified_erratum_predecessor(root, result)
+            break
+    for relative, start, end, content in entries:
+        planned[paths[relative]] = _plan_superseding_erratum(
+            planned[paths[relative]],
+            start,
+            end,
+            content,
+            relative,
+            result,
+            predecessor_result=predecessor,
+        )
+
+
 def _plan_closeout(
     root: Path, result: AdmissionResult
 ) -> dict[Path, bytes]:
@@ -727,15 +859,7 @@ def _plan_closeout(
     if result.input_commit == CURRENT_INPUT_COMMIT and historical_applied:
         for relative in LEDGER_PATHS:
             planned[paths[relative]] = current[relative]
-        for relative, start, end, content in _erratum_contents(result):
-            planned[paths[relative]] = _plan_superseding_erratum(
-                planned[paths[relative]],
-                start,
-                end,
-                content,
-                relative,
-                result,
-            )
+        _plan_errata(root, paths, planned, result)
         planned[paths[RUN_LOG_PATH]] = current[RUN_LOG_PATH]
     else:
         for relative, start, end, content in _ledger_contents(result):
@@ -743,15 +867,7 @@ def _plan_closeout(
                 current[relative], start, end, content, relative
             )
         if _is_historical_erratum_result(result):
-            for relative, start, end, content in _erratum_contents(result):
-                planned[paths[relative]] = _plan_superseding_erratum(
-                    planned[paths[relative]],
-                    start,
-                    end,
-                    content,
-                    relative,
-                    result,
-                )
+            _plan_errata(root, paths, planned, result)
         planned[paths[RUN_LOG_PATH]] = _plan_run_log(
             current[RUN_LOG_PATH], result
         )

@@ -34,6 +34,7 @@ CONTROLLER_COMMIT = subprocess.run(
         "scripts/apply_candidate_d_admission.py",
         "research/mat_sab/candidate_d_stage_replay.py",
         "docs/candidate_d_task9_replay_contract.md",
+        "docs/candidate_d_task9_threat_model.md",
     ],
     cwd=ROOT,
     check=True,
@@ -524,10 +525,22 @@ class CandidateDCloseoutTests(unittest.TestCase):
         for relative, start, end, content in contents:
             before = (ROOT / relative).read_bytes()
             first = closeout._plan_superseding_erratum(
-                before, start, end, content, relative, self.result
+                before,
+                start,
+                end,
+                content,
+                relative,
+                self.result,
+                predecessor_result=self.result,
             )
             second = closeout._plan_superseding_erratum(
-                first, start, end, content, relative, self.result
+                first,
+                start,
+                end,
+                content,
+                relative,
+                self.result,
+                predecessor_result=self.result,
             )
             self.assertEqual(first, second)
             self.assertEqual(first.count(start.encode("ascii")), 1)
@@ -536,7 +549,7 @@ class CandidateDCloseoutTests(unittest.TestCase):
     def test_new_controller_supersedes_exact_prior_erratum_in_place(self):
         prior = replace(
             self.result,
-            controller_commit="47173c44729430c23d7078d8cc4368dabd0fa528",
+            controller_commit="8a953a54b8799089d2e7fef6d3951581b4cf8fd4",
         )
         current = replace(self.result, controller_commit="b" * 40)
         prior_contents = {
@@ -556,6 +569,7 @@ class CandidateDCloseoutTests(unittest.TestCase):
                 content,
                 relative,
                 current,
+                predecessor_result=prior,
             )
             replayed = closeout._plan_superseding_erratum(
                 updated,
@@ -564,11 +578,67 @@ class CandidateDCloseoutTests(unittest.TestCase):
                 content,
                 relative,
                 current,
+                predecessor_result=prior,
             )
             self.assertEqual(updated, replayed)
             self.assertEqual(updated.count(start.encode("ascii")), 1)
             self.assertIn(("--controller-commit " + "b" * 40).encode(), updated)
             self.assertNotIn(prior.controller_commit.encode(), updated)
+
+    def test_erratum_supersession_rejects_arbitrary_controller_in_both_commands(self):
+        prior = replace(
+            self.result,
+            controller_commit="8a953a54b8799089d2e7fef6d3951581b4cf8fd4",
+        )
+        current = replace(self.result, controller_commit="b" * 40)
+        prior_contents = {
+            relative: (start, end, content)
+            for relative, start, end, content in closeout._erratum_contents(prior)
+        }
+        arbitrary = ("a" * 40).encode("ascii")
+        for relative, start, end, content in closeout._erratum_contents(current):
+            _prior_start, _prior_end, prior_content = prior_contents[relative]
+            ledger = closeout._plan_bounded_append(
+                b"# ledger\n", start, end, prior_content, relative
+            )
+            self.assertEqual(ledger.count(prior.controller_commit.encode("ascii")), 2)
+            tampered = ledger.replace(
+                prior.controller_commit.encode("ascii"), arbitrary
+            )
+            self.assertEqual(tampered.count(arbitrary), 2)
+
+            with self.assertRaises(ValueError):
+                closeout._plan_superseding_erratum(
+                    tampered,
+                    start,
+                    end,
+                    content,
+                    relative,
+                    current,
+                )
+
+    def test_predecessor_evidence_and_ancestry_are_verified_independently(self):
+        head = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        current = replace(self.result, controller_commit=head)
+
+        self.assertTrue(
+            hasattr(closeout, "_verified_erratum_predecessor"),
+            "independent predecessor-evidence verifier is missing",
+        )
+        predecessor = closeout._verified_erratum_predecessor(ROOT, current)
+
+        self.assertEqual(
+            predecessor.controller_commit,
+            "8a953a54b8799089d2e7fef6d3951581b4cf8fd4",
+        )
+        with self.assertRaisesRegex(ValueError, "ancestor"):
+            closeout._verified_erratum_predecessor(ROOT, predecessor)
 
     def test_erratum_plan_preserves_exact_historical_blocks_and_run_row(self):
         planned = closeout._plan_closeout(ROOT, self.result)

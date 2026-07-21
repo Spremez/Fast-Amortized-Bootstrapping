@@ -43,6 +43,7 @@ CONTROLLER_COMMIT = subprocess.run(
         "scripts/apply_candidate_d_admission.py",
         "research/mat_sab/candidate_d_stage_replay.py",
         "docs/candidate_d_task9_replay_contract.md",
+        "docs/candidate_d_task9_threat_model.md",
     ],
     cwd=ROOT,
     check=True,
@@ -134,6 +135,29 @@ def passing_result(**changes) -> AdmissionResult:
         runtime_source_hashes=(),
     )
     return replace(result, **changes)
+
+
+def current_d1_block_result() -> AdmissionResult:
+    skipped = "SKIPPED_D1_BLOCK"
+    return passing_result(
+        d1_status="BLOCK",
+        d1_decision="BLOCK_D1_REQUIRED_FULLTEXT_OR_REVIEW_MISSING",
+        d1_missing_evidence=("NTRU_AMORT_2026_068",),
+        d2_status=skipped,
+        d2_decision="",
+        d2_replay_authenticated=False,
+        d3_replay_authenticated=False,
+        gamma_count=None,
+        negative_controls_status=skipped,
+        binding_status=skipped,
+        security_status=skipped,
+        noise_status=skipped,
+        complete_cost_status=skipped,
+        resource_status=skipped,
+        pessimistic_projection="",
+        decision=BLOCK,
+        resume_condition="obtain the missing reviewed D1 source",
+    )
 
 
 def _write(root: Path, relative: str, content: str) -> None:
@@ -774,6 +798,94 @@ class CandidateDGateTests(unittest.TestCase):
         self.assertIn("latest second revision", result.resume_condition)
         self.assertIn("2026-07-16", result.resume_condition)
         self.assertIn("not the archived January", result.resume_condition)
+
+    def test_threat_model_correction_preserves_d1_terminal_state(self):
+        result = evaluate_candidate_d_admission(
+            ROOT, input_commit=gate.CURRENT_INPUT_COMMIT
+        )
+        self.assertEqual(
+            (
+                result.d0_status,
+                result.d1_status,
+                result.d2_status,
+                result.d2_replay_authenticated,
+                result.d3_replay_authenticated,
+                result.decision,
+                result.pre_application_permission,
+            ),
+            (
+                "PASS",
+                "BLOCK",
+                "SKIPPED_D1_BLOCK",
+                False,
+                False,
+                BLOCK,
+                False,
+            ),
+        )
+
+    def test_tracked_claims_use_the_finite_reviewed_code_threat_model(self):
+        threat_path = ROOT / "docs/candidate_d_task9_threat_model.md"
+        self.assertTrue(threat_path.is_file(), "tracked threat model is missing")
+        threat = " ".join(threat_path.read_text(encoding="ascii").split())
+        contract = " ".join(
+            (
+                ROOT / "docs/candidate_d_task9_replay_contract.md"
+            ).read_text(encoding="ascii").split()
+        )
+        report = " ".join(
+            gate._report(current_d1_block_result()).decode("ascii").split()
+        )
+
+        for statement in (
+            "Mandatory code review is a prerequisite for scientific authority.",
+            "These controls are defense in depth, not a hostile-code sandbox.",
+            "A malicious commit-pinned Python runner is out of scope.",
+            "D1 BLOCK is independent of D2/D3 runtime replay.",
+            "D2 and D3 are SKIPPED / NOT_REACHED.",
+        ):
+            self.assertIn(statement, threat)
+        for text in (contract, report):
+            self.assertIn(
+                "authenticates reviewed deterministic execution, not arbitrary "
+                "untrusted code",
+                text,
+            )
+            self.assertIn("not a hostile-code sandbox", text)
+            self.assertIn("D1 BLOCK is independent of D2/D3 runtime replay", text)
+        for text in (threat, contract, report):
+            self.assertNotIn("proves malicious runner containment", text)
+            self.assertNotIn("arbitrary hostile runner is authenticated", text)
+
+    def test_decision_provenance_explicitly_binds_predecessor_evidence(self):
+        result = current_d1_block_result()
+        payload = gate._decision_evidence_payload(result)
+        expected = {
+            "evidence_commit": "95bc17959e6bfa25e8504481cbd26ee265bbe9c7",
+            "controller_commit": "8a953a54b8799089d2e7fef6d3951581b4cf8fd4",
+            "decision_evidence_path": (
+                "repro/candidate_d_admission/decision_evidence.json"
+            ),
+            "decision_evidence_sha256": (
+                "7287a6d11ca0a61ff4abb8371fd4d6c24a0fe005781e38d53e3964cbd5506036"
+            ),
+        }
+        self.assertEqual(
+            payload["schema"], "candidate-d-task9-decision-evidence-v4"
+        )
+        self.assertEqual(payload["predecessor_evidence"], expected)
+        summary = gate.canonical_summary_record(result)
+        self.assertEqual(
+            summary["predecessor_evidence_commit"], expected["evidence_commit"]
+        )
+        self.assertEqual(
+            summary["predecessor_controller_commit"],
+            expected["controller_commit"],
+        )
+        self.assertEqual(
+            summary["predecessor_decision_evidence_sha256"],
+            expected["decision_evidence_sha256"],
+        )
 
     def test_summary_is_one_canonical_nonpermissive_record(self):
         result = evaluate_candidate_d_admission(

@@ -43,6 +43,18 @@ import scripts.run_candidate_d_d1_literature as d1_literature  # noqa: E402
 
 CURRENT_INPUT_COMMIT = "c8221ad0fcd8413753ca4c3072f49460972de454"
 HISTORICAL_BLOCK_COMMIT = "fba794ce8820fb2ab167bf928c9cdae67ed508b9"
+ERRATUM_PREDECESSOR_EVIDENCE_COMMIT = (
+    "95bc17959e6bfa25e8504481cbd26ee265bbe9c7"
+)
+ERRATUM_PREDECESSOR_CONTROLLER_COMMIT = (
+    "8a953a54b8799089d2e7fef6d3951581b4cf8fd4"
+)
+ERRATUM_PREDECESSOR_EVIDENCE_PATH = (
+    "repro/candidate_d_admission/decision_evidence.json"
+)
+ERRATUM_PREDECESSOR_EVIDENCE_SHA256 = (
+    "7287a6d11ca0a61ff4abb8371fd4d6c24a0fe005781e38d53e3964cbd5506036"
+)
 OUT = Path("repro/candidate_d_admission")
 REPORT = Path("docs/candidate_d_admission_report.md")
 
@@ -454,6 +466,14 @@ RUNTIME_SOURCES = (
     "scripts/mat_sab_research_state.py",
     "research/mat_sab/candidate_d_stage_replay.py",
     "docs/candidate_d_task9_replay_contract.md",
+    "docs/candidate_d_task9_threat_model.md",
+)
+DECISION_EVIDENCE_V3_RUNTIME_SOURCES = (
+    "scripts/run_candidate_d_admission.py",
+    "scripts/apply_candidate_d_admission.py",
+    "scripts/mat_sab_research_state.py",
+    "research/mat_sab/candidate_d_stage_replay.py",
+    "docs/candidate_d_task9_replay_contract.md",
 )
 GENERATED_OUTPUTS = (
     REPORT.as_posix(),
@@ -499,6 +519,9 @@ SUMMARY_FIELDS = (
     "input_commit",
     "controller_commit",
     "historical_block_commit",
+    "predecessor_evidence_commit",
+    "predecessor_controller_commit",
+    "predecessor_decision_evidence_sha256",
     "run_date",
     "execution_platform",
     "resume_condition",
@@ -1855,12 +1878,22 @@ def _pinned_inputs_for_result(result: AdmissionResult) -> tuple[str, ...]:
     return tuple(dict.fromkeys(paths))
 
 
+def _predecessor_evidence_record() -> dict[str, str]:
+    return {
+        "evidence_commit": ERRATUM_PREDECESSOR_EVIDENCE_COMMIT,
+        "controller_commit": ERRATUM_PREDECESSOR_CONTROLLER_COMMIT,
+        "decision_evidence_path": ERRATUM_PREDECESSOR_EVIDENCE_PATH,
+        "decision_evidence_sha256": ERRATUM_PREDECESSOR_EVIDENCE_SHA256,
+    }
+
+
 def _decision_evidence_payload(result: AdmissionResult) -> dict[str, object]:
     payload = {
-        "schema": "candidate-d-task9-decision-evidence-v3",
+        "schema": "candidate-d-task9-decision-evidence-v4",
         "input_commit": result.input_commit,
         "controller_commit": result.controller_commit,
         "historical_block_commit": HISTORICAL_BLOCK_COMMIT,
+        "predecessor_evidence": _predecessor_evidence_record(),
         "run_date": result.run_date,
         "execution_platform": result.execution_platform,
         "claimed_decision": result.decision,
@@ -1918,6 +1951,13 @@ def canonical_summary_record(result: AdmissionResult) -> dict[str, str]:
         "input_commit": result.input_commit,
         "controller_commit": result.controller_commit,
         "historical_block_commit": HISTORICAL_BLOCK_COMMIT,
+        "predecessor_evidence_commit": ERRATUM_PREDECESSOR_EVIDENCE_COMMIT,
+        "predecessor_controller_commit": (
+            ERRATUM_PREDECESSOR_CONTROLLER_COMMIT
+        ),
+        "predecessor_decision_evidence_sha256": (
+            ERRATUM_PREDECESSOR_EVIDENCE_SHA256
+        ),
         "run_date": result.run_date,
         "execution_platform": result.execution_platform,
         "resume_condition": result.resume_condition,
@@ -2003,7 +2043,12 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
     if payload.get("input_commit") != CURRENT_INPUT_COMMIT:
         expected_source_paths = (*expected_source_paths, *RESUME_PINNED_INPUTS)
     source_hashes = hashes("source_hashes", expected_source_paths)
-    runtime_hashes = hashes("runtime_source_hashes", RUNTIME_SOURCES)
+    runtime_paths = (
+        DECISION_EVIDENCE_V3_RUNTIME_SOURCES
+        if payload.get("schema") == "candidate-d-task9-decision-evidence-v3"
+        else RUNTIME_SOURCES
+    )
+    runtime_hashes = hashes("runtime_source_hashes", runtime_paths)
     string_fields = expected_gate_keys - {
         "d1_missing_evidence",
         "gamma_count",
@@ -2070,7 +2115,7 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
 def validate_decision_evidence(payload: object) -> AdmissionResult:
     if not isinstance(payload, Mapping):
         raise ValueError("decision evidence must be an object")
-    expected_keys = {
+    base_keys = {
         "schema",
         "input_commit",
         "controller_commit",
@@ -2084,9 +2129,16 @@ def validate_decision_evidence(payload: object) -> AdmissionResult:
         "resume_condition",
         "binding_sha256",
     }
-    if set(payload) != expected_keys or payload.get("schema") != (
-        "candidate-d-task9-decision-evidence-v3"
-    ):
+    schema = payload.get("schema")
+    if schema == "candidate-d-task9-decision-evidence-v3":
+        expected_keys = base_keys
+    elif schema == "candidate-d-task9-decision-evidence-v4":
+        expected_keys = {*base_keys, "predecessor_evidence"}
+        if payload.get("predecessor_evidence") != _predecessor_evidence_record():
+            raise ValueError("decision evidence predecessor binding is malformed")
+    else:
+        raise ValueError("decision evidence schema is malformed")
+    if set(payload) != expected_keys:
         raise ValueError("decision evidence schema is malformed")
     binding = payload.get("binding_sha256")
     if not isinstance(binding, str) or re.fullmatch(r"[0-9a-f]{64}", binding) is None:
@@ -2285,6 +2337,12 @@ def _report(result: AdmissionResult) -> bytes:
         if result.binding_status.startswith("SKIPPED_")
         else "canonical D3 source evidence"
     )
+    terminal_boundary = ""
+    if result.d1_status == "BLOCK":
+        terminal_boundary = (
+            "\nThis D1 BLOCK is independent of D2/D3 runtime replay; D2 and "
+            "D3 are SKIPPED / NOT_REACHED.\n"
+        )
     text = f"""# Candidate D Admission Report
 
 ## Decision
@@ -2312,17 +2370,31 @@ D0 was regenerated from the pinned baseline anchors and compared byte for
 byte with the tracked D0 artifacts. D1 was regenerated from the source
 registry and locally hash-bound full texts and compared byte for byte with the
 tracked D1 artifacts. Missing D1 reviews: `{missing}`. D2 and D3 PASS/REJECT
-values have authority only after their commit-pinned canonical runner executes
-in a temporary output root and every artifact compares byte for byte. Static
-CSV parsing is secondary; skipped or hand-written values are never promoted.
+values have authority only after their reviewed, commit-pinned canonical
+runner executes under the finite threat model in a temporary output root and
+every artifact compares byte for byte. Static CSV parsing is secondary;
+skipped or hand-written values are never promoted.
+
+## Replay Claim Boundary
+
+This controller authenticates reviewed deterministic execution, not arbitrary
+untrusted code. Mandatory source review of the canonical runner and its exact
+recursive local closure is a prerequisite for scientific authority. The
+import guard, execution audit, checkout snapshot, output-tree validation, and
+completion attestation are defense in depth, not a hostile-code sandbox. A
+malicious commit-pinned runner and arbitrary native code are out of scope; see
+`docs/candidate_d_task9_threat_model.md`.{terminal_boundary}
 
 ## Scope
 
 No D0-D3 terminal route is itself a complete SAB speedup or paper claim. The
 decision is bound to input commit `{result.input_commit}`, controller commit
 `{result.controller_commit}`, immutable historical BLOCK commit
-`{HISTORICAL_BLOCK_COMMIT}`, run date `{result.run_date}`, execution platform
-`{result.execution_platform}`, and decision-evidence hash
+`{HISTORICAL_BLOCK_COMMIT}`, predecessor evidence commit
+`{ERRATUM_PREDECESSOR_EVIDENCE_COMMIT}` with controller
+`{ERRATUM_PREDECESSOR_CONTROLLER_COMMIT}` and decision-evidence SHA-256
+`{ERRATUM_PREDECESSOR_EVIDENCE_SHA256}`, run date `{result.run_date}`,
+execution platform `{result.execution_platform}`, and decision-evidence hash
 `{_decision_binding(result)}`.
 {resume}
 """

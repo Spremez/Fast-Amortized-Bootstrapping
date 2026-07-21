@@ -13,16 +13,43 @@ Task 9 records three distinct commits:
   `fba794ce8820fb2ab167bf928c9cdae67ed508b9`. It is the first corrected
   metadata terminal closeout whose immutable ledger blocks and run row bind
   input `c8221ad0fcd8413753ca4c3072f49460972de454`.
+- Erratum supersession independently pins predecessor evidence commit
+  `95bc17959e6bfa25e8504481cbd26ee265bbe9c7`, its direct-parent controller
+  `8a953a54b8799089d2e7fef6d3951581b4cf8fd4`, and decision-evidence SHA-256
+  `7287a6d11ca0a61ff4abb8371fd4d6c24a0fe005781e38d53e3964cbd5506036`.
+  The predecessor evidence, commit parent, source hashes, runtime hashes,
+  artifact index, and ancestry to the current controller are verified before
+  an existing erratum can be replaced. The old controller is never inferred
+  solely from the block being replaced.
 
 These commits are not interchangeable. In particular, `c8221ad` is the
 corrected evidence input, not the commit containing its corrected historical
 closeout record.
 
+## Finite Threat Model
+
+The normative trust boundary is
+`docs/candidate_d_task9_threat_model.md`. Task 9 authenticates reviewed
+deterministic execution, not arbitrary untrusted code. Mandatory review of the
+canonical stage runner and its exact recursive repository-local source closure
+is a prerequisite for scientific authority. It is not a hostile-code sandbox.
+
+The import guard, execution audit, checkout snapshot, strict output tree, and
+completion attestation are defense in depth against accidental contamination
+and early termination. A malicious commit-pinned runner, arbitrary native
+code, same-user OS attacks, process introspection, and deliberate writes
+outside the checkout are out of scope. A stronger claim requires a separately
+reviewed OS sandbox or system-call monitor before D2.
+
+D1 BLOCK is independent of D2/D3 runtime replay. For the current terminal
+result, D2 and D3 are absent and `SKIPPED / NOT_REACHED`; no replay defense is
+used to establish the D1 decision.
+
 ## Authority Rule
 
-Static CSV parsing is only a consistency check. D2 or D3 may return PASS or
-REJECT only when Task 9 executes the canonical, reviewed stage runner and all
-of the following hold:
+Static CSV parsing is only a consistency check. Under the finite threat model,
+D2 or D3 may return PASS or REJECT only after mandatory source review and when
+Task 9 executes the canonical stage runner and all of the following hold:
 
 1. Task 9 derives the runner's complete repository-local Python import closure
    recursively from `input_commit`. Normal, `from`, relative, package
@@ -35,9 +62,10 @@ of the following hold:
 2. The runner, every closure source, every required input, and every canonical
    tracked output is a regular committed file read from `input_commit`; mutable
    files in the caller's active worktree are not replay inputs.
-3. Task 9 creates a clean detached checkout of the exact `input_commit` and
-   executes the committed runner there. The checkout and the separate empty
-   temporary `--output-root` are removed on success and failure.
+3. Task 9 creates a self-contained `--no-local` detached checkout of the exact
+   `input_commit`, verifies that it has no Git alternates file, and executes
+   the committed runner there. The checkout and the separate empty temporary
+   `--output-root` are removed on success and failure.
 4. The runner executes with isolated Python startup and an external bytecode
    cache. An import-time finder/loader guard validates immutable spec and
    loader origins before each repository-local module body executes, while an
@@ -49,7 +77,8 @@ of the following hold:
    Preloaded, shadowed, or unregistered repository-local modules fail.
 5. The runner receives an empty temporary `--output-root`, explicit full
    `--input-commit`, and explicit full `--controller-commit`.
-6. The child writes a parent-nonce-bound completion attestation through a
+6. As defense in depth, the child writes a parent-nonce-bound completion
+   attestation through a
    separate control file only after runner return and final import-integrity
    checks. The parent validates its exact schema, nonce, and audited immutable
    origins. Control configuration is consumed once from stdin and is absent
@@ -67,7 +96,9 @@ of the following hold:
    committed at `input_commit`.
 10. The manifest has schema `candidate-d-stage-replay-v1`, names the stage,
    both commits, exact output list, one registered decision, and
-   `scientific_authority: true`.
+    `scientific_authority: true`. That flag means reviewed deterministic
+    execution under this finite model; it does not claim malicious-runner
+    containment.
 
 If a canonical runner, checker/model, required input, or replay contract is
 absent, the stage is BLOCKED. Hand-written or self-consistent CSV files have no
