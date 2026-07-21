@@ -17,7 +17,7 @@ Task 9 records three distinct commits:
 - Erratum supersession independently pins predecessor evidence commit
   `2e2508a4716f83a92d9b53e7b716569c642c1033`, its direct-parent controller
   `fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0`, and decision-evidence SHA-256
-  `48ac5ee01f3a24037a5ea0a9781c7528158498c4605f81985b8a722482f4277e`.
+  `2e25282ede5c6339f2e2ccd4ccc835d3eeb2f6216c0330049902600f06a14c8f`.
   The predecessor evidence, commit parent, source hashes, runtime hashes,
   artifact index, and ancestry to the current controller are verified before
   an existing erratum can be replaced. The old controller is never inferred

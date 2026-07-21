@@ -54,7 +54,7 @@ ERRATUM_PREDECESSOR_EVIDENCE_PATH = (
     "repro/candidate_d_admission/decision_evidence.json"
 )
 ERRATUM_PREDECESSOR_EVIDENCE_SHA256 = (
-    "48ac5ee01f3a24037a5ea0a9781c7528158498c4605f81985b8a722482f4277e"
+    "2e25282ede5c6339f2e2ccd4ccc835d3eeb2f6216c0330049902600f06a14c8f"
 )
 OUT = Path("repro/candidate_d_admission")
 REPORT = Path("docs/candidate_d_admission_report.md")
