@@ -2,7 +2,10 @@ from dataclasses import replace
 import json
 import os
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
+import textwrap
 import unittest
 from unittest.mock import patch
 
@@ -20,13 +23,39 @@ from scripts.run_candidate_d_admission import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
+CONTROLLER_COMMIT = subprocess.run(
+    [
+        "git",
+        "log",
+        "-1",
+        "--format=%H",
+        "--",
+        "scripts/run_candidate_d_admission.py",
+        "scripts/apply_candidate_d_admission.py",
+        "research/mat_sab/candidate_d_stage_replay.py",
+        "docs/candidate_d_task9_replay_contract.md",
+    ],
+    cwd=ROOT,
+    check=True,
+    capture_output=True,
+    text=True,
+).stdout.strip()
+RUN_DATE = "2026-07-21"
+EXECUTION_PLATFORM = (
+    "Windows-PowerShell; CPython-3.12; evidence-controller-only; "
+    "no-performance-claim"
+)
 RUN_HEADER = (ROOT / "repro/run_log.csv").read_text(encoding="ascii").splitlines()[0]
 
 
 class CandidateDCloseoutTests(unittest.TestCase):
     def setUp(self):
         self.result = evaluate_candidate_d_admission(
-            ROOT, input_commit=closeout.CURRENT_INPUT_COMMIT
+            ROOT,
+            input_commit=closeout.CURRENT_INPUT_COMMIT,
+            controller_commit=CONTROLLER_COMMIT,
+            run_date=RUN_DATE,
+            execution_platform=EXECUTION_PLATFORM,
         )
         self.assertEqual(self.result.decision, BLOCK)
 
@@ -38,6 +67,8 @@ class CandidateDCloseoutTests(unittest.TestCase):
             d1_missing_evidence=(),
             d2_status="PASS",
             d2_decision="PASS_D2_OPERATOR_CLOSURE_G_LE_4",
+            d2_replay_authenticated=True,
+            d3_replay_authenticated=True,
             gamma_count=2,
             negative_controls_status="PASS",
             binding_status="PASS",
@@ -142,7 +173,12 @@ class CandidateDCloseoutTests(unittest.TestCase):
 
     def _apply(self, root: Path, result=None) -> str:
         selected = self.result if result is None else result
-        with patch.object(closeout, "verify_candidate_d_artifacts", return_value=selected):
+        with (
+            patch.object(
+                closeout, "verify_candidate_d_artifacts", return_value=selected
+            ),
+            patch.object(closeout, "_validate_historical_block_ledgers"),
+        ):
             return closeout.apply_candidate_d_decision(root, selected)
 
     @staticmethod
@@ -411,6 +447,166 @@ class CandidateDCloseoutTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 self._apply(root)
             self.assertEqual(self._snapshot(root), before)
+
+    def test_historical_block_bytes_reject_any_field_mutation(self):
+        paths = (*closeout.LEDGER_PATHS, closeout.RUN_LOG_PATH)
+        canonical = {
+            relative: closeout._git_blob(
+                ROOT, closeout.HISTORICAL_BLOCK_COMMIT, relative
+            )
+            for relative in paths
+        }
+        closeout._validate_historical_block_ledgers(ROOT, canonical)
+        mutations = (
+            (
+                "hypotheses/hypothesis_register.yaml",
+                b"primary_metric: complete_sab_T_bootstrap_div_rN_active",
+                b"primary_metric: changed_metric",
+            ),
+            (
+                closeout.RUN_LOG_PATH,
+                b"python-stdlib-evidence-controller",
+                b"changed-backend",
+            ),
+        )
+        for relative, old, new in mutations:
+            with self.subTest(relative=relative):
+                changed = dict(canonical)
+                self.assertIn(old, changed[relative])
+                changed[relative] = changed[relative].replace(old, new, 1)
+                with self.assertRaises(ValueError):
+                    closeout._validate_historical_block_ledgers(ROOT, changed)
+
+    def test_real_resumed_reject_verifier_apply_check_is_idempotent(self):
+        with tempfile.TemporaryDirectory() as directory:
+            clone = Path(directory) / "repo"
+            subprocess.run(
+                ["git", "clone", "-q", "--shared", str(ROOT), str(clone)],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Candidate D integration"],
+                cwd=clone,
+                check=True,
+            )
+            subprocess.run(
+                [
+                    "git",
+                    "config",
+                    "user.email",
+                    "candidate-d-integration@example.invalid",
+                ],
+                cwd=clone,
+                check=True,
+            )
+            literature = textwrap.dedent(
+                """
+                PASS_D1 = "PASS_D1_DISTINCT_SAB_OPERATOR_CLAIM_REMAINS_TESTABLE"
+                REJECT_D1 = "REJECT_D1_CANDIDATE_D_SUBSUMED_BY_PRIOR_WORK"
+                BLOCK_D1 = "BLOCK_D1_REQUIRED_FULLTEXT_OR_REVIEW_MISSING"
+                """
+            ).lstrip()
+            runner = textwrap.dedent(
+                '''
+                # Integration fixture only: it exercises D1 REJECT routing and has
+                # no scientific or admission authority.
+                from pathlib import Path
+                from research.mat_sab.candidate_d_literature import REJECT_D1
+
+                OUTPUTS = {
+                    Path("docs/candidate_d_d1_novelty_audit.md"): b"# Non-scientific D1 reject integration fixture\\n",
+                    Path("repro/candidate_d_admission/literature_sources.csv"): (
+                        b"source_id,title,year,official_url,fulltext_url,registry_status,verification_status,pdf_sha256,text_sha256,page_range,source_binding_sha256,validation_errors\\n"
+                        b"FIXTURE,fixture,2026,fixture,fixture,TEST_ONLY,FULLTEXT_REVIEWED,,,1,,\\n"
+                    ),
+                    Path("repro/candidate_d_admission/claim_overlap.csv"): b"fixture,status\\nnon_scientific,REJECT\\n",
+                    Path("repro/candidate_d_admission/novelty_gate.csv"): b"decision\\nREJECT_D1_CANDIDATE_D_SUBSUMED_BY_PRIOR_WORK\\n",
+                }
+
+                def build_candidate_d_d1_artifacts(root):
+                    return REJECT_D1, OUTPUTS
+                '''
+            ).lstrip()
+            (clone / "research/mat_sab/candidate_d_literature.py").write_text(
+                literature, encoding="ascii", newline=""
+            )
+            (clone / "scripts/run_candidate_d_d1_literature.py").write_text(
+                runner, encoding="ascii", newline=""
+            )
+            fixture_outputs = {
+                Path("docs/candidate_d_d1_novelty_audit.md"): (
+                    b"# Non-scientific D1 reject integration fixture\n"
+                ),
+                Path("repro/candidate_d_admission/literature_sources.csv"): (
+                    b"source_id,title,year,official_url,fulltext_url,registry_status,verification_status,pdf_sha256,text_sha256,page_range,source_binding_sha256,validation_errors\n"
+                    b"FIXTURE,fixture,2026,fixture,fixture,TEST_ONLY,FULLTEXT_REVIEWED,,,1,,\n"
+                ),
+                Path("repro/candidate_d_admission/claim_overlap.csv"): (
+                    b"fixture,status\nnon_scientific,REJECT\n"
+                ),
+                Path("repro/candidate_d_admission/novelty_gate.csv"): (
+                    b"decision\nREJECT_D1_CANDIDATE_D_SUBSUMED_BY_PRIOR_WORK\n"
+                ),
+            }
+            for relative, content in fixture_outputs.items():
+                path = clone / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(content)
+            subprocess.run(["git", "add", "-u"], cwd=clone, check=True)
+            subprocess.run(
+                ["git", "commit", "-qm", "fixture: D1 reject resume route"],
+                cwd=clone,
+                check=True,
+            )
+            input_commit = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=clone,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            common = [
+                "--root",
+                str(clone),
+                "--input-commit",
+                input_commit,
+                "--controller-commit",
+                CONTROLLER_COMMIT,
+                "--run-date",
+                RUN_DATE,
+                "--execution-platform",
+                EXECUTION_PLATFORM,
+            ]
+            generate = [
+                sys.executable,
+                str(clone / "scripts/run_candidate_d_admission.py"),
+                *common,
+            ]
+            apply = [
+                sys.executable,
+                str(clone / "scripts/apply_candidate_d_admission.py"),
+                *common,
+            ]
+            subprocess.run(generate, cwd=clone, check=True, capture_output=True)
+            subprocess.run(
+                [*apply, "--check"], cwd=clone, check=True, capture_output=True
+            )
+            subprocess.run(apply, cwd=clone, check=True, capture_output=True)
+            subprocess.run(
+                [*apply, "--check"], cwd=clone, check=True, capture_output=True
+            )
+            first = self._snapshot(clone)
+            subprocess.run(apply, cwd=clone, check=True, capture_output=True)
+            subprocess.run(
+                [*apply, "--check"], cwd=clone, check=True, capture_output=True
+            )
+            self.assertEqual(self._snapshot(clone), first)
+            state = load_state(clone / "research_state.yaml")
+            self.assertEqual(state["active_candidate"], "E")
+            self.assertFalse(state["production_hot_path_permission"])
+            self.assertEqual(state["candidates"]["D"]["status"], "REJECTED")
 
     def test_write_failure_rolls_back_all_closeout_outputs(self):
         with tempfile.TemporaryDirectory() as directory:

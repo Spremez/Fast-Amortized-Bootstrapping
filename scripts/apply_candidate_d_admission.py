@@ -26,12 +26,14 @@ from scripts.run_candidate_d_admission import (  # noqa: E402
     ADMIT,
     BLOCK,
     CURRENT_INPUT_COMMIT,
+    HISTORICAL_BLOCK_COMMIT,
     REJECT_BINDING_NOISE_SECURITY,
     REJECT_CLOSURE,
     REJECT_COMPLETE_COST,
     REJECT_PRIOR_ART,
     AdmissionEvidenceError,
     AdmissionResult,
+    _git_blob,
     _safe_path,
     verify_candidate_d_artifacts,
 )
@@ -65,13 +67,6 @@ LEDGER_PATHS = (
 )
 STATE_PATH = "research_state.yaml"
 RUN_LOG_PATH = "repro/run_log.csv"
-TASK9_PLATFORM = (
-    "Windows-NT-10.0.26200.0 CPython-3.12.4; "
-    "WSL2-Linux-5.15.167.4-x86_64 cross-check; "
-    "formal-performance=native-Linux-required"
-)
-
-
 def _is_resume_result(result: AdmissionResult) -> bool:
     return result.input_commit != CURRENT_INPUT_COMMIT
 
@@ -144,6 +139,12 @@ def _generator_command(result: AdmissionResult) -> str:
     return (
         "python scripts/run_candidate_d_admission.py --input-commit "
         + result.input_commit
+        + " --controller-commit "
+        + result.controller_commit
+        + " --run-date "
+        + result.run_date
+        + " --execution-platform "
+        + json.dumps(result.execution_platform, ensure_ascii=True)
     )
 
 
@@ -151,6 +152,12 @@ def _apply_command(result: AdmissionResult) -> str:
     return (
         "python scripts/apply_candidate_d_admission.py --input-commit "
         + result.input_commit
+        + " --controller-commit "
+        + result.controller_commit
+        + " --run-date "
+        + result.run_date
+        + " --execution-platform "
+        + json.dumps(result.execution_platform, ensure_ascii=True)
     )
 
 
@@ -269,11 +276,13 @@ def _run_row(result: AdmissionResult) -> dict[str, str]:
         f"resource={result.resource_status};"
         f"pessimistic_projection={result.pessimistic_projection or 'none'};"
         f"pre_permission={'yes' if result.pre_application_permission else 'no'};"
-        f"execution_platform={TASK9_PLATFORM}"
+        f"controller_commit={result.controller_commit};"
+        f"historical_block_commit={HISTORICAL_BLOCK_COMMIT};"
+        f"execution_platform={result.execution_platform}"
     )
     return {
         "run_id": _run_marker_for(result),
-        "date": "2026-07-21",
+        "date": result.run_date,
         "commit_or_state": result.input_commit,
         "stage": "Candidate D atomic D0-D3 admission closeout",
         "backend": "python-stdlib-evidence-controller",
@@ -451,51 +460,53 @@ def _validate_resume_base_state(state: dict[str, object]) -> None:
         raise ValueError("state is not an exact Candidate D external BLOCK")
 
 
-def _validate_historical_block_ledgers(current: dict[str, bytes]) -> None:
+def _exact_marker_block(content: bytes, start: str, end: str) -> bytes:
+    start_line = start.encode("ascii")
+    end_line = end.encode("ascii")
+    lines = content.splitlines(keepends=True)
+    starts = [index for index, line in enumerate(lines) if line.rstrip(b"\r\n") == start_line]
+    ends = [index for index, line in enumerate(lines) if line.rstrip(b"\r\n") == end_line]
+    if len(starts) != 1 or len(ends) != 1 or ends[0] <= starts[0]:
+        raise ValueError("historical Candidate D BLOCK marker is missing")
+    return b"".join(lines[starts[0] : ends[0] + 1])
+
+
+def _exact_run_row(content: bytes, marker: str) -> bytes:
+    matches = []
+    for line in content.splitlines(keepends=True):
+        try:
+            rows = list(csv.reader(StringIO(line.decode("ascii")), strict=True))
+        except (UnicodeError, csv.Error) as error:
+            raise ValueError("historical Candidate D run log is malformed") from error
+        if len(rows) == 1 and rows[0] and rows[0][0] == marker:
+            matches.append(line)
+    if len(matches) != 1:
+        raise ValueError("historical Candidate D BLOCK run record is missing")
+    return matches[0]
+
+
+def _validate_historical_block_ledgers(
+    root: Path, current: dict[str, bytes]
+) -> None:
     marker_specs = (
         ("hypotheses/hypothesis_register.yaml", HYPOTHESIS_START, HYPOTHESIS_END),
         ("repro/artifact_manifest.md", MANIFEST_START, MANIFEST_END),
         ("repro/reproduction_checklist.md", CHECKLIST_START, CHECKLIST_END),
     )
     for relative, start, end in marker_specs:
-        try:
-            lines = current[relative].decode("ascii").splitlines()
-        except UnicodeError as error:
-            raise ValueError("historical Candidate D ledger is not ASCII") from error
-        starts = [index for index, line in enumerate(lines) if line == start]
-        ends = [index for index, line in enumerate(lines) if line == end]
-        if len(starts) != 1 or len(ends) != 1 or ends[0] <= starts[0]:
-            raise ValueError("historical Candidate D BLOCK marker is missing")
-        body = "\n".join(lines[starts[0] + 1 : ends[0]])
-        if relative.endswith("hypothesis_register.yaml") and (
-            BLOCK not in body or "production permission is false" not in body
-        ):
-            raise ValueError("historical Candidate D BLOCK hypothesis changed")
-        if relative.endswith("reproduction_checklist.md") and (
-            BLOCK not in body or CURRENT_INPUT_COMMIT not in body
-        ):
-            raise ValueError("historical Candidate D BLOCK checklist changed")
-        if relative.endswith("artifact_manifest.md") and (
-            "scripts/run_candidate_d_admission.py" not in body
-            or "repro/candidate_d_admission/" not in body
-        ):
-            raise ValueError("historical Candidate D BLOCK manifest changed")
-
-    try:
-        rows = list(
-            csv.DictReader(
-                StringIO(current[RUN_LOG_PATH].decode("ascii"), newline=""),
-                strict=True,
-            )
+        expected = _exact_marker_block(
+            _git_blob(root, HISTORICAL_BLOCK_COMMIT, relative), start, end
         )
-    except (UnicodeError, csv.Error) as error:
-        raise ValueError("historical Candidate D run log is malformed") from error
-    matches = [row for row in rows if row.get("run_id") == RUN_MARKER]
-    if len(matches) != 1 or not (
-        matches[0].get("commit_or_state") == CURRENT_INPUT_COMMIT
-        and matches[0].get("status") == BLOCK
-        and CURRENT_INPUT_COMMIT in matches[0].get("command", "")
-    ):
+        actual = _exact_marker_block(current[relative], start, end)
+        if actual != expected:
+            raise ValueError(
+                f"historical Candidate D BLOCK marker changed: {relative}"
+            )
+    expected_row = _exact_run_row(
+        _git_blob(root, HISTORICAL_BLOCK_COMMIT, RUN_LOG_PATH), RUN_MARKER
+    )
+    actual_row = _exact_run_row(current[RUN_LOG_PATH], RUN_MARKER)
+    if actual_row != expected_row:
         raise ValueError("historical Candidate D BLOCK run record changed")
 
 
@@ -596,13 +607,21 @@ def _plan_closeout(
     except (UnicodeError, json.JSONDecodeError) as error:
         raise ValueError("research state is malformed") from error
     planned: dict[Path, bytes] = {}
-    for relative, start, end, content in _ledger_contents(result):
-        planned[paths[relative]] = _plan_bounded_append(
-            current[relative], start, end, content, relative
+    historical_applied = state.get("goal_status") == "EXTERNAL_BLOCKED"
+    if historical_applied or _is_resume_result(result):
+        _validate_historical_block_ledgers(root, current)
+    if result.input_commit == CURRENT_INPUT_COMMIT and historical_applied:
+        for relative in LEDGER_PATHS:
+            planned[paths[relative]] = current[relative]
+        planned[paths[RUN_LOG_PATH]] = current[RUN_LOG_PATH]
+    else:
+        for relative, start, end, content in _ledger_contents(result):
+            planned[paths[relative]] = _plan_bounded_append(
+                current[relative], start, end, content, relative
+            )
+        planned[paths[RUN_LOG_PATH]] = _plan_run_log(
+            current[RUN_LOG_PATH], result
         )
-    planned[paths[RUN_LOG_PATH]] = _plan_run_log(
-        current[RUN_LOG_PATH], result
-    )
     candidates = state.get("candidates")
     current_decision = state.get("last_decision")
     applied = False
@@ -629,7 +648,6 @@ def _plan_closeout(
         changed = _transition_state(state, result)
         planned[paths[STATE_PATH]] = _state_bytes(changed)
     elif _is_resume_result(result) and state.get("goal_status") == "EXTERNAL_BLOCKED":
-        _validate_historical_block_ledgers(current)
         changed = _transition_resumed_state(state, result)
         planned[paths[STATE_PATH]] = _state_bytes(changed)
     else:
@@ -664,7 +682,11 @@ def _restore_snapshot(snapshot: dict[Path, bytes]) -> None:
 
 def check_candidate_d_decision(root: Path, result: AdmissionResult) -> str:
     verified = verify_candidate_d_artifacts(
-        root, input_commit=result.input_commit
+        root,
+        input_commit=result.input_commit,
+        controller_commit=result.controller_commit,
+        run_date=result.run_date,
+        execution_platform=result.execution_platform,
     )
     if verified != result:
         raise ValueError("requested result differs from verified artifacts")
@@ -674,7 +696,11 @@ def check_candidate_d_decision(root: Path, result: AdmissionResult) -> str:
 
 def apply_candidate_d_decision(root: Path, result: AdmissionResult) -> str:
     verified = verify_candidate_d_artifacts(
-        root, input_commit=result.input_commit
+        root,
+        input_commit=result.input_commit,
+        controller_commit=result.controller_commit,
+        run_date=result.run_date,
+        execution_platform=result.execution_platform,
     )
     if verified != result:
         raise ValueError("requested result differs from verified artifacts")
@@ -697,6 +723,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--input-commit", required=True)
+    parser.add_argument("--controller-commit", required=True)
+    parser.add_argument("--run-date", required=True)
+    parser.add_argument("--execution-platform", required=True)
     parser.add_argument(
         "--check",
         action="store_true",
@@ -704,7 +733,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     result = verify_candidate_d_artifacts(
-        args.root, input_commit=args.input_commit
+        args.root,
+        input_commit=args.input_commit,
+        controller_commit=args.controller_commit,
+        run_date=args.run_date,
+        execution_platform=args.execution_platform,
     )
     if args.check:
         decision = check_candidate_d_decision(args.root, result)

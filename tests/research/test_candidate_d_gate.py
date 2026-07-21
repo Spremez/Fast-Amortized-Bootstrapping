@@ -5,6 +5,7 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -31,6 +32,62 @@ from scripts.run_candidate_d_admission import (
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "repro/candidate_d_admission"
 FIXTURE_COMMIT = "f" * 40
+CONTROLLER_COMMIT = subprocess.run(
+    [
+        "git",
+        "log",
+        "-1",
+        "--format=%H",
+        "--",
+        "scripts/run_candidate_d_admission.py",
+        "scripts/apply_candidate_d_admission.py",
+        "research/mat_sab/candidate_d_stage_replay.py",
+        "docs/candidate_d_task9_replay_contract.md",
+    ],
+    cwd=ROOT,
+    check=True,
+    capture_output=True,
+    text=True,
+).stdout.strip()
+RUN_DATE = "2026-07-21"
+EXECUTION_PLATFORM = (
+    "Windows-PowerShell; CPython-3.12; evidence-controller-only; "
+    "no-performance-claim"
+)
+
+
+def evaluate_candidate_d_admission(
+    root: Path = ROOT,
+    *,
+    input_commit: str,
+    controller_commit: str = CONTROLLER_COMMIT,
+    run_date: str = RUN_DATE,
+    execution_platform: str = EXECUTION_PLATFORM,
+) -> AdmissionResult:
+    return gate.evaluate_candidate_d_admission(
+        root,
+        input_commit=input_commit,
+        controller_commit=controller_commit,
+        run_date=run_date,
+        execution_platform=execution_platform,
+    )
+
+
+def verify_candidate_d_artifacts(
+    root: Path = ROOT,
+    *,
+    input_commit: str,
+    controller_commit: str = CONTROLLER_COMMIT,
+    run_date: str = RUN_DATE,
+    execution_platform: str = EXECUTION_PLATFORM,
+) -> AdmissionResult:
+    return gate.verify_candidate_d_artifacts(
+        root,
+        input_commit=input_commit,
+        controller_commit=controller_commit,
+        run_date=run_date,
+        execution_platform=execution_platform,
+    )
 
 D2_PASS = "PASS_D2_OPERATOR_CLOSURE_G_LE_4"
 D2_REJECT = "REJECT_D2_PHASE_EQUIVALENCE"
@@ -56,6 +113,8 @@ def passing_result(**changes) -> AdmissionResult:
         d1_missing_evidence=(),
         d2_status="PASS",
         d2_decision="PASS_D2_OPERATOR_CLOSURE_G_LE_4",
+        d2_replay_authenticated=True,
+        d3_replay_authenticated=True,
         gamma_count=2,
         negative_controls_status="PASS",
         binding_status="PASS",
@@ -68,6 +127,9 @@ def passing_result(**changes) -> AdmissionResult:
         decision=ADMIT,
         resume_condition="none",
         input_commit="7ef0ef5ccd0eb99f484888ba11af27740a13182d",
+        controller_commit="c" * 40,
+        run_date=RUN_DATE,
+        execution_platform=EXECUTION_PLATFORM,
         source_hashes=(),
         runtime_source_hashes=(),
     )
@@ -486,85 +548,6 @@ def write_d3_fixture(
     )
 
 
-def source_route_result(
-    *,
-    d1_decision: str = gate.PASS_D1,
-    d2_decision: str = D2_PASS,
-    gamma_count: int = 2,
-    negative_control_status: str = "DETECTED",
-    binding: str = "PASS",
-    security: str = "PASS",
-    noise: str = "PASS",
-    cost: str = "PASS",
-    resource: str = "PASS",
-    projection: str = "1.10",
-    permission: bool = False,
-) -> AdmissionResult:
-    with tempfile.TemporaryDirectory() as directory:
-        root = Path(directory)
-        for relative in (*gate.D0_OUTPUTS, *gate.D1_OUTPUTS):
-            _write(root, relative, f"fixture:{relative}\n")
-        if d1_decision == gate.PASS_D1:
-            write_d2_fixture(
-                root,
-                decision=d2_decision,
-                gamma_count=gamma_count,
-                negative_control_status=negative_control_status,
-            )
-            if (
-                d2_decision == D2_PASS
-                and gamma_count <= 4
-                and negative_control_status == "DETECTED"
-            ):
-                write_d3_fixture(
-                    root,
-                    binding=binding,
-                    security=security,
-                    noise=noise,
-                    cost=cost,
-                    resource=resource,
-                    projection=projection,
-                )
-        missing = (
-            ("NTRU_AMORT_2026_068",)
-            if d1_decision == gate.BLOCK_D1
-            else ()
-        )
-        source_paths = tuple(
-            dict.fromkeys((*gate.PINNED_INPUTS, *gate.D2_OUTPUTS, *gate.D3_OUTPUTS))
-        )
-        source_hashes = tuple((path, "0" * 64) for path in source_paths)
-        runtime_hashes = tuple((path, "1" * 64) for path in gate.RUNTIME_SOURCES)
-        state = {"production_hot_path_permission": permission}
-        with (
-            patch.object(gate, "_validate_module_origins"),
-            patch.object(
-                gate,
-                "_pinned_source_hashes",
-                return_value=source_hashes,
-            ),
-            patch.object(
-                gate,
-                "_runtime_source_hashes",
-                return_value=runtime_hashes,
-            ),
-            patch.object(
-                gate,
-                "_recompute_d0",
-                return_value=gate.d0_baseline.D0_DECISION,
-            ),
-            patch.object(
-                gate,
-                "_recompute_d1",
-                return_value=(d1_decision, missing),
-            ),
-            patch.object(gate, "load_state", return_value=state),
-        ):
-            return gate.evaluate_candidate_d_admission(
-                root, input_commit=FIXTURE_COMMIT
-            )
-
-
 class CandidateDGateTests(unittest.TestCase):
     def test_d2_summary_is_assertion_not_authority(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -640,63 +623,20 @@ class CandidateDGateTests(unittest.TestCase):
                     with self.assertRaises(gate.AdmissionEvidenceError):
                         gate._recompute_d3(root)
 
-    def test_source_artifacts_derive_all_six_terminal_routes(self):
-        cases = (
-            ("D1 block", {"d1_decision": gate.BLOCK_D1}, BLOCK),
-            ("D1 reject", {"d1_decision": gate.REJECT_D1}, REJECT_PRIOR_ART),
-            ("D2 reject", {"d2_decision": D2_REJECT}, REJECT_CLOSURE),
-            (
-                "D3 binding reject",
-                {"binding": "REJECT"},
-                REJECT_BINDING_NOISE_SECURITY,
-            ),
-            (
-                "D3 cost reject",
-                {"cost": "REJECT", "projection": "1.09"},
-                REJECT_COMPLETE_COST,
-            ),
-            ("all source gates pass", {}, ADMIT),
-        )
-        for label, changes, expected in cases:
-            with self.subTest(label=label):
-                self.assertEqual(source_route_result(**changes).decision, expected)
-
-    def test_source_artifacts_expose_each_downstream_priority_input(self):
-        cases = (
-            ("D2 block", {"d2_decision": D2_BLOCK}, BLOCK),
-            ("gamma overflow", {"gamma_count": 5}, REJECT_CLOSURE),
-            (
-                "negative control missed",
-                {"negative_control_status": "MISSED"},
-                REJECT_CLOSURE,
-            ),
-            (
-                "security reject",
-                {"security": "REJECT"},
-                REJECT_BINDING_NOISE_SECURITY,
-            ),
-            (
-                "noise reject",
-                {"noise": "REJECT"},
-                REJECT_BINDING_NOISE_SECURITY,
-            ),
-            ("noise block", {"noise": "BLOCK"}, BLOCK),
-            (
-                "resource reject",
-                {"resource": "REJECT"},
-                REJECT_COMPLETE_COST,
-            ),
-            ("cost block", {"cost": "BLOCK", "projection": ""}, BLOCK),
-            (
-                "subthreshold projection",
-                {"projection": "1.09"},
-                REJECT_COMPLETE_COST,
-            ),
-            ("pre-application permission", {"permission": True}, BLOCK),
-        )
-        for label, changes, expected in cases:
-            with self.subTest(label=label):
-                self.assertEqual(source_route_result(**changes).decision, expected)
+    def test_static_d2_d3_parsers_cannot_authorize_without_replay(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            write_d2_fixture(root)
+            write_d3_fixture(root)
+            d2 = gate._recompute_d2(root)
+            d3 = gate._recompute_d3(root)
+            self.assertEqual(d2.decision, D2_PASS)
+            self.assertEqual(d3.decision, D3_PASS)
+            untrusted = passing_result(
+                d2_replay_authenticated=False,
+                d3_replay_authenticated=False,
+            )
+            self.assertEqual(gate.derive_candidate_d_decision(untrusted), BLOCK)
 
     def test_decision_priority_is_fail_closed_and_ordered(self):
         cases = (
@@ -820,7 +760,14 @@ class CandidateDGateTests(unittest.TestCase):
         )
         self.assertIn("git commit", result.resume_condition)
         self.assertIn("REQUIRED_SOURCE_BINDINGS", result.resume_condition)
-        self.assertIn("--input-commit <new-D3-commit>", result.resume_condition)
+        self.assertIn("D1 REJECT/BLOCK", result.resume_condition)
+        self.assertIn("do not run D2", result.resume_condition)
+        self.assertIn("D2 REJECT/BLOCK", result.resume_condition)
+        self.assertIn("do not run D3", result.resume_condition)
+        self.assertIn(
+            "--controller-commit " + CONTROLLER_COMMIT,
+            result.resume_condition,
+        )
         self.assertIn("run_candidate_d_d2_closure.py", result.resume_condition)
         self.assertIn("run_candidate_d_d3_admission.py", result.resume_condition)
         self.assertIn("historical Task 9 ledgers", result.resume_condition)
@@ -929,9 +876,11 @@ class CandidateDGateTests(unittest.TestCase):
                 "D0_baseline",
                 "D1_novelty",
                 "D2_closure",
+                "D2_replay_authentication",
                 "D2_gamma_count",
                 "D2_negative_controls",
                 "D3_integer_binding",
+                "D3_replay_authentication",
                 "D3_standard_object_security",
                 "D3_noise_decode",
                 "D3_complete_cost",
@@ -945,11 +894,15 @@ class CandidateDGateTests(unittest.TestCase):
         )
 
     def test_admit_recheck_recovers_original_false_permission_evidence(self):
-        source_paths = (
-            *gate.PINNED_INPUTS,
-            *gate.D2_OUTPUTS,
-            *gate.D3_OUTPUTS,
-            *gate.RESUME_PINNED_INPUTS,
+        source_paths = tuple(
+            dict.fromkeys(
+                (
+                    *gate.PINNED_INPUTS,
+                    *gate.D2_REPLAY_CONTRACT.pinned_paths,
+                    *gate.D3_REPLAY_CONTRACT.pinned_paths,
+                    *gate.RESUME_PINNED_INPUTS,
+                )
+            )
         )
         source_hashes = tuple((path, "0" * 64) for path in source_paths)
         runtime_hashes = tuple((path, "1" * 64) for path in gate.RUNTIME_SOURCES)
@@ -1018,7 +971,12 @@ class CandidateDGateTests(unittest.TestCase):
             ):
                 with self.assertRaises(gate.AdmissionEvidenceError):
                     gate.write_candidate_d_artifacts(
-                        root, result, input_commit=FIXTURE_COMMIT
+                        root,
+                        result,
+                        input_commit=FIXTURE_COMMIT,
+                        controller_commit=result.controller_commit,
+                        run_date=result.run_date,
+                        execution_platform=result.execution_platform,
                     )
             self.assertEqual(victim.read_text(encoding="ascii"), "unchanged")
 
@@ -1047,7 +1005,12 @@ class CandidateDGateTests(unittest.TestCase):
             ):
                 with self.assertRaises(gate.AdmissionEvidenceError):
                     gate.write_candidate_d_artifacts(
-                        root, result, input_commit=FIXTURE_COMMIT
+                        root,
+                        result,
+                        input_commit=FIXTURE_COMMIT,
+                        controller_commit=result.controller_commit,
+                        run_date=result.run_date,
+                        execution_platform=result.execution_platform,
                     )
 
     def test_cli_requires_explicit_input_commit(self):

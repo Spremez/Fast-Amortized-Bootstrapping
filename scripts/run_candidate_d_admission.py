@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 from dataclasses import dataclass, replace
+from datetime import date
 from decimal import Decimal, InvalidOperation
 import hashlib
 from io import StringIO
@@ -25,6 +26,12 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import research.mat_sab.candidate_d_baseline as d0_baseline  # noqa: E402
+from research.mat_sab.candidate_d_stage_replay import (  # noqa: E402
+    StageReplayContract,
+    StageReplayError,
+    StageReplayUnavailable,
+    execute_stage_replay,
+)
 from research.mat_sab.candidate_d_literature import (  # noqa: E402
     BLOCK_D1,
     PASS_D1,
@@ -35,6 +42,7 @@ import scripts.run_candidate_d_d1_literature as d1_literature  # noqa: E402
 
 
 CURRENT_INPUT_COMMIT = "c8221ad0fcd8413753ca4c3072f49460972de454"
+HISTORICAL_BLOCK_COMMIT = "fba794ce8820fb2ab167bf928c9cdae67ed508b9"
 OUT = Path("repro/candidate_d_admission")
 REPORT = Path("docs/candidate_d_admission_report.md")
 
@@ -62,30 +70,6 @@ SKIPPED_D1_REJECT = "SKIPPED_D1_REJECT"
 SKIPPED_D2_BLOCK = "SKIPPED_D2_BLOCK"
 SKIPPED_D2_REJECT = "SKIPPED_D2_REJECT"
 NONE = ""
-RESUME_CONDITION = (
-    "Obtain the latest second revision of IACR ePrint 2026/068 dated "
-    "2026-07-16 (not the archived January first-version PDF); set "
-    "NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf>; run "
-    "NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf> bash "
-    "scripts/fetch_candidate_d_primary_sources.sh; record the verified PDF "
-    "SHA-256, canonical pdftotext SHA-256, page range, and claim anchors for "
-    "NTRU_AMORT_2026_068 in literature/candidate_d_source_registry.json; "
-    "update its REQUIRED_SOURCE_BINDINGS entry in "
-    "research/mat_sab/candidate_d_literature.py; then run python "
-    "scripts/run_candidate_d_d1_literature.py and commit with git commit the corrected D1 "
-    "registry, binding, and artifacts as <new-D1-commit>; without changing "
-    "research_state.yaml or the historical Task 9 ledgers, execute Tasks 4-6 "
-    "from the reviewed Candidate D plan, run python "
-    "scripts/run_candidate_d_d2_closure.py, and commit the complete canonical "
-    "D2 evidence as <new-D2-commit>; if D2 passes, execute Tasks 7-8, run "
-    "python scripts/run_candidate_d_d3_admission.py, and commit the complete "
-    "canonical D3 evidence as <new-D3-commit>; finally run python "
-    "scripts/run_candidate_d_admission.py --input-commit <new-D3-commit> and "
-    "python scripts/apply_candidate_d_admission.py --input-commit "
-    "<new-D3-commit>. Each commit must be a strict descendant of the frozen "
-    "BLOCK input, and Task 9 appends a new terminal record instead of "
-    "rewriting the historical BLOCK record"
-)
 
 D2_PASS_DECISION = "PASS_D2_OPERATOR_CLOSURE_G_LE_4"
 D2_REJECT_DECISIONS = {
@@ -142,6 +126,121 @@ D3_OUTPUTS = (
     "repro/candidate_d_admission/resource_projection.csv",
     "repro/candidate_d_admission/d3_summary.csv",
 )
+
+D2_REPLAY_CONTRACT = StageReplayContract(
+    stage="D2",
+    runner="scripts/run_candidate_d_d2_closure.py",
+    scientific_sources=(
+        "research/mat_sab/finite_linear.py",
+        "research/mat_sab/candidate_d_source_map.py",
+        "research/mat_sab/negacyclic_operator.py",
+        "research/mat_sab/candidate_d_operator_closure.py",
+    ),
+    required_inputs=(
+        "src/sparse_amortized_bootstrap.c",
+        "src/sab_pvw.c",
+        "include/sab.h",
+        "include/sab_pvw.h",
+        "main.c",
+    ),
+    canonical_outputs=D2_OUTPUTS,
+    decisions=(D2_PASS_DECISION, *sorted(D2_REJECT_DECISIONS), *sorted(D2_BLOCK_DECISIONS)),
+    scientific_authority=True,
+)
+D3_REPLAY_CONTRACT = StageReplayContract(
+    stage="D3",
+    runner="scripts/run_candidate_d_d3_admission.py",
+    scientific_sources=(
+        "research/mat_sab/candidate_d_source_map.py",
+        "research/mat_sab/negacyclic_operator.py",
+        "research/mat_sab/candidate_d_operator_closure.py",
+        "research/mat_sab/candidate_d_admission.py",
+    ),
+    required_inputs=(
+        *D2_OUTPUTS,
+        "repro/candidate_d_admission/baseline_manifest.csv",
+        "repro/stage331_current_head_highstat_refresh/summary.csv",
+        "repro/stage322_schedule_profile_attribution/profile_summary.csv",
+        "repro/stage322_schedule_profile_attribution/component_budget.csv",
+        "src/sparse_amortized_bootstrap.c",
+        "src/sab_pvw.c",
+        "include/sab.h",
+        "include/sab_pvw.h",
+        "main.c",
+    ),
+    canonical_outputs=D3_OUTPUTS,
+    decisions=(D3_PASS_DECISION, *sorted(D3_REJECT_DECISIONS), *sorted(D3_BLOCK_DECISIONS)),
+    scientific_authority=True,
+)
+
+
+def _task9_command(input_placeholder: str, controller_commit: str) -> str:
+    metadata = (
+        "--run-date <YYYY-MM-DD> "
+        "--execution-platform <audited-evidence-platform>"
+    )
+    return (
+        "python scripts/run_candidate_d_admission.py --input-commit "
+        f"{input_placeholder} --controller-commit {controller_commit} {metadata}; "
+        "python scripts/apply_candidate_d_admission.py --input-commit "
+        f"{input_placeholder} --controller-commit {controller_commit} {metadata}"
+    )
+
+
+def resume_condition_for(stage: str, *, controller_commit: str) -> str:
+    if re.fullmatch(r"[0-9a-f]{40}", controller_commit) is None:
+        raise ValueError("controller commit must be a full lowercase SHA-1")
+    if stage == "D1_BLOCK":
+        return (
+            "Obtain the latest second revision of IACR ePrint 2026/068 dated "
+            "2026-07-16 (not the archived January first-version PDF); set "
+            "NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf>; run "
+            "NTRU_AMORT_FULLTEXT_PATH=<latest-NTRU_AMORT_2026_068.pdf> bash "
+            "scripts/fetch_candidate_d_primary_sources.sh; record the verified "
+            "PDF SHA-256, canonical pdftotext SHA-256, page range, and claim "
+            "anchors for NTRU_AMORT_2026_068 in "
+            "literature/candidate_d_source_registry.json; update "
+            "REQUIRED_SOURCE_BINDINGS in "
+            "research/mat_sab/candidate_d_literature.py; run python "
+            "scripts/run_candidate_d_d1_literature.py and commit as "
+            "<new-D1-commit>. If D1 REJECT/BLOCK, do not run D2; run Task 9 "
+            "with the last-stage <new-D1-commit>: "
+            + _task9_command("<new-D1-commit>", controller_commit)
+            + ". If D1 PASS, implement and run the canonical Tasks 4-6 D2 "
+            "replay contract, then commit as <new-D2-commit>. If D2 "
+            "REJECT/BLOCK, do not run D3; run Task 9 with the last-stage "
+            "<new-D2-commit>: "
+            + _task9_command("<new-D2-commit>", controller_commit)
+            + ". If D2 PASS, implement and run canonical Tasks 7-8 D3, "
+            "commit as <new-D3-commit>, then run Task 9: "
+            + _task9_command("<new-D3-commit>", controller_commit)
+            + ". Every stage commit must descend from the frozen input; Task "
+            "9 appends a commit-specific terminal record and never rewrites "
+            "the historical BLOCK."
+        )
+    if stage == "D2_BLOCK":
+        return (
+            "Implement or repair the canonical Tasks 4-6 D2 generator and "
+            "exact checker under docs/candidate_d_task9_replay_contract.md; "
+            "run it, commit the source-derived D2 artifacts as "
+            "<new-D2-commit>, and rerun Task 9 with "
+            + _task9_command("<new-D2-commit>", controller_commit)
+            + ". If D2 REJECT/BLOCK, do not run D3; only D2 PASS may proceed "
+            "to Tasks 7-8."
+        )
+    if stage == "D3_BLOCK":
+        return (
+            "Implement or repair the canonical Tasks 7-8 D3 generator, fixed "
+            "noise/security anchors, frozen B1 profile binding, and complete "
+            "cost/resource model under "
+            "docs/candidate_d_task9_replay_contract.md; commit the canonical "
+            "D3 artifacts as <new-D3-commit>, then rerun Task 9 with "
+            + _task9_command("<new-D3-commit>", controller_commit)
+            + "."
+        )
+    if stage in {"D1_REJECT", "D2_REJECT", "D3_TERMINAL", "NONE"}:
+        return "none"
+    raise ValueError(f"unknown Candidate D resume stage: {stage}")
 
 D2_SUMMARY_FIELDS = (
     "decision",
@@ -325,6 +424,8 @@ RUNTIME_SOURCES = (
     "scripts/run_candidate_d_admission.py",
     "scripts/apply_candidate_d_admission.py",
     "scripts/mat_sab_research_state.py",
+    "research/mat_sab/candidate_d_stage_replay.py",
+    "docs/candidate_d_task9_replay_contract.md",
 )
 GENERATED_OUTPUTS = (
     REPORT.as_posix(),
@@ -355,6 +456,8 @@ SUMMARY_FIELDS = (
     "d1_missing_evidence",
     "d2_status",
     "d2_decision",
+    "d2_replay_authenticated",
+    "d3_replay_authenticated",
     "gamma_count",
     "negative_controls_status",
     "binding_status",
@@ -366,6 +469,10 @@ SUMMARY_FIELDS = (
     "pre_application_permission",
     "production_hot_path_permission",
     "input_commit",
+    "controller_commit",
+    "historical_block_commit",
+    "run_date",
+    "execution_platform",
     "resume_condition",
     "decision_evidence_binding_sha256",
 )
@@ -385,6 +492,8 @@ class AdmissionResult:
     d1_missing_evidence: tuple[str, ...]
     d2_status: str
     d2_decision: str
+    d2_replay_authenticated: bool
+    d3_replay_authenticated: bool
     gamma_count: int | None
     negative_controls_status: str
     binding_status: str
@@ -397,6 +506,9 @@ class AdmissionResult:
     decision: str
     resume_condition: str
     input_commit: str
+    controller_commit: str
+    run_date: str
+    execution_platform: str
     source_hashes: tuple[tuple[str, str], ...]
     runtime_source_hashes: tuple[tuple[str, str], ...]
 
@@ -607,7 +719,20 @@ def _pinned_source_hashes(
     return tuple(rows)
 
 
-def _runtime_source_hashes(root: Path) -> tuple[tuple[str, str], ...]:
+def _commit_only_hashes(
+    root: Path, input_commit: str, paths: tuple[str, ...]
+) -> tuple[tuple[str, str], ...]:
+    commit = _resolve_input_commit(root, input_commit)
+    return tuple(
+        (relative, _sha256_bytes(_git_blob(root, commit, relative)))
+        for relative in paths
+    )
+
+
+def _controller_source_hashes(
+    root: Path, controller_commit: str
+) -> tuple[tuple[str, str], ...]:
+    commit = _resolve_input_commit(root, controller_commit)
     rows = []
     for relative in RUNTIME_SOURCES:
         path = _safe_path(
@@ -617,7 +742,12 @@ def _runtime_source_hashes(root: Path) -> tuple[tuple[str, str], ...]:
             strict=True,
             require_file=True,
         )
-        rows.append((relative, _sha256_bytes(path.read_bytes())))
+        blob = _git_blob(root, commit, relative)
+        if path.read_bytes() != blob:
+            raise AdmissionEvidenceError(
+                f"working controller source differs from controller commit: {relative}"
+            )
+        rows.append((relative, _sha256_bytes(blob)))
     return tuple(rows)
 
 
@@ -714,6 +844,69 @@ def _recompute_d1(root: Path) -> tuple[str, tuple[str, ...]]:
         if row["verification_status"] != "FULLTEXT_REVIEWED"
     )
     return decision, missing
+
+
+def _replay_d2(
+    root: Path, *, input_commit: str, controller_commit: str
+) -> tuple[D2Evidence, bool]:
+    try:
+        replayed = execute_stage_replay(
+            root,
+            D2_REPLAY_CONTRACT,
+            input_commit=input_commit,
+            controller_commit=controller_commit,
+        )
+    except (StageReplayUnavailable, StageReplayError):
+        return (
+            D2Evidence(
+                "BLOCK",
+                "BLOCK_D2_SOURCE_OR_EXACT_CHECKER_INCOMPLETE",
+                None,
+                "BLOCK",
+            ),
+            False,
+        )
+    if not replayed.scientific_authority:
+        raise AdmissionEvidenceError("non-scientific D2 replay cannot authorize a gate")
+    evidence = _recompute_d2(root)
+    if replayed.decision != evidence.decision:
+        raise AdmissionEvidenceError(
+            "D2 replay decision differs from secondary artifact parsing"
+        )
+    return evidence, True
+
+
+def _replay_d3(
+    root: Path, *, input_commit: str, controller_commit: str
+) -> tuple[D3Evidence, bool]:
+    try:
+        replayed = execute_stage_replay(
+            root,
+            D3_REPLAY_CONTRACT,
+            input_commit=input_commit,
+            controller_commit=controller_commit,
+        )
+    except (StageReplayUnavailable, StageReplayError):
+        return (
+            D3Evidence(
+                "BLOCK_D3_COST_INPUT_INCOMPLETE",
+                "BLOCK",
+                "BLOCK",
+                "BLOCK",
+                "BLOCK",
+                "BLOCK",
+                NONE,
+            ),
+            False,
+        )
+    if not replayed.scientific_authority:
+        raise AdmissionEvidenceError("non-scientific D3 replay cannot authorize a gate")
+    evidence = _recompute_d3(root)
+    if replayed.decision != evidence.decision:
+        raise AdmissionEvidenceError(
+            "D3 replay decision differs from secondary artifact parsing"
+        )
+    return evidence, True
 
 
 def _require_source_artifacts(root: Path, paths: tuple[str, ...]) -> None:
@@ -1401,6 +1594,8 @@ def derive_candidate_d_decision(result: AdmissionResult) -> str:
         return REJECT_PRIOR_ART
     if result.d1_status != "PASS":
         return BLOCK
+    if result.d2_status in {"PASS", "REJECT"} and not result.d2_replay_authenticated:
+        return BLOCK
     if (
         result.d2_status == "REJECT"
         or (result.gamma_count is not None and result.gamma_count > 4)
@@ -1414,6 +1609,8 @@ def derive_candidate_d_decision(result: AdmissionResult) -> str:
         or result.gamma_count is None
         or result.negative_controls_status != "PASS"
     ):
+        return BLOCK
+    if not result.d3_replay_authenticated:
         return BLOCK
     binding_gates = (
         result.binding_status,
@@ -1445,10 +1642,32 @@ def derive_candidate_d_decision(result: AdmissionResult) -> str:
     return ADMIT
 
 
+def _validate_run_metadata(run_date: str, execution_platform: str) -> None:
+    try:
+        parsed = date.fromisoformat(run_date)
+    except ValueError as error:
+        raise AdmissionEvidenceError("run date must be an ISO-8601 calendar date") from error
+    if parsed.isoformat() != run_date:
+        raise AdmissionEvidenceError("run date must be canonical ISO-8601")
+    if (
+        not execution_platform
+        or len(execution_platform) > 240
+        or any(ord(character) < 32 or ord(character) > 126 for character in execution_platform)
+    ):
+        raise AdmissionEvidenceError("execution platform must be printable ASCII")
+
+
 def evaluate_candidate_d_admission(
-    root: Path = ROOT, *, input_commit: str
+    root: Path = ROOT,
+    *,
+    input_commit: str,
+    controller_commit: str,
+    run_date: str,
+    execution_platform: str,
 ) -> AdmissionResult:
     root = _resolved_root(root)
+    _validate_run_metadata(run_date, execution_platform)
+    runtime_hashes = _controller_source_hashes(root, controller_commit)
     _validate_module_origins(root)
     d0_decision = _recompute_d0(root)
     if d0_decision != d0_baseline.D0_DECISION:
@@ -1471,15 +1690,30 @@ def evaluate_candidate_d_admission(
         )
         d2 = D2Evidence(skipped, NONE, None, skipped)
         d3 = D3Evidence(NONE, skipped, skipped, skipped, skipped, skipped, NONE)
+        d2_replayed = False
+        d3_replayed = False
         if d1_decision == BLOCK_D1:
-            resume_condition = RESUME_CONDITION
+            resume_condition = resume_condition_for(
+                "D1_BLOCK", controller_commit=controller_commit
+            )
     else:
-        d2 = _recompute_d2(root)
-        pinned_paths = (*pinned_paths, *D2_OUTPUTS)
+        d2, d2_replayed = _replay_d2(
+            root,
+            input_commit=input_commit,
+            controller_commit=controller_commit,
+        )
+        if d2_replayed:
+            pinned_paths = (*pinned_paths, *D2_REPLAY_CONTRACT.pinned_paths)
         if d2.status == "PASS":
-            d3 = _recompute_d3(root)
-            pinned_paths = (*pinned_paths, *D3_OUTPUTS)
+            d3, d3_replayed = _replay_d3(
+                root,
+                input_commit=input_commit,
+                controller_commit=controller_commit,
+            )
+            if d3_replayed:
+                pinned_paths = (*pinned_paths, *D3_REPLAY_CONTRACT.pinned_paths)
         else:
+            d3_replayed = False
             _require_skipped_outputs_absent(root, D3_OUTPUTS)
             skipped = (
                 SKIPPED_D2_REJECT
@@ -1490,10 +1724,8 @@ def evaluate_candidate_d_admission(
                 NONE, skipped, skipped, skipped, skipped, skipped, NONE
             )
             if d2.status == "BLOCK":
-                resume_condition = (
-                    "Run python scripts/run_candidate_d_d2_closure.py, commit "
-                    "the corrected D2 source artifacts, then pass that commit "
-                    "explicitly to both Task 9 commands with --input-commit."
+                resume_condition = resume_condition_for(
+                    "D2_BLOCK", controller_commit=controller_commit
                 )
         if d2.status == "PASS" and (
             "BLOCK"
@@ -1505,16 +1737,17 @@ def evaluate_candidate_d_admission(
                 d3.resource_status,
             }
         ):
-            resume_condition = (
-                "Run python scripts/run_candidate_d_d3_admission.py, commit "
-                "the corrected D3 source artifacts, then pass that commit "
-                "explicitly to both Task 9 commands with --input-commit."
+            resume_condition = resume_condition_for(
+                "D3_BLOCK", controller_commit=controller_commit
             )
 
-    if input_commit != CURRENT_INPUT_COMMIT:
-        pinned_paths = (*pinned_paths, *RESUME_PINNED_INPUTS)
+    pinned_paths = tuple(dict.fromkeys(pinned_paths))
     source_hashes = _pinned_source_hashes(root, input_commit, pinned_paths)
-    runtime_hashes = _runtime_source_hashes(root)
+    if input_commit != CURRENT_INPUT_COMMIT:
+        source_hashes = (
+            *source_hashes,
+            *_commit_only_hashes(root, input_commit, RESUME_PINNED_INPUTS),
+        )
     state = load_state(root / "research_state.yaml")
     provisional = AdmissionResult(
         d0_status="PASS",
@@ -1524,6 +1757,8 @@ def evaluate_candidate_d_admission(
         d1_missing_evidence=missing,
         d2_status=d2.status,
         d2_decision=d2.decision,
+        d2_replay_authenticated=d2_replayed,
+        d3_replay_authenticated=d3_replayed,
         gamma_count=d2.gamma_count,
         negative_controls_status=d2.negative_controls_status,
         binding_status=d3.binding_status,
@@ -1536,6 +1771,9 @@ def evaluate_candidate_d_admission(
         decision=BLOCK,
         resume_condition=resume_condition,
         input_commit=input_commit,
+        controller_commit=controller_commit,
+        run_date=run_date,
+        execution_platform=execution_platform,
         source_hashes=source_hashes,
         runtime_source_hashes=runtime_hashes,
     )
@@ -1566,6 +1804,8 @@ def _gate_payload(result: AdmissionResult) -> dict[str, object]:
         "d1_missing_evidence": list(result.d1_missing_evidence),
         "d2_status": result.d2_status,
         "d2_decision": result.d2_decision,
+        "d2_replay_authenticated": result.d2_replay_authenticated,
+        "d3_replay_authenticated": result.d3_replay_authenticated,
         "gamma_count": result.gamma_count,
         "negative_controls_status": result.negative_controls_status,
         "binding_status": result.binding_status,
@@ -1580,19 +1820,21 @@ def _gate_payload(result: AdmissionResult) -> dict[str, object]:
 
 def _pinned_inputs_for_result(result: AdmissionResult) -> tuple[str, ...]:
     paths = PINNED_INPUTS
-    if result.d1_status == "PASS":
-        paths = (*paths, *D2_OUTPUTS)
-    if result.d2_status == "PASS":
-        paths = (*paths, *D3_OUTPUTS)
-    if result.input_commit != CURRENT_INPUT_COMMIT:
-        paths = (*paths, *RESUME_PINNED_INPUTS)
-    return paths
+    if result.d2_replay_authenticated:
+        paths = (*paths, *D2_REPLAY_CONTRACT.pinned_paths)
+    if result.d3_replay_authenticated:
+        paths = (*paths, *D3_REPLAY_CONTRACT.pinned_paths)
+    return tuple(dict.fromkeys(paths))
 
 
 def _decision_evidence_payload(result: AdmissionResult) -> dict[str, object]:
     payload = {
-        "schema": "candidate-d-task9-decision-evidence-v2",
+        "schema": "candidate-d-task9-decision-evidence-v3",
         "input_commit": result.input_commit,
+        "controller_commit": result.controller_commit,
+        "historical_block_commit": HISTORICAL_BLOCK_COMMIT,
+        "run_date": result.run_date,
+        "execution_platform": result.execution_platform,
         "claimed_decision": result.decision,
         "gate_evidence": _gate_payload(result),
         "source_hashes": [
@@ -1625,6 +1867,12 @@ def canonical_summary_record(result: AdmissionResult) -> dict[str, str]:
         "d1_missing_evidence": "|".join(result.d1_missing_evidence),
         "d2_status": result.d2_status,
         "d2_decision": result.d2_decision,
+        "d2_replay_authenticated": (
+            "yes" if result.d2_replay_authenticated else "no"
+        ),
+        "d3_replay_authenticated": (
+            "yes" if result.d3_replay_authenticated else "no"
+        ),
         "gamma_count": "" if result.gamma_count is None else str(result.gamma_count),
         "negative_controls_status": result.negative_controls_status,
         "binding_status": result.binding_status,
@@ -1640,6 +1888,10 @@ def canonical_summary_record(result: AdmissionResult) -> dict[str, str]:
             "yes" if result.decision == ADMIT else "no"
         ),
         "input_commit": result.input_commit,
+        "controller_commit": result.controller_commit,
+        "historical_block_commit": HISTORICAL_BLOCK_COMMIT,
+        "run_date": result.run_date,
+        "execution_platform": result.execution_platform,
         "resume_condition": result.resume_condition,
         "decision_evidence_binding_sha256": _decision_binding(result),
     }
@@ -1657,6 +1909,8 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
         "d1_missing_evidence",
         "d2_status",
         "d2_decision",
+        "d2_replay_authenticated",
+        "d3_replay_authenticated",
         "gamma_count",
         "negative_controls_status",
         "binding_status",
@@ -1680,6 +1934,12 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
     permission = gates["pre_application_permission"]
     if not isinstance(permission, bool):
         raise ValueError("decision evidence permission is malformed")
+    replay_flags = (
+        gates["d2_replay_authenticated"],
+        gates["d3_replay_authenticated"],
+    )
+    if any(not isinstance(value, bool) for value in replay_flags):
+        raise ValueError("decision evidence replay flags are malformed")
 
     def hashes(key: str, expected: tuple[str, ...]) -> tuple[tuple[str, str], ...]:
         rows = payload.get(key)
@@ -1701,10 +1961,17 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
         return tuple(parsed)
 
     expected_source_paths = PINNED_INPUTS
-    if gates["d1_status"] == "PASS":
-        expected_source_paths = (*expected_source_paths, *D2_OUTPUTS)
-    if gates["d2_status"] == "PASS":
-        expected_source_paths = (*expected_source_paths, *D3_OUTPUTS)
+    if gates["d2_replay_authenticated"]:
+        expected_source_paths = (
+            *expected_source_paths,
+            *D2_REPLAY_CONTRACT.pinned_paths,
+        )
+    if gates["d3_replay_authenticated"]:
+        expected_source_paths = (
+            *expected_source_paths,
+            *D3_REPLAY_CONTRACT.pinned_paths,
+        )
+    expected_source_paths = tuple(dict.fromkeys(expected_source_paths))
     if payload.get("input_commit") != CURRENT_INPUT_COMMIT:
         expected_source_paths = (*expected_source_paths, *RESUME_PINNED_INPUTS)
     source_hashes = hashes("source_hashes", expected_source_paths)
@@ -1713,20 +1980,35 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
         "d1_missing_evidence",
         "gamma_count",
         "pre_application_permission",
+        "d2_replay_authenticated",
+        "d3_replay_authenticated",
     }
     if any(not isinstance(gates[field], str) for field in string_fields):
         raise ValueError("decision evidence gate values are malformed")
     decision = payload.get("claimed_decision")
     resume = payload.get("resume_condition")
     input_commit = payload.get("input_commit")
+    controller_commit = payload.get("controller_commit")
+    historical_commit = payload.get("historical_block_commit")
+    run_date = payload.get("run_date")
+    execution_platform = payload.get("execution_platform")
     if (
         not isinstance(decision, str)
         or decision not in DECISIONS
         or not isinstance(resume, str)
         or not isinstance(input_commit, str)
         or re.fullmatch(r"[0-9a-f]{40}", input_commit) is None
+        or not isinstance(controller_commit, str)
+        or re.fullmatch(r"[0-9a-f]{40}", controller_commit) is None
+        or historical_commit != HISTORICAL_BLOCK_COMMIT
+        or not isinstance(run_date, str)
+        or not isinstance(execution_platform, str)
     ):
         raise ValueError("decision evidence terminal fields are malformed")
+    try:
+        _validate_run_metadata(run_date, execution_platform)
+    except AdmissionEvidenceError as error:
+        raise ValueError(str(error)) from error
     return AdmissionResult(
         d0_status=gates["d0_status"],
         d0_decision=gates["d0_decision"],
@@ -1735,6 +2017,8 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
         d1_missing_evidence=tuple(missing),
         d2_status=gates["d2_status"],
         d2_decision=gates["d2_decision"],
+        d2_replay_authenticated=gates["d2_replay_authenticated"],
+        d3_replay_authenticated=gates["d3_replay_authenticated"],
         gamma_count=gamma,
         negative_controls_status=gates["negative_controls_status"],
         binding_status=gates["binding_status"],
@@ -1747,6 +2031,9 @@ def _result_from_evidence(payload: Mapping[str, object]) -> AdmissionResult:
         decision=decision,
         resume_condition=resume,
         input_commit=input_commit,
+        controller_commit=controller_commit,
+        run_date=run_date,
+        execution_platform=execution_platform,
         source_hashes=source_hashes,
         runtime_source_hashes=runtime_hashes,
     )
@@ -1758,6 +2045,10 @@ def validate_decision_evidence(payload: object) -> AdmissionResult:
     expected_keys = {
         "schema",
         "input_commit",
+        "controller_commit",
+        "historical_block_commit",
+        "run_date",
+        "execution_platform",
         "claimed_decision",
         "gate_evidence",
         "source_hashes",
@@ -1766,7 +2057,7 @@ def validate_decision_evidence(payload: object) -> AdmissionResult:
         "binding_sha256",
     }
     if set(payload) != expected_keys or payload.get("schema") != (
-        "candidate-d-task9-decision-evidence-v2"
+        "candidate-d-task9-decision-evidence-v3"
     ):
         raise ValueError("decision evidence schema is malformed")
     binding = payload.get("binding_sha256")
@@ -1814,6 +2105,12 @@ def _proof_rows(result: AdmissionResult) -> tuple[dict[str, str], ...]:
             "evidence": result.d2_decision or result.d2_status,
         },
         {
+            "gate": "D2_replay_authentication",
+            "status": "PASS" if result.d2_replay_authenticated else "NOT_REACHED",
+            "classification": "PINNED_CANONICAL_REPLAY_REQUIRED",
+            "evidence": D2_REPLAY_CONTRACT.runner,
+        },
+        {
             "gate": "D2_gamma_count",
             "status": (
                 "MISSING" if result.gamma_count is None else str(result.gamma_count)
@@ -1839,6 +2136,12 @@ def _proof_rows(result: AdmissionResult) -> tuple[dict[str, str], ...]:
                 result.binding_status, "CANONICAL_BINDING_DOMAIN_ROWS"
             ),
             "evidence": result.binding_status,
+        },
+        {
+            "gate": "D3_replay_authentication",
+            "status": "PASS" if result.d3_replay_authenticated else "NOT_REACHED",
+            "classification": "PINNED_CANONICAL_REPLAY_REQUIRED",
+            "evidence": D3_REPLAY_CONTRACT.runner,
         },
         {
             "gate": "D3_standard_object_security",
@@ -1969,7 +2272,9 @@ def _report(result: AdmissionResult) -> bytes:
 | D0 baseline freeze | {result.d0_status} | `{result.d0_decision}` |
 | D1 novelty/full-text audit | {result.d1_status} | `{result.d1_decision}` |
 | D2 exact operator closure | {result.d2_status} | `{result.d2_decision or result.d2_status}` |
+| D2 deterministic replay | {'PASS' if result.d2_replay_authenticated else 'NOT_REACHED'} | canonical scientific runner required |
 | D2 gamma / negative controls | {result.gamma_count if result.gamma_count is not None else 'missing'} | `{result.negative_controls_status}` |
+| D3 deterministic replay | {'PASS' if result.d3_replay_authenticated else 'NOT_REACHED'} | canonical scientific runner required |
 | D3 integer binding | {result.binding_status} | {d3_evidence} |
 | D3 standard security objects | {result.security_status} | {d3_evidence} |
 | D3 absolute noise/decode | {result.noise_status} | {d3_evidence} |
@@ -1978,15 +2283,19 @@ def _report(result: AdmissionResult) -> bytes:
 D0 was regenerated from the pinned baseline anchors and compared byte for
 byte with the tracked D0 artifacts. D1 was regenerated from the source
 registry and locally hash-bound full texts and compared byte for byte with the
-tracked D1 artifacts. Missing D1 reviews: `{missing}`. D2 and D3 values above
-are parsed only when their canonical source artifacts are present after their
-predecessor passes; skipped values are never promoted to PASS.
+tracked D1 artifacts. Missing D1 reviews: `{missing}`. D2 and D3 PASS/REJECT
+values have authority only after their commit-pinned canonical runner executes
+in a temporary output root and every artifact compares byte for byte. Static
+CSV parsing is secondary; skipped or hand-written values are never promoted.
 
 ## Scope
 
 No D0-D3 terminal route is itself a complete SAB speedup or paper claim. The
-decision is bound to input commit `{result.input_commit}` and decision-evidence
-hash `{_decision_binding(result)}`.
+decision is bound to input commit `{result.input_commit}`, controller commit
+`{result.controller_commit}`, immutable historical BLOCK commit
+`{HISTORICAL_BLOCK_COMMIT}`, run date `{result.run_date}`, execution platform
+`{result.execution_platform}`, and decision-evidence hash
+`{_decision_binding(result)}`.
 {resume}
 """
     return (text.rstrip() + "\n").encode("ascii")
@@ -2032,9 +2341,9 @@ def _render_artifacts(root: Path, result: AdmissionResult) -> dict[str, bytes]:
 
 def _indexed_artifacts(result: AdmissionResult) -> tuple[str, ...]:
     paths = set(INDEXED_ARTIFACTS)
-    if result.d1_status == "PASS":
+    if result.d2_replay_authenticated:
         paths.update(D2_OUTPUTS)
-    if result.d2_status == "PASS":
+    if result.d3_replay_authenticated:
         paths.update(D3_OUTPUTS)
     return tuple(sorted(paths))
 
@@ -2115,10 +2424,22 @@ def _write_bytes_atomic(path: Path, content: bytes) -> None:
 
 
 def write_candidate_d_artifacts(
-    root: Path, result: AdmissionResult, *, input_commit: str
+    root: Path,
+    result: AdmissionResult,
+    *,
+    input_commit: str,
+    controller_commit: str,
+    run_date: str,
+    execution_platform: str,
 ) -> None:
     root = _resolved_root(root)
-    fresh = evaluate_candidate_d_admission(root, input_commit=input_commit)
+    fresh = evaluate_candidate_d_admission(
+        root,
+        input_commit=input_commit,
+        controller_commit=controller_commit,
+        run_date=run_date,
+        execution_platform=execution_platform,
+    )
     if result != fresh:
         raise AdmissionEvidenceError(
             "admission result does not match fresh repository evidence"
@@ -2162,10 +2483,21 @@ def write_candidate_d_artifacts(
 
 
 def verify_candidate_d_artifacts(
-    root: Path = ROOT, *, input_commit: str
+    root: Path = ROOT,
+    *,
+    input_commit: str,
+    controller_commit: str,
+    run_date: str,
+    execution_platform: str,
 ) -> AdmissionResult:
     root = _resolved_root(root)
-    result = evaluate_candidate_d_admission(root, input_commit=input_commit)
+    result = evaluate_candidate_d_admission(
+        root,
+        input_commit=input_commit,
+        controller_commit=controller_commit,
+        run_date=run_date,
+        execution_platform=execution_platform,
+    )
     expected = _render_artifacts(root, result)
     for relative in GENERATED_OUTPUTS:
         path = _safe_path(
@@ -2200,6 +2532,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--input-commit", required=True)
+    parser.add_argument("--controller-commit", required=True)
+    parser.add_argument("--run-date", required=True)
+    parser.add_argument("--execution-platform", required=True)
     parser.add_argument(
         "--check",
         action="store_true",
@@ -2208,17 +2543,34 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.check:
         result = verify_candidate_d_artifacts(
-            args.root, input_commit=args.input_commit
+            args.root,
+            input_commit=args.input_commit,
+            controller_commit=args.controller_commit,
+            run_date=args.run_date,
+            execution_platform=args.execution_platform,
         )
     else:
         result = evaluate_candidate_d_admission(
-            args.root, input_commit=args.input_commit
+            args.root,
+            input_commit=args.input_commit,
+            controller_commit=args.controller_commit,
+            run_date=args.run_date,
+            execution_platform=args.execution_platform,
         )
         write_candidate_d_artifacts(
-            args.root, result, input_commit=args.input_commit
+            args.root,
+            result,
+            input_commit=args.input_commit,
+            controller_commit=args.controller_commit,
+            run_date=args.run_date,
+            execution_platform=args.execution_platform,
         )
         result = verify_candidate_d_artifacts(
-            args.root, input_commit=args.input_commit
+            args.root,
+            input_commit=args.input_commit,
+            controller_commit=args.controller_commit,
+            run_date=args.run_date,
+            execution_platform=args.execution_platform,
         )
     print(result.decision)
     return 0
