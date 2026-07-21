@@ -45,6 +45,8 @@ in depth, not a hostile-code sandbox.
 The canonical stage child also runs under `python -I -S`. Its execution audit
 trusts only the explicit interpreter `stdlib` and `platstdlib` roots, never an
 arbitrary initial `sys.path`, site-packages directory, or `.pth` expansion.
+The `purelib` and `platlib` subtrees are explicitly excluded even when, as on
+Windows, they are nested below the standard-library root.
 
 A malicious commit-pinned Python runner is out of scope. Such a runner can
 introspect or mutate same-process Python guards and can attempt to forge a

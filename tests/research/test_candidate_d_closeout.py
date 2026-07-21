@@ -63,6 +63,9 @@ class CandidateDCloseoutTests(unittest.TestCase):
             execution_platform=EXECUTION_PLATFORM,
         )
         self.assertEqual(self.result.decision, BLOCK)
+        self.predecessor = closeout._verified_erratum_predecessor(
+            ROOT, self.result
+        )
 
     def _route_result(self, decision: str):
         passing = replace(
@@ -145,6 +148,16 @@ class CandidateDCloseoutTests(unittest.TestCase):
         (root / "repro/run_log.csv").write_bytes(
             (RUN_HEADER + "\n").encode("ascii")
         )
+        if closeout._is_historical_erratum_result(selected):
+            for relative, start, end, content in (
+                closeout._predecessor_erratum_contents(self.predecessor)
+            ):
+                path = root / relative
+                path.write_bytes(
+                    closeout._plan_bounded_append(
+                        path.read_bytes(), start, end, content, relative
+                    )
+                )
         state = load_state(ROOT / "research_state.yaml")
         state["goal_status"] = "ACTIVE"
         state["active_candidate"] = "D"
@@ -183,6 +196,11 @@ class CandidateDCloseoutTests(unittest.TestCase):
                 closeout, "verify_candidate_d_artifacts", return_value=selected
             ),
             patch.object(closeout, "_validate_historical_block_ledgers"),
+            patch.object(
+                closeout,
+                "_verified_erratum_predecessor",
+                return_value=self.predecessor,
+            ),
         ):
             return closeout.apply_candidate_d_decision(root, selected)
 
@@ -538,24 +556,15 @@ class CandidateDCloseoutTests(unittest.TestCase):
         joined.encode("ascii")
 
         for relative, start, end, content in contents:
-            before = (ROOT / relative).read_bytes()
-            first = closeout._plan_superseding_erratum(
-                before,
-                start,
-                end,
-                content,
-                relative,
-                self.result,
-                predecessor_result=self.result,
+            first = closeout._plan_bounded_append(
+                b"# ledger\n", start, end, content, relative
             )
-            second = closeout._plan_superseding_erratum(
+            second = closeout._plan_bounded_append(
                 first,
                 start,
                 end,
                 content,
                 relative,
-                self.result,
-                predecessor_result=self.result,
             )
             self.assertEqual(first, second)
             self.assertEqual(first.count(start.encode("ascii")), 1)
@@ -700,11 +709,11 @@ class CandidateDCloseoutTests(unittest.TestCase):
             ledger = closeout._plan_bounded_append(
                 b"# ledger\n", start, end, prior_content, relative
             )
-            self.assertEqual(ledger.count(prior.controller_commit.encode("ascii")), 2)
+            self.assertEqual(ledger.count(prior.controller_commit.encode("ascii")), 4)
             tampered = ledger.replace(
                 prior.controller_commit.encode("ascii"), arbitrary
             )
-            self.assertEqual(tampered.count(arbitrary), 2)
+            self.assertEqual(tampered.count(arbitrary), 4)
 
             with self.assertRaises(ValueError):
                 closeout._plan_superseding_erratum(
@@ -915,7 +924,15 @@ class CandidateDCloseoutTests(unittest.TestCase):
                 closeout,
                 "verify_candidate_d_artifacts",
                 return_value=self.result,
-            ), patch.object(closeout, "_write_bytes_atomic", side_effect=fail_on_third):
+            ), patch.object(
+                closeout,
+                "_verified_erratum_predecessor",
+                return_value=self.predecessor,
+            ), patch.object(
+                closeout,
+                "_write_bytes_atomic",
+                side_effect=fail_on_third,
+            ):
                 with self.assertRaisesRegex(OSError, "injected"):
                     closeout.apply_candidate_d_decision(root, self.result)
             self.assertEqual(self._snapshot(root), before)
