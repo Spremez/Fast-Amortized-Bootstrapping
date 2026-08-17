@@ -13,6 +13,8 @@ uint64_t get_min_prec(TRLWE_Key key){
         previous = (N - j - 1);
       }
     }  
+    const uint64_t r_diff = previous;
+    if(r_max < r_diff) r_max = r_diff;
   }
   return (uint64_t)(log2(r_max) + 1);
 }
@@ -37,6 +39,11 @@ bool check_key(TRLWE_Key key, uint64_t h, uint64_t r_prec, SAB_Key sab){
         previous = (N - j - 1);
       }
     }  
+    const uint64_t r_diff = previous;
+    if(r_diff >= r_max){
+      if(sab->include_zeros) cnt_h += r_diff/r_max;
+      else return false;
+    }
     if(cnt_h > h) return false;
     if(cnt_h < h && !sab->include_zeros) return false;
   }

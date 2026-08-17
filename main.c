@@ -214,9 +214,10 @@ void test_sab(){
   SAB_Key sab = new_sparse_amortized_bootstrapping(input_key, packing_key, output_key, msg_prec, b_packing, ell_packing, t_ks, b_ks, h_in, r_prec, false, false, false);
   
   TorusPolynomial poly_in = polynomial_new_torus_polynomial(in_N);
+  generate_random_bytes(sizeof(uint64_t)*(in_N), (uint8_t *) poly_in->coeffs);
 
   const uint64_t mod_mask = (1ULL<<(msg_prec - 1)) - 1;
-  for (size_t i = 0; i < in_N; i++) poly_in->coeffs[i] = int2torus(i&mod_mask, msg_prec);
+  for (size_t i = 0; i < in_N; i++) poly_in->coeffs[i] = int2torus(poly_in->coeffs[i]&mod_mask, msg_prec);
 
   TRLWE rlwe_in = trlwe_new_sample(poly_in, input_key);
   TRLWE rlwe_tv = trlwe_new_noiseless_trivial_sample(NULL, out_k, out_N);
@@ -328,9 +329,10 @@ void test_sab_tern(){
   SAB_Key sab = new_sparse_amortized_bootstrapping(input_key, packing_key, output_key, msg_prec, b_packing, ell_packing, t_ks, b_ks, h_in, r_prec, false, true, false);
   
   TorusPolynomial poly_in = polynomial_new_torus_polynomial(in_N);
+  generate_random_bytes(sizeof(uint64_t)*(in_N), (uint8_t *) poly_in->coeffs);
 
   const uint64_t mod_mask = (1ULL<<(msg_prec - 1)) - 1;
-  for (size_t i = 0; i < in_N; i++) poly_in->coeffs[i] = int2torus(i&mod_mask, msg_prec);
+  for (size_t i = 0; i < in_N; i++) poly_in->coeffs[i] = int2torus(poly_in->coeffs[i]&mod_mask, msg_prec);
 
   TRLWE rlwe_in = trlwe_new_sample(poly_in, input_key);
   TRLWE rlwe_tv = trlwe_new_noiseless_trivial_sample(NULL, out_k, out_N);
@@ -414,9 +416,10 @@ void test_sab_arbitrary(){
   SAB_Key sab = new_sparse_amortized_bootstrapping(input_key, packing_key, output_key, msg_prec, b_packing, ell_packing, t_ks, b_ks, h_in, r_prec, false, false, true);
   
   TorusPolynomial poly_in = polynomial_new_torus_polynomial(in_N);
+  generate_random_bytes(sizeof(uint64_t)*(in_N), (uint8_t *) poly_in->coeffs);
 
   const uint64_t mod_mask = (1ULL<<(msg_prec - 1)) - 1;
-  for (size_t i = 0; i < in_N; i++) poly_in->coeffs[i] = int2torus(i&mod_mask, msg_prec);
+  for (size_t i = 0; i < in_N; i++) poly_in->coeffs[i] = int2torus(poly_in->coeffs[i]&mod_mask, msg_prec);
 
   TRLWE rlwe_in = trlwe_new_sample(poly_in, input_key);
   TRLWE rlwe_tv = trlwe_new_noiseless_trivial_sample(NULL, out_k, out_N);
