@@ -2,7 +2,9 @@
   "schema_version": 1,
   "text_extraction_profile": {
     "tool": "pdftotext",
-    "arguments": ["-layout"],
+    "arguments": [
+      "-layout"
+    ],
     "reference_version": "24.02.0",
     "platform": "WSL/Linux"
   },
@@ -21,7 +23,10 @@
     {
       "id": "FAB_2025_686",
       "title": "Fast amortized bootstrapping with small keys and polynomial noise overhead",
-      "authors": ["Antonio Guimaraes", "Hilder V. L. Pereira"],
+      "authors": [
+        "Antonio Guimaraes",
+        "Hilder V. L. Pereira"
+      ],
       "year": 2025,
       "official_url": "https://eprint.iacr.org/2025/686",
       "fulltext_url": "https://eprint.iacr.org/2025/686.pdf",
@@ -47,25 +52,36 @@
           "page": 4,
           "section": "Performance summary",
           "paraphrase": "States an approximately 2^-64 failure target and approximately 128-bit security for the reported cases.",
-          "required_terms": ["Failure probability", "128 for all cases"]
+          "required_terms": [
+            "Failure probability",
+            "128 for all cases"
+          ]
         },
         {
           "page": 13,
           "section": "Algorithm 2",
           "paraphrase": "Defines the binary sparse amortized bootstrapping schedule used as the scalar target.",
-          "required_terms": ["Algorithm 2", "bin-SAB"]
+          "required_terms": [
+            "Algorithm 2",
+            "bin-SAB"
+          ]
         },
         {
           "page": 21,
           "section": "Section 6",
           "paraphrase": "States complete functional-bootstrapping complexity and amortized cost.",
-          "required_terms": ["Corollary 6.2", "amortized"]
+          "required_terms": [
+            "Corollary 6.2",
+            "amortized"
+          ]
         },
         {
           "page": 22,
           "section": "Section 6.2",
           "paraphrase": "Provides the security-level accounting used by the target parameter discussion.",
-          "required_terms": ["security level"]
+          "required_terms": [
+            "security level"
+          ]
         }
       ]
     },
@@ -107,19 +123,27 @@
           "page": 1,
           "section": "Abstract",
           "paraphrase": "Defines common-mask ciphertexts as a shared mask with multiple message bodies.",
-          "required_terms": ["common mask", "multiple message bodies"]
+          "required_terms": [
+            "common mask",
+            "multiple message bodies"
+          ]
         },
         {
           "page": 1,
           "section": "Abstract",
           "paraphrase": "Claims natural extension of known FHEW/TFHE ciphertext variants and operations.",
-          "required_terms": ["all known FHEW/TFHE-style ciphertext variants"]
+          "required_terms": [
+            "all known FHEW/TFHE-style ciphertext variants"
+          ]
         },
         {
           "page": 4,
           "section": "Contribution summary",
           "paraphrase": "Reports that common-mask evaluation keys can grow by factors approximately w and w^2.",
-          "required_terms": ["bootstrapping keys", "approximately w and w2 larger"]
+          "required_terms": [
+            "bootstrapping keys",
+            "approximately w and w2 larger"
+          ]
         }
       ]
     },
@@ -162,26 +186,37 @@
           "page": 1,
           "section": "Abstract",
           "paraphrase": "Redesigns homomorphic polynomial multiplication to reduce expensive FFT operations.",
-          "required_terms": ["homomorphic polynomial multiplication", "expensive FFT"]
+          "required_terms": [
+            "homomorphic polynomial multiplication",
+            "expensive FFT"
+          ]
         },
         {
           "page": 1,
           "section": "Abstract",
           "paraphrase": "Introduces sparsity-aware packing as a separate batching mechanism.",
-          "required_terms": ["sparsity-aware message packing"]
+          "required_terms": [
+            "sparsity-aware message packing"
+          ]
         },
         {
           "page": 13,
           "section": "Conclusion",
           "paraphrase": "Attributes fewer FFT operations to homomorphic polynomial multiplication and linear packing-density complexity to sparse MLWE packing.",
-          "required_terms": ["reduce the number of FFT operations", "linear complexity in packing density"]
+          "required_terms": [
+            "reduce the number of FFT operations",
+            "linear complexity in packing density"
+          ]
         }
       ]
     },
     {
       "id": "FDFB2_2024_1376",
       "title": "FDFB2: Functional Bootstrapping via Sparse Polynomial Multiplication",
-      "authors": ["Kamil Kluczniak", "Leonard Schild"],
+      "authors": [
+        "Kamil Kluczniak",
+        "Leonard Schild"
+      ],
       "year": 2024,
       "official_url": "https://eprint.iacr.org/2024/1376",
       "fulltext_url": "https://eprint.iacr.org/2024/1376.pdf",
@@ -223,14 +258,21 @@
           "page": 7,
           "section": "Section 3",
           "paraphrase": "Generalizes to multiple functions at the cost of a single bootstrap.",
-          "required_terms": ["multiple functions", "single"]
+          "required_terms": [
+            "multiple functions",
+            "single"
+          ]
         }
       ]
     },
     {
       "id": "MULTIVALUE_2018_622",
       "title": "New Techniques for Multi-value Input Homomorphic Evaluation and Applications",
-      "authors": ["Sergiu Carpov", "Malika Izabachene", "Victor Mollimard"],
+      "authors": [
+        "Sergiu Carpov",
+        "Malika Izabachene",
+        "Victor Mollimard"
+      ],
       "year": 2018,
       "official_url": "https://eprint.iacr.org/2018/622",
       "fulltext_url": "https://eprint.iacr.org/2018/622.pdf",
@@ -258,14 +300,21 @@
           "page": 1,
           "section": "Abstract",
           "paraphrase": "Evaluates several operations in one bootstrap and reports low incremental cost for many outputs.",
-          "required_terms": ["one bootstrapping call", "number of LUT outputs"]
+          "required_terms": [
+            "one bootstrapping call",
+            "number of LUT outputs"
+          ]
         }
       ]
     },
     {
       "id": "MOSFHET_2022_515",
       "title": "MOSFHET: Optimized Software for FHE over the Torus",
-      "authors": ["Antonio Guimaraes", "Edson Borin", "Diego F. Aranha"],
+      "authors": [
+        "Antonio Guimaraes",
+        "Edson Borin",
+        "Diego F. Aranha"
+      ],
       "year": 2022,
       "official_url": "https://eprint.iacr.org/2022/515",
       "fulltext_url": "https://eprint.iacr.org/2022/515.pdf",
@@ -293,20 +342,28 @@
           "page": 1,
           "section": "Abstract",
           "paraphrase": "Introduces multi-value bootstrapping based on blind-rotation unfolding.",
-          "required_terms": ["multi-value bootstrapping", "blind rotation unfolding"]
+          "required_terms": [
+            "multi-value bootstrapping",
+            "blind rotation unfolding"
+          ]
         },
         {
           "page": 12,
           "section": "Implementation discussion",
           "paraphrase": "Discusses an implementation regime where external products become internal products.",
-          "required_terms": ["external products become internal products"]
+          "required_terms": [
+            "external products become internal products"
+          ]
         }
       ]
     },
     {
       "id": "NTRU_AMORT_2026_068",
       "title": "Practical Amortized Bootstrapping for NTRU-Based FHE",
-      "authors": ["Wun-Ting Lin", "Ja-Ling Wu"],
+      "authors": [
+        "Wun-Ting Lin",
+        "Ja-Ling Wu"
+      ],
       "year": 2026,
       "official_url": "https://eprint.iacr.org/2026/068",
       "fulltext_url": "https://eprint.iacr.org/2026/068.pdf",
@@ -316,23 +373,73 @@
         "NTRU-based comparison boundary",
         "latest complete-cost and security context"
       ],
-      "review_status": "FULLTEXT_MISSING",
-      "pdf_sha256": null,
-      "text_sha256": null,
-      "page_range": null,
-      "claim_classification": "MANDATORY_POST_FAB_SOURCE_UNREVIEWED",
-      "same_operator": null,
-      "same_complexity": null,
-      "distinct_sab_theorem": false,
-      "distinct_complete_result": false,
-      "falsifiable_full_sab_endpoint": false,
-      "composition_with_batchboot": "UNRESOLVED",
-      "anchors": []
+      "review_status": "FULLTEXT_REVIEWED",
+      "pdf_sha256": "8083db16cd43613968e02846ad16d3f4e2c4d8dd0c64692300e31bc184cbda84",
+      "text_sha256": "4b94fd8372953d1ef311c7f8d04455d5021ae32c6389d729a3688404a3921cc0",
+      "page_range": "1-22",
+      "claim_classification": "NTRU_TRANSFER_OF_GP25_MPMUL_NO_LATE_BOUND_OPERATOR_NO_MULTI_LANE_ACCUMULATOR",
+      "same_operator": false,
+      "same_complexity": false,
+      "distinct_sab_theorem": true,
+      "distinct_complete_result": true,
+      "falsifiable_full_sab_endpoint": true,
+      "composition_with_batchboot": "POSSIBLE_SEPARATE_AXIS",
+      "anchors": [
+        {
+          "page": 1,
+          "section": "Abstract",
+          "paraphrase": "Adapts monomial-by-polynomial amortized bootstrapping to NTRU ciphertexts with sparse secret keys, reducing dominant per-coefficient work from O(n*l_Q) to O(h*l_pos) external-product operations.",
+          "required_terms": [
+            "sparse secret keys",
+            "external-product"
+          ]
+        },
+        {
+          "page": 2,
+          "section": "Introduction",
+          "paraphrase": "Credits Guimaraes and Pereira (GP25) as the origin of the adapted MPMul amortization and states the NTRU adaptation is nontrivial, achieved through a difference-vector representation of sparse secret-key positions.",
+          "required_terms": [
+            "Guimarães",
+            "nontrivial",
+            "difference-vector"
+          ]
+        },
+        {
+          "page": 9,
+          "section": "Algorithm 2",
+          "paraphrase": "The full amortized bootstrapping algorithm initializes each accumulator with the test vector before the sparse rotation schedule; lookup tables are bound before rotation and no LUT-independent lane-operator state appears.",
+          "required_terms": [
+            "Algorithm 2",
+            "test vector"
+          ]
+        },
+        {
+          "page": 17,
+          "section": "Section 6.4",
+          "paraphrase": "Reports the single-threaded benchmark of 2.68 ms per refreshed message coefficient at n = 8192 against FINAL, TFHE, and GP25 on identical hardware.",
+          "required_terms": [
+            "2.68",
+            "amortized"
+          ]
+        },
+        {
+          "page": 19,
+          "section": "Conclusion and Future Work",
+          "paraphrase": "Leaves whether GP25's two-key accumulator technique applies to the polynomial-NTRU setting as an open question for future work; no multi-lane matrix accumulator is constructed.",
+          "required_terms": [
+            "two-key accumulator",
+            "future work"
+          ]
+        }
+      ]
     },
     {
       "id": "BATCH_BOOT_I",
       "title": "Batch Bootstrapping I: A New Framework for SIMD Bootstrapping in Polynomial Modulus",
-      "authors": ["Feng-Hao Liu", "Han Wang"],
+      "authors": [
+        "Feng-Hao Liu",
+        "Han Wang"
+      ],
       "year": 2023,
       "official_url": "https://doi.org/10.1007/978-3-031-30620-4_11",
       "fulltext_url": "https://link.springer.com/content/pdf/10.1007/978-3-031-30620-4_11.pdf",
@@ -358,14 +465,20 @@
           "page": 1,
           "section": "Abstract",
           "paraphrase": "Defines a batch homomorphic framework and an amortized bootstrapping target in polynomial modulus.",
-          "required_terms": ["amortized cost", "batch homomorphic computation"]
+          "required_terms": [
+            "amortized cost",
+            "batch homomorphic computation"
+          ]
         }
       ]
     },
     {
       "id": "BATCH_BOOT_II",
       "title": "Batch Bootstrapping II: Bootstrapping in Polynomial Modulus only Requires O-tilde(1) FHE Multiplications in Amortization",
-      "authors": ["Feng-Hao Liu", "Han Wang"],
+      "authors": [
+        "Feng-Hao Liu",
+        "Han Wang"
+      ],
       "year": 2023,
       "official_url": "https://doi.org/10.1007/978-3-031-30620-4_12",
       "fulltext_url": "https://link.springer.com/content/pdf/10.1007/978-3-031-30620-4_12.pdf",
@@ -391,7 +504,10 @@
           "page": 1,
           "section": "Abstract",
           "paraphrase": "Claims O-tilde(1) amortized FHE multiplications per input ciphertext.",
-          "required_terms": ["amortized complexity", "polynomial modulus"]
+          "required_terms": [
+            "amortized complexity",
+            "polynomial modulus"
+          ]
         }
       ]
     }

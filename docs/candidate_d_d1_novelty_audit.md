@@ -2,11 +2,11 @@
 
 ## Decision
 
-`BLOCK_D1_REQUIRED_FULLTEXT_OR_REVIEW_MISSING`
+`PASS_D1_DISTINCT_SAB_OPERATOR_CLAIM_REMAINS_TESTABLE`
 
-The gate is fail closed. 8 of nine mandatory primary sources are locally
-hash-bound and claim-anchored. Missing or invalid mandatory sources: `NTRU_AMORT_2026_068`.
-Candidate D therefore does not advance to D2, and no algorithm hot-path change is authorized by this audit.
+The gate is fail closed. 9 of nine mandatory primary sources are locally
+hash-bound and claim-anchored. Missing or invalid mandatory sources: none.
+All mandatory reviews are complete and the concrete narrow claim remains testable. Candidate D may transition to D1 pass and execute D2; algorithm hot-path work remains prohibited until D3 admission.
 
 ## Source Evidence
 
@@ -18,7 +18,7 @@ Candidate D therefore does not advance to D2, and no algorithm hot-path change i
 | FDFB2_2024_1376 | FULLTEXT_REVIEWED | 1-21 | SAME_BROAD_LATE_BOUND_MULTI_FUNCTION_OPERATOR_DISTINCT_SAB_CLOSURE_UNRESOLVED |
 | MULTIVALUE_2018_622 | FULLTEXT_REVIEWED | 1-21 | ADJACENT_MULTI_OUTPUT_LUT_PRIOR_ART_NOT_SAB_OPERATOR_CLOSURE |
 | MOSFHET_2022_515 | FULLTEXT_REVIEWED | 1-22 | IMPLEMENTATION_AND_MULTI_VALUE_PRIOR_ART_NOT_COMPLETE_SAB_OPERATOR_CLOSURE |
-| NTRU_AMORT_2026_068 | FULLTEXT_MISSING | n/a | MANDATORY_POST_FAB_SOURCE_UNREVIEWED |
+| NTRU_AMORT_2026_068 | FULLTEXT_REVIEWED | 1-22 | NTRU_TRANSFER_OF_GP25_MPMUL_NO_LATE_BOUND_OPERATOR_NO_MULTI_LANE_ACCUMULATOR |
 | BATCH_BOOT_I | FULLTEXT_REVIEWED | 1-32 | THEORETICAL_BATCH_BOOTSTRAPPING_PRIOR_ART_DIFFERENT_OPERATOR_OBJECT |
 | BATCH_BOOT_II | FULLTEXT_REVIEWED | 1-32 | THEORETICAL_AMORTIZED_BOOTSTRAPPING_PRIOR_ART_DIFFERENT_OPERATOR_OBJECT |
 
@@ -57,6 +57,6 @@ Status: `TESTABLE_NOT_PROVEN`
 
 ## Routing
 
-Keep Candidate D at `D0_BASELINE_FROZEN` until the atomic Task 9 admission controller records `BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE`. Tasks D2-D8 are skipped for this run. The finite resume condition is a locally hash-bound, page-anchored review of every source listed above as missing; repeated network probing is not part of the loop.
+Transition Candidate D from `D0_BASELINE_FROZEN` to `D1_NOVELTY_AUDIT_PASS`, then execute the finite D2 closure gate.
 
-This result is not a Candidate D rejection on mathematical grounds and is not a bootstrapping speedup claim. It is a reproducible evidence-bound stop decision.
+This result admits a narrow claim to further falsification. It is not a proved theorem, a bootstrapping speedup, or a paper claim.

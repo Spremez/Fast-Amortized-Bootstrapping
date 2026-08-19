@@ -1,5 +1,5 @@
 gate_id,status,decision,evidence,next_action
-required_source_registry,PASS,BLOCK_D1_REQUIRED_FULLTEXT_OR_REVIEW_MISSING,registered_sources=9; required_sources=9,none
-fulltext_claim_review,BLOCK,BLOCK_D1_REQUIRED_FULLTEXT_OR_REVIEW_MISSING,complete_reviews=8; missing_or_invalid=NTRU_AMORT_2026_068,"obtain, hash, anchor, and review every missing source"
-fdfb2_operator_overlap,PASS_NARROW_CLAIM_ONLY,BLOCK_D1_REQUIRED_FULLTEXT_OR_REVIEW_MISSING,"Broad late-bound multi-function novelty overlaps FDFB2; only the bounded SAB-specific closure, complete cost, and full-SAB endpoint remain testable.",retain only the narrow SAB-specific claim boundary
-d1_terminal_decision,BLOCK,BLOCK_D1_REQUIRED_FULLTEXT_OR_REVIEW_MISSING,fail-closed priority: missing review precedes overlap verdict,skip D2-D8 and execute Task 9 incomplete-evidence routing; resume only after the named full text is reviewed
+required_source_registry,PASS,PASS_D1_DISTINCT_SAB_OPERATOR_CLAIM_REMAINS_TESTABLE,registered_sources=9; required_sources=9,none
+fulltext_claim_review,PASS,PASS_D1_DISTINCT_SAB_OPERATOR_CLAIM_REMAINS_TESTABLE,complete_reviews=9; missing_or_invalid=none,none
+fdfb2_operator_overlap,PASS_NARROW_CLAIM_ONLY,PASS_D1_DISTINCT_SAB_OPERATOR_CLAIM_REMAINS_TESTABLE,"Broad late-bound multi-function novelty overlaps FDFB2; only the bounded SAB-specific closure, complete cost, and full-SAB endpoint remain testable.",retain only the narrow SAB-specific claim boundary
+d1_terminal_decision,PASS,PASS_D1_DISTINCT_SAB_OPERATOR_CLAIM_REMAINS_TESTABLE,fail-closed priority: missing review precedes overlap verdict,transition D to D1_NOVELTY_AUDIT_PASS and execute D2
