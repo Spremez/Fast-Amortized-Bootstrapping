@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import csv
 from io import StringIO
+import json
 import sys
 from pathlib import Path
 
@@ -33,6 +34,8 @@ if str(ROOT) not in sys.path:
 from research.mat_sab.candidate_d_operator_closure import (  # noqa: E402
     run_closure_check,
 )
+
+REPLAY_MANIFEST_SCHEMA = "candidate-d-stage-replay-v1"
 
 D2_SUMMARY_FIELDS = (
     "decision",
@@ -161,6 +164,32 @@ def main() -> int:
         output_root,
         "repro/candidate_d_admission/schedule_trace.csv",
         _csv_bytes(D2_SCHEDULE_FIELDS, result.trace_rows),
+    )
+    manifest = {
+        "schema": REPLAY_MANIFEST_SCHEMA,
+        "stage": "D2",
+        "input_commit": arguments.input_commit,
+        "controller_commit": arguments.controller_commit,
+        "decision": result.decision,
+        "canonical_outputs": [
+            "theory_checks/candidate_d_operator_closure.md",
+            "repro/candidate_d_admission/d2_summary.csv",
+            "repro/candidate_d_admission/closure_basis.csv",
+            "repro/candidate_d_admission/phase_equivalence.csv",
+            "repro/candidate_d_admission/negative_controls.csv",
+            "repro/candidate_d_admission/schedule_trace.csv",
+        ],
+        "scientific_authority": True,
+    }
+    _write_output(
+        output_root,
+        "candidate_d_stage_replay.json",
+        (
+            json.dumps(
+                manifest, sort_keys=True, separators=(",", ":"), indent=None
+            )
+            + "\n"
+        ).encode("ascii"),
     )
     print(result.decision)
     return 0
