@@ -1,37 +1,37 @@
 {
-  "binding_sha256": "38ffdd96237f45e44f1a35afec1eeb58cc19076d4f7c641afd80dfebc4f62ced",
+  "binding_sha256": "ae31e8176c31e7f5fb51e70f1a4d8cb8a00a81cb93219b8fe8c2b2f55eb175bf",
   "claimed_decision": "BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE",
   "controller_commit": "cfb8f6330e6cafecc60db48e9f341af578debe14",
   "execution_platform": "Windows-WSL; CPython-3.12; evidence-controller-only; no-performance-claim",
   "gate_evidence": {
-    "binding_status": "SKIPPED_D2_BLOCK",
-    "complete_cost_status": "SKIPPED_D2_BLOCK",
+    "binding_status": "BLOCK",
+    "complete_cost_status": "BLOCK",
     "d0_decision": "PASS_D0_CANDIDATE_D_BASELINES_FROZEN",
     "d0_status": "PASS",
     "d1_decision": "PASS_D1_DISTINCT_SAB_OPERATOR_CLAIM_REMAINS_TESTABLE",
     "d1_missing_evidence": [],
     "d1_status": "PASS",
-    "d2_decision": "BLOCK_D2_SOURCE_OR_EXACT_CHECKER_INCOMPLETE",
-    "d2_replay_authenticated": false,
-    "d2_status": "BLOCK",
+    "d2_decision": "PASS_D2_OPERATOR_CLOSURE_G_LE_4",
+    "d2_replay_authenticated": true,
+    "d2_status": "PASS",
     "d3_replay_authenticated": false,
-    "gamma_count": null,
-    "negative_controls_status": "BLOCK",
-    "noise_status": "SKIPPED_D2_BLOCK",
+    "gamma_count": 2,
+    "negative_controls_status": "PASS",
+    "noise_status": "BLOCK",
     "pessimistic_projection": "",
     "pre_application_permission": false,
-    "resource_status": "SKIPPED_D2_BLOCK",
-    "security_status": "SKIPPED_D2_BLOCK"
+    "resource_status": "BLOCK",
+    "security_status": "BLOCK"
   },
   "historical_block_commit": "fba794ce8820fb2ab167bf928c9cdae67ed508b9",
-  "input_commit": "5d9762ab5edf619275ad71867c055082d3ee0cc6",
+  "input_commit": "0d02637d9c702eac28079738e6b45b8c5401e459",
   "predecessor_evidence": {
     "controller_commit": "fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0",
     "decision_evidence_path": "repro/candidate_d_admission/decision_evidence.json",
     "decision_evidence_sha256": "2e25282ede5c6339f2e2ccd4ccc835d3eeb2f6216c0330049902600f06a14c8f",
     "evidence_commit": "2e2508a4716f83a92d9b53e7b716569c642c1033"
   },
-  "resume_condition": "Implement or repair the canonical Tasks 4-6 D2 generator and exact checker under docs/candidate_d_task9_replay_contract.md; run python scripts/run_candidate_d_d2_closure.py --root <absolute-repository-root> --output-root <staging-output-directory> --input-commit <last-valid-stage-commit> --controller-commit cfb8f6330e6cafecc60db48e9f341af578debe14; install the verified outputs and commit the source-derived D2 artifacts as <new-D2-commit>, and rerun Task 9 with git show cfb8f6330e6cafecc60db48e9f341af578debe14:scripts/candidate_d_task9_launcher.py | python -I -S - --mode run --root . --input-commit <new-D2-commit> --controller-commit cfb8f6330e6cafecc60db48e9f341af578debe14 --run-date <YYYY-MM-DD> --execution-platform \"<audited-evidence-platform>\"; git show cfb8f6330e6cafecc60db48e9f341af578debe14:scripts/candidate_d_task9_launcher.py | python -I -S - --mode apply --root . --input-commit <new-D2-commit> --controller-commit cfb8f6330e6cafecc60db48e9f341af578debe14 --run-date <YYYY-MM-DD> --execution-platform \"<audited-evidence-platform>\". If D2 REJECT/BLOCK, do not run D3; only D2 PASS may run python scripts/run_candidate_d_d3_admission.py --root <absolute-repository-root> --output-root <staging-output-directory> --input-commit <new-D2-commit> --controller-commit cfb8f6330e6cafecc60db48e9f341af578debe14 and proceed to Tasks 7-8.",
+  "resume_condition": "Implement or repair the canonical Tasks 7-8 D3 generator, fixed noise/security anchors, frozen B1 profile binding, and complete cost/resource model under docs/candidate_d_task9_replay_contract.md; run python scripts/run_candidate_d_d3_admission.py --root <absolute-repository-root> --output-root <staging-output-directory> --input-commit <last-valid-stage-commit> --controller-commit cfb8f6330e6cafecc60db48e9f341af578debe14; install the verified outputs, commit the canonical D3 artifacts as <new-D3-commit>, then rerun Task 9 with git show cfb8f6330e6cafecc60db48e9f341af578debe14:scripts/candidate_d_task9_launcher.py | python -I -S - --mode run --root . --input-commit <new-D3-commit> --controller-commit cfb8f6330e6cafecc60db48e9f341af578debe14 --run-date <YYYY-MM-DD> --execution-platform \"<audited-evidence-platform>\"; git show cfb8f6330e6cafecc60db48e9f341af578debe14:scripts/candidate_d_task9_launcher.py | python -I -S - --mode apply --root . --input-commit <new-D3-commit> --controller-commit cfb8f6330e6cafecc60db48e9f341af578debe14 --run-date <YYYY-MM-DD> --execution-platform \"<audited-evidence-platform>\".",
   "run_date": "2026-08-19",
   "runtime_source_hashes": [
     {
@@ -136,6 +136,82 @@
     {
       "path": "repro/candidate_d_admission/novelty_gate.csv",
       "sha256": "ae158b6f9957157f540422395e55ddca1400df98816afed65c5eb22609e44677"
+    },
+    {
+      "path": "scripts/run_candidate_d_d2_closure.py",
+      "sha256": "5df1e87ecea70c6802c0dfb1412584382c24884a9778f70478137a30cb394c67"
+    },
+    {
+      "path": "research/__init__.py",
+      "sha256": "98eb8593797a37c72b36bd94b8150767464623835dede5786ef9e05ed543551e"
+    },
+    {
+      "path": "research/mat_sab/__init__.py",
+      "sha256": "420b88063feb409c0ced6de4e3a2eb5a589f64913755e58b09448e263bf03353"
+    },
+    {
+      "path": "research/mat_sab/candidate_d_operator_closure.py",
+      "sha256": "e803be4a6ca25d56aa65e239687cdc4780241a4289184e2d8565e1ba1180a7e0"
+    },
+    {
+      "path": "research/mat_sab/candidate_d_source_map.py",
+      "sha256": "47bfb2c800a42e10b348934cf7933e277270e568393d0ce53c2a2ef2d52b1ecb"
+    },
+    {
+      "path": "research/mat_sab/finite_linear.py",
+      "sha256": "1975572c15000f3ff639318c0823358228b74389176561032e8d0b7d2e924ed0"
+    },
+    {
+      "path": "research/mat_sab/negacyclic_operator.py",
+      "sha256": "056546083de67795ef17f4a136c815b21c47db5876a59d525dfc9d07b3cedf59"
+    },
+    {
+      "path": "scripts/__init__.py",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "src/sparse_amortized_bootstrap.c",
+      "sha256": "8c0953caca8c87fe6fe5a12334d1bdfb320ddadf2dbf12379c221361a9b28d82"
+    },
+    {
+      "path": "src/sab_pvw.c",
+      "sha256": "6aaabf61f010e0154b826855286137afc39de9b2520ee09e2ca43d5accf5e2ac"
+    },
+    {
+      "path": "include/sab.h",
+      "sha256": "fb1de44cd4e5756d908e7b0a5d0dd206b568c06d37d7da002357df37d1b6fd9c"
+    },
+    {
+      "path": "include/sab_pvw.h",
+      "sha256": "50a0b389b1bca1159f9e4551ca0fe616aaf8ee77018d3a27b6ce774b9e5b439e"
+    },
+    {
+      "path": "main.c",
+      "sha256": "d402980a203aacbaf6b281a9f7245cf14b72c2c80468e5a05050f35373eb11f8"
+    },
+    {
+      "path": "theory_checks/candidate_d_operator_closure.md",
+      "sha256": "cae743c0b9c7dc6490a11e1fba26c832f46aa8cbf229421f678c48154544d016"
+    },
+    {
+      "path": "repro/candidate_d_admission/d2_summary.csv",
+      "sha256": "24b04985aee2daad03b384ce8b800129f5e26bde75cd6b3ed1e8cd315223f1fd"
+    },
+    {
+      "path": "repro/candidate_d_admission/closure_basis.csv",
+      "sha256": "88453c1e57b08ea2c4f5b4ec982a1a83ca3846bea2ebd9803ede209a96bb2fe6"
+    },
+    {
+      "path": "repro/candidate_d_admission/phase_equivalence.csv",
+      "sha256": "141d460010ab35d12691764eebbd141a25ac1cdbd40a7feacb9508670e9ff22b"
+    },
+    {
+      "path": "repro/candidate_d_admission/negative_controls.csv",
+      "sha256": "780885bf05de0db9730bba705cee019799790034918f3bf71b2fa5ebc84232a5"
+    },
+    {
+      "path": "repro/candidate_d_admission/schedule_trace.csv",
+      "sha256": "9c45d50f52250181bde612f3429f4af0cda86b3464826b476fad80389380dbe7"
     },
     {
       "path": "hypotheses/hypothesis_register.yaml",
