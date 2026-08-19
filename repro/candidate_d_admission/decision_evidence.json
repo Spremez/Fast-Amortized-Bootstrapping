@@ -1,5 +1,5 @@
 {
-  "binding_sha256": "f8b897aeb7df4231c273ac3885092cd7f10819e06fe6e4c87168900e6a19c914",
+  "binding_sha256": "38ffdd96237f45e44f1a35afec1eeb58cc19076d4f7c641afd80dfebc4f62ced",
   "claimed_decision": "BLOCK_CANDIDATE_D_INCOMPLETE_EVIDENCE",
   "controller_commit": "cfb8f6330e6cafecc60db48e9f341af578debe14",
   "execution_platform": "Windows-WSL; CPython-3.12; evidence-controller-only; no-performance-claim",
@@ -24,7 +24,7 @@
     "security_status": "SKIPPED_D2_BLOCK"
   },
   "historical_block_commit": "fba794ce8820fb2ab167bf928c9cdae67ed508b9",
-  "input_commit": "75ff42a358ac777d8049ca3720ab624b79a013db",
+  "input_commit": "5d9762ab5edf619275ad71867c055082d3ee0cc6",
   "predecessor_evidence": {
     "controller_commit": "fd5043edb7128e4b5f7bb86ddfdd948c88f53fd0",
     "decision_evidence_path": "repro/candidate_d_admission/decision_evidence.json",

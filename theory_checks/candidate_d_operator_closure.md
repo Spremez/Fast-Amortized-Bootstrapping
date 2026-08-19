@@ -56,6 +56,6 @@ This checker establishes ideal algebraic semantics only. Torus scaling, gadget d
 
 ## Provenance
 
-- input commit: `59b162bc8b0032e6670138cb3ac46c3ea5f3cac6`
+- input commit: `459496ff006ffef77fba10e5deffa05f6dc931b3`
 - controller commit: `cfb8f6330e6cafecc60db48e9f341af578debe14`
 - stage: D2 (exact operator closure)
