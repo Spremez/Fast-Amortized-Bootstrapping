@@ -129,16 +129,10 @@ def main() -> int:
         "schedule_status": result.schedule_status,
         "equation_revisions_used": str(result.equation_revisions_used),
     }
-    provenance = (
-        "\n## Provenance\n\n"
-        f"- input commit: `{arguments.input_commit}`\n"
-        f"- controller commit: `{arguments.controller_commit}`\n"
-        "- stage: D2 (exact operator closure)\n"
-    )
     _write_output(
         output_root,
         "theory_checks/candidate_d_operator_closure.md",
-        (result.report_markdown + provenance).encode("utf-8"),
+        result.report_markdown.encode("utf-8"),
     )
     _write_output(
         output_root,
