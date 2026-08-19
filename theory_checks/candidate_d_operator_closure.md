@@ -27,7 +27,7 @@ Gamma_0 = {identity} (one channel) FAILED the phase-equivalence sweep; first div
 
 ## Coverage
 
-- rings: GF(257)[X]/(X^8+1) and GF(257)[X]/(X^16+1); phase rows: 256; trace rows: 147
+- rings: GF(257)[X]/(X^8+1) and GF(257)[X]/(X^16+1); phase rows: 256; trace rows: 168
 - selectors mu in {0,1} via binary_all_zero/binary_all_one and the per-bit mixed cases; every rotation offset 2^i (i < r_prec) and every wrapped-slot boundary is exercised by the one-hot and alternating schedules; setup/sub_a exponents sweep all offsets in [-N, N) across slots
 - schedule shape anchored to production sources: primary SET_2_3_2048 in main.c has in_N=2048, h_in=39, target_r_prec=7; the checker runs h=4 sparse steps (include-zero cases run 2h)
 
@@ -56,6 +56,6 @@ This checker establishes ideal algebraic semantics only. Torus scaling, gadget d
 
 ## Provenance
 
-- input commit: `9adb9dd46fbad8dc6e9e8e9075b48f2aac2d9467`
+- input commit: `59b162bc8b0032e6670138cb3ac46c3ea5f3cac6`
 - controller commit: `cfb8f6330e6cafecc60db48e9f341af578debe14`
 - stage: D2 (exact operator closure)

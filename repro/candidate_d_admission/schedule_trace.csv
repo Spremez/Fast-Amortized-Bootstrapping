@@ -6,6 +6,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 8,binary_all_zero,4,ncmux_mu1,final,1,PASS
 8,binary_all_zero,5,rgsw_monomial,final,0,PASS
 8,binary_all_zero,6,sub_a,final,public,PASS
+8,binary_all_zero,7,final_bind,final,public,PASS
 8,binary_all_one,0,setup,final,public,PASS
 8,binary_all_one,1,cmux_mu0,final,0,PASS
 8,binary_all_one,2,cmux_mu1,final,1,PASS
@@ -13,6 +14,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 8,binary_all_one,4,ncmux_mu1,final,1,PASS
 8,binary_all_one,5,rgsw_monomial,final,1,PASS
 8,binary_all_one,6,sub_a,final,public,PASS
+8,binary_all_one,7,final_bind,final,public,PASS
 8,binary_alternating,0,setup,final,public,PASS
 8,binary_alternating,1,cmux_mu0,final,0,PASS
 8,binary_alternating,2,cmux_mu1,final,1,PASS
@@ -20,6 +22,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 8,binary_alternating,4,ncmux_mu1,final,1,PASS
 8,binary_alternating,5,rgsw_monomial,final,mixed,PASS
 8,binary_alternating,6,sub_a,final,public,PASS
+8,binary_alternating,7,final_bind,final,public,PASS
 8,binary_one_hot_0,0,setup,final,public,PASS
 8,binary_one_hot_0,1,cmux_mu0,final,0,PASS
 8,binary_one_hot_0,2,cmux_mu1,final,1,PASS
@@ -27,6 +30,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 8,binary_one_hot_0,4,ncmux_mu1,final,1,PASS
 8,binary_one_hot_0,5,rgsw_monomial,final,mixed,PASS
 8,binary_one_hot_0,6,sub_a,final,public,PASS
+8,binary_one_hot_0,7,final_bind,final,public,PASS
 8,binary_one_hot_1,0,setup,final,public,PASS
 8,binary_one_hot_1,1,cmux_mu0,final,0,PASS
 8,binary_one_hot_1,2,cmux_mu1,final,1,PASS
@@ -34,6 +38,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 8,binary_one_hot_1,4,ncmux_mu1,final,1,PASS
 8,binary_one_hot_1,5,rgsw_monomial,final,mixed,PASS
 8,binary_one_hot_1,6,sub_a,final,public,PASS
+8,binary_one_hot_1,7,final_bind,final,public,PASS
 8,binary_one_hot_2,0,setup,final,public,PASS
 8,binary_one_hot_2,1,cmux_mu0,final,0,PASS
 8,binary_one_hot_2,2,cmux_mu1,final,1,PASS
@@ -41,6 +46,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 8,binary_one_hot_2,4,ncmux_mu1,final,1,PASS
 8,binary_one_hot_2,5,rgsw_monomial,final,mixed,PASS
 8,binary_one_hot_2,6,sub_a,final,public,PASS
+8,binary_one_hot_2,7,final_bind,final,public,PASS
 8,binary_source_mixed,0,setup,final,public,PASS
 8,binary_source_mixed,1,cmux_mu0,final,0,PASS
 8,binary_source_mixed,2,cmux_mu1,final,1,PASS
@@ -48,6 +54,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 8,binary_source_mixed,4,ncmux_mu1,final,1,PASS
 8,binary_source_mixed,5,rgsw_monomial,final,mixed,PASS
 8,binary_source_mixed,6,sub_a,final,public,PASS
+8,binary_source_mixed,7,final_bind,final,public,PASS
 8,include_zero_mu0,0,setup,final,public,PASS
 8,include_zero_mu0,1,cmux_mu0,final,0,PASS
 8,include_zero_mu0,2,cmux_mu1,final,1,PASS
@@ -55,6 +62,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 8,include_zero_mu0,4,ncmux_mu1,final,1,PASS
 8,include_zero_mu0,5,rgsw_monomial,final,0,PASS
 8,include_zero_mu0,6,sub_a,final,public,PASS
+8,include_zero_mu0,7,final_bind,final,public,PASS
 8,include_zero_mu1,0,setup,final,public,PASS
 8,include_zero_mu1,1,cmux_mu0,final,0,PASS
 8,include_zero_mu1,2,cmux_mu1,final,1,PASS
@@ -62,6 +70,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 8,include_zero_mu1,4,ncmux_mu1,final,1,PASS
 8,include_zero_mu1,5,rgsw_monomial,final,1,PASS
 8,include_zero_mu1,6,sub_a,final,public,PASS
+8,include_zero_mu1,7,final_bind,final,public,PASS
 8,coeff_one_fast_mu1,0,setup,final,public,PASS
 8,coeff_one_fast_mu1,1,cmux_mu0,final,0,PASS
 8,coeff_one_fast_mu1,2,cmux_mu1,final,1,PASS
@@ -69,6 +78,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 8,coeff_one_fast_mu1,4,ncmux_mu1,final,1,PASS
 8,coeff_one_fast_mu1,5,rgsw_monomial,final,1,PASS
 8,coeff_one_fast_mu1,6,sub_a,final,public,PASS
+8,coeff_one_fast_mu1,7,final_bind,final,public,PASS
 16,binary_all_zero,0,setup,final,public,PASS
 16,binary_all_zero,1,cmux_mu0,final,0,PASS
 16,binary_all_zero,2,cmux_mu1,final,1,PASS
@@ -76,6 +86,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 16,binary_all_zero,4,ncmux_mu1,final,1,PASS
 16,binary_all_zero,5,rgsw_monomial,final,0,PASS
 16,binary_all_zero,6,sub_a,final,public,PASS
+16,binary_all_zero,7,final_bind,final,public,PASS
 16,binary_all_one,0,setup,final,public,PASS
 16,binary_all_one,1,cmux_mu0,final,0,PASS
 16,binary_all_one,2,cmux_mu1,final,1,PASS
@@ -83,6 +94,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 16,binary_all_one,4,ncmux_mu1,final,1,PASS
 16,binary_all_one,5,rgsw_monomial,final,1,PASS
 16,binary_all_one,6,sub_a,final,public,PASS
+16,binary_all_one,7,final_bind,final,public,PASS
 16,binary_alternating,0,setup,final,public,PASS
 16,binary_alternating,1,cmux_mu0,final,0,PASS
 16,binary_alternating,2,cmux_mu1,final,1,PASS
@@ -90,6 +102,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 16,binary_alternating,4,ncmux_mu1,final,1,PASS
 16,binary_alternating,5,rgsw_monomial,final,mixed,PASS
 16,binary_alternating,6,sub_a,final,public,PASS
+16,binary_alternating,7,final_bind,final,public,PASS
 16,binary_one_hot_0,0,setup,final,public,PASS
 16,binary_one_hot_0,1,cmux_mu0,final,0,PASS
 16,binary_one_hot_0,2,cmux_mu1,final,1,PASS
@@ -97,6 +110,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 16,binary_one_hot_0,4,ncmux_mu1,final,1,PASS
 16,binary_one_hot_0,5,rgsw_monomial,final,mixed,PASS
 16,binary_one_hot_0,6,sub_a,final,public,PASS
+16,binary_one_hot_0,7,final_bind,final,public,PASS
 16,binary_one_hot_1,0,setup,final,public,PASS
 16,binary_one_hot_1,1,cmux_mu0,final,0,PASS
 16,binary_one_hot_1,2,cmux_mu1,final,1,PASS
@@ -104,6 +118,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 16,binary_one_hot_1,4,ncmux_mu1,final,1,PASS
 16,binary_one_hot_1,5,rgsw_monomial,final,mixed,PASS
 16,binary_one_hot_1,6,sub_a,final,public,PASS
+16,binary_one_hot_1,7,final_bind,final,public,PASS
 16,binary_one_hot_2,0,setup,final,public,PASS
 16,binary_one_hot_2,1,cmux_mu0,final,0,PASS
 16,binary_one_hot_2,2,cmux_mu1,final,1,PASS
@@ -111,6 +126,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 16,binary_one_hot_2,4,ncmux_mu1,final,1,PASS
 16,binary_one_hot_2,5,rgsw_monomial,final,mixed,PASS
 16,binary_one_hot_2,6,sub_a,final,public,PASS
+16,binary_one_hot_2,7,final_bind,final,public,PASS
 16,binary_one_hot_3,0,setup,final,public,PASS
 16,binary_one_hot_3,1,cmux_mu0,final,0,PASS
 16,binary_one_hot_3,2,cmux_mu1,final,1,PASS
@@ -118,6 +134,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 16,binary_one_hot_3,4,ncmux_mu1,final,1,PASS
 16,binary_one_hot_3,5,rgsw_monomial,final,mixed,PASS
 16,binary_one_hot_3,6,sub_a,final,public,PASS
+16,binary_one_hot_3,7,final_bind,final,public,PASS
 16,binary_source_mixed,0,setup,final,public,PASS
 16,binary_source_mixed,1,cmux_mu0,final,0,PASS
 16,binary_source_mixed,2,cmux_mu1,final,1,PASS
@@ -125,6 +142,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 16,binary_source_mixed,4,ncmux_mu1,final,1,PASS
 16,binary_source_mixed,5,rgsw_monomial,final,mixed,PASS
 16,binary_source_mixed,6,sub_a,final,public,PASS
+16,binary_source_mixed,7,final_bind,final,public,PASS
 16,include_zero_mu0,0,setup,final,public,PASS
 16,include_zero_mu0,1,cmux_mu0,final,0,PASS
 16,include_zero_mu0,2,cmux_mu1,final,1,PASS
@@ -132,6 +150,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 16,include_zero_mu0,4,ncmux_mu1,final,1,PASS
 16,include_zero_mu0,5,rgsw_monomial,final,0,PASS
 16,include_zero_mu0,6,sub_a,final,public,PASS
+16,include_zero_mu0,7,final_bind,final,public,PASS
 16,include_zero_mu1,0,setup,final,public,PASS
 16,include_zero_mu1,1,cmux_mu0,final,0,PASS
 16,include_zero_mu1,2,cmux_mu1,final,1,PASS
@@ -139,6 +158,7 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 16,include_zero_mu1,4,ncmux_mu1,final,1,PASS
 16,include_zero_mu1,5,rgsw_monomial,final,1,PASS
 16,include_zero_mu1,6,sub_a,final,public,PASS
+16,include_zero_mu1,7,final_bind,final,public,PASS
 16,coeff_one_fast_mu1,0,setup,final,public,PASS
 16,coeff_one_fast_mu1,1,cmux_mu0,final,0,PASS
 16,coeff_one_fast_mu1,2,cmux_mu1,final,1,PASS
@@ -146,3 +166,4 @@ N,schedule_case,step,operation,accumulator_index,selector_bit,status
 16,coeff_one_fast_mu1,4,ncmux_mu1,final,1,PASS
 16,coeff_one_fast_mu1,5,rgsw_monomial,final,1,PASS
 16,coeff_one_fast_mu1,6,sub_a,final,public,PASS
+16,coeff_one_fast_mu1,7,final_bind,final,public,PASS
