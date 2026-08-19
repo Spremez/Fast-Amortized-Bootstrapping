@@ -58,6 +58,7 @@ TRACE_OPERATIONS = (
     "ncmux_mu1",
     "rgsw_monomial",
     "sub_a",
+    "final_bind",
 )
 
 NEGATIVE_CONTROLS = (
@@ -191,6 +192,7 @@ def run_closure_check(root: Path) -> ClosureResult:
             spec = build_schedule(n, r_prec, small_h, case)
             operator_final = operator_schedule(ring, spec, HONEST_CONTROL)
             matrix_rank = channel_matrix_rank(operator_final)
+            case_phase_pass = True
             for basis_index, vector in enumerate(vectors):
                 scalar_final = scalar_schedule(ring, spec, vector)
                 bound = bind(ring, operator_final, vector, HONEST_CONTROL)
@@ -198,6 +200,7 @@ def run_closure_check(root: Path) -> ClosureResult:
                 actual_hash = ring.state_hash(bound)
                 equal = scalar_final == bound
                 phase_all_pass = phase_all_pass and equal
+                case_phase_pass = case_phase_pass and equal
                 phase_rows.append(
                     {
                         "N": str(n),
@@ -238,6 +241,7 @@ def run_closure_check(root: Path) -> ClosureResult:
                 ):
                     in_schedule["rgsw_monomial"] = False
                     in_schedule["sub_a"] = False
+            in_schedule["final_bind"] = case_phase_pass
             statuses = {**unit_checks, **in_schedule}
             for step, operation in enumerate(TRACE_OPERATIONS):
                 selector = {
@@ -248,6 +252,7 @@ def run_closure_check(root: Path) -> ClosureResult:
                     "ncmux_mu1": "1",
                     "rgsw_monomial": spec.selector_summary,
                     "sub_a": "public",
+                    "final_bind": "public",
                 }[operation]
                 status = "PASS" if statuses[operation] else "REJECT"
                 trace_all_pass = trace_all_pass and statuses[operation]
