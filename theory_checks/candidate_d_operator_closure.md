@@ -53,9 +53,3 @@ Gamma_0 = {identity} (one channel) FAILED the phase-equivalence sweep; first div
 ## Scope limits
 
 This checker establishes ideal algebraic semantics only. Torus scaling, gadget decomposition error, key sizes, noise growth, security hybrids, and the complete Amdahl projection belong to the D3 admission gate. No algorithm hot-path change is authorized by this document.
-
-## Provenance
-
-- input commit: `459496ff006ffef77fba10e5deffa05f6dc931b3`
-- controller commit: `cfb8f6330e6cafecc60db48e9f341af578debe14`
-- stage: D2 (exact operator closure)
