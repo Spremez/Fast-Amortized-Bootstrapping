@@ -1,0 +1,10 @@
+case,value,limit,source_anchor,status
+external_product_lemma,ANCHORED,REQUIRED,FAB-2025/686 Lemma 4.1 (plaintext monomial multiplications do not grow noise); D2 closure report theory_checks/candidate_d_operator_closure.md; design spec section 9,PASS
+covariance_lambda_max,0.000046962729195604,0.000088055117241758,channel sigma from FAB-2025/686 Table 5 B1 row 2^-120 at threshold 2^-4; g=2 from D2 closure_basis.csv,PASS
+deterministic_l1,0.071251397013,0.088388347648,12.9-sigma subgaussian quantile (the 2^-120 level) applied to the 2^-8 rerandomization flood; sqrt(2) two-channel sum,PASS
+deterministic_linf,0.050382345997,0.062500000000,12.9-sigma subgaussian quantile applied to the 2^-8 flood,PASS
+decode_margin,0.062500000000,0.003906250000,threshold 1/16 for the 2-bit domain; sigma_flood = 2^-8,PASS
+union_failure_bound,2.5722093726424038114378018288389933111408193132173E-56,7.5231638452626400509999138382223723380394595633414E-37,Gaussian tail at t=16 (threshold 2^-4 over sigma 2^-8); rerandomization mandated because direct binding degrades 2^-120 to 2^-0.117,PASS
+scalar_failure_bound,7.5231638452626400509999138382223723380394595633414E-37,5.42101086242752217003726400434970855712890625E-20,"FAB-2025/686 Table 5, binary 2-bit 2048-message row: 2^-120",PASS
+b1_failure_bound,7.5231638452626400509999138382223723380394595633414E-37,5.42101086242752217003726400434970855712890625E-20,stage331 highstat noise summary: 0/10 pair failures and equal expected model sigma for PVW and scalar; scalar bound carried,PASS
+target_failure_bound,5.42101086242752217003726400434970855712890625E-20,5.42101086242752217003726400434970855712890625E-20,FAB-2025/686 section 6 header: failure probability target approximately 2^-64 for all cases,PASS

@@ -1,0 +1,6 @@
+variant,selector_key_bytes,automorphism_key_bytes,operator_state_bytes,scratch_bytes,output_bytes,rerandomization_bytes,keygen_work,late_binding_transforms,status
+B0a,17915904,0,32768,65536,16384,0,1024,0,REFERENCE
+B0b,,,,,,,,,REQUIRED_NOT_YET_LOCAL
+B1,19159716,0,81920,163840,65536,0,1024,0,REFERENCE
+B2,,,,,,,,,REQUIRED_NOT_YET_LOCAL
+D,17915904,786432,65536,131072,65536,65536,1024,16,PASS

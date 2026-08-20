@@ -1,0 +1,13 @@
+variant,r,g,selector_events,products_per_event,selector_ring_products,materialized_components,late_binding_products,ncmux_events,sub_a_calls,status
+B1_exact_dense,1,,573440,4,2293760,2,0,5080,39,PASS
+B1_exact_dense,2,,573440,9,5160960,3,0,5080,39,PASS
+B1_exact_dense,4,,573440,25,14336000,5,0,5080,39,PASS
+B1_exact_dense,8,,573440,81,46448640,9,0,5080,39,PASS
+D_operator_generic,1,2,653312,8,5226496,4,4,5080,39,PASS
+D_operator_generic,2,2,653312,8,5226496,4,8,5080,39,PASS
+D_operator_generic,4,2,653312,8,5226496,4,16,5080,39,PASS
+D_operator_generic,8,2,653312,8,5226496,4,32,5080,39,PASS
+D_operator_coeff_one_fast,1,2,573440,8,4587520,4,4,5080,39,PASS
+D_operator_coeff_one_fast,2,2,573440,8,4587520,4,8,5080,39,PASS
+D_operator_coeff_one_fast,4,2,573440,8,4587520,4,16,5080,39,PASS
+D_operator_coeff_one_fast,8,2,573440,8,4587520,4,32,5080,39,PASS

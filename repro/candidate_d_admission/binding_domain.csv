@@ -1,0 +1,5 @@
+plaintext_bits,delta_integer,delta_torus,coefficient_min,coefficient_max,checker_min,checker_max,binder_operation,status
+2,4611686018427387904,2^-2,-2,1,-128,128,public_bounded_integer_polynomial_multiplication,PASS
+3,2305843009213693952,2^-3,-4,3,-128,128,public_bounded_integer_polynomial_multiplication,PASS
+5,576460752303423488,2^-5,-16,15,-128,128,public_bounded_integer_polynomial_multiplication,PASS
+8,72057594037927936,2^-8,-128,127,-128,128,public_bounded_integer_polynomial_multiplication,PASS
