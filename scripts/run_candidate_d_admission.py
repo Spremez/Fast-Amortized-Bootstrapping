@@ -172,6 +172,9 @@ D3_REPLAY_CONTRACT = StageReplayContract(
         "research/mat_sab/candidate_d_admission.py",
         "research/mat_sab/candidate_d_operator_closure.py",
         "research/mat_sab/candidate_d_source_map.py",
+        # finite_linear is transitively imported by negacyclic_operator; the
+        # recursive closure derivation requires it to be registered
+        "research/mat_sab/finite_linear.py",
         "research/mat_sab/negacyclic_operator.py",
         "scripts/__init__.py",
     ),
