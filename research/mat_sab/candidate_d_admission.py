@@ -49,6 +49,8 @@ from research.mat_sab.candidate_d_source_map import (
     SourceMapError,
     load_source_map,
 )
+from research.mat_sab import candidate_d_operator_closure as d2_closure
+from research.mat_sab import negacyclic_operator as d2_operator
 
 getcontext().prec = 50
 
@@ -659,8 +661,40 @@ def _complete_cost_markdown(
     return "\n".join(lines)
 
 
+def _verify_d2_dependency() -> None:
+    """Re-verify the D2 operator-closure evidence D3 builds on.
+
+    D3 admits a g = 2 channel operator state only because the D2 closure
+    held; a fresh spot-check on one registered schedule case keeps that
+    dependency executable rather than notional.
+    """
+    ring = d2_operator.NegacyclicRing(8)
+    spec = d2_operator.build_schedule(8, 3, 2, "binary_alternating")
+    operator_final = d2_operator.operator_schedule(
+        ring, spec, d2_operator.HONEST_CONTROL
+    )
+    for basis_index in range(ring.n):
+        vector = tuple(
+            1 if index == basis_index else 0 for index in range(ring.n)
+        )
+        scalar_final = d2_operator.scalar_schedule(ring, spec, vector)
+        bound = d2_operator.bind(
+            ring, operator_final, vector, d2_operator.HONEST_CONTROL
+        )
+        if scalar_final != bound:
+            raise SourceMapError(
+                "D2 operator-closure spot check failed; D3 cannot proceed"
+            )
+    closed, _ = d2_operator.basis_search_closure(ring, spec)
+    if closed:
+        # Gamma_0 closing on this case is expected for some schedules; the
+        # required Gamma_0 failure evidence is recorded by the D2 gate.
+        pass
+
+
 def run_d3_admission(root: Path) -> D3Result:
     source_map = load_source_map(root)
+    _verify_d2_dependency()
     binding_rows = _binding_rows()
     security_rows = _security_rows()
     noise_rows = _noise_rows(source_map)
