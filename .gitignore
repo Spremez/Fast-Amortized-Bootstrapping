@@ -36,3 +36,10 @@ __pycache__/
 
 .clangd
 doc/
+
+# stage356 (SAB_SQ) isolated build outputs
+build_sq/
+build_wsl/
+probe_sq.exe
+main_sq.exe
+main_sq

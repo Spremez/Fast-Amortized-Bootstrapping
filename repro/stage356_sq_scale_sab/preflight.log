@@ -1,0 +1,25 @@
+set              side       N    h  dens gap279    adj upliftC absorb q_rec full?
+SET_2_3_2048     input   2048   39  0.02   15.0  113.0   30.0     20    13 optimistic_only
+SET_2_3_2048     output  2048  512  0.25    9.2  118.8   18.4     20    13 yes
+SET_2_3_4096     input   4096   32  0.01   15.0  113.0   30.0     20    13 optimistic_only
+SET_2_3_4096     output  2048  512  0.25    9.2  118.8   18.4     20    13 yes
+SET_2_3_8192     input   8192   25  0.00   15.0  113.0   30.0     20    13 optimistic_only
+SET_2_3_8192     output  2048  512  0.25    9.2  118.8   18.4     20    13 yes
+SET_4_5_2048     input   2048   42  0.02   15.0  113.0   30.0     16    15 optimistic_only
+SET_4_5_2048     output  2048  512  0.25    9.2  118.8   18.4     16    15 optimistic_only
+SET_4_5_4096     input   4096   34  0.01   15.0  113.0   30.0     16    15 optimistic_only
+SET_4_5_4096     output  2048  512  0.25    9.2  118.8   18.4     16    15 optimistic_only
+SET_4_5_8192     input   8192   26  0.00   15.0  113.0   30.0     16    15 optimistic_only
+SET_4_5_8192     output  2048  512  0.25    9.2  118.8   18.4     16    15 optimistic_only
+SET_6_7_4096     input   4096   33  0.01   15.0  113.0   30.0     12    17 NO
+SET_6_7_4096     output  2048  512  0.25    9.2  118.8   18.4     12    17 optimistic_only
+SET_6_7_8192     input   8192   27  0.00   15.0  113.0   30.0     12    17 NO
+SET_6_7_8192     output  2048  512  0.25    9.2  118.8   18.4     12    17 optimistic_only
+SET_8_9_4096     input   4096   34  0.01   15.0  113.0   30.0      8    19 NO
+SET_8_9_4096     output  8192  512  0.06   14.6  113.4   29.3      8    19 NO
+SET_8_9_8192     input   8192   28  0.00   15.0  113.0   30.0      8    19 NO
+SET_8_9_8192     output  8192  512  0.06   14.6  113.4   29.3      8    19 NO
+SET_8_9_HIGH_FR  input   8192   28  0.00   15.0  113.0   30.0      8    19 NO
+SET_8_9_HIGH_FR  output  4096  512  0.12   12.8  115.2   25.7      8    19 NO
+
+wrote repro/stage356_sq_scale_sab/security_preflight_279.csv (baseline 128 bits, elasticity 0.5..1.0 bits/log2sigma)

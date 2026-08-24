@@ -1,0 +1,2303 @@
+=== page 1 ===
+Accelerating FHEW-like Bootstrapping via New
+Configurations of the Underlying Cryptosystems
+Han Wang1,2, Ming Luo1,2, Han Xia3, Mingsheng Wang1,2, Hanxu Hou4
+1 Key Laboratory of Cyberspace Security Defense, Institute of Information
+Engineering, Chinese Academy of Science, Beijing, China.
+{wanghan,luoming,wangmingsheng}@iie.ac.cn.
+2 School of Cyber Security, University of Chinese Academy of Science, Beijing, China.
+3 Xi’an Jiaotong-Liverpool University, Suzhou, China han.xia@xjtlu.edu.cn.
+4 School of Electrical Engineering and Intelligentization, Dongguan University of
+Technology, Dongguan, China
+Abstract. This work introduces a new configuration of the GSW fully
+homomorphic encryption (FHE) (Gentry, Sahai, Waters Crypto 2013),
+with a squared gadget ,batching and scale-based homomorphic opera-
+tion. This configuration offers improved efficiency compared to existing
+approaches. By utilizing our proposed method as the underlying build-
+ing block, we can accelerate FHEW-like bootstrapping implementations,
+including the libraries of FHEW and TFHE. We conduct comprehen-
+sive experiments to evaluate the concrete performance of our method,
+demonstrating improvements of more than 2 times faster. For example,
+the current ring GSW under OpenFHE takes 84 ms and TFHE takes 11.4
+ms, while our approach achieves 26.2 ms and 4.8 ms, respectively. These
+improvements have significant implications for the practical aspects of
+FHE, enhancing real-world usability.
+1
+Introduction
+Fully homomorphic encryption (FHE) is a powerful tool that allows arbitrary
+computation over ciphertexts without first decrypting them. The concept was
+proposed by [44] back to 1978, and soon numerous applications were noticed,
+albeit no plausible solution was known. In the celebrated work, Gentry [21]
+constructed the first scheme that supports general homomorphic computation
+of arbitrary functions, which inspired many follow-up works and software im-
+plementations for practical adoption. See the website [45] for a comprehensive
+survey for the developments of the theory and applications.
+FHE was initially perceived as “theoretical only” as the operations would
+incur a large overhead compared with the plaintext computation. The main bot-
+tleneck comes from the need to bootstrap (i.e., homomorphically refresh) the
+ciphertexts during computation, as homomorphic operations of all known FHE
+schemes would incur noise blowups, eventually exceeding the bound for correct-
+ness of decryption. In fact, one major breakthrough of Gentry [21] is to identify
+the bootstrapping paradigm to handle noise, with a plausible solution showing
+a surprising theoretical feasibility.
+
+=== page 2 ===
+Since then, there has been remarkable progress towards improving the effi-
+ciency, both in terms of asymptotic efficiency and concrete performances [45]. For
+bootstrapping with small FHE parameters, a series of works have significantly
+advanced the theoretical frontier and practical applicability. Particularly, the
+work AP14 [5] designed the first explicit method that only incurs a polynomial
+noise blowup, under the Learning with Error (LWE) assumption [43]. Shortly, the
+work FHEW [17] instantiated the AP14 framework in the ring setting [34] with
+some other novel techniques, showing that bootstrapping a single ciphertext can
+be done in 1 second. Then the subsequent work TFHE [13] pushed forward the
+number to 0.1 seconds by various optimizations, such as using the small secrets
+of LWE and computing different types of the ciphertexts (i.e., external products).
+Thanks to these advancements, now FHE can be practical for certain real world
+applications.
+A novel work [36] proposed a unified framework to evaluate the approach
+of FHEW and TFHE, by suggesting new parameters and re-evaluating the con-
+crete performances of these schemes in OpenFHE [6]. In summary, the work [36]
+identifies that these two approaches have essentially the same procedure, except
+the way how they handle the LWE secrets – FHEW uses the AP14 technique
+and thus can handle arbitrary secrets, whereas TFHE uses GINX [20] technique
+whose original version can only handle binary secrets. Due to the similarities,
+these two approaches are referred to as FHEW-like bootstrapping by [36]. The
+work [36] and a subsequent work [8] provide some adjustments of GINX so that
+ternary secrets can be integrated with TFHE, roughly at the same complexity.
+Even though algorithmically these two approaches are similar, the implemen-
+tation details significantly impact overall efficiency. For example, OpenFHE [6]
+employs a number-theoretic transform (NTT) for the underlying ring opera-
+tions, whereas tfhe library [15] utilizes the Fast Fourier Transform (FFT).
+Given the substantial performance differences, it becomes crucial to explore more
+implementation-level optimizations that can further accelerate existing FHE li-
+braries and thus practical deployments.
+1.1
+Our Contributions
+This work presents significant insights that lead to substantially faster imple-
+mentations of FHE bootstrapping. At a high level, we uncover critical advantages
+of a squared-gadget version of the module GSW scheme [13,14,17,22] (denoted
+as MGSW) and its matrix variant (denoted as Mat-MGSW). Even though the
+MGSW form has appeared [14, 46], this work is the first to recognize and ex-
+ploit the advantages of this configuration, especially in batching bootstrapping,
+achieving significant improvements at the implementation level for FHE. Next,
+we outline our specific contributions.
+– Our first contribution is the formal presentation and analysis of the squared-
+gadget version of the Mat-MGSW scheme. We provide a detailed description
+of this variant and an analysis of its noise growth, which are necessary to
+determine the FHE parameters in use. Notably, we demonstrate that the
+2
+
+=== page 3 ===
+homomorphic multiplication in this squared-gadget version can be imple-
+mented more efficiently using scale-based homomorphic operations.
+Furthermore, we highlight the compatibility of this variant with existing im-
+plementations. Specifically, the external product implemented by this squared-
+gadget version can be directly plugged into existing schemes such as FHEW
+and TFHE. This compatibility allows for seamless integration of the advan-
+tages offered by the squared-gadget variant into current FHE libraries.
+– In order to assess the concrete efficiency of our approach, we begin by deter-
+mining various sets of FHE parameters for our system, specifically target-
+ing the MEDIUM and STD128 security levels (using the notation of [36]).
+Subsequently, we proceed to implement our squared-gadget version of the
+Mat-MGSW scheme using these chosen parameters. The underlying ring mul-
+tiplications are computed using either the NTT approach, as employed by
+OpenFHE, or the FFT approach, as used in the tfhe library. In some param-
+eter settings, our implementation is more than 2 times faster than current
+implementations.
+1.2
+Technical Overview
+We first review the FHEW-like bootstrapping framework, and then describe the
+squared-gadget Mat-MGSW that can be integrated to accelerate computation
+within the framework. We next analyze why the homomorphic multiplication of
+this variant can be implemented more efficiently than the prior configuration.
+By using our configuration as the underlying building block, the bootstrapping
+procedure can be accelerated.
+FHEW-like Bootstrapping Framework The FHEW-like framework takes an
+input consisting of a LWE ciphertext (b, a) ∈Z1+n
+q
+for parameters (n, q) and a
+bootstrapping key {BKi = Enc (xsi)}i∈[n], where si ∈Zq is the i-th element of
+the LWE secret s, i.e., b = ⟨s, a⟩+ e + q/2 · m for message m and some error e
+and does the following steps:
+1. From each BKi and ai, we can obtain cti = Enc(x−aisi).
+2. By multiplying these cti’s together with Enc(xb), one can obtain Enc(xb−P
+i∈[n] aisi).
+This step is also known as the blind rotation.
+3. From Enc(xz) of any z, there is a simple extraction function that outputs
+Enc(Round(z)).
+It is clear that the Step 2 consumes the most computational resource. So we
+focus on reduce the computational cost of element operations in step 2, i.e., the
+homomorphic multiplications.
+The Squared-gadget matrix GSW Now we present the ideas of our squared-
+gadget matrix GSW for message batching. As we mentioned before, the unbatch-
+ing form of GSW has appeared in the literature [14,30,46]. However, the novelty
+3
+
+=== page 4 ===
+of this work lies in combining it with the matrix form and identifying its advan-
+tages in implementation, thereby accelerating the existing FHE libraries.
+We begin with a revisit of the RGSW ciphertext. Recall that we can write a
+RGSW ciphertext as
+C =
+za⊤+ e⊤
+a⊤
+
++ µ · G
+with the gadget matrix
+G =g ⊗I =
+1 2 . . . 2ℓ−1 0 0 . . .
+0
+0 0 . . .
+0
+1 2 . . . 2ℓ−1
+
+∈Z2×2ℓ
+Q
+.
+The first ℓcolumns of the ciphertext matrix are RLWE ciphertexts encrypting
+{µ, 2 · µ, . . . , 2ℓ−1 · µ}. If we apply a simple transformation to the a part and
+denote a′ =
+a′
+i = ai
+if 0 ≤i ≤ℓ−1
+a′
+i = ai + µ · 2i−ℓif ℓ≤i ≤2ℓ−1 . We can rewrite the above
+RGSW ciphertext
+C =
+za′⊤+ e⊤
+a′⊤
+
++
+
+µ 2µ . . . 2ℓ−1µ −µs −2µs . . . −2ℓ−1µs
+0 0 . . .
+0
+0
+0
+. . .
+0
+
+.
+An interesting discovery is that the columns of the above ciphertext forms a
+KeySwitch key of a private function KeySwitch [14] with private function f(x) =
+x · µ. The external product of a LWE ciphertext and a GSW ciphertext is then
+equal to applying a private function KeySwitch to the LWE ciphertext.
+Up to now, there are other ways to perform KeySwitch. For a RLWE ciphertext
+(b, a) under modulus Q,
+– Type I: Its KeySwitch key KSK is a series of ciphertexts encrypting s, Bkss, B2
+kss, . . . ,
+for some integer basis Bks. The KeySwitch algorithm outputs (b, 0)−g−1(a)·
+KSK.
+– Type II: There is another modulus T satisfying Q|T. The KeySwitch key KSK
+is a ciphertext encrypting T
+Qs under modulus T. The KeySwitch algorithm
+outputs (b, 0) −⌈Q
+T · KSK⌋mod Q.
+– Type III: A combination of the above two types.
+The above external product between a RLWE ciphertext and a RGSW cipher-
+text is corresponds to the type I way of KeySwitch. From the above analysis, the
+type II of KeySwitch corresponds to a way of external product introduced explic-
+itly in [30] and the type III of KeySwitch corresponds to a way of external product
+introduced implicitly in [14], also introduce as approximate decomposition.
+Below we adopt a presentation using scale-based operations in the integer
+ring setting, which is easier to understand compared to the torus setting in
+TFHE.
+Particularly, the external product consists of two encryption schemes:
+4
+
+=== page 5 ===
+1. A variant of (module) GSW called MGSW. Let T > Q be two moduli where
+MGSW works in modulo T and MLWE works in modulo Q. The variant
+MGSW ciphertext has the structure:
+C := ⌈B + m · T/Q · Ik+1⌋
+mod T,
+where B is a (k+1)×(k+1) ring matrix R(k+1)×(k+1)
+T
+that satisfies (1, −s⊤)·
+B ≈e for some small noise e, s is the secret key/vector, and Ik+1 is the
+identity matrix of dimension k + 1. Instead of using the “fat” gadget matrix
+G (e.g., a 2 by 6 matrix) as the standard GSW, we use the squared matrix,
+the identity Ik+1 with the scale T/Q.
+2. The standard (Module) LWE [11] scheme called MLWE. It has the following
+structure:
+c :=
+b
+a
+
+=
+
+−s⊤· a + e + ∆· m′
+a
+
+mod Q.
+Interestingly, if we interpret c as a vector in Rk+1
+T
+whose coefficients are in
+[−Q/2, Q/2], then we can derive a very simple multiplication between C and c,
+yielding the following definition of the external product :
+C  c :=
+j
+C · c · Q
+T
+m
+mod Q.
+Moreover, we can show that C  c is a MLWE ciphertext that encrypts m · m′
+mod 2, with noise roughly ∥e1∥·poly(λ)+m·∥e2∥+poly(λ). This asymmetric noise
+behavior is the critical property which FHEW-like system requires to achieve a
+polynomial noise growth as used in [5,17]. By setting the underlying ring in the
+MGSW/MLWE appropriately as R = Z[x]/(xN +1), it also supports computation
+over the roots of unity. Thus, this new homomorphic cryptosystem has all the
+necessary properties to implement the FHEW-like framework.
+Batching External Product To refresh several LWE ciphertexts, we use the
+Vec-LWE, first introduced in [42]. A Vec-LWE ciphertext encrypting m, is denoted
+as
+c :=
+
+b
+a
+
+=
+∆· m + e + S · a
+a
+
+∈Zr+k
+q
+for a given S ∈Zr×n
+q
+. Each row of all r rows of S is an LWE secret and the
+Vec-LWE uses the common a. So it reduces the rate of ciphertext to plaintext.
+Next, we need to extend homomorphic operation external product to this
+setting. Follow the above argument about external product and KeySwitch. We
+now extend KeySwitch to the Vec-LWE case.
+It is interesting when we extend the type I KeySwitch to the Vec-LWE case.
+To achieve the SIMD operations and better polynomial-size noise control, the
+message in the KSK is encoded in the diagonal of a matrix, and the corresponding
+KeySwitch key is
+5
+
+=== page 6 ===
+SA + E
+A
+
++
+M −MS
+0
+0
+
+G
+This is just the matrix GSW form introduced in [26]. However, for the FHEW-
+like bootstrapping framework, we should use the matrix GSW with a ring struc-
+ture. In the RGSW case, the amortized complexity is equal to that of the non-
+batched case.
+For better performance, we exploit the type II KeySwitch. The KSK needs a
+relatively large modulus, which leads to a large ”dimension”. Instead of using a
+ring with high degree, we use MLWE which leads to more efficient computation
+in the underlying ring and better amortized complexity for the matrix GSW.
+Given m′ and M = Diag(m′), the Mat-MGSW ciphertext C encrypting M has
+the form
+
+−S⊤A + E
+A
+
++
+
+T
+Q ·
+
+M M · S⊤
+0
+0
+
+mod T.
+Clearly, the product  is defined as
+C  c :=
+j
+C · c · Q
+T
+m
+mod Q,
+similarly to the non-batched case. Its result is a Vec-MLWE encrypting M · m =
+m′ ⊙m, where ⊙denotes the component-wise multiplication.
+Computational Advantages Now we analyze why the homomorphic multi-
+plication under this configuration can be implemented more efficiently. First,
+we recall that how the standard MGSW external product works. A standard
+MGSW ciphertext has the structure C = B + mG for some gadget matrix
+G = [1, Bg, B2
+g, . . . Bℓ−1
+g
+] ⊗Ik+1, where ℓ= logBg Q for some base Bg and Q is
+the ciphertext modulus. In pragmatic parameters, ℓcan be set to 2, 3 or 4. In this
+way, we have C ∈R(k+1)×ℓ·(k+1). The external product is basically C · G−1(c),
+which requires to compute 4ℓring multiplications. Suppose both C and c are
+given in the NTT/FFT form. Then we first need to convert c to the coefficient
+form to perform G−1, taking k +1 NTT/FFT inverses. Then it needs to convert
+the G−1(c) back to the NTT/FFT form for fast ring multiplications, requiring
+ℓ·(k +1) NTT/FFT transformation. Finally, it computes ℓ·(k +1)2 component-
+wise multiplications with dimension N. This is (ℓ+ 1) · (k + 1) NTT/FFT+inv-
+NTT/inv-FFT’s and ℓ·(k +1)2 component-wise multiplications. If we bootstrap
+r messages, we need in total r · (ℓ+ 1) · (k + 1) NTT/FFT+inv-NTT/inv-FFT’s
+and r · ℓ· (k + 1)2 component-wise multiplications.
+For our proposed variant of Mat-MGSW, we need to compute
+j
+C · c · Q
+T
+m
+,
+where C ∈R(k+r)×(k+r)
+T
+. Suppose c is in the NTT/FFT form. Then we need
+to compute (k + r)2 component-wise multiplications of dimension N for C · c.
+Then we need to convert the result into the coefficient form in order to compute
+6
+
+=== page 7 ===
+multiplication and rounding with Q
+T , requiring (k +1) NTT/FFT inverses. After
+the rounding over the coefficients, we convert it back to the NTT/FFT form,
+using another (k + 1) NTT/FFT’s. Therefore, the total cost would be 2(k + r)
+NTT/FFT+inv-NTT/inv-FFT’s and (k + r)2 component-wise multiplications
+and rounding. Thus, under a proper choice of r (e.g., 1 < r < k2), the external
+product under this new configuration is more efficient than that of the standard
+GSW, under the same ring dimension N.
+Comparison of the Overall Bootstrapping Even if the above analysis shows
+an advantage of the squared-gadget approach, to compare the overall efficiency
+with the currently in-use GSW-based FHEW-like framework, we need to further
+handle some subtleties. The squared-gadget Mat-MGSW would require a slightly
+larger modulus T than the standard MGSW modulus Q, meaning that we need
+a slightly larger dimension N to achieve the same security level. On the other
+hand, our approach allows a smaller noise growth. For a fair comparison, we
+need to take into account all these factors.
+To achieve this, we calculate and suggest various parameters for different
+security levels, according to the LWE estimator [4]. We then compare the square-
+gadget method under these parameters, with the standard GSW method under
+the OpenFHE and tfhe parameters. We implement all these schemes using both
+NTT and FFT and conduct comprehensive experiments. Moreover, we analyze
+concretely how many NTT/inv-NTT’s or FFT/inv-FFT’s (the dominating term)
+are required by our approach and the standard GSW-based approach under our
+suggested parameters, confirming that our approach would be intrinsically faster
+than the standard GSW-based method. In Sections 5 and 6, we present the
+details.
+1.3
+Integration with Recent Improvements
+It is exciting to see recent efforts in improving FHEW-like bootstrapping algo-
+rithms and the identification of new applications based on these techniques. Our
+work is compatible with many of these developments and holds the potential for
+integration into future versions, resulting in enhanced efficiency and usability.
+For instance, the work [29] proposed a novel method that handles general
+secret distributions more efficiently than FHEW/AP14, utilizing insights from
+automorphisms and KeySwitch. The works [31, 32] demonstrated how to batch
+FHEW-like bootstrapping within a polynomial modulus, resulting in better amor-
+tized complexity when bootstrapping multiple ciphertexts. Since these works all
+use the blind rotation in the core bootstrapping procedure, the insights from
+our work are expected to improve these recent developments and lead to further
+efficiency gains. Moreover, The work [32] can also be seen as an improvement of
+MS18 [37]. Following MS18, there is another two interesting works [23] and [38]
+improving the amortized complexity to O( 1
+ϵ nϵ) and eO(nϵ), respectively. How-
+ever, the works in this line mainly focus on the theoretical side and cannot
+outperform the current fastest open-source implementations, such as tfhe and
+7
+
+=== page 8 ===
+OpenFHE. Very recently, two works [24,40] announced concretely efficient pack-
+ing bootstrapping algorithms. Interestingly, as our work mainly focuses on the
+elementary homomorphic operations, we believe it can be combined with their
+frameworks. [7] also used the matrix form of GSW ciphertext under the MLWE
+(they called GLWE) assumption. However, we use a square-gadget scheme and
+our external product is built on the scale-based operation(division of two mod-
+uli), instead of gadget decomposition. Their implementation is less than 2 times
+faster than the baseline(tfhe-rs),while ours can be more than 2 times faster.
+Additionally, there are important variants of FHEW-like bootstrapping, such
+as functional bootstrapping and large-precision homomorphic evaluation, e.g., [16,
+28,33]. As these variants use the FHEW-like bootstrapping procedure in a black-
+box manner, our results can be directly applied to their settings, potentially
+yielding substantial efficiency improvements.
+2
+Preliminary
+2.1
+Notations
+Denote the set of integers by Z, the set of rational numbers by Q, the set of real
+numbers by R, and the set of complex numbers by C. For a positive k ∈Z, let [k]
+be the set of integers {0, ..., k−1}. We denote [a, b] as the set {a, a+1, . . . , b} ⊂Z
+for any integers a ≤b. For a set S and a positive integer n, we denote Sn as the
+set of all n dimensional vectors with each component belonging to S. A vector
+is always a column vector by default and is denoted by a bold lower-case letter,
+e.g., a. We use a[i] to denote the i-th element of a. For a vector a ∈Zn, let
+∥a∥2, ∥a∥∞be its ℓ2, ℓ∞norm, respectively.
+Cyclotomic Ring and Quotient Ring In this work, we only consider the
+cyclotomic rings with dimension N being two’s power, which is widely used in
+lattice-based cryptography. In this case, the ring is isomorphic to the polynomial
+ring R = Z[x]/(xN + 1), where each element a ∈R can be expressed as a
+polynomial in the coefficient representation as a = a0+a1x+a2x · · ·+aN−1xN−1,
+or (a0, . . . , aN−1) in the vector form. We use ∥a∥2, ∥a∥∞to denote the vector’s
+ℓ2, ℓ∞norms.
+For a positive integer Q, let RQ = R/(Q · R) and ZQ = Z/(Q · Z). We use
+the balanced integer set [−Q/2, Q/2] as a complete set of representatives for
+coefficients of RQ and the quotient ring ZQ.
+Sampling Notations In this work, we use the following notion for the sam-
+pling random process: x ←χ denotes sampling a random element x from the
+distribution χ, and x ←S denotes sampling uniformly from the set S. For the
+ring setting, a ←χ(R) means that every coefficient of a ∈R is sampled from
+distribution χ. If the context is clear, we may simply write a ←χ.
+8
+
+=== page 9 ===
+Gaussian Distribution For any real number s > 0 and an n-dimensional
+vector c, let ρs,c(x) := exp(−π∥x −c∥2/s2) be the Gaussian density function
+with parameter s and centered at c. The discrete gaussian distribution over a
+lattice coset Λ+u is defined as DΛ+u,s,c(x) =
+ρs,c(x)
+ρs,c(Λ+u). When c and u are both
+set to be the zero vector and the lattice is clear from the context, we write Ds
+for short and s is the deviation. In addition, the Gaussian distribution satisfies
+the Pythagorean additivity for the deviation.
+Subgaussian For δ > 0, we call a random variable X over R is δ-subgaussian
+with parameter s > 0, if for all t ∈R, the (scaled) moment-generating function
+satisfies: E[e2πtX] ≤eδ ·eπs2t2. If X is a δ-subgaussian with parameter s, then cX
+is δ-subgaussian with parameter cs for any positive c ∈R. Any B-bounded sym-
+metric random variable X (i.e., |X| ≤B always) is 0-subgaussian with parameter
+B
+√
+2π. Specifically, the uniform distribution over [−b, b] is 0-subgaussian with
+parameter b
+√
+2π. The gaussian with deviation s is subgaussian with parameter
+s
+√
+2π. Subgaussians satisfy Pythagorean additivity as follow.
+Lemma 2.1 ( [35]) For δi, si ≥0, and random variables Xi for i ∈[k], if Xi
+is δi-subgaussian with parameter si conditioning on any values of X1, ..., Xi−1,
+then P
+i∈[k] Xi is (P
+i∈[k] δi)-subgaussian with parameter (P
+i∈[k] s2
+i )1/2.
+The notion of subgaussianity can be extended to vectors: a random real vec-
+tor x is δ-subgaussian with parameter r if for all fixed real unit vectors u, the
+marginal ⟨u, x⟩∈R is δ-subgaussian with parameter r. It is clear from the defi-
+nition that the concatenation of δ-subgaussian variables or vectors, each of which
+has a parameter s and is independent of the prior one, is also δ-subgaussian with
+parameter s. Homogeneity and Pythagorean additivity also hold from linearity
+of vectors. It is known that the Euclidean norm of the subgaussian random vec-
+tor has the following upper bound. In this paper, we only need δ to be 0, and
+thus we write 0-subgaussian simply as subgaussian.
+Lemma 2.2 ( [17]) For any subgaussian random variable X with parameter s,
+we have
+Pr[|X| > t] < 2 · exp(−πt2/s2).
+2.2
+MLWE
+Our new cryptosystem is based on the module learning with errors, namely
+MLWE assumption as studied extensively [41]. To describe the problem, we first
+define the distribution As,χ,q over Rk
+q ×Rq. The distribution is parameterized by
+a secret vector s ∈Rk, an error distribution χ over R, and a modulus q. A sample
+from the distribution As,χ is of the form (b, a) ∈Rk+1
+q
+with b = −⟨s, a⟩+ e
+mod q where a ←Rk
+q and e ←χ.
+Definition 2.3 (MLWE) For a security parameter λ, let N := N(λ) be the
+degree of the ring, k = k(λ) ≥1 be the rank, q = q(λ) ≥2 be an integer modu-
+lus, and χ = χ(λ) be an error distribution over R. Given an arbitrary number
+9
+
+=== page 10 ===
+of independent samples from As,χ,q, the decision version of MLWE, denoted by
+M-DLWEN,k,q,χ, is to distinguish whether the samples come from As,χ,q or the
+uniform distribution over Rk+1
+q
+.
+The MLWE problem captures the following two special cases: traditional LWE
+(N = 1) [43] and RLWE(k = 1) [34].
+The concrete hardness of MLWE can be estimated using the estimator of [4].
+We refer the readers to [3] for further details.
+3
+New Configuration of Homomorphic Cryptosystems
+In this section, we introduce a novel configuration of the underlying cryptosys-
+tems for FHEW-like bootstrapping [36], but with notable performance improve-
+ments compared to existing state-of-the-art libraries, such as OpenFHE [6, 36]
+and tfhe [14,15]. We provide extensive experimental results in Sections 5 and 6
+to demonstrate the concrete performance enhancements.
+Our proposed variant can be viewed as a squared-gadget matrix version of the
+GSW scheme presented in TFHE [14], specifically by setting ℓ= 1 as described
+in their Section 3.2. However, previous works did not recognize the potential
+advantages of this configuration. Consequently, they considered different values
+for ℓand optimized accordingly, such as TFHE with ℓ= 3 and FHEW with
+ℓ= 3. This work identifies how to set FHE parameters along with a faster
+implementation under this specific configuration.
+Rather than using the torus representation, we choose to describe the scheme
+in the integer setting, which offers easier readability and understanding. As we
+later aim to optimize the FHE parameters, we provide a detailed analysis of
+the noise growth and computational complexity of the homomorphic operations
+within the scheme. Interestingly, this configuration of the scheme can be viewed
+as a scale-based GSW/LWE system utilizing two moduli. This bears some con-
+ceptual similarities to the second generation BFV [18], while benefiting from the
+noise growth advantage of the third generation (e.g., GSW).
+3.1
+The Scale-based Variant
+Now we present our variant based on the module learning with errors, with two
+basic encryption schemes called Mat-MGSW and Vec-MLWE. Our new insight
+is to identify that our scale-based external product can be implemented more
+efficiently than the prior configurations. For this work, the symmetric-key version
+of the cryptosystem suffices to present our insights and applications, and we
+notice that the public-key version just works analogously.
+Parameters Let k be the module rank of MLWE and T > Q be two moduli.
+Our basic scheme includes a variant of MGSW system under modulus T and a
+variant of MLWE system. Let R = Z[x]/(xN + 1) be a cyclotomic ring, where N
+is a two’s power.
+10
+
+=== page 11 ===
+Construction The cryptosystem works as follow.
+– KeyGen(1λ): Choose randomly S ←χk×r and set sk :=
+I
+S
+
+∈R(k+r)×r.
+– Mat-MGSW.Enc(sk, M ∈Rr×r): Given input sk and message M, the al-
+gorithm performs the following steps. Sample a uniformly random matrix
+A ←Rk×(k+r)
+T
+and a small noise matrix E ←ψ, where ψ is a distribution
+over Rr×(k+r). The ciphertext C is set as
+
+−S⊤A + E
+A
+
++
+ T
+Q ·
+
+M M · S⊤
+0
+0
+
+mod T.
+– Vec-MLWE.Enc(sk, m ∈Rr, t): Given input sk, message m, and an additional
+parameter t, the algorithm does the following. Sample a uniformly random
+vector a ←Rk
+Q, and compute
+c :=
+b
+a
+
+=
+
+−S⊤· a + e + m · Q/t
+a
+
+mod Q.
+Then output ct as c ∈Rk+r
+T
+whose coefficients are in [−Q/2, Q/2].
+– Scale-based External Product. Given a Mat-MGSW ciphertext C ∈
+R(k+r)×(k+r)
+T
+and a Vec-MLWE ciphertext c ∈Rk+r
+T
+(whose coefficients are
+in [−Q/2, Q/2]) as input, the external product  works as follow:
+C  c =
+j
+C · c · Q
+T
+m
+mod Q,
+where C · c is computed under modulo T, and the division and rounding
+are applied coefficient-wise. That is, ⌊Q · a/T⌉is computed by first inter-
+preting a in the coefficient embedding, i.e., P aixi, and then outputting
+a′ = P⌊Q · ai/T⌉xi.
+Note: The result of the external product is still stored as a vector in Rk+r
+T
+,
+but note that the coefficients are in [−Q/2, Q/2].
+– Vec-MLWE.Dec(sk, c ∈Rk+r
+T
+, t): Given input sk, ciphertext c, and an addi-
+tional parameter t, output
+j
+t
+Q · (sk⊤· c mod Q)
+m
+mod t.
+Remark 3.1 The Mat-MGSW/Vec-MLWE ciphertext is stored by matrices/vectors
+over RT , respectively. Each ring element of Vec-MLWE ciphertexts has coeffi-
+cients represented in [−Q/2, Q/2].
+The CPA-security of the encryption scheme follows directly from the hardness of
+MLWE as analyzed in many prior works [41]. The correctness of the Mat-MGSW
+scheme is with respect to modulo Q, and that of Vec-MLWE is with respect to
+11
+
+=== page 12 ===
+modulo t specified in the input to the decryption algorithm. Using this addi-
+tional parameter t allows the integration with the FHEW [17] framework, where
+NAND can be computed by using only homomorphic addition, but the underly-
+ing modulus would be changed. This idea has been used before [17], so we refer
+the readers the prior work for further intuitions. The plaintext computation of
+external product takes each entry of M1, m2 ∈R and outputs M1 · m2 mod t.
+As setting t|Q suffices for our next applications of bootstrapping (Section 4), we
+just consider this case in this section for ease of the analysis. Next we formally
+analyze the correctness and noise growth of the scale-based external product.
+We notice that even though the plaintext moduli of the Mat-MGSW and
+Vec-MLWE are different, their conjunction suffices to improve the FHEW-like
+bootstrapping as the message space required is only the monomials, i.e., {1, x, x2, . . . , x2N−1}.
+This is clearly supported by both the Mat-MGSW and Vec-MLWE systems. We
+present more details in Section 4.
+3.2
+Correctness and Noise Analysis of the External Product
+To analyze correctness and error growth, we first re-define the following notions
+for the error terms of Mat-MGSW/Vec-MLWE ciphertexts under our scale-based
+scheme.
+Definition 3.2 We use the symbols Mat-MGSW(M1) and Vec-MLWEt(m2) to
+present the set of all valid Mat-MGSW ciphertexts encrypting M1 and the set
+of all valid Vec-MLWE ciphertexts encrypting m2 mod t, respectively. We put
+a subscript s, i.e., Vec-MLWEt
+s(m) to indicate the secret key associated with the
+ciphertext. If the context is clear, we may omit the subscript for simplicity.
+Note that for Vec-MLWE encryption and decryption, there is an additional
+parameter t specified in the input.
+Definition 3.3 Let C be a Mat-MGSW ciphertext encrypting M1 and c be a
+Vec-MLWE ciphertext encrypting m2. Define the error function Err(·, ·) that
+works as follow: on input a Mat-MGSW ciphertext C ∈R(k+r)×(k+r)
+T
+and the
+message M1 (or a Vec-MLWE ciphertext c ∈R(k+r)
+T
+and the message m2)
+outputs the error term E1 = sk · (C −M1 · T/Q) mod T (or respectively,
+e2 = sk · (c −(Q/t · m2, 0, . . . , 0)⊤) mod Q).
+Note that we use the input type to differentiate whether Err(·, ·) should output
+a Mat-MGSW error term or a Vec-MLWE error term.
+Now, we analyze the correctness and the noise growth of the external product
+in the following lemma. We adopt the notations from the construction.
+Lemma 3.4 Let C1 ∈Mat-MGSW(M1) with error term E1 = Err(C1, M1),
+c2 ∈Vec-MLWEt(m2) with error term e2 = Err(c2, m2), and c = C1  c2 be
+the external product (all under the same secret key ). Then we have:
+– Correctness. c ∈Vec-MLWEt(M1 · m2 mod t) (i.e., by treating each
+entry of M1, m2 ∈R and then outputting M1 · m2 mod t), with an error
+term e whose norm can be upper bounded as follows.
+12
+
+=== page 13 ===
+– Noise growth. For the noise term e, we have:
+• Worst case: The infinity norm can be bounded as below.
+
+
+e
+
+
+
+∞≤B1 + B2 + Bsk
+where the auxiliary parameters are defined as follows:
+∗B1 := (k+r)NQ2∥E1∥∞
+2T
+∗B2 := ∥M1 · e2∥∞
+∗Bsk := kNQ2+Q2N
+4T
++ kN∥sk∥∞+1
+2
+• Average case: Suppose each coefficient of E1 is subgaussian distribution
+with parameter σ1, each coefficient of e2 is subgaussian distribution with
+parameter σ2, and E1 is independent of e2. Then, we have that e is a
+subgaussian distribution with parameter less than:
+r
+Q2
+T 2 · γ2
+1 + γ2
+2 + Q2
+T 2 · γ2
+3 + γ2
+4
+where the auxiliary parameters are defined as follows:
+∗γ1 := Qσ1
+p
+(k + r)N/2;
+∗γ2 := ∥M1∥∞σ2
+√
+kN;
+∗γ3 :=
+p
+2πkNQ2 + 2πNQ2/4;
+∗γ4 :=
+p
+2πkN∥sk∥2∞+ 2π/2.
+Proof. Our proof starts with the correctness analysis. Denote ec as
+C1·c2·Q
+T
+−
+j
+C1·c2·Q
+T
+m
+mod Q, i.e., ec is the fractional part of
+C1·c2·Q
+T
+mod Q. It is clear
+that ∥ec∥∞≤1/2. Therefore, we have sk · c mod Q = sk · C1·c2·Q
+T
+−sk · ˜c
+mod Q = sk · C1·c2·Q
+T
+−˜e mod Q. As the second term ˜e is small, we focus
+on the first term. First we denote C1 = C′ −C′′, where C′ is computed as
+Mat-MGSW.Enc without rounding, and C′′ is the adjustment matrix for the
+rounding with the following form:
+C′′
+11 C′′
+12
+0
+0
+
+,
+where C′′
+11 ∈Rr×r and C′′
+12 ∈Rr×k with small norm. Now we express the
+relation as following:
+sk · C1 · c2 · Q
+T
+mod Q = sk · (C′ −C′′) · c2 · Q
+T
+mod Q
+= E1 · c2 · Q
+T
++ M1 · e2 + sk · C′′ · c2 · Q
+T +
+M1 · m2 · Q/t
+mod Q.
+13
+
+=== page 14 ===
+Therefore, we can see that the external product is a Vec-MLWE ciphertext that
+encrypts M1 · m2 mod t, with error term
+e = E1 · c2 · Q
+T
++ M1 · e2 + sk · C′′ · c2 · Q
+T + sk · ec.
+Next, we derive an upper bound of e for the worst case of the noise growth.
+
+
+e
+
+
+
+∞≤
+
+
+e1 · c2 · Q
+T
+
+
+
+∞+ ∥m1 · e2∥∞+
+
+
+Q · sk · C′′ · c2
+T
+
+
+
+∞+
+
+
+sk · ec
+
+
+
+∞
+≤(k + r)NQ2∥E1∥∞
+2T
++ ∥M1 · e2∥∞+
+kNQ2 + Q2N
+4T
++ kN∥sk∥∞+ 1
+2
+By using the expressions as follows:
+– B1 := (k+r)NQ2∥E1∥∞
+2T
+– B2 := ∥M1 · e2∥∞
+– Bsk := kNQ2+Q2N
+4T
++ kN∥sk∥∞+1
+2
+we get the bound for the worst-case noise growth.
+Finally, we derive the bound for the average case. Recall the fact that a distri-
+bution over [−1/2, 1/2] is subgaussian with parameter
+√
+2π/2, so each coefficient
+of C′′ and ec are subgaussian with parameter
+√
+2π/2. By a simple calculation,
+we have e1 · c2, m1 · e2, sk · C′′ · c2 and sk · ec are subgaussian with parameters
+less than
+– γ1 := Qσ1
+p
+(k + r)N/2;
+– γ2 := ∥M1∥∞σ2
+√
+kN;
+– γ3 :=
+p
+2πkNQ2 + 2πNQ2/4;
+– γ4 :=
+p
+2πkN∥sk∥2∞+ 2π/2.
+respectively. So the error term of the external product is subgaussian with pa-
+rameter less than
+r
+Q2
+T 2 · γ2
+1 + γ2
+2 + Q2
+T 2 · γ2
+3 + γ2
+4
+⊓⊔
+Application-based Optimizations In our application of the FHEW-like boot-
+strapping, we can use the following facts to simplify and optimize the bound.
+(1) The parameters are set such that ∆· Q2 < T for some integer ∆. (2) In the
+bootstrapping process, the message M 1 is always a diagonal matrix with mono-
+mial non-zero entries, and thus ∥M1∥∞= 1. (3) We use the uniform ternary
+14
+
+=== page 15 ===
+secret. (4) The distribution of C1 is uniformly random (computationally), and
+that of c2 can be assumed uniformly random, empirically [17].
+Adding these conditions in the above lemma results in the following corollary.
+Corollary 3.5 Adopt the notions from Lemma 3.4. Suppose that each coefficient
+of C1 is uniform over [−T/2, T/2] and each coefficient of c2 is uniform over
+[−Q/2, Q/2]. If the diagonal matrix M1 has only monomial non-zero entries
+and ∆· Q2 ≤T, then e is subgaussian with parameter less than:
+r
+(k + r)Nσ2
+1
+4∆2
++ σ2
+2 + 3π + 2πkN + 12π∆2 + 8πkN∆2
+72∆2
+.
+Proof. In the proof of Lemma 3.4, the rounding part of C1 has only nonzero
+scalar elements in the diagonal and each coefficient of c2 is uniform over [−Q/2, Q/2].
+Similar to the analysis of [17], each coefficient of sk · C′′ · c2 is subgaussian with
+parameter
+γ3 =
+r
+2π · (2
+3kN + 1) · Q2
+4 · 1
+12 =
+r
+3πQ2 + 2πkNQ2
+72
+,
+by the central limit. Similarly, we can estimate sk · ec as a subgaussian with pa-
+rameter γ4 =
+q
+3π+2πkN
+18
+. Summing all these up, we have that e is subgaussian
+with parameter less than:
+r
+(k + r)Nσ2
+1
+4∆2
++ σ2
+2 + 3π + 2πkN + 12π∆2 + 8πkN∆2
+72∆2
+.
+⊓⊔
+3.3
+Computational Complexity
+In this section, we compare the computational complexity between our scale-
+based external product and the standard ring GSW external product with the
+setting ℓ≥2, e.g., [13,36].
+(module) GSW uses some modulus QGSW and gadget matrix G ∈R(k+r)×ℓ(k+r),
+where ℓ= logBg(QGSW) and Bg is the base in the gadget matrix. The ex-
+ternal product C · G−1(c) under modulus QGSW. Suppose the modulus and
+rank are N and k respectively, and the ring representation is in NTT/FFT
+form in the input and output. Then the computation of the external product
+takes (k + r) NTT/FFT inverses for the G−1, and then ℓ(k + r) NTT/FFT’s
+back to the NTT/FFT form for the matrix/vector multiplications. Then it takes
+(k +r)2ℓcomponent-wise multiplications with dimension N. In total, this would
+be (k+r)·(ℓ+1) NTT/inv-NTT’s or FFT/inv-FFT’s and (k+r)2·ℓcomponent-
+wise multiplications with dimension N.
+For our variant, we need to compute
+j
+C·c· Q
+T
+m
+. Suppose the input matrix and
+vector are in the NTT/FFT form. Then we need to compute (k+r)2 component-
+wise multiplications with dimension N for C · c and then convert it into the
+15
+
+=== page 16 ===
+coefficient form in order to compute multiplication/rounding with Q
+T , requiring
+(k + r) inv-NTT/FFT. After the rounding over the coefficients, we convert it
+back to the NTT/FFT form, using (k+r) NTT/FFT’s. Therefore, the total cost
+would be 2(k + r) NTT/inv-NTT’s or FFT/inv-FFT’s and (k + r)2 component-
+wise multiplications of dimension N and rounding.
+The above analysis shows that under the same ring dimension and module
+rank, our method requires less NTT/inv-NTT’s or FFT/inv-FFT’s , which are
+the dominating term of the computation. As we discussed in the introduction, in
+the application to FHEW-like bootstrapping, we use a larger T than the modulus
+QGSW, and thus we would need a slightly larger ring dimension/module rank N, k.
+In Sections 5 and 6, we propose several parameters for multiple security levels,
+and then analyze the overall cost in the FHEW-like bootstrapping framework,
+using our scale-based multiplication versus the standard GSW multiplication.
+4
+Accelerating the FHEW-like Bootstrapping
+In this section, we show how to integrate our new cryptosystem into the FHEW-
+like framework with ternary ({−1, 0, 1}) secrets, using the improved GINX method
+proposed by [8]. This approach is also referred to as TFHE/GINX according
+to [36]. We note that our underlying cryptosystems in Section 3 are also com-
+patible with other approaches, such as FHEW/AP14 [36] and other optimiza-
+tions [16,33].
+Parameters We begin with a description of the parameters:
+– n: the dimension of the a-part of the input Vec-LWE scheme.
+– r: the number of messages of one input ciphertext.
+– q: the modulus of the input Vec-LWE scheme.
+– S: the secret of the input Vec-LWE ciphertexts, denoted as S := (s1, ..., sr),
+where sj = (s1j, . . . , snj)⊤for all j ∈[1, r].
+– R: Z[x]/(xN + 1) for some power-of-two N.
+– k: the rank of the Vec-MLWE and Mat-MGSW scheme.
+– T: the modulus of the scale-based Mat-MGSW scheme.
+– Q: the modulus of the Vec-MLWE scheme in the scale-based external product.
+We set ∆· Q2 < T for some integer ∆.
+– sk: the secret key of the scale-based Mat-MGSW scheme.
+– QKS: the modulus of KS keys.
+– ℓKS: the dimension of the gadget decomposition in KS.
+Bootstrapping Key As in [8], in the bootstrapping key generating stage, we
+encrypt each entry of the ternary secret key S of the input Vec-LWE ciphertexts
+by our scale-based Mat-MGSW and store them in the NTT forms. In details, we
+define the bootstrapping key {BK0i, BK1i}i∈[1,n] as follows:
+BK0i ∈Mat-MGSW(Diag(b1, . . . , br)),
+bj =
+(
+1
+if
+sij > 0
+0
+otherwise , for j ∈[1, r],
+16
+
+=== page 17 ===
+BK1i ∈Mat-MGSW(Diag(b1, . . . , br)),
+bj =
+(
+1
+if
+sij < 0
+0
+otherwise , for j ∈[1, r],
+where Diag(b) denotes a diagonal matrix with diagonal entries equaling to b.
+Blind Rotation In the FHEW-like bootstrapping framework, the blind rota-
+tion mechanism plays an important role. We present the mechanism with the
+improved GINX [8] and our scale-based external product as follow.
+Algorithm 1 Blind Rotation–BR(ct0, a, {BK0i, BK1i})
+Input:
+1: A ciphertext ct0 ∈Vec-MLWE(µ1, . . . , µr) ;
+2: a vector a = (a1, · · · , an)⊤∈Zn
+q ;
+3: the bootstrapping key {BK0i, BK1i}i∈[1,n].
+Output: A new Vec-MLWE ciphertext that encrypts the vector (µ1 · x
+P aisi1, . . . , µr ·
+x
+P aisir)⊤.
+4: ACC0 = ct0
+5: for i = 1 to n do
+6:
+EK = G + (xai −1) · BK0i + (x−ai −1) · BK1i
+7:
+ACCi ←EK  ACCi−1
+8: end for
+9: return ACCn
+Next we analyze the noise behavior of the blind rotate algorithm. The analysis
+simply follows from that of Lemma 3.4.
+Theorem 4.1 Adopt the notations from the above blind rotation algorithm. Sup-
+pose each coefficient of the error term of ct0 is subgaussian with parameter σ0
+and each coefficient of the error term of BKji is independent subgaussian with
+the same parameter σ for all j ∈{0, 1} and i ∈[1, n]. And suppose that BKij’s
+and the ACCi’s are uniformly random matrices/vectors.
+Then, the output of the algorithm is a Vec-MLWE ciphertext encrypting (µ1 ·
+x
+P aisi1, . . . , µr · x
+P aisir)⊤with the error term eBR, each coefficient of which is
+subgaussian with the same parameter less than
+r
+3n + 2knN + 12n∆2 + 8kNn∆2
+72∆2
+π + n(k + r)Nσ2
+∆2
++ σ2
+0
+Proof. We first show the output encrypting the correct message. By the def-
+inition of the bootstrapping key {BK0i, BK1i}, we can get that EK in line 6
+encrypts (ai · si1, . . . , ai · sir) in the i-th iteration. By the correctness as stated
+17
+
+=== page 18 ===
+in Lemma 3.4, we know that the ACC is a Vec-MLWE ciphertext encrypting
+(µ1 · x
+P aisi1, . . . , µr · x
+P aisir).
+Now we analyze the error. Since the underlying ring of our scheme is RQ,
+multiplications by a power of x do not change the norm of a ring element.
+The error term of xai · BKji is subgaussian with parameter σ for all j ∈{0, 1}
+and i ∈[1, n]. So in each iteration, Err(EK) is subgaussian with parameter 2σ.
+Err(ACC1) is subgaussian with parameter less than
+r
+3 + 2kN + 12∆2 + 8kN∆2
+72∆2
+π + (k + r)Nσ2
+∆2
++ σ2
+0
+by corollary 3.5.
+By Pythagorean additivity, the error term of the final output is subgaussian
+with parameter less than
+r
+3n + 2knN + 12n∆2 + 8kNn∆2
+72∆2
+π + n(k + r)Nσ2
+∆2
++ σ2
+0
+as desired.
+⊓⊔
+Key-switch Next we present the syntax of the required KeySwitch proce-
+dure KeySwitch(ct, KSK). Given input a ciphertext ct ∈Vec-LWEsk(m) with
+dimension kN and a KeySwitch key KSK, it outputs ct′ ∈Vec-LWES(m). The
+KeySwitch procedure for Vec-LWE can be instantiate directly from the LWE in-
+stantiations, e.g., [10–12,18], and we can just use the original one from [12].
+Sample-Extract We require SampleExtract(ct). The algorithm takes a cipher-
+text ct ∈Vec-MLWE(xz1, . . . , xzr) as input and outputs a ciphertext
+ct′ ∈Vec-LWE(Round(z1), . . . , Round(zr)),
+where Round is the LWE rounding in the decryption step. The instantiation can
+be improved directly from many prior works [17].
+Bootstrapping Now, we can move to our new efficient bootstrapping algo-
+rithm. Using the blind rotation BR and KeySwitch algorithms as building blocks,
+the bootstrapping algorithm can be described as follows.
+18
+
+=== page 19 ===
+Algorithm 2 Bootstrapping–BTS(c, {BK0i, BK1i}, KSK)
+Input:
+1: A Vec-LWE sample c = (b1, . . . , br, a1, . . . , an)⊤∈Zr+n
+q
+, bj = −⟨a, sj⟩+ej + q
+2 ·mj
+for 1 ≤j ≤r;
+2: the bootstrapping key {BK0i, BK1i}i∈[1,n];
+3: the KeySwitch key KSK.
+Output: A fresh ciphertext c′ ∈Vec-LWE4(m1, . . . , mr).
+4: Set testv = Q
+8 · (1 + x + x2 + · · · + xN−1) · xq/4
+5: Initialize ACC = (testv · xb1, . . . , testv · xbr, 0)⊤∈Rr+k
+Q
+.
+6: ACC =BR(ACC, (a1, · · · , an), {BK0i, BK1i}).
+7: (b0, a0) = SampleExtract(ACC) + ( Q
+8 , . . . , Q
+8 , 0)
+8: (b, a) = ⌊(Qks/Q) · (b0, a0)⌉mod Qks
+9: (b′, a′) ←KeySwitch((b, a), KSK)
+10: (b′′, a′′) = ⌊(q/Qks) · (b′, a′)⌉mod q
+11: return (b′′, a′′)
+The correctness of this scheme has been analyzed in many prior works,
+e.g., [13,17], so we present only a brief sketch. The following theorem focuses on
+the error growth in our new scale-based cryptosystem.
+Theorem 4.2 Adopt the notations from the above BTS algorithm. Suppose each
+coefficient of the error term of BKji is independently subgaussian with the same
+parameter σ for all j ∈{0, 1} and i ∈[1, n]. Let the error term of each key-switch
+key be subgaussian with parameter σKS.
+Then, the output of the algorithm belongs to LWE4(m) with the error term
+eBTS, each coefficient of which is subgaussian with the same parameter less than
+s
+q2
+Q2
+ks
+(Q2
+ks
+Q σ2
+1 + σ2
+2 + σ2
+3) + σ2
+4,
+where all the σ1, σ2 , σ3 and σ4 are defined as follows:
+– σ1 :=
+q
+3πn+2πknN+12πn∆2+8πkNn∆2
+72∆2
++ n(k+r)Nσ2
+∆2
+– σ2 :=
+q
+2πkN+3π
+18
+– σ3 :=
+p
+kNℓKSσ2
+KS
+– σ4 :=
+q
+2πn+3π
+18
+Proof. We first considering the correctness. In line 5, ACC is a Vec-MLWE cipher-
+text encrypting (testv · xb1, . . . , testv · xbr). By Theorem 4.1, the output ACC
+is a Vec-MLWE ciphertext encrypting (testv · xb1+⟨a,s1⟩, . . . , testv · xbr+⟨a,sr⟩).
+Applying the SampleExtract results in the desired message by the negative cyclic
+property of R.
+Now, we estimate the noise growth. In line 5, the initial ACC is an errorless
+ciphertext. By the property of Sample extract and Theorem 4.1, the error term
+19
+
+=== page 20 ===
+of (b0, a0) (in line 7) is subgaussian with parameter less than
+σ1 :=
+r
+3n + 2knN + 12n∆2 + 8kNn∆2
+72∆2
+π + n(k + r)Nr2
+∆2
+.
+After the first modulus switch procedure in line 8, the error term of (b, a) is
+subgaussian with parameter less than
+q
+Q2
+ks
+Q2 σ2
+1 + σ2
+2, where σ2 :=
+q
+2πkN+3π
+18
+,
+using a similar estimation as [4].
+After the KeySwitch procedure in line 9, the error term of (b′, a′) is sub-
+gaussian with parameter less than
+q
+Q2
+ks
+Q2 σ2
+1 + σ2
+2 + σ2
+3, where σ3 :=
+p
+kNℓKSσ2
+KS
+(using the existing KeySwitch algorithm [12]). After the modulo switch proce-
+dure in line 10, the error term of (b”, a”) is subgaussian with parameter less
+than
+r
+q2
+Q2
+ks ( Q2
+ks
+Q2 σ2
+1 + σ2
+2 + σ2
+3) + σ2
+4, where σ4 :=
+q
+2πn+3π
+18
+.
+⊓⊔
+Table 1. Parameters for OpenFHE v0.9.3 and ours.
+Parameters
+OpenFHE
+Ours
+n
+q
+N
+log2 Q
+Bg
+FP⋆
+r
+N
+k
+log2 T
+log2 Q
+Qks
+ℓKS
+FP
+MEDIUM
+422
+1024
+1024
+28
+210
+2−27
+1
+256
+5
+38
+17
+214
+2
+2−44
+1
+512
+3
+39
+17
+214
+2
+2−38
+4
+256
+5
+38
+17
+214
+2
+2−44
+8
+256
+5
+38
+17
+214
+2
+2−44
+16
+256
+5
+38
+17
+214
+2
+2−43
+STD128
+512
+1024
+1024
+27
+27
+2−52
+1
+512
+3
+41
+18
+214
+2
+2−37
+1
+1024†
+2
+41
+18
+214
+2
+2−33
+4
+512
+3
+41
+18
+214
+2
+2−37
+8
+512
+3
+41
+18
+214
+2
+2−37
+16
+512
+3
+41
+18
+214
+2
+2−37
+STD192
+1024
+1024
+2048
+37
+213
+2−96
+1
+512
+4
+37
+17
+216
+2
+2−58
+1
+2048
+1
+37
+17
+216
+2
+2−50
+STD256
+1024
+2048
+2048
+29
+28
+2−33
+1
+512‡
+6
+44
+19
+215
+3
+2−54
+1
+1024‡
+3
+44
+19
+215
+3
+2−54
+FP denotes decryption failure probability. †The corresponding LWE parameter
+q = 2048. ‡The corresponding LWE parameter n = 1088. We perform a
+modulus-switching in front of blind rotation when q ∤2N, like tfhe library. ⋆The
+results from [36], who use a tighter noise estimation than ours.
+5
+Experiment upon OpenFHE Library
+In Sections 5 and 6, we conduct comprehensive experiments to evaluate the
+concrete performance improvements under our proposed squared-gadget GSW,
+20
+
+=== page 21 ===
+using the underlying libraries OpenFHE and tfhe. In both sections, we first
+determine the required FHE parameters at various security levels5, and then
+implement the FHEW-like bootstrapping algorithm accordingly. We then com-
+pare the performances by running the same bootstrapping algorithm, but with
+the two different underlying building blocks. This is to make sure the advantage
+mainly comes from our squared-gadget configuration, which can be implemented
+more efficiently than the currently in-use GSW multiplications. Below, we start
+with the setting of OpenFHE, which uses the NTT-based ring computation.
+5.1
+Concrete Parameters
+First in Table 1, we present the parameters proposed by the prior work [36], and
+then our parameters for the squared-gadget configuration. We set the parameter
+T is NTT-friendly and Q is a power of 2. Our security estimation is based on the
+LWE estimator of [4] (commit c50ab18 from May 17, 2022), which is also used
+by OpenFHE and [36].
+We notice that the FHEW-like gate bootstrapping framework supports AND,
+OR, NAND, NOR gates and others. Here we take the NAND gate as the compari-
+son object, and NAND is complete for general boolean computation. To compute
+the probability of decryption failure, denoted as FP, we first compute the value
+of
+r
+q2
+Q2
+ks
+ Q2
+ks
+Q2 σ2
+1 + σ2
+2 + σ2
+3
+
++ σ2
+4 in Theorem 4.2 where σ, σKS =
+√
+2π · 3.19, and
+we estimate the corresponding FP by the subgaussian tail bound of Lemma 2.2.
+We evaluate FP by verifying |Err(c1) + Err(c2)| < q/8 for two independently re-
+freshed ciphertexts c1, c2 with subgaussian parameter s, which is sufficient but
+looser than |Err(ci)| < q/16 [17]. We calculate Pr[|X| > t] < 2 · exp(−πt2/(2s2))
+as FP with t = q/8. All secrets of our scheme are assumed to be uniform ternary,
+which is considered in our security estimation and FP calculation.
+Our parameters of MEDIUM realize 108 bits of classical security and 100 bits
+of quantum security. The prefix “STD” denotes the parameters corresponding
+to the HE security standard [3]. The numbers denotes the security level. The
+parameters of OpenFHE we used is the v0.9.3 version, which is listed in Table 1.
+5.2
+Implementation
+We implement our scheme based on the OpenFHE v0.9.3 [36], using the param-
+eters listed in Table 1. Our computing environment is a server equipped with
+an Intel(R) Xeon(R) Gold 6230R CPU @ 2.10GHz and 256GB RAM, running
+Ubuntu 22.04.1. The compiler we used is clang 14.0.0. We first disable Intel
+HEXL and compile OpenFHE with WITH NATIVEOPT=OFF. Then we en-
+able Intel HEXL and compile OpenFHE with WITH NATIVEOPT=ON. We
+5 We notice that the choice of parameters would slightly differ for OpenFHE and tfhe.
+For example, the NTT implementation of OpenFHE requires special primes for the
+modulus.
+21
+
+=== page 22 ===
+Table 2. Single-threaded results (running time) and size of bootstrapping key (BK)
+for NAND gate bootstrapping.
+Timeopen
+Ours Parameters
+TimeOurs
+Amt.
+non-compress
+compress
+r
+N
+k
+log2 Q
+BKopen
+BKOurs
+BKopen
+BKOurs
+MEDIUM
+106(55)
+1
+256
+5
+17
+58(29)
+29
+34.6
+35.2
+17.3
+5.9
+1
+512
+3
+17
+66(36)
+36
+32.1
+8
+4
+256
+5
+17
+146(74)
+18.5
+79.3
+8.8
+8
+256
+5
+17
+281(153)
+19.1
+165.4
+12.7
+16
+256
+5
+17
+648(366)
+22.9
+431.6
+20.5
+STD128
+162(84)
+1
+512
+3
+18
+79(43)
+43
+54
+41
+27
+10.3
+1
+1024
+2
+18
+106(57)
+57
+46.1
+15.4
+4
+512
+3
+18
+217(103)
+25.8
+125.6
+17.9
+8
+512
+3
+18
+424(226)
+28.2
+310.1
+28.2
+16
+512
+3
+18
+1105(609)
+38.1
+925.1
+48.7
+STD192
+526(286)
+1
+512
+4
+17
+219(126)
+126
+222
+115.6
+111
+23.1
+1
+2048
+1
+17
+251(135)
+135
+74
+37
+STD256
+667(336)
+1
+512
+6
+19
+341(183)
+183
+232
+286.3
+116
+40.9
+1
+1024
+3
+19
+313(182)
+182
+187
+46.8
+Suffix ‘Ours’ is the running time [ms] and the size of bootstrapping key [MB] of ours,
+suffix ‘open’ is the GSW-based bootstrapping as implemented in OpenFHE
+v0.9.3 [36]. The running times outside () correspond to the non-HEXL setting, and
+those in () correspond to the HEXL optimization.
+collect all the NAND gate bootstrapping runtimes and bootstrapping key sizes,
+and report them in Table 2. All our experiments are conducted in a single thread.
+In Table 2, Timeopen denotes the runtime of the bootstrapping with the recent
+GINX improvement [8] under the standard GSW cryptosystem as implemented
+in current OpenFHE [36], while TimeOurs denotes the runtimes via our squared-
+gadget configuration. BKopen denotes the bootstrapping key size of the original
+scheme, and BKOurs denotes our corresponding values. We present the runtimes
+in Timeopen and TimeOurs where the runtimes in the parentheses refer to using
+HEXL AVX512-DQ, and those outside the parentheses refer to the pre-optimized
+version.
+The improved GINX [8] scheme requires 8nℓN log2 Q bits in total for the
+bootstrapping key while ours requires 2n(k + 1)2N log2 T. In fact, our param-
+eter k is usually small, so our bootstrapping key is smaller than the improved
+GINX [8] for most instances. Moreover, we can use seed from a pseudorandom
+function to further compress the bootstrapping key, similar to some post quan-
+tum encryption candidates, e.g., Kyber [9]. We use non-compress and compress
+to denote the original key size and the compressed version, respectively. In
+compress setting, we treat a MGSW ciphertext as multiple MLWE ciphertexts
+(see Section 2 in [36]), so the parts drawn uniformly random in MLWE cipher-
+texts can all be compressed. Then we report the size of the bootstrapping keys
+accordingly.
+22
+
+=== page 23 ===
+We notice that the cost of expanding the seed to recover the full bootstrap-
+ping key from the compressed key is ignorable, and thus using either one would
+not significantly affect the running time.
+Table 3. The compare of computational complexity, using the number of basic
+NTT/inv-NTT’s.
+OpenFHE
+Ours
+n
+N
+ℓ
+NTTs
+r
+N
+k
+NTTs
+MEDIUM
+422
+1024
+3
+6752
+1
+256
+5
+2532
+1
+512
+3
+3376
+4
+256
+5
+3798
+8
+256
+5
+5486
+16
+256
+5
+8862
+STD128
+512
+1024
+4
+10240
+1
+512
+3
+4096
+1
+1024
+2
+6144
+4
+512
+3
+7168
+8
+512
+3
+11264
+16
+512
+3
+19456
+STD192
+1024
+2048
+3
+32768
+1
+512
+4
+10240
+1
+2048
+1
+16384
+STD256
+1024
+2048
+4
+40960
+1
+512†
+6
+15232
+1
+1024†
+3
+17408
+Our basic NTT/inv-NTT’s refer to the dimension 512. Based on this reference, an
+NTT with dimension 1024 can be estimated as 2 basic NTT’s, an NTT with
+dimension 256 can be estimated as 0.5 NTT. NTT/inv-NTT’s with other dimensions
+can be estimated analogously. †The corresponding LWE parameter n = 1088.
+Comparison of the Number of NTT/inv-NTT’s Here we briefly analyze
+the dominating term of the computational complexity – namely the number of
+NTT’s/inv-NTT’s required for the bootstrapping procedure, for the standard
+GSW-based method versus ours, under the parameters in Table 1. This identifies
+the core reason why our method can be intrinsically faster.
+For the GSW-based computation, the dominating procedure, i.e., the blind
+rotation requires total 2n(ℓ+ 1) NTT/inv-NTT’s, while ours requires 2n(k + r).
+A caveat is that the underlying ring dimensions might be different as ours require
+a slightly larger modulus T, and thus a slightly larger Nk. To compare fairly,
+we plug in the concrete parameters in Table 1, and then calculate the number
+of basic NTT/inv-NTT’s required by the two methods, presented in Table 3.
+In this table, the basic NTT/inv-NTT refer to the dimension 512. Based
+on this reference, we estimate NTT/inv-NTT of dimension N ′ as N ′/512 basic
+NTT/inv-NTT’s. We notice that an NTT (or inv-NTT) with dimension N re-
+quires basic operators of O(N log N), and thus our estimation above is valid as
+it would capture the high order term.
+23
+
+=== page 24 ===
+This analysis shows that the core reason why our configuration can be inher-
+ently faster than that of the currently in-use GSW, confirming the results of our
+experiments. Of course, there are some other overheads during the computation,
+so for the precise runtimes, we refer the readers to Table 2.
+Table 4. Parameters and performance of tfhe.
+LWE Parameters
+MGSW Parameters
+FP
+Times (ms)
+n
+q
+σks/q
+k
+N
+log2 Q
+Bg
+σbk/Q
+fftw3
+fftw3+ [27]
+MEDIUM
+500
+232
+2.44e-5
+1
+1024
+32
+210
+7.18e-9
+2−92
+18
+13.6
+STD128-1
+630
+232
+2−15
+1
+1024
+32
+27
+2−25
+2−156
+30
+22.3
+STD128-2
+586
+232
+2−13.4
+2
+512
+32
+28
+2−24.8
+2−21†
+16.8
+13.1
+STD128-3†
+580
+232
+2−13.5
+1
+1024
+32
+27
+2−25
+2−63
+27.9
+20.6
+STD128-4†
+560
+232
+2−13
+1
+1024
+32
+27
+2−25
+2−37
+27.2
+20.3
+†We add some other parameter sets to tfhe library. Bg denotes the decomposition
+base. FP denotes decryption failure probability. STD128-2 stands for the default
+parameters in tfhe-rs [1], and we use signed approximate decomposition in the
+current tfhe library, i.e., the error from approximate decomposition should be
+zero-centered. σks and σbk are the Gaussian standard deviation of key-switching key
+and bootstrapping key, respectively. †tfhe-rs claims a decryption failure probability
+of 2−25, and the difference comes from the different noise estimation methods.
+fftw3+ [27] stands for the combination of fftw3 and the method of [27]. spqlios stands
+for spqlios-fma. The red color denotes a high failure probability. The green color
+denotes a direct improvement of the existing tfhe, just by plugging in fftw3+. These
+numbers have not been reported in prior benchmarks.
+Table 5. Parameters of ours.
+LWE Parameters
+MGSW Parameters
+KS Parameters
+FP
+n
+q
+σks/q
+r
+k
+N
+log2 T
+log2 Q
+σbk/T
+log2 Qks
+ℓKS
+f-MEDIUM
+410
+232
+2−12.2
+1
+3
+512
+37
+17
+2−35.3
+14
+2
+2−37
+4
+3
+512
+37
+17
+2−35.3
+14
+2
+2−36
+8
+3
+512
+37
+17
+2−35.3
+14
+2
+2−35
+16
+3
+512
+37
+17
+2−35.3
+14
+2
+2−33
+32
+3
+512
+37
+17
+2−35.3
+14
+2
+2−30
+f-STD128-1
+530
+232
+2−12.2
+1
+3
+512
+41
+18
+2−38.7
+14
+2
+2−38
+f-STD128-2
+550
+232
+2−12.8
+1
+3
+512
+41
+18
+2−38.7
+14
+2
+2−89
+4
+3
+512
+41
+18
+2−38.7
+14
+2
+2−89
+8
+3
+512
+41
+18
+2−38.7
+14
+2
+2−88
+16
+3
+512
+41
+18
+2−38.7
+14
+2
+2−88
+32
+3
+512
+41
+18
+2−38.7
+14
+2
+2−87
+FP denotes decryption failure probability. Prefix ‘f’ stands for faster. σks and σbk are
+the Gaussian standard deviation of key-switching key and bootstrapping key,
+respectively.
+24
+
+=== page 25 ===
+6
+Experiment upon tfhe Library
+We also implement our scheme based on the tfhe library [15], which is the
+implementation of the TFHE scheme [13]. The original TFHE scheme is defined
+over the real torus T = R/Z, which means all operations are modulo 1. In tfhe
+library, each element over T is scaled by a factor 232. In this way, operations on
+torus can be replaced by operations on int32 t, i.e., ZQ where Q = 232. For
+convenience of description and consistency with Section 5, we describe the TFHE
+scheme in the latter manner in what follows. We denote a TLWE ciphertext as
+an ordinary LWE ciphertext in Zn+1
+q
+, where q = 232. Similarly, we denote a
+TGSW ciphertext as a MGSW ciphertext.
+In Table 4, we list the parameters and performance of tfhe library. All
+our experiments run in a single thread, with the same running environment as
+Section 5. We call two parameter sets in tfhe (commit bc71bfa from February
+16, 2023) as MEDIUM and STD128-1, which provides more than 99 and 128 bits
+classic security, respectively. In addition, we also provide the performance of the
+parameter in tfhe-rs [1], where we denote it as STD128-2. The parameter of
+STD128-2 provide better performance but significantly larger decryption failure
+probability, i.e., 2−21. Moreover, tfhe library supports three types of FFT (Fast
+Fourier Transform), and they are fftw3 [19], nayuki [39] and spqlios [15]. Among
+them fftw3 [19] and spqlios are faster. Since most FFT implementations are not
+negacyclic (like NTT), FHEW and TFHE use 2N-dimensional FFT to perform the
+multiplication on RQ = ZQ[x]/(xN +1). We utilize the method of [27] to improve
+the concrete performance. At a high level, TFHE use 2N-dimensional r2c (real
+to complex) FFT’s for the input polynomials are real polynomials, which is
+faster than 2N-dimensional c2c (complex to complex) FFT’s. The method of [27]
+can utilize N/2-dimensional c2c FFT’s to perform the multiplication on RQ =
+ZQ[x]/(xN +1). In Table 4, we list some other parameter sets which is compatible
+with tfhe library and report the concrete performance results.
+We implement our squared-gadget gate bootstrapping based on top of the
+tfhe library. Our scheme requires higher accuracy in calculating FFT’s than
+original TFHE, as we use a bigger modulus. However, FFT with double com-
+plex that has 53 bits of precision is indeed enough for our implementation of
+the external product in Section 3. In this section, we set parameters slightly
+different from that in Section 5, to ensure better compatibility with the TFHE
+design and the tfhe library. Particularly, modulus q of input LWE ciphertexts
+can be larger, i.e., q > 2N, as there is a modulus-switching operation before
+the blind rotation [15]. Additionally, we use binary secrets instead of ternary
+secrets. The description of scheme and the noise estimate are just slightly differ-
+ent from Algorithm 2 and Theorem 4.2, respectively, so we do not repeat them
+here for simplicity. We list the parameter sets in Table 5 and report the concrete
+performance results in Table 6.
+Comparison for the Number of FFT/inv-FFT’s Similar to Section 5, we
+briefly analyze the number of FFT/inv-FFT’s required for the bootstrapping pro-
+cedure in the original TFHE implementation versus ours. This highlights why our
+25
+
+=== page 26 ===
+Table 6. Performance of ours.
+r
+Times (ms)
+BK size (MB)
+fftw3 fftw3+ [27] spqlios-fma amt. non-comp. comp.
+f-MEDIUM
+1
+12.2
+8.9
+6.9
+6.9
+14.8
+3.7
+4
+27.8
+22.4
+18.3
+4.6
+45.4
+6.5
+8
+53
+44.3
+38.5
+4.8
+112
+10.2
+16 124
+108
+92.7
+5.8
+334.3
+17.6
+32 326
+303
+266
+8.3
+1134.2
+32.4
+f-STD128-1
+1
+15.8
+11.4
+9.1
+9.1
+21.2
+5.3
+f-STD128-2
+1
+16.1
+11.7
+9.7
+9.7
+22
+5.5
+4
+37.8
+29.4
+25.1
+6.3
+67.4
+9.6
+8
+71.7
+60.8
+51.2
+6.4
+166.5
+15.1
+16 163
+143
+123
+7.7
+496.9
+26.2
+32 439
+404
+345
+10.8
+1686
+48.2
+Single-threaded results (running time) and size of bootstrapping key (BK) for NAND
+gate bootstrapping. fftw3+ [27] stands for the combination of fftw3 and the method
+of [27]. amt. stands for the amortized time of spqlios-fma, i.e., amt. = spqlios-fma / r.
+non-comp. and comp. denote the original key size and the compressed version,
+respectively, as in Section 5.
+Table 7. The comparison of computational complexity, using the number of basic
+FFT/inv-FFT’s.
+tfhe library
+Ours
+n
+k
+N
+ℓFFT’s
+n
+r
+k
+N
+FFT’s
+MEDIUM 500 1 1024 2
+6000
+f-MEDIUM
+410
+1 3 512
+3280
+STD128-1 630 1 1024 3 10080
+4 3 512
+8200
+STD128-2 586 2 512 2
+5274
+8 3 512 14760
+STD128-3 580 1 1024 3
+9280
+16 3 512 27880
+STD128-4 560 1 1024 3
+8960
+32 3 512 54120
+f-STD128-1
+530
+1 3 512
+4240
+f-STD128-2
+550
+1 3 512
+4400
+4 3 512
+7700
+8 3 512 12100
+16 3 512 20900
+32 3 512 38500
+Our basic FFT/inv-FFT’s refer to the dimension 512. Based on this reference, an
+FFT/inv-FFT with dimension 1024 can be estimated as 2 basic FFT/inv-FFT’s.
+FFT’s denotes the total number of basic FFT/inv-FFT’s.
+26
+
+=== page 27 ===
+configurations and parameter sets can be intrinsically faster. Under the parame-
+ters in Table 4 and 5, we compute the total number of FFT/inv-FFT’s for each
+parameter set. The blind rotation in TFHE requires a total of n(k + 1)(ℓ+ 1)
+FFT/inv-FFT’s, while ours requires 2n(k + r). We count each FFT/inv-FFT
+with dimension 512 as one basic FFT/inv-FFT, and each FFT/inv-FFT with
+dimension 1024 as two basic FFT/inv-FFT’s. We report the concrete numbers
+in Table 7.
+References
+1. Tfhe-rs: Pure rust implementation of the tfhe scheme for boolean and integers fhe
+arithmetics. Github, 2023. https://github.com/zama-ai/tfhe-rs.
+2. S. Agrawal and D. Lin, editors.
+ASIACRYPT 2022, Part II, volume 13792 of
+LNCS. Springer, Cham, Dec. 2022.
+3. M. Albrecht, M. Chase, H. Chen, J. Ding, S. Goldwasser, S. Gorbunov, S. Halevi,
+J. Hoffstein, K. Laine, K. Lauter, et al. Homomorphic encryption standard. In
+Protecting Privacy through Homomorphic Encryption, pages 31–62. Springer, 2021.
+4. M. R. Albrecht, R. Player, and S. Scott. On the concrete hardness of learning with
+errors. J. Mathematical Cryptology, 9(3):169–203, 2015.
+5. J. Alperin-Sheriff and C. Peikert.
+Faster bootstrapping with polynomial error.
+In J. A. Garay and R. Gennaro, editors, CRYPTO 2014, Part I, volume 8616 of
+LNCS, pages 297–314. Springer, Berlin, Heidelberg, Aug. 2014.
+6. A. A. Badawi, J. Bates, F. Bergamaschi, D. B. Cousins, S. Erabelli, N. Genise,
+S. Halevi, H. Hunt, A. Kim, Y. Lee, Z. Liu, D. Micciancio, I. Quah, Y. Polyakov,
+S. R.V., K. Rohloff, J. Saylor, D. Suponitsky, M. Triplett, V. Vaikuntanathan, and
+V. Zucca. Openfhe: Open-source fully homomorphic encryption library. Cryptology
+ePrint Archive, Paper 2022/915, 2022. https://eprint.iacr.org/2022/915.
+7. L. Bergerat, C. Bonte, B. R. Curtis, J.-B. Orfila, P. Paillier, and S. Tap. Shar-
+ing the mask: Tfhe bootstrapping on packed messages.
+IACR Transactions on
+Cryptographic Hardware and Embedded Systems, 2025(4):925–971, Sep. 2025.
+8. C. Bonte, I. Iliashenko, J. Park, H. V. L. Pereira, and N. P. Smart. FINAL: Faster
+FHE instantiated with NTRU and LWE. In Agrawal and Lin [2], pages 188–215.
+9. J. Bos, L. Ducas, E. Kiltz, T. Lepoint, V. Lyubashevsky, J. M. Schanck, P. Schwabe,
+G. Seiler, and D. Stehl´e. Crystals-kyber: a cca-secure module-lattice-based kem.
+In 2018 IEEE European Symposium on Security and Privacy (EuroS&P), pages
+353–367. IEEE, 2018.
+10. Z. Brakerski.
+Fully homomorphic encryption without modulus switching from
+classical GapSVP.
+In R. Safavi-Naini and R. Canetti, editors, CRYPTO 2012,
+volume 7417 of LNCS, pages 868–886. Springer, Berlin, Heidelberg, Aug. 2012.
+11. Z. Brakerski, C. Gentry, and V. Vaikuntanathan. (Leveled) fully homomorphic
+encryption without bootstrapping.
+In S. Goldwasser, editor, ITCS 2012, pages
+309–325. ACM, Jan. 2012.
+12. Z. Brakerski and V. Vaikuntanathan. Efficient fully homomorphic encryption from
+(standard) LWE. In R. Ostrovsky, editor, 52nd FOCS, pages 97–106. IEEE Com-
+puter Society Press, Oct. 2011.
+13. I. Chillotti, N. Gama, M. Georgieva, and M. Izabach`ene. Faster fully homomorphic
+encryption: Bootstrapping in less than 0.1 seconds. In J. H. Cheon and T. Takagi,
+editors, ASIACRYPT 2016, Part I, volume 10031 of LNCS, pages 3–33. Springer,
+Berlin, Heidelberg, Dec. 2016.
+27
+
+=== page 28 ===
+14. I. Chillotti, N. Gama, M. Georgieva, and M. Izabach`ene. TFHE: Fast fully ho-
+momorphic encryption over the torus. Journal of Cryptology, 33(1):34–91, Jan.
+2020.
+15. I. Chillotti, N. Gama, M. Georgieva, and M. Izabach`ene. Tfhe: Fast fully homo-
+morphic encryption library. Github, 2023. https://github.com/tfhe/tfhe.
+16. I. Chillotti, D. Ligier, J.-B. Orfila, and S. Tap.
+Improved programmable boot-
+strapping with larger precision and efficient arithmetic circuits for TFHE.
+In
+M. Tibouchi and H. Wang, editors, ASIACRYPT 2021, Part III, volume 13092
+of LNCS, pages 670–699. Springer, Cham, Dec. 2021.
+17. L. Ducas and D. Micciancio. FHEW: Bootstrapping homomorphic encryption in
+less than a second. In E. Oswald and M. Fischlin, editors, EUROCRYPT 2015,
+Part I, volume 9056 of LNCS, pages 617–640. Springer, Berlin, Heidelberg, Apr.
+2015.
+18. J. Fan and F. Vercauteren. Somewhat practical fully homomorphic encryption.
+Cryptology ePrint Archive, Paper 2012/144, 2012.
+https://eprint.iacr.org/
+2012/144.
+19. M. Frigo and S. G. Johnson. The design and implementation of FFTW3. Proc.
+IEEE, 93(2):216–231, 2005.
+20. N. Gama, M. Izabach`ene, P. Q. Nguyen, and X. Xie.
+Structural lattice reduc-
+tion: Generalized worst-case to average-case reductions and homomorphic cryp-
+tosystems. In M. Fischlin and J.-S. Coron, editors, EUROCRYPT 2016, Part II,
+volume 9666 of LNCS, pages 528–558. Springer, Berlin, Heidelberg, May 2016.
+21. C. Gentry. Fully homomorphic encryption using ideal lattices. In M. Mitzenmacher,
+editor, 41st ACM STOC, pages 169–178. ACM Press, May / June 2009.
+22. C. Gentry, A. Sahai, and B. Waters. Homomorphic encryption from learning with
+errors: Conceptually-simpler, asymptotically-faster, attribute-based. In R. Canetti
+and J. A. Garay, editors, CRYPTO 2013, Part I, volume 8042 of LNCS, pages
+75–92. Springer, Berlin, Heidelberg, Aug. 2013.
+23. A. Guimar˜aes, H. V. L. Pereira, and B. van Leeuwen. Amortized bootstrapping
+revisited: Simpler, asymptotically-faster, implemented. In J. Guo and R. Steinfeld,
+editors, ASIACRYPT 2023, Part VI, volume 14443 of LNCS, pages 3–35. Springer,
+Singapore, Dec. 2023.
+24. A. Guimar˜aes and H. V. L. Pereira. Fast amortized bootstrapping with small keys
+and polynomial noise overhead. Cryptology ePrint Archive, Paper 2025/686, 2025.
+25. C. Hazay and M. Stam, editors. EUROCRYPT 2023, Part III, volume 14006 of
+LNCS. Springer, Cham, Apr. 2023.
+26. R. Hiromasa, M. Abe, and T. Okamoto. Packing messages and optimizing boot-
+strapping in GSW-FHE. In J. Katz, editor, PKC 2015, volume 9020 of LNCS,
+pages 699–715. Springer, Berlin, Heidelberg, Mar. / Apr. 2015.
+27. J. Klemsa. Fast and error-free negacyclic integer convolution using extended fourier
+transform. In S. Dolev, O. Margalit, B. Pinkas, and A. A. Schwarzmann, editors,
+Cyber Security Cryptography and Machine Learning - 5th International Sympo-
+sium, CSCML 2021, Be’er Sheva, Israel, July 8-9, 2021, Proceedings, volume 12716
+of Lecture Notes in Computer Science, pages 282–300. Springer, 2021.
+28. K. Kluczniak and L. Schild. FDFB: full domain functional bootstrapping towards
+practical fully homomorphic encryption. IACR Trans. Cryptogr. Hardw. Embed.
+Syst., 2023(1):501–537, 2023.
+29. Y. Lee, D. Micciancio, A. Kim, R. Choi, M. Deryabin, J. Eom, and D. Yoo. Efficient
+FHEW bootstrapping with small evaluation keys, and applications to threshold
+homomorphic encryption. In Hazay and Stam [25], pages 227–256.
+28
+
+=== page 29 ===
+30. Z. Li, Y. Liu, X. Lu, R. Wang, B. Wei, C. Chen, and K. Wang. Faster bootstrapping
+via modulus raising and composite NTT. IACR Trans. Cryptogr. Hardw. Embed.
+Syst., 2024(1):563–591, 2024.
+31. F.-H. Liu and H. Wang.
+Batch bootstrapping I: A new framework for SIMD
+bootstrapping in polynomial modulus. In Hazay and Stam [25], pages 321–352.
+32. F.-H. Liu and H. Wang.
+Batch bootstrapping II: Bootstrapping in polynomial
+modulus only requires ˜O(1) FHE multiplications in amortization. In Hazay and
+Stam [25], pages 353–384.
+33. Z. Liu, D. Micciancio, and Y. Polyakov. Large-precision homomorphic sign evalu-
+ation using FHEW/TFHE bootstrapping. In Agrawal and Lin [2], pages 130–160.
+34. V. Lyubashevsky, C. Peikert, and O. Regev. On ideal lattices and learning with
+errors over rings. In H. Gilbert, editor, EUROCRYPT 2010, volume 6110 of LNCS,
+pages 1–23. Springer, Berlin, Heidelberg, May / June 2010.
+35. V. Lyubashevsky, C. Peikert, and O. Regev. A toolkit for ring-LWE cryptography.
+In T. Johansson and P. Q. Nguyen, editors, EUROCRYPT 2013, volume 7881 of
+LNCS, pages 35–54. Springer, Berlin, Heidelberg, May 2013.
+36. D. Micciancio and Y. Polyakov.
+Bootstrapping in fhew-like cryptosystems.
+In
+WAHC ’21: Proceedings of the 9th on Workshop on Encrypted Computing & Ap-
+plied Homomorphic Cryptography, Virtual Event, Korea, 15 November 2021, pages
+17–28. WAHC@ACM, 2021.
+37. D. Micciancio and J. Sorrell. Ring packing and amortized FHEW bootstrapping.
+In I. Chatzigiannakis, C. Kaklamanis, D. Marx, and D. Sannella, editors, ICALP
+2018, volume 107 of LIPIcs, pages 100:1–100:14. Schloss Dagstuhl, July 2018.
+38. G. D. Micheli, D. Kim, D. Micciancio, and A. Suhl.
+Faster amortized FHEW
+bootstrapping using ring automorphisms.
+In Q. Tang and V. Teague, editors,
+Public-Key Cryptography - PKC 2024 - 27th IACR International Conference on
+Practice and Theory of Public-Key Cryptography, Sydney, NSW, Australia, April
+15-17, 2024, Proceedings, Part IV, volume 14604 of Lecture Notes in Computer
+Science, pages 322–353. Springer, 2024.
+39. Nayuki. Fast fourier transform in x86 assembly, 2023. https://www.nayuki.io/
+page/fast-fourier-transform-in-x86-assembly.
+40. T. B. Paiva, G. D. Micheli, S. M. Hafiz, M. A. S. Jr., and B. Yildiz.
+Faster
+amortized bootstrapping using the incomplete NTT for free. Cryptology ePrint
+Archive, Paper 2025/696, 2025.
+41. C. Peikert and Z. Pepin. Algebraically structured LWE, revisited. In D. Hofheinz
+and A. Rosen, editors, TCC 2019, Part I, volume 11891 of LNCS, pages 1–23.
+Springer, Cham, Dec. 2019.
+42. C. Peikert, V. Vaikuntanathan, and B. Waters.
+A framework for efficient and
+composable oblivious transfer. In D. Wagner, editor, CRYPTO 2008, volume 5157
+of LNCS, pages 554–571. Springer, Berlin, Heidelberg, Aug. 2008.
+43. O. Regev. On lattices, learning with errors, random linear codes, and cryptography.
+In H. N. Gabow and R. Fagin, editors, 37th ACM STOC, pages 84–93. ACM Press,
+May 2005.
+44. R. L. Rivest, L. Adleman, and M. L. Dertouzos.
+On data banks and privacy
+homomorphisms. Foundations of Secure Computation, 1978.
+45. V. Vaikuntanathan. Homomorphic encryption references. https://people.csail.
+mit.edu/vinodv/FHE/FHE-refs.html.
+46. Y. Yu, H. Jia, and X. Wang. Compact lattice gadget and its applications to hash-
+and-sign signatures. In H. Handschuh and A. Lysyanskaya, editors, CRYPTO 2023,
+Part V, volume 14085 of LNCS, pages 390–420. Springer, Cham, Aug. 2023.
+29

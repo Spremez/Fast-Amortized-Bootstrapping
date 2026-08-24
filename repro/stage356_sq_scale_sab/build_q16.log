@@ -1,0 +1,909 @@
+mkdir -p ./build
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/keyswitch.c -o build/keyswitch.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/bootstrap.c -o build/bootstrap.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/bootstrap_ga.c -o build/bootstrap_ga.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/tlwe.c -o build/tlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/trlwe.c -o build/trlwe.o
+src/mosfhet/src/trlwe.c: In function 'print_trlwe_msg':
+src/mosfhet/src/trlwe.c:320:15: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+     printf("%lu, ", torus2int(tmp->coeffs[i], prec));
+             ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             %I64u
+src/mosfhet/src/trlwe.c:320:15: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+     printf("%lu, ", torus2int(tmp->coeffs[i], prec));
+             ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             %I64u
+src/mosfhet/src/trlwe.c:322:13: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%lu\n", torus2int(tmp->coeffs[N-1], prec));
+           ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           %I64u
+src/mosfhet/src/trlwe.c:322:13: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%lu\n", torus2int(tmp->coeffs[N-1], prec));
+           ~~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           %I64u
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/trgsw.c -o build/trgsw.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/misc.c -o build/misc.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/polynomial.c -o build/polynomial.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/register.c -o build/register.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/pvwtlwe.c -o build/pvwtlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/sha3/fips202.c -o build/fips202.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/fft/karatsuba.c -o build/karatsuba.o
+src/mosfhet/src/fft/karatsuba.c: In function '_debug_print128':
+src/mosfhet/src/fft/karatsuba.c:18:22: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: 0x%016lx%016lx\n", msg, x64[1], x64[0]);
+                 ~~~~~^                ~~~~~~
+                 %016I64x
+src/mosfhet/src/fft/karatsuba.c:18:28: warning: format '%lx' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: 0x%016lx%016lx\n", msg, x64[1], x64[0]);
+                       ~~~~~^                  ~~~~~~
+                       %016I64x
+src/mosfhet/src/fft/karatsuba.c:18:22: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: 0x%016lx%016lx\n", msg, x64[1], x64[0]);
+                 ~~~~~^                ~~~~~~
+                 %016I64x
+src/mosfhet/src/fft/karatsuba.c:18:28: warning: format '%lx' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: 0x%016lx%016lx\n", msg, x64[1], x64[0]);
+                       ~~~~~^                  ~~~~~~
+                       %016I64x
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/fft/ffnt/ffnt.c -o build/ffnt.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3_2048 src/sparse_amortized_bootstrap.c -o build/sparse_amortized_bootstrap.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3_2048 src/sab_profile.c -o build/sab_profile.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3_2048 src/sab_sq.c -o build/sab_sq.o
+src/sab_sq.c: In function 'sab_sq_new_key':
+src/sab_sq.c:63:18: warning: unused variable 'r_max' [-Wunused-variable]
+   const uint64_t r_max = 1ULL << r_prec;
+                  ^~~~~
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=haswell -lm -DUSE_SHAKE -DPORTABLE_BUILD -I./src/mosfhet/include -I./include/ -DSAB_SQ_EQUIV_TEST -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3_2048 main.c -o build/main.o
+In file included from main.c:3:
+./include/benchmark_util.h: In function 'print_bench':
+./include/benchmark_util.h:24:17: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: %lu,%03lu,%03luμs +- %lf\n", msg, mean/1000000, (mean/1000)%1000, mean%1000, stddev);
+               ~~^                                ~~~~~~~~~~~~
+               %I64u
+./include/benchmark_util.h:24:23: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: %lu,%03lu,%03luμs +- %lf\n", msg, mean/1000000, (mean/1000)%1000, mean%1000, stddev);
+                   ~~~~^                                        ~~~~~~~~~~~~~~~~
+                   %03I64u
+./include/benchmark_util.h:24:29: warning: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: %lu,%03lu,%03luμs +- %lf\n", msg, mean/1000000, (mean/1000)%1000, mean%1000, stddev);
+                         ~~~~^                                                    ~~~~~~~~~
+                         %03I64u
+./include/benchmark_util.h:24:17: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: %lu,%03lu,%03luμs +- %lf\n", msg, mean/1000000, (mean/1000)%1000, mean%1000, stddev);
+               ~~^                                ~~~~~~~~~~~~
+               %I64u
+./include/benchmark_util.h:24:23: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: %lu,%03lu,%03luμs +- %lf\n", msg, mean/1000000, (mean/1000)%1000, mean%1000, stddev);
+                   ~~~~^                                        ~~~~~~~~~~~~~~~~
+                   %03I64u
+./include/benchmark_util.h:24:29: warning: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%s: %lu,%03lu,%03luμs +- %lf\n", msg, mean/1000000, (mean/1000)%1000, mean%1000, stddev);
+                         ~~~~^                                                    ~~~~~~~~~
+                         %03I64u
+main.c: In function 'test_sab_sq':
+main.c:254:45: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("SAB_SQ scale-quantized SAB (q = %lu, 2025/1711 x 2025/686, 2026/279 preflight)\n", q);
+                                           ~~^                                                ~
+                                           %I64u
+main.c:254:45: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("SAB_SQ scale-quantized SAB (q = %lu, 2025/1711 x 2025/686, 2026/279 preflight)\n", q);
+                                           ~~^                                                ~
+                                           %I64u
+main.c:255:23: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, sigma=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                     ~~^                                  ~~~~
+                     %I64d
+main.c:255:30: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, sigma=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                            ~~^                                 ~~~~
+                            %I64d
+main.c:255:51: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, sigma=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                                                 ~~^                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                 %I64d
+main.c:255:23: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, sigma=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                     ~~^                                  ~~~~
+                     %I64d
+main.c:255:30: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, sigma=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                            ~~^                                 ~~~~
+                            %I64d
+main.c:255:51: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, sigma=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                                                 ~~^                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                 %I64d
+main.c:256:24: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, sigma=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                      ~~^                                   ~~~~~
+                      %I64d
+main.c:256:31: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, sigma=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                             ~~^                                   ~~~~~
+                             %I64d
+main.c:256:53: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, sigma=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                                                   ~~^                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                   %I64d
+main.c:256:24: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, sigma=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                      ~~^                                   ~~~~~
+                      %I64d
+main.c:256:31: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, sigma=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                             ~~^                                   ~~~~~
+                             %I64d
+main.c:256:53: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, sigma=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                                                   ~~^                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                   %I64d
+main.c:265:44: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Max monomial distance (log B): %lu\n", r_prec);
+                                          ~~^     ~~~~~~
+                                          %I64u
+main.c:265:44: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Max monomial distance (log B): %lu\n", r_prec);
+                                          ~~^     ~~~~~~
+                                          %I64u
+main.c:281:3: warning: implicit declaration of function 'MEASURE_BOOTSTRAP_TIME'; did you mean 'MEASURE_TIME'? [-Wimplicit-function-declaration]
+   MEASURE_BOOTSTRAP_TIME("", reps, "SAB_SQ bootstrap",
+   ^~~~~~~~~~~~~~~~~~~~~~
+   MEASURE_TIME
+main.c:282:51: error: expected ')' before ';' token
+     sab_sq_bootstrap(sq_out, rlwe_in, rlwe_tv, sq);
+                                                   ^
+                                                   )
+main.c:282:5: error: invalid use of void expression
+     sab_sq_bootstrap(sq_out, rlwe_in, rlwe_tv, sq);
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+main.c:294:39: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'long long unsigned int'} [-Wformat=]
+       if(mism <= 8) printf("SQ Fail %lu: %lu != %lu\n", i, res, expected);
+                                     ~~^                 ~
+                                     %I64u
+main.c:294:44: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       if(mism <= 8) printf("SQ Fail %lu: %lu != %lu\n", i, res, expected);
+                                          ~~^               ~~~
+                                          %I64u
+main.c:294:51: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       if(mism <= 8) printf("SQ Fail %lu: %lu != %lu\n", i, res, expected);
+                                                 ~~^             ~~~~~~~~
+                                                 %I64u
+main.c:294:39: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'long long unsigned int'} [-Wformat=]
+       if(mism <= 8) printf("SQ Fail %lu: %lu != %lu\n", i, res, expected);
+                                     ~~^                 ~
+                                     %I64u
+main.c:294:44: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       if(mism <= 8) printf("SQ Fail %lu: %lu != %lu\n", i, res, expected);
+                                          ~~^               ~~~
+                                          %I64u
+main.c:294:51: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       if(mism <= 8) printf("SQ Fail %lu: %lu != %lu\n", i, res, expected);
+                                                 ~~^             ~~~~~~~~
+                                                 %I64u
+main.c:302:78: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'long long unsigned int' [-Wformat=]
+   printf("SAB_SQ noise: max phase deviation log2 = %.2f (message budget 2^-%lu)\n",
+                                                                            ~~^
+                                                                            %I64u
+          log2((double)(max_dev + 1)), msg_prec + 1);
+                                       ~~~~~~~~~~~~                            
+main.c:302:78: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'long long unsigned int' [-Wformat=]
+   printf("SAB_SQ noise: max phase deviation log2 = %.2f (message budget 2^-%lu)\n",
+                                                                            ~~^
+                                                                            %I64u
+          log2((double)(max_dev + 1)), msg_prec + 1);
+                                       ~~~~~~~~~~~~                            
+main.c:308:59: error: expected ')' before ';' token
+     sab_rlwe_bootstrap(scalar_out, rlwe_in2, rlwe_tv, sab);
+                                                           ^
+                                                           )
+main.c:308:5: error: invalid use of void expression
+     sab_rlwe_bootstrap(scalar_out, rlwe_in2, rlwe_tv, sab);
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+main.c: In function 'tlwe_print':
+main.c:328:13: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%lu", torus2int(tlwe_phase(c, key), prec));
+           ~~^   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           %I64u
+main.c:328:13: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("%lu", torus2int(tlwe_phase(c, key), prec));
+           ~~^   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           %I64u
+main.c: In function 'trlwe_print':
+main.c:344:15: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+     printf("%lu, ", val);
+             ~~^     ~~~
+             %I64u
+main.c:344:15: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+     printf("%lu, ", val);
+             ~~^     ~~~
+             %I64u
+main.c: In function 'print_exp_poly':
+main.c:374:15: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'int64_t' {aka 'long long int'} [-Wformat=]
+     printf("%ld, ", idx*sign);
+             ~~^     ~~~~~~~~
+             %I64d
+main.c:374:15: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'int64_t' {aka 'long long int'} [-Wformat=]
+     printf("%ld, ", idx*sign);
+             ~~^     ~~~~~~~~
+             %I64d
+main.c: In function 'test_NCMUX':
+main.c:387:28: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Min precision: %lu\n", r_prec);
+                          ~~^     ~~~~~~
+                          %I64u
+main.c:387:28: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Min precision: %lu\n", r_prec);
+                          ~~^     ~~~~~~
+                          %I64u
+main.c: In function 'test_monomial_mul':
+main.c:409:28: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Min precision: %lu\n", r_prec);
+                          ~~^     ~~~~~~
+                          %I64u
+main.c:409:28: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Min precision: %lu\n", r_prec);
+                          ~~^     ~~~~~~
+                          %I64u
+main.c: In function 'test_sab_br':
+main.c:433:28: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Min precision: %lu\n", r_prec);
+                          ~~^     ~~~~~~
+                          %I64u
+main.c:433:28: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Min precision: %lu\n", r_prec);
+                          ~~^     ~~~~~~
+                          %I64u
+main.c: In function 'test_sab':
+main.c:518:23: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                     ~~^                               ~~~~
+                     %I64d
+main.c:518:30: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                            ~~^                              ~~~~
+                            %I64d
+main.c:518:48: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                                              ~~^                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                              %I64d
+main.c:518:23: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                     ~~^                               ~~~~
+                     %I64d
+main.c:518:30: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                            ~~^                              ~~~~
+                            %I64d
+main.c:518:48: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, binary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                                              ~~^                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                              %I64d
+main.c:519:25: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                       ~~^                                ~~~~
+                       %I64d
+main.c:519:32: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'long long unsigned int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                              ~~^                               ~~~~~~~~~~~~~~
+                              %I64d
+main.c:519:51: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                                                 ~~^                            ~~~~~~~~~~~~~
+                                                 %I64d
+main.c:519:25: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                       ~~^                                ~~~~
+                       %I64d
+main.c:519:32: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'long long unsigned int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                              ~~^                               ~~~~~~~~~~~~~~
+                              %I64d
+main.c:519:51: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                                                 ~~^                            ~~~~~~~~~~~~~
+                                                 %I64d
+main.c:520:24: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                      ~~^                                ~~~~~
+                      %I64d
+main.c:520:31: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                             ~~^                                ~~~~~
+                             %I64d
+main.c:520:50: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                                                ~~^                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                %I64d
+main.c:520:24: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                      ~~^                                ~~~~~
+                      %I64d
+main.c:520:31: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                             ~~^                                ~~~~~
+                             %I64d
+main.c:520:50: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                                                ~~^                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                %I64d
+main.c:521:35: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                 ~~^
+                                 %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+         ~                          
+main.c:521:45: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                           ~~^
+                                           %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+            ~~~~~~                            
+main.c:521:58: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                        ~~^
+                                                        %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                    ~~~~~~~~~~~                            
+main.c:521:68: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                  ~~^
+                                                                  %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                 ~~~~~~~~~                           
+main.c:521:80: warning: format '%ld' expects argument of type 'long int', but argument 6 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                              ~~^
+                                                                              %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                            ~~~~                                 
+main.c:521:90: warning: format '%ld' expects argument of type 'long int', but argument 7 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                                        ~~^
+                                                                                        %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                                  ~~~~                                     
+main.c:521:35: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                 ~~^
+                                 %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+         ~                          
+main.c:521:45: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                           ~~^
+                                           %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+            ~~~~~~                            
+main.c:521:58: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                        ~~^
+                                                        %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                    ~~~~~~~~~~~                            
+main.c:521:68: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                  ~~^
+                                                                  %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                 ~~~~~~~~~                           
+main.c:521:80: warning: format '%ld' expects argument of type 'long int', but argument 6 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                              ~~^
+                                                                              %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                            ~~~~                                 
+main.c:521:90: warning: format '%ld' expects argument of type 'long int', but argument 7 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                                        ~~^
+                                                                                        %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                                  ~~~~                                     
+main.c:523:32: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                              ~~^                        ~~~~~~~~
+                              %I64d
+main.c:523:51: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                                                 ~~^               ~~~~
+                                                 %I64d
+main.c:523:32: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                              ~~^                        ~~~~~~~~
+                              %I64d
+main.c:523:51: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                                                 ~~^               ~~~~
+                                                 %I64d
+main.c:533:46: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("\nMax monomial distance (log B): %lu\n", r_prec);
+                                            ~~^     ~~~~~~
+                                            %I64u
+main.c:533:46: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("\nMax monomial distance (log B): %lu\n", r_prec);
+                                            ~~^     ~~~~~~
+                                            %I64u
+main.c:534:42: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("Rejection Sampling Attempts: %lu\n", rs_attempts);
+                                        ~~^     ~~~~~~~~~~~
+                                        %I64u
+main.c:534:42: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+   printf("Rejection Sampling Attempts: %lu\n", rs_attempts);
+                                        ~~^     ~~~~~~~~~~~
+                                        %I64u
+main.c:564:24: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                      ~~^                 ~
+                      %I64u
+main.c:564:29: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                           ~~^               ~~~
+                           %I64u
+main.c:564:36: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                                  ~~^             ~~~~~~~~
+                                  %I64u
+main.c:564:24: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                      ~~^                 ~
+                      %I64u
+main.c:564:29: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                           ~~^               ~~~
+                           %I64u
+main.c:564:36: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                                  ~~^             ~~~~~~~~
+                                  %I64u
+main.c: In function 'test_sab_tern':
+main.c:632:23: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                     ~~^                                ~~~~
+                     %I64d
+main.c:632:30: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                            ~~^                               ~~~~
+                            %I64d
+main.c:632:49: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                                               ~~^                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                               %I64d
+main.c:632:23: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                     ~~^                                ~~~~
+                     %I64d
+main.c:632:30: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                            ~~^                               ~~~~
+                            %I64d
+main.c:632:49: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, h_in, (int64_t) round(log2(sigma_in)));
+                                               ~~^                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                               %I64d
+main.c:633:25: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                       ~~^                                ~~~~
+                       %I64d
+main.c:633:32: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'long long unsigned int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                              ~~^                               ~~~~~~~~~~~~~~
+                              %I64d
+main.c:633:51: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                                                 ~~^                            ~~~~~~~~~~~~~
+                                                 %I64d
+main.c:633:25: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                       ~~^                                ~~~~
+                       %I64d
+main.c:633:32: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'long long unsigned int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                              ~~^                               ~~~~~~~~~~~~~~
+                              %I64d
+main.c:633:51: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                                                 ~~^                            ~~~~~~~~~~~~~
+                                                 %I64d
+main.c:634:24: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                      ~~^                                ~~~~~
+                      %I64d
+main.c:634:31: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                             ~~^                                ~~~~~
+                             %I64d
+main.c:634:50: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                                                ~~^                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                %I64d
+main.c:634:24: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                      ~~^                                ~~~~~
+                      %I64d
+main.c:634:31: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                             ~~^                                ~~~~~
+                             %I64d
+main.c:634:50: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                                                ~~^                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                %I64d
+main.c:635:35: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                 ~~^
+                                 %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+         ~                          
+main.c:635:45: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                           ~~^
+                                           %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+            ~~~~~~                            
+main.c:635:58: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                        ~~^
+                                                        %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                    ~~~~~~~~~~~                            
+main.c:635:68: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                  ~~^
+                                                                  %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                 ~~~~~~~~~                           
+main.c:635:80: warning: format '%ld' expects argument of type 'long int', but argument 6 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                              ~~^
+                                                                              %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                            ~~~~                                 
+main.c:635:90: warning: format '%ld' expects argument of type 'long int', but argument 7 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                                        ~~^
+                                                                                        %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                                  ~~~~                                     
+main.c:635:35: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                 ~~^
+                                 %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+         ~                          
+main.c:635:45: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                           ~~^
+                                           %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+            ~~~~~~                            
+main.c:635:58: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                        ~~^
+                                                        %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                    ~~~~~~~~~~~                            
+main.c:635:68: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                  ~~^
+                                                                  %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                 ~~~~~~~~~                           
+main.c:635:80: warning: format '%ld' expects argument of type 'long int', but argument 6 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                              ~~^
+                                                                              %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                            ~~~~                                 
+main.c:635:90: warning: format '%ld' expects argument of type 'long int', but argument 7 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                                        ~~^
+                                                                                        %I64d
+         l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                                  ~~~~                                     
+main.c:637:32: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                              ~~^                        ~~~~~~~~
+                              %I64d
+main.c:637:51: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                                                 ~~^               ~~~~
+                                                 %I64d
+main.c:637:32: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                              ~~^                        ~~~~~~~~
+                              %I64d
+main.c:637:51: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                                                 ~~^               ~~~~
+                                                 %I64d
+main.c:647:42: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("\nMonomial distance (log B): %lu\n", r_prec);
+                                        ~~^     ~~~~~~
+                                        %I64u
+main.c:647:42: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("\nMonomial distance (log B): %lu\n", r_prec);
+                                        ~~^     ~~~~~~
+                                        %I64u
+main.c:648:42: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Rejection Sampling Attempts: %lu\n", rs_attempts);
+                                        ~~^     ~~~~~~~~~~~
+                                        %I64u
+main.c:648:42: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Rejection Sampling Attempts: %lu\n", rs_attempts);
+                                        ~~^     ~~~~~~~~~~~
+                                        %I64u
+main.c:678:24: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                      ~~^                 ~
+                      %I64u
+main.c:678:29: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                           ~~^               ~~~
+                           %I64u
+main.c:678:36: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                                  ~~^             ~~~~~~~~
+                                  %I64u
+main.c:678:24: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                      ~~^                 ~
+                      %I64u
+main.c:678:29: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                           ~~^               ~~~
+                           %I64u
+main.c:678:36: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                                  ~~^             ~~~~~~~~
+                                  %I64u
+main.c: In function 'test_sab_arbitrary':
+main.c:718:23: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, θ=%ld, σ=2^%ld)\n", in_N, h_in, key_bound, (int64_t) round(log2(sigma_in)));
+                     ~~^                               ~~~~
+                     %I64d
+main.c:718:30: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, θ=%ld, σ=2^%ld)\n", in_N, h_in, key_bound, (int64_t) round(log2(sigma_in)));
+                            ~~^                              ~~~~
+                            %I64d
+main.c:718:38: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, θ=%ld, σ=2^%ld)\n", in_N, h_in, key_bound, (int64_t) round(log2(sigma_in)));
+                                    ~~^                            ~~~~~~~~~
+                                    %I64d
+main.c:718:48: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'long long int' [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, θ=%ld, σ=2^%ld)\n", in_N, h_in, key_bound, (int64_t) round(log2(sigma_in)));
+                                              ~~^                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                              %I64d
+main.c:718:23: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, θ=%ld, σ=2^%ld)\n", in_N, h_in, key_bound, (int64_t) round(log2(sigma_in)));
+                     ~~^                               ~~~~
+                     %I64d
+main.c:718:30: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, θ=%ld, σ=2^%ld)\n", in_N, h_in, key_bound, (int64_t) round(log2(sigma_in)));
+                            ~~^                              ~~~~
+                            %I64d
+main.c:718:38: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, θ=%ld, σ=2^%ld)\n", in_N, h_in, key_bound, (int64_t) round(log2(sigma_in)));
+                                    ~~^                            ~~~~~~~~~
+                                    %I64d
+main.c:718:48: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'long long int' [-Wformat=]
+   printf("Input: (N=%ld, h=%ld, θ=%ld, σ=2^%ld)\n", in_N, h_in, key_bound, (int64_t) round(log2(sigma_in)));
+                                              ~~^                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                              %I64d
+main.c:719:25: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                       ~~^                                ~~~~
+                       %I64d
+main.c:719:32: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'long long unsigned int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                              ~~^                               ~~~~~~~~~~~~~~
+                              %I64d
+main.c:719:51: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                                                 ~~^                            ~~~~~~~~~~~~~
+                                                 %I64d
+main.c:719:25: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                       ~~^                                ~~~~
+                       %I64d
+main.c:719:32: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'long long unsigned int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                              ~~^                               ~~~~~~~~~~~~~~
+                              %I64d
+main.c:719:51: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Packing: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", in_N, (uint64_t) 256, (int64_t) -44);
+                                                 ~~^                            ~~~~~~~~~~~~~
+                                                 %I64d
+main.c:720:24: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                      ~~^                                ~~~~~
+                      %I64d
+main.c:720:31: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                             ~~^                                ~~~~~
+                             %I64d
+main.c:720:50: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                                                ~~^                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                %I64d
+main.c:720:24: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                      ~~^                                ~~~~~
+                      %I64d
+main.c:720:31: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                             ~~^                                ~~~~~
+                             %I64d
+main.c:720:50: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'long long int' [-Wformat=]
+   printf("Output: (N=%ld, h=%ld, ternary, σ=2^%ld)\n", out_N, h_out, (int64_t) round(log2(sigma_out)));
+                                                ~~^                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                %I64d
+main.c:721:35: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                 ~~^
+                                 %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+          ~                         
+main.c:721:45: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                           ~~^
+                                           %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+             ~~~~~~                           
+main.c:721:58: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                        ~~^
+                                                        %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                     ~~~~~~~~~~~                           
+main.c:721:68: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                  ~~^
+                                                                  %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                  ~~~~~~~~~                          
+main.c:721:80: warning: format '%ld' expects argument of type 'long int', but argument 6 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                              ~~^
+                                                                              %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                             ~~~~                                
+main.c:721:90: warning: format '%ld' expects argument of type 'long int', but argument 7 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                                        ~~^
+                                                                                        %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                                   ~~~~                                    
+main.c:721:35: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                 ~~^
+                                 %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+          ~                         
+main.c:721:45: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                           ~~^
+                                           %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+             ~~~~~~                           
+main.c:721:58: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                        ~~^
+                                                        %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                     ~~~~~~~~~~~                           
+main.c:721:68: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                  ~~^
+                                                                  %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                  ~~~~~~~~~                          
+main.c:721:80: warning: format '%ld' expects argument of type 'long int', but argument 6 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                              ~~^
+                                                                              %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                             ~~~~                                
+main.c:721:90: warning: format '%ld' expects argument of type 'long int', but argument 7 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Decomposition: BS(ℓ=%ld, β=2^%ld) PCK(ℓ=%ld, β=2^%ld) KS(ℓ=%ld, β=2^%ld)\n",
+                                                                                        ~~^
+                                                                                        %I64d
+          l, bg_bit, ell_packing, b_packing, t_ks, b_ks);
+                                                   ~~~~                                    
+main.c:723:32: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                              ~~^                        ~~~~~~~~
+                              %I64d
+main.c:723:51: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                                                 ~~^               ~~~~
+                                                 %I64d
+main.c:723:32: warning: format '%ld' expects argument of type 'long int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                              ~~^                        ~~~~~~~~
+                              %I64d
+main.c:723:51: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Message precision: %ld - Repetitions: %ld\n", msg_prec, reps);
+                                                 ~~^               ~~~~
+                                                 %I64d
+main.c:733:42: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("\nMonomial distance (log B): %lu\n", r_prec);
+                                        ~~^     ~~~~~~
+                                        %I64u
+main.c:733:42: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("\nMonomial distance (log B): %lu\n", r_prec);
+                                        ~~^     ~~~~~~
+                                        %I64u
+main.c:734:42: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Rejection Sampling Attempts: %lu\n", rs_attempts);
+                                        ~~^     ~~~~~~~~~~~
+                                        %I64u
+main.c:734:42: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Rejection Sampling Attempts: %lu\n", rs_attempts);
+                                        ~~^     ~~~~~~~~~~~
+                                        %I64u
+main.c:763:24: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                      ~~^                 ~
+                      %I64u
+main.c:763:29: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                           ~~^               ~~~
+                           %I64u
+main.c:763:36: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                                  ~~^             ~~~~~~~~
+                                  %I64u
+main.c:763:24: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                      ~~^                 ~
+                      %I64u
+main.c:763:29: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                           ~~^               ~~~
+                           %I64u
+main.c:763:36: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                                  ~~^             ~~~~~~~~
+                                  %I64u
+main.c: In function 'test_sab_lwe':
+main.c:778:28: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Min precision: %lu\n", r_prec);
+                          ~~^     ~~~~~~
+                          %I64u
+main.c:778:28: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+   printf("Min precision: %lu\n", r_prec);
+                          ~~^     ~~~~~~
+                          %I64u
+main.c:805:24: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                      ~~^                 ~
+                      %I64u
+main.c:805:29: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                           ~~^               ~~~
+                           %I64u
+main.c:805:36: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                                  ~~^             ~~~~~~~~
+                                  %I64u
+main.c:805:24: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                      ~~^                 ~
+                      %I64u
+main.c:805:29: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                           ~~^               ~~~
+                           %I64u
+main.c:805:36: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+       printf("\nFail %lu: %lu != %lu\n", i, res, expected);
+                                  ~~^             ~~~~~~~~
+                                  %I64u
+main.c:807:15: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+     printf("%lu, ", res);
+             ~~^     ~~~
+             %I64u
+main.c:807:15: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'uint64_t' {aka 'const long long unsigned int'} [-Wformat=]
+     printf("%lu, ", res);
+             ~~^     ~~~
+             %I64u
+make: *** [Makefile:41: build/main.o] Error 1
+EXIT=2

@@ -1,0 +1,64 @@
+SAB_SQ probe (q = 23, 2025/1711 x 2025/686, 2026/279 preflight)
+Input: (N=2048, h=39, binary, sigma=2^-15)
+Output: (N=2048, h=512, ternary, sigma=2^-50)
+[sqchk] born: input=0x55cefd792360 input_dft=0x55cefd7ea860 distinct
+[sqchk] after RS: ones=39 bad=0
+[sqchk] after gen_sparse: ones=39 bad=0
+[sqchk] after to_DFT: ones=39 bad=0
+[sqchk] ptrs: input=0x55cefd792360 out=0x55cefd7ee8a0
+[sqchk] after out_key: ones=39 bad=0
+[sqchk] after packing_key: ones=39 bad=0
+[sqchk] after trgsw keys: ones=39 bad=0
+Max monomial distance (log B): 7
+[sq] keygen sq r_prec=7
+[sqkg] gap=80 coeff=1
+[sqkg] gap=99 coeff=1
+[sqkg] gap=40 coeff=1
+[sqkg] gap=100 coeff=1
+[sqkg] gap=95 coeff=1
+[sqkg] gap=28 coeff=1
+[sqkg] gap=15 coeff=1
+[sqkg] gap=56 coeff=1
+[sqkg] gap=9 coeff=1
+[sqkg] gap=99 coeff=1
+[sqkg] gap=63 coeff=1
+[sqkg] gap=14 coeff=1
+[sqkg] gap=58 coeff=1
+[sqkg] gap=16 coeff=1
+[sqkg] gap=18 coeff=1
+[sqkg] gap=56 coeff=1
+[sqkg] gap=11 coeff=1
+[sqkg] gap=82 coeff=1
+[sqkg] gap=38 coeff=1
+[sqkg] gap=107 coeff=1
+[sqkg] gap=32 coeff=1
+[sqkg] gap=5 coeff=1
+[sqkg] gap=81 coeff=1
+[sqkg] gap=74 coeff=1
+[sqkg] gap=62 coeff=1
+[sqkg] gap=50 coeff=1
+[sqkg] gap=24 coeff=1
+[sqkg] gap=85 coeff=1
+[sqkg] gap=23 coeff=1
+[sqkg] gap=74 coeff=1
+[sqkg] gap=116 coeff=1
+[sqkg] gap=3 coeff=1
+[sqkg] gap=45 coeff=1
+[sqkg] gap=72 coeff=1
+[sqkg] gap=27 coeff=1
+[sqkg] gap=89 coeff=1
+[sqkg] gap=37 coeff=1
+[sqkg] gap=1 coeff=1
+[sqkg] gap=14 coeff=1
+[sqkg] cnt_h=39 h=39 r_prec=7
+[sq] keygen sq ok
+[sq] keygen scalar ok
+[sq] inputs ready
+[sq] bootstrap start
+SAB_SQ bootstrap: 27,139,092μs +- 21403.229523
+[sq] bootstrap done
+SAB_SQ noise: max phase deviation log2 = 57.68 (message budget 2^-4)
+SAB_SQ gate: Pass (mismatch 0 / 2048)
+SAB_scalar bootstrap: 26,692,813μs +- 199531.702874
+SAB_scalar noise: max phase deviation log2 = 57.54
+SAB_SQ probe done

@@ -13,6 +13,9 @@ endif
 ifeq ($(SAB_OPERATOR_EQUIV_TEST),true)
 	SRC += sab_operator.c
 endif
+ifeq ($(SAB_SQ_EQUIV_TEST),true)
+	SRC += sab_sq.c
+endif
 SRC_SELF = $(addprefix ./src/, $(SRC))
 OBJ_SELF = $(addprefix $(BUILD_DIR)/, $(notdir $(SRC_SELF:.c=.o)))
 
@@ -110,6 +113,19 @@ $(BUILD_DIR)/fft_processor_spqlios.o: $(MOSFHET_DIR)/src/fft/spqlios/fft_process
 # Link all objects
 main: $(OBJ_MOSFHET) $(OBJ_SELF) $(BUILD_DIR)/main.o
 	$(CC) -g -o main $^ $(LIBS) -lm
+
+# stage356 (SAB_SQ): isolated link target so concurrent scalar/D4 builds of
+# `main` never race with the SQ test binary; pair with BUILD_DIR=./build_sq
+main_sq.exe: $(OBJ_MOSFHET) $(OBJ_SELF) $(BUILD_DIR)/main.o
+	$(CC) -g -o main_sq.exe $^ $(LIBS) -lm
+
+# stage356 standalone probe (own main; main.c is under concurrent edit by
+# the candidate-D track, so the verification vehicle lives in src/probe_sq.c)
+probe_sq.exe: $(OBJ_MOSFHET) $(BUILD_DIR)/sab_sq.o $(BUILD_DIR)/probe_sq.o $(BUILD_DIR)/sparse_amortized_bootstrap.o $(BUILD_DIR)/sab_profile.o
+	$(CC) -g -o probe_sq.exe $^ $(LIBS) -lm
+
+$(BUILD_DIR)/probe_sq.o: ./src/probe_sq.c | setup
+	$(CC) -g -c $(OPT_FLAGS) $(INCLUDE_FLAGS) -D$(KEY) -D$(PARAM) -DSAB_SQ_Q=$(SAB_SQ_Q) $< -o $@
 
 clean:
 	rm -rf $(BUILD_DIR) main

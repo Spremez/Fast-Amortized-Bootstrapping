@@ -1,0 +1,7 @@
+SAB_SQ probe (q = 16, 2025/1711 x 2025/686, 2026/279 preflight)
+Input: (N=2048, h=39, binary, sigma=2^-15)
+Output: (N=2048, h=512, ternary, sigma=2^-50)
+[sq] input key ok
+Max monomial distance (log B): 1
+[sq] keygen sq r_prec=1
+EXIT=139
