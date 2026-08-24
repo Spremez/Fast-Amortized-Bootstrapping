@@ -41,6 +41,12 @@ void test_operator_equiv(){
    * must reproduce F exactly at the LUT positions */
   {
     SAB_Operator_State ust = sab_operator_new_state(opkey);
+    for (size_t jj = 0; jj < in_N; jj++)
+      for (int gg = 0; gg < 2; gg++){
+        for (int cc = 0; cc < ust->channel[jj][gg]->k; cc++)
+          polynomial_zero_torus_polynomial(ust->channel[jj][gg]->a[cc]);
+        polynomial_zero_torus_polynomial(ust->channel[jj][gg]->b);
+      }
     ust->channel[0][0]->b->coeffs[0] += (Torus)(1LL << 62);
     TRLWE * uout = trlwe_alloc_new_sample_array(in_N, out_k, out_N);
     sab_operator_bind(uout, ust, tv->b, opkey);

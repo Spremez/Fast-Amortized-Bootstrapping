@@ -23,11 +23,15 @@ int main(void)
   dig->coeffs[pos] = (Torus) digit;
   printf("digit=%lld (expect %lld) dftN=%d\n",
          (long long) digit, (long long) (1LL << 16), dft[0]->N);
+  /* v7 construction: channel spectrum at 2^62 class, multiplier spectrum
+   * pre-scaled by 2^-62 (represents 4*F on the real torus) */
   polynomial_torus_to_DFT(dft[2], F);
+  const double to_real4 = 1.0 / (double) (((Torus) 1) << 62);
+  for(int q = 0; q < dft[2]->N; q++)
+    dft[2]->coeffs[q] *= to_real4;
+  polynomial_torus_to_DFT(dft[0], dig); /* dig here = full channel: 2^62@pos */
+  dig->coeffs[pos] = (Torus) (((Torus) 1) << 62);
   polynomial_torus_to_DFT(dft[0], dig);
-  const double scale = (double) (((uint64_t) 1) << 48);
-  for(int q = 0; q < dft[0]->N; q++)
-    dft[0]->coeffs[q] *= scale;
   polynomial_mul_DFT(dft[1], dft[0], dft[2]);
   polynomial_DFT_to_torus(res, dft[1]);
   const int p1 = (pos + 1) % N, p5 = (pos + 5) % N;
