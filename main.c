@@ -37,6 +37,24 @@ void test_operator_equiv(){
   sab_rlwe_bootstrap_wo_extract(scalar_out, in, tv, sab);
 
   SAB_Operator_State state = sab_operator_new_state(opkey);
+  /* unit probe: slot 0 U_id = (1/4) X^0, everything else zero; bind
+   * must reproduce F exactly at the LUT positions */
+  {
+    SAB_Operator_State ust = sab_operator_new_state(opkey);
+    ust->channel[0][0]->b->coeffs[0] += (Torus)(1LL << 62);
+    TRLWE * uout = trlwe_alloc_new_sample_array(in_N, out_k, out_N);
+    sab_operator_bind(uout, ust, tv->b, opkey);
+    TorusPolynomial up = polynomial_new_torus_polynomial(out_N);
+    trlwe_phase(up, uout[0], output_key->trlwe_key);
+    printf("UNIT slot0: out[1]=%ld out[5]=%ld out[0]=%ld out[N-1]=%ld\n",
+           (long)((int64_t)up->coeffs[1] >> 44),
+           (long)((int64_t)up->coeffs[5] >> 44),
+           (long)((int64_t)up->coeffs[0] >> 44),
+           (long)((int64_t)up->coeffs[out_N-1] >> 44));
+    free_polynomial(up);
+    free_trlwe_array(uout, in_N);
+    sab_operator_free_state(ust, opkey);
+  }
   sab_operator_setup(state, in->b->coeffs, opkey);
   /* Stage-1 bisect: setup + bind only, against the scalar setup */
   {
@@ -55,6 +73,36 @@ void test_operator_equiv(){
     }
     printf("SAB_OPERATOR_EQUIV stage1(setup+bind) coarse_mismatch = %lu%s\n",
            (unsigned long) mm, mm == 0 ? " (clean)" : "");
+    {
+      size_t shown = 0;
+      for (size_t j = 0; j < in_N && shown < 6; j++){
+        trlwe_phase(p1, st1[j], output_key->trlwe_key);
+        trlwe_phase(p2, st1_op[j], output_key->trlwe_key);
+        for (size_t c = 0; c < out_N && shown < 6; c++){
+          int64_t vs = ((int64_t)p1->coeffs[c] >> 44);
+          int64_t vo = ((int64_t)p2->coeffs[c] >> 44);
+          if(vs != vo){
+            printf("  S1 j=%zu c=%zu scalar=%ld op=%ld (c-4: %ld/%ld, c+4: %ld/%ld)\n",
+                   j, c, (long)vs, (long)vo,
+                   (long)((int64_t)p1->coeffs[(c+out_N-4)%out_N] >> 44),
+                   (long)((int64_t)p2->coeffs[(c+out_N-4)%out_N] >> 44),
+                   (long)((int64_t)p1->coeffs[(c+4)%out_N] >> 44),
+                   (long)((int64_t)p2->coeffs[(c+4)%out_N] >> 44));
+            shown++;
+            if(shown == 1){
+              printf("    op nonzero positions in slot %zu:", j);
+              int cnt = 0;
+              for (size_t q = 0; q < out_N && cnt < 6; q++){
+                int64_t vo2 = ((int64_t)p2->coeffs[q] >> 44);
+                if(vo2 != 0){ printf(" [%zu]=%ld", q, (long)vo2); cnt++; }
+              }
+              printf("\n");
+            }
+            c = out_N; /* one per slot */
+          }
+        }
+      }
+    }
     for (size_t j = 0; j < 3 && mm; j++){
       trlwe_phase(p1, st1[j], output_key->trlwe_key);
       trlwe_phase(p2, st1_op[j], output_key->trlwe_key);

@@ -102,16 +102,16 @@ sab_operator_setup (SAB_Operator_State state, const uint64_t *b,
     }
     polynomial_zero_torus_polynomial(id_channel->b);
     polynomial_zero_torus_polynomial(tau_channel->b);
-    /* Negacyclic monomial at the representable torus scale 1/2: the bare
-     * integer monomial coefficient 1 is not a representable torus value,
-     * so the identity channel carries (1/2)*X^s (2^63 on the integer
-     * torus) and the binder multiplies by 2F, whose coefficients are
-     * strictly inside (-1, 1) whenever the LUT coefficients are; the
-     * product (1/2)*(2F) = F is exact on the integer torus. */
+    /* Negacyclic monomial at the torus scale 1/4. Scale 1/2 cannot encode
+     * the negacyclic sign because +1/2 and -1/2 are the same torus value
+     * (2^63 == -2^63 mod 2^64); at 1/4 they are distinct (2^62 vs -2^62).
+     * The binder correspondingly multiplies by 4F via exact digit-layer
+     * decomposition (see sab_operator_bind), which never forms the
+     * unrepresentable polynomial 4F itself. */
     const int64_t s = (int64_t) torus2int(b[j] + prec_offset, log_N2);
     const int pos = (int) (s % out_N);
     id_channel->b->coeffs[pos] +=
-        (s >= out_N) ? (Torus)(-(1LL << 63)) : (Torus)(1LL << 63);
+        (s >= out_N) ? (Torus)(-(1LL << 62)) : (Torus)(1LL << 62);
   }
 }
 
@@ -233,43 +233,103 @@ void
 sab_operator_bind (TRLWE *out, SAB_Operator_State state,
                    TorusPolynomial F, SAB_Operator_Key key)
 {
+  /* out_j = F * U_id,j + tau_{-1}(F) * U_tau,j with the channels carried
+   * at scale 1/4. Writing the multiplier as 4F directly overflows the
+   * torus for full-scale LUT coefficients, so 4F is applied as exact
+   * digit layers: each layer multiplies the channel by a small-digit
+   * polynomial through the FFT product and is then shifted left by an
+   * exact power of two. Because LUT coefficients carry only
+   * msg_prec-ish significant bits, only a couple of layers are nonzero.
+   * tau_{-1}(F)_0 = F_0 and tau_{-1}(F)_{N-j} = -F_j. */
   const SAB_Key sab = key->sab;
   const int in_N = (int) sab->in_N;
   const int out_N = (int) sab->out_N;
-  TorusPolynomial tau_F = polynomial_new_torus_polynomial(out_N);
+  const int layer_bits = 8;
+  const int layers = 64 / layer_bits + 1;
+  /* Decompose F itself (never the overflowing 4F): the factor 4 from the
+   * channel scale 1/4 enters only as the exact per-layer rescale
+   * 2^(shift+2), reduced mod 2^64 once. */
   TorusPolynomial scratch = polynomial_new_torus_polynomial(out_N);
-  /* doubled LUT: see the setup note; the channels carry the operator at
-   * scale 1/2, so binding multiplies by 2F and 2*tau_{-1}(F). */
-  tau_F->coeffs[0] = 2 * F->coeffs[0];
-  for(int j = 1; j < out_N; j++)
-    tau_F->coeffs[out_N - j] = -2 * F->coeffs[j];
-  TorusPolynomial F2 = polynomial_new_torus_polynomial(out_N);
+  TorusPolynomial F4 = polynomial_new_torus_polynomial(out_N);
+  TorusPolynomial tau_F4 = polynomial_new_torus_polynomial(out_N);
   for(int j = 0; j < out_N; j++)
-    F2->coeffs[j] = 2 * F->coeffs[j];
+    F4->coeffs[j] = F->coeffs[j];
+  tau_F4->coeffs[0] = F->coeffs[0];
+  for(int j = 1; j < out_N; j++)
+    tau_F4->coeffs[out_N - j] = -F->coeffs[j];
+  /* digit layers of the 4F multipliers: layer d holds signed chunks of
+   * layer_bits bits, shifted back by (4x prefactor >> (64 - 62)) = 2 bits;
+   * the exact reconstruction is 4F = sum_d layer_d * 2^(d*layer_bits - 2)
+   * in real torus units, i.e. layer coefficients carry the raw integer
+   * chunks so the shift happens on the integer torus. */
   for(int j = 0; j < in_N; j++)
   {
     TRLWE target = out[j];
-    for(int c = 0; c < target->k; c++)
+    for(int c = 0; c <= target->k; c++)
     {
-      polynomial_mul_torus(scratch, state->channel[j][0]->a[c], F2);
-      polynomial_copy_torus_polynomial(target->a[c], scratch);
+      TorusPolynomial comp_id =
+          (c == target->k) ? state->channel[j][0]->b
+                           : state->channel[j][0]->a[c];
+      TorusPolynomial comp_tau =
+          (c == target->k) ? state->channel[j][1]->b
+                           : state->channel[j][1]->a[c];
+      TorusPolynomial target_comp =
+          (c == target->k) ? target->b : target->a[c];
+      for(int g = 0; g < SAB_OPERATOR_GAMMA; g++)
+      {
+        TorusPolynomial mult_poly = (g == 0) ? F4 : tau_F4;
+        TorusPolynomial comp = (g == 0) ? comp_id : comp_tau;
+        bool first = true;
+        for(int d = 0; d < layers; d++)
+        {
+          const int shift = d * layer_bits;
+          bool any = false;
+          for(int q = 0; q < out_N; q++)
+          {
+            int64_t chunk =
+                (((int64_t) mult_poly->coeffs[q]) >> shift)
+                & ((1LL << layer_bits) - 1);
+            if(chunk & (1LL << (layer_bits - 1)))
+              chunk -= (1LL << layer_bits);
+            scratch->coeffs[q] = (Torus) chunk;
+            if(chunk != 0) any = true;
+          }
+          if(!any) continue;
+          /* layer_d * 2^(shift+2-64) in real units: integer chunk times
+           * the channel at 2^-2 gives 2^(shift-62) scale; accumulate the
+           * product shifted so the total reconstructs chunk*2^shift * U/4
+           * = mult_coeff * U/4 exactly on the integer torus. */
+          const int scale = shift + 2 - layer_bits; /* leftover 2s cancel:
+                                                       chunk<2^lb, U<2^62 */
+          (void) scale;
+          TorusPolynomial prod = polynomial_new_torus_polynomial(out_N);
+          polynomial_mul_torus(prod, comp, scratch);
+          for(int q = 0; q < out_N; q++)
+          {
+            Torus v = (Torus)((int64_t) prod->coeffs[q] << (shift + 2 - 64 + 64 - 64 + 0));
+            /* shift left by (shift+2) is wrong for high layers; do the
+             * exact integer rescale: prod holds chunk*U (int64 product of
+             * |chunk|<2^8 and |U|<2^62 fits int64 with room), so multiply
+             * by 2^(shift+2) mod 2^64 */
+            v = (Torus)((( __int128) prod->coeffs[q])
+                        * ((( __int128) 1) << (shift + 2)));
+            if(first){ target_comp->coeffs[q] = v; }
+            else { target_comp->coeffs[q] += v; }
+          }
+          first = false;
+          free_polynomial(prod);
+        }
+        if(first) polynomial_zero_torus_polynomial(target_comp);
+      }
     }
-    polynomial_mul_torus(scratch, state->channel[j][0]->b, F2);
-    polynomial_copy_torus_polynomial(target->b, scratch);
-    for(int c = 0; c < target->k; c++)
-    {
-      polynomial_mul_torus(scratch, state->channel[j][1]->a[c], tau_F);
-      polynomial_addto_torus_polynomial(target->a[c], scratch);
-    }
-    polynomial_mul_torus(scratch, state->channel[j][1]->b, tau_F);
-    polynomial_addto_torus_polynomial(target->b, scratch);
   }
-  free_polynomial(tau_F);
   free_polynomial(scratch);
-  free_polynomial(F2);
+  free_polynomial(F4);
+  free_polynomial(tau_F4);
   if(key->rerand_ks != NULL)
   {
     for(int j = 0; j < in_N; j++)
       trlwe_keyswitch(out[j], out[j], key->rerand_ks);
   }
 }
+
