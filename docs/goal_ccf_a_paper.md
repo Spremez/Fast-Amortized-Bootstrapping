@@ -68,6 +68,18 @@
   行1 SET_8_9_4096_r4 完成 4/10 样本，05:44Z）
 - 已修复: 主树 `.git/config` 残留 `core.worktree`（备份于服务器前 /tmp 与本会话记录）
 
+
+### v3 最终设计（原语探针后确定，2026-08-24）
+
+独立探针（src/probe_mul.c，已提交 924271f）：`polynomial_mul_torus` 对
+"满刻度 × 小数值"返回零（N=1024 复现）或 −(A·B)·2⁻⁵³ 的 ε 残差（N=256）；
+`init_fft` 已排除。全库通行的正确模式是 trgsw.c:447 外积：
+**`trlwe_decompose` 分解密文侧（小数位）× DFT 域满刻度多项式
+（`trlwe_DFT_mul_addto_by_polynomial`）**。
+v3 绑定 = U 通道按 accumulator gadget（bg_bit=23，l≈3 层）分解，
+逐层与 DFT 域 F/τ(F) 相乘后精确移位累加——与系统全部外积同构，
+成本 ≈ 3 EP（D3 late_binding_transforms 预算内）。
+
 ## D4 进度
 
 - [x] include/sab_operator.h（契约）+ src/sab_operator.c（参考实现，零警告编译）
@@ -84,7 +96,7 @@
      （2⁶³≡−2⁶³）；¼ 缩放 + F 数位分解后，单元探针（U_id=¼X⁰）证明 bind 仍全零——
      `polynomial_mul_torus` 对 2⁶²×数位 的乘积逐项 mod-2⁶⁴ wrap（2⁶⁶≡0）。
      **v3**：U 系数拆 32 位高/低半（各 ≤2³⁸，FFT 安全），int128 精确重组
-     （(chunk·U_hi)·2³² + chunk·U_lo，末次 mod 2⁶⁴ 即 torus 语义），再统一
+     （(chunk·U_hi)·2³² + chunk·U_lo，末次 mod 2⁶⁴ 即 torus 语义），再统一。**v3 最终版另见下一条（原语规范用法）。**
      2^(shift+2) 移位。阶段数据：stage1 失配从 1,045,011（满刻度 FFT）→ 2048
      （wrap 归零定位）→ 待 v3。
 - [ ] microbench + D5 集成（服务器恢复后；服务器 8-23 起不可达待开机）
