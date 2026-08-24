@@ -80,6 +80,18 @@ v3 绑定 = U 通道按 accumulator gadget（bg_bit=23，l≈3 层）分解，
 逐层与 DFT 域 F/τ(F) 相乘后精确移位累加——与系统全部外积同构，
 成本 ≈ 3 EP（D3 late_binding_transforms 预算内）。
 
+
+### v4 进展（2026-08-24 晚）
+
+v3（数位分解 + torus 域逐层移位）失败：中间层实数值 >1 不可表示（数位×F 的
+torus 表示 wrap）——EP 的真实做法是 DFT 域累加、单次逆变换。v4 据此重写：
+F 的带符号位层（每层 ≤½ 合法 torus）× U 的 DFT（预计算一次），DFT 域点乘累加，
+单次逆变换，尾端 <<2 吸收 ¼ 通道缩放。**最终失配 94%（v3）→ 0.1%（2113/2.1M）**。
+剩余：stage1 稳定 2048（半数 slot 特征）+ 单元探针零——一个有界 bug，疑似
+位层权重/边界符号层的具体定义（层权 2^d 与移位提取位不匹配的候选已记录在
+src/sab_operator.c v4 注释与本次会话）。下一步：修正层权定义为
+bit(64-prec+d)·2^{64-prec+d} 的 torus 缩放并处理 d=prec 边界，重跑等价测试至 Pass。
+
 ## D4 进度
 
 - [x] include/sab_operator.h（契约）+ src/sab_operator.c（参考实现，零警告编译）
