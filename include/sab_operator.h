@@ -23,7 +23,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "mosfhet.h"
-#include "sab.h"
+
+/* Forward declaration only: the full scalar SAB_Key definition comes from
+ * sab_b.h (identical to sab.h; both are unguarded), which every
+ * translation unit that uses this header already includes. */
+typedef struct _SAB_Key * SAB_Key;
 
 #define SAB_OPERATOR_GAMMA 2 /* |Gamma| = {identity, tau_minus_one}, D2 evidence */
 

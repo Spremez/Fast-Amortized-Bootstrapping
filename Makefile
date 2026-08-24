@@ -10,6 +10,9 @@ SRC = sparse_amortized_bootstrap.c sab_profile.c
 ifeq ($(ENABLE_PVW_TMLWE),true)
 	SRC += sab_pvw.c
 endif
+ifeq ($(SAB_OPERATOR_EQUIV_TEST),true)
+	SRC += sab_operator.c
+endif
 SRC_SELF = $(addprefix ./src/, $(SRC))
 OBJ_SELF = $(addprefix $(BUILD_DIR)/, $(notdir $(SRC_SELF:.c=.o)))
 

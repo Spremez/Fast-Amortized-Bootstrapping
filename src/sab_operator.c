@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include "sab_b.h"
 #include "sab_operator.h"
 
 static void sab_operator_die (const char *msg)
@@ -101,9 +102,16 @@ sab_operator_setup (SAB_Operator_State state, const uint64_t *b,
     }
     polynomial_zero_torus_polynomial(id_channel->b);
     polynomial_zero_torus_polynomial(tau_channel->b);
-    const int shift =
-        (int) torus2int(b[j] + prec_offset, log_N2) % out_N;
-    id_channel->b->coeffs[shift] += 1; /* integer monomial coefficient 1 */
+    /* Negacyclic monomial at the representable torus scale 1/2: the bare
+     * integer monomial coefficient 1 is not a representable torus value,
+     * so the identity channel carries (1/2)*X^s (2^63 on the integer
+     * torus) and the binder multiplies by 2F, whose coefficients are
+     * strictly inside (-1, 1) whenever the LUT coefficients are; the
+     * product (1/2)*(2F) = F is exact on the integer torus. */
+    const int64_t s = (int64_t) torus2int(b[j] + prec_offset, log_N2);
+    const int pos = (int) (s % out_N);
+    id_channel->b->coeffs[pos] +=
+        (s >= out_N) ? (Torus)(-(1LL << 63)) : (Torus)(1LL << 63);
   }
 }
 
@@ -230,18 +238,23 @@ sab_operator_bind (TRLWE *out, SAB_Operator_State state,
   const int out_N = (int) sab->out_N;
   TorusPolynomial tau_F = polynomial_new_torus_polynomial(out_N);
   TorusPolynomial scratch = polynomial_new_torus_polynomial(out_N);
-  tau_F->coeffs[0] = F->coeffs[0];
+  /* doubled LUT: see the setup note; the channels carry the operator at
+   * scale 1/2, so binding multiplies by 2F and 2*tau_{-1}(F). */
+  tau_F->coeffs[0] = 2 * F->coeffs[0];
   for(int j = 1; j < out_N; j++)
-    tau_F->coeffs[out_N - j] = -F->coeffs[j];
+    tau_F->coeffs[out_N - j] = -2 * F->coeffs[j];
+  TorusPolynomial F2 = polynomial_new_torus_polynomial(out_N);
+  for(int j = 0; j < out_N; j++)
+    F2->coeffs[j] = 2 * F->coeffs[j];
   for(int j = 0; j < in_N; j++)
   {
     TRLWE target = out[j];
     for(int c = 0; c < target->k; c++)
     {
-      polynomial_mul_torus(scratch, state->channel[j][0]->a[c], F);
+      polynomial_mul_torus(scratch, state->channel[j][0]->a[c], F2);
       polynomial_copy_torus_polynomial(target->a[c], scratch);
     }
-    polynomial_mul_torus(scratch, state->channel[j][0]->b, F);
+    polynomial_mul_torus(scratch, state->channel[j][0]->b, F2);
     polynomial_copy_torus_polynomial(target->b, scratch);
     for(int c = 0; c < target->k; c++)
     {
@@ -253,6 +266,7 @@ sab_operator_bind (TRLWE *out, SAB_Operator_State state,
   }
   free_polynomial(tau_F);
   free_polynomial(scratch);
+  free_polynomial(F2);
   if(key->rerand_ks != NULL)
   {
     for(int j = 0; j < in_N; j++)

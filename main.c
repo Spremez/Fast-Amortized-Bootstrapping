@@ -2,12 +2,125 @@
 //#include <sab.h>
 #include <benchmark_util.h>
 #include <sab_profile.h>
+#ifdef SAB_OPERATOR_EQUIV_TEST
+#include "sab_operator.h"
+#endif
 #include <inttypes.h>
 #include <string.h>
 #if (defined(MAT_TRGSW_IFFT_ROWS_BENCH) || defined(MAT_TRGSW_IFFT_BATCH5_BENCH) || defined(MAT_TRGSW_IFFT_BATCH5_ASM_BENCH)) && defined(USE_SPQLIOS) && !defined(TORUS32)
 #include "src/mosfhet/src/fft/spqlios/spqlios-fft.h"
 extern __thread FFT_Processor_Spqlios fft_proc[32];
 #endif
+#ifdef SAB_OPERATOR_EQUIV_TEST
+/* D4 equivalence gate: the operator schedule bound with the public LUT F
+ * must equal the scalar SAB bootstrap that carries F as its test vector.
+ * Mirrors the small-parameter shape of the existing scalar tests; runs the
+ * scalar path and the two-channel operator path on the same input and
+ * compares phases under the accumulator key. The difference is the
+ * late-binding noise amplification bounded by sqrt(2)*||F||_2 (D3 gate). */
+void test_operator_equiv(){
+  const uint64_t in_N = 1024, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 12, ell_packing = 2, t_aut = l, b_aut = bg_bit, h_in = 64, msg_prec = 4;
+  TRLWE_Key input_key = trlwe_new_sparse_binary_key(in_N, in_k, h_in, pow(2, -20));
+  TRLWE_Key out_key = trlwe_new_sparse_binary_key(out_N, out_k, h_in, pow(2, -53));
+  TRGSW_Key output_key = trgsw_new_key(out_key, l, bg_bit);
+  const uint64_t r_prec = get_min_prec(input_key);
+  printf("SAB_OPERATOR_EQUIV input: (N=%lu, h=%lu, r_prec=%lu)\n", in_N, h_in, r_prec);
+  SAB_Key sab = new_sparse_amortized_bootstrapping(input_key, out_key, output_key, msg_prec, b_packing, ell_packing, t_aut, b_aut, h_in, r_prec, false, false, false);
+  SAB_Operator_Key opkey = sab_operator_wrap_scalar(sab, NULL);
+
+  TRLWE in = trlwe_new_sample(NULL, input_key);
+  TRLWE tv = trlwe_new_noiseless_trivial_sample(NULL, out_k, out_N);
+  tv->b->coeffs[1] += int2torus(1, msg_prec);
+  tv->b->coeffs[5] += int2torus(3, msg_prec);
+
+  TRLWE * scalar_out = trlwe_alloc_new_sample_array(in_N, out_k, out_N);
+  sab_rlwe_bootstrap_wo_extract(scalar_out, in, tv, sab);
+
+  SAB_Operator_State state = sab_operator_new_state(opkey);
+  sab_operator_setup(state, in->b->coeffs, opkey);
+  /* Stage-1 bisect: setup + bind only, against the scalar setup */
+  {
+    TRLWE * st1 = trlwe_alloc_new_sample_array(in_N, out_k, out_N);
+    setup_tv_xb(st1, in->b->coeffs, tv, sab);
+    TRLWE * st1_op = trlwe_alloc_new_sample_array(in_N, out_k, out_N);
+    sab_operator_bind(st1_op, state, tv->b, opkey);
+    TorusPolynomial p1 = polynomial_new_torus_polynomial(out_N);
+    TorusPolynomial p2 = polynomial_new_torus_polynomial(out_N);
+    size_t mm = 0;
+    for (size_t j = 0; j < in_N; j++){
+      trlwe_phase(p1, st1[j], output_key->trlwe_key);
+      trlwe_phase(p2, st1_op[j], output_key->trlwe_key);
+      for (size_t c = 0; c < out_N; c++)
+        if(((int64_t)p1->coeffs[c] >> 44) != ((int64_t)p2->coeffs[c] >> 44)) mm++;
+    }
+    printf("SAB_OPERATOR_EQUIV stage1(setup+bind) coarse_mismatch = %lu%s\n",
+           (unsigned long) mm, mm == 0 ? " (clean)" : "");
+    for (size_t j = 0; j < 3 && mm; j++){
+      trlwe_phase(p1, st1[j], output_key->trlwe_key);
+      trlwe_phase(p2, st1_op[j], output_key->trlwe_key);
+      printf("  slot %zu: scalar[1]=%ld scalar[5]=%ld op[1]=%ld op[5]=%ld scalar[1029]=%ld op[1029]=%ld\n",
+             j,
+             (long)((int64_t)p1->coeffs[1] >> 44), (long)((int64_t)p1->coeffs[5] >> 44),
+             (long)((int64_t)p2->coeffs[1] >> 44), (long)((int64_t)p2->coeffs[5] >> 44),
+             (long)((int64_t)p1->coeffs[1029] >> 44), (long)((int64_t)p2->coeffs[1029] >> 44));
+    }
+    free_polynomial(p1); free_polynomial(p2);
+    free_trlwe_array(st1, in_N); free_trlwe_array(st1_op, in_N);
+  }
+  uint64_t * a = (uint64_t *) malloc(sizeof(uint64_t) * in_N);
+  const uint64_t log_N2 = (uint64_t) log2(2 * out_N);
+  mod_switch_a(a, in->a[0]->coeffs, log_N2, in_N, sab->gaussian_secret);
+  for (size_t i = 0; i < sab->h; i++){
+    sab_operator_rgsw_monomial_mul(state, sab->s[0][i], opkey);
+    sab_operator_sub_a(state, a, opkey);
+  }
+  sab_operator_rgsw_monomial_mul(state, sab->s[0][sab->h], opkey);
+  TRLWE * op_out = trlwe_alloc_new_sample_array(in_N, out_k, out_N);
+  sab_operator_bind(op_out, state, tv->b, opkey);
+
+  TorusPolynomial ph_s = polynomial_new_torus_polynomial(out_N);
+  TorusPolynomial ph_o = polynomial_new_torus_polynomial(out_N);
+  int64_t max_diff = 0;
+  size_t message_mismatch = 0;
+  const int64_t msg_half = 1LL << (64 - msg_prec - 1);
+  for (size_t j = 0; j < in_N; j++){
+    trlwe_phase(ph_s, scalar_out[j], output_key->trlwe_key);
+    trlwe_phase(ph_o, op_out[j], output_key->trlwe_key);
+    for (size_t c = 0; c < out_N; c++){
+      int64_t d = (int64_t)(ph_o->coeffs[c] - ph_s->coeffs[c]);
+      if(d < 0) d = -d;
+      if(d > max_diff) max_diff = d;
+      int64_t rs = ((int64_t)ph_s->coeffs[c] + msg_half) >> (64 - msg_prec);
+      int64_t ro = ((int64_t)ph_o->coeffs[c] + msg_half) >> (64 - msg_prec);
+      if(rs != ro){
+        message_mismatch++;
+        if(message_mismatch <= 8){
+          printf("MISMATCH j=%zu c=%zu ph_s=%ld ph_o=%ld rs=%ld ro=%ld\n",
+                 j, c, (long)((int64_t)ph_s->coeffs[c] >> 40),
+                 (long)((int64_t)ph_o->coeffs[c] >> 40), rs, ro);
+        }
+      }
+    }
+  }
+  printf("SAB_OPERATOR_EQUIV max_phase_diff log2 = %.2f, message_mismatch = %lu / %lu\n",
+         log2((double)(max_diff + 1)), (unsigned long) message_mismatch,
+         (unsigned long)(in_N * out_N));
+  printf("SAB_OPERATOR_EQUIV gate: %s\n", message_mismatch == 0 ? "Pass" : "Fail");
+  free_polynomial(ph_s);
+  free_polynomial(ph_o);
+  free(a);
+  free_trlwe_array(op_out, in_N);
+  sab_operator_free_state(state, opkey);
+  sab_operator_free_key(opkey);
+  free_trlwe_array(scalar_out, in_N);
+  free_trlwe(tv);
+  free_trlwe(in);
+  /* keys follow the repo convention: freed at process exit */
+  free_trlwe_key(input_key);
+  free_trlwe_key(out_key);
+}
+#endif
+
 #if defined(SAB_PVW_KERNEL_TEST) || defined(SAB_PVW_RGT4_KERNEL_TEST) || defined(SAB_PVW_TARGET_TEST) || defined(SAB_PVW_NONBINARY_TEST) || defined(SAB_PVW_NONBINARY_NOISE_TEST) || defined(SAB_PVW_NONBINARY_FULL_TEST) || defined(SAB_PVW_NONBINARY_FULL_NOISE_TEST) || defined(SAB_PVW_NONBINARY_TARGET_NOISE_TEST) || defined(SAB_PVW_NONBINARY_TARGET_STAGE_NOISE_TEST) || defined(SAB_PVW_INCLUDE_ZERO_FAST_RESOURCE_TEST) || defined(SAB_PVW_SUBA_ALIAS_TEST) || defined(SAB_PVW_NONBINARY_BENCH) || defined(SAB_PVW_BENCH) || defined(SAB_PVW_NOISE_TEST) || defined(SAB_PVW_STAGE_NOISE_TEST) || defined(SAB_PVW_RESOURCE_TEST)
 #include <sab_pvw.h>
 #endif
@@ -5827,6 +5940,8 @@ int main(int argc, char const *argv[])
   test_sab_tern();
 #elif defined(ARBITRARY)
   test_sab_arbitrary();
+#elif defined(SAB_OPERATOR_EQUIV_TEST)
+  test_operator_equiv();
 #else
   test_sab();
 #endif

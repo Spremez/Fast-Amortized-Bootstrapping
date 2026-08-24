@@ -60,8 +60,24 @@
 5. stage355 服务器监控（行1 第5样本）
 6. B2 复现 + 应用原型（D4 等价测试通过后上服务器并行）
 
-## 运行状态速查（2026-08-20）
+## 运行状态速查（2026-08-23）
 
-- 本机: 空闲（无计算任务）
-- 服务器: stage355 矩阵运行中（nohup + 断点续跑），进度
-  `ssh autovoice-delld "tail -5 /home/spz/Fast-Amortized-Bootstrapping-stage355-e1-server/repro/stage355_server_e1_matrix/raw/driver.log"`
+- 本机: D4 参考实现已提交主树（`53e7ca9`，编译零警告）；下一项 = 等价测试模式
+- 服务器: **2026-08-23 全天不可达**（ping 100% 丢包，疑似关机/离网；需操作者开机）。
+  stage355 断点续跑就绪，恢复后自动从缺行继续；数据在盘上安全（最后一次确认：
+  行1 SET_8_9_4096_r4 完成 4/10 样本，05:44Z）
+- 已修复: 主树 `.git/config` 残留 `core.worktree`（备份于服务器前 /tmp 与本会话记录）
+
+## D4 进度
+
+- [x] include/sab_operator.h（契约）+ src/sab_operator.c（参考实现，零警告编译）
+- [x] main.c `SAB_OPERATOR_EQUIV_TEST` 运行（构建/执行/插桩全通）——**测试装置本身验证有效**
+- [ ] 通道编码 v2：等价测试暴露两个 GF(257) 检查器结构性看不到的真实编码问题：
+  1. **单项式不可表示**：torus 上裸整数 1 = 2⁻⁶⁴，算子通道不能携带 X^s 原尺度过
+     Δ_op=½ 缩放 + 绑定乘 2F（2F∈(−1,1) 恒可表示，乘积精确）——已实现；
+  2. **FFT 精度**：polynomial_mul_torus 为双精度 FFT 基，满刻度 2⁶³ 通道系数使
+     绑定舍入误差 ~2⁻²⁰ torus（实测 50% 粗粒度不匹配，与理论吻合）。需要 gadget
+     式分解绑定（F 数位分解 + 精确 xai 移位 + 小系数 FFT）或指数域绑定——v2 设计
+     待做，属 D3 binding_domain"Torus-scale 证明"义务的实现侧。
+  D2 检查器无法发现这两点（GF(257) 精确算术 + 共模调度），D4 等价测试的价值实证。
+- [ ] microbench + D5 集成（服务器恢复后；服务器 8-23 起不可达待开机）

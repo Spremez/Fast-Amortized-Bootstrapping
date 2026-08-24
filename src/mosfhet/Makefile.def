@@ -404,3 +404,8 @@ endif
 SRC_MOSFHET = $(addprefix $(MOSFHET_DIR)/src/, $(__SRC))
 INCLUDE_FLAGS = $(addprefix -I, $(INCLUDE_DIRS))
 FLAGS += $(INCLUDE_FLAGS)
+
+SAB_OPERATOR_EQUIV_TEST ?= false
+ifeq ($(SAB_OPERATOR_EQUIV_TEST),true)
+	FLAGS += -DSAB_OPERATOR_EQUIV_TEST
+endif
