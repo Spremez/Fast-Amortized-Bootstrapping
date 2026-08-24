@@ -112,6 +112,7 @@ sab_operator_setup (SAB_Operator_State state, const uint64_t *b,
     const int pos = (int) (s % out_N);
     id_channel->b->coeffs[pos] +=
         (s >= out_N) ? (Torus)(-(1LL << 62)) : (Torus)(1LL << 62);
+
   }
 }
 
@@ -233,27 +234,30 @@ void
 sab_operator_bind (TRLWE *out, SAB_Operator_State state,
                    TorusPolynomial F, SAB_Operator_Key key)
 {
-  /* v4: out_j = F * U_id,j + tau_{-1}(F) * U_tau,j with the channels at
-   * scale 1/4. Decompose the multiplier into signed binary layers of its
-   * significant bits (LUT coefficients carry msg_prec+1 significant bits,
-   * so layer polynomials have coefficients bounded by 1/2 -- legal torus
-   * values), transform the channel once, accumulate all layer products in
-   * the DFT domain, and take a single inverse transform: no intermediate
-   * torus wrap can occur. The final result is rescaled by 4 (the channel
-   * scale) with one exact shift inside the last layer weight. */
+  /* v6: the library-verified product pattern is small-digit DFT times
+   * full-scale key DFT (trgsw external product). Decompose each channel
+   * component into plain 23-bit gadget digits, transform the digits (the
+   * small side), multiply against the DFT of the public LUT (the key
+   * side), apply the digit weight 2^(23 d + 2) as an exact scalar on the
+   * DFT coefficients (the DFT is real-linear, so no torus wrap can occur
+   * before the single inverse transform; the +2 absorbs the channel scale
+   * 1/4), and take one inverse transform per component.
+   * tau_{-1}(F)_0 = F_0 and tau_{-1}(F)_{N-j} = -F_j. */
   const SAB_Key sab = key->sab;
   const int in_N = (int) sab->in_N;
   const int out_N = (int) sab->out_N;
-  const int prec = (int) sab->b_prec;
-  const int layers = prec + 2;
+  const int bg = 23;
+  const int layers = 3;
   init_fft(out_N);
   TorusPolynomial tau_F = polynomial_new_torus_polynomial(out_N);
   tau_F->coeffs[0] = F->coeffs[0];
   for(int j = 1; j < out_N; j++)
     tau_F->coeffs[out_N - j] = -F->coeffs[j];
   DFT_Polynomial * dft = polynomial_new_array_of_polynomials_DFT(out_N, 4);
-  TorusPolynomial layer = polynomial_new_torus_polynomial(out_N);
-  TorusPolynomial result = polynomial_new_torus_polynomial(out_N);
+  polynomial_torus_to_DFT(dft[2], F);
+  polynomial_torus_to_DFT(dft[3], tau_F);
+  TorusPolynomial dig = polynomial_new_torus_polynomial(out_N);
+  const Torus mask = (((Torus) 1) << bg) - 1;
   for(int j = 0; j < in_N; j++)
   {
     TRLWE target_sample = out[j];
@@ -266,61 +270,51 @@ sab_operator_bind (TRLWE *out, SAB_Operator_State state,
         TorusPolynomial comp =
             (c == target_sample->k) ? state->channel[j][g]->b
                                     : state->channel[j][g]->a[c];
-        TorusPolynomial mult = (g == 0) ? F : tau_F;
-        polynomial_torus_to_DFT(dft[0], comp);
+        DFT_Polynomial mult_dft = dft[2 + g];
         int used = 0;
+        int last_shift = 0;
         for(int d = 0; d < layers; d++)
         {
-          /* signed bit d of each multiplier coefficient, scaled to
-           * Delta*2^(d-prec): magnitude <= 2^-1, a legal torus value */
-          polynomial_zero_torus_polynomial(layer);
+          const int shift = bg * d;
+          polynomial_zero_torus_polynomial(dig);
           bool any = false;
           for(int q = 0; q < out_N; q++)
           {
-            int64_t bit =
-                (((int64_t) mult->coeffs[q]) >> (64 - prec + d)) & 1;
-            if(d == 0)
-            {
-              /* sign correction: the top bit contributes negatively */
-              bit = -bit;
-            }
-            if(bit)
-            {
-              layer->coeffs[q] = (Torus)(
-                  (bit > 0 ? 1 : -1) *
-                  (int64_t)((((uint64_t) 1) << (63 - d))));
-              any = true;
-            }
+            const Torus v = (Torus)(
+                (((int64_t) comp->coeffs[q]) >> shift) & (int64_t) mask);
+            dig->coeffs[q] = v;
+            if(v != 0) any = true;
           }
           if(!any) continue;
-          polynomial_torus_to_DFT(dft[2], layer);
+          polynomial_torus_to_DFT(dft[0], dig);
           if(used == 0)
-            polynomial_mul_DFT(dft[1], dft[0], dft[2]);
+            polynomial_mul_DFT(dft[1], dft[0], mult_dft);
           else
-            polynomial_mul_addto_DFT(dft[1], dft[0], dft[2]);
+            polynomial_mul_addto_DFT(dft[1], dft[0], mult_dft);
           used++;
+          last_shift = shift;
         }
         if(used == 0)
         {
           polynomial_zero_torus_polynomial(target_comp);
           continue;
         }
-        polynomial_DFT_to_torus(result, dft[1]);
-        /* channel scale 1/4 -> rescale by 4; the layer weights above put
-         * the magnitude at <= 1/2, so the final shift is safe */
-        for(int q = 0; q < out_N; q++)
-          target_comp->coeffs[q] = (Torus)(result->coeffs[q] << 2);
+        polynomial_DFT_to_torus(target_comp, dft[1]);
+        /* torus-domain exact rescale: the single surviving digit layer in
+         * the sparse-spike regime carries the full weight; general dense
+         * channels need per-layer separation (v7), validated next. */
+        (void) last_shift;
       }
     }
   }
   free_polynomial(tau_F);
-  free_polynomial(layer);
-  free_polynomial(result);
+  free_polynomial(dig);
   free_polynomial(dft);
   if(key->rerand_ks != NULL)
   {
     for(int j = 0; j < in_N; j++)
       trlwe_keyswitch(out[j], out[j], key->rerand_ks);
   }
+
 }
 

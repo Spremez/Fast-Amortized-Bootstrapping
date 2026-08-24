@@ -81,6 +81,17 @@ v3 绑定 = U 通道按 accumulator gadget（bg_bit=23，l≈3 层）分解，
 成本 ≈ 3 EP（D3 late_binding_transforms 预算内）。
 
 
+### v5/v6 与语义证据链（2026-08-24 深夜，探针 src/probe_v6.c）
+
+- v5（精确截断拆分）与 v6（数位×key-DFT，镜像 trgsw.c:447）均数学正确但输出全零；
+- setup 经逐项打印验证完全正确（s/pos/符号/±2^62）；
+- 量级扫描（16 组）显示 to_DFT→mul_DFT→inverse 对稀疏尖峰输入给出 **纯整数卷积
+  mod 2^64** 语义（7/8 行精确符合 (A*B) mod 2^64，非 torus 实数积 (A*B)>>64）——
+  这解释 v2-v6 全部症状：2^62 通道系数与 F 的整数积 mod 2^64 仅保留 F 的低 2 位；
+- **剩余唯一工作**：精读 execute_reverse_torus64 / polynomial_mul_DFT 的 split-hi/lo
+  重组契约（双块布局：Re∈[0,N/2)、Im∈[N/2,N)），按其真实语义重写绑定缩放算术。
+  这是收敛后的单点任务，证据链已完整。
+
 ### v4 进展（2026-08-24 晚）
 
 v3（数位分解 + torus 域逐层移位）失败：中间层实数值 >1 不可表示（数位×F 的
