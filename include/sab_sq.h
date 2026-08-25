@@ -62,10 +62,11 @@ void sab_sq_external_product(TRLWE out, TRLWE in, TRGSW_DFT sel, SAB_SQ_Key k);
 
 void sab_sq_cmux(TRLWE out, TRLWE in1, TRLWE in2, TRGSW_DFT selector, SAB_SQ_Key k);
 void sab_sq_ncmux(TRLWE out, TRLWE in1, TRLWE in2, TRGSW_DFT selector, SAB_SQ_Key k);
-void sab_sq_monomial_mul(TRLWE * p0, TRGSW_DFT * e, SAB_SQ_Key k);
+/* zero-copy butterfly: returns the ping-pong buffer holding the result */
+TRLWE * sab_sq_monomial_mul(TRLWE * p0, TRGSW_DFT * e, SAB_SQ_Key k);
 void sab_sq_sub_a(TRLWE * p, uint64_t * a, SAB_SQ_Key k);
-void sab_sq_sparse_mul(TRLWE * p, uint64_t * a, uint64_t a_idx, SAB_SQ_Key k);
-void sab_sq_blind_rotate(TRLWE * out, TRLWE in, SAB_SQ_Key k);
+TRLWE * sab_sq_sparse_mul(TRLWE * p, uint64_t * a, uint64_t a_idx, SAB_SQ_Key k);
+TRLWE * sab_sq_blind_rotate(TRLWE * out, TRLWE in, SAB_SQ_Key k);
 void sab_sq_setup_tv_xb(TRLWE * acc, uint64_t * b, TRLWE tv, SAB_SQ_Key k);
 void sab_sq_bootstrap(TRLWE out, TRLWE in, TRLWE tv, SAB_SQ_Key k);
 

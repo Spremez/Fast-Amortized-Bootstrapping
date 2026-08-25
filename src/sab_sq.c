@@ -18,13 +18,21 @@
  *     exactly upshifted to torus scale before the KS and rescaled after,
  *     so the KS sees the stock semantics and its noise is unchanged.
  *
+ * v3 kernel notes:
+ *   - the rescale is fused with the CMUX recombination (one pass
+ *     out = in1 + round_{2^q}(product) instead of round then add);
+ *   - the monomial-multiply butterfly is zero-copy: it returns whichever
+ *     ping-pong buffer holds the result instead of copying back
+ *     (~2.7 GB of memcpy per bootstrap removed).
+ *
  * The Q^2/T = 2^(2q-64) suppression of the key-noise term (Lemma 3.4 of
  * 2025/1711) is the budget that absorbs the sparse-secret isometry
- * hybrid gap of eprint 2026/279 via sigma hardening at iso-speed; see
- * scripts/sq_security_preflight_279.py.
+ * hybrid gap of eprint 2026/279 via sigma hardening at iso-speed, with
+ * the NCMUX/packing KS gadgets co-refined (SQKS_* environment knobs).
  *
- * Isolation: compiled only behind SAB_SQ_EQUIV_TEST; does not modify the
- * scalar SAB, sab_pvw_* or sab_operator_* paths. Binary secrets only.
+ * Isolation: compiled only behind SAB_SQ_EQUIV_TEST / probe_sq.exe; does
+ * not modify the scalar SAB, sab_pvw_* or sab_operator_* paths. Binary
+ * sparse secrets only.
  */
 #include "sab_sq.h"
 #include <sab.h>
@@ -139,8 +147,9 @@ SAB_SQ_Key sab_sq_new_key(TRLWE_Key input_key, TRLWE_Key repacking_key,
   return res;
 }
 
-/* out = round_2^q(in * sel): the scale-based external product */
-void sab_sq_external_product(TRLWE out, TRLWE in, TRGSW_DFT sel, SAB_SQ_Key k){
+/* out = raw DFT product rows x in (integer convolution mod 2^64); the
+ * Q-scale rescale is left to the caller so it can be fused. */
+static void sab_sq_product_raw(TRLWE out, TRLWE in, TRGSW_DFT sel, SAB_SQ_Key k){
   assert(sel->l == 1);
   assert(in->k == 1);
   sab_sq_tmp t = k->tmp;
@@ -152,17 +161,34 @@ void sab_sq_external_product(TRLWE out, TRLWE in, TRGSW_DFT sel, SAB_SQ_Key k){
   polynomial_mul_DFT(t->ob, t->da, sel->samples[0]->b);
   polynomial_mul_addto_DFT(t->oa, t->db, sel->samples[1]->a[0]);
   polynomial_mul_addto_DFT(t->ob, t->db, sel->samples[1]->b);
-  // back to coefficients and rescale by Q/T = 2^(q-64)
   polynomial_DFT_to_torus(out->a[0], t->oa);
   polynomial_DFT_to_torus(out->b, t->ob);
+}
+
+/* scale-based external product with in-place rescale (standalone form) */
+void sab_sq_external_product(TRLWE out, TRLWE in, TRGSW_DFT sel, SAB_SQ_Key k){
+  sab_sq_product_raw(out, in, sel, k);
   sab_sq_round_shift_poly(out->a[0], k->q);
   sab_sq_round_shift_poly(out->b, k->q);
 }
 
+/* fused kernel: out = in1 + round_{2^q}(sel * (in2 - in1)) in a single
+ * coefficient pass over the product (one 2N traversal saved per CMUX) */
 void sab_sq_cmux(TRLWE out, TRLWE in1, TRLWE in2, TRGSW_DFT selector, SAB_SQ_Key k){
   trlwe_sub(k->tmp->t1, in2, in1);
-  sab_sq_external_product(k->tmp->t2, k->tmp->t1, selector, k);
-  trlwe_add(out, k->tmp->t2, in1);
+  sab_sq_product_raw(k->tmp->t2, k->tmp->t1, selector, k);
+  const unsigned shift = 64 - k->q;
+  const int64_t half = 1LL << (shift - 1);
+  const Torus * restrict p_b = k->tmp->t2->b->coeffs;
+  const Torus * restrict i_b = in1->b->coeffs;
+  Torus * restrict o_b = out->b->coeffs;
+  for (size_t c = 0; c < out->b->N; c++)
+    o_b[c] = i_b[c] + (Torus) ((((int64_t) p_b[c]) + half) >> shift);
+  const Torus * restrict p_a = k->tmp->t2->a[0]->coeffs;
+  const Torus * restrict i_a = in1->a[0]->coeffs;
+  Torus * restrict o_a = out->a[0]->coeffs;
+  for (size_t c = 0; c < out->b->N; c++)
+    o_a[c] = i_a[c] + (Torus) ((((int64_t) p_a[c]) + half) >> shift);
 }
 
 void sab_sq_ncmux(TRLWE out, TRLWE in1, TRLWE in2, TRGSW_DFT selector, SAB_SQ_Key k){
@@ -174,10 +200,13 @@ void sab_sq_ncmux(TRLWE out, TRLWE in1, TRLWE in2, TRGSW_DFT selector, SAB_SQ_Ke
   sab_sq_cmux(out, in1, k->tmp->t2, selector, k);
 }
 
-/* p0 <- p0 * X^e (same butterfly schedule as the scalar RGSW_monomial_mul) */
-void sab_sq_monomial_mul(TRLWE * p0, TRGSW_DFT * e, SAB_SQ_Key k){
+/* p0 <- p0 * X^e (same butterfly schedule as the scalar RGSW_monomial_mul).
+ * Zero-copy: returns the ping-pong buffer that holds the result; the
+ * caller threads it into the next stage instead of copying back. */
+TRLWE * sab_sq_monomial_mul(TRLWE * p0, TRGSW_DFT * e, SAB_SQ_Key k){
   const uint32_t r_prec = k->r_prec, in_N = k->in_N;
-  TRLWE * p[2] = {p0, k->tmp->p2};
+  TRLWE * other = (p0 == k->tmp->p2) ? k->tmp->slots : k->tmp->p2;
+  TRLWE * p[2] = {p0, other};
   for (size_t i = 0; i < r_prec; i++){
     const uint64_t power = 1ULL << i;
     const uint64_t out = (i+1)&1, in = out^1;
@@ -188,11 +217,7 @@ void sab_sq_monomial_mul(TRLWE * p0, TRGSW_DFT * e, SAB_SQ_Key k){
       sab_sq_cmux(p[out][j + power], p[in][j + power], p[in][j], e[i], k);
     }
   }
-  if(p[r_prec&1]!=p0){
-    for (size_t i = 0; i < in_N; i++){
-      trlwe_copy(p0[i], p[r_prec&1][i]);
-    }
-  }
+  return p[r_prec&1];
 }
 
 /* p = p * x^{-as} (binary path: plain negacyclic rotation) */
@@ -203,12 +228,12 @@ void sab_sq_sub_a(TRLWE * p, uint64_t * a, SAB_SQ_Key k){
   }
 }
 
-void sab_sq_sparse_mul(TRLWE * p, uint64_t * a, uint64_t a_idx, SAB_SQ_Key k){
+TRLWE * sab_sq_sparse_mul(TRLWE * p, uint64_t * a, uint64_t a_idx, SAB_SQ_Key k){
   for (size_t i = 0; i < k->h; i++){
-    sab_sq_monomial_mul(p, k->s[a_idx][i], k);
+    p = sab_sq_monomial_mul(p, k->s[a_idx][i], k);
     sab_sq_sub_a(p, a, k);
   }
-  sab_sq_monomial_mul(p, k->s[a_idx][k->h], k);
+  return sab_sq_monomial_mul(p, k->s[a_idx][k->h], k);
 }
 
 static void sab_sq_mod_switch(uint64_t * out, uint64_t * in, uint64_t prec, uint64_t size){
@@ -217,15 +242,16 @@ static void sab_sq_mod_switch(uint64_t * out, uint64_t * in, uint64_t prec, uint
   }
 }
 
-void sab_sq_blind_rotate(TRLWE * out, TRLWE in, SAB_SQ_Key k){
+TRLWE * sab_sq_blind_rotate(TRLWE * out, TRLWE in, SAB_SQ_Key k){
   uint64_t * a = (uint64_t *) safe_malloc(sizeof(uint64_t) * k->in_N);
   const uint64_t log_N2 = (uint64_t) log2(2 * k->out_N);
   assert(k->in_k == 1);
   for (size_t i = 0; i < k->in_k; i++){
     sab_sq_mod_switch(a, in->a[i]->coeffs, log_N2, k->in_N);
-    sab_sq_sparse_mul(out, a, i, k);
+    out = sab_sq_sparse_mul(out, a, i, k);
   }
   free(a);
+  return out;
 }
 
 /* acc[i] = quantize_q(tv * X^{b_i}): the test vector enters at Q-scale */
@@ -246,11 +272,11 @@ void sab_sq_setup_tv_xb(TRLWE * acc, uint64_t * b, TRLWE tv, SAB_SQ_Key k){
 
 void sab_sq_bootstrap(TRLWE out, TRLWE in, TRLWE tv, SAB_SQ_Key k){
   sab_sq_setup_tv_xb(k->tmp->slots, in->b->coeffs, tv, k);
-  sab_sq_blind_rotate(k->tmp->slots, in, k);
+  TRLWE * acc = sab_sq_blind_rotate(k->tmp->slots, in, k);
   // lift each slot back to torus scale, then the stock extract/pack/HW chain
   for (size_t i = 0; i < k->in_N; i++){
-    sab_sq_upshift(k->tmp->slots[i], k->tmp->slots[i], k->q);
-    trlwe_extract_tlwe(k->tmp->ext[i], k->tmp->slots[i], 0);
+    sab_sq_upshift(acc[i], acc[i], k->q);
+    trlwe_extract_tlwe(k->tmp->ext[i], acc[i], 0);
   }
   trlwe_full_packing_keyswitch(k->tmp->pack, k->tmp->ext, k->in_N, k->packing_key);
   trlwe_keyswitch(out, k->tmp->pack, k->hw_reducing_key);
