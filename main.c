@@ -118,6 +118,89 @@ void test_operator_equiv(){
       for (int s2 = 0; s2 < 2; s2++)
         free_trlwe(base[g2][s2]);
   }
+  {
+    /* UNIT3: bind after one CMUX -> channels become REAL ciphertexts */
+    SAB_Operator_State ust3 = sab_operator_new_state(opkey);
+    for (size_t jj = 0; jj < in_N; jj++)
+      for (int gg = 0; gg < 2; gg++){
+        for (int cc = 0; cc < ust3->channel[jj][gg]->k; cc++)
+          polynomial_zero_torus_polynomial(ust3->channel[jj][gg]->a[cc]);
+        polynomial_zero_torus_polynomial(ust3->channel[jj][gg]->b);
+      }
+    ust3->channel[0][0]->b->coeffs[10] += (Torus)(1LL << 62);
+    ust3->channel[0][1]->b->coeffs[20] += (Torus)(1LL << 62);
+    TRLWE k3[2] = {ust3->channel[0][0], ust3->channel[0][1]};
+    TRLWE s3[2] = {trlwe_alloc_new_sample(out_k, out_N),
+                   trlwe_alloc_new_sample(out_k, out_N)};
+    for (int cc = 0; cc < out_k; cc++){
+      polynomial_zero_torus_polynomial(s3[0]->a[cc]);
+      polynomial_zero_torus_polynomial(s3[1]->a[cc]);
+    }
+    polynomial_zero_torus_polynomial(s3[0]->b);
+    polynomial_zero_torus_polynomial(s3[1]->b);
+    s3[0]->b->coeffs[30] += (Torus)(1LL << 62);
+    s3[1]->b->coeffs[40] += (Torus)(1LL << 62);
+    TRGSW_DFT * sel3 = trgsw_alloc_new_DFT_sample_array(r_prec, 1, 23, out_k, out_N);
+    RGSW_encrypt_bits(sel3, sab->tmp->rgsw, output_key, 1, r_prec);
+    TRLWE o3[2] = {trlwe_alloc_new_sample(out_k, out_N),
+                   trlwe_alloc_new_sample(out_k, out_N)};
+    sab_operator_cmux(o3, k3, s3, sel3[0], opkey);
+    /* o3 is now a REAL ciphertext pair encrypting 1/4 X^30 / 1/4 X^40 */
+    TRLWE * ub3 = trlwe_alloc_new_sample_array(in_N, out_k, out_N);
+    SAB_Operator_State tmp3 = sab_operator_new_state(opkey);
+    for (int cc = 0; cc < out_k; cc++){
+      polynomial_copy_torus_polynomial(tmp3->channel[0][0]->a[cc], o3[0]->a[cc]);
+      polynomial_copy_torus_polynomial(tmp3->channel[0][1]->a[cc], o3[1]->a[cc]);
+    }
+    polynomial_copy_torus_polynomial(tmp3->channel[0][0]->b, o3[0]->b);
+    polynomial_copy_torus_polynomial(tmp3->channel[0][1]->b, o3[1]->b);
+    sab_operator_bind(ub3, tmp3, tv->b, opkey);
+    TorusPolynomial p3 = polynomial_new_torus_polynomial(out_N);
+    trlwe_phase(p3, ub3[0], output_key->trlwe_key);
+    int64_t u3m = 0; int u3p = -1;
+    for (size_t c = 0; c < out_N; c++){
+      int64_t v = (int64_t)p3->coeffs[c]; int64_t a9 = v < 0 ? -v : v;
+      if(a9 > u3m){ u3m = a9; u3p = (int)c; }
+    }
+    printf("UNIT3 real-cipher bind: max=%ld@%d sign=%ld (expect 65536@31 and 196608@35)",
+           (long)(u3m >> 44), u3p,
+           u3p >= 0 ? (long)((int64_t)p3->coeffs[u3p] >> 44) : 0L);
+    printf("\n");
+    int64_t v31 = (int64_t)p3->coeffs[31] >> 44;
+    int64_t v35 = (int64_t)p3->coeffs[35] >> 44;
+    /* manual phase with both sign conventions on the bind output */
+    {
+      TorusPolynomial pm = polynomial_new_torus_polynomial(out_N);
+      /* phase_plus = b' + a'*s ; phase_minus = b' - a'*s */
+      for (size_t c = 0; c < out_N; c++){
+        __int128 acc = (__int128)ub3[0]->b->coeffs[c];
+        for (size_t ki = 0; ki < out_k; ki++){
+          /* s is a polynomial; a'*s coefficient c = sum_i a'[i] * s[c-i mod N] negacyclic */
+          for (size_t i2 = 0; i2 < out_N; i2++){
+            int64_t av = (int64_t)ub3[0]->a[ki]->coeffs[i2];
+            if(!av) continue;
+            int idx = (int)((c + out_N - i2) % out_N);
+            int64_t sv = (int64_t)output_key->trlwe_key->s[ki]->coeffs[idx];
+            if(!sv) continue;
+            /* negacyclic sign handled by s's ring semantics via polynomial mul: approximate */
+            acc += (__int128)av * sv;
+          }
+        }
+        pm->coeffs[c] = (Torus)acc;
+      }
+      printf("UNIT3 manual-b-only [31]=%ld", (long)((int64_t)ub3[0]->b->coeffs[31] >> 44));
+      printf("\n");
+    }
+    printf("UNIT3 detail: [31]=%ld (expect 65536) [35]=%ld (expect 196608)",
+           (long)v31, (long)v35);
+    printf("\n");
+    free_polynomial(p3);
+    free_trlwe_array(ub3, in_N);
+    sab_operator_free_state(tmp3, opkey);
+    free_trlwe(o3[0]); free_trlwe(o3[1]);
+    free_trlwe(s3[0]); free_trlwe(s3[1]);
+    sab_operator_free_state(ust3, opkey);
+  }
   sab_operator_setup(state, in->b->coeffs, opkey);
   /* Stage-1 bisect: setup + bind only, against the scalar setup */
   {
