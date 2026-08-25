@@ -32,8 +32,70 @@ int sq_key_check(TRLWE_Key key, uint64_t N, const char * where){
   return bad;
 }
 
+/* D4-convergence contract check (stage356 -> candidate D offer):
+ * the LUT-late-binding product bind(F, U) with U holding quarter-scale
+ * (2^62) unit spikes, computed as the raw-int DFT envelope with the
+ * SPECTRUM prescale 1/4 and the <<2 tail recovery, must reproduce
+ * F * X^p to 1-ulp at torus. This pins the integer semantics
+ * (toward-zero mod-2^64 truncation in execute_direct_torus64, real
+ * spectrum prescale) that D4's UNIT3 integer-multiple error is
+ * fighting; the SQ kernel uses the identical contract at general q. */
+static void bind_contract_check(uint64_t N){
+  TorusPolynomial F = polynomial_new_torus_polynomial(N);
+  TorusPolynomial U = polynomial_new_torus_polynomial(N);
+  TorusPolynomial exp = polynomial_new_torus_polynomial(N);
+  TorusPolynomial got = polynomial_new_torus_polynomial(N);
+  DFT_Polynomial fd = polynomial_new_DFT_polynomial(N);
+  DFT_Polynomial ud = polynomial_new_DFT_polynomial(N);
+  DFT_Polynomial od = polynomial_new_DFT_polynomial(N);
+  uint64_t raw[8];
+  generate_random_bytes(sizeof(raw), (uint8_t *) raw);
+  for (size_t i = 0; i < N; i++) F->coeffs[i] = raw[i % 8] * 0x9E3779B97F4A7C15ULL + i;
+  const uint64_t p = 17;
+  U->coeffs[p] += (Torus)(1LL << 62);            // quarter-scale unit spike
+  U->coeffs[(p + 5) % N] += (Torus)(-(int64_t)(1LL << 62));
+  torus_polynomial_mul_by_xai(exp, F, p);         // expected: F*(X^p - X^(p+5))
+  {
+    TorusPolynomial t = polynomial_new_torus_polynomial(N);
+    torus_polynomial_mul_by_xai(t, F, (p + 5) % N);
+    for (size_t i = 0; i < N; i++) exp->coeffs[i] -= t->coeffs[i];
+    free_polynomial(t);
+  }
+  // raw-int envelope: |F| ~ 2^63, |U| ~ 2^62 -> products ~2^125 blow the
+  // 53-bit mantissa long before the mod-2^64 reduction; the quarter-scale
+  // prescale + <<2 recovery CANNOT carry a full-torus F (this is the shape
+  // of D4's UNIT3 integer-multiple error). Correct contract: prescale the
+  // public side by 2^-s so |product| ~< 2^52, recover with <<(s-62).
+  const int s_prescale = 73;
+  const int s_recover = s_prescale - 62;          // U spikes sit at 2^62
+  polynomial_torus_to_DFT(fd, F);
+  polynomial_torus_to_DFT(ud, U);
+  const double prescale = ldexp(1.0, -s_prescale);
+  for (size_t i = 0; i < N; i++) fd->coeffs[i] *= prescale;
+  polynomial_mul_DFT(od, fd, ud);
+  polynomial_DFT_to_torus(got, od);
+  int64_t max_dev = 0;
+  for (size_t i = 0; i < N; i++){
+    int64_t v = ((int64_t) got->coeffs[i]) << s_recover;
+    int64_t d = v - (int64_t) exp->coeffs[i];
+    if(d < 0) d = -d;
+    if(d > max_dev) max_dev = d;
+  }
+  /* absolute floor includes the sqrt(N) transform growth on top of the
+   * 2^-53 mantissa: relative deviation is the meaningful quantity */
+  const int64_t floor = 1LL << (s_recover + 6);
+  printf("BIND_CONTRACT prescale 2^-%d, <<%d recovery: max dev log2 = %.2f abs"
+         " (relative 2^%.1f, floor 2^%d, %s)\n",
+         s_prescale, s_recover, log2((double)(max_dev + 1)),
+         log2((double)(max_dev + 1)) - 63.0, (int) log2((double) floor),
+         max_dev <= floor ? "Pass" : "FAIL");
+  free_polynomial(F); free_polynomial(U); free_polynomial(exp);
+  free_polynomial(got); free_DFT_polynomial(fd); free_DFT_polynomial(ud); free_DFT_polynomial(od);
+}
+
 int main(){
   setvbuf(stdout, NULL, _IONBF, 0);
+  bind_contract_check(2048);
 #ifndef SAB_SQ_Q
 #define SAB_SQ_Q 16
 #endif

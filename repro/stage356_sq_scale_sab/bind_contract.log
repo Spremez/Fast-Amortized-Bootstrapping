@@ -1,0 +1,19 @@
+BIND_CONTRACT prescale 2^-73, <<11 recovery: max dev log2 = 12.84 abs (relative 2^-50.2, floor 2^17, Pass)
+SAB_SQ probe (q = 16, 2025/1711 x 2025/686, 2026/279 preflight)
+Input: (N=2048, h=39, binary, sigma=2^-15)
+Output: (N=2048, h=512, ternary, sigma=2^-50)
+KS gadgets: aut(l=1,Bg=2^23) pack(ell=2,b=2^14)
+[sqchk] born: input=0x55614689d3e0 input_dft=0x5561468f9920 distinct
+[sqchk] after RS: ones=39 bad=0
+[sqchk] after gen_sparse: ones=39 bad=0
+[sqchk] after to_DFT: ones=39 bad=0
+[sqchk] ptrs: input=0x55614689d3e0 out=0x5561468fd960
+[sqchk] after out_key: ones=39 bad=0
+[sqchk] after packing_key: ones=39 bad=0
+[sqchk] after trgsw keys: ones=39 bad=0
+Max monomial distance (log B): 7
+[sq] keygen sq r_prec=7
+[sq] keygen sq ok
+[sq] keygen scalar ok
+[sq] inputs ready
+[sq] bootstrap start
