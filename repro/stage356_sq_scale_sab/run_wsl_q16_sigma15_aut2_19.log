@@ -1,0 +1,25 @@
+SAB_SQ probe (q = 16, 2025/1711 x 2025/686, 2026/279 preflight)
+Input: (N=2048, h=39, binary, sigma=2^-15)
+Output: (N=2048, h=512, ternary, sigma=2^-35 HARDENED)
+KS gadgets: aut(l=2,Bg=2^19) pack(ell=2,b=2^14)
+[sqchk] born: input=0x564e7f921360 input_dft=0x564e7f979860 distinct
+[sqchk] after RS: ones=39 bad=0
+[sqchk] after gen_sparse: ones=39 bad=0
+[sqchk] after to_DFT: ones=39 bad=0
+[sqchk] ptrs: input=0x564e7f921360 out=0x564e7f97d8a0
+[sqchk] after out_key: ones=39 bad=0
+[sqchk] after packing_key: ones=39 bad=0
+[sqchk] after trgsw keys: ones=39 bad=0
+Max monomial distance (log B): 7
+[sq] keygen sq r_prec=7
+[sq] keygen sq ok
+[sq] keygen scalar ok
+[sq] inputs ready
+[sq] bootstrap start
+SAB_SQ bootstrap: 33,176,619μs +- 1027551.936433
+[sq] bootstrap done
+SAB_SQ noise: max phase deviation log2 = 59.30 (message budget 2^-4)
+SAB_SQ gate: Pass (mismatch 0 / 2048)
+SAB_scalar bootstrap: 35,808,143μs +- 2003749.109020
+SAB_scalar noise: max phase deviation log2 = 62.05
+SAB_SQ probe done

@@ -50,11 +50,26 @@ int main(){
     if(env != NULL) sigma_shift = atoi(env);
   }
   const double sigma_out = pow(2, -50 + sigma_shift);
+  /* 2026/279 hardened KS gadget (stage357 v2 sweep): finer decomposition
+   * trades key size for sigma-tolerant KS noise. */
+  uint64_t aut_l = 1, aut_bg = 23, pack_ell = 2, pack_bg = 14;
+  {
+    const char * e = getenv("SQKS_AUT_L");
+    if(e) aut_l = strtoull(e, NULL, 0);
+    e = getenv("SQKS_AUT_BG");
+    if(e) aut_bg = strtoull(e, NULL, 0);
+    e = getenv("SQKS_PACK_ELL");
+    if(e) pack_ell = strtoull(e, NULL, 0);
+    e = getenv("SQKS_PACK_BG");
+    if(e) pack_bg = strtoull(e, NULL, 0);
+  }
   const uint64_t target_r_prec = 7;
   printf("SAB_SQ probe (q = %d, 2025/1711 x 2025/686, 2026/279 preflight)\n", (int) q);
   printf("Input: (N=%d, h=%d, binary, sigma=2^-15)\n", (int) in_N, (int) h_in);
   printf("Output: (N=%d, h=%d, ternary, sigma=2^-%d%s)\n", (int) out_N, (int) h_out,
          (int)(50 - sigma_shift), sigma_shift ? " HARDENED" : "");
+  printf("KS gadgets: aut(l=%d,Bg=2^%d) pack(ell=%d,b=2^%d)\n",
+         (int) aut_l, (int) aut_bg, (int) pack_ell, (int) pack_bg);
 
   TRLWE_Key input_key;
   RS_sparse_binary_key(&input_key, in_N, in_k, h_in, sigma_in, target_r_prec);
@@ -79,7 +94,7 @@ int main(){
   const uint64_t r_prec = get_min_prec(input_key);
   printf("Max monomial distance (log B): %d\n", (int) r_prec);
   printf("[sq] keygen sq r_prec=%d\n", (int) r_prec);
-  SAB_SQ_Key sq = sab_sq_new_key(input_key, packing_key, sq_output_key, msg_prec, b_packing, ell_packing, t_ks, b_ks, h_in, r_prec, q);
+  SAB_SQ_Key sq = sab_sq_new_key(input_key, packing_key, sq_output_key, msg_prec, pack_bg, pack_ell, t_ks, b_ks, h_in, r_prec, q);
   printf("[sq] keygen sq ok\n");
   SAB_Key sab = new_sparse_amortized_bootstrapping(input_key, packing_key, scalar_output_key, msg_prec, b_packing, ell_packing, t_ks, b_ks, h_in, r_prec, false, false, false);
   printf("[sq] keygen scalar ok\n");

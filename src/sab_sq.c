@@ -63,9 +63,22 @@ SAB_SQ_Key sab_sq_new_key(TRLWE_Key input_key, TRLWE_Key repacking_key,
   const uint64_t r_max = 1ULL << r_prec;
   TRGSW tmp = trgsw_alloc_new_sample(1, q, out_k, out_N);
 
+  /* NCMUX automorphism keyswitch gadget. Stock (l=1, Bg=23) matches the
+   * scalar path; under 2026/279 sigma hardening the KS noise (~ sigma *
+   * 2^Bg * sqrt(N)) scales linearly with the out-key sigma and becomes
+   * the binding constraint (stage356 sigma+15 experiment), so the gadget
+   * is runtime-tunable: SQKS_AUT_L / SQKS_AUT_BG (defaults 1/23). */
+  uint64_t aut_l = 1, aut_bg = 23;
+  {
+    const char * e = getenv("SQKS_AUT_L");
+    if(e) aut_l = strtoull(e, NULL, 0);
+    e = getenv("SQKS_AUT_BG");
+    if(e) aut_bg = strtoull(e, NULL, 0);
+    assert(aut_l >= 1 && aut_l * aut_bg <= 64);
+  }
   // automorphism key for -1, torus-scale gadget (independent of q)
   uint64_t m1[1] = {2*out_N - 1};
-  TRLWE_KS_Key * aut_ks = trlwe_new_automorphism_KS_keyset_2(sq_output_key->trlwe_key, m1, 1, 1, 23);
+  TRLWE_KS_Key * aut_ks = trlwe_new_automorphism_KS_keyset_2(sq_output_key->trlwe_key, m1, 1, aut_l, aut_bg);
   res->aut_minus1 = aut_ks[0];
   free(aut_ks);
 

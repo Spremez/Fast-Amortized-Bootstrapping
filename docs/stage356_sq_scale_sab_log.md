@@ -49,7 +49,13 @@
 ## 遗留 / 下一步
 
 - [x] σ-硬化对照实验（结论如上: 需 KS 联动细化，非单旋钮）
-- [ ] 279 硬化参数集 v2: aut-KS Bg↓/l↑ + packing KS 联调，目标 σ_out+15 下 SQ gate 保持 Pass
+- [x] **279 硬化参数集 v2（stage357 前置，本分支补做）**: aut-KS gadget 运行时可调（`SQKS_AUT_L`/`SQKS_AUT_BG`/`SQKS_PACK_ELL`/`SQKS_PACK_BG`）。**σ_out+15 bit（=完整恢复 279 保守 15 bit 边际）下 SQ(q=16) gate Pass**:
+  - `aut(l=2, Bg=2^19)`: Pass，噪声 57.30→59.30（2^{-4.7}），见 `run_wsl_q16_sigma15_aut2_19.log`
+  - `aut(l=4, Bg=2^16)`: Pass，噪声 59.27（2^{-4.7}），见 `run_wsl_q16_sigma15_aut4_16.log`
+  - 同 σ 的 stock scalar（aut l=1/Bg=2^23 不可调）: 噪声 62.04（2^{-1.96}）失效
+  - 默认配置回归: 无环境变量时与 v1 完全一致（57.55/57.54，Pass）
+  - 细化 KS 只作用于 ~0.9% 的 NCMUX 路径与最终 KS 链，密钥量小；本机计时受并行负载扰动不可比，速度结论仍以 §TL;DR runner 数据为准
+  - 残余 +1.7 bit 噪声来自 packing KS 链（`SQKS_PACK_*` 已可调，进一步压制留参数扫描）
 - [ ] AVX-512 服务器矩阵（stage355 基础设施）上复测核速度与 10 次高统计
 - [ ] 与 sab_pvw/MAT 后端组合（stage357）；ternary/gaussian 选择子路径
 - [ ] 279 全文 isometry-hybrid 精确代价模型替换保守插值
