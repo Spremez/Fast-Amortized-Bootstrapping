@@ -191,7 +191,7 @@ void test_operator_equiv(){
     sab_operator_bind(ub3, tmp3, tv->b, opkey);
     TorusPolynomial p3 = polynomial_new_torus_polynomial(out_N);
     trlwe_phase(p3, ub3[0], output_key->trlwe_key);
-    printf("UNIT3 bind: [31]=%ld(exp+65536) [35]=%ld(exp0) [39]=%ld(exp-65536) [29]=%ld [41]=%ld [25]=%ld [45]=%ld",
+    printf("UNIT3 bind: [31]=%ld(exp+65536) [35]=%ld(exp+393216) [39]=%ld(exp+65536) [29]=%ld [41]=%ld [25]=%ld [45]=%ld",
            (long)((int64_t)p3->coeffs[31] >> 44),
            (long)((int64_t)p3->coeffs[35] >> 44),
            (long)((int64_t)p3->coeffs[39] >> 44),
