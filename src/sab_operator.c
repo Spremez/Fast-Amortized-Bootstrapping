@@ -266,6 +266,35 @@ sab_operator_bind (TRLWE *out, SAB_Operator_State state,
   }
   TorusPolynomial dig = polynomial_new_torus_polynomial(out_N);
   const Torus mask = (((Torus) 1) << bg) - 1;
+#ifdef SAB_OPERATOR_SPECTRUM_DEBUG
+  {
+    /* verify what the spectra actually encode: undo the weight on copies */
+    DFT_Polynomial * dbg = polynomial_new_array_of_polynomials_DFT(out_N, 2);
+    TorusPolynomial dres = polynomial_new_torus_polynomial(out_N);
+    for(int d = 0; d < layers; d++)
+    {
+      const double w = 1.0 / (double) (((Torus) 1) << (62 - 23 * d));
+      for(int q = 0; q < dbg[0]->N; q++){
+        dbg[0]->coeffs[q] = dft[4 + d]->coeffs[q] / w;
+        dbg[1]->coeffs[q] = dft[4 + layers + d]->coeffs[q] / w;
+      }
+      polynomial_DFT_to_torus(dres, dbg[0]);
+      printf("SPEC d=%d Fslot: [1]=%ld [5]=%ld", d,
+             (long)((int64_t)dres->coeffs[1] >> 44),
+             (long)((int64_t)dres->coeffs[5] >> 44));
+      printf("\n");
+      polynomial_DFT_to_torus(dres, dbg[1]);
+      printf("SPEC d=%d Tslot: [1]=%ld [5]=%ld [2043]=%ld [2047]=%ld", d,
+             (long)((int64_t)dres->coeffs[1] >> 44),
+             (long)((int64_t)dres->coeffs[5] >> 44),
+             (long)((int64_t)dres->coeffs[2043] >> 44),
+             (long)((int64_t)dres->coeffs[2047] >> 44));
+      printf("\n");
+    }
+    free_polynomial(dres);
+    free_polynomial(dbg);
+  }
+#endif
   for(int j = 0; j < in_N; j++)
   {
     TRLWE target_sample = out[j];
