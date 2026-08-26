@@ -234,35 +234,38 @@ void
 sab_operator_bind (TRLWE *out, SAB_Operator_State state,
                    TorusPolynomial F, SAB_Operator_Key key)
 {
-  /* v7: all MOSFHET DFT primitives are integer-spectrum (coefficients are
-   * cast int64->double verbatim; the inverse applies one mod-2^64
-   * reduction). Precision is 53-bit relative, so product magnitudes must
-   * stay near the external-product class (~2^95). The channel carries the
-   * operator at 2^62 (scale 1/4); pre-scaling the multiplier spectrum by
-   * 2^-62 represents 4*F on the real torus exactly in doubles, so the
-   * single product (channel spectrum ~2^62 class times ~2^0 class, times
-   * the 2N accumulation) stays near 2^73 with torus error ~2^-43, and the
-   * final mod-2^64 reduction returns F * X^pos exactly (the LUT
-   * coefficients are Delta-scaled with >= 62 low zero bits, so the 1/4
-   * channel scale is lossless by divisibility).
+  /* v11: digit decomposition times prescaled-weighted multiplier spectra.
+   * The spectrum path breaks on real-cipher masks (~2^85 products); keep
+   * every layer product <= ~2^80 by decomposing each channel component
+   * into 23-bit digits (the small side, <= 2^22) and multiplying against
+   * spec(F * 2^(23d-60)). The reconstruction
+   *   sum_d dig_d * 2^(23d) * F * 2^-62 = F * comp / 2^62
+   * is exactly F * X^pos for the 2^62-class (scale 1/4) channel content.
    * tau_{-1}(F)_0 = F_0 and tau_{-1}(F)_{N-j} = -F_j. */
   const SAB_Key sab = key->sab;
   const int in_N = (int) sab->in_N;
   const int out_N = (int) sab->out_N;
+  const int bg = 23;
+  const int layers = 3;
   init_fft(out_N);
   TorusPolynomial tau_F = polynomial_new_torus_polynomial(out_N);
   tau_F->coeffs[0] = F->coeffs[0];
   for(int j = 1; j < out_N; j++)
     tau_F->coeffs[out_N - j] = -F->coeffs[j];
-  DFT_Polynomial * dft = polynomial_new_array_of_polynomials_DFT(out_N, 4);
-  polynomial_torus_to_DFT(dft[2], F);
-  polynomial_torus_to_DFT(dft[3], tau_F);
-  const double to_real4 = 1.0 / (double) (((Torus) 1) << 62);
-  for(int q = 0; q < dft[2]->N; q++)
+  DFT_Polynomial * dft = polynomial_new_array_of_polynomials_DFT(out_N, 10);
+  for(int d = 0; d < layers; d++)
   {
-    dft[2]->coeffs[q] *= to_real4;
-    dft[3]->coeffs[q] *= to_real4;
+    const double w = 1.0 / (double) (((Torus) 1) << (62 - 23 * d));
+    polynomial_torus_to_DFT(dft[4 + d], F);
+    polynomial_torus_to_DFT(dft[4 + layers + d], tau_F);
+    for(int q = 0; q < dft[4 + d]->N; q++)
+    {
+      dft[4 + d]->coeffs[q] *= w;
+      dft[4 + layers + d]->coeffs[q] *= w;
+    }
   }
+  TorusPolynomial dig = polynomial_new_torus_polynomial(out_N);
+  const Torus mask = (((Torus) 1) << bg) - 1;
   for(int j = 0; j < in_N; j++)
   {
     TRLWE target_sample = out[j];
@@ -270,28 +273,51 @@ sab_operator_bind (TRLWE *out, SAB_Operator_State state,
     {
       TorusPolynomial target_comp =
           (c == target_sample->k) ? target_sample->b : target_sample->a[c];
-      /* accumulate both channels in the DFT domain, one inverse */
+      int used = 0;
       for(int g = 0; g < SAB_OPERATOR_GAMMA; g++)
       {
         TorusPolynomial comp =
             (c == target_sample->k) ? state->channel[j][g]->b
                                     : state->channel[j][g]->a[c];
-        polynomial_torus_to_DFT(dft[0], comp);
-        if(g == 0)
-          polynomial_mul_DFT(dft[1], dft[0], dft[2]);
-        else
-          polynomial_mul_addto_DFT(dft[1], dft[0], dft[3]);
+        for(int d = 0; d < layers; d++)
+        {
+          const int shift = bg * d;
+          polynomial_zero_torus_polynomial(dig);
+          bool any = false;
+          for(int q = 0; q < out_N; q++)
+          {
+            const Torus v = (Torus)(
+                (((int64_t) comp->coeffs[q]) >> shift) & (int64_t) mask);
+            dig->coeffs[q] = v;
+            if(v != 0) any = true;
+          }
+          if(!any) continue;
+          polynomial_torus_to_DFT(dft[0], dig);
+          DFT_Polynomial mult = dft[4 + (g ? layers : 0) + d];
+          if(used == 0)
+            polynomial_mul_DFT(dft[1], dft[0], mult);
+          else
+            polynomial_mul_addto_DFT(dft[1], dft[0], mult);
+          used++;
+        }
+      }
+      if(used == 0)
+      {
+        polynomial_zero_torus_polynomial(target_comp);
+        continue;
       }
       polynomial_DFT_to_torus(target_comp, dft[1]);
     }
   }
   free_polynomial(tau_F);
+  free_polynomial(dig);
   free_polynomial(dft);
   if(key->rerand_ks != NULL)
   {
     for(int j = 0; j < in_N; j++)
       trlwe_keyswitch(out[j], out[j], key->rerand_ks);
   }
+
 
 
 }
