@@ -23,6 +23,7 @@
  */
 
 #include <stdlib.h>
+#define SAB_OPERATOR_LAYER_DEBUG 1
 #include <string.h>
 #include <math.h>
 #include "sab_b.h"
@@ -245,8 +246,14 @@ sab_operator_bind (TRLWE *out, SAB_Operator_State state,
   const SAB_Key sab = key->sab;
   const int in_N = (int) sab->in_N;
   const int out_N = (int) sab->out_N;
-  const int bg = 23;
-  const int layers = 3;
+  int bg = 32;
+  int layers = 2;
+  {
+    const char * e = getenv("SAB_OP_BG");
+    const char * el = getenv("SAB_OP_LAYERS");
+    if(e) bg = atoi(e);
+    if(el) layers = atoi(el);
+  }
   init_fft(out_N);
   TorusPolynomial tau_F = polynomial_new_torus_polynomial(out_N);
   tau_F->coeffs[0] = F->coeffs[0];
@@ -255,7 +262,7 @@ sab_operator_bind (TRLWE *out, SAB_Operator_State state,
   DFT_Polynomial * dft = polynomial_new_array_of_polynomials_DFT(out_N, 10);
   for(int d = 0; d < layers; d++)
   {
-    const double w = 1.0 / (double) (((Torus) 1) << (62 - 23 * d));
+    const double w = 1.0 / (double) (((Torus) 1) << (62 - bg * d));
     polynomial_torus_to_DFT(dft[4 + d], F);
     polynomial_torus_to_DFT(dft[4 + layers + d], tau_F);
     for(int q = 0; q < dft[4 + d]->N; q++)
@@ -328,6 +335,20 @@ sab_operator_bind (TRLWE *out, SAB_Operator_State state,
           else
             polynomial_mul_addto_DFT(dft[1], dft[0], mult);
           used++;
+#ifdef SAB_OPERATOR_LAYER_DEBUG
+          if(j == 0 && c == target_sample->k)
+          {
+            static __thread TorusPolynomial dp = NULL;
+            if(!dp) dp = polynomial_new_torus_polynomial(out_N);
+            polynomial_DFT_to_torus(dp, dft[1]);
+            printf("LAYERP j0 b g=%d d=%d: [31]=%ld [35]=%ld [39]=%ld",
+                   g, d,
+                   (long)((int64_t)dp->coeffs[31] >> 44),
+                   (long)((int64_t)dp->coeffs[35] >> 44),
+                   (long)((int64_t)dp->coeffs[39] >> 44));
+            printf("\n");
+          }
+#endif
         }
       }
       if(used == 0)

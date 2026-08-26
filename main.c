@@ -158,9 +158,16 @@ void test_operator_equiv(){
         int64_t v = (int64_t)vp0->coeffs[c]; int64_t ax = v < 0 ? -v : v;
         if(ax > m0){ m0 = ax; p0b = (int)c; }
       }
-      printf("UNIT3 o3[0]: max=%ld@%d sign=%ld (expect 4194304@30)",
+      printf("UNIT3 o3[0]: max=%ld@%d sign=%ld (expect 4194304@30) full:",
              (long)(m0 >> 40), p0b,
              p0b >= 0 ? (long)((int64_t)vp0->coeffs[p0b] >> 40) : 0L);
+      printf(" [10]=%ld [20]=%ld [29]=%ld [30]=%ld [40]=%ld [31]=%ld",
+             (long)((int64_t)vp0->coeffs[10] >> 44),
+             (long)((int64_t)vp0->coeffs[20] >> 44),
+             (long)((int64_t)vp0->coeffs[29] >> 44),
+             (long)((int64_t)vp0->coeffs[30] >> 44),
+             (long)((int64_t)vp0->coeffs[40] >> 44),
+             (long)((int64_t)vp0->coeffs[31] >> 44));
       printf("\n");
       trlwe_phase(vp0, o3[1], output_key->trlwe_key);
       m0 = 0; p0b = -1;
@@ -188,6 +195,40 @@ void test_operator_equiv(){
     }
     polynomial_copy_torus_polynomial(tmp3->channel[0][0]->b, o3[0]->b);
     polynomial_copy_torus_polynomial(tmp3->channel[0][1]->b, o3[1]->b);
+    /* control: trivial channels carrying o3's exact phase VALUES */
+    {
+      SAB_Operator_State tmpT = sab_operator_new_state(opkey);
+      for (size_t jj = 0; jj < in_N; jj++)
+        for (int gg = 0; gg < 2; gg++){
+          for (int cc = 0; cc < tmpT->channel[jj][gg]->k; cc++)
+            polynomial_zero_torus_polynomial(tmpT->channel[jj][gg]->a[cc]);
+          polynomial_zero_torus_polynomial(tmpT->channel[jj][gg]->b);
+        }
+      TorusPolynomial ph_id = polynomial_new_torus_polynomial(out_N);
+      TorusPolynomial ph_tau = polynomial_new_torus_polynomial(out_N);
+      trlwe_phase(ph_id, o3[0], output_key->trlwe_key);
+      trlwe_phase(ph_tau, o3[1], output_key->trlwe_key);
+      polynomial_copy_torus_polynomial(tmpT->channel[0][0]->b, ph_id);
+      polynomial_copy_torus_polynomial(tmpT->channel[0][1]->b, ph_tau);
+      TRLWE * ubT = trlwe_alloc_new_sample_array(in_N, out_k, out_N);
+      sab_operator_bind(ubT, tmpT, tv->b, opkey);
+      TorusPolynomial pT = polynomial_new_torus_polynomial(out_N);
+      trlwe_phase(pT, ubT[0], output_key->trlwe_key);
+      printf("UNIT3-T trivial-same-values: [31]=%ld(exp+65536) [35]=%ld(exp+393216) [39]=%ld(exp+65536) [29]=%ld [41]=%ld [25]=%ld [45]=%ld",
+             (long)((int64_t)pT->coeffs[31] >> 44),
+             (long)((int64_t)pT->coeffs[35] >> 44),
+             (long)((int64_t)pT->coeffs[39] >> 44),
+             (long)((int64_t)pT->coeffs[29] >> 44),
+             (long)((int64_t)pT->coeffs[41] >> 44),
+             (long)((int64_t)pT->coeffs[25] >> 44),
+             (long)((int64_t)pT->coeffs[45] >> 44));
+      printf("\n");
+      free_polynomial(pT);
+      free_trlwe_array(ubT, in_N);
+      sab_operator_free_state(tmpT, opkey);
+      free_polynomial(ph_id);
+      free_polynomial(ph_tau);
+    }
     sab_operator_bind(ub3, tmp3, tv->b, opkey);
     TorusPolynomial p3 = polynomial_new_torus_polynomial(out_N);
     trlwe_phase(p3, ub3[0], output_key->trlwe_key);
