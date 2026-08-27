@@ -280,7 +280,7 @@ sab_operator_bind (TRLWE *out, SAB_Operator_State state,
     TorusPolynomial dres = polynomial_new_torus_polynomial(out_N);
     for(int d = 0; d < layers; d++)
     {
-      const double w = 1.0 / (double) (((Torus) 1) << (62 - 23 * d));
+      const double w = 1.0 / (double) (((Torus) 1) << (62 - bg * d));
       for(int q = 0; q < dbg[0]->N; q++){
         dbg[0]->coeffs[q] = dft[4 + d]->coeffs[q] / w;
         dbg[1]->coeffs[q] = dft[4 + layers + d]->coeffs[q] / w;
