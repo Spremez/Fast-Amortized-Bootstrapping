@@ -49,7 +49,23 @@ int main(int argc, char ** argv){
       dig->coeffs[q] = (Torus) (((int64_t) double2torus(generate_normal_random(pow(2.0, noise_log2 - 64.0)))) >> 32 & 0xFFFFFFFFULL);
     dig->coeffs[40] += (Torus)(1LL << 30); /* the channel spike's top word */
   }
-  if(mode & 2){
+  if(mode & 8){
+    /* experiment B: DENSE 2^60-class LUT multiplier (the real bind's F is
+     * the full packing LUT, not sparse spikes), spectrum-prescaled, against
+     * sign-extended noise digits + spike -- the last unreproduced element */
+    uint64_t st2 = 0x2545F4914F6CDD1DULL;
+    for (int q = 0; q < N; q++){
+      st2 ^= st2 << 13; st2 ^= st2 >> 7; st2 ^= st2 << 17;
+      mul->coeffs[q] = (st2 >> 44) << 52; /* dense ~2^60-class 12-bit values */
+    }
+    const double w8 = 1.0 / (double)(((Torus)1) << 30);
+    polynomial_torus_to_DFT(md, mul);
+    for (int q = 0; q < N; q++) md->coeffs[q] *= w8;
+    for (int q = 0; q < N; q++) mi[q] = (int64_t)(mul->coeffs[q] >> 30);
+    for (int q = 0; q < N; q++)
+      dig->coeffs[q] = (Torus) (((int64_t) double2torus(generate_normal_random(pow(2.0, noise_log2 - 64.0)))) >> 32 & 0xFFFFFFFFULL);
+    dig->coeffs[40] += (Torus)(1LL << 30);
+  }else if(mode & 2){
     polynomial_zero_torus_polynomial(mul);
     if(mode & 4){
       /* spectrum-prescaled from a 2^60-scale tau_F, exactly as bind4 */
