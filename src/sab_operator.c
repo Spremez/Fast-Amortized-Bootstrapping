@@ -256,9 +256,12 @@ sab_operator_bind (TRLWE *out, SAB_Operator_State state,
   }
   init_fft(out_N);
   TorusPolynomial tau_F = polynomial_new_torus_polynomial(out_N);
+  /* sign ablation (P0-b experiment A): build the POSITIVE reversal and
+   * apply the tau sign on the spectrum (-w, exact double negation) so the
+   * forward transform never sees the negated-reversal coefficients. */
   tau_F->coeffs[0] = F->coeffs[0];
   for(int j = 1; j < out_N; j++)
-    tau_F->coeffs[out_N - j] = -F->coeffs[j];
+    tau_F->coeffs[out_N - j] = F->coeffs[j];
   DFT_Polynomial * dft = polynomial_new_array_of_polynomials_DFT(out_N, 10);
   for(int d = 0; d < layers; d++)
   {
@@ -268,7 +271,7 @@ sab_operator_bind (TRLWE *out, SAB_Operator_State state,
     for(int q = 0; q < dft[4 + d]->N; q++)
     {
       dft[4 + d]->coeffs[q] *= w;
-      dft[4 + layers + d]->coeffs[q] *= w;
+      dft[4 + layers + d]->coeffs[q] *= -w;
     }
   }
   TorusPolynomial dig = polynomial_new_torus_polynomial(out_N);

@@ -1,0 +1,50 @@
+mkdir -p ./build_op
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/keyswitch.c -o build_op/keyswitch.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/bootstrap.c -o build_op/bootstrap.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/bootstrap_ga.c -o build_op/bootstrap_ga.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/tlwe.c -o build_op/tlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/trlwe.c -o build_op/trlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/trgsw.c -o build_op/trgsw.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/misc.c -o build_op/misc.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/polynomial.c -o build_op/polynomial.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/register.c -o build_op/register.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/pvwtlwe.c -o build_op/pvwtlwe.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/sha3/fips202.c -o build_op/fips202.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/fft/karatsuba.c -o build_op/karatsuba.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/rnd/aes_rng.c -o build_op/aes_rng.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/fft/spqlios/spqlios-fft-fma.s -o build_op/spqlios-fft-fma.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/fft/spqlios/spqlios-ifft-fma.s -o build_op/spqlios-ifft-fma.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/fft/spqlios/spqlios-fft-impl.c -o build_op/spqlios-fft-impl.o
+gcc -g -c -O3 -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ src/mosfhet/src/fft/spqlios/fft_processor_spqlios.c -o build_op/fft_processor_spqlios.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3_2048 src/sparse_amortized_bootstrap.c -o build_op/sparse_amortized_bootstrap.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3_2048 src/sab_profile.c -o build_op/sab_profile.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3_2048 src/sab_operator.c -o build_op/sab_operator.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -I./src/mosfhet/include -I./include/ -DSAB_OPERATOR_EQUIV_TEST -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3_2048 main.c -o build_op/main.o
+main.c: In function ‘test_operator_equiv’:
+main.c:96:50: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+   96 |     printf("MICRO ncmux out0 peak at %d (expect %d = N-40, sign %ld)",
+      |                                                 ~^
+      |                                                  |
+      |                                                  int
+      |                                                 %ld
+   97 |            p0, out_N - 40, p0 >= 0 ? (long)((int64_t)mp->coeffs[p0] >> 44) : 0L);
+      |                ~~~~~~~~~~                         
+      |                      |
+      |                      uint64_t {aka long unsigned int}
+main.c:103:50: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+  103 |     printf("MICRO ncmux out1 peak at %d (expect %d = N-30, sign %ld)",
+      |                                                 ~^
+      |                                                  |
+      |                                                  int
+      |                                                 %ld
+  104 |            p1, out_N - 30, p1 >= 0 ? (long)((int64_t)mp->coeffs[p1] >> 44) : 0L);
+      |                ~~~~~~~~~~                         
+      |                      |
+      |                      uint64_t {aka long unsigned int}
+main.c:375:3: warning: implicit declaration of function ‘mod_switch_a’ [-Wimplicit-function-declaration]
+  375 |   mod_switch_a(a, in->a[0]->coeffs, log_N2, in_N, sab->gaussian_secret);
+      |   ^~~~~~~~~~~~
+gcc -g -o main build_op/keyswitch.o build_op/bootstrap.o build_op/bootstrap_ga.o build_op/tlwe.o build_op/trlwe.o build_op/trgsw.o build_op/misc.o build_op/polynomial.o build_op/register.o build_op/pvwtlwe.o build_op/fips202.o build_op/karatsuba.o build_op/aes_rng.o build_op/spqlios-fft-fma.o build_op/spqlios-ifft-fma.o build_op/spqlios-fft-impl.o build_op/fft_processor_spqlios.o build_op/sparse_amortized_bootstrap.o build_op/sab_profile.o build_op/sab_operator.o build_op/main.o  -lm
+/usr/bin/ld: warning: build_op/spqlios-ifft-fma.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+BUILD_EXIT=0

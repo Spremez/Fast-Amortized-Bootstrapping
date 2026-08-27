@@ -1,0 +1,54 @@
+SAB_OPERATOR_EQUIV input: (N=1024, h=64, r_prec=6)
+LAYERP j0 b g=0 d=1: [31]=0 [35]=0 [39]=0
+UNIT slot0: out[1]=65535 out[5]=196607 out[0]=0 out[N-1]=0
+MICRO ncmux out0 peak at 0 (expect 2008 = N-40, sign -1)
+MICRO ncmux out1 peak at 0 (expect 2018 = N-30, sign -1)
+MICRO cmux out0 peak at 1 (expect 30, sign -1)
+UNIT3 o3[0]: max=4194304@30 sign=4194304 (expect 4194304@30) full: [10]=-1 [20]=-1 [29]=-1 [30]=262144 [40]=0 [31]=0
+UNIT3 o3[1]: max=4194304@40 sign=4194304 (expect 4194304@40)
+LAYERP j0 b g=0 d=0: [31]=0 [35]=0 [39]=0
+LAYERP j0 b g=0 d=1: [31]=65536 [35]=458751 [39]=-262145
+LAYERP j0 b g=1 d=0: [31]=65536 [35]=458751 [39]=-262145
+LAYERP j0 b g=1 d=1: [31]=-196608 [35]=-131072 [39]=-458753
+UNIT3-T trivial-same-values: [31]=-196608(exp+65536) [35]=-131072(exp+393216) [39]=-458753(exp+65536) [29]=-262144 [41]=0 [25]=-1 [45]=262144
+LAYERP j0 b g=0 d=0: [31]=0 [35]=0 [39]=0
+LAYERP j0 b g=0 d=1: [31]=-366037 [35]=107595 [39]=348340
+LAYERP j0 b g=1 d=0: [31]=-366037 [35]=107595 [39]=348340
+LAYERP j0 b g=1 d=1: [31]=396374 [35]=349563 [39]=-420817
+UNIT3 bind: [31]=-458752(exp+65536) [35]=393216(exp+393216) [39]=-196609(exp+65536) [29]=0 [41]=262144 [25]=262143 [45]=-262144
+LAYERP j0 b g=0 d=0: [31]=0 [35]=0 [39]=0
+LAYERP j0 b g=0 d=1: [31]=-366037 [35]=107595 [39]=348340
+UNIT3-SPLIT half=0: [31]=-196608 [35]=-327681 [39]=262143 [29]=524287 [41]=-262144 [45]=-262144 [25]=524287
+LAYERP j0 b g=1 d=0: [31]=0 [35]=0 [39]=0
+LAYERP j0 b g=1 d=1: [31]=-286166 [35]=241968 [39]=279419
+UNIT3-SPLIT half=1: [31]=-262144 [35]=-327680 [39]=-458753 [29]=-524288 [41]=524287 [45]=0 [25]=-262144
+LAYERP j0 b g=0 d=1: [31]=65535 [35]=196608 [39]=0
+LAYERP j0 b g=1 d=1: [31]=65535 [35]=393215 [39]=65535
+UNIT4 both-trivial: [31]=65535(exp+65536) [35]=393215(exp0) [39]=65535(exp-65536) [29]=0 [41]=0 [25]=0 [45]=0
+LAYERP j0 b g=0 d=1: [31]=-1 [35]=-1 [39]=-1
+SAB_OPERATOR_EQUIV stage1(setup+bind) coarse_mismatch = 499757
+  S1 j=0 c=1 scalar=0 op=-1 (c-4: 0/0, c+4: 0/0)
+    op nonzero positions in slot 0: [1]=-1 [3]=-1 [7]=-1 [9]=-1 [11]=-1 [15]=-1
+  S1 j=1 c=0 scalar=0 op=-1 (c-4: 0/-1, c+4: 0/0)
+  S1 j=2 c=2 scalar=0 op=-1 (c-4: 0/0, c+4: 0/-1)
+  S1 j=3 c=1 scalar=0 op=-1 (c-4: 0/0, c+4: 0/0)
+  S1 j=4 c=1 scalar=0 op=-1 (c-4: 0/0, c+4: 0/-1)
+  S1 j=5 c=7 scalar=0 op=-1 (c-4: 0/0, c+4: 0/-1)
+  slot 0: scalar[1]=0 scalar[5]=0 op[1]=-1 op[5]=0 scalar[1029]=0 op[1029]=0
+  slot 1: scalar[1]=0 scalar[5]=0 op[1]=0 op[5]=0 scalar[1029]=0 op[1029]=0
+  slot 2: scalar[1]=0 scalar[5]=0 op[1]=0 op[5]=0 scalar[1029]=0 op[1029]=0
+LAYERP j0 b g=0 d=0: [31]=0 [35]=0 [39]=0
+LAYERP j0 b g=0 d=1: [31]=115694 [35]=409172 [39]=311157
+LAYERP j0 b g=1 d=0: [31]=115694 [35]=409172 [39]=311157
+LAYERP j0 b g=1 d=1: [31]=-333363 [35]=-166415 [39]=478049
+MISMATCH j=0 c=0 ph_s=118 ph_o=-4194316 rs=0 ro=-4
+MISMATCH j=0 c=1 ph_s=25 ph_o=-4194218 rs=0 ro=-4
+MISMATCH j=0 c=2 ph_s=-94 ph_o=4194263 rs=0 ro=4
+MISMATCH j=0 c=4 ph_s=114 ph_o=-4194302 rs=0 ro=-4
+MISMATCH j=0 c=5 ph_s=107 ph_o=4194320 rs=0 ro=4
+MISMATCH j=0 c=6 ph_s=104 ph_o=-4194390 rs=0 ro=-4
+MISMATCH j=0 c=7 ph_s=102 ph_o=8388595 rs=0 ro=-8
+MISMATCH j=0 c=10 ph_s=33 ph_o=-4194357 rs=0 ro=-4
+SAB_OPERATOR_EQUIV max_phase_diff log2 = 63.00, message_mismatch = 1573412 / 2097152
+SAB_OPERATOR_EQUIV gate: Fail
+EXIT=0
