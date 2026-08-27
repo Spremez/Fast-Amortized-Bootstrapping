@@ -1,0 +1,211 @@
+==============================================================================
+A. 686 key instances (Tables 3+4 of [686]; q=2^64; torus sigma)
+==============================================================================
+B1 (binary, n=2^11, h=39, sigma=2^-15, delta=7.37)
+  raw entropy H = log2 C(n,h) + h log2 w      =    274.64 bits
+  rotation-orbit loss (ceiling log2 n)        =     11.00 bits
+  security ceiling T1_exhaustive_quotient    <=    256.27 bits
+  security ceiling T2_mitm_plain             <=    133.63 bits
+  security ceiling T3_mitm_rotational        <=    128.13 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    128.90 bits
+  margin T3-ceiling minus claim              =     -0.77 bits  (CLAIM EXCEEDS PURE-COMBINATORIAL CEILING)
+
+B2 (binary, n=2^11, h=42, sigma=2^-17, delta=6.16)
+  raw entropy H = log2 C(n,h) + h log2 w      =    291.48 bits
+  rotation-orbit loss (ceiling log2 n)        =     11.00 bits
+  security ceiling T1_exhaustive_quotient    <=    274.32 bits
+  security ceiling T2_mitm_plain             <=    142.66 bits
+  security ceiling T3_mitm_rotational        <=    137.16 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    129.90 bits
+  margin T3-ceiling minus claim              =      7.26 bits  (OK)
+
+B3 (binary, n=2^12, h=33, sigma=2^-21, delta=0.66)
+  raw entropy H = log2 C(n,h) + h log2 w      =    273.11 bits
+  rotation-orbit loss (ceiling log2 n)        =     12.00 bits
+  security ceiling T1_exhaustive_quotient    <=    260.45 bits
+  security ceiling T2_mitm_plain             <=    136.22 bits
+  security ceiling T3_mitm_rotational        <=    130.22 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    128.10 bits
+  margin T3-ceiling minus claim              =      2.12 bits  (OK)
+
+B4 (binary, n=2^13, h=27, sigma=2^-21, delta=1.30)
+  raw entropy H = log2 C(n,h) + h log2 w      =    257.80 bits
+  rotation-orbit loss (ceiling log2 n)        =     13.00 bits
+  security ceiling T1_exhaustive_quotient    <=    243.50 bits
+  security ceiling T2_mitm_plain             <=    128.25 bits
+  security ceiling T3_mitm_rotational        <=    121.75 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    127.90 bits
+  margin T3-ceiling minus claim              =     -6.15 bits  (CLAIM EXCEEDS PURE-COMBINATORIAL CEILING)
+
+B5 (binary, n=2^12, h=34, sigma=2^-24, delta=0.58)
+  raw entropy H = log2 C(n,h) + h log2 w      =    280.01 bits
+  rotation-orbit loss (ceiling log2 n)        =     12.00 bits
+  security ceiling T1_exhaustive_quotient    <=    267.43 bits
+  security ceiling T2_mitm_plain             <=    139.71 bits
+  security ceiling T3_mitm_rotational        <=    133.71 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    129.10 bits
+  margin T3-ceiling minus claim              =      4.61 bits  (OK)
+
+B6 (binary, n=2^13, h=28, sigma=2^-24, delta=1.15)
+  raw entropy H = log2 C(n,h) + h log2 w      =    265.99 bits
+  rotation-orbit loss (ceiling log2 n)        =     13.00 bits
+  security ceiling T1_exhaustive_quotient    <=    251.84 bits
+  security ceiling T2_mitm_plain             <=    132.42 bits
+  security ceiling T3_mitm_rotational        <=    125.92 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    130.60 bits
+  margin T3-ceiling minus claim              =     -4.68 bits  (CLAIM EXCEEDS PURE-COMBINATORIAL CEILING)
+
+T1 (ternary, n=2^11, h=35, sigma=2^-15, delta=9.34)
+  raw entropy H = log2 C(n,h) + h log2 w      =    286.65 bits
+  rotation-orbit loss (ceiling log2 n)        =     11.00 bits
+  security ceiling T1_exhaustive_quotient    <=    266.31 bits
+  security ceiling T2_mitm_plain             <=    138.66 bits
+  security ceiling T3_mitm_rotational        <=    133.16 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    128.30 bits
+  margin T3-ceiling minus claim              =      4.86 bits  (OK)
+  279 RotPrimalHybrid  no-MitM/H1/H2        = 133.6 / 122.8 / 118.4 bits
+  drop below 686 claim (H2 vs claim)        =      9.90 bits  (orbit ceiling caps rotational part at 11.00)
+  OPEN if 279 ignored 686 delta: H2-delta  =    109.06 bits
+
+T2 (ternary, n=2^11, h=38, sigma=2^-17, delta=7.81)
+  raw entropy H = log2 C(n,h) + h log2 w      =    306.95 bits
+  rotation-orbit loss (ceiling log2 n)        =     11.00 bits
+  security ceiling T1_exhaustive_quotient    <=    288.14 bits
+  security ceiling T2_mitm_plain             <=    149.57 bits
+  security ceiling T3_mitm_rotational        <=    144.07 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    129.90 bits
+  margin T3-ceiling minus claim              =     14.17 bits  (OK)
+  279 RotPrimalHybrid  no-MitM/H1/H2        = 134.4 / 124.0 / 119.7 bits
+  drop below 686 claim (H2 vs claim)        =     10.20 bits  (orbit ceiling caps rotational part at 11.00)
+  OPEN if 279 ignored 686 delta: H2-delta  =    111.89 bits
+
+T3 (ternary, n=2^12, h=30, sigma=2^-21, delta=0.92)
+  raw entropy H = log2 C(n,h) + h log2 w      =    282.14 bits
+  rotation-orbit loss (ceiling log2 n)        =     12.00 bits
+  security ceiling T1_exhaustive_quotient    <=    269.22 bits
+  security ceiling T2_mitm_plain             <=    140.61 bits
+  security ceiling T3_mitm_rotational        <=    134.61 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    127.80 bits
+  margin T3-ceiling minus claim              =      6.81 bits  (OK)
+  279 RotPrimalHybrid  no-MitM/H1/H2        = 138.1 / 122.1 / 117.3 bits
+  drop below 686 claim (H2 vs claim)        =     10.50 bits  (orbit ceiling caps rotational part at 12.00)
+  OPEN if 279 ignored 686 delta: H2-delta  =    116.38 bits
+
+T4 (ternary, n=2^13, h=25, sigma=2^-21, delta=1.63)
+  raw entropy H = log2 C(n,h) + h log2 w      =    266.27 bits
+  rotation-orbit loss (ceiling log2 n)        =     13.00 bits
+  security ceiling T1_exhaustive_quotient    <=    251.64 bits
+  security ceiling T2_mitm_plain             <=    132.32 bits
+  security ceiling T3_mitm_rotational        <=    125.82 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    127.90 bits
+  margin T3-ceiling minus claim              =     -2.08 bits  (CLAIM EXCEEDS PURE-COMBINATORIAL CEILING)
+  279 RotPrimalHybrid  no-MitM/H1/H2        = 148.3 / 126.7 / 121.2 bits
+  drop below 686 claim (H2 vs claim)        =      6.70 bits  (orbit ceiling caps rotational part at 13.00)
+  OPEN if 279 ignored 686 delta: H2-delta  =    119.57 bits
+
+T5 (ternary, n=2^12, h=32, sigma=2^-24, delta=0.73)
+  raw entropy H = log2 C(n,h) + h log2 w      =    298.16 bits
+  rotation-orbit loss (ceiling log2 n)        =     12.00 bits
+  security ceiling T1_exhaustive_quotient    <=    285.43 bits
+  security ceiling T2_mitm_plain             <=    148.72 bits
+  security ceiling T3_mitm_rotational        <=    142.72 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    127.90 bits
+  margin T3-ceiling minus claim              =     14.82 bits  (OK)
+  279 RotPrimalHybrid  no-MitM/H1/H2        = 138.3 / 122.7 / 118.1 bits
+  drop below 686 claim (H2 vs claim)        =      9.80 bits  (orbit ceiling caps rotational part at 12.00)
+  OPEN if 279 ignored 686 delta: H2-delta  =    117.37 bits
+
+T6 (ternary, n=2^13, h=26, sigma=2^-23, delta=1.46)
+  raw entropy H = log2 C(n,h) + h log2 w      =    275.56 bits
+  rotation-orbit loss (ceiling log2 n)        =     13.00 bits
+  security ceiling T1_exhaustive_quotient    <=    261.10 bits
+  security ceiling T2_mitm_plain             <=    137.05 bits
+  security ceiling T3_mitm_rotational        <=    130.55 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    129.80 bits
+  margin T3-ceiling minus claim              =      0.75 bits  (OK)
+  279 RotPrimalHybrid  no-MitM/H1/H2        = 149.1 / 127.8 / 122.4 bits
+  drop below 686 claim (H2 vs claim)        =      7.40 bits  (orbit ceiling caps rotational part at 13.00)
+  OPEN if 279 ignored 686 delta: H2-delta  =    120.94 bits
+
+RPC1 (ternary, n=2^11, h=256, sigma=2^-44, delta=0.00)
+  raw entropy H = log2 C(n,h) + h log2 w      =   1363.99 bits
+  rotation-orbit loss (ceiling log2 n)        =     11.00 bits
+  security ceiling T1_exhaustive_quotient    <=   1352.99 bits
+  security ceiling T2_mitm_plain             <=    682.00 bits
+  security ceiling T3_mitm_rotational        <=    676.50 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    143.10 bits
+  margin T3-ceiling minus claim              =    533.40 bits  (OK)
+
+RPC2 (ternary, n=2^12, h=256, sigma=2^-44, delta=0.00)
+  raw entropy H = log2 C(n,h) + h log2 w      =   1632.26 bits
+  rotation-orbit loss (ceiling log2 n)        =     12.00 bits
+  security ceiling T1_exhaustive_quotient    <=   1620.26 bits
+  security ceiling T2_mitm_plain             <=    816.13 bits
+  security ceiling T3_mitm_rotational        <=    810.13 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    277.20 bits
+  margin T3-ceiling minus claim              =    532.93 bits  (OK)
+
+RPC3 (ternary, n=2^13, h=256, sigma=2^-44, delta=0.00)
+  raw entropy H = log2 C(n,h) + h log2 w      =   1894.19 bits
+  rotation-orbit loss (ceiling log2 n)        =     13.00 bits
+  security ceiling T1_exhaustive_quotient    <=   1881.19 bits
+  security ceiling T2_mitm_plain             <=    947.10 bits
+  security ceiling T3_mitm_rotational        <=    940.60 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    454.10 bits
+  margin T3-ceiling minus claim              =    486.50 bits  (OK)
+
+FBS1 (ternary, n=2^11, h=512, sigma=2^-50, delta=0.00)
+  raw entropy H = log2 C(n,h) + h log2 w      =   2167.88 bits
+  rotation-orbit loss (ceiling log2 n)        =     11.00 bits
+  security ceiling T1_exhaustive_quotient    <=   2156.88 bits
+  security ceiling T2_mitm_plain             <=   1083.94 bits
+  security ceiling T3_mitm_rotational        <=   1078.44 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    128.90 bits
+  margin T3-ceiling minus claim              =    949.54 bits  (OK)
+
+FBS2 (ternary, n=2^13, h=512, sigma=2^-51, delta=0.00)
+  raw entropy H = log2 C(n,h) + h log2 w      =   3269.30 bits
+  rotation-orbit loss (ceiling log2 n)        =     13.00 bits
+  security ceiling T1_exhaustive_quotient    <=   3256.30 bits
+  security ceiling T2_mitm_plain             <=   1634.65 bits
+  security ceiling T3_mitm_rotational        <=   1628.15 bits
+  686 claimed lambda (estimator+CHHS19-delta) =    511.80 bits
+  margin T3-ceiling minus claim              =   1116.35 bits  (OK)
+
+==============================================================================
+B. Minimum Hamming weight h* for a lambda-bit target (n fixed)
+==============================================================================
+n=  2048 binary : h*(lam=128, tier1 rigorous)=  18  h*(tier2 May-MITM)=  36  h*(tier3 279-MITM)=  38
+n=  2048 ternary: h*(lam=128, tier1 rigorous)=  15  h*(tier2 May-MITM)=  31  h*(tier3 279-MITM)=  33
+n=  4096 binary : h*(lam=128, tier1 rigorous)=  16  h*(tier2 May-MITM)=  31  h*(tier3 279-MITM)=  33
+n=  4096 ternary: h*(lam=128, tier1 rigorous)=  14  h*(tier2 May-MITM)=  27  h*(tier3 279-MITM)=  29
+n=  8192 binary : h*(lam=128, tier1 rigorous)=  14  h*(tier2 May-MITM)=  27  h*(tier3 279-MITM)=  29
+n=  8192 ternary: h*(lam=128, tier1 rigorous)=  13  h*(tier2 May-MITM)=  24  h*(tier3 279-MITM)=  26
+n= 16384 binary : h*(lam=128, tier1 rigorous)=  13  h*(tier2 May-MITM)=  24  h*(tier3 279-MITM)=  26
+n= 16384 ternary: h*(lam=128, tier1 rigorous)=  12  h*(tier2 May-MITM)=  22  h*(tier3 279-MITM)=  23
+n=131072 binary : h*(lam=128, tier1 rigorous)=  10  h*(tier2 May-MITM)=  19  h*(tier3 279-MITM)=  20
+n=131072 ternary: h*(lam=128, tier1 rigorous)=  10  h*(tier2 May-MITM)=  17  h*(tier3 279-MITM)=  19
+
+Note: tier1 is a proven ceiling (attack exists at 2^(H-log2 n-delta));
+      tiers 2-3 assume collision/MitM decomposition heuristics.
+
+==============================================================================
+C. Entropy-approximation sanity (h*log2(e*n/h) vs exact, binary)
+==============================================================================
+n= 2048 h= 39: exact log2 C =  274.64  approx h*log2(en/h) =  279.13  (diff +4.50)
+n= 2048 h= 35: exact log2 C =  251.65  approx h*log2(en/h) =  255.97  (diff +4.32)
+n= 4096 h= 33: exact log2 C =  273.11  approx h*log2(en/h) =  277.14  (diff +4.04)
+n= 8192 h= 26: exact log2 C =  249.56  approx h*log2(en/h) =  253.30  (diff +3.74)
+
+==============================================================================
+D. 686 asymptotic-regime check (their Sec 6.1: h = O(lambda/log lambda))
+==============================================================================
+Entropy H(h) = h*log2(e*n*w/h). 686's aggressive regime n=lam*log^k(lam),
+h = c*lam/log2(lam) gives H = c*(k+1)*lam*loglog(lam)/log2(lam) = o(lam),
+hence lambda-bit security FAILS asymptotically for ANY constant c (tier 2/3).
+lam=128 k=0: h=2lam/log2(lam)= 36.6 n=   128 -> H= 142.04 (< 2*lam FAILS tier3)
+lam=128 k=1: h=2lam/log2(lam)= 36.6 n=   256 -> H= 182.18 (< 2*lam FAILS tier3)
+lam=128 k=2: h=2lam/log2(lam)= 36.6 n=   512 -> H= 220.09 (< 2*lam FAILS tier3)
+lam=256 k=0: h=2lam/log2(lam)= 64.0 n=   256 -> H= 267.57 (< 2*lam FAILS tier3)
+lam=256 k=1: h=2lam/log2(lam)= 64.0 n=   512 -> H= 338.07 (< 2*lam FAILS tier3)
+lam=256 k=2: h=2lam/log2(lam)= 64.0 n=  1024 -> H= 405.10 (< 2*lam FAILS tier3)
