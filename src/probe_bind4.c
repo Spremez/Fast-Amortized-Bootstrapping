@@ -126,6 +126,16 @@ int main(int argc, char ** argv){
         }
         printf("LAYER g=%d d=%d envelope-vs-exact max log2 = %.2f\n",
                g, d, log2((double)(md2 + 1)));
+        {
+          /* digit/comp magnitude sanity: distinguishes 2^17/2^30-class
+           * digits (healthy) from 2^31+-class (pathological noise) */
+          uint64_t dmax = 0; int dpos = -1;
+          for (int q = 0; q < N; q++)
+            if(dig->coeffs[q] > dmax){ dmax = dig->coeffs[q]; dpos = q; }
+          printf("  DIGSTAT g=%d d=%d max=%llu (2^%.1f) at %d\n",
+                 g, d, (unsigned long long) dmax,
+                 log2((double)(dmax + 1)), dpos);
+        }
         if(md2 > (1LL << 40)){
           /* export the worst mismatch for external exact arbitration */
           int worst_q = -1;
