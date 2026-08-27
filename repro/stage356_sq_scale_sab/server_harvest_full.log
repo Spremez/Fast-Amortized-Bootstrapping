@@ -1,0 +1,49 @@
+=== build q16 2026年 08月 27日 星期四 12:47:10 CST ===
+build exit=0
+=== 9 ratio rounds q16 2026年 08月 27日 星期四 12:47:12 CST ===
+=== q23 reference 2026年 08月 27日 星期四 12:57:48 CST ===
+q23 exit=0
+=== sigma+15 hardening (aut l=4 Bg=2^16) 2026年 08月 27日 星期四 12:59:00 CST ===
+sigma15 exit=0
+=== done 2026年 08月 27日 星期四 13:00:12 CST ===
+===TIMING===
+10,955,050
+12,103,052
+10,794,731
+12,089,014
+10,947,306
+12,068,647
+11,524,477
+12,784,513
+11,095,127
+12,083,929
+10,851,679
+12,130,146
+10,887,652
+12,107,656
+10,908,707
+12,072,644
+10,934,764
+12,116,252
+===Q16TAIL===
+[r8 ec=0] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[r8 ec=0] SAB_scalar bootstrap: 12,072,644μs +- 31287.686790
+[r8 ec=0] SAB_scalar noise: max phase deviation log2 = 57.43
+[r9 ec=0] SAB_SQ bootstrap: 10,934,764μs +- 165501.115914
+[r9 ec=0] SAB_SQ noise: max phase deviation log2 = 57.45 (message budget 2^-4)
+[r9 ec=0] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[r9 ec=0] SAB_scalar bootstrap: 12,116,252μs +- 36104.125452
+[r9 ec=0] SAB_scalar noise: max phase deviation log2 = 57.43
+===Q23===
+SAB_SQ bootstrap: 10,978,358μs +- 24649.696611
+SAB_SQ noise: max phase deviation log2 = 57.79 (message budget 2^-4)
+SAB_SQ gate: Pass (mismatch 0 / 2048)
+SAB_scalar bootstrap: 12,111,952μs +- 87454.410560
+SAB_scalar noise: max phase deviation log2 = 57.43
+===SIGMA15===
+KS gadgets: aut(l=4,Bg=2^16) pack(ell=2,b=2^14)
+SAB_SQ bootstrap: 11,056,675μs +- 35938.170265
+SAB_SQ noise: max phase deviation log2 = 59.36 (message budget 2^-4)
+SAB_SQ gate: Pass (mismatch 0 / 2048)
+SAB_scalar bootstrap: 12,095,851μs +- 50682.075401
+SAB_scalar noise: max phase deviation log2 = 62.09
