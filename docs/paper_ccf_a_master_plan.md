@@ -43,3 +43,21 @@
 5. **P2**: ternary/gaussian 路径、合并 main、artifact 打包。
 
 **判定**: A+B 已构成可投稿主体（速度 1.52×+、安全闭环、含诚实否定性结果）；C 闭合则升级为三贡献；P0 两项是本周窗口目标。
+
+## 五、决策记录（2026-08-27，作者裁定）
+
+1. **合并时机 = 选项 2**: SQ 分支在 P0-b（D4 仲裁/gate）关闭后并入 main。
+2. **论文 venue = Eurocrypt（欧密会）**。含义与写作策略调整：
+   - 重心从"系统论文"转为"带实现验证的算法/安全论文"：核心贡献需**定理化**——(T1) 尺度量化外积的正确性与噪声引理（消息路径精确性 + σ 项系数 σ·2^{q+3.5} 与 ∆=Q²/T 抑制的证明）；(T2) 279 硬化参数方法定理（给定 (gap, b, q, KS-gadget) 的充分条件，σ 上调后盲旋转噪声 ≤ 预算）；(T3) 安全性归约（IND-CPA 标准 + 稀疏密钥下引用/内化 isometry-hybrid 界）。
+   - **279 部分必须升级为精确模型**（保守插值不可投欧密）——P1-2 提升为投稿阻塞项。
+   - 实验节定位：验证定理常数与端到端性能（AVX-512 9.7%、r-lane 1.52–1.83×、硬化 +1.1%）。
+   - 时间线：Eurocrypt 截稿约 10 月上旬 → ~5 周；建议 3 周内完成 P0-b + stage357，2 周成稿。
+   - 若 D4 gate 关闭，LUT 晚绑定作为第三贡献（其 D0-D3 证明链本就按定理形式存在，适配欧密）。
+
+## 六、P0-b 执行配方（下一会话直接开火）
+
+前置事实：独立复刻（probe_envneg 全扫描 + probe_bind4 mode 7）全部精确，含 |x|>2^64 回绕区与符号扩展数位（0xFFFFFFFF 字）——层内代数已排除；真实 bind 的 F 是**稠密 2^60 级 LUT**（非探针的 2 尖峰），且真实泄漏在真实密文输出上观察到。
+
+实验 A（真 bind 符号消融，最高性价比）：`sab_operator_bind` 中把 tau_F 构造改为 +rev(F)，`to_DFT` 后对 `dft[4+layers+d]` 谱系数 `*= -1.0`（double 取负精确，语义恒等）——绕开"负系数多项式变换"路径。跑 `SAB_OPERATOR_EQUIV_TEST`（构建行：`make FFT_LIB=spqlios A_PRNG=none ENABLE_VAES=false KEY=BINARY PARAM=SET_2_3_2048 SAB_OPERATOR_EQUIV_TEST=true -j8`；看 UNIT3-T 的 [31]/[35]/[39] 与 STEP/MICRO 输出）。若垃圾消失 → gate 冲刺；若不变 → 排除该路径，转 B。
+实验 B（稠密 F 复刻）：probe_envneg 加 mode 8：mult = 稠密 2^60 级随机 LUT·2^{-30} 谱预缩放，dig = 符号扩展混合字——若泄漏出现即拿到最小复现，二分定位信封路径（怀疑集中在 execute_direct_torus64 标量解码对特定指数/符号组合，或 polynomial_mul_DFT 的双块布局在稠密×稠密下的行为）。
+实验 C（bind4 工作区嫌疑）：泄漏层用全新局部 DFT 缓冲重算同一积（fresh to_DFT）——若 fresh 精确而共享缓冲泄漏 = bind4 探针自害，其检查结论作废，以真实 bind 为准。
