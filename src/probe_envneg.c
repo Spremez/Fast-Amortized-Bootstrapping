@@ -62,6 +62,18 @@ int main(int argc, char ** argv){
       mul->coeffs[q] = (st2 >> 44) << 52; /* dense ~2^60-class 12-bit values */
       if((mode & 64) && (q & 1)) mul->coeffs[q] = 0; /* bisect: half density */
     }
+    { /* nonzero-count sweep: keep only the first k nonzero coefficients */
+      const int kcnt = (argc > 4) ? atoi(argv[4]) : 0;
+      if(kcnt > 0){
+        int kept = 0;
+        for (int q = 0; q < N; q++){
+          if(mul->coeffs[q] != 0){
+            if(kept < kcnt) kept++;
+            else mul->coeffs[q] = 0;
+          }
+        }
+      }
+    }
     const double w8 = 1.0 / (double)(((Torus)1) << 30);
     if(mode & 16){
       /* control: divide coefficients FIRST (values are 2^52-aligned, so
