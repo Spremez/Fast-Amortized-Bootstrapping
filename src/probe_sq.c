@@ -101,7 +101,18 @@ int main(){
 #endif
   const uint64_t q = SAB_SQ_Q;
   const uint64_t reps = 3;
-  const uint64_t in_N = 2048, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_in = 39, h_out = 512, msg_prec = 3;
+  const uint64_t in_N = 2048, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_out = 512, msg_prec = 3;
+  /* fairness protocol (stage356-F): CRYPTO'26 (ex-279) corrected input-key
+   * weight. T3 combinatorial tier gives h*=38 at n=2048 (current 39 is
+   * borderline, T3=128.13 vs claim 128.90); the estimator tier (MitM-H2,
+   * ~6.7-10.5 bits below claims) is covered at h=42 (B2-class, +8.4 bits
+   * of T3 ceiling). SAB_SQ_H selects the point; both schemes share it. */
+  uint64_t h_in = 39;
+  {
+    const char * e = getenv("SAB_SQ_H");
+    if(e) h_in = strtoull(e, NULL, 0);
+  }
+  printf("Input key: h = %d (fairness point)\n", (int) h_in);
   const double sigma_in = pow(2, -15);
   /* 2026/279 hardening demo: SAB_SQ_SIGMA_SHIFT=<bits> raises the output
    * key sigma by that many bits (restoring the isometry-hybrid margin).
