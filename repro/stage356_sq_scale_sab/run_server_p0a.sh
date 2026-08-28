@@ -2,7 +2,7 @@
 # stage356 P0-a server runner: SQ v3 AVX-512 retest on spz (fab-main).
 # 9 back-to-back ratio rounds (q=16), q=23 reference, sigma+15 hardening.
 set -uo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/../.."   # repo root
 OUT=repro/stage356_sq_scale_sab
 mkdir -p "$OUT"
 
