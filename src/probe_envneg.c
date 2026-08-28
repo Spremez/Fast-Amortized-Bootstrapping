@@ -52,19 +52,33 @@ int main(int argc, char ** argv){
   if(mode & 8){
     /* experiment B: DENSE 2^60-class LUT multiplier (the real bind's F is
      * the full packing LUT, not sparse spikes), spectrum-prescaled, against
-     * sign-extended noise digits + spike -- the last unreproduced element */
+     * sign-extended noise digits + spike -- the last unreproduced element.
+     * bit 16: coefficient-domain pre-division control (divide the poly by
+     * 2^30 BEFORE the forward transform instead of scaling the spectrum
+     * after) -- the P0-b fix candidate. */
     uint64_t st2 = 0x2545F4914F6CDD1DULL;
     for (int q = 0; q < N; q++){
       st2 ^= st2 << 13; st2 ^= st2 >> 7; st2 ^= st2 << 17;
       mul->coeffs[q] = (st2 >> 44) << 52; /* dense ~2^60-class 12-bit values */
+      if((mode & 64) && (q & 1)) mul->coeffs[q] = 0; /* bisect: half density */
     }
     const double w8 = 1.0 / (double)(((Torus)1) << 30);
-    polynomial_torus_to_DFT(md, mul);
-    for (int q = 0; q < N; q++) md->coeffs[q] *= w8;
+    if(mode & 16){
+      /* control: divide coefficients FIRST (values are 2^52-aligned, so
+       * the shift is exact), then transform -- no spectral scaling */
+      TorusPolynomial pre = polynomial_new_torus_polynomial(N);
+      for (int q = 0; q < N; q++) pre->coeffs[q] = (Torus)(((int64_t) mul->coeffs[q]) >> 30);
+      polynomial_torus_to_DFT(md, pre);
+      free_polynomial(pre);
+    }else{
+      polynomial_torus_to_DFT(md, mul);
+      for (int q = 0; q < N; q++) md->coeffs[q] *= w8;
+    }
     for (int q = 0; q < N; q++) mi[q] = (int64_t)(mul->coeffs[q] >> 30);
     for (int q = 0; q < N; q++)
       dig->coeffs[q] = (Torus) (((int64_t) double2torus(generate_normal_random(pow(2.0, noise_log2 - 64.0)))) >> 32 & 0xFFFFFFFFULL);
     dig->coeffs[40] += (Torus)(1LL << 30); /* the channel spike's top word */
+    if(mode & 32) dig->coeffs[40] -= (Torus)(1LL << 30); /* bisect: pure-noise dig */
     /* P0-b fix candidate: threshold the noise-digit words -- zero every
      * word whose signed 32-bit value is below 2^thr (their contribution
      * is noise-floor by construction; the dense tiny words are what
