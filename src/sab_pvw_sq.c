@@ -1,4 +1,13 @@
 #include "sab_pvw_sq.h"
+/* stage357: the SQ kernel replaces the decomposition lifecycle that every
+ * SAB_PVW_* fusion flag optimizes; neutralize them so a promoted-flag build
+ * cannot silently bypass the SQ path via the copied branches. */
+#undef SAB_PVW_SUB_DECOMP_FUSION
+#undef SAB_PVW_FUSED_FROM_DFT_ADD
+#undef SAB_PVW_SCHEDULE_FUSED_CMUX
+#undef SAB_PVW_BACKEND_FROM_DFT_ADD
+#undef SAB_PVW_DUAL_SUB_CMUX
+#undef SAB_PVW_SUBA_FUSED_FROM_DFT_ADD
 #include <inttypes.h>
 #include <string.h>
 #include <sys/time.h>
