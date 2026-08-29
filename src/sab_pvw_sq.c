@@ -68,7 +68,7 @@ static void sab_pvw_sq_body_profile_acc(uint64_t * us, uint64_t * calls,
   (*calls)++;
 }
 
-static void sab_pvw_sq_body_profile_print(SAB_PVW_Key sab, uint64_t full_us){
+static void sab_pvw_sq_body_profile_print(SAB_PVW_SQ_Key sab, uint64_t full_us){
   printf("SAB_PVW_BODY_PROFILE sample lanes=%" PRIu64
          " in_N=%" PRIu64
          " out_N=%" PRIu64
@@ -201,7 +201,7 @@ typedef struct {
 } SAB_PVW_Accumulator_State;
 
 static inline void sab_pvw_sq_accumulator_check(
-    const SAB_PVW_Accumulator_State * state, SAB_PVW_Key sab){
+    const SAB_PVW_Accumulator_State * state, SAB_PVW_SQ_Key sab){
   if(state->in_N != sab->in_N || state->lanes != sab->lanes ||
       state->r_prec != sab->r_prec){
     sab_pvw_sq_die("accumulator state metadata mismatch");
@@ -209,7 +209,7 @@ static inline void sab_pvw_sq_accumulator_check(
 }
 
 static inline SAB_PVW_Accumulator_State sab_pvw_sq_accumulator_state(
-    PVW_TMLWE * primary, SAB_PVW_Key sab){
+    PVW_TMLWE * primary, SAB_PVW_SQ_Key sab){
   SAB_PVW_Accumulator_State state = {
     {primary, sab->tmp->tmlwe_poly2},
     0,
@@ -295,13 +295,13 @@ static void sab_pvw_sq_extract_tlwe_lane(TLWE out, PVW_TMLWE in,
 }
 
 static void sab_pvw_sq_extract_tlwe_lane_array(TLWE * out, PVW_TMLWE * in,
-    uint64_t lane, SAB_PVW_Key sab){
+    uint64_t lane, SAB_PVW_SQ_Key sab){
   for (size_t idx = 0; idx < (size_t) sab->in_N; idx++){
     sab_pvw_sq_extract_tlwe_lane(out[idx], in[idx], lane, 0);
   }
 }
 
-static void sab_pvw_sq_init_full_postproc(SAB_PVW_Key sab, TRLWE_Key input_key,
+static void sab_pvw_sq_init_full_postproc(SAB_PVW_SQ_Key sab, TRLWE_Key input_key,
     TRLWE_Key repacking_key, uint64_t b_packing, uint64_t ell_packing,
     uint64_t t_ks, uint64_t b_ks){
   sab->packing_keys = (TRLWE_KS_Key *) safe_malloc(
@@ -331,13 +331,13 @@ static void sab_pvw_sq_init_full_postproc(SAB_PVW_Key sab, TRLWE_Key input_key,
   sab->tmp->packed = trlwe_alloc_new_sample(sab->in_k, sab->in_N);
 }
 
-SAB_PVW_Key sab_pvw_sq_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key,
+SAB_PVW_SQ_Key sab_pvw_sq_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key,
     uint64_t b_prec, uint64_t h, uint64_t r_prec, uint64_t l, uint64_t bg_bit){
   if(input_key == NULL) sab_pvw_sq_die("input key is NULL");
   if(output_key == NULL) sab_pvw_sq_die("output key is NULL");
   if(r_prec == 0) sab_pvw_sq_die("r_prec must be non-zero");
 
-  SAB_PVW_Key res = (SAB_PVW_Key) safe_malloc(sizeof(*res));
+  SAB_PVW_SQ_Key res = (SAB_PVW_SQ_Key) safe_malloc(sizeof(*res));
   const uint64_t in_N = input_key->s[0]->N;
   const uint64_t in_k = input_key->k;
   const uint64_t out_N = output_key->s[0][0]->N;
@@ -409,7 +409,7 @@ SAB_PVW_Key sab_pvw_sq_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_
   return res;
 }
 
-SAB_PVW_Key sab_pvw_sq_new_nonbinary_key(TRLWE_Key input_key,
+SAB_PVW_SQ_Key sab_pvw_sq_new_nonbinary_key(TRLWE_Key input_key,
     PVW_TMLWE_Key output_key, uint64_t b_prec, uint64_t h,
     uint64_t r_prec, uint64_t l, uint64_t bg_bit, bool include_zeros,
     bool ternary){
@@ -424,7 +424,7 @@ SAB_PVW_Key sab_pvw_sq_new_nonbinary_key(TRLWE_Key input_key,
         r_prec, l, bg_bit);
   }
 
-  SAB_PVW_Key res = (SAB_PVW_Key) safe_malloc(sizeof(*res));
+  SAB_PVW_SQ_Key res = (SAB_PVW_SQ_Key) safe_malloc(sizeof(*res));
   const uint64_t in_N = input_key->s[0]->N;
   const uint64_t in_k = input_key->k;
   const uint64_t out_N = output_key->s[0][0]->N;
@@ -525,7 +525,7 @@ SAB_PVW_Key sab_pvw_sq_new_nonbinary_key(TRLWE_Key input_key,
   return res;
 }
 
-SAB_PVW_Key sab_pvw_sq_new_binary_full_key(TRLWE_Key input_key,
+SAB_PVW_SQ_Key sab_pvw_sq_new_binary_full_key(TRLWE_Key input_key,
     TRLWE_Key repacking_key, PVW_TMLWE_Key output_key, uint64_t b_prec,
     uint64_t b_packing, uint64_t ell_packing, uint64_t t_ks, uint64_t b_ks,
     uint64_t h, uint64_t r_prec, uint64_t l, uint64_t bg_bit){
@@ -538,7 +538,7 @@ SAB_PVW_Key sab_pvw_sq_new_binary_full_key(TRLWE_Key input_key,
     bg_bit = e ? strtoull(e, NULL, 0) : 16;
   }
   if(repacking_key == NULL) sab_pvw_sq_die("repacking key is NULL");
-  SAB_PVW_Key res = sab_pvw_sq_new_binary_key(input_key, output_key, b_prec,
+  SAB_PVW_SQ_Key res = sab_pvw_sq_new_binary_key(input_key, output_key, b_prec,
       h, r_prec, l, bg_bit);
   res->q = bg_bit;
   sab_pvw_sq_init_full_postproc(res, input_key, repacking_key, b_packing,
@@ -546,20 +546,20 @@ SAB_PVW_Key sab_pvw_sq_new_binary_full_key(TRLWE_Key input_key,
   return res;
 }
 
-SAB_PVW_Key sab_pvw_sq_new_nonbinary_full_key(TRLWE_Key input_key,
+SAB_PVW_SQ_Key sab_pvw_sq_new_nonbinary_full_key(TRLWE_Key input_key,
     TRLWE_Key repacking_key, PVW_TMLWE_Key output_key, uint64_t b_prec,
     uint64_t b_packing, uint64_t ell_packing, uint64_t t_ks, uint64_t b_ks,
     uint64_t h, uint64_t r_prec, uint64_t l, uint64_t bg_bit,
     bool include_zeros, bool ternary){
   if(repacking_key == NULL) sab_pvw_sq_die("repacking key is NULL");
-  SAB_PVW_Key res = sab_pvw_sq_new_nonbinary_key(input_key, output_key, b_prec,
+  SAB_PVW_SQ_Key res = sab_pvw_sq_new_nonbinary_key(input_key, output_key, b_prec,
       h, r_prec, l, bg_bit, include_zeros, ternary);
   sab_pvw_sq_init_full_postproc(res, input_key, repacking_key, b_packing,
       ell_packing, t_ks, b_ks);
   return res;
 }
 
-void free_sab_pvw_sq_key(SAB_PVW_Key sab){
+void free_sab_pvw_sq_key(SAB_PVW_SQ_Key sab){
   if(sab == NULL) return;
   for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
     for (size_t step = 0; step < sab->h + 1; step++){
@@ -622,10 +622,10 @@ void free_sab_pvw_sq_key(SAB_PVW_Key sab){
 }
 
 static void sab_pvw_sq_rescale_add(PVW_TMLWE out, PVW_TMLWE_DFT prod,
-    PVW_TMLWE addend, SAB_PVW_Key sab);
+    PVW_TMLWE addend, SAB_PVW_SQ_Key sab);
 
 static void sab_pvw_sq_CMUX_materialize_internal(PVW_TMLWE out,
-    PVW_TMLWE addend, SAB_PVW_Key sab, int prefer_fused_from_dft_add){
+    PVW_TMLWE addend, SAB_PVW_SQ_Key sab, int prefer_fused_from_dft_add){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t cmux_from_dft_begin = sab_pvw_sq_now_us();
 #endif
@@ -658,16 +658,28 @@ static void sab_pvw_sq_CMUX_materialize_internal(PVW_TMLWE out,
 
 /* SQ fused epilogue: out = addend + round_{2^q}(prod), one pass per poly */
 static void sab_pvw_sq_rescale_add(PVW_TMLWE out, PVW_TMLWE_DFT prod,
-    PVW_TMLWE addend, SAB_PVW_Key sab){
+    PVW_TMLWE addend, SAB_PVW_SQ_Key sab){
   const unsigned shift = 64 - sab->q;
   const int64_t half = 1LL << (shift - 1);
   const int N = addend->b[0]->N;
   static __thread TorusPolynomial tmpa = NULL, * tmpb = NULL;
-  if(!tmpa){
-    tmpa = polynomial_new_torus_polynomial(N);
-    tmpb = (TorusPolynomial *) safe_malloc(sizeof(TorusPolynomial) * addend->r);
-    for (int j = 0; j < addend->r; j++) tmpb[j] = polynomial_new_torus_polynomial(N);
+  static __thread int tmpb_r = 0;
+  if(tmpa && tmpa->N != N){
+    free_polynomial(tmpa);
+    for (int j = 0; j < tmpb_r; j++) free_polynomial(tmpb[j]);
+    free(tmpb);
+    tmpa = NULL; tmpb = NULL; tmpb_r = 0;
   }
+  if(tmpb_r < addend->r){
+    TorusPolynomial * nb = (TorusPolynomial *) safe_malloc(sizeof(TorusPolynomial) * addend->r);
+    for (int j = 0; j < tmpb_r; j++) nb[j] = tmpb[j];
+    for (int j = tmpb_r; j < addend->r; j++)
+      nb[j] = polynomial_new_torus_polynomial(N);
+    free(tmpb);
+    tmpb = nb;
+    tmpb_r = addend->r;
+  }
+  if(!tmpa) tmpa = polynomial_new_torus_polynomial(N);
   polynomial_DFT_to_torus(tmpa, prod->a[0]);
   for (int j = 0; j < addend->r; j++)
     polynomial_DFT_to_torus(tmpb[j], prod->b[j]);
@@ -681,7 +693,7 @@ static void sab_pvw_sq_rescale_add(PVW_TMLWE out, PVW_TMLWE_DFT prod,
 }
 
 static void sab_pvw_sq_CMUX_from_sub_internal(PVW_TMLWE out, PVW_TMLWE addend,
-    PVW_TMLWE sub, MAT_TRGSW_DFT selector, SAB_PVW_Key sab,
+    PVW_TMLWE sub, MAT_TRGSW_DFT selector, SAB_PVW_SQ_Key sab,
     int prefer_fused_from_dft_add){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t mat_ep_begin = sab_pvw_sq_now_us();
@@ -720,7 +732,7 @@ static void sab_pvw_sq_CMUX_from_sub_internal(PVW_TMLWE out, PVW_TMLWE addend,
 
 #ifdef SAB_PVW_SUB_DECOMP_FUSION
 static void sab_pvw_sq_CMUX_from_diff_internal(PVW_TMLWE out, PVW_TMLWE addend,
-    PVW_TMLWE in1, PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_Key sab,
+    PVW_TMLWE in1, PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_SQ_Key sab,
     int prefer_fused_from_dft_add){
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_sq_body_profile.cmux_sub_calls++;
@@ -738,7 +750,7 @@ static void sab_pvw_sq_CMUX_from_diff_internal(PVW_TMLWE out, PVW_TMLWE addend,
 #endif
 
 static void sab_pvw_sq_CMUX_internal(PVW_TMLWE out, PVW_TMLWE in1,
-    PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_Key sab,
+    PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_SQ_Key sab,
     int prefer_fused_from_dft_add){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t cmux_begin = sab_pvw_sq_now_us();
@@ -765,7 +777,7 @@ static void sab_pvw_sq_CMUX_internal(PVW_TMLWE out, PVW_TMLWE in1,
 }
 
 void sab_pvw_sq_CMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
-    MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+    MAT_TRGSW_DFT selector, SAB_PVW_SQ_Key sab){
 #if defined(SAB_PVW_FUSED_FROM_DFT_ADD)
   sab_pvw_sq_CMUX_internal(out, in1, in2, selector, sab, 1);
 #else
@@ -774,7 +786,7 @@ void sab_pvw_sq_CMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
 }
 
 void sab_pvw_sq_NCMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
-    MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+    MAT_TRGSW_DFT selector, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t ncmux_begin = sab_pvw_sq_now_us();
   const uint64_t ncmux_auto_begin = sab_pvw_sq_now_us();
@@ -812,7 +824,7 @@ void sab_pvw_sq_NCMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
 }
 
 static void sab_pvw_sq_schedule_CMUX(PVW_TMLWE out, PVW_TMLWE in1,
-    PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+    PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_sq_body_profile.schedule_fused_cmux_calls++;
 #endif
@@ -820,7 +832,7 @@ static void sab_pvw_sq_schedule_CMUX(PVW_TMLWE out, PVW_TMLWE in1,
 }
 
 static void sab_pvw_sq_schedule_NCMUX(PVW_TMLWE out, PVW_TMLWE in1,
-    PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+    PVW_TMLWE in2, MAT_TRGSW_DFT selector, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t ncmux_begin = sab_pvw_sq_now_us();
   const uint64_t ncmux_auto_begin = sab_pvw_sq_now_us();
@@ -917,7 +929,7 @@ static void sab_pvw_sq_dual_sub_shared(PVW_TMLWE out_rot_minus_shared,
 
 static void sab_pvw_sq_schedule_dual_sub_pair(PVW_TMLWE out_ncmux,
     PVW_TMLWE out_direct, PVW_TMLWE shared, PVW_TMLWE ncmux_rhs,
-    PVW_TMLWE direct_rhs, MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+    PVW_TMLWE direct_rhs, MAT_TRGSW_DFT selector, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t ncmux_begin = sab_pvw_sq_now_us();
   const uint64_t ncmux_auto_begin = sab_pvw_sq_now_us();
@@ -960,7 +972,7 @@ static void sab_pvw_sq_schedule_dual_sub_pair(PVW_TMLWE out_ncmux,
 #endif
 
 static uint64_t sab_pvw_sq_RGSW_monomial_mul_state(PVW_TMLWE * p[2],
-    uint64_t active, MAT_TRGSW_DFT * e, SAB_PVW_Key sab){
+    uint64_t active, MAT_TRGSW_DFT * e, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t rgsw_begin = sab_pvw_sq_now_us();
 #endif
@@ -1028,7 +1040,7 @@ static uint64_t sab_pvw_sq_RGSW_monomial_mul_state(PVW_TMLWE * p[2],
 }
 
 static void sab_pvw_sq_copy_accumulator_array(PVW_TMLWE * out, PVW_TMLWE * in,
-    SAB_PVW_Key sab){
+    SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t copyback_begin = sab_pvw_sq_now_us();
 #endif
@@ -1042,7 +1054,7 @@ static void sab_pvw_sq_copy_accumulator_array(PVW_TMLWE * out, PVW_TMLWE * in,
 }
 
 static inline void sab_pvw_sq_accumulator_normalize(
-    SAB_PVW_Accumulator_State * state, SAB_PVW_Key sab){
+    SAB_PVW_Accumulator_State * state, SAB_PVW_SQ_Key sab){
   sab_pvw_sq_accumulator_check(state, sab);
   if(state->active != 0){
     sab_pvw_sq_copy_accumulator_array(state->buffers[0],
@@ -1052,14 +1064,14 @@ static inline void sab_pvw_sq_accumulator_normalize(
 }
 
 void sab_pvw_sq_RGSW_monomial_mul(PVW_TMLWE * p0, MAT_TRGSW_DFT * e,
-    SAB_PVW_Key sab){
+    SAB_PVW_SQ_Key sab){
   SAB_PVW_Accumulator_State state = sab_pvw_sq_accumulator_state(p0, sab);
   state.active = sab_pvw_sq_RGSW_monomial_mul_state(state.buffers,
       state.active, e, sab);
   sab_pvw_sq_accumulator_normalize(&state, sab);
 }
 
-void sab_pvw_sq_sub_a_binary(PVW_TMLWE * p, const uint64_t * a, SAB_PVW_Key sab){
+void sab_pvw_sq_sub_a_binary(PVW_TMLWE * p, const uint64_t * a, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t sub_a_begin = sab_pvw_sq_now_us();
 #endif
@@ -1086,7 +1098,7 @@ void sab_pvw_sq_sub_a_binary(PVW_TMLWE * p, const uint64_t * a, SAB_PVW_Key sab)
 }
 
 void sab_pvw_sq_sub_a_include_zero(PVW_TMLWE * p, const uint64_t * a,
-    MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+    MAT_TRGSW_DFT selector, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t sub_a_begin = sab_pvw_sq_now_us();
 #endif
@@ -1154,7 +1166,7 @@ void sab_pvw_sq_sub_a_include_zero(PVW_TMLWE * p, const uint64_t * a,
 }
 
 void sab_pvw_sq_sub_a_ternary(PVW_TMLWE * p, const uint64_t * a,
-    MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+    MAT_TRGSW_DFT selector, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t sub_a_begin = sab_pvw_sq_now_us();
 #endif
@@ -1215,7 +1227,7 @@ void sab_pvw_sq_sub_a_ternary(PVW_TMLWE * p, const uint64_t * a,
 }
 
 static void sab_pvw_sq_sub_a_binary_to(PVW_TMLWE * out, PVW_TMLWE * in,
-    const uint64_t * a, SAB_PVW_Key sab){
+    const uint64_t * a, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t sub_a_begin = sab_pvw_sq_now_us();
 #endif
@@ -1239,7 +1251,7 @@ static void sab_pvw_sq_sub_a_binary_to(PVW_TMLWE * out, PVW_TMLWE * in,
 }
 
 void sab_pvw_sq_sparse_mul_binary(PVW_TMLWE * p, const uint64_t * a,
-    uint64_t a_idx, SAB_PVW_Key sab){
+    uint64_t a_idx, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t sparse_mul_begin = sab_pvw_sq_now_us();
 #endif
@@ -1276,7 +1288,7 @@ void sab_pvw_sq_sparse_mul_binary(PVW_TMLWE * p, const uint64_t * a,
 }
 
 void sab_pvw_sq_sparse_mul_nonbinary(PVW_TMLWE * p, const uint64_t * a,
-    uint64_t a_idx, SAB_PVW_Key sab){
+    uint64_t a_idx, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t sparse_mul_begin = sab_pvw_sq_now_us();
 #endif
@@ -1313,7 +1325,7 @@ void sab_pvw_sq_sparse_mul_nonbinary(PVW_TMLWE * p, const uint64_t * a,
 }
 
 void sab_pvw_sq_setup_tv_xb(PVW_TMLWE * acc, const uint64_t * b,
-    PVW_TMLWE tv, SAB_PVW_Key sab){
+    PVW_TMLWE tv, SAB_PVW_SQ_Key sab){
   const int log_N2 = (int) log2(2 * sab->out_N);
   const uint64_t prec_offset = 1ULL << (64 - sab->b_prec - 1);
   /* SQ: the test vector enters at Q-scale (quantize every poly) */
@@ -1331,7 +1343,7 @@ void sab_pvw_sq_setup_tv_xb(PVW_TMLWE * acc, const uint64_t * b,
   }
 }
 
-void sab_pvw_sq_blind_rotate_binary(PVW_TMLWE * out, TRLWE in, SAB_PVW_Key sab){
+void sab_pvw_sq_blind_rotate_binary(PVW_TMLWE * out, TRLWE in, SAB_PVW_SQ_Key sab){
   if(sab->in_k != 1) sab_pvw_sq_die("only in_k=1 is supported");
   const uint64_t log_N2 = (uint64_t) log2(2 * sab->out_N);
   for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
@@ -1343,7 +1355,7 @@ void sab_pvw_sq_blind_rotate_binary(PVW_TMLWE * out, TRLWE in, SAB_PVW_Key sab){
 }
 
 void sab_pvw_sq_blind_rotate_nonbinary(PVW_TMLWE * out, TRLWE in,
-    SAB_PVW_Key sab){
+    SAB_PVW_SQ_Key sab){
   if(sab->in_k != 1) sab_pvw_sq_die("only in_k=1 is supported");
   if(!sab->include_zeros && !sab->ternary_secret){
     sab_pvw_sq_die("nonbinary blind rotate requires include-zero or ternary mode");
@@ -1359,7 +1371,7 @@ void sab_pvw_sq_blind_rotate_nonbinary(PVW_TMLWE * out, TRLWE in,
 }
 
 void sab_pvw_sq_bootstrap_wo_extract_binary(PVW_TMLWE * out, TRLWE in,
-    PVW_TMLWE tv, SAB_PVW_Key sab){
+    PVW_TMLWE tv, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_sq_body_profile_reset();
   const uint64_t full_begin = sab_pvw_sq_now_us();
@@ -1370,6 +1382,10 @@ void sab_pvw_sq_bootstrap_wo_extract_binary(PVW_TMLWE * out, TRLWE in,
   sab_pvw_sq_body_profile_acc(&sab_pvw_sq_body_profile.setup_tv_xb_us,
       &sab_pvw_sq_body_profile.setup_tv_xb_calls, setup_begin);
 #endif
+#ifdef SAB_PVW_BODY_PROFILE
+  const uint64_t blind_rotate_begin = sab_pvw_sq_now_us();
+#endif
+  sab_pvw_sq_blind_rotate_binary(out, in, sab);
   /* SQ: final lift of every slot back to torus scale for the stock
    * extract/packing/HW postproc */
   {
@@ -1384,10 +1400,6 @@ void sab_pvw_sq_bootstrap_wo_extract_binary(PVW_TMLWE * out, TRLWE in,
       }
     }
   }
-#if 0 /* the original profile close is duplicated below */
-  const uint64_t blind_rotate_begin = sab_pvw_sq_now_us();
-#endif
-  sab_pvw_sq_blind_rotate_binary(out, in, sab);
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_sq_body_profile_acc(&sab_pvw_sq_body_profile.blind_rotate_us,
       &sab_pvw_sq_body_profile.blind_rotate_calls, blind_rotate_begin);
@@ -1396,7 +1408,7 @@ void sab_pvw_sq_bootstrap_wo_extract_binary(PVW_TMLWE * out, TRLWE in,
 }
 
 void sab_pvw_sq_bootstrap_wo_extract_nonbinary(PVW_TMLWE * out, TRLWE in,
-    PVW_TMLWE tv, SAB_PVW_Key sab){
+    PVW_TMLWE tv, SAB_PVW_SQ_Key sab){
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_sq_body_profile_reset();
   const uint64_t full_begin = sab_pvw_sq_now_us();
@@ -1407,6 +1419,10 @@ void sab_pvw_sq_bootstrap_wo_extract_nonbinary(PVW_TMLWE * out, TRLWE in,
   sab_pvw_sq_body_profile_acc(&sab_pvw_sq_body_profile.setup_tv_xb_us,
       &sab_pvw_sq_body_profile.setup_tv_xb_calls, setup_begin);
 #endif
+#ifdef SAB_PVW_BODY_PROFILE
+  const uint64_t blind_rotate_begin = sab_pvw_sq_now_us();
+#endif
+  sab_pvw_sq_blind_rotate_nonbinary(out, in, sab);
   /* SQ: final lift of every slot back to torus scale for the stock
    * extract/packing/HW postproc */
   {
@@ -1421,10 +1437,6 @@ void sab_pvw_sq_bootstrap_wo_extract_nonbinary(PVW_TMLWE * out, TRLWE in,
       }
     }
   }
-#if 0 /* the original profile close is duplicated below */
-  const uint64_t blind_rotate_begin = sab_pvw_sq_now_us();
-#endif
-  sab_pvw_sq_blind_rotate_nonbinary(out, in, sab);
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_sq_body_profile_acc(&sab_pvw_sq_body_profile.blind_rotate_us,
       &sab_pvw_sq_body_profile.blind_rotate_calls, blind_rotate_begin);
@@ -1432,14 +1444,14 @@ void sab_pvw_sq_bootstrap_wo_extract_nonbinary(PVW_TMLWE * out, TRLWE in,
 #endif
 }
 
-void sab_pvw_sq_extract_pvwtlwe(PVW_TLWE * out, PVW_TMLWE * in, SAB_PVW_Key sab){
+void sab_pvw_sq_extract_pvwtlwe(PVW_TLWE * out, PVW_TMLWE * in, SAB_PVW_SQ_Key sab){
   for (size_t idx = 0; idx < sab->in_N; idx++){
     pvmtmlwe_extract_pvmtlwe(out[idx], in[idx], 0);
   }
 }
 
 void sab_pvw_sq_bootstrap_binary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
-    SAB_PVW_Key sab){
+    SAB_PVW_SQ_Key sab){
   if(sab->packing_keys == NULL || sab->hw_reducing_key == NULL){
     sab_pvw_sq_die("full binary bootstrap requires sab_pvw_sq_new_binary_full_key");
   }
@@ -1478,7 +1490,7 @@ void sab_pvw_sq_bootstrap_binary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
 }
 
 void sab_pvw_sq_bootstrap_nonbinary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
-    SAB_PVW_Key sab){
+    SAB_PVW_SQ_Key sab){
   if(sab->packing_keys == NULL || sab->hw_reducing_key == NULL){
     sab_pvw_sq_die("full nonbinary bootstrap requires sab_pvw_sq_new_nonbinary_full_key");
   }
