@@ -1,0 +1,30 @@
+=== build (avx512) 2026年 08月 29日 星期六 14:05:44 CST ===
+make exit=0
+ppsq built
+=== r=1 h=39 2026年 08月 29日 星期六 14:05:49 CST ===
+=== r=1 h=42 2026年 08月 29日 星期六 14:07:07 CST ===
+=== r=4 h=39 2026年 08月 29日 星期六 14:08:31 CST ===
+=== r=4 h=42 2026年 08月 29日 星期六 14:13:06 CST ===
+=== done 2026年 08月 29日 星期六 14:18:09 CST ===
+===TIMING===
+r_prec = 7
+TIMING r=1 h=39 rep=0 stock=12490495us sq=14058278us ratio=1.1255 mism=0 Pass
+TIMING r=1 h=39 rep=1 stock=12820181us sq=12763749us ratio=0.9956 mism=0 Pass
+TIMING r=1 h=39 rep=2 stock=12627069us sq=12821012us ratio=1.0154 mism=0 Pass
+r_prec = 7
+TIMING r=1 h=42 rep=0 stock=14165787us sq=13798090us ratio=0.9740 mism=0 Pass
+TIMING r=1 h=42 rep=1 stock=13828845us sq=13623803us ratio=0.9852 mism=0 Pass
+TIMING r=1 h=42 rep=2 stock=13732566us sq=13418270us ratio=0.9771 mism=0 Pass
+r_prec = 7
+TIMING r=4 h=39 rep=0 stock=44670049us sq=42209209us ratio=0.9449 mism=0 Pass
+TIMING r=4 h=39 rep=1 stock=41707113us sq=42719811us ratio=1.0243 mism=0 Pass
+TIMING r=4 h=39 rep=2 stock=45964030us sq=52632403us ratio=1.1451 mism=0 Pass
+r_prec = 7
+TIMING r=4 h=42 rep=0 stock=47620552us sq=57321656us ratio=1.2037 mism=0 Pass
+TIMING r=4 h=42 rep=1 stock=48248666us sq=47787980us ratio=0.9905 mism=0 Pass
+TIMING r=4 h=42 rep=2 stock=47361212us sq=48024886us ratio=1.0140 mism=0 Pass
+===BUILDTAIL===
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3_2048 src/sab_pvw.c -o build_pq/sab_pvw.o
+gcc -g -c -O3 -fwhole-program -flto  -DNDEBUG -Wall -Wno-unused-function -Wno-unused-result -funroll-all-loops -march=native -lm -DMOSFHET_DETERMINISTIC_RNG -DMOSFHET_TEST_RNG_SEED=1 -DUSE_SPQLIOS -DAVX512_OPT -I./src/mosfhet/include -I./include/ -I./src/mosfhet/include -I./include/ -DBINARY -DSET_2_3_2048 main.c -o build_pq/main.o
+gcc -g -o main build_pq/keyswitch.o build_pq/bootstrap.o build_pq/bootstrap_ga.o build_pq/tlwe.o build_pq/trlwe.o build_pq/trgsw.o build_pq/misc.o build_pq/polynomial.o build_pq/register.o build_pq/pvwtlwe.o build_pq/fips202.o build_pq/karatsuba.o build_pq/pvwtmlwe.o build_pq/mattrgsw.o build_pq/aes_rng.o build_pq/spqlios-fft-avx512.o build_pq/spqlios-ifft-avx512.o build_pq/spqlios-fft-impl-avx512.o build_pq/fft_processor_spqlios.o build_pq/sparse_amortized_bootstrap.o build_pq/sab_profile.o build_pq/sab_pvw.o build_pq/main.o  -lm
+HARVEST_DONE
