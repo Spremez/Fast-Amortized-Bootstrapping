@@ -1,0 +1,201 @@
+=== PART 1: SCALAR (probe_sq) all sets Sun Aug 30 08:12:35 AM PDT 2026 ===
+--- SET_2_3_2048 n=2048 p=3 ---
+[SET_2_3_2048 h=39 ORIG r1] [sq] keygen sq r_prec=7
+[SET_2_3_2048 h=39 ORIG r1] SAB_SQ bootstrap: 12,830,606μs +- 522917.552460
+[SET_2_3_2048 h=39 ORIG r1] SAB_SQ noise: max phase deviation log2 = 57.45 (message budget 2^-4)
+[SET_2_3_2048 h=39 ORIG r1] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_2_3_2048 h=39 ORIG r1] SAB_scalar bootstrap: 13,777,790μs +- 36881.682427
+[SET_2_3_2048 h=39 ORIG r1] SAB_scalar noise: max phase deviation log2 = 57.43
+[SET_2_3_2048 h=42 FAIR r1] [sq] keygen sq r_prec=7
+[SET_2_3_2048 h=42 FAIR r1] SAB_SQ bootstrap: 13,716,356μs +- 167534.628939
+[SET_2_3_2048 h=42 FAIR r1] SAB_SQ noise: max phase deviation log2 = 57.60 (message budget 2^-4)
+[SET_2_3_2048 h=42 FAIR r1] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_2_3_2048 h=42 FAIR r1] SAB_scalar bootstrap: 15,313,669μs +- 233351.248859
+[SET_2_3_2048 h=42 FAIR r1] SAB_scalar noise: max phase deviation log2 = 57.69
+[SET_2_3_2048 h=39 ORIG r2] [sq] keygen sq r_prec=7
+[SET_2_3_2048 h=39 ORIG r2] SAB_SQ bootstrap: 12,809,005μs +- 674087.399109
+[SET_2_3_2048 h=39 ORIG r2] SAB_SQ noise: max phase deviation log2 = 57.45 (message budget 2^-4)
+[SET_2_3_2048 h=39 ORIG r2] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_2_3_2048 h=39 ORIG r2] SAB_scalar bootstrap: 13,990,471μs +- 73407.700734
+[SET_2_3_2048 h=39 ORIG r2] SAB_scalar noise: max phase deviation log2 = 57.43
+[SET_2_3_2048 h=42 FAIR r2] [sq] keygen sq r_prec=7
+[SET_2_3_2048 h=42 FAIR r2] SAB_SQ bootstrap: 13,459,406μs +- 354821.288635
+[SET_2_3_2048 h=42 FAIR r2] SAB_SQ noise: max phase deviation log2 = 57.60 (message budget 2^-4)
+[SET_2_3_2048 h=42 FAIR r2] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_2_3_2048 h=42 FAIR r2] SAB_scalar bootstrap: 15,079,327μs +- 337641.944546
+[SET_2_3_2048 h=42 FAIR r2] SAB_scalar noise: max phase deviation log2 = 57.69
+[SET_2_3_2048 h=39 ORIG r3] [sq] keygen sq r_prec=7
+[SET_2_3_2048 h=39 ORIG r3] SAB_SQ bootstrap: 12,583,157μs +- 370642.260295
+[SET_2_3_2048 h=39 ORIG r3] SAB_SQ noise: max phase deviation log2 = 57.45 (message budget 2^-4)
+[SET_2_3_2048 h=39 ORIG r3] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_2_3_2048 h=39 ORIG r3] SAB_scalar bootstrap: 14,010,912μs +- 407573.677532
+[SET_2_3_2048 h=39 ORIG r3] SAB_scalar noise: max phase deviation log2 = 57.43
+[SET_2_3_2048 h=42 FAIR r3] [sq] keygen sq r_prec=7
+[SET_2_3_2048 h=42 FAIR r3] SAB_SQ bootstrap: 13,449,951μs +- 496745.060677
+[SET_2_3_2048 h=42 FAIR r3] SAB_SQ noise: max phase deviation log2 = 57.60 (message budget 2^-4)
+[SET_2_3_2048 h=42 FAIR r3] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_2_3_2048 h=42 FAIR r3] SAB_scalar bootstrap: 15,111,358μs +- 308554.784003
+[SET_2_3_2048 h=42 FAIR r3] SAB_scalar noise: max phase deviation log2 = 57.69
+--- SET_4_5_2048 n=2048 p=5 ---
+[SET_4_5_2048 h=42 ORIG r1] [sq] keygen sq r_prec=7
+[SET_4_5_2048 h=42 ORIG r1] SAB_SQ bootstrap: 13,248,657μs +- 177804.812801
+[SET_4_5_2048 h=42 ORIG r1] SAB_SQ noise: max phase deviation log2 = 56.73 (message budget 2^-6)
+[SET_4_5_2048 h=42 ORIG r1] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_4_5_2048 h=42 ORIG r1] SAB_scalar bootstrap: 21,953,555μs +- 3426868.910452
+[SET_4_5_2048 h=42 ORIG r1] SAB_scalar noise: max phase deviation log2 = 55.65
+[SET_4_5_2048 h=41 FAIR r1] [sq] keygen sq r_prec=7
+[SET_4_5_2048 h=41 FAIR r1] SAB_SQ bootstrap: 19,898,519μs +- 1180909.164057
+[SET_4_5_2048 h=41 FAIR r1] SAB_SQ noise: max phase deviation log2 = 56.67 (message budget 2^-6)
+[SET_4_5_2048 h=41 FAIR r1] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_4_5_2048 h=41 FAIR r1] SAB_scalar bootstrap: 17,369,028μs +- 1588056.421467
+[SET_4_5_2048 h=41 FAIR r1] SAB_scalar noise: max phase deviation log2 = 55.79
+[SET_4_5_2048 h=42 ORIG r2] [sq] keygen sq r_prec=7
+[SET_4_5_2048 h=42 ORIG r2] SAB_SQ bootstrap: 14,750,065μs +- 764594.528100
+[SET_4_5_2048 h=42 ORIG r2] SAB_SQ noise: max phase deviation log2 = 56.73 (message budget 2^-6)
+[SET_4_5_2048 h=42 ORIG r2] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_4_5_2048 h=42 ORIG r2] SAB_scalar bootstrap: 15,342,699μs +- 119240.368434
+[SET_4_5_2048 h=42 ORIG r2] SAB_scalar noise: max phase deviation log2 = 55.65
+[SET_4_5_2048 h=41 FAIR r2] [sq] keygen sq r_prec=7
+[SET_4_5_2048 h=41 FAIR r2] SAB_SQ bootstrap: 14,601,715μs +- 775070.092267
+[SET_4_5_2048 h=41 FAIR r2] SAB_SQ noise: max phase deviation log2 = 56.67 (message budget 2^-6)
+[SET_4_5_2048 h=41 FAIR r2] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_4_5_2048 h=41 FAIR r2] SAB_scalar bootstrap: 15,464,731μs +- 1527206.664880
+[SET_4_5_2048 h=41 FAIR r2] SAB_scalar noise: max phase deviation log2 = 55.79
+[SET_4_5_2048 h=42 ORIG r3] [sq] keygen sq r_prec=7
+[SET_4_5_2048 h=42 ORIG r3] SAB_SQ bootstrap: 13,685,685μs +- 755886.288843
+[SET_4_5_2048 h=42 ORIG r3] SAB_SQ noise: max phase deviation log2 = 56.73 (message budget 2^-6)
+[SET_4_5_2048 h=42 ORIG r3] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_4_5_2048 h=42 ORIG r3] SAB_scalar bootstrap: 19,180,573μs +- 2189295.994481
+[SET_4_5_2048 h=42 ORIG r3] SAB_scalar noise: max phase deviation log2 = 55.65
+[SET_4_5_2048 h=41 FAIR r3] [sq] keygen sq r_prec=7
+[SET_4_5_2048 h=41 FAIR r3] SAB_SQ bootstrap: 13,157,240μs +- 848375.073941
+[SET_4_5_2048 h=41 FAIR r3] SAB_SQ noise: max phase deviation log2 = 56.67 (message budget 2^-6)
+[SET_4_5_2048 h=41 FAIR r3] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[SET_4_5_2048 h=41 FAIR r3] SAB_scalar bootstrap: 17,144,183μs +- 2698944.705920
+[SET_4_5_2048 h=41 FAIR r3] SAB_scalar noise: max phase deviation log2 = 55.79
+--- SET_2_3_4096 n=4096 p=3 ---
+[SET_2_3_4096 h=32 ORIG r1] [sq] keygen sq r_prec=9
+[SET_2_3_4096 h=32 ORIG r1] SAB_SQ bootstrap: 28,693,002μs +- 3135510.820598
+[SET_2_3_4096 h=32 ORIG r1] SAB_SQ noise: max phase deviation log2 = 58.19 (message budget 2^-4)
+[SET_2_3_4096 h=32 ORIG r1] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_2_3_4096 h=32 ORIG r1] SAB_scalar bootstrap: 29,931,731μs +- 2746214.916841
+[SET_2_3_4096 h=32 ORIG r1] SAB_scalar noise: max phase deviation log2 = 58.06
+[SET_2_3_4096 h=36 FAIR r1] [sq] keygen sq r_prec=8
+[SET_2_3_4096 h=36 FAIR r1] SAB_SQ bootstrap: 30,243,208μs +- 3271500.270202
+[SET_2_3_4096 h=36 FAIR r1] SAB_SQ noise: max phase deviation log2 = 58.05 (message budget 2^-4)
+[SET_2_3_4096 h=36 FAIR r1] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_2_3_4096 h=36 FAIR r1] SAB_scalar bootstrap: 30,534,664μs +- 1907207.809483
+[SET_2_3_4096 h=36 FAIR r1] SAB_scalar noise: max phase deviation log2 = 57.83
+[SET_2_3_4096 h=32 ORIG r2] [sq] keygen sq r_prec=9
+[SET_2_3_4096 h=32 ORIG r2] SAB_SQ bootstrap: 30,482,198μs +- 1829054.476818
+[SET_2_3_4096 h=32 ORIG r2] SAB_SQ noise: max phase deviation log2 = 58.19 (message budget 2^-4)
+[SET_2_3_4096 h=32 ORIG r2] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_2_3_4096 h=32 ORIG r2] SAB_scalar bootstrap: 31,784,255μs +- 4104905.963980
+[SET_2_3_4096 h=32 ORIG r2] SAB_scalar noise: max phase deviation log2 = 58.06
+[SET_2_3_4096 h=36 FAIR r2] [sq] keygen sq r_prec=8
+[SET_2_3_4096 h=36 FAIR r2] SAB_SQ bootstrap: 34,920,621μs +- 3657549.901966
+[SET_2_3_4096 h=36 FAIR r2] SAB_SQ noise: max phase deviation log2 = 58.05 (message budget 2^-4)
+[SET_2_3_4096 h=36 FAIR r2] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_2_3_4096 h=36 FAIR r2] SAB_scalar bootstrap: 37,518,017μs +- 6490070.365357
+[SET_2_3_4096 h=36 FAIR r2] SAB_scalar noise: max phase deviation log2 = 57.83
+[SET_2_3_4096 h=32 ORIG r3] [sq] keygen sq r_prec=9
+[SET_2_3_4096 h=32 ORIG r3] SAB_SQ bootstrap: 33,887,463μs +- 2882239.919045
+[SET_2_3_4096 h=32 ORIG r3] SAB_SQ noise: max phase deviation log2 = 58.19 (message budget 2^-4)
+[SET_2_3_4096 h=32 ORIG r3] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_2_3_4096 h=32 ORIG r3] SAB_scalar bootstrap: 32,088,383μs +- 1597991.908326
+[SET_2_3_4096 h=32 ORIG r3] SAB_scalar noise: max phase deviation log2 = 58.06
+[SET_2_3_4096 h=36 FAIR r3] [sq] keygen sq r_prec=8
+[SET_2_3_4096 h=36 FAIR r3] SAB_SQ bootstrap: 28,490,444μs +- 1089639.749126
+[SET_2_3_4096 h=36 FAIR r3] SAB_SQ noise: max phase deviation log2 = 58.05 (message budget 2^-4)
+[SET_2_3_4096 h=36 FAIR r3] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_2_3_4096 h=36 FAIR r3] SAB_scalar bootstrap: 30,799,458μs +- 1475532.582344
+[SET_2_3_4096 h=36 FAIR r3] SAB_scalar noise: max phase deviation log2 = 57.83
+--- SET_4_5_4096 n=4096 p=5 ---
+[SET_4_5_4096 h=34 ORIG r1] [sq] keygen sq r_prec=8
+[SET_4_5_4096 h=34 ORIG r1] SAB_SQ bootstrap: 29,058,659μs +- 1750609.781086
+[SET_4_5_4096 h=34 ORIG r1] SAB_SQ noise: max phase deviation log2 = 56.69 (message budget 2^-6)
+[SET_4_5_4096 h=34 ORIG r1] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_4_5_4096 h=34 ORIG r1] SAB_scalar bootstrap: 58,113,508μs +- 1147312.755387
+[SET_4_5_4096 h=34 ORIG r1] SAB_scalar noise: max phase deviation log2 = 55.70
+[SET_4_5_4096 h=36 FAIR r1] [sq] keygen sq r_prec=8
+[SET_4_5_4096 h=36 FAIR r1] SAB_SQ bootstrap: 54,662,021μs +- 6784722.756154
+[SET_4_5_4096 h=36 FAIR r1] SAB_SQ noise: max phase deviation log2 = 56.85 (message budget 2^-6)
+[SET_4_5_4096 h=36 FAIR r1] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_4_5_4096 h=34 ORIG r2] [sq] keygen sq r_prec=8
+[SET_4_5_4096 h=34 ORIG r2] SAB_SQ bootstrap: 35,167,739μs +- 9598170.521361
+[SET_4_5_4096 h=34 ORIG r2] SAB_SQ noise: max phase deviation log2 = 56.69 (message budget 2^-6)
+[SET_4_5_4096 h=34 ORIG r2] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_4_5_4096 h=34 ORIG r2] SAB_scalar bootstrap: 30,100,636μs +- 3469965.175980
+[SET_4_5_4096 h=34 ORIG r2] SAB_scalar noise: max phase deviation log2 = 55.70
+[SET_4_5_4096 h=36 FAIR r2] [sq] keygen sq r_prec=8
+[SET_4_5_4096 h=36 FAIR r2] SAB_SQ bootstrap: 30,964,938μs +- 3822492.047476
+[SET_4_5_4096 h=36 FAIR r2] SAB_SQ noise: max phase deviation log2 = 56.85 (message budget 2^-6)
+[SET_4_5_4096 h=36 FAIR r2] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_4_5_4096 h=36 FAIR r2] SAB_scalar bootstrap: 30,486,059μs +- 2643850.749239
+[SET_4_5_4096 h=36 FAIR r2] SAB_scalar noise: max phase deviation log2 = 55.30
+[SET_4_5_4096 h=34 ORIG r3] [sq] keygen sq r_prec=8
+[SET_4_5_4096 h=34 ORIG r3] SAB_SQ bootstrap: 31,571,454μs +- 4850605.316334
+[SET_4_5_4096 h=34 ORIG r3] SAB_SQ noise: max phase deviation log2 = 56.69 (message budget 2^-6)
+[SET_4_5_4096 h=34 ORIG r3] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_4_5_4096 h=34 ORIG r3] SAB_scalar bootstrap: 34,500,502μs +- 956484.175637
+[SET_4_5_4096 h=34 ORIG r3] SAB_scalar noise: max phase deviation log2 = 55.70
+[SET_4_5_4096 h=36 FAIR r3] [sq] keygen sq r_prec=8
+[SET_4_5_4096 h=36 FAIR r3] SAB_SQ bootstrap: 34,780,325μs +- 3587619.064524
+[SET_4_5_4096 h=36 FAIR r3] SAB_SQ noise: max phase deviation log2 = 56.85 (message budget 2^-6)
+[SET_4_5_4096 h=36 FAIR r3] SAB_SQ gate: Pass (mismatch 0 / 4096)
+[SET_4_5_4096 h=36 FAIR r3] SAB_scalar bootstrap: 36,124,163μs +- 3365763.070561
+[SET_4_5_4096 h=36 FAIR r3] SAB_scalar noise: max phase deviation log2 = 55.30
+--- SET_6_7_4096 n=4096 p=7 ---
+[SET_6_7_4096 h=33 ORIG r1] [sq] keygen sq r_prec=8
+[SET_6_7_4096 h=33 ORIG r1] SAB_SQ bootstrap: 28,399,834μs +- 3925702.660885
+[SET_6_7_4096 h=33 ORIG r1] SAB_SQ noise: max phase deviation log2 = 56.53 (message budget 2^-8)
+[SET_6_7_4096 h=33 ORIG r1] SAB_SQ gate: Fail (mismatch 70 / 4096)
+[SET_6_7_4096 h=33 ORIG r1] SAB_scalar bootstrap: 35,756,879μs +- 1337471.174461
+[SET_6_7_4096 h=33 ORIG r1] SAB_scalar noise: max phase deviation log2 = 52.83
+[SET_6_7_4096 h=36 FAIR r1] [sq] keygen sq r_prec=8
+[SET_6_7_4096 h=36 FAIR r1] SAB_SQ bootstrap: 29,606,690μs +- 1740363.972067
+[SET_6_7_4096 h=36 FAIR r1] SAB_SQ noise: max phase deviation log2 = 56.58 (message budget 2^-8)
+[SET_6_7_4096 h=36 FAIR r1] SAB_SQ gate: Fail (mismatch 94 / 4096)
+[SET_6_7_4096 h=36 FAIR r1] SAB_scalar bootstrap: 61,837,140μs +- 35220628.890612
+[SET_6_7_4096 h=36 FAIR r1] SAB_scalar noise: max phase deviation log2 = 52.32
+[SET_6_7_4096 h=33 ORIG r2] [sq] keygen sq r_prec=8
+[SET_6_7_4096 h=33 ORIG r2] SAB_SQ bootstrap: 25,181,752μs +- 3667053.815761
+[SET_6_7_4096 h=33 ORIG r2] SAB_SQ noise: max phase deviation log2 = 56.53 (message budget 2^-8)
+[SET_6_7_4096 h=33 ORIG r2] SAB_SQ gate: Fail (mismatch 70 / 4096)
+[SET_6_7_4096 h=33 ORIG r2] SAB_scalar bootstrap: 27,536,398μs +- 1310994.198534
+[SET_6_7_4096 h=33 ORIG r2] SAB_scalar noise: max phase deviation log2 = 52.83
+[SET_6_7_4096 h=36 FAIR r2] [sq] keygen sq r_prec=8
+[SET_6_7_4096 h=36 FAIR r2] SAB_SQ bootstrap: 26,815,493μs +- 2486094.166218
+[SET_6_7_4096 h=36 FAIR r2] SAB_SQ noise: max phase deviation log2 = 56.58 (message budget 2^-8)
+[SET_6_7_4096 h=36 FAIR r2] SAB_SQ gate: Fail (mismatch 94 / 4096)
+[SET_6_7_4096 h=36 FAIR r2] SAB_scalar bootstrap: 27,700,405μs +- 1425678.408843
+[SET_6_7_4096 h=36 FAIR r2] SAB_scalar noise: max phase deviation log2 = 52.32
+[SET_6_7_4096 h=33 ORIG r3] [sq] keygen sq r_prec=8
+[SET_6_7_4096 h=33 ORIG r3] SAB_SQ bootstrap: 22,663,603μs +- 760817.784821
+[SET_6_7_4096 h=33 ORIG r3] SAB_SQ noise: max phase deviation log2 = 56.53 (message budget 2^-8)
+[SET_6_7_4096 h=33 ORIG r3] SAB_SQ gate: Fail (mismatch 70 / 4096)
+[SET_6_7_4096 h=33 ORIG r3] SAB_scalar bootstrap: 25,338,582μs +- 1791975.404150
+[SET_6_7_4096 h=33 ORIG r3] SAB_scalar noise: max phase deviation log2 = 52.83
+[SET_6_7_4096 h=36 FAIR r3] [sq] keygen sq r_prec=8
+[SET_6_7_4096 h=36 FAIR r3] SAB_SQ bootstrap: 27,181,752μs +- 2323763.971667
+[SET_6_7_4096 h=36 FAIR r3] SAB_SQ noise: max phase deviation log2 = 56.58 (message budget 2^-8)
+[SET_6_7_4096 h=36 FAIR r3] SAB_SQ gate: Fail (mismatch 94 / 4096)
+[SET_6_7_4096 h=36 FAIR r3] SAB_scalar bootstrap: 30,121,396μs +- 659311.430683
+[SET_6_7_4096 h=36 FAIR r3] SAB_scalar noise: max phase deviation log2 = 52.32
+--- SET_8_9_4096 n=4096 p=9 ---
+[SET_8_9_4096 h=34 ORIG r1] [sq] keygen sq r_prec=8
+[SET_8_9_4096 h=36 FAIR r1] [sq] keygen sq r_prec=8
+[SET_8_9_4096 h=34 ORIG r2] [sq] keygen sq r_prec=8
+[SET_8_9_4096 h=36 FAIR r2] [sq] keygen sq r_prec=8
+[SET_8_9_4096 h=34 ORIG r3] [sq] keygen sq r_prec=8
+[SET_8_9_4096 h=36 FAIR r3] [sq] keygen sq r_prec=8
+--- SET_2_3_8192 n=8192 p=3 ---
+[SET_2_3_8192 h=25 ORIG r1] [sq] keygen sq r_prec=10
+[SET_2_3_8192 h=25 ORIG r1] SAB_SQ bootstrap: 52,846,848μs +- 1218886.088747
+[SET_2_3_8192 h=25 ORIG r1] SAB_SQ noise: max phase deviation log2 = 59.01 (message budget 2^-4)
+[SET_2_3_8192 h=25 ORIG r1] SAB_SQ gate: Pass (mismatch 0 / 8192)
+[SET_2_3_8192 h=32 FAIR r1] [sq] keygen sq r_prec=10
+[SET_2_3_8192 h=32 FAIR r1] SAB_SQ bootstrap: 66,946,210μs +- 1977238.516643
+[SET_2_3_8192 h=32 FAIR r1] SAB_SQ noise: max phase deviation log2 = 59.11 (message budget 2^-4)
+[SET_2_3_8192 h=32 FAIR r1] SAB_SQ gate: Pass (mismatch 0 / 8192)
+EC_HARVESTED
