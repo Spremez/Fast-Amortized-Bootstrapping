@@ -98,6 +98,8 @@ static void run_timing(void){
     if(e) h = strtoull(e, NULL, 0);
     e = getenv("SAB_PVW_SQ_R");
     if(e) r = strtoull(e, NULL, 0);
+    e = getenv("SAB_PVW_SQ_REPS");
+    if(e) reps = strtoull(e, NULL, 0);
   }
   printf("== timing r=%lu h=%lu ==\n", (unsigned long) r, (unsigned long) h);
   TRLWE_Key input_key, packing_key;
@@ -128,18 +130,32 @@ static void run_timing(void){
   TRLWE * stock_out = trlwe_alloc_new_sample_array((int) r, in_k, in_N);
   TRLWE * sq_out = trlwe_alloc_new_sample_array((int) r, in_k, in_N);
 
+  /* S2b: warm up both paths (cold pages), then alternate the measurement
+   * order per rep to cancel allocation-order / cache-state bias */
+  sab_pvw_bootstrap_binary(stock_out, input, pvw_tv, stock);
+  sab_pvw_sq_bootstrap_binary(sq_out, input, pvw_tv, sq);
   for (int rep = 0; rep < (int) reps; rep++){
     struct timespec t0, t1;
-    clock_gettime(CLOCK_MONOTONIC, &t0);
-    sab_pvw_bootstrap_binary(stock_out, input, pvw_tv, stock);
-    clock_gettime(CLOCK_MONOTONIC, &t1);
-    const double stock_us = (t1.tv_sec - t0.tv_sec) * 1e6
-        + (t1.tv_nsec - t0.tv_nsec) / 1e3;
-    clock_gettime(CLOCK_MONOTONIC, &t0);
-    sab_pvw_sq_bootstrap_binary(sq_out, input, pvw_tv, sq);
-    clock_gettime(CLOCK_MONOTONIC, &t1);
-    const double sq_us = (t1.tv_sec - t0.tv_sec) * 1e6
-        + (t1.tv_nsec - t0.tv_nsec) / 1e3;
+    double stock_us, sq_us;
+    if(rep & 1){
+      clock_gettime(CLOCK_MONOTONIC, &t0);
+      sab_pvw_sq_bootstrap_binary(sq_out, input, pvw_tv, sq);
+      clock_gettime(CLOCK_MONOTONIC, &t1);
+      sq_us = (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_nsec - t0.tv_nsec) / 1e3;
+      clock_gettime(CLOCK_MONOTONIC, &t0);
+      sab_pvw_bootstrap_binary(stock_out, input, pvw_tv, stock);
+      clock_gettime(CLOCK_MONOTONIC, &t1);
+      stock_us = (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_nsec - t0.tv_nsec) / 1e3;
+    }else{
+      clock_gettime(CLOCK_MONOTONIC, &t0);
+      sab_pvw_bootstrap_binary(stock_out, input, pvw_tv, stock);
+      clock_gettime(CLOCK_MONOTONIC, &t1);
+      stock_us = (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_nsec - t0.tv_nsec) / 1e3;
+      clock_gettime(CLOCK_MONOTONIC, &t0);
+      sab_pvw_sq_bootstrap_binary(sq_out, input, pvw_tv, sq);
+      clock_gettime(CLOCK_MONOTONIC, &t1);
+      sq_us = (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_nsec - t0.tv_nsec) / 1e3;
+    }
     size_t mism = 0;
     for (int lane = 0; lane < (int) r; lane++){
       TorusPolynomial ps = polynomial_new_torus_polynomial(in_N);
