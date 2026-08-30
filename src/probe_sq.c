@@ -109,7 +109,18 @@ int main(){
     if((e = getenv("SAB_SQ_OUTN"))) out_N = strtoull(e, NULL, 0);
     if((e = getenv("SAB_SQ_P"))) msg_prec = strtoull(e, NULL, 0);
   }
-  const uint64_t in_k = 1, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_out = 512;
+  const uint64_t in_k = 1, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, b_ks = 1, h_out = 512;
+  /* precision-dependent KS parameters (mirror 686's per-set values from main.c):
+   * t_ks: HW-reducing KS decomposition length, grows with message precision
+   * to keep the packing/HW noise under the message budget */
+  uint64_t t_ks = 12;
+  if(msg_prec >= 5) t_ks = 14;
+  if(msg_prec >= 7) t_ks = 17;
+  if(msg_prec >= 9) t_ks = 20;
+  {
+    const char * e = getenv("SAB_SQ_TKS");
+    if(e) t_ks = strtoull(e, NULL, 0);
+  }
   /* fairness protocol (stage356-F): CRYPTO'26 (ex-279) corrected input-key
    * weight. T3 combinatorial tier gives h*=38 at n=2048 (current 39 is
    * borderline, T3=128.13 vs claim 128.90); the estimator tier (MitM-H2,
