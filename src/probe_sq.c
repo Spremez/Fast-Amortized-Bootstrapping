@@ -101,7 +101,15 @@ int main(){
 #endif
   const uint64_t q = SAB_SQ_Q;
   const uint64_t reps = 3;
-  const uint64_t in_N = 2048, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_out = 512, msg_prec = 3;
+  uint64_t in_N = 2048, out_N = 2048, msg_prec = 3, sigma_shift_in = 0;
+  double sigma_in_exp = 15.0;
+  {
+    const char * e;
+    if((e = getenv("SAB_SQ_N"))) in_N = strtoull(e, NULL, 0);
+    if((e = getenv("SAB_SQ_OUTN"))) out_N = strtoull(e, NULL, 0);
+    if((e = getenv("SAB_SQ_P"))) msg_prec = strtoull(e, NULL, 0);
+  }
+  const uint64_t in_k = 1, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_out = 512;
   /* fairness protocol (stage356-F): CRYPTO'26 (ex-279) corrected input-key
    * weight. T3 combinatorial tier gives h*=38 at n=2048 (current 39 is
    * borderline, T3=128.13 vs claim 128.90); the estimator tier (MitM-H2,
@@ -113,7 +121,8 @@ int main(){
     if(e) h_in = strtoull(e, NULL, 0);
   }
   printf("Input key: h = %d (fairness point)\n", (int) h_in);
-  const double sigma_in = pow(2, -15);
+  double sigma_in = pow(2, -15);
+  { const char * e = getenv("SAB_SQ_SIG_IN"); if(e) sigma_in = pow(2, -atof(e)); }
   /* 2026/279 hardening demo: SAB_SQ_SIGMA_SHIFT=<bits> raises the output
    * key sigma by that many bits (restoring the isometry-hybrid margin).
    * Expected: SQ(q<=16) keeps the gate, the stock scalar path degrades. */
