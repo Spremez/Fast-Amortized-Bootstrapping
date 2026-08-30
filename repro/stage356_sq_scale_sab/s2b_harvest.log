@@ -1,0 +1,19 @@
+=== exclusivity check 2026年 08月 30日 星期日 14:37:16 CST ===
+server exclusive
+=== S2b r=4 h=42 5reps 2026年 08月 30日 星期日 14:37:24 CST ===
+=== S2b r=1 h=42 5reps 2026年 08月 30日 星期日 14:47:20 CST ===
+=== done 2026年 08月 30日 星期日 14:50:17 CST ===
+===TIMING===
+r_prec = 7
+TIMING r=4 h=42 rep=0 stock=50463574us sq=50395169us ratio=0.9986 mism=0 Pass
+TIMING r=4 h=42 rep=1 stock=47827258us sq=48474281us ratio=1.0135 mism=0 Pass
+TIMING r=4 h=42 rep=2 stock=48335383us sq=49220615us ratio=1.0183 mism=0 Pass
+TIMING r=4 h=42 rep=3 stock=48380131us sq=49617737us ratio=1.0256 mism=0 Pass
+TIMING r=4 h=42 rep=4 stock=48158549us sq=49073934us ratio=1.0190 mism=0 Pass
+r_prec = 7
+TIMING r=1 h=42 rep=0 stock=14033604us sq=13955371us ratio=0.9944 mism=0 Pass
+TIMING r=1 h=42 rep=1 stock=15453142us sq=15425712us ratio=0.9982 mism=0 Pass
+TIMING r=1 h=42 rep=2 stock=14422559us sq=14319513us ratio=0.9929 mism=0 Pass
+TIMING r=1 h=42 rep=3 stock=14993437us sq=15564670us ratio=1.0381 mism=0 Pass
+TIMING r=1 h=42 rep=4 stock=14739661us sq=13660828us ratio=0.9268 mism=0 Pass
+HARVEST_DONE
