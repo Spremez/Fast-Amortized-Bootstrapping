@@ -1,0 +1,15 @@
+=== r=4 h=42 AVX-512 ===
+r_prec = 7
+TIMING r=4 h=42 rep=0 stock=45493892us sq=45861568us ratio=1.0081 mism=0 Pass
+TIMING r=4 h=42 rep=1 stock=45303312us sq=45846278us ratio=1.0120 mism=0 Pass
+TIMING r=4 h=42 rep=2 stock=45669602us sq=48651183us ratio=1.0653 mism=0 Pass
+TIMING r=4 h=42 rep=3 stock=45800682us sq=45227271us ratio=0.9875 mism=0 Pass
+TIMING r=4 h=42 rep=4 stock=47140123us sq=44919531us ratio=0.9529 mism=0 Pass
+=== r=1 h=42 AVX-512 ===
+r_prec = 7
+TIMING r=1 h=42 rep=0 stock=13490923us sq=13282732us ratio=0.9846 mism=0 Pass
+TIMING r=1 h=42 rep=1 stock=13567140us sq=13248996us ratio=0.9766 mism=0 Pass
+TIMING r=1 h=42 rep=2 stock=15128032us sq=14735752us ratio=0.9741 mism=0 Pass
+TIMING r=1 h=42 rep=3 stock=13443508us sq=13375394us ratio=0.9949 mism=0 Pass
+TIMING r=1 h=42 rep=4 stock=13660480us sq=13701016us ratio=1.0030 mism=0 Pass
+DONE

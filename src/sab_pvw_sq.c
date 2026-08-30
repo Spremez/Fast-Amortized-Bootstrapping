@@ -1,4 +1,6 @@
 #include "sab_pvw_sq.h"
+extern void mat_trgsw_mul_pvmtmlwe_DFT_dense(PVW_TMLWE_DFT out,
+    MAT_TRGSW_DFT selector, DFT_Polynomial * operand_dft);
 /* stage357: the SQ kernel replaces the decomposition lifecycle that every
  * SAB_PVW_* fusion flag optimizes; neutralize them so a promoted-flag build
  * cannot silently bypass the SQ path via the copied branches. */
@@ -707,29 +709,19 @@ static void sab_pvw_sq_CMUX_from_sub_internal(PVW_TMLWE out, PVW_TMLWE addend,
 #ifdef SAB_PVW_BODY_PROFILE
   const uint64_t mat_ep_begin = sab_pvw_sq_now_us();
 #endif
-  /* stage357 SQ kernel: l = 1 (asserted at keygen), so the MAT gadget
-   * decomposition degenerates to the RAW operand spectra and the selector
-   * message enters at 2^(64-q). Dense (k+r)x(k+r) multiply inlined (the
-   * mattrgsw from_dec helper is static); the rescale is fused with the
-   * addend recombination below. */
+  /* stage357 SQ kernel v2: l = 1, so the MAT gadget decomposition
+   * degenerates to the RAW operand spectra; feed them directly into the
+   * AVX-512 dense multiply (same kernel the stock uses for its decomposed
+   * digits -- the interface doesn't care about provenance). This gives us
+   * BOTH the SIMD-optimized dense multiply AND the decomposition
+   * elimination, plus the fused rescale+add epilogue below. */
   {
-    PVW_TMLWE_DFT od = sab->tmp->tmlwe_dft;
     DFT_Polynomial * dd = sab->tmp->scratch->dec_dft;
-    const int kk = sub->k, rr = sub->r, N = sub->b[0]->N;
-    (void) N;
+    const int rr = sub->r;
     polynomial_torus_to_DFT(dd[0], sub->a[0]);
     for (int j = 0; j < rr; j++)
       polynomial_torus_to_DFT(dd[1 + j], sub->b[j]);
-    for (int j = 0; j < kk; j++)
-      polynomial_mul_DFT(od->a[j], dd[0], selector->samples[0]->a[j]);
-    for (int j = 0; j < rr; j++)
-      polynomial_mul_DFT(od->b[j], dd[0], selector->samples[0]->b[j]);
-    for (int row = 1; row < 1 + kk + rr - 1; row++){
-      for (int j = 0; j < kk; j++)
-        polynomial_mul_addto_DFT(od->a[j], dd[row], selector->samples[row]->a[j]);
-      for (int j = 0; j < rr; j++)
-        polynomial_mul_addto_DFT(od->b[j], dd[row], selector->samples[row]->b[j]);
-    }
+    mat_trgsw_mul_pvmtmlwe_DFT_dense(sab->tmp->tmlwe_dft, selector, dd);
   }
 #ifdef SAB_PVW_BODY_PROFILE
   sab_pvw_sq_body_profile_acc(&sab_pvw_sq_body_profile.mat_ep_us,

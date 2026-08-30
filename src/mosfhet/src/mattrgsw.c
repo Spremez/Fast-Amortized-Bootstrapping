@@ -824,6 +824,11 @@ static void mat_trgsw_mul_pvmtmlwe_DFT_k1_l1_r6_bodymajor_avx512(
 #endif
 #endif
 
+/* stage357: exported for the SQ kernel -- same dense multiply, but the
+ * operand DFT rows may come from raw (non-decomposed) polynomials */
+void mat_trgsw_mul_pvmtmlwe_DFT_dense(PVW_TMLWE_DFT out,
+    MAT_TRGSW_DFT selector, DFT_Polynomial * operand_dft);
+
 static void mat_trgsw_mul_pvmtmlwe_DFT_from_dec(PVW_TMLWE_DFT out,
     MAT_TRGSW_DFT selector, DFT_Polynomial * dec_dft){
   const int k = out->k;
@@ -888,6 +893,11 @@ static void mat_trgsw_mul_pvmtmlwe_DFT_from_dec(PVW_TMLWE_DFT out,
       polynomial_mul_addto_DFT(out->b[j], dec_dft[row], selector->samples[row]->b[j]);
     }
   }
+}
+
+void mat_trgsw_mul_pvmtmlwe_DFT_dense(PVW_TMLWE_DFT out,
+    MAT_TRGSW_DFT selector, DFT_Polynomial * operand_dft){
+  mat_trgsw_mul_pvmtmlwe_DFT_from_dec(out, selector, operand_dft);
 }
 
 void mat_trgsw_mul_pvmtmlwe_DFT(PVW_TMLWE_DFT out, PVW_TMLWE in, MAT_TRGSW_DFT selector, MAT_TRGSW_MUL_SCRATCH scratch){
