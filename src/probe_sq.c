@@ -121,8 +121,8 @@ int main(){
     if(e) h_in = strtoull(e, NULL, 0);
   }
   printf("Input key: h = %d (fairness point)\n", (int) h_in);
-  double sigma_in = pow(2, -15);
-  { const char * e = getenv("SAB_SQ_SIG_IN"); if(e) sigma_in = pow(2, -atof(e)); }
+  { const char * e = getenv("SAB_SQ_SIG_IN"); if(e) sigma_in_exp = atof(e); }
+  double sigma_in = pow(2, -sigma_in_exp);
   /* 2026/279 hardening demo: SAB_SQ_SIGMA_SHIFT=<bits> raises the output
    * key sigma by that many bits (restoring the isometry-hybrid margin).
    * Expected: SQ(q<=16) keeps the gate, the stock scalar path degrades. */
@@ -145,7 +145,14 @@ int main(){
     e = getenv("SQKS_PACK_BG");
     if(e) pack_bg = strtoull(e, NULL, 0);
   }
-  const uint64_t target_r_prec = 7;
+  /* auto-derive r_prec from N and h (max gap ≈ N/h, need ceil(log2) + 1);
+   * override via SAB_SQ_RPREC; 686's original targets: 2048→7, 4096→8/9, 8192→10 */
+  uint64_t target_r_prec = (uint64_t)(log2((double) in_N / (double) h_in) + 2.0);
+  if(target_r_prec < 4) target_r_prec = 4;
+  {
+    const char * e = getenv("SAB_SQ_RPREC");
+    if(e) target_r_prec = strtoull(e, NULL, 0);
+  }
   printf("SAB_SQ probe (q = %d, 2025/1711 x 2025/686, 2026/279 preflight)\n", (int) q);
   printf("Input: (N=%d, h=%d, binary, sigma=2^-15)\n", (int) in_N, (int) h_in);
   printf("Output: (N=%d, h=%d, ternary, sigma=2^-%d%s)\n", (int) out_N, (int) h_out,
