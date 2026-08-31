@@ -1,0 +1,78 @@
+0
+=== PART 2: R-LANE Sun Aug 30 06:51:26 PM PDT 2026 ===
+r-lane probe built
+--- r=1 h=39 ORIG ---
+[r=1 h=39 ORIG t1] r_prec = 7
+[r=1 h=39 ORIG t1] TIMING r=1 h=39 rep=0 stock=12393305us sq=12424564us ratio=1.0025 mism=0 Pass
+[r=1 h=39 ORIG t1] TIMING r=1 h=39 rep=1 stock=12508436us sq=12504640us ratio=0.9997 mism=0 Pass
+[r=1 h=39 ORIG t1] TIMING r=1 h=39 rep=2 stock=12535729us sq=12457586us ratio=0.9938 mism=0 Pass
+[r=1 h=39 ORIG t2] r_prec = 7
+[r=1 h=39 ORIG t2] TIMING r=1 h=39 rep=0 stock=12744603us sq=13507823us ratio=1.0599 mism=0 Pass
+[r=1 h=39 ORIG t2] TIMING r=1 h=39 rep=1 stock=12632388us sq=12508599us ratio=0.9902 mism=0 Pass
+[r=1 h=39 ORIG t2] TIMING r=1 h=39 rep=2 stock=12580304us sq=12485340us ratio=0.9925 mism=0 Pass
+[r=1 h=39 ORIG t3] r_prec = 7
+[r=1 h=39 ORIG t3] TIMING r=1 h=39 rep=0 stock=12640045us sq=12556754us ratio=0.9934 mism=0 Pass
+[r=1 h=39 ORIG t3] TIMING r=1 h=39 rep=1 stock=12669217us sq=12590036us ratio=0.9938 mism=0 Pass
+[r=1 h=39 ORIG t3] TIMING r=1 h=39 rep=2 stock=12603008us sq=12609152us ratio=1.0005 mism=0 Pass
+--- r=1 h=42 FAIR ---
+[r=1 h=42 FAIR t1] r_prec = 7
+[r=1 h=42 FAIR t1] TIMING r=1 h=42 rep=0 stock=13926465us sq=13828997us ratio=0.9930 mism=0 Pass
+[r=1 h=42 FAIR t1] TIMING r=1 h=42 rep=1 stock=13797776us sq=13363151us ratio=0.9685 mism=0 Pass
+[r=1 h=42 FAIR t1] TIMING r=1 h=42 rep=2 stock=13684328us sq=13411843us ratio=0.9801 mism=0 Pass
+[r=1 h=42 FAIR t2] r_prec = 7
+[r=1 h=42 FAIR t2] TIMING r=1 h=42 rep=0 stock=13634599us sq=13574478us ratio=0.9956 mism=0 Pass
+[r=1 h=42 FAIR t2] TIMING r=1 h=42 rep=1 stock=14011835us sq=13657078us ratio=0.9747 mism=0 Pass
+[r=1 h=42 FAIR t2] TIMING r=1 h=42 rep=2 stock=15342138us sq=14798107us ratio=0.9645 mism=0 Pass
+[r=1 h=42 FAIR t3] r_prec = 7
+[r=1 h=42 FAIR t3] TIMING r=1 h=42 rep=0 stock=15070413us sq=14126909us ratio=0.9374 mism=0 Pass
+[r=1 h=42 FAIR t3] TIMING r=1 h=42 rep=1 stock=14533406us sq=14382099us ratio=0.9896 mism=0 Pass
+[r=1 h=42 FAIR t3] TIMING r=1 h=42 rep=2 stock=14465941us sq=13987787us ratio=0.9669 mism=0 Pass
+--- r=2 h=39 ORIG ---
+[r=2 h=39 ORIG t1] r_prec = 7
+[r=2 h=39 ORIG t1] TIMING r=2 h=39 rep=0 stock=19896383us sq=19797973us ratio=0.9951 mism=0 Pass
+[r=2 h=39 ORIG t1] TIMING r=2 h=39 rep=1 stock=20258997us sq=22210915us ratio=1.0963 mism=0 Pass
+[r=2 h=39 ORIG t1] TIMING r=2 h=39 rep=2 stock=20108732us sq=19957825us ratio=0.9925 mism=0 Pass
+[r=2 h=39 ORIG t2] r_prec = 7
+[r=2 h=39 ORIG t2] TIMING r=2 h=39 rep=0 stock=20691814us sq=21212023us ratio=1.0251 mism=0 Pass
+[r=2 h=39 ORIG t2] TIMING r=2 h=39 rep=1 stock=21445832us sq=21270159us ratio=0.9918 mism=0 Pass
+[r=2 h=39 ORIG t2] TIMING r=2 h=39 rep=2 stock=21534992us sq=21584500us ratio=1.0023 mism=0 Pass
+[r=2 h=39 ORIG t3] r_prec = 7
+[r=2 h=39 ORIG t3] TIMING r=2 h=39 rep=0 stock=21159994us sq=21551034us ratio=1.0185 mism=0 Pass
+[r=2 h=39 ORIG t3] TIMING r=2 h=39 rep=1 stock=20709826us sq=22103810us ratio=1.0673 mism=0 Pass
+[r=2 h=39 ORIG t3] TIMING r=2 h=39 rep=2 stock=20841371us sq=20865743us ratio=1.0012 mism=0 Pass
+--- r=2 h=42 FAIR ---
+[r=2 h=42 FAIR t1] r_prec = 7
+[r=2 h=42 FAIR t1] TIMING r=2 h=42 rep=0 stock=22452497us sq=23009448us ratio=1.0248 mism=0 Pass
+[r=2 h=42 FAIR t1] TIMING r=2 h=42 rep=1 stock=23356790us sq=23358546us ratio=1.0001 mism=0 Pass
+[r=2 h=42 FAIR t1] TIMING r=2 h=42 rep=2 stock=24486063us sq=24401194us ratio=0.9965 mism=0 Pass
+[r=2 h=42 FAIR t2] r_prec = 7
+[r=2 h=42 FAIR t2] TIMING r=2 h=42 rep=0 stock=23622987us sq=23852530us ratio=1.0097 mism=0 Pass
+[r=2 h=42 FAIR t2] TIMING r=2 h=42 rep=1 stock=23434888us sq=23776795us ratio=1.0146 mism=0 Pass
+[r=2 h=42 FAIR t2] TIMING r=2 h=42 rep=2 stock=23222220us sq=23199153us ratio=0.9990 mism=0 Pass
+[r=2 h=42 FAIR t3] r_prec = 7
+[r=2 h=42 FAIR t3] TIMING r=2 h=42 rep=0 stock=23244636us sq=23671894us ratio=1.0184 mism=0 Pass
+[r=2 h=42 FAIR t3] TIMING r=2 h=42 rep=1 stock=23204019us sq=24513456us ratio=1.0564 mism=0 Pass
+[r=2 h=42 FAIR t3] TIMING r=2 h=42 rep=2 stock=23915805us sq=22731396us ratio=0.9505 mism=0 Pass
+--- r=4 h=39 ORIG ---
+[r=4 h=39 ORIG t1] r_prec = 7
+[r=4 h=39 ORIG t1] TIMING r=4 h=39 rep=0 stock=46427713us sq=45436168us ratio=0.9786 mism=0 Pass
+[r=4 h=39 ORIG t1] TIMING r=4 h=39 rep=1 stock=44866301us sq=45070818us ratio=1.0046 mism=0 Pass
+[r=4 h=39 ORIG t1] TIMING r=4 h=39 rep=2 stock=43123423us sq=42646094us ratio=0.9889 mism=0 Pass
+[r=4 h=39 ORIG t2] r_prec = 7
+[r=4 h=39 ORIG t2] TIMING r=4 h=39 rep=0 stock=43124616us sq=43035327us ratio=0.9979 mism=0 Pass
+[r=4 h=39 ORIG t2] TIMING r=4 h=39 rep=1 stock=44527298us sq=44192635us ratio=0.9925 mism=0 Pass
+[r=4 h=39 ORIG t2] TIMING r=4 h=39 rep=2 stock=43968670us sq=44875685us ratio=1.0206 mism=0 Pass
+[r=4 h=39 ORIG t3] r_prec = 7
+[r=4 h=39 ORIG t3] TIMING r=4 h=39 rep=0 stock=42584050us sq=42231149us ratio=0.9917 mism=0 Pass
+[r=4 h=39 ORIG t3] TIMING r=4 h=39 rep=1 stock=43023452us sq=42815989us ratio=0.9952 mism=0 Pass
+[r=4 h=39 ORIG t3] TIMING r=4 h=39 rep=2 stock=44435188us sq=44423380us ratio=0.9997 mism=0 Pass
+--- r=4 h=42 FAIR ---
+[r=4 h=42 FAIR t1] r_prec = 7
+[r=4 h=42 FAIR t1] TIMING r=4 h=42 rep=0 stock=48116424us sq=48180990us ratio=1.0013 mism=0 Pass
+[r=4 h=42 FAIR t1] TIMING r=4 h=42 rep=1 stock=47199750us sq=49522034us ratio=1.0492 mism=0 Pass
+[r=4 h=42 FAIR t1] TIMING r=4 h=42 rep=2 stock=47176578us sq=46366937us ratio=0.9828 mism=0 Pass
+[r=4 h=42 FAIR t2] r_prec = 7
+[r=4 h=42 FAIR t2] TIMING r=4 h=42 rep=0 stock=47404605us sq=47472302us ratio=1.0014 mism=0 Pass
+[r=4 h=42 FAIR t2] TIMING r=4 h=42 rep=1 stock=49082300us sq=48740767us ratio=0.9930 mism=0 Pass
+[r=4 h=42 FAIR t2] TIMING r=4 h=42 rep=2 stock=48511373us sq=49611582us ratio=1.0227 mism=0 Pass
+FINAL
