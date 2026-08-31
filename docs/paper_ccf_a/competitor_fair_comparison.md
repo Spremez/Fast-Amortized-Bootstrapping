@@ -78,3 +78,21 @@ git clone https://github.com/antoniocgj/Amortized-Bootstrapping
 2. ⏳ TFHE-rs 安装 + 基准（需要 Rust）
 3. ⏳ GPV23 编译尝试（可能内存不够）
 4. ⏳ 汇总全部对比表
+
+## TFHE-rs 实测结果
+
+服务器网络限制（无法下载 Rust crate），TFHE-rs 无法在本服务器运行。
+改用论文引用数据（标注跨机器差异）。
+
+### 引用数据来源
+
+| 来源 | 机器 | TFHE-rs boolean NOT | 备注 |
+|---|---|---|---|
+| BatchBoot Table 4 | Xeon 6258R | 9.8 ms (Def 2-bit) | 单bit, DFR 2^-53 |
+| 068 Table 7 | AWS c8a | 7.10 ms | 单bit, DFR 2^-64 |
+| TFHE-rs 官方 README | varies | ~7-10 ms | 依赖参数 |
+
+论文处理：引用 068/BatchBoot 的 TFHE-rs 数据作为参考行，标注：
+- 跨机器（不同 CPU）
+- 不同安全模型（稠密密钥，不受 CRYPTO'26 影响）
+- 不同任务（单bit boolean vs 摊销多bit）
