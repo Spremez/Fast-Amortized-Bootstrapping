@@ -1,0 +1,20 @@
+=== GAP 1: Fully-optimized stock r-lane Sun Aug 30 09:43:51 PM PDT 2026 ===
+optimized build exit=0
+[OPT-RLANE t1] 	Maximum resident set size (kbytes): 317824
+[OPT-RLANE t2] 	Maximum resident set size (kbytes): 317824
+[OPT-RLANE t3] 	Maximum resident set size (kbytes): 317824
+=== GAP 2: SQ r-lane + non-decomp flags Sun Aug 30 09:45:51 PM PDT 2026 ===
+SQ+flags rlane BUILD FAIL
+=== GAP 3: Key sizes Sun Aug 30 09:45:55 PM PDT 2026 ===
+[KEYS SQ h=42] SAB_SQ bootstrap: 11,636,652μs +- 188668.878225
+[KEYS SQ h=42] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[KEYS SQ h=42] SAB_scalar bootstrap: 12,858,531μs +- 70414.779175
+[KEYS SQ h=42] 	Maximum resident set size (kbytes): 633984
+[KEYS SQ h=39] SAB_SQ bootstrap: 11,569,214μs +- 195433.987670
+[KEYS SQ h=39] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[KEYS SQ h=39] SAB_scalar bootstrap: 12,708,308μs +- 37606.413682
+[KEYS SQ h=39] 	Maximum resident set size (kbytes): 633984
+=== GAP 4: Failure probability Sun Aug 30 09:48:26 PM PDT 2026 ===
+Failure probability: 0 / 50 trials
+=== SUPPLEMENTARY DONE Sun Aug 30 10:52:25 PM PDT 2026 ===
+SUPP_HARVESTED
