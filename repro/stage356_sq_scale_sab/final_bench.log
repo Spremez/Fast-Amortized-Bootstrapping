@@ -1,0 +1,69 @@
+=== BUILD Mon Aug 31 03:16:32 AM PDT 2026 ===
+r-lane BUILD FAIL
+=== PART 1: Scalar h={39,41,42} sigma+11 Mon Aug 31 03:16:36 AM PDT 2026 ===
+--- h=39 sigma+11 ---
+[h=39 sig+11 r1] SAB_SQ bootstrap: 12,047,809μs +- 264242.400403
+[h=39 sig+11 r1] SAB_SQ noise: max phase deviation log2 = 57.81 (message budget 2^-4)
+[h=39 sig+11 r1] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=39 sig+11 r1] SAB_scalar bootstrap: 13,567,218μs +- 346787.772613
+[h=39 sig+11 r1] SAB_scalar noise: max phase deviation log2 = 58.26
+[h=39 sig+11 r2] SAB_SQ bootstrap: 11,377,984μs +- 179273.339734
+[h=39 sig+11 r2] SAB_SQ noise: max phase deviation log2 = 57.81 (message budget 2^-4)
+[h=39 sig+11 r2] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=39 sig+11 r2] SAB_scalar bootstrap: 13,720,325μs +- 710782.193551
+[h=39 sig+11 r2] SAB_scalar noise: max phase deviation log2 = 58.26
+[h=39 sig+11 r3] SAB_SQ bootstrap: 11,564,833μs +- 183256.186619
+[h=39 sig+11 r3] SAB_SQ noise: max phase deviation log2 = 57.81 (message budget 2^-4)
+[h=39 sig+11 r3] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=39 sig+11 r3] SAB_scalar bootstrap: 13,016,198μs +- 392304.534922
+[h=39 sig+11 r3] SAB_scalar noise: max phase deviation log2 = 58.26
+--- h=41 sigma+11 ---
+[h=41 sig+11 r1] SAB_SQ bootstrap: 12,713,940μs +- 510529.238899
+[h=41 sig+11 r1] SAB_SQ noise: max phase deviation log2 = 57.73 (message budget 2^-4)
+[h=41 sig+11 r1] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=41 sig+11 r1] SAB_scalar bootstrap: 13,925,610μs +- 269043.448479
+[h=41 sig+11 r1] SAB_scalar noise: max phase deviation log2 = 58.72
+[h=41 sig+11 r2] SAB_SQ bootstrap: 12,721,722μs +- 397356.977675
+[h=41 sig+11 r2] SAB_SQ noise: max phase deviation log2 = 57.73 (message budget 2^-4)
+[h=41 sig+11 r2] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=41 sig+11 r2] SAB_scalar bootstrap: 14,035,351μs +- 268872.355082
+[h=41 sig+11 r2] SAB_scalar noise: max phase deviation log2 = 58.72
+[h=41 sig+11 r3] SAB_SQ bootstrap: 12,219,307μs +- 172939.305555
+[h=41 sig+11 r3] SAB_SQ noise: max phase deviation log2 = 57.73 (message budget 2^-4)
+[h=41 sig+11 r3] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=41 sig+11 r3] SAB_scalar bootstrap: 13,833,315μs +- 484414.643632
+[h=41 sig+11 r3] SAB_scalar noise: max phase deviation log2 = 58.72
+--- h=42 sigma+11 ---
+[h=42 sig+11 r1] SAB_SQ bootstrap: 13,904,241μs +- 188850.761962
+[h=42 sig+11 r1] SAB_SQ noise: max phase deviation log2 = 57.46 (message budget 2^-4)
+[h=42 sig+11 r1] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=42 sig+11 r1] SAB_scalar bootstrap: 14,838,148μs +- 479943.114585
+[h=42 sig+11 r1] SAB_scalar noise: max phase deviation log2 = 58.66
+[h=42 sig+11 r2] SAB_SQ bootstrap: 13,311,327μs +- 376720.531456
+[h=42 sig+11 r2] SAB_SQ noise: max phase deviation log2 = 57.46 (message budget 2^-4)
+[h=42 sig+11 r2] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=42 sig+11 r2] SAB_scalar bootstrap: 14,490,322μs +- 486676.996931
+[h=42 sig+11 r2] SAB_scalar noise: max phase deviation log2 = 58.66
+[h=42 sig+11 r3] SAB_SQ bootstrap: 13,277,748μs +- 767795.400329
+[h=42 sig+11 r3] SAB_SQ noise: max phase deviation log2 = 57.46 (message budget 2^-4)
+[h=42 sig+11 r3] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=42 sig+11 r3] SAB_scalar bootstrap: 14,298,936μs +- 144943.711563
+[h=42 sig+11 r3] SAB_scalar noise: max phase deviation log2 = 58.66
+=== PART 3: Baseline h=39 sigma+0 Mon Aug 31 03:28:43 AM PDT 2026 ===
+[h=39 sig+0 r1] SAB_SQ bootstrap: 11,767,152μs +- 364737.087983
+[h=39 sig+0 r1] SAB_SQ noise: max phase deviation log2 = 57.45 (message budget 2^-4)
+[h=39 sig+0 r1] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=39 sig+0 r1] SAB_scalar bootstrap: 13,293,910μs +- 309830.672154
+[h=39 sig+0 r1] SAB_scalar noise: max phase deviation log2 = 57.43
+[h=39 sig+0 r2] SAB_SQ bootstrap: 12,000,378μs +- 273880.432741
+[h=39 sig+0 r2] SAB_SQ noise: max phase deviation log2 = 57.45 (message budget 2^-4)
+[h=39 sig+0 r2] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=39 sig+0 r2] SAB_scalar bootstrap: 13,275,437μs +- 433244.363602
+[h=39 sig+0 r2] SAB_scalar noise: max phase deviation log2 = 57.43
+[h=39 sig+0 r3] SAB_SQ bootstrap: 11,607,970μs +- 241700.111266
+[h=39 sig+0 r3] SAB_SQ noise: max phase deviation log2 = 57.45 (message budget 2^-4)
+[h=39 sig+0 r3] SAB_SQ gate: Pass (mismatch 0 / 2048)
+[h=39 sig+0 r3] SAB_scalar bootstrap: 13,383,347μs +- 519429.451440
+[h=39 sig+0 r3] SAB_scalar noise: max phase deviation log2 = 57.43
+=== FINAL BENCH DONE Mon Aug 31 03:32:33 AM PDT 2026 ===
+FIN_HARVESTED
