@@ -93,6 +93,8 @@ static void run_timing(void){
   const int bg_bit = 23, prec = 3;
   const int ell_packing = 2, b_packing = 14, t_ks = 12, b_ks = 1;
   uint64_t h = 39, r = 4, reps = 3;
+  int sigma_shift = 0;   /* 2026/279 hardening: raises the BSK key sigma,
+                          * mirrors SAB_SQ_SIGMA_SHIFT in probe_sq.c */
   {
     const char * e = getenv("SAB_SQ_H");
     if(e) h = strtoull(e, NULL, 0);
@@ -100,15 +102,18 @@ static void run_timing(void){
     if(e) r = strtoull(e, NULL, 0);
     e = getenv("SAB_PVW_SQ_REPS");
     if(e) reps = strtoull(e, NULL, 0);
+    e = getenv("SAB_SQ_SIGMA_SHIFT");
+    if(e) sigma_shift = atoi(e);
   }
-  printf("== timing r=%lu h=%lu ==\n", (unsigned long) r, (unsigned long) h);
+  printf("== timing r=%lu h=%lu sigma_shift=%d ==\n", (unsigned long) r,
+         (unsigned long) h, sigma_shift);
   TRLWE_Key input_key, packing_key;
   RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), 7);
   RS_sparse_binary_key(&packing_key, in_N, in_k, 256, pow(2, -44), 7);
   const uint64_t r_prec = get_min_prec(input_key);
   printf("r_prec = %lu\n", (unsigned long) r_prec);
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(out_N, out_k, (int) r,
-      pow(2, -50));
+      pow(2, -50 + sigma_shift));
   SAB_PVW_Key stock = sab_pvw_new_binary_full_key(input_key, packing_key,
       pvw_key, prec, b_packing, ell_packing, t_ks, b_ks, h, r_prec, 1, bg_bit);
   SAB_PVW_SQ_Key sq = sab_pvw_sq_new_binary_full_key(input_key, packing_key,
