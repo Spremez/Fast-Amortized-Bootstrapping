@@ -1,0 +1,59 @@
+=== R-LANE FINAL Mon Aug 31 06:07:18 AM PDT 2026 ===
+--- r=1 h=39 sigma+11 ---
+[r=1 h=39 sig+11 t1] r_prec = 7
+[r=1 h=39 sig+11 t1] TIMING r=1 h=39 rep=0 stock=12696046us sq=12873499us ratio=1.0140 mism=0 Pass
+[r=1 h=39 sig+11 t1] TIMING r=1 h=39 rep=1 stock=12628836us sq=12689780us ratio=1.0048 mism=0 Pass
+[r=1 h=39 sig+11 t1] TIMING r=1 h=39 rep=2 stock=12699367us sq=12705926us ratio=1.0005 mism=0 Pass
+[r=1 h=39 sig+11 t2] r_prec = 7
+[r=1 h=39 sig+11 t2] TIMING r=1 h=39 rep=0 stock=12627760us sq=12531763us ratio=0.9924 mism=0 Pass
+[r=1 h=39 sig+11 t2] TIMING r=1 h=39 rep=1 stock=12507602us sq=12572524us ratio=1.0052 mism=0 Pass
+[r=1 h=39 sig+11 t2] TIMING r=1 h=39 rep=2 stock=12669235us sq=14011624us ratio=1.1060 mism=0 Pass
+[r=1 h=39 sig+11 t3] r_prec = 7
+[r=1 h=39 sig+11 t3] TIMING r=1 h=39 rep=0 stock=12765824us sq=12753879us ratio=0.9991 mism=0 Pass
+[r=1 h=39 sig+11 t3] TIMING r=1 h=39 rep=1 stock=12794047us sq=12786083us ratio=0.9994 mism=0 Pass
+[r=1 h=39 sig+11 t3] TIMING r=1 h=39 rep=2 stock=12747815us sq=12820943us ratio=1.0057 mism=0 Pass
+--- r=4 h=39 sigma+11 ---
+[r=4 h=39 sig+11 t1] r_prec = 7
+[r=4 h=39 sig+11 t1] TIMING r=4 h=39 rep=0 stock=43402643us sq=43500846us ratio=1.0023 mism=0 Pass
+[r=4 h=39 sig+11 t1] TIMING r=4 h=39 rep=1 stock=47178298us sq=44412019us ratio=0.9414 mism=0 Pass
+[r=4 h=39 sig+11 t1] TIMING r=4 h=39 rep=2 stock=47261288us sq=46802852us ratio=0.9903 mism=0 Pass
+[r=4 h=39 sig+11 t2] r_prec = 7
+[r=4 h=39 sig+11 t2] TIMING r=4 h=39 rep=0 stock=49323641us sq=47140604us ratio=0.9557 mism=0 Pass
+[r=4 h=39 sig+11 t2] TIMING r=4 h=39 rep=1 stock=50566588us sq=48666132us ratio=0.9624 mism=0 Pass
+[r=4 h=39 sig+11 t2] TIMING r=4 h=39 rep=2 stock=47187543us sq=50483854us ratio=1.0699 mism=0 Pass
+[r=4 h=39 sig+11 t3] r_prec = 7
+[r=4 h=39 sig+11 t3] TIMING r=4 h=39 rep=0 stock=47103225us sq=46101712us ratio=0.9787 mism=0 Pass
+[r=4 h=39 sig+11 t3] TIMING r=4 h=39 rep=1 stock=46237511us sq=46238883us ratio=1.0000 mism=0 Pass
+[r=4 h=39 sig+11 t3] TIMING r=4 h=39 rep=2 stock=45779546us sq=51782975us ratio=1.1311 mism=0 Pass
+--- r=1 h=41 sigma+11 ---
+[r=1 h=41 sig+11 t1] r_prec = 7
+[r=1 h=41 sig+11 t1] TIMING r=1 h=41 rep=0 stock=20028712us sq=18827686us ratio=0.9400 mism=0 Pass
+[r=1 h=41 sig+11 t1] TIMING r=1 h=41 rep=1 stock=18412195us sq=18852825us ratio=1.0239 mism=0 Pass
+[r=1 h=41 sig+11 t1] TIMING r=1 h=41 rep=2 stock=21356556us sq=25906467us ratio=1.2130 mism=0 Pass
+[r=1 h=41 sig+11 t2] r_prec = 7
+[r=1 h=41 sig+11 t2] TIMING r=1 h=41 rep=0 stock=18879911us sq=18639025us ratio=0.9872 mism=0 Pass
+[r=1 h=41 sig+11 t2] TIMING r=1 h=41 rep=1 stock=19166927us sq=19141871us ratio=0.9987 mism=0 Pass
+[r=1 h=41 sig+11 t2] TIMING r=1 h=41 rep=2 stock=19384751us sq=21054763us ratio=1.0862 mism=0 Pass
+[r=1 h=41 sig+11 t3] r_prec = 7
+[r=1 h=41 sig+11 t3] TIMING r=1 h=41 rep=0 stock=24459541us sq=26310031us ratio=1.0757 mism=0 Pass
+[r=1 h=41 sig+11 t3] TIMING r=1 h=41 rep=1 stock=27043151us sq=26339565us ratio=0.9740 mism=0 Pass
+[r=1 h=41 sig+11 t3] TIMING r=1 h=41 rep=2 stock=25954506us sq=25396928us ratio=0.9785 mism=0 Pass
+--- r=4 h=41 sigma+11 ---
+[r=4 h=41 sig+11 t1] r_prec = 7
+[r=4 h=41 sig+11 t1] TIMING r=4 h=41 rep=0 stock=67173972us sq=71085106us ratio=1.0582 mism=0 Pass
+[r=4 h=41 sig+11 t1] TIMING r=4 h=41 rep=1 stock=62484694us sq=69751310us ratio=1.1163 mism=0 Pass
+[r=4 h=41 sig+11 t1] TIMING r=4 h=41 rep=2 stock=58301205us sq=64817075us ratio=1.1118 mism=0 Pass
+[r=4 h=41 sig+11 t2] r_prec = 7
+[r=4 h=41 sig+11 t2] TIMING r=4 h=41 rep=0 stock=63998781us sq=62350185us ratio=0.9742 mism=0 Pass
+[r=4 h=41 sig+11 t2] TIMING r=4 h=41 rep=1 stock=62163971us sq=64163931us ratio=1.0322 mism=0 Pass
+[r=4 h=41 sig+11 t2] TIMING r=4 h=41 rep=2 stock=62145997us sq=75375162us ratio=1.2129 mism=0 Pass
+[r=4 h=41 sig+11 t3] r_prec = 7
+[r=4 h=41 sig+11 t3] TIMING r=4 h=41 rep=0 stock=61109798us sq=65734367us ratio=1.0757 mism=0 Pass
+[r=4 h=41 sig+11 t3] TIMING r=4 h=41 rep=1 stock=65047806us sq=64346706us ratio=0.9892 mism=0 Pass
+[r=4 h=41 sig+11 t3] TIMING r=4 h=41 rep=2 stock=61547045us sq=61339391us ratio=0.9966 mism=0 Pass
+--- r=1 h=42 sigma+11 ---
+[r=1 h=42 sig+11 t1] r_prec = 7
+[r=1 h=42 sig+11 t1] TIMING r=1 h=42 rep=0 stock=20460929us sq=19662393us ratio=0.9610 mism=0 Pass
+[r=1 h=42 sig+11 t1] TIMING r=1 h=42 rep=1 stock=19026634us sq=18803529us ratio=0.9883 mism=0 Pass
+[r=1 h=42 sig+11 t1] TIMING r=1 h=42 rep=2 stock=18809115us sq=19376719us ratio=1.0302 mism=0 Pass
+COMPLETE
