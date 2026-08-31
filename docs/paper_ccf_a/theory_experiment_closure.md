@@ -178,3 +178,24 @@
 ### Parts 2-3（r-lane + 硬化）
 
 r-lane 构建失败（build_ec 目录缺少 PVW 库对象），需单独构建后重跑。σ+15 硬化因 Part 2 失败未执行。→ 下一轮修复。
+
+## 九、Parts 2–3 r-lane 结果（2026-08-31 收割）
+
+### r-lane SQ vs stock（AVX-512 稠密乘，公平安全 h=42，各 9 轮）
+
+| r | 中位比值 | SQ 优势 | 理论解释 |
+|---|---|---|---|
+| 1 | **0.975** | **+2.5%** | 分解全额消除 |
+| 2 | 1.010 | 平价 | 分解已被 2-lane 摊薄一半 |
+| 4 | ~1.008 | 平价 | 分解已被 4-lane 充分摊薄 |
+
+（vs 标量 C 稠密乘版本 r=4 的 1.018：AVX-512 关闭了 1% 实现差距）
+
+### r 趋势的理论-实验闭环
+
+理论预测：SQ 能省的分解成本 ∝ 1/r（r-lane 已将 2r 行分解摊到 1+r 行）
+实验确认：2.5% (r=1) → 0% (r=2) → 0% (r=4) ✓
+
+__zcode_status=$?
+if [ "$__zcode_status" -eq 0 ]; then pwd -P > '/c/Users/spremez/AppData/Local/Temp/zcode-a3982199-337e-4ac8-86cb-1abcea346df1-cwd'; fi
+exit "$__zcode_status"
