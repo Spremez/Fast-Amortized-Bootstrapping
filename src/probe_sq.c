@@ -247,9 +247,12 @@ int main(){
     const char * e = getenv("SAB_SQ_POSTOPS");
     if(e) postops = strtoull(e, NULL, 0);
     if(postops){
-      TRGSW_Key post_key = trgsw_new_key(input_key, (int) l, (int) bg_bit);
-      TRGSW sel_raw = trgsw_alloc_new_sample((int) l, (int) bg_bit, (int) in_k, (int) in_N);
-      TRGSW_DFT sel = trgsw_alloc_new_DFT_sample((int) l, (int) bg_bit, (int) in_k, (int) in_N);
+      uint64_t post_l = 8, post_bg = 8;   /* circuit-grade gadget: l*bg >= 64 */
+      { const char * e2 = getenv("SAB_SQ_POST_L"); if(e2) post_l = strtoull(e2, NULL, 0);
+        e2 = getenv("SAB_SQ_POST_BG"); if(e2) post_bg = strtoull(e2, NULL, 0); }
+      TRGSW_Key post_key = trgsw_new_key(input_key, (int) post_l, (int) post_bg);
+      TRGSW sel_raw = trgsw_alloc_new_sample((int) post_l, (int) post_bg, (int) in_k, (int) in_N);
+      TRGSW_DFT sel = trgsw_alloc_new_DFT_sample((int) post_l, (int) post_bg, (int) in_k, (int) in_N);
       trgsw_monomial_sample(sel_raw, 1, 0, post_key);
       trgsw_to_DFT(sel, sel_raw);
       TRLWE_DFT buf = trlwe_alloc_new_DFT_sample((int) in_k, (int) in_N);
@@ -288,9 +291,12 @@ int main(){
     const char * e = getenv("SAB_SQ_POSTOPS");
     if(e) postops = strtoull(e, NULL, 0);
     if(postops){
-      TRGSW_Key post_key = trgsw_new_key(input_key, (int) l, (int) bg_bit);
-      TRGSW sel_raw = trgsw_alloc_new_sample((int) l, (int) bg_bit, (int) in_k, (int) in_N);
-      TRGSW_DFT sel = trgsw_alloc_new_DFT_sample((int) l, (int) bg_bit, (int) in_k, (int) in_N);
+      uint64_t post_l = 8, post_bg = 8;   /* circuit-grade gadget: l*bg >= 64 */
+      { const char * e2 = getenv("SAB_SQ_POST_L"); if(e2) post_l = strtoull(e2, NULL, 0);
+        e2 = getenv("SAB_SQ_POST_BG"); if(e2) post_bg = strtoull(e2, NULL, 0); }
+      TRGSW_Key post_key = trgsw_new_key(input_key, (int) post_l, (int) post_bg);
+      TRGSW sel_raw = trgsw_alloc_new_sample((int) post_l, (int) post_bg, (int) in_k, (int) in_N);
+      TRGSW_DFT sel = trgsw_alloc_new_DFT_sample((int) post_l, (int) post_bg, (int) in_k, (int) in_N);
       trgsw_monomial_sample(sel_raw, 1, 0, post_key);
       trgsw_to_DFT(sel, sel_raw);
       TRLWE_DFT buf = trlwe_alloc_new_DFT_sample((int) in_k, (int) in_N);
