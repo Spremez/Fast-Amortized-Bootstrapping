@@ -239,6 +239,37 @@ int main(){
          log2((double)(max_dev + 1)), (int)(msg_prec + 1));
   printf("SAB_SQ gate: %s (mismatch %d / %d)\n", pass ? "Pass" : "Fail", (int) mism, (int) in_N);
 
+  /* headroom-as-output: apply SAB_SQ_POSTOPS external products after the
+   * bootstrap (multiply-by-one TRGSW selectors under the input key) and
+   * report the noise after each -- the post-bootstrap capacity curve. */
+  {
+    uint64_t postops = 0;
+    const char * e = getenv("SAB_SQ_POSTOPS");
+    if(e) postops = strtoull(e, NULL, 0);
+    if(postops){
+      TRGSW_Key post_key = trgsw_new_key(input_key, (int) l, (int) bg_bit);
+      TRGSW sel_raw = trgsw_alloc_new_sample((int) l, (int) bg_bit, (int) in_k, (int) in_N);
+      TRGSW_DFT sel = trgsw_alloc_new_DFT_sample((int) l, (int) bg_bit, (int) in_k, (int) in_N);
+      trgsw_monomial_sample(sel_raw, 1, 0, post_key);
+      trgsw_to_DFT(sel, sel_raw);
+      TRLWE_DFT buf = trlwe_alloc_new_DFT_sample((int) in_k, (int) in_N);
+      for (uint64_t s = 0; s < postops; s++){
+        trgsw_mul_trlwe_DFT(buf, sq_out, sel);
+        trlwe_from_DFT(sq_out, buf);
+        trlwe_phase(res_poly, sq_out, input_key);
+        int64_t dev_max = 0;
+        for (size_t i = 0; i < in_N; i++){
+          const uint64_t expected = LUT[torus2int(poly_in->coeffs[i], msg_prec)];
+          int64_t dev = ((int64_t) res_poly->coeffs[i]) - (int64_t) int2torus(expected, msg_prec);
+          if(dev < 0) dev = -dev;
+          if(dev > dev_max) dev_max = dev;
+        }
+        printf("SAB_SQ postop %lu: max phase deviation log2 = %.2f\n",
+               (unsigned long)(s + 1), log2((double)(dev_max + 1)));
+      }
+    }
+  }
+
   TRLWE scalar_out = trlwe_new_sample(NULL, input_key);
   MEASURE_BOOTSTRAP_TIME("", reps, "SAB_scalar bootstrap",
     sab_rlwe_bootstrap(scalar_out, rlwe_in2, rlwe_tv, sab);
@@ -252,6 +283,33 @@ int main(){
     if(dev > max_dev_scalar) max_dev_scalar = dev;
   }
   printf("SAB_scalar noise: max phase deviation log2 = %.2f\n", log2((double)(max_dev_scalar + 1)));
+  {
+    uint64_t postops = 0;
+    const char * e = getenv("SAB_SQ_POSTOPS");
+    if(e) postops = strtoull(e, NULL, 0);
+    if(postops){
+      TRGSW_Key post_key = trgsw_new_key(input_key, (int) l, (int) bg_bit);
+      TRGSW sel_raw = trgsw_alloc_new_sample((int) l, (int) bg_bit, (int) in_k, (int) in_N);
+      TRGSW_DFT sel = trgsw_alloc_new_DFT_sample((int) l, (int) bg_bit, (int) in_k, (int) in_N);
+      trgsw_monomial_sample(sel_raw, 1, 0, post_key);
+      trgsw_to_DFT(sel, sel_raw);
+      TRLWE_DFT buf = trlwe_alloc_new_DFT_sample((int) in_k, (int) in_N);
+      for (uint64_t s = 0; s < postops; s++){
+        trgsw_mul_trlwe_DFT(buf, scalar_out, sel);
+        trlwe_from_DFT(scalar_out, buf);
+        trlwe_phase(res_poly, scalar_out, input_key);
+        int64_t dev_max = 0;
+        for (size_t i = 0; i < in_N; i++){
+          const uint64_t expected = LUT[torus2int(poly_in->coeffs[i], msg_prec)];
+          int64_t dev = ((int64_t) res_poly->coeffs[i]) - (int64_t) int2torus(expected, msg_prec);
+          if(dev < 0) dev = -dev;
+          if(dev > dev_max) dev_max = dev;
+        }
+        printf("SAB_scalar postop %lu: max phase deviation log2 = %.2f\n",
+               (unsigned long)(s + 1), log2((double)(dev_max + 1)));
+      }
+    }
+  }
   printf("SAB_SQ probe done\n");
   return pass ? 0 : 1;
 }
