@@ -107,8 +107,16 @@ static void run_timing(void){
   }
   printf("== timing r=%lu h=%lu sigma_shift=%d ==\n", (unsigned long) r,
          (unsigned long) h, sigma_shift);
+  /* B_gap control: rejection-sampling target for the sparse support
+   * (max circular gap <= 2^target_r_prec). Default mirrors probe_sq's
+   * auto-derivation log2(N/h)+2; override via SAB_SQ_RPREC. */
+  uint64_t target_r_prec = (uint64_t)(log2((double) in_N / (double) h) + 2.0);
+  {
+    const char * e = getenv("SAB_SQ_RPREC");
+    if(e) target_r_prec = strtoull(e, NULL, 0);
+  }
   TRLWE_Key input_key, packing_key;
-  RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), 7);
+  RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), target_r_prec);
   RS_sparse_binary_key(&packing_key, in_N, in_k, 256, pow(2, -44), 7);
   const uint64_t r_prec = get_min_prec(input_key);
   printf("r_prec = %lu\n", (unsigned long) r_prec);
