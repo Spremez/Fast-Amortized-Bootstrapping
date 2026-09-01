@@ -247,10 +247,20 @@ int main(){
     const char * e = getenv("SAB_SQ_POSTOPS");
     if(e) postops = strtoull(e, NULL, 0);
     if(postops){
-      uint64_t post_l = 8, post_bg = 8;   /* circuit-grade gadget: l*bg >= 64 */
+      uint64_t post_l = 8, post_bg = 8, post_sig = 40;
       { const char * e2 = getenv("SAB_SQ_POST_L"); if(e2) post_l = strtoull(e2, NULL, 0);
-        e2 = getenv("SAB_SQ_POST_BG"); if(e2) post_bg = strtoull(e2, NULL, 0); }
-      TRGSW_Key post_key = trgsw_new_key(input_key, (int) post_l, (int) post_bg);
+        e2 = getenv("SAB_SQ_POST_BG"); if(e2) post_bg = strtoull(e2, NULL, 0);
+        e2 = getenv("SAB_SQ_POST_SIG"); if(e2) post_sig = strtoull(e2, NULL, 0); }
+      /* circuit keys must sample at small sigma: the input key's own
+       * sigma (2^-15) amplifies to ~half-torus per EP (sqrt(lN)*Bg/12^0.5
+       * * sigma ~ 2^-1.8, measured 2^63 saturation). Clone the secret at
+       * an adjustable sampling sigma instead. */
+      TRLWE_Key post_ik = trlwe_alloc_key((int) in_N, (int) in_k, pow(2, -(double) post_sig));
+      for (size_t ci = 0; ci < in_k; ci++){
+        memcpy(post_ik->s[ci]->coeffs, input_key->s[ci]->coeffs, sizeof(Torus) * in_N);
+        polynomial_torus_to_DFT(post_ik->s_dft[ci], post_ik->s[ci]);
+      }
+      TRGSW_Key post_key = trgsw_new_key(post_ik, (int) post_l, (int) post_bg);
       TRGSW sel_raw = trgsw_alloc_new_sample((int) post_l, (int) post_bg, (int) in_k, (int) in_N);
       TRGSW_DFT sel = trgsw_alloc_new_DFT_sample((int) post_l, (int) post_bg, (int) in_k, (int) in_N);
       trgsw_monomial_sample(sel_raw, 1, 0, post_key);
@@ -291,10 +301,20 @@ int main(){
     const char * e = getenv("SAB_SQ_POSTOPS");
     if(e) postops = strtoull(e, NULL, 0);
     if(postops){
-      uint64_t post_l = 8, post_bg = 8;   /* circuit-grade gadget: l*bg >= 64 */
+      uint64_t post_l = 8, post_bg = 8, post_sig = 40;
       { const char * e2 = getenv("SAB_SQ_POST_L"); if(e2) post_l = strtoull(e2, NULL, 0);
-        e2 = getenv("SAB_SQ_POST_BG"); if(e2) post_bg = strtoull(e2, NULL, 0); }
-      TRGSW_Key post_key = trgsw_new_key(input_key, (int) post_l, (int) post_bg);
+        e2 = getenv("SAB_SQ_POST_BG"); if(e2) post_bg = strtoull(e2, NULL, 0);
+        e2 = getenv("SAB_SQ_POST_SIG"); if(e2) post_sig = strtoull(e2, NULL, 0); }
+      /* circuit keys must sample at small sigma: the input key's own
+       * sigma (2^-15) amplifies to ~half-torus per EP (sqrt(lN)*Bg/12^0.5
+       * * sigma ~ 2^-1.8, measured 2^63 saturation). Clone the secret at
+       * an adjustable sampling sigma instead. */
+      TRLWE_Key post_ik = trlwe_alloc_key((int) in_N, (int) in_k, pow(2, -(double) post_sig));
+      for (size_t ci = 0; ci < in_k; ci++){
+        memcpy(post_ik->s[ci]->coeffs, input_key->s[ci]->coeffs, sizeof(Torus) * in_N);
+        polynomial_torus_to_DFT(post_ik->s_dft[ci], post_ik->s[ci]);
+      }
+      TRGSW_Key post_key = trgsw_new_key(post_ik, (int) post_l, (int) post_bg);
       TRGSW sel_raw = trgsw_alloc_new_sample((int) post_l, (int) post_bg, (int) in_k, (int) in_N);
       TRGSW_DFT sel = trgsw_alloc_new_DFT_sample((int) post_l, (int) post_bg, (int) in_k, (int) in_N);
       trgsw_monomial_sample(sel_raw, 1, 0, post_key);
