@@ -11,13 +11,16 @@ LOG="$OUT/run.log"
 mkdir -p "$OUT"
 log(){ echo "[$(date -u +%H:%M:%S)] $*" | tee -a "$LOG"; }
 
-for i in $(seq 90); do
-  grep -q 'STAGE360 COMPLETE' repro/stage360_rscaling_anchor/run.log 2>/dev/null && break
-  sleep 60
-done
 grep -q 'STAGE360 COMPLETE' repro/stage360_rscaling_anchor/run.log 2>/dev/null \
-  || { log "stage360 did not complete in 90min - aborting"; exit 1; }
-log "stage360 complete; start same-session scalar + r=4 (load=$(cat /proc/loadavg))"
+  || { log "stage360 not complete - aborting"; exit 1; }
+log "stage360 complete; waiting for quiet machine (1-min load < 25, max 6h)"
+
+for i in $(seq 72); do
+  cur=$(cut -d' ' -f1 /proc/loadavg | cut -d. -f1)
+  [ "$cur" -lt 25 ] && break
+  sleep 300
+done
+log "starting at load=$(cat /proc/loadavg)"
 
 log "--- scalar anchor h=41 sigma+11 (3 runs) ---"
 for t in 1 2 3; do
