@@ -1,0 +1,13 @@
+=== inkey h=39 (alpha=7.650e-05) ===
+[inkey h=39] ERR: ValueError success_probability must be between 0 and 1.
+=== inkey h=41 (alpha=7.650e-05) ===
+[inkey h=41] ERR: ValueError success_probability must be between 0 and 1.
+=== inkey h=42 (alpha=7.650e-05) ===
+[inkey h=42] ERR: ValueError success_probability must be between 0 and 1.
+=== inkey h=52 (alpha=7.650e-05) ===
+[inkey h=52] ERR: ValueError success_probability must be between 0 and 1.
+=== BSK sigma=2^-50 (alpha=2.226e-15) ===
+[BSK sigma=2^-50] 823s -> rop: 2^136.2, pre: 2^135.6, enum: 2^134.5, beta:  345, |S|: 2^216.3, prob: 0.337203, scale: 2^15.0, pp: 54, d: 3844, tau: 195, repeat: 12
+=== BSK sigma=2^-39 (alpha=4.560e-12) ===
+[BSK sigma=2^-39] 723s -> rop: 2^175.1, pre: 2^174.4, enum: 2^173.7, beta:  465, |S|: 2^287.3, prob: 0.026856, scale: 2^26.0, pp: 67, d: 3712, tau: 285, repeat: 170
+E4 DONE

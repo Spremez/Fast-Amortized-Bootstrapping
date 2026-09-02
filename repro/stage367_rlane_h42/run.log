@@ -1,0 +1,26 @@
+[02:18:24] probes BUILT
+[probe_rl_stock h=42 sig+11 t1] == timing r=4 h=42 sigma_shift=11 ==
+[probe_rl_stock h=42 sig+11 t1] r_prec = 7
+[probe_rl_stock h=42 sig+11 t1] TIMING r=4 h=42 rep=0 stock=59382530us sq=48464014us ratio=0.8161 mism=0 Pass
+[probe_rl_stock h=42 sig+11 t1] TIMING r=4 h=42 rep=1 stock=87150012us sq=68677573us ratio=0.7880 mism=0 Pass
+[probe_rl_stock h=42 sig+11 t1] TIMING r=4 h=42 rep=2 stock=84705081us sq=102755914us ratio=1.2131 mism=0 Pass
+[02:27:45] case probe_rl_stock t1 done load=143.02
+[probe_rl_stock h=42 sig+11 t2] == timing r=4 h=42 sigma_shift=11 ==
+[probe_rl_stock h=42 sig+11 t2] r_prec = 7
+[probe_rl_stock h=42 sig+11 t2] TIMING r=4 h=42 rep=0 stock=47553975us sq=48481858us ratio=1.0195 mism=0 Pass
+[probe_rl_stock h=42 sig+11 t2] TIMING r=4 h=42 rep=1 stock=54145547us sq=49069414us ratio=0.9063 mism=0 Pass
+[probe_rl_stock h=42 sig+11 t2] TIMING r=4 h=42 rep=2 stock=51877988us sq=47916308us ratio=0.9236 mism=0 Pass
+[02:41:36] case probe_rl_stock t2 done load=15.30
+[probe_rl_pathA h=42 sig+11 t1] == timing r=4 h=42 sigma_shift=11 ==
+[probe_rl_pathA h=42 sig+11 t1] r_prec = 7
+[probe_rl_pathA h=42 sig+11 t1] TIMING r=4 h=42 rep=0 stock=38966042us sq=44142216us ratio=1.1328 mism=0 Pass
+[probe_rl_pathA h=42 sig+11 t1] TIMING r=4 h=42 rep=1 stock=38254495us sq=44422556us ratio=1.1612 mism=0 Pass
+[probe_rl_pathA h=42 sig+11 t1] TIMING r=4 h=42 rep=2 stock=37788177us sq=44707757us ratio=1.1831 mism=0 Pass
+[02:47:14] case probe_rl_pathA t1 done load=10.97
+[probe_rl_pathA h=42 sig+11 t2] == timing r=4 h=42 sigma_shift=11 ==
+[probe_rl_pathA h=42 sig+11 t2] r_prec = 7
+[probe_rl_pathA h=42 sig+11 t2] TIMING r=4 h=42 rep=0 stock=41433146us sq=45353048us ratio=1.0946 mism=0 Pass
+[probe_rl_pathA h=42 sig+11 t2] TIMING r=4 h=42 rep=1 stock=38790590us sq=44576842us ratio=1.1492 mism=0 Pass
+[probe_rl_pathA h=42 sig+11 t2] TIMING r=4 h=42 rep=2 stock=38814334us sq=44424231us ratio=1.1445 mism=0 Pass
+[02:52:57] case probe_rl_pathA t2 done load=9.96
+[02:52:57] === STAGE367 COMPLETE ===
