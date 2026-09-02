@@ -1,0 +1,18 @@
+=== E1a (impl-semantics MC, 20k samples; delta=7.38 to match recorded T3) ===
+    N    h   t  p_accept   loss  T3prime rho_typ  EP cost
+ 2048   39   7    0.0063   7.30   124.48    7.00     1.00x
+ 2048   41   7    0.0103   6.59   130.46    7.00     1.05x
+ 2048   41   8    0.8400   0.25   133.64    7.99     1.20x
+ 2048   42   7    0.0140   6.15   133.47    7.00     1.07x
+ 2048   52   7    0.0974   3.36   161.87    7.00     1.32x
+ 2048   52   8    0.9511   0.07   163.51    7.90     1.50x
+ 4096   32   8    0.0003  11.70   117.54    8.00     0.94x
+
+=== E1b: alternating-ternary entropy audit (output key h_out=512/2048) ===
+  combinatorial tier, independent signs: 2167.9 bit
+  combinatorial tier, alternating signs: 1656.9 bit  (loss 511.0 = h-1)
+  MITM-style bound (independent): lambda ~ 1078.4 bit
+  MITM-style bound (alternating ): lambda ~ 822.9 bit
+  lattice tier of this layer: ~117-128 bit (279 re-estimate) -> binding tier
+  => alternating signs do NOT change the binding tier for h_out=512/2048;
+     they must still be reported as the true distribution (1060 targets ternary).
