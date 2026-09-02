@@ -1,0 +1,4712 @@
+An Improved Hybrid Dual Attack on LWE with Sparse Secrets and its Application to FHE
+Lei Bi1,2, Yijian Liu1,2, Xianhui Lu1,2, Junjie Luo3, and Kunpeng Wang1,2
+1 Key Laboratory of Cyberspace Security Defense, Institute of Information Engineering, Chinese Academy of Sciences, Beijing 100093, China {bilei, liuyijian, luxianhhui, wangkunpeng}@iie.ac.cn
+2 School of Cyber Security, University of Chinese Academy of Sciences, Beijing 100049, China
+3 School of Mathematics and Statistics, Beijing Jiaotong University, Beijing 100044, China
+jjluo1@bjtu.edu.cn
+Abstract. The Learning with Errors (LWE) problem serves as a cornerstone of modern cryptography, underlying advanced schemes such as Fully Homomorphic Encryption (FHE). Many FHE schemes adopt LWE instances with sparse ternary secrets, leaving them vulnerable to attacks. In 2022, Bi-Lu-Luo-Wang [ACISP 2022] proposed a hybrid dual attack that combines May's Meet-in-the-Middle (MITM) algorithm [Crypto 2021] with a dual attack and shows that it outperforms other attacks in a large range of FHE-type parameters. However, their attack suffers from two main efficiency bottlenecks: the costly enumeration of error entries and the large number of hash function labels. In this work, we conduct a systematic analysis of several variants of May's MITM algorithm equipped with different list constructions and hash functions. Based on this, we propose a new hybrid dual attack that incorporates the most efficient variant, effectively mitigating both bottlenecks. We further enhance the attack by adopting a better hypothesis testing algorithm for FHE settings. Addressing recent concerns raised by Ducas-Pulles [Crypto 2023] regarding the independence heuristic in dual attacks, we provide a rigorous theoretical and empirical analysis. We demonstrate that, for typical FHE parameters, our attack does not rely on the problematic independence heuristic and lies outside the contradictory regime. Finally, we compare our attack with previous hybrid attacks, showing consistent and significant improvements across all evaluated cases. In particular, our results invalidate the accelerated BGV scheme in [EUROCRYPT 2024] by reducing its bit-security below the claimed security level, with the most extreme case being 18 bits lower.
+Keywords: Lattice-based Cryptography · Learning with Errors · Bitsecurity · Dual Attack · Hybrid Attack.
+1 Introduction
+The Learning with Errors (LWE) problem [39] has emerged as a foundational building block in lattice-based cryptography. The LWE problem asks to recovery
+
+2
+
+Bi et al.
+
+a secret vector s given samples (A, b), where b = As + e mod q and e is a small error vector. A variety of cryptographic schemes, from homomorphic encryptions (HE), public key encryptions to digital signatures, base their security on LWE family of the lattice problems. LWE is widely believed to be quantum-safe and benefits from strong worst-case to average-case reductions, which means that it is at least as hard as some worst-case lattice problems. However, in practice, the bit-security of concrete LWE-based schemes depends crucially on parameter selection, making the precise evaluation of their security levels an essential task.
+For efficiency reasons, many practical LWE-based schemes employ small and sparse secrets. As one of the most important implementation of LWE, the fully HE (FHE) schemes use sparse ternary secrets because the bootstrapping procedure, the key technique in FHE, relies on such sparsity for computational efficiency. However, the use of sparsity and small secrets makes this variant of LWE problem more vulnerable to attacks, and the bit-security of LWE with small/sparse secrets remains insufficiently understood [1]. Recently, the sparsesecret encapsulation technique [7] was proposed to improve the precision and efficiency of bootstrapping without compromising the security of the schemes. Since then lots of new proposed schemes have adopted sparse ternary secrets. Moreover, most widely used FHE libraries, including HEAAN, HElib, Lattigo, and PALISADE [18, 19, 27, 36], adopt sparse secrets, and the Homomorphic Encryption Standardization [22] has listed LWE with sparse secrets as an extension of the current document. These developments make it both important and urgent to rigorously assess the bit-security of LWE with small/sparse secrets.
+Estimating the concrete bit-security of LWE-based schemes requires assessing their resilience against all known attacks. For FHE-type parameters, the two most powerful attack families are hybrid primal attacks [42, 20] and hybrid dual attacks [10, 5]. In this paper, we focus on the hybrid dual attack, which currently represents one of the most efficient approaches for FHE-type parameters. A hybrid dual attack partitions the secret vector into two parts: s = (s1, s2)  A2s2 + e = b - A1s1 mod q, then enumerates candidates for s1 while using short vectors in the dual lattice of A2 to perform hypothesis testing on the guesses. Currently, the most efficient hybrid dual attack on FHE is due to Bi-Lu-Luo-Wang [5], which incorporates May's Meet-LWE algorithm [31], an optimal Meet-in-the-Middle (MITM) method for solving sparse ternary LWE, to accelerate the enumeration of s1. However, embedding Meet-LWE into the hybrid dual framework amplifies its two inherent weakness with respect to errorguessing and hash labels. Consequently, although the Bi-Lu-Luo-Wang algorithm improves bit-security estimates in across a wide range of FHE parameters, it still faces two significant efficiency drawbacks: (1) the high computational cost of error enumeration, and (2) the large number of hash function labels required. Addressing these two issues is critical for further advancing the performance of hybrid dual attacks leveraging Meet-LWE.
+In addition, a broader question concerning the effectiveness and reliability of (hybrid) dual attacks was raised by Ducas-Pulles [13] in 2023. They argued that the analysis of these attacks relies on unverified heuristics, particularly
+
+An Improved Hybrid Dual Attack on LWE
+
+3
+
+the independence heuristic, and lacks sufficient theoretical and experimental justification. More importantly, they showed that some conclusions derived from these heuristics contradict unconditional lattice-theoretic results. This motivates a careful theoretical and empirical study to determine whether the independence assumptions hold for typical FHE parameter regimes under hybrid dual attacks.
+
+1.1 Our Contribution
+In this paper, we revisit the Meet-LWE attack and propose a more effective hybrid dual attack for LWE with sparse ternary secrets. Notably, we prove that our attack does not rely on the debated independence heuristic. Our contributions are three-fold.
+(1) Improved Understanding of Meet-LWE and Its Variants. We thoroughly revisit Meet-LWE and two of its recent enhancements: the new list construction and hash function techniques (Sections 3 and 4). In particular, we simplify the analysis of the list construction method introduced in [20] by adapting it to the pure Meet-LWE setting, and we develop a more theoretically rigorous method for parameter selection that removes the previous reliance on empirical heuristics. We then perform an in-depth comparison of four Meet-LWE variants obtained by combining different list constructions and hash functions. Our analysis reveals several key insights. Surprisingly, while the new list construction from [20] successfully eliminates error enumeration, it frequently results in worse performance across a wide parameter range due to a fundamental structural bottleneck. In contrast, the new randomized hash function from [31, 20] consistently outperforms Odlyzko's classic hash function [21, 34] by reducing the large number of hash labels at a minor repetition cost. This advantage becomes particularly pronounced with large error distributions, which are typical in hybrid dual attacks. When used together, these two techniques complement each other effectively: the hash function mitigates the main bottleneck of the list construction, while the list construction amplifies the hash function's impact. As a result, their combination achieves the best overall performance in most practical parameter regimes, though some regions still leave room for further optimization. Contrary to the claims of [24], our findings indicate that it is the new list construction, rather than the new hash function, that primarily resolves the error enumeration issue. The hash function instead addresses the amplified label explosion problem. We believe that our detailed analysis of these techniques contributes to a deeper understanding of how these techniques work in the complex scenarios of MITM attack and hybrid dual attack, and lays the groundwork for further improvements.
+(2) A More Effective Hybrid Dual Attack. In Section 5, we propose an improved hybrid dual attack based on the Bi-Lu-Luo-Wang (BLLW) algorithm [5], equipped with the above two new techniques. Based on our previous analysis, this change helps to overcome the two main drawbacks of [5]. In addition, regarding the hypothesis testing, we replace the trivial decoder used in previous MITM-accelerated hybrid dual attacks [10, 5] by a better hypothesis testing algorithm referred to as Simple-decoder in [25]. Focused on LWE with
+
+4
+
+Bi et al.
+
+FHE-type parameters, the Gaussian distribution in hybrid dual attack to be
+
+distinguished has a relevant small deviation (compared with those in PQC-type
+
+parameters) and can be easily distinguished from a uniform distribution. There-
+
+fore, both [10] and [5] simply selects a threshold to decide the distribution.
+
+However, this trivial decoder requires a large dimension to ensure a high suc-
+
+cess probability, which increases the complexity of the former MITM process.
+
+This inefficiency has been overlooked by previous MITM-accelerated hybrid dual
+
+attacks [10, 5]. In our new attack we replace the trivial decoder with the Simple-
+
+decoder, which can decrease the dimension and thus decrease the complexity
+
+while maintaining a similar success probability.
+
+(3) Clarifying the Independence Heuristic. In response to recent con-
+
+cerns raised by Ducas and Pulles [13], we clarify that our attack is not affected
+
+by it through both theoretical analysis and experiments (Section 6). The core
+
+reason
+
+for
+
+this
+
+is
+
+the
+
+small
+
+ratios
+
+of
+
+ q
+
+and
+
+w n
+
+in
+
+FHE
+
+schemes
+
+(where
+
+
+
+is
+
+the
+
+standard deviation of the error and w is the hamming weight of the secret),
+
+which simplify the instances requiring hypothesis testing and decrease the num-
+
+ber of testing instances. As it is easy to distinguish the correct one, we only need
+
+a small number of short vectors from the dual lattice for the hypothesis testing.
+
+Indeed, the number is smaller than the dimension of the lattice, so we can use
+
+linearly independent ones to do the testing, which makes the scores independent
+
+from each other. We analyze and experimentally verify this argument to show
+
+that our attack is out of the scope of the contradictory regime of independence
+
+heuristic.
+
+Finally, in Section 7 we compare our new attack with previous MITM-
+
+accelerating hybrid dual attacks [5, 10] on a series of LWE instances with FHE-
+
+type parameters. The results show that our new attack offers significant im-
+
+provements across all cases. Particularly, we estimate the bit-security of CKKS
+
+[11], a leading scheme used in many open-source implementations of HE. Our
+
+attack reduces the bit-security by 17-24 bits compared with [5, 10], bringing the
+
+estimated security level close to the claimed boundary (82 bits vs 80 bits). Ad-
+
+ditionally, we estimate the security of the accelerated BGV schemes published
+
+in EUROCRYPT24 [29], showing that the bit-security falls below the claimed
+
+security level by up to 18 bits, thus invalidating the schemes and requiring re-
+
+parameterized. We remark that our results do not invalidate the security of
+
+LWE-based schemes in NIST-PQC as MITM-accelerating hybrid dual attacks
+
+do not fit their parameters.
+
+1.2 Related Work
+MITM Attack. Odlyzko's [21] and Howgrave-Graham's [34] MITM attacks are two basic forms of meet-in-the-middle with different splitting methods of the secret: As = A1s1 + A2s2 vs As = A(s1 + s2). Odlyzko's algorithm runs in time O S0.5 , where S is the search space of s and Howgrave-Graham's is worse than that. In 2021, May [31] proposed a new MITM attack named MeetLWE on sparse ternary LWE, reduces the complexity to O S0.25 . This work is followed up by a series of improvements [15, 16, 20, 23, 24, 28] and among them,
+
+An Improved Hybrid Dual Attack on LWE
+
+5
+
+Kirshanova-May [24] and Hhan-Kim-Lee-Son [20] independently tried to remove the two auxiliary overheads by using similar techniques and Hhan-Kim-LeeSon [20] combined the improved Meet-LWE into the hybrid primal attack.
+Hybrid Dual Attack. The first hybrid dual attack was introduced by Albrecht [2] in 2017. After that, this type of attacks evolves rapidly and has become the most efficient bit-security estimation algorithm of LWE. In 2020, EspitauJoux-Kharchenko [14] introduced a FFT-type distinguisher and an efficient matrix multiplication method to accelerate guessing small secrets. Bi-Lu-Luo-WangZhang [6] further generalized the matrix multiplication method for LWE with arbitrary secrets, and showed that hybrid dual attack always outperforms the standalone dual attack for most cryptographic use cases regardless of the secret distribution. In 2021, Guo-Johansson [17] gave a hybrid dual attack by introducing a FFT distinguisher and a two-step lattice-reduction which is followed quickly by an independent report of MATZOV [30], which further improves the attack by combining it with the modulus switching technique. Two follow up works by Albrecht-Shen [3] and Carrier-Shen-Tillich [8] improve this attack by using quantum algorithm and coding theory, respectively.
+For LWE with FHE-type parameters, another branch of hybrid dual attacks using MITM techniques further improves the efficiency. Cheon-Hhan-Hong-Son [10] introduced a hybrid dual attack for LWE with FHE-type parameters by using Howgrave-Graham's MITM attack [34], which significantly improves the performance of the original hybrid dual attack by Albrecht [2]. After that, BiLu-Luo-Wang [5] continue to improve this type of attack by replacing HowgraveGraham's MITM attack with Meet-LWE, a more efficient MITM attack proposed by May [31].
+Hybrid Primal Attack. The hybrid primal attack on LWE was first presented by Wunderer [42], which combines the primal attack with HowgraveGraham's MITM attack [34]. This attack works for LWE with arbitrary secret and error. Afterwards, Son-Cheon [40] showed that when focusing on LWE with FHE-type parameters, Wunderer's hybrid primal attack can be further improved because of the structure of the sparse ternary secret. Recently, Hhan-Kim-LeeSon [20] proposed a new hybrid primal attack on FHE that combines primal attack and a generalization of May's Meet-LWE attack [31] using a new list construction.
+
+2 Preliminaries
+
+2.1 Notations
+
+Denote U(S) the uniform distribution over a compact set S  Rn. Denote
+
+Gc, a Gaussian distribution with center c and standard deviation , and use
+
+G as shorthand for G0,. The multinomial coefficient is denoted as
+
+a b1 ,b2
+
+:=
+
+a b1
+
+a-b1 b2
+
+.
+
+The
+
+Gauss
+
+error
+
+function
+
+is
+
+defined
+
+as
+
+erf(x) :=
+
+2 
+
+x -
+
+e-t2 dt.
+
+We
+
+write [n] := {1, · · · , n}.
+
+6
+
+Bi et al.
+
+2.2 Lattice and Lattice Reduction
+
+A lattice is a discrete additive subgroup of Rm for some m  N. Formally,
+
+a lattice  is the set of all integer linear combinations of a set of n linearly
+
+independent vectors B = {b1, · · · , bn}  Rm, i.e.,  = { i[n] zi · bi : zi  Z}.
+
+The determinant of the lattice is given by det() = det(BT B). For a random
+
+lattice  of dimension m, the Gaussian heuristic estimates the norm of the
+
+shortest vector in the lattice 1() as GH()  det()1/m ·
+
+m 2e
+
+.
+
+A lattice reduction algorithm takes a basis of a lattice as input and returns a
+
+new basis of the lattice with higher quality. The quality of a basis is characterized
+
+by
+
+the
+
+root-Hermit-factor
+
+0,
+
+defined
+
+as
+
+0m
+
+=
+
+||b1
+
+||/det()
+
+1 m
+
+,
+
+where
+
+b1
+
+is
+
+the
+
+first (and shortest) vector in the output basis. BKZ algorithm is exploited for
+
+lattice reduction. It takes a blocksize  and a basis as input, and outputs a
+
+reduced
+
+basis
+
+with
+
+root-Hermit-factor
+
+0
+
+=
+
+(
+
+ 2e
+
+(
+
+
+
+)
+
+1 
+
+1
+) 2(-1)
+
+.
+
+(Hybrid) Dual attacks utilize the BKZ algorithm to generate short vectors.
+
+In this paper, following the approach in [17, 30], we adopt a two-step reduction
+
+strategy: (1) apply BKZ with block size 1 to the dual lattice; (2) perform sieving
+
+on the lattice L spanned by the first 2 vectors of the reduced basis, yielding
+
+Nsieve(2) short vectors with norm at most 4/3 · 1(L). Let M denote the
+
+number of short vectors used in the hybrid dual attack. These are obtained by
+
+selecting the M shortest vectors among the Nsieve(2) generated ones.
+
+In addition, we follow [9, 14] to assume that the coordinates of the vectors
+
+output by BKZ are approximately independently distributed according to a Gaussian distributions with mean 0 and standard deviation / d, where d is
+
+the lattice dimension.
+
+2.3 The Learning with Errors Problem
+Definition 1 (LWE [39]). Let n, q  N. S is the secret distribution over Znq and  is a small error distribution over Z. For a secret s  S, denote LWEn,q,s, the probability distribution on Znq × Zq obtained by sampling a  Zqn uniformly random, sampling e   and returning (a, a, s + e)  Zqn × Zq. Given access to the outputs from LWEn,q,s,, we define two versions of LWE problem. DecisionLWE: Given m instances, distinguish LWEn,q,s, from U (Znq × Zq) for a fixed s  S. Search-LWE: Given m instances sampled from LWEn,q,s, with a fixed s  S, recover s.
+
+We rewrite the LWE instances into matrix form as (A, b = As + e mod q)
+
+where s  S, A  Zqm×n, e  m, b  Zqm. In this work, we focus on sparse
+
+ternary LWE and define two distributions for it as follows.
+
+Ternary-0: Given an even number w, let T0n(w) denote the set of all vectors
+
+s  {0, ±1}n
+
+that
+
+have
+
+exactly
+
+w 2
+
+entries
+
+of
+
+1
+
+and
+
+w 2
+
+entries
+
+of
+
+-1.
+
+The
+
+uniform
+
+distribution over T0n(w), denoted by U0n(w), assigns equal probability to each
+
+vector in this set.
+
+Ternary-1: Given an even number w, let T1n(w) =
+
+w h=0,even
+
+h
+
+T0n(h),
+
+i.e.,
+
+T1n(h)
+
+is
+
+the
+
+set
+
+of
+
+all
+
+vectors
+
+s
+
+
+
+{0, ±1}n
+
+that
+
+have
+
+exactly
+
+h 2
+
+entries
+
+of
+
+1
+
+An Improved Hybrid Dual Attack on LWE
+
+7
+
+and
+
+h 2
+
+entries
+
+of
+
+-1,
+
+where
+
+h
+
+is
+
+an
+
+even
+
+number
+
+with
+
+0
+
+
+
+h
+
+
+
+w.
+
+Let
+
+p
+
+be
+
+a
+
+probability mass function defined on the even integers h such that 0  h  w,
+
+with
+
+w h=0
+
+p(h)
+
+=
+
+1.
+
+Given
+
+p
+
+and
+
+w,
+
+the
+
+mixture
+
+distribution
+
+over
+
+T1n(w),
+
+denoted by U1n(w, p), is defined as follows: A vector is drawn by first selecting h
+
+with probability p(h), and then uniformly sampling a vector from T0n(h).
+
+2.4 Lemmas
+
+Lemma 1 ([40, 20]). Let x  U[0, B) and e   with supp() = [-E, E]. If  is a Gaussian distribution, then the probability that x + e  [0, B) is
+
+e-2 - 1
+
+pc (E, B) := Pr [x + e  [0, B)|x  U [0, B), e  GE] = erf( ) +
+
+ 
+
+,
+
+where  = B . If  is a uniform distribution, then
+2E
+
+x  U[0, B)
+
+pc (E, B) := Pr
+
+x + e  [0, B) e  U[-E, E)
+
+1
+
+ 
+
+2E
+
+for
+
+B
+
+=0
+
+=
+
+B 2E
+
+for
+
+0<B
+
+<
+
+E 2
+
+1 -
+
+E 2B
+
+for
+
+B
+
+
+
+E 2
+
+.
+
+Lemma 2 ([13]). Let  be a lattice with volume 1 and r > 0 such that r <
+
+1 () 2GH()
+
+.
+
+Then,
+
+for
+
+a
+
+target
+
+t
+
+uniform
+
+in
+
+Rm/,
+
+it
+
+holds
+
+with
+
+probability
+
+rm
+
+that
+
+t is at distance at most r · GH() from the lattice.
+
+3 Meet-LWE attack and Two New Techniques
+In this section, we begin by reviewing the original Meet-LWE attack proposed by [31] and analyze its limitations when applied in a hybrid dual attack (Section 3.1). Then we revisit two recent techniques that enhance Meet-LWE from two perspectives: hash function and list construction (Section 3.2 and 3.3, respectively). In particular, for the list construction technique originally introduced in the context of a hybrid primal attack [20], we present a simplified analysis tailored to the pure Meet-LWE setting. Our contribution includes a more theoretically grounded method for parameter selection, which avoids reliance on empirical heuristics and improves the general applicability of the approach.
+
+3.1 Meet-LWE Attack
+Consider an LWE instance (A, b = As + e mod q)  Zqm×n × Zqn, where s  T0n(w) and e  m, with supp() = [-E, E].4 A typical MITM attack solves
+4 When  = U , e is uniform in [-E, E]m. When  = G, we treat its effective range as [-3, 3]m. This ensures that e falls within this range with overwhelming probability. Note that the success of Meet-LWE depends only on the range of the error, not on its precise distribution.
+
+8
+
+Bi et al.
+
+the LWE instance by splitting the equation as As1 = b - As2 - e mod q, where
+
+s1 + s2 = s with s1, s2  T0n
+
+w 2
+
+, followed by enumerating (s1, s2) to find a pair
+
+(As1, b - As2) that differs from each other by e. The main idea of Meet-LWE is
+
+that s can be represented as the sum of s1 and s2 in R =
+
+w/2 w/4
+
+2
+
+different
+
+ways,
+
+thus
+
+in
+
+expectation
+
+we
+
+can
+
+find
+
+one
+
+of
+
+them
+
+by
+
+only
+
+enumerating
+
+1 R
+
+-fraction
+
+of
+
+the overall search space of (s1, s2).
+
+Meet-LWE
+
+filters
+
+out
+
+the
+
+1 R
+
+-fraction
+
+of
+
+the
+
+search
+
+space
+
+in
+
+the
+
+following
+
+way.
+
+Let k = logq R and define a projection mapping km(·) to extract the first k
+
+coordinates of a m-length vector. We choose a random target t  Zkq and only
+
+enumerate (s1, s2) that satisfy the following condition:
+
+km (As1 + e) = km (b - As2) = t mod q.
+
+(1)
+
+As km(As1 + e) and km(b - As2) can be regarded as uniformly distributed over
+
+Zkq ,
+
+those
+
+that
+
+satisfy
+
+Eq.(1)
+
+account
+
+for
+
+1 qk
+
+
+
+1 R
+
+of
+
+the
+
+entire
+
+set.
+
+In
+
+this
+
+way,
+
+we
+
+get
+
+one
+
+solution
+
+(As1, b - As2)
+
+with
+
+high
+
+probability
+
+by
+
+enumerating
+
+1 R
+
+of
+
+the search space of (s1, s2).
+
+There is an additional expense in this process: enumerating the error km(e) in
+
+the first term km (As1 + e). Meet-LWE splits the error as km(e) = km ((e1|0))+
+
+km ((0|e2)) through standard MITM manner to decrease the time complexity.
+
+Overall, we construct the following two lists:5
+
+L1 = {s1 : km (As1 + (e1|0)) = t mod q} , L2 = {s2 : km (b - As2 + (0|e2)) = t mod q} .
+
+The pairs in L1 ×L2 satisfy the LWE equation in the first k entries. It remains to find a pair (As1, b - As2) such that they are close to each other in the remaining m-k entries. In the original Meet-LWE, this is done by applying Odlyzko's hash function, which is defined as
+
+ 0 
+
+if xi 
+
+-
+
+q 2
+
+,
+
+-E
+
+h(x)i = 1
+
+if xi 
+
+0,
+
+q 2
+
+-
+
+E
+
+.
+
+(2)
+
+0, 1
+
+if xi  [-E, 0) 
+
+q 2
+
+-
+
+E,
+
+q 2
+
+Note that border values in [-E, 0)
+
+q 2
+
+-
+
+E,
+
+q 2
+
+will get both labels. Let |L| denote
+
+the size of lists and d denote the dimension of coordinates to perform the hash
+
+function.
+
+Then
+
+the
+
+total
+
+number
+
+of
+
+hash
+
+labels
+
+for
+
+one
+
+list
+
+is
+
+|L|
+
+:=
+
+|L|
+
+·
+
+2 2E+1 q
+
+d
+
+and the expected number of collision between two such lists is 2-d(|L|)2. Hence,
+
+the overall time complexity is
+
+TOdlyzko(|L|, d) = max{|L|, 2-d(|L|)2}.
+
+(3)
+
+While Meet-LWE effectively reduces the search space by exploiting multiple representations of the secret, it also introduces two time-consuming operations:
+
+5 These lists can be constructed in a standard MITM manner, e.g., enumerate s1 as
+
+the sum of u1  T0n/2
+
+w 4
+
+× 0n/2 and u2  0n/2 × T0n/2
+
+w 4
+
+.
+
+An Improved Hybrid Dual Attack on LWE
+
+9
+
+Algorithm 1 Use LSH-hash to find near pairs
+Require: lists L1, L2 of size |L|, E Ensure: A set of E-near pairs (x, x)  L1 × L2 1: choose a range B 2: repeat 3: choose u  Zqm 4: apply hB,u to L1, L2 and sort L1, L2 according to the hash values 5: merge the sorted lists according to their hash values 6: output the pairs (x, x)  L1 × L2 satisfying ||x - x||  E 7: until  times
+
+(1) enumerating the k-entries of the error vector, and (2) computing a large number of hash labels for values near the boundary. These operations become especially costly when the error range E is large, as is typical in the hybrid dual attack scenario. How to avoid these inefficiencies was raised as an open problem in [31, 5]. Next we revisit two recently introduced proposed techniques designed to address these challenges.
+
+3.2 Randomized Hash Function
+
+We begin by reviewing the improved hash function that can avoid the issue of excessive hash labels near boarder values in Odlyzko's hash function. The idea is to partition the Zq torus into multiple segments and, more importantly, to introduce randomization into the partitioning process [33]. We refer to Odlyzko's original hash function, used in the original Meet-LWE, as Hash1 (see Eq.(2)), and the improved version as Hash2. We remark that Hash2 was first proposed and analyzed in the Meet-LWE variant of Kirshanova-May [24], and was later also used in the work of Hhan-Kim-Lee-Son [20].
+Given a selected bucket size B and a uniformly random shift vector u  Zqd, define a locality-sensitive hash function (LSH) as
+
+hu,B :
+
+Zdq  [0, · · · ,  - 1]d ,
+
+(x1,
+
+··
+
+·
+
+,
+
+xd)
+
+
+
+( x1
+
++ B
+
+u1
+
+
+
+mod
+
+,
+
+··
+
+·
+
+,
+
+ xd
+
++ B
+
+ud
+
+
+
+mod
+
+),
+
+where  =
+
+q B
+
+. Let HBd
+
+=
+
+hu,B|u  Zqd
+
+denote a family of the above LSH-
+
+hash functions parameterized by B and u. The algorithm of using this LSH-hash
+
+to find near pairs is shown in Algorithm 1. Here we name a pair of vectors (x, x)
+
+as an E-near pair if ||x - x||  E.
+
+For an E-near pair (x, x), the probability that they have the same hash value
+
+is pnear := Pr [hB,u(x) = hB,u(x)] = pc (E, B)d, as established in Lemma 1. By
+
+repeating the procedure (Line 3-6 in Algorithm 1) for  times, the algorithm
+
+finds the pair with probability at least pLSH = 1 - (1 - pnear). To ensure that
+
+the algorithm finds a (1 - o(1))-fraction of all E-near pairs with high probability,
+
+we
+
+follow
+
+[20]
+
+and
+
+set
+
+
+
+=
+
+. 10
+pnear
+
+The
+
+total
+
+number
+
+of
+
+hash
+
+evaluations
+
+is
+
+ · |L|,
+
+10
+
+Bi et al.
+
+and
+
+the
+
+expected
+
+number
+
+of
+
+collisions
+
+is
+
+approximately
+
+·
+
+|L|2 2
+
+·
+
+1 d
+
+[20].
+
+Then
+
+the overall runtime of the algorithm is computed as
+
+|L|2 1
+
+10
+
+TLSH(|L|, d, B)  max{|L|, 2 · d } · pc(E, B)d ,
+
+(4)
+
+where  =
+
+q B
+
+, and the optimal B is found by enumeration. From this runtime
+
+expression, we observe that Hash2 avoids the issue of excessive hash labels at
+
+the cost of introducing a repetition number .
+
+3.3 List Construction
+
+Next we revisit a recent list construction technique designed to eliminate the error enumeration. The challenge of removing error enumeration was first posed as an open problem by May [31]. In response, Kirshanova-May [24] introduced a solution that combined a new list construction with a randomized hash function. However, as later noted in [20, Appendix A], their success probability analysis contains a flaw. When corrected, the resulting algorithm becomes impractical.
+To address this, Hhan-Kim-Lee-Son [20] proposed a new list construction that also avoids error enumeration and incorporated it into the hybrid primal attack framework. However, due to the complexity introduced by the hybrid setting, their analysis is somewhat intricate and relies on empirical methods for parameter selection.
+In this subsection, we revisit the list construction of Hhan-Kim-Lee-Son [20] and present an alternative, simplified analysis within the context of a pure MeetLWE attack. In particular, we show how to choose parameters analytically using a simple worst-case probability criterion, thereby eliminating the reliance on experimental heuristics. For simplicity, we focus on the case with four levels of lists, which suffices to illustrate the core ideas of the construction and its analysis. For clarity of reference, we denote the original list construction used in Meet-LWE as Const.1 and the variant introduced in [20] as Const.2.
+
+Lists. For the level-1 lists, instead of choosing a fixed target t  Zqk as in Const.1, Const.2 chooses an interval -(1), (1) centered around the origin on
+
+k(1)
+
+coordinates
+
+to
+
+ensure
+
+that
+
+approximately
+
+a
+
+1 R(1)
+
+-fraction
+
+of
+
+the
+
+total
+
+search
+
+space for (s1(1), s2(1)) in captured in the lists:
+
+km(As1(1))  [-(1), (1)]k(1) and km(b - As2(1))  [-(1), (1)]k(1) ,
+
+(5)
+
+where s1(1), s2(1)  T0n
+
+w 2
+
+. Note that setting (1) = 0 reduces this condition to
+
+the one used in Const.1 with t = 0, making Const.1 a special case of Const.2.
+
+The level-1 lists are then defined as:
+
+L(11)
+
+=
+
+{(s(11),
+
+As(11))
+
+:
+
+m
+k(1)
+
+(As(11)
+
+)
+
+
+
+[-(1),
+
+(1)]k(1) },
+
+L(21)
+
+=
+
+{(s(21),
+
+b
+
+-
+
+As(21))
+
+:
+
+m
+k(1)
+
+(b
+
+-
+
+As2(1))
+
+
+
+[-(1),
+
+(1)]k(1) }.
+
+An Improved Hybrid Dual Attack on LWE
+
+11
+
+Recall
+
+that
+
+in
+
+Const.1,
+
+to
+
+ensure
+
+Eq.(1),
+
+we
+
+must
+
+enumerate
+
+over
+
+m
+k(1)
+
+(e)
+
+
+
+[-E, E]k(1) , which incurs significant computational cost. Const.2 avoids this enu-
+
+meration by instead introducing a probability that combining b - As(21) and As1(1) satisfying Eq.(5) can get the desired error e. We will analyze how this influence the selection of k(1), (1) later.
+
+These level-1 lists are constructed from level-2 lists, which are defined in a
+
+similar manner. Given proper parameters k(2), (2) , level-2 lists are defined as:
+
+L(i2)
+
+=
+
+{(si(2), Asi(2))
+
+:
+
+m
+k(2)
+
+(As(i2)
+
+)
+
+
+
+[-(2), (2)]k(2) }, i
+
+=
+
+1, 2, 3,
+
+L4(2)
+
+=
+
+{(s4(2), b
+
+-
+
+As(42))
+
+:
+
+m
+k(2)
+
+(b
+
+-
+
+As4(2))
+
+
+
+[-(2), (2)]k(2) },
+
+where s(i2)  T0n
+
+w 4
+
+(i = 1, 2, 3, 4). Note that these lists must ensure that for
+
+each element in Li(1)(i = 1, 2), at least one out of R(2) representations of s(i1) =
+
+s(22i-) 1 + s(22i) exists in the level-2 lists. This requirement guides the selection of
+
+k(2), (2) , which we will analyze in detail later.
+
+Finally, level-2 lists are constructed from the level-3 (top level) lists L(i3), which are defined using Odlyzko's MITM technique.6 In this construction, each
+
+vector si(2)  T0n
+
+w 4
+
+is enumerated as the sum of s2(3i-) 1
+
+
+
+T0n/2(
+
+w 8
+
+)×0
+
+n 2
+
+and
+
+s(23i)
+
+
+
+0n 2
+
+×
+
+T0n/2
+
+(
+
+w 8
+
+).
+
+Algorithm. The complete Meet-LWE algorithm using Const.2 is summarized in Algorithm 2. The selection of parameters k(i), (i) in step 1 will be analyzed
+in detail later. The algorithm begins by generating the top-level lists and then
+recursively constructs lower-level lists by applying hash function to selected coordinates. In step 4, the hash function is applied to the k(1) - k(2) coordinates for two main reasons. First, we aim to find (1)-near collisions in L1(2) × L(22) to construct the level-1 lists, and only the first k(1) coordinates of the elements in level-1 lists satisfy this condition. Second, the k(2) coordinates of the elements
+in level-2 lists are too small for effective hashing; using them would result in too many hash addresses or rounds. Instead, these k(2) coordinates are later used to filter candidate pairs that matched on the remaining k(1) - k(2) coordinates.
+A similar strategy is used in step 5, where the hash function is applied to the m - k(1) coordinates. However, here we omit the filtering step on the k(1) co-
+ordinates because the full condition across all coordinates will be verified later
+in step 7. Finally, note that the hypothesis testing step (lines 6-8) involves two conditions. We will replace the second condition, Ax - b mod q  [-E, E]m,
+with a more efficient decoder later in our hybrid attack.
+
+Selection of (k(i), (i)). The choice of parameters (k(i), (i)) is crucial for successfully recovering the secret s. The primary requirement is that for each element
+
+6 We note that the original construction for top-level lists in [20] follows a differ-
+
+ent MITM approach, which involves randomly sampling a subset of T0n
+
+w 8
+
+. Since
+
+Odlyzko's MITM is both simpler to implement and more efficient [31, Section 4], we
+
+adopt it in place of the original method in [20].
+
+12
+
+Bi et al.
+
+Algorithm 2 Meet-LWE with Const.2 on solving Ternary-0 LWE
+
+Require: (A, b = As + e mod q)  Zqm×n × Zm q with s  T0n(w) and e  [-E, E]m Ensure: s  T0n(w) satisfying As - b mod q  [-E, E]m 1: compute parameters k(1), k(2) and (1), (2)
+
+2: construct level-3 lists as T0(w(3)) of size L(3)
+
+L(i3)
+
+=
+
+{(s(i3), Asi(3))
+
+:
+
+s(i3)
+
+
+
+T0n/2 (
+
+w 8
+
+)
+
+×
+
+0n/2}, i
+
+=
+
+1, 3, 5, 7
+
+L(i3)
+
+=
+
+{(s(i3),
+
+b
+
+-
+
+Asi(3))
+
+:
+
+si(3)
+
+
+
+0n/2
+
+×
+
+T0n/2
+
+(
+
+w 8
+
+)},
+
+i
+
+=
+
+2,
+
+4,
+
+6
+
+L8(3)
+
+=
+
+{(s(83), b
+
+-
+
+As(83))
+
+:
+
+s8(3)
+
+
+
+0n/2
+
+×
+
+T0n/2
+
+(
+
+w 8
+
+)}
+
+3: construct level-2 lists by performing hash function on the k(2) coordinates of the
+
+second component of the elements in level-3 lists
+
+L(i2)
+
+=
+
+{(si(2), As(i2))
+
+:
+
+m k(2)
+
+(Asi(2)
+
+)
+
+
+
+[-(2), (2)]k(2) }using
+
+L2(3i-) 1
+
+×
+
+L2(3i), i
+
+=
+
+1, 2, 3
+
+L4(2)
+
+=
+
+{(s(42), b
+
+-
+
+As(42))
+
+:
+
+m k(2)
+
+(b
+
+-
+
+As(42))
+
+
+
+[-(2), (2)]k(2) }
+
+using
+
+L(73)
+
+×
+
+L(83)
+
+4: construct level-1 lists by first performing hash function on the k(1)-k(2) coordinates
+
+of the second component of elements in level-2 lists, and then filtering matched pairs
+
+based on the k(2) coordinates
+
+L(11)
+
+=
+
+{(s(11), As1(1))
+
+:
+
+m k(1)
+
+(As1(1)
+
+)
+
+
+
+[-(1), (1)]k(1) }
+
+using
+
+L(12)
+
+×
+
+L2(2)
+
+L2(1)
+
+=
+
+{(s(21), b
+
+-
+
+As(21))
+
+:
+
+m k(1)
+
+(b
+
+-
+
+As2(1))
+
+
+
+[-(1), (1)]k(1) }
+
+using
+
+L3(2)
+
+×
+
+L4(2)
+
+5: construct level-0 list L(10) by performing hash function on the m - k(1) coordinates
+
+of the second component of the elements in level-1 lists
+
+6: for all matched (s1(1), ·) and (s2(1), ·) in L1(0) do
+
+7: if x := s(11) + s(21)  T0n(w) and Ax - b mod q  [-E, E]m then
+
+8:
+
+return x
+
+s(ji-1) at level-(i - 1), there must exist at least one corresponding representation at level-i with high probability. However, the analysis in [20] ensures this con-
+
+dition only on average, rather than for every individual sj(i-1). In what follows, we clarify this issue by carefully examining the conditions on the parameters
+
+(k(2), (2)) and (k(1), (1)).
+
+We begin with (k(2), (2)). To construct the level-1 list L1(1) (the analysis
+
+for L(21) is analogous), we must select suitable parameters (k(2), (2)) for the
+
+level-2 lists such that, for each element s1(1) in L(11), at least one representation
+
+(s(12), s(22)) of s(11) survives in L1(2) ×L(22) with high probability. Let pR(s(11)) denote
+
+the probability that a single representation of s1(1) satisfies this condition. Since
+
+there are R(2) representations, we require R(2) · pR(s(11))  1 to ensure at least
+
+one
+
+representation
+
+survives
+
+with
+
+probability
+
+1
+
+-
+
+(1
+
+-
+
+pR (s1(1) ))R(2)
+
+
+
+1
+
+-
+
+1 e
+
+.
+
+Define E1(s1(1)) and E2(s1(1)) as the events that the first k(2) coordinates of
+
+As1(2) and As(22), respectively, lie within the box -(2), (2) . k(2) Since As(22) =
+
+-As1(2) + As1(1), we have
+
+pR s(11) = Pr E1 s1(1) · Pr E2 s(11) E1 s(11) .
+
+=
+
+2(2) q
+
+k(2)
+
+conditional probability depends on s(11)
+
+An Improved Hybrid Dual Attack on LWE
+
+13
+
+Observe that the first term does not depend on s1(1), whereas the second conditional probability varies with the particular value of s1(1). In [20], this second term is approximated by its expectation over all s(11) in L(11):
+
+pexp
+
+=
+
+Es(11)L1(1) [Pr[E2(s(11))|E1(s(11))]]
+
+=
+
+(1
+
+-
+
+(1) )k(2) , 4(2)
+
+and then the parameters k(2), (2) are chosen to satisfy
+
+R(2)
+
+·
+
+2(2) (
+q
+
+)k(2)
+
+·
+
+pexp
+
+
+
+1.
+
+(6)
+
+This approach is flawed. In practice, we must ensure that R(1) · pR(s1(1))  1 holds for every s(11) in L(11), not merely on average. If the parameters (k(2), (2)) are chosen according to condition 6, then for elements s(11) with below-average
+conditional probability, the expected number of surviving representations in
+
+L1(2) × L2(2) will fall below one, resulting in missing elements in L1(1). Conversely, elements with above-average probabilities yield extra representations, but only
+
+one is retained in L1(1). As a result, these additional representations cannot compensate for the missing ones, and the overall correctness of the construction is
+
+not preserved.
+
+This limitation is acknowledged in [20]. To mitigate it, [20] adopts a more con-
+
+servative
+
+strategy:
+
+the
+
+parameters
+
+(k
+
+(2)
+
+,
+
+(2)
+
+)
+
+are
+
+chosen
+
+such
+
+that
+
+R(2)
+
+·(
+
+2(2) q
+
+)k(2)
+
+·
+
+pexp  10, which is intended to ensure that the survival probability is at least
+
+1-
+
+1 e10
+
+.
+
+Subsequently,
+
+they
+
+conduct
+
+experiments
+
+to
+
+estimate
+
+the
+
+actual
+
+expected
+
+probability that an element s1(1) in L1(1) has at least one surviving representa-
+
+tion. Their empirical results show that this probability remains above 0.6 when
+
+k(2)  100, and it could be smaller for larger dimension.
+
+To enhance the general applicability of the method and ground it in a more
+
+rigorous theoretical framework, we propose a different and simpler approach
+
+for parameter selection. Rather than relying on the average-case behavior, we
+
+analyze the worst-case conditional probability, which occurs when the first k(1)
+
+coordinates of As(11) are all equal to (1):
+
+pmin = min Pr E2
+s1(1) L1(1)
+
+s1(1)
+
+E1 s(11)
+
+= (Pr[-x + (1)  [-(2), (2)]|x  [-(2), (2)]])k(2) = (1 - (1) )k(2) . 2(2)
+
+We then adopt this worst-case bound to guide parameter selection and require
+
+R(2)
+
+·
+
+( 2(2) )k(2) q
+
+·
+
+(1
+
+-
+
+(1) )k(2) 2(2)
+
+
+
+1.
+
+(7)
+
+This condition guarantees that every element s(11) in L1(1) has at least one surviving representation with high probability. Moreover, condition 7 implies a natural constraint on adjacent levels, namely, (1) < 2(2) must hold.
+
+14
+
+Bi et al.
+
+We now turn to the condition on (k(1), (1)), where the analysis is consistent
+
+with [20]. In this case, it suffices to ensure that, for the target secret s, at least
+
+one representation (s(11), s2(1)) survives in L(11) ×L(21) with high probability. Unlike the previous case, here we only need to consider one fixed target s. Let pR (s)
+
+denote the probability that a single representation of s satisfies this condition.
+
+Define E1(s) and E2(s) as the events that the first k(1) coordinates of As1(1) and
+
+b - As(21), respectively, lie within the box
+
+-(1), (1)
+
+k(1)
+.
+
+Note
+
+that
+
+b - As2(1)
+
+=
+
+As1(1) + e. Assuming independence across coordinates and denoting by e a single
+
+component of the error vector e, we have
+
+pR
+
+(s)
+
+=
+
+Eem
+
+(Pr
+
+[E1
+
+(s)]
+
+·
+
+Pr
+
+[E2
+
+(s)|E1
+
+(s)])
+
+=
+
+2(1) (
+q
+
+)k(1)
+
+·
+
+Eem
+
+Pr[E2(s)|E1(s)]
+
+=
+
+2(1) (
+q
+
+)k(1)
+
+·
+
+(Ee
+
+Pr[x
+
++
+
+e
+
+
+
+[-(1),
+
+(1)]|x
+
+
+
+[-(1),
+
+(1)]])k(1)
+
+=
+
+2(1) (
+q
+
+)k(1)
+
+·
+
+pc(E,
+
+(1))k(1) ,
+
+where pc(E, (1)) is defined in Lemma 1. Therefore, (k(1), (1)) satisfies
+
+R(1)
+
+·
+
+( 2(1) )k(1) q
+
+·
+
+pc(E, (1))k(1)
+
+
+
+1.
+
+(8)
+
+Given the above conditions, we determine the optimal values for (k(i), (i)) by performing an exhaustive search over all 0  k(2)  k(1)  m. For each pair (k(1), k(2)), we compute the corresponding values of (1) and (2) based on conditions (7) and (8), respectively, ensuring that the constraint (2) < 2(1) is
+satisfied.
+
+Time
+
+analysis.
+
+The
+
+sizes
+
+of
+
+the
+
+lists
+
+at
+
+each
+
+level
+
+are
+
+given
+
+by
+
+L(3)
+
+=
+
+|T0n/2
+
+(
+
+w 8
+
+)|,
+
+L(2)
+
+=
+
+|T0n(
+
+w 4
+
+)|
+
+·
+
+(
+
+2(2) q
+
+)k(2)
+
+,
+
+L(1)
+
+=
+
+|T0n(
+
+w 2
+
+)|
+
+·
+
+(
+
+2(1) q
+
+)k(1)
+
+.
+
+The
+
+size
+
+of
+
+L(0)
+
+depends
+
+on the hash function from level-1 lists to level-0 list (see the explanation of Eq.(3)
+
+and Eq.(4) for the number of collisions of using Hash1 and Hash2, respectively).
+
+Denote T (i) the time of performing hash function on level-i lists to generate
+
+level-(i - 1) lists (i = 1, 2, 3). The time of Hash1 and Hash2 are given in Eq.(3)
+
+and Eq.(4), respectively. Then the overall time of Const.2 is
+
+TConst.2 = max L(3), L(2), L(1), L(0), T (3), T (2), T (1) .
+
+(9)
+
+4 Comparison of Meet-LWE Variants
+In the previous section, we revisited two recently proposed techniques aimed at addressing the primary bottlenecks of Meet-LWE, namely, error enumeration and hash label explosion. While both techniques are designed to improve the efficiency of Meet-LWE, their actual effectiveness--whether they offer consistent
+
+An Improved Hybrid Dual Attack on LWE
+
+15
+
+gains and under what conditions--remains incompletely understood, particularly within the pure MITM setting. In this section, we conduct a systematic and indepth comparison of these techniques, both individually and in combination, within the Meet-LWE framework. Our analysis reveals that their performance exhibits subtler and more complex behavior than initially expected. In particular, we highlight the following insights.
+­ List Construction (Const.2): Somewhat surprisingly, the new list construction (Const.2) often results in worse performance across a wide range of parameter settings. This is due to a subtle but fundamental structural bottleneck,7 which we analyze in detail.
+­ Hash Function (Hash2): As expected, the new hash function Hash2 consistently outperforms Hash1, with its advantage becoming more pronounced when the error distribution is large.
+­ Combined Use: When used together, Hash2 and Const.2 complement each other: Hash2 mitigates the primary bottleneck of Const.2, while Const.2 amplifies the benefits of Hash2. This combination achieves better overall performance in most cases, though there remain parameter regimes where further improvements are needed.
+We hope these insights clarify the nuanced behavior of these techniques and also provide a foundation for future improvements to Meet-LWE and its variants.
+To facilitate a structured comparison, we define four Meet-LWE variants based on the choice of list construction and hash function: MITM1 is the original Meet-LWE; H1C2 replaces Const.1 by Const.2; H2C1 replaces Hash1 by Hash2, and MITM2 combines both changes. Since these attacks involve many interdependent parameters and exhibit complex interactions, we begin in Section 4.1 by analyzing the dependencies among key parameters. Building on this, Section 4.2 compares the four variants under three representative parameter settings, providing insights into their relative strengths and limitations. Finally, Section 4.3 offers a broader comparison across a wide parameter range.
+
+4.1 Parameter Dependency
+
+We begin with several observations regarding the dependency among parameters under Const.2. Recall that parameters (k(i), (i)) must satisfy the following
+conditions (7) and (8):
+
+R(2)
+
+· ( 2(2) )k(2) q
+
+· (1 -
+
+(1) )k(2) 2(2)
+
+
+
+1
+
+and
+
+R(1)
+
+· ( 2(1) )k(1) q
+
+· pc(E, (1))k(1)
+
+
+
+1.
+
+From these inequalities, we observe that (k(i) and (i)) must vary in the same direction in order to maintain feasibility.
+Observation 1. Under Const.2, for each level i = 1, 2, increasing k(i) requires increasing (i), and vice versa, assuming other parameters remain fixed.
+7 This limitation persists even with the parameter selection strategy proposed in [20].
+
+16
+
+Bi et al.
+
+k(1) 
+
+(1) 
+
+p =  1
+
+col
+
+2k(1) -k(2)
+
+k(2) 
+
+L(2) 
+
+#(label)
+
+=
+
+2(1) q
+
+(k(1)
+
+- k(2))
+
+
+
+T (2)
+
+Fig. 1: Parameter dependencies under H1C2 and the effect of increasing k(1). An arrow "" (resp. " ") from node A to node B indicates that increasing A cause B to increase (resp. decrease).
+
+Furthermore,
+
+conditions
+
+7
+
+and
+
+(8)
+
+imply
+
+that
+
+( ) 2(i) k(i)
+q
+
+
+
+. 1
+R(i)
+
+Hence,
+
+the
+
+list
+
+size
+
+under
+
+Const.2
+
+satisfies
+
+L(i)
+
+=
+
+|T0n
+
+(
+
+w 2i
+
+)|
+
+·
+
+(
+
+2(i) q
+
+)k(i)
+
+
+
+|T0n
+
+(
+
+w 2i
+
+)|
+
+·
+
+1 R(i)
+
+,
+
+where
+
+the right-hand side corresponds to the the list size under Const.1.
+
+Observation 2. For each level i = 1, 2, the list size under Const.2 is larger than that under Const.1.
+
+Finally, from condition 7 for (k(2), (2)), we can see that increasing (1) will
+
+decrease
+
+the
+
+last
+
+term
+
+(1
+
+-
+
+) . (1) k(2)
+2(2)
+
+To
+
+compensate,
+
+one
+
+must
+
+decrease
+
+k(2)
+
+to
+
+increase
+
+the
+
+middle
+
+term
+
+(
+
+2(2) q
+
+)k(2)
+
+,
+
+which
+
+will
+
+then
+
+increase
+
+the
+
+list
+
+size
+
+L(2).
+
+Observation 3. Under Const.2, increasing (1) requires decreasing k(2), which in turn increases the level-2 list size L(2).
+
+The above dependencies among parameters are summarized in Fig.1 and will be used in the next subsection.
+
+4.2 Comparison on Three Typical Schemes
+We compare the performance of the four Meet-LWE variants using three representative parameter sets from sparse ternary LWE. The first scheme "NTRU Prime 653" was originally used in [31] to illustrate the effect of MITM1. The second scheme "FHE 1024" features a much larger q than "NTRU Prime 653". The third scheme "FHE 1024 large error" is representative of hybrid dual attack scenarios, in which the LWE instance resulting from the reduction stage typically exhibits a large error. Table 1 summarizes the parameters of these schemes and the corresponding bit-security estimates obtained using each attack variant.
+Const.1 vs Const.2. We first compare Const.1 and Const.2 using the results of MITM1 and H1C2. Using Const.2 avoids the error-guessing time Te, but at the cost of increasing the list size L(1) (Obs. 2), which subsequently increases T (1). For all three schemes, this trade-off is favorable, as T (1) under H1C2 is always smaller than the combined cost T (1) + Te under MITM1. However, this local
+
+An Improved Hybrid Dual Attack on LWE
+
+17
+
+advantage does not always translate into a global one. In fact, for the first two
+schemes, the overall time complexity under H1C2 is surprisingly larger than that
+under MITM1. This demonstrates that adopting Const.2 does not necessarily yield better performance. The root cause is that the computational bottleneck under H1C2 lies in T (2), which dominates T (1) in these cases.
+Recall that T (2) is the time to apply Hash1 to the first k(1) - k(2) coordinates of the elements in level-2 lists in order to find (1)-close pairs:
+
+T (2)(H1C2)
+
+=
+
+max{L(2)
+
+·
+
+#(label), (L(2)
+
+·
+
+#(label))2
+
+·
+
+1 2k(1) -k(2)
+
+}
+
+=
+
+(L(2)
+
+·
+
+#(label))2
+
+·
+
+1 2k(1) -k(2)
+
+,
+
+where the first term is the time to computing hash labels and the second to find collisions. The second term dominates for all three schemes because k(1) - k(2)
+is small, resulting in a high collision probability. Since T (2) is large for the first two schemes, one natural idea is to increase
+the gap k(1) - k(2) to reduce the collision cost. However, this turns out to be
+ineffective due to a chain reaction among the parameters. As shown in Fig.1, increasing k(1) also increases (1) (Obs. 1), which then leads to a smaller k(2) and a larger L(2) (Obs. 3). Although this indeed widens the gap k(1) -k(2), which
+reduces the collision probability, it also increases both the number of labels and the list size L(2). These effects outweigh the gain, and as a result, increasing k(1) can actually worsen T (2). In fact, the current parameter settings for the first two schemes already achieve the optimal trade-off for minimizing T (2).
+Another idea to reduce T (2) is to introduce additional levels of lists. How-
+ever, this also does not help as adding more levels primarily reduces the time for constructing the level-2 lists (i.e., T (3)), which is already smaller than the bottleneck T (2). Therefore, it does not alleviate the overall runtime.
+
+Hash1 vs Hash2. We then compare Hash1 and Hash2 by examining the per-
+formance of MITM1 and H2C1. Both attacks share the same list construction
+(Const.1), and thus the error enumeration cost Te is identical in both. Their total runtime is given by T (MITM1/H2C1) = max T (1), T (2) + Te = T (1) + Te, since for these all schemes, T (1)  T (2). The key difference lies in T (1), the time
+of applying hash function on level-1 lists to find collisions. Hash1 assigns multiple hash labels to each elements in L(11) and L(21), whereas Hash2 avoids this redundancy but requires multiple rounds of hashing. Therefore, we can rewrite T (1) for each method as
+
+T (1)(MITM1) = L(1) · #(label) and T (1)(H2C1) = L(1) · #(round).
+
+Both the number of hash labels and the number of rounds depend primarily
+
+on
+
+the
+
+ratio
+
+E q
+
+.
+
+As
+
+this
+
+ratio
+
+is
+
+approaching
+
+0
+
+for
+
+the
+
+first
+
+two
+
+schemes,
+
+both
+
+terms are less than 1 bit, so the runtimes of MITM1 and H2C1 are nearly
+
+identical.
+
+In
+
+contrast,
+
+for
+
+the
+
+third
+
+scheme,
+
+the
+
+ratio
+
+is
+
+E q
+
+=
+
+0.02,
+
+leading
+
+to
+
+#(label) = 224 and #(round) = 26. This difference directly explains the gap
+
+18
+
+Bi et al.
+
+Table 1: Comparison of log2-based complexity for four variants of Meet-LWE
+
+Scheme Attack
+
+Cost (bit)
+
+List size (bit)
+
+Parameters
+
+T T (1) T (2) T (3) Te L(1) L(2) L(3) k(1) k(2) (1)
+
+(2)
+
+NTRU Prime
+653
+
+MITM1 H2C1 H1C2
+MITM2
+
+370 370 507 402
+
+352 352 367 357
+
+352 352 507 402
+
+365 268
+
+18 18 -
+
+352 352 367 357
+
+313 313 256 274
+
+192 192
+
+23 23 26 30
+
+21 14
+
+2 4
+
+27 7
+
+MITM1 180 173 173 - 7 173 115 - 3 - -
+
+-
+
+FHE H2C1 180 173 173 - 7 173 115 - 3 - -
+
+-
+
+1024 H1C2 204 173 204 126 - 173 102 64 4 3 16 638
+
+MITM2 172 172 172 123 - 172 128 64 87 5 323334 332534
+
+FHE MITM1 222 197 173 - 25 173 115 - 3 - -
+
+-
+
+1024 H2C1 204 179 173 - 25 173 115 - 3 - -
+
+-
+
+large H1C2 212 202 212 123 - 178 108 64 14 10 34369 103820
+
+error MITM2 180 180 180 124 - 175 128 64 64 4 280142 283491
+
+* NTRU Prime 653: (n, q, w) = (653, 4621, 288) and error e  U ({0, ±1}m).
+
+* FHE 1024: (log n, log q, w) = (10, 20, 64) and error e  G3.2. * FHE 1024 large error: (log n, log q, w) = (10, 20, 64) and error e  G0.02q.
+
+between the runtimes: (222 - 204 = 18 = 24 - 6). In summary, the advantage
+
+of
+
+Hash2
+
+is
+
+more
+
+pronounced
+
+when
+
+the
+
+ratio
+
+E q
+
+is
+
+large,
+
+which
+
+is
+
+exactly
+
+the
+
+situation encountered in hybrid attacks. Thus, Hash2 provides greater benefits
+
+for MITM in a hybrid framework than used alone.
+
+Combining Hash2 and Const.2. Finally we compare MITM1 and MITM2 to see the benefits of combining Hash2 and Const.2. MITM2 outperforms MITM1 for the last two schemes, while it performs worse on the first one. The most intriguing case is the second scheme, where using Hash2 along brings no gain, and Const.2 alone increases complexity, but combining both reduces the overall complexity by 8 bits. We analyze this case in more detail below.
+As discussed in "Const.1 vs Const.2", the main obstacle to using Const.2 in H1C2 is the large T (2), and attempts to reduce it by increasing k(1) are ineffective: while a larger k(1) reduces the collision probability, it also increases both the list size L(2) and the number of labels, negating the benefit. Now consider what happens when we additionally replace Hash1 with Hash2, resulting in MITM2. This brings two key advantages. First, the large number of labels is be replaced by a much smaller number of hashing rounds (as explained in "Hash1 vs Hash2"). Notably, from the perspective of Hash2, Const.2 amplifies its advantage because the number of labels under Const.2 is large, making Hash2 especially effective. Second, and more importantly, Hash2's ability to partition the torus into multiple segments greatly reduces the the collision probability. This enables more aggressive use of a larger k(1): while L(2) still increases, the reduction in collision probability dominates, resulting in an overall decrease in T (2) . To summarize, combining Hash2 and Const.2 is strictly more powerful
+
+An Improved Hybrid Dual Attack on LWE
+
+19
+
+NTRU Prime 653: n = 653, q = 4621 with w  [4, 256],   [1, 512]
+FHE 1024: log n = 10, log q = 20 with log w  [3, 8], log   [6, 16]
+Fig. 2: Comparison of Meet-LWE variants across a wide range of parameters. Red regions indicate instances where the new techniques outperform the original MITM1, with darker shades representing greater performance gains.
+than using either one alone, since Hash2 eliminates the primary bottleneck of Const.2, and Const.2 amplifies the efficiency gains brought by Hash2.8
+4.3 Comparison on A Large Range of Parameters In addition to the three schemes discussed earlier, we extend our comparison across a broader range of parameters. In particular, we fix two (n, q) settings corresponding to the first two schemes in Table 1 and vary the Hamming weight w and error standard deviation . The parameter settings and results are summarized in Fig.2.
+The trends in Fig.2 align with the conclusions drawn in the previous subsection. The two leftmost plots show that Const.2 often underperforms compared to Const.1 (blue regions), especially when w is large. The two middle plots demonstrate that Hash2 consistently outperforms Hash1, with its advantage growing as  and w increase. The rightmost plots, comparing MITM1 and MITM2, reveal a more nuanced picture. Both plots show that MITM2 performs worse when w is small. In the top-right plot, MITM2 also underperforms in the bottom-right region, which includes the "NTRU Prime 653" parameters. 8 This synergy is also observable in the first scheme, where MITM2 outperforms
+H1C2, although it still does not outperform MITM1.
+
+20
+
+Bi et al.
+
+These findings indicate that combining Const.2 and Hash2 offers improvements in most parameter settings, particularly when the error variance is large, as is typical in hybrid dual attack settings. This motivates the new hybrid dual attack introduced in the next section. That said, there remain cases where the combined method performs worse, highlighting an open challenge for future work.
+
+5 Our New Hybrid Dual Attack
+In this section we present our new hybrid dual attack by combining dual attack and MITM2 defined in Section 3. As usual, our new attack has two stages: reduction-stage and guessing-stage. The reduction-stage is the same as other hybrid dual attacks, which outputs a new instance with a smaller dimension, a larger error, and also a different secret distribution. Then in the guessing-stage we apply MITM2 with the following two modifications to solve this new instance. In order to cope with the different secret distribution, we analyze the choice of the parameters for the list construction and the corresponding success probability. For the larger error, we replace the original trivial distinguish method in the last hypothesis testing step of MITM2 by a better decoder from LaarhovenWalter [25]. We present the reduction-stage in Section 5.1 and the guessingstage highlighting the two modifications in Section 5.2, and then summarize our algorithm and its complexity in Section 5.3.
+
+5.1 Reduction-stage [5]
+
+Given an instance (A, b)  LWEn,q,s,G with s  T0n(w), we divide the matrix
+
+A
+
+and
+
+secret
+
+s
+
+into
+
+two
+
+parts:
+
+A
+
+=
+
+(A1,
+
+A2)
+
+
+
+Zqm×r
+
+×
+
+m×(n-r)
+Zq
+
+,
+
+s
+
+=
+
+(s1,
+
+s2)
+
+
+
+{0, ±1}r × {0, ±1}n-r. Then we construct the dual lattice over A2: (A2) =
+
+{(w, v)
+
+
+
+Zm
+
+×
+
+(
+
+1 c
+
+·
+
+Z)n-r
+
+:
+
+w
+
+· A2
+
+=
+
+c
+
+·
+
+v
+
+mod
+
+q},
+
+where
+
+c
+
+is
+
+the
+
+scale
+
+factor
+
+and m =
+
+(n-r)·log(q/c) log 0
+
+[32],
+
+which
+
+depends
+
+on
+
+0
+
+(defined
+
+in
+
+Section
+
+2.2).
+
+For
+
+a short vector (w, v)  (A2), we compute
+
+w, b = w(As + e) = wA1s1 + wA2s2 + w, e = wA1s1 + c · v, s2 + w, e mod q.
+
+This can be seen as a new LWE instance a¯, ¯b = a¯, s1 + e¯ mod q with
+
+¯b = w, b mod q,
+
+a¯ = wA1 mod q,
+
+(10)
+
+e¯ = c · v, s2 + w, e mod q.
+
+By using M short vectors W = {(w, v)1, ..., (w, v)M }, we obtain a set of new
+
+LWE instance
+
+A¯ s1 + e¯ = b¯ mod q,
+
+(11)
+
+An Improved Hybrid Dual Attack on LWE
+
+21
+
+where b¯, e¯  ZqM and A¯  ZM q ×r. This instance follows distribution LWEr,q,s1,G with  =  where  = ||(w, v)|| [4]. Notice that this new instance has a special secret distribution as s1 is part of the original secret s. Denote hm(s1) the Hamming weight of s1 and wr := min(r, w), then we have hm(s1)  [0, wr].
+Remark 1. Note that the error term e¯ contains the part secret s2. Based on the subsequent sections, hm(s2)  [wr, w], and for the purpose of the calculation of the bit-security, we assume a fixed hm(s2) = w, which gives an upper bound on the bit-security estimation of our attack.
+
+5.2 Guessing-stage
+
+Next we solve the above new LWE instance by using MITM2. First we select a
+Hamming weight parameter w^  (0, wr] to determine which candidate solutions for s1 can be solved by MITM2. Let w^ be even and we only solve those candidate solutions with #(1) = #(-1), i.e., s1  U1r(w^, ps(h)) with
+
+r
+
+n-r
+
+n
+
+ps(h) := h, h
+
+/
+
+,
+
+(r - 2h)/2, (r - 2h)/2 w/2, w/2
+
+(12)
+
+to be the probability for hm(s1) = 2h with 0  2h  w^. Then the probability of
+
+forming the target secret s1 is
+
+w^/2 h=0
+
+ps(h).
+
+Remark 2. Note that in the hybrid setting we do not need to consider the representation technique as in [31] here, since the Hamming weight parameter w^ is chosen by ourselves, and adding additional Hamming weight is equivalent to choosing a larger w^. We will search for the optimal w^  (0, wr] that minimizes the overall attack complexity.
+
+List Construction. The main difference in the list construction for LWE with
+
+the special secret distribution is the choice of parameters k(1), (1) for level-1
+
+lists. The upper levels of lists construction here are the same as that in Section
+
+3 and we will not dwell on it here.
+
+Recall that for normal secret distribution (see Section 3), these parameters
+
+are chosen such that at least one representation of the secret survives with high
+
+probability in the lists. Now we need to fix one pair of parameters for all candi-
+
+dates with different Hamming weights, which will introduce an additional suc-
+
+cess
+
+probability.
+
+More
+
+precisely,
+
+for
+
+each
+
+h
+
+
+
+w^ 2
+
+,
+
+the
+
+representation
+
+number
+
+of
+
+s1 = s1(1) + s(21) with hm(s1) = 2h is R(1)(h) =
+
+r-2h w^/2-h
+
+w^/2-h w^/2-h
+
+k=0
+
+k
+
+h w^/4-k
+
+,
+
+and
+
+the
+
+probability
+
+for
+
+M
+k(1)
+
+(As1(1)
+
+)
+
+
+
+[-(1), (1)]k(1)
+
+and
+
+M
+k(1)
+
+(b
+
+-
+
+As(21))
+
+
+
+[-(1), (1)]k(1) can be computed as
+
+p (h)
+
+:=
+
+1
+
+-
+
+(1
+
+-
+
+2(1) (
+q
+
+·
+
+pc(, 2(1)))k(1) )R(1)(h).
+
+(13)
+
+Therefore the overall success probability is
+
+w^/2 h=0
+
+ps(h)
+
+·
+
+p
+
+(h).
+
+22
+
+Bi et al.
+
+Hypothesis Testing. Next we improve the efficiency of MITM2 in the setting of larger error by replacing the condition Ax - b mod q  [-E, E]m of line 6 in
+
+Algorithm 2 by a different decoder. Among the set of candidate pairs (~s(11), ~s(21)) (i.e., the line 5 in Algorithm 2), one of them can form the correct secret s1, which satisfies ~t := b¯ - A¯ (s1(1) + s2(1)) = b¯ - A¯ s1 = e¯, and hence follows the Gaussian distribution G defined as Eq.(11). The remaining vectors ~t associated with wrong pairs are uniform in ZqM . This is different from applying MITM2 on LWE with sparse ternary secrets, where we can simply check whether the result-
+
+ing vectors are in the range [-1, 1]M . Although we can still choose a parameter, say E = 3, and find the correct candidate by checking whether ~t  [-E, E]M ,
+
+this would require a larger M to maintain a reasonable success probability as
+
+the
+
+ratio
+
+E q
+
+is
+
+much
+
+larger
+
+than
+
+1 q
+
+.
+
+In order to improve the efficiency, we use the distinguisher referred to as the
+
+simple-decoder [25] in the hypothesis testing. For all candidates ~s1 := ~s(11) + ~s(21), we first check whether it satisfies the hamming weight condition of correct s1
+and then compute the score of them by using the simple-decoder and output
+
+the one with the highest score. The score for each candidate is given by f (~s1) =
+
+i[M ]
+
+cos(
+
+2 q
+
+·
+
+~ti).
+
+The
+
+score
+
+can
+
+be
+
+modelled
+
+as
+
+a
+
+Gaussian
+
+of
+
+center
+
+M
+
+·
+
+E
+
+and variance M · V, where E, V depend on the accuracy of guessing. When
+
+guessing
+
+correctly,
+
+EG
+
+
+
+, VG
+
+
+
+1 2
+
+- (2),
+
+where
+
+
+
+=
+
+exp(
+
+-22 q2
+
+2
+
+),
+
+and
+
+they
+
+are
+
+EU
+
+=
+
+0, VU
+
+=
+
+1 2
+
+when
+
+guessing
+
+wrongly,
+
+according
+
+to
+
+[25].
+
+Following
+
+[13, 17,
+
+30], we denote the candidate number of hypothesis testing as T , and then the
+
+probability of success of using
+
+1
+
+M  2 · ln T
+
+(14)
+
+short vectors to distinguish all these candidates is
+
+T
+
+
+
+pt(M ) = 1 - 2 · erfc M  .
+
+(15)
+
+Remark 3. When using the same number of short vectors, the simple-decoder has better success probability than the trivial method used in MITM and previous hybrid dual attacks focused on FHE (e.g., [5, 10]). The detailed analysis of the trivial distinguishing method can be found in [5, 10].
+
+5.3 Our New Attack
+Our attack is summarized in Algorithm 3. We first construct a new LWE instance (A¯ , b¯) as Section 5.1. Then we solve the new instance using the adjusted MITM2 in Section 5.2. According to the analysis above, we summarize the runtime of our new hybrid dual attack in Theorem 1.
+Theorem 1. Given an LWE instance (A, b = As + e mod q)  Zqm×n × Zqm with s  U0n(w) and e  G, the runtime of our new hybrid dual attack on
+
+An Improved Hybrid Dual Attack on LWE
+
+23
+
+Algorithm 3 New Hybrid Dual Attack
+
+Require:
+
+(A,
+
+b)
+
+
+
+m×n
+Zq
+
+×
+
+m
+Zq
+
+,
+
+r,
+
+,
+
+,
+
+w^,
+
+M,
+
+(k(1),
+
+(1)),
+
+(k(2),
+
+(2))
+
+Ensure: s1  T1r (wr)
+
+1:
+
+Divide A into two
+
+parts
+
+(A1,
+
+A2)
+
+
+
+Zqm×r
+
+×
+
+m×(n-r)
+Zq
+
+2: Construct lattice (A2) = (w, v)  Zm × Zn-r : w · A2 = v mod q
+
+and per-
+
+form BKZ and sieving with blocksize  on it to obtain M short vectors (w, v) of
+
+length  (see Section 2.2)
+
+3: Construct new instance A¯ , b¯  ZM q ×r × ZqM by computing each row/entry of A¯ and b¯ as a¯ = wA1 mod q and ¯b = w, b mod q
+4: Perform MITM attack on (A¯ , b¯) and get a set of candidates (s(11), s2(1)) (i.e., perform Algorithm 2 until line 5)
+
+5: Filter out the portion of the candidates that meets the condition ~s1 := s(11) + s(21)  T1r (wr) (i.e., the first judgement condition of line 7 in Algorithm 2)
+6: Hypothesis test on these candidates and output s1 := s1(1) + s2(1) with the highest score (i.e., replacing the second judgment condition of line 7 in Algorithm 2)
+
+it is computed as Tours = TBKZ(n, r, ) + TMITM(n, r, q, w, ), where TBKZ is the time of performing BKZ algorithm with blocksize  on lattice (A2) and
+
+TMITM is the time of performing MITM2 (see Eq.(9)) to solve the new LWE
+
+instance defined in Eq.(11) with M selected according to Eq.(14). The success
+
+probability of the attack is pours =
+
+w^/2 h=0
+
+ps(h)
+
+·
+
+p (h),
+
+where
+
+ps(h), p(h)
+
+are
+
+given in Eq.(12)-(13).
+
+6 Clarify the Distinguishing Issues
+
+Recently, Ducas-Pulles [13] identified a contradiction in the heuristic analysis
+
+used in hybrid dual attacks for distinguishing BDD (Bounded Distance Decod-
+
+ing) instance from uniform ones. The issue mainly arises from the independence
+
+heuristic, which assumes that all the individual scores, given by dual vectors, are
+
+mutually independent. In addition, when searching for a BDD instance among
+
+many uniform ones, it becomes likely that some uniform instances may lie closer
+
+to the lattice than the correct BDD target when the number of uniform instances
+
+is large. These concerns have ignited a surge of interest in better understanding
+
+and analyzing (hybrid) dual attacks [41, 37, 38, 12].
+
+In this section, we clarify that our hybrid dual attacks targeting FHE schemes
+
+are not affected by the above two issues. The main reason is that FHE schemes
+
+typically
+
+have
+
+small
+
+ratios
+
+ q
+
+and
+
+w n
+
+,
+
+which
+
+allows
+
+for
+
+simple
+
+instances
+
+for
+
+hy-
+
+pothesis testing and a small number of hypothesis testing instances to be tested,
+
+respectively. Since the BDD target associated with correct guessing is easily dis-
+
+tinguished, this in turn makes it possible to perform hypothesis testing with very
+
+few short vectors. This number is typically smaller than the lattice dimension,
+
+which means the vectors can be chosen to be linearly independent, thus satisfying
+
+the independence heuristic and avoiding the two aforementioned issues.
+
+24
+
+Bi et al.
+
+Next we clarify these issues from three perspectives. First we show that a uniform candidate associated with a wrong guessed partial secret s1 is farther away from the lattice than the correct one with high probability. Then we show that for FHE-type parameters, the number of short vectors used for the hypothesis testing is smaller than the lattice dimension, ensuring their linear independence. At last, we experimentally verify that, for these parameters, the hypothesis testing succeeds with probability close to 1 when using multiple linearly independent short vectors.
+
+6.1 Distinguishability
+
+Background. The hybrid dual attack divides the LWE equation into A2s2 +
+
+e
+
+=
+
+b
+
+-
+
+A1s1
+
+mod
+
+q,
+
+where
+
+A
+
+=
+
+(A1, A2)
+
+
+
+Zqm×r
+
+×
+
+m×(n-r)
+Zq
+
+,
+
+then
+
+guesses
+
+s1
+
+and uses the short vectors in dual lattice (A2) to hypothesis test b - A1s1.
+
+Now we will show that the uniform instances b-A1s1 associated with wrong guessing s1 are farther away from the lattice (A2) than the BDD instance
+
+computed by the correct s1 with high probability. Then regardless of the number
+
+of uniform instances is, it does not affect the fact that the correct s1 gets the
+
+highest score in the hypothesis test.
+
+There are two basic types of dual attacks that use different lattice construc-
+
+tions defined as follows and we will show this distinguishing issue in them re-
+
+spectively: the lattice in MR dual attack [32] with 1 (A) = {w|wA = 0 mod q} and that in ADPS dual attack [4] with 2(A) = {(w, v)|wA = v mod q}. The ADPS dual attack is now the prominent one in the bit-security estimation of
+
+practical LWE-base schemes since it can benefit from small secrets and the prac-
+
+tical schemes are all of this type for the sake of efficiency.
+
+MR Dual Attack. In this case, we use the short vectors in lattice 1(A2) = {w|wA2 = 0 mod q} to perform the hypothesis testing. We assume that the distribution of b-A1s1 mod q is computationally indistinguishable from U (Zm q ), which is consistent with that of current literature of dual attacks, where s1 is a wrong guessing. Next, we demonstrate that no vector of the form b - A1s1 is closer to the lattice (A2) than the vector associated with the correct guess s1. We refer to such a wrong guess s1 as a W-solution in the following.
+We denote   (0, 1) the radius of a BDD target within distance ||e|| in
+lattice (A), i.e., we have
+
+||e||   · 1 ((A))   ·
+
+m
+
+·
+
+q1-
+
+n m
+
+.
+
+2e
+
+(16)
+
+For a wrong guessing s1, the corresponding e is uniform in Rm/(A2), where e is defined by A2s2 + e = b - A1s1 mod q. Since e is uniform, we get the following heuristic.
+
+Heuristic 1. For a rational score function fscore,   1, s.t. e which satisfies ||e||   · ||e||, the probability of fscore(e)  fscore(e) is negligible.
+
+An Improved Hybrid Dual Attack on LWE
+
+25
+
+According to Heuristic 1, s1 might get higher score only when ||e|| <  · ||e||, where   1 is an approximate factor depending on the score function. Thus we divide the area of ||e|| into two cases: (1) ||e||   ·  · 1 ((A)) and (2) ||e|| >  ·  · 1 ((A)). According to Heuristic 1, e corresponds to a W-solution
+must be in the first case.
+Now even we assume s1  U (Zqr), which maximizes the search space of s1 to qr, we still have that the expected number of W-solution is
+
+E (#(W-solution))  qr · Pr [||e||   ·  · 1 ((A))]
+
+= qr ·
+
+ ·  · 1 ((A))
+
+m
+= ()m
+
+1 ((A2))
+
+Twwthahhekeicicrnheognitsth|r|feeaad|fi|irirlcsyttol"ar=yrmg"reecgeoiinnmmoeuEesgqhf.·r(of1rm62o)mLleeee·amxdpm·seqtarm noim2-e1inntws,1h.2i2cTha2ewk·ieen·gt·aqk· em qhn em nr-ua-1rd.i1isuTt<sihcea1n·llcyow,·ueslad1c1y((oam(l(AwA=e2a))y)t2)os,.
+be satisfied for practical schemes. Then the expected number of W-solution is much less than 1. Therefore, the probability for a wrong guess s1 getting a higher score than the unique real s1 is low.
+
+Remark 4. We remark that the analysis in Section 5.1 of a recent work [37] is basically the  = 1 case in our analysis. However, they mainly discussed the complementary area of the contradiction regime, but this regime in [13] is only a sufficient condition which causes that some uniform samples might get higher score than the BDD samples. We consider the impact of score functions to make the results more rigorous and generic.
+
+ADPS Dual Attack. The above analysis suggests that the large number of
+
+wrong guessing would not disturb distinguishing the correct one when using
+
+MR dual lattice. However, most current dual attacks works over the ADPS dual
+
+lattice 2(A2) = {(w, v)|wA2 = v mod q} because of the small secret, which leads to the equation w · (b - A1s1) = w · (A2s2 + e) = v, s2 + w, e mod q, i.e., now the hypothesis testing cares not only ||e|| but also ||s2||. In this case, a W-solution means ||(s2, e)|| <  · ||(s2, e)||, where s2 and e are defined by b - A1s1 = A2s2 + e mod q and   1 is an approximate factor as defined in heuristic 1. This is to ensure that v, s2 + w, e   · (v, s2 + w, e). Since the coordinates of (w, v) are independent and identically distributed according
+
+to Section 2.2, it follows from ||(s2, e)|| <  · ||(s2, e)|| that ||e|| <  · ||e|| and ||s2 ||   · ||s2||.
+For convenience, we denote s = (s1, s2)  [-t, t]r×[-t, t]n-r, then the number of hypothesis testing candidates is T = (2t + 1)r. The expected number of the
+
+candidates associated with wrong guessing fall into the ball of radius  ·  ·
+
+1 ((A)) 1 ((A2 ))
+
+is
+
+
+
+·
+
+
+
+·
+
+1 ((A)) 1 ((A2 ))
+
+m
+· (2t + 1)r. Among these T candidates, the W-
+
+solution additionally requires ||s2||   · ||s2|| to ensure that v, s2 + w, e 
+
+26
+
+Bi et al.
+
+ · (v, s2 + w, e). Then it is clear that the expectation of the number of Wsolution is
+
+E(#(W-solution))
+
+<
+
+(
+
+·
+
+
+
+·
+
+1((A)) )m 1((A2))
+
+·
+
+(2t
+
++
+
+1)r
+
+·
+
+(
+
+
+
+·
+
+(2t q
+
++
+
+1) )n-r
+
+<
+
+2t (
+
++
+
+1 )n
+
+·
+
+()m
+
+·
+
+n-r
+
+<
+
+(
+
+·
+
+2t
+
++
+
+1 )n
+
+·
+
+()m,
+
+q
+
+q
+
+as for wrong guessing s1, the associated s2 is uniform in Znq 2 . Then in this case E(#(W-solution)) is even less than that in MR case due to  · (2t + 1) < q. That is to say, the probability of existing a wrong guessing s1 obtaining higher score than the correct s1 becomes smaller. In conclusion, the probability of a wrong guessing getting higher score than the correct one is low, although the number
+of samples in hypothesis testing computed according to wrong guessing is large.
+
+Example. We take CKKS as an example to show that for practical FHE
+
+schemes, no wrong guessing will gain higher score than the correct one. In
+
+other words, when performing our attack on CKKS, the parameters are not
+
+in the so-called contradictory regime. To this end, we first compute the number
+
+T of the uniform instances associated with wrong guessing and then compute
+
+the expected number of the uniform instances that fall in the ball with radius
+
+µ
+
+=
+
+m· GH((A2
+
+))
+
+,
+
+which
+
+is
+
+defined
+
+by
+
+the
+
+error
+
+e
+
+of
+
+the
+
+BDD
+
+instance
+
+(see
+
+Lemma
+
+2). The results are given in Table 2 that the expected number of uniform targets
+
+fall
+
+into
+
+the
+
+ball
+
+of
+
+radius
+
+µ
+
+equal
+
+to
+
+T
+
+·
+
+1 µm
+
+,
+
+is
+
+far
+
+less
+
+than
+
+1
+
+for
+
+each
+
+case.
+
+Therefore, there is no uniform target closer to the lattice than the BDD target
+
+with overwhelm probability.
+
+Table 2: The distinguishability of CKKS [11]
+
+Scheme
+
+log n log q
+
+120
+
+13 130
+
+155
+
+14
+
+185
+
+250
+
+15 620
+
+log T - log µm
+
+65 17643
+
+67 6697
+
+52 19822
+
+65 24233
+
+50 2274
+
+60 109068
+
+#(uniform
+
+targets
+
+fall
+
+into
+
+the
+
+ball
+
+of
+
+radius
+
+µ)
+
+=
+
+T
+
+·
+
+1 µm
+
+
+
+1
+
+for
+
+each
+
+case.
+
+6.2 Independence
+A crucial heuristic used in the analysis of dual attacks is the assumption that all short vectors used in the hypothesis testing are independent. This does not hold when the attack needs an exponential number of short vectors. In this section, we show that, for FHE-type parameters, the number of short vectors needed for the hybrid dual attack does not exceed the lattice dimension, i.e., M  dim. This ensures all short vectors used in the hypothesis testing are indeed independent.
+
+An Improved Hybrid Dual Attack on LWE
+
+27
+
+2(n-r)
+
+Fig. 3: Value of X for different log
+
+q 
+
+(x-axis) and log(02dim · s dim ) (y-axis).
+
+Recall
+
+that
+
+we
+
+choose
+
+M
+
+=
+
+-2 ln T
+
+=
+
+exp(
+
+4 2  2 2 q2
+
+)
+
+·
+
+ln
+
+T
+
+(see
+
+Section
+
+5.2).
+
+First, let's establish an upper bound for ln T . Since T denotes the number of
+
+candidates used in the hypothesis testing, it is clearly upper bounded by the
+
+overall runtime of the attack (as testing all T candidates is just one step in
+
+the attack). Given that the bit-security of practical schemes typically reaches
+
+up to 256 bits, we can conclude that T  2256. Furthermore, for practical FHE
+
+schemes, n  210, which implies ln T  300 ln 2  0.204n.
+
+Next, we show that for FHE-type parameters, the exponential term X :=
+
+4 2  2 2 q2
+
+is
+
+bounded
+
+by
+
+1.
+
+Therefore,
+
+we
+
+can
+
+achieve
+
+the
+
+desired
+
+bound
+
+with
+
+M
+
+
+
+e · ln T
+
+
+
+0.55n 
+
+dim.
+
+We
+
+compute
+
+X
+
+as
+
+X
+
+=
+
+4 2  2 2 q2
+
+=
+
+4 2  2 q2
+
+· 02dim ·
+
+( ) q
+
+2(n-r)
+
+dim
+
+/s
+
+=
+
+42
+
+·
+
+( )q
+
+n-r dim
+
+-2
+
+
+
+· 02dim
+
+2(n-r)
+· s dim ,
+
+where
+
+s
+
+is the deviation of
+
+the
+
+secret
+
+and
+
+c
+
+=
+
+ s
+
+is
+
+the
+
+scale
+
+factor.
+
+The
+
+dimension
+
+is
+
+given
+
+by
+
+dim
+
+=
+
+m+(n-r) =
+
+(n-r) log(q/c) log(0 )
+
+(the
+
+last
+
+" ="
+
+is
+
+from
+
+[32]).
+
+From
+
+a
+
+parameter-setting
+
+point of view, compared with LWE-based schemes in PQC, such as Kyber, FHE
+
+schemes
+
+n-r dim
+
+-
+
+2
+
+generally have a
+
+<
+
+0,
+
+a
+
+larger
+
+q 
+
+much
+
+larger
+
+q 
+
+and
+
+n
+
+leads to a smaller X.
+
+(resulting in a larger dim). Since On the other hand, as 0 > 1, a
+
+larger dim leads to a larger X. Thus, the value of X is primarily determined by
+
+the interplay of these two opposing factors. Note that the factor 02dim·s2(n-r)/dim in X is also influenced by 0, which is determined by , the blocksize of BKZ (see
+
+Section 2.2). To eliminate the effect of 0 on X and ensure a fair comparison, we
+
+choose schemes with nearly the same bit-security (128 bits) to ensure similar 
+
+and 0.
+
+To demonstrate that X  1 holds for FHE-type parameters, we present the relation between X and two parameter sets, (q, ) and (n - r, s), in Fig.3. In
+
+28
+
+Bi et al.
+
+this figure, the y-axis represents log
+
+q 
+
+while the x-axis represents log(02dim ·
+
+2(n-r)
+
+ dim
+s
+
+). Different color regions indicate varying ranges of log(X), with the black
+
+line corresponding to X = 1. To calculate the relation between the color regions
+
+and the x and y axes, we fix the security-level at 128 bits under RC.ADPS16
+
+costmodel in the lattice-estimator [26]. Although the exact values of the x and y
+
+axes will vary depending on the security level, the trend is consistent for different
+
+security levels. In the figure, areas below the black line corresponds to X < 1,
+
+indicating that schemes in this region require a small number of short vectors.
+
+The farther a scheme is from the black line, the fewer short vectors it requires. On
+
+the contrary, areas above the black line indicate large numbers of short vectors
+
+are needed, with the black line serving as the dividing boundary.
+
+In Fig.3, we label several practical schemes (both FHE and NIST-PQC LWE-
+
+based schemes) with approximately 128-bit security under RC.ADPS16 cost-
+
+model (in order to eliminate the effect of 0 in the y-axis term). The red points correspond to CKKS schemes [11] (with log n = 13, 14 cases, see Table 4), and
+
+HElib120-4096 and HElib80-4096 [19]. The black points represent NIST-PQC
+
+round-3 schemes [35]: Kyber512, LightSaber, Frodo640 and NTRUHRSS701Enc.
+
+From the figure, it is evident that PQC and FHE schemes are separated by the
+
+black line, with all the FHE schemes having X  1. For LWE-based schemes
+
+in PQC, the hypothesis testing in the hybrid dual attacks needs exponential
+
+multiple short vectors, which causes the independence issue raised by Ducas-
+
+Pulles [13]. This separation also explains why current hybrid dual attacks are
+
+effective against for FHE schemes but not against LWE-based schemes in PQC.
+
+In Section 7, we present data of M for three typical cases using our new hybrid
+
+dual attack (see Table 5). In all instances, M is smaller than the dimension dim.
+
+6.3 Hypothesis Testing Experiments
+
+In this subsection, we experimentally verify that, for FHE schemes, it is suffi-
+
+cient to use N linear independent short vectors (computed using Eq.(14)) in the
+
+hypothesis testing to ensure a high success probability. In the experiments, we
+
+choose different parameters (n, q, w), as shown in Table 3, and fix the error stan-
+
+dard deviation at  = 1.596. For convenience, we fix the number of given LWE
+
+instances by m = n, i.e., (A, b)  Znq ×n × Zqn. In addition, we fix the guessing
+
+dimension at r = 10 and the candidate number of hypothesis testing T at its
+
+upper
+
+bound
+
+3r
+
+=
+
+59049.
+
+Then
+
+we
+
+construct
+
+the
+
+dual
+
+lattice
+
+over
+
+A2
+
+
+
+n×(n-r)
+Zq
+
+as 2(A2) = {(w, v)|wA2 = v mod q} and run BKZ with blocksize 3 on it to
+
+get the first M shortest linear independent vectors from the sieving oracle, where
+
+M is calculated from Eq.(14).
+
+For each case, we calculate the success probability in theory ppred using Eq.(15) and conduct 1000 experiments to determine the real success preal. The results are shown in Table 3. We can see that preal is very close to 1, indicating that the number of short vectors is sufficient for the hypothesis testing in nearly
+
+all cases. Furthermore, preal consistently exceeds ppred, as ppred is calculated us-
+
+An Improved Hybrid Dual Attack on LWE
+
+29
+
+Table 3: Hypothesis Testing Experiments
+
+Experiment Parameter Probability
+
+nqw M
+
+ppred
+
+preal
+
+40 509 10 28 91.75% 99.4%
+
+45 609 12 35 91.74% 99.2%
+
+50 809 12 38 91.77% 99.7%
+
+55 1109 14 39 91.82% 99.6%
+
+60 1409 14 45 91.81% 99.8%
+
+ing the larger norm of the M short vectors, meaning it provides a lower bound for preal.
+7 Bit-security Estimation and Comparison
+To assess the performance of our new attack on practical schemes, we compare ours with previous hybrid attacks on a series of parameters of CKKS [11] (which is a leading scheme widely used in many open-source implementations of homomorphic encryption) and a new accelerated BGV schemes in [29]. The bit-security estimation results are given in Table 4. For all schemes, we use their original costmodels of BKZ to ensure a fair comparison.
+As is shown in Table 4, for all cases of CKKS [11], our attack works the best, and our attack greatly reduces the estimation results by 17 to 24 bits under BKZ-coreSVP-model. Although our attack does not invalidate any scheme (the claimed security is 80 bits), it is still noteworthy that for some schemes the results estimated by using our attack is already very close to 80 bits.
+For schemes in [29], our new attack significantly reduces the bit-security for all schemes, placing each one clearly below the claimed security-level, with the largest discrepancy being 18 bits. Therefore, all schemes in [29] are invalid under these findings and will need re-parameterization.
+In Appendix A, we present a comprehensive comparison of our new attack with the previous hybrid dual attacks (BLLWZ [6], CHHS [10], and BLLW [5]) using three typical cases from [5], where the improvements of our attack is 11-34 bits. We also provide a comparison with the latest hybrid primal attack from [20]. Our attack is on par with it, less than 3 bits away from each other.
+8 Conclusion
+In this work, we conducted a comprehensive analysis and comparison of four variants of Meet-LWE, utilizing different list constructions and hash functions.
+
+30
+
+Bi et al.
+
+Table 4: The bit-security estimation of practical FHE-schemes
+
+Schemes
+
+Results of CKKS [11]
+
+log n
+
+13
+
+14
+
+15
+
+log q
+
+120 130 155 185 250 620
+
+Claimed
+
+80
+
+Bit-security
+
+CHHS BLLW
+
+117 111 99 137 116 102 127 123 116 163 158 117
+
+OURS
+
+97
+
+91
+
+82 113 97
+
+83
+
+The LWE instances used in these schemes have Gaussian error with standard deviation 3.2 and sparse ternary secret with Hamming weight 64.
+
+Schemes
+
+n log q
+w 
+
+Results of the schemes in [29] 36960 55080 54096 44100 50112 36960 55080 54096 44100 50112 63.8 69.4 64.2 66.3 74.6 64.5 60.7 64.7 66.8 75.1
+24 22 22 22 22 12 12 12 12 12 626.3 761.6 753.4 680.3 720.8 626.3 761.6 753.4 680.3 720.8
+
+Bit security
+
+Level Claimed OURS
+
+136 122
+
+128 134.1 135.5 130.2 130.6 81.3 117 116 112 110 65
+
+87.3 72
+
+80 87.4 73
+
+83.3 67
+
+83 68
+
+Based on this analysis, we proposed a new hybrid dual attack using a generalization of Meet-LWE and an efficient decoder in the hypothesis testing. We clarified that for FHE-type parameters our attack requires only a small number of short vectors generated by the BKZ algorithm and hence does not depend on the independence heuristics and is out of the so-called contradictory regime defined by Ducas-Pulles [13]. Lastly, we compared our new attack against previous hybrid dual attacks across various LWE instances with FHE-type parameters. The results show that our attack significantly outperforms earlier hybrid dual attacks and remains competitive with the latest hybrid primal attack.
+
+An Improved Hybrid Dual Attack on LWE
+
+31
+
+Appendix
+
+A Further Comparison with Previous Hybrid Attacks
+
+A.1 Three Typical Cases in [5]
+We start with the three typical cases given by Bi-Lu-Luo-Wang [5], which was used to illustrate the advantages and disadvantages of their attack BLLW compared with other attacks. The estimation results are given in Table 5, where the results of (hybrid) dual attacks [4­6, 10] in the first four columns are from [5]. Following [5] we assume that BKZ with blocksize  and basis dimension d takes TBKZ(d, ) = 8d · 20.292+16.4 and we use the amortizing cost model for the output vectors of BKZ in [2].
+To get a clearer comparison, for each case we present three different results using different variants of our attack in the column "Ours". The first one "Test1" uses the trivial decoder and MITM2, and we enforce the algorithm to use the same r and  as BLLW to get a direct comparison with it. The second one "Opt1" also uses the trivial decoder and MITM2, but it chooses the optimal attack parameters to find the best estimation results. The last one "Opt2" is our new attack, which uses the simple decoder and MITM2, and chooses the optimal attack parameters.
+For each case, in addition to the estimation results, we also present the cost of both BKZ and guessing, the success probability and the parameters: number of LWE instances m (which is computed according to Section 5.1), blocksize , guessing dimension r, the mapping dimension of level-1 lists k (if any), and the number M of short vectors needed for the attack. Note that in all three cases and across all variants of our attack, M is consistently upper bounded by 400, and thus remains smaller than dim. Specifically, for our new attack "Opt2", M is always less than 150.
+
+Case 1. For case 1, BLLW was the best for this case before introducing our new attack, and our new attack (the last column) improves the result of BLLW by 17 bits. The column "Test1" shows that MITM2 consumes less time (167 vs 170) and gains better success probability (22 vs 30) compared with BLLW. This means that MITM2 has greater capability than MITM1, which is consistent with the analysis in Section 3. Compared with "Test1", "Opt1" balances the time of BKZ and guessing by using a slightly larger guessing dimension r (2251 vs 2245) and a smaller blocksize  (470 vs 483) such that TBKZ  TGuess. In addition, it also optimizes the balance between the time and success probability, i.e., the time of BKZ is decreased while the success probability is also decreased. The difference between "Opt1" and "Opt2" is the hypothesis testing algorithm which leads to a further increase in r (2260 vs 2251) and a decrease in  (430 vs 483). It is noteworthy that the main improvement of our new attack comes from the different between "Opt1" and "Opt2" due to the hypothesis testing algorithm.
+
+32
+
+Bi et al.
+
+Table 5: Three typical cases in [5]
+
+Case 1. (log n, log q, w, ) = (12, 50, 128, 3.2)
+
+Attack
+
+Dual BLLWZ CHHS
+
+[4]
+
+[6]
+
+[10]
+
+BLLW [5]
+
+Test1
+
+Attack 299 215
+
+Cost
+
+BKZ 299 166
+
+(bit)
+
+Guess -
+
+166
+
+Prob. -
+
+49
+
+221
+
+201
+
+191
+
+183
+
+175
+
+175
+
+181 174=151+23 176
+
+38
+
+26
+
+15
+
+m r Parameter  k M
+
+3572 -
+912 -
+
+2289 1689 494
+-
+
+2343 2245 520
+-
+
+2022 2245 492
+1
+
+2261 2245 492
+43 348
+
+Ours Opt1
+189 169 169 20 2195 2251 470 39 326
+
+Opt2
+185 157 157 28 2070 2260 430 16 112
+
+Attack
+
+Case 2. (log n, log q, w, ) = (13, 200, 128, 3.2)
+
+Dual BLLWZ CHHS BLLW
+
+[4]
+
+[6]
+
+[10]
+
+[5]
+
+Test1
+
+Cost (bit)
+Parameter
+
+Attack BKZ Guess Prob.
+m r  k M
+
+140 140
+7995 365 -
+
+124 112 110 12 6834 1650 270
+-
+
+120 112 112
+9 6499 2050 269
+-
+
+204 198 200=121+79
+4 10633 1637
+563 1
+
+198 197 187
+1 10284 1637
+563 13 374
+
+Ours Opt1
+111 104 105
+6 6101 2456 244
+47 215
+
+Opt2
+109 100 99
+9 5880 2500 230
+13 57
+
+Case 3. (log n, log q, w, ) = (10, 20, 192, 3.2)
+
+Attack
+
+Dual BLLWZ CHHS
+
+[4]
+
+[6]
+
+[10]
+
+BLLW [5]
+
+Test1
+
+Attack 188 175
+
+299
+
+228
+
+226
+
+Cost (bit)
+
+BKZ 188 169
+
+Guess -
+
+169
+
+265
+
+211
+
+211
+
+265 211=146+65 180
+
+Prob. -
+
+5
+
+34
+
+18
+
+15
+
+m
+
+918 847 1097
+
+988
+
+931
+
+r
+
+-
+
+161
+
+420
+
+455
+
+455
+
+Parameter 
+
+539 475
+
+805
+
+620
+
+620
+
+k
+
+-
+
+-
+
+-
+
+7
+
+8
+
+M
+
+-
+
+309
+
+Ours Opt1
+198 187 187 11 8666 408 537 44 296
+
+Opt2
+185 167 164 18 788 459 470 44 142
+
+Case 2. For case 2, before introducing our attack, CHHS works the best and BLLW is much worse than the others. The main reason for the poor performance of BLLW is the time-consuming enumeration of the error (79 bits). This in turn is due to that the range E of the error e¯ of the new instance in Eq.(10) is usually
+
+An Improved Hybrid Dual Attack on LWE
+
+33
+
+large when q is large and the value of E has a big influence on BLLW as it needs to enumerate some entries of the error e¯  [-E, E]. Our new attack solves exactly this error enumeration problem and it is not sensitive to the exact value of E. Thus, it works well in this case, even better than the previous optimal attack CHHS because of the high efficiency of MITM2, which can be seen from the comparison between "CHHS" and "Opt1". In addition, since this case has very large q, both hypothesis tests used in "Opt1" and "Opt2" can have a good effect and hence "Opt2" has only 1 bit boost compared to "Opt1".
+
+Case
+
+3.
+
+Case
+
+3
+
+has
+
+weight
+
+ratio
+
+w n
+
+
+
+0.177,
+
+which
+
+is
+
+much
+
+larger
+
+than
+
+case
+
+1
+
+(0.031) and case 2 (0.015). This parameter setting falls in the less efficient area of
+
+the hash functions in MITM since the large weight ratio increases the deviation
+
+ of the error of the new LWE instance in the guessing-stage, where using MITM
+
+is even worse than exhaustive searching. As a result, BLLWZ, using exhaustive
+
+searching in the guessing-stage, works better than CHHS and BLLW, which use
+
+MITM. Actually, this set of parameter is closer to the LWE-based scheme in
+
+PQC than it is to FHE-type parameter from the point of view of the ratios
+
+w n
+
+and
+
+ q
+
+,
+
+which
+
+is
+
+out
+
+of
+
+the
+
+scope
+
+of
+
+MITM-accelerated
+
+hybrid
+
+dual
+
+attacks
+
+(see Remark 5 and Section 6.2 for the discussion about this issue). Nevertheless,
+
+our new attack works much better than the previous two MITM-accelerated
+
+hybrid dual attacks (CHHS and BLLW); the improvements are 99 bits and 34
+
+bits, respectively. In addition, our new attack is better than the standalone dual
+
+attack and is relatively close to the optimal one BLLWZ.
+
+Remark 5. A necessary condition for the hash function to distinguish E-near
+
+pairs from uniform ones is that the collision probabilitypc(E, B) must be larger
+
+than
+
+1 
+
+,
+
+the
+
+collision
+
+probability
+
+for
+
+random
+
+pairs.
+
+This
+
+fundamental
+
+limitation
+
+of
+
+the hash function is in our view the key reason for the ineffectiveness of MITM-
+
+accelerated hybrid attacks on LWE-based PQC schemes. For instance, consider
+
+the
+
+case
+
+where
+
+B
+
+=
+
+q 2
+
+and
+
+hence
+
+1 
+
+=
+
+1 2
+
+.
+
+Let
+
+
+
+denote
+
+the
+
+error
+
+deviation
+
+of
+
+the
+
+LWE instance being solved via the MITM step in hybrid dual attacks (see Eq.(11)
+
+for more details). Then . For FHE parameters,
+
+the condition pc(, B) >
+
+since
+
+ q
+
+is
+
+very
+
+small,
+
+its
+
+1
+2
+
+
+derives satisfies
+
+an the
+
+upper bound on required bound,
+
+making such attacks viable. However, for standard LWE-based schemes in PQC,
+
+the
+
+ratio
+
+ q
+
+is
+
+typically
+
+larger,
+
+and
+
+the
+
+corresponding
+
+value
+
+of
+
+
+
+exceeds
+
+this
+
+threshold. This explains why MITM-accelerated hybrid attacks have not proven
+
+effective in the PQC setting.
+
+A.2 Comparison with the Hybrid Primal Attack [20]
+We compare our new attack with hybrid primal attack HKLS [20], which combines primal attack with MITM2. As the source code of [20] is not publicly available, in Table 6 we compare the result of our attack (the last row) with the results given by [20] under the refined BKZ model [26]. From the table we can see an interesting match between different variants of primal attacks and
+
+34
+
+Bi et al.
+
+dual attacks. The difference between the results of primal attack and dual attack is within 2 bits, the difference between the results of primal+MITM1 and dual+MITM1 is within 4 bits, and the difference between the results of primal+MITM2 (HKLS) and dual+MITM2 (our attack) is within 3 bits.
+
+Table 6: The bit-security estimation of the schemes in [20]
+
+Schemes
+
+log n (log q, w)
+
+15
+
+16
+
+(699,128) (768,192) (1553,192) (1450,64)
+
+Primal
+
+161
+
+145
+
+145
+
+155
+
+Primal Primal+MITM1
+
+133
+
+130
+
+130
+
+111
+
+Primal+MITM2
+
+127
+
+126
+
+127
+
+105
+
+Dual
+
+162
+
+146
+
+146
+
+157
+
+Dual
+
+Dual+MITM1
+
+133
+
+133
+
+136
+
+108
+
+Dual+MITM2
+
+124
+
+129
+
+127
+
+106
+
+References
+1. Albrecht, M., Chase, M., Chen, H., Ding, J., Goldwasser, S., Gorbunov, S., Halevi, S., Hoffstein, J., Laine, K., Lauter, K., Lokam, S., Micciancio, D., Moody, D., Morrison, T., Sahai, A., Vaikuntanathan, V.: Homomorphic encryption security standard. Tech. rep., HomomorphicEncryption.org (2018)
+2. Albrecht, M.R.: On dual lattice attacks against small-secret LWE and parameter choices in helib and SEAL. In: EUROCRYPT. vol. 10211, pp. 103­129 (2017)
+3. Albrecht, M.R., Shen, Y.: Quantum augmented dual attack. Cryptology ePrint Archive, Paper 2022/656 (2022)
+4. Alkim, E., Ducas, L., Pöppelmann, T., Schwabe, P.: Post-quantum key exchange - A new hope. In: 25th USENIX. pp. 327­343 (2016)
+5. Bi, L., Lu, X., Luo, J., Wang, K.: Hybrid dual and meet-LWE attack. In: ACISP. vol. 13494, pp. 168­188 (2022)
+6. Bi, L., Lu, X., Luo, J., Wang, K., Zhang, Z.: Hybrid dual attack on LWE with arbitrary secrets. Cybersecurity 5(1), 15 (2022)
+7. Bossuat, J.P., Troncoso-Pastoriza, J., Hubaux, J.P.: Bootstrapping for approximate homomorphic encryption with negligible failure-probability by using sparse-secret encapsulation. In: Applied Cryptography and Network Security. pp. 521­541 (2022)
+8. Carrier, K., Shen, Y., Tillich, J.: Faster dual lattice attacks by using coding theory. Cryptology ePrint Archive, Paper 2023/1750 (2022)
+9. Chen, Y., Nguyen, P.Q.: BKZ 2.0: Better lattice security estimates. In: ASIACRYPT. vol. 7073, pp. 1­20 (2011)
+10. Cheon, J.H., Hhan, M., Hong, S., Son, Y.: A hybrid of dual and meet-in-the-middle attack on sparse and ternary secret LWE. IEEE Access 7, 89497­89506 (2019)
+11. Cheon, J.H., Kim, A., Kim, M., Song, Y.S.: Homomorphic encryption for arithmetic of approximate numbers. In: ASIACRYPT. vol. 10624, pp. 409­437 (2017)
+
+An Improved Hybrid Dual Attack on LWE
+
+35
+
+12. Ducas, L., Pulles, L.N.: Accurate score prediction for dual-sieve attacks. Cryptology
+
+ePrint Archive, Paper 2023/1850 (2023)
+
+13. Ducas, L., Pulles, L.N.: Does the dual-sieve attack on learning with errors even
+
+work? In: CRYPTO. vol. 14083, pp. 37­69 (2023)
+
+14. Espitau, T., Joux, A., Kharchenko, N.: On a dual/hybrid approach to small secret
+
+LWE - A dual/enumeration technique for learning with errors and application to
+
+security estimates of FHE schemes. In: INDOCRYPT. vol. 12578, pp. 440­462
+
+(2020)
+
+15. Esser, A., Girme, R., Mukherjee, A., Sarkar, S.: Memory-efficient attacks on small
+
+LWE keys. In: ASIACRYPT. vol. 14441, pp. 72­105 (2023)
+
+16. Glaser, T., May, A.: How to enumerate LWE keys as narrow as in kyber/dilithium.
+
+In: CANS. vol. 14342, pp. 75­100 (2023)
+
+17. Guo, Q., Johansson, T.: Faster dual lattice attacks for solving LWE with applica-
+
+tions to CRYSTALS. In: ASIACRYPT. vol. 13093, pp. 33­62 (2021)
+
+18. HEAAN: https://github.com/snucrypto/HEAAN
+
+19. HElib: https://github.com/homenc/HElib
+
+20. Hhan, M., Kim, J., Lee, C., Son, Y.: Let's meet ternary keys on babai's plane:
+
+A hybrid of lattice-reduction and meet-lwe. Cryptology ePrint Archive, Paper
+
+2022/1473 (2022)
+
+21. Hoffstein, J., Pipher, J., Silverman, J.H.: NTRU: A ring-based public key cryp-
+
+tosystem. In: ANTS. vol. 1423, pp. 267­288 (1998)
+
+22. Homomorphic Encryption Standardization: https://homomorphicencryption.org
+
+23. van Hoof, I., Kirshanova, E., May, A.: Quantum key search for ternary LWE. In:
+
+PQCrypto. vol. 12841, pp. 117­132 (2021)
+
+24. Kirshanova, E., May, A.: How to find ternary LWE keys using locality sensitive
+
+hashing. In: IMACC. vol. 13129, pp. 247­264 (2021)
+
+25. Laarhoven, T., Walter, M.: Dual lattice attacks for closest vector problems (with
+
+preprocessing). In: CT-RSA. vol. 12704, pp. 478­502 (2021)
+
+26. Lattice estimator.: https://github.com/malb/lattice-estimator/
+
+27. Lattigo: https://github.com/tuneinsight/lattigo
+
+28. Lee, E., Lee, J., Son, Y., Wang, Y.: Improved meet-LWE attack via ternary trees.
+
+Cryptology ePrint Archive, Paper 2024/824 (2024)
+
+29. Ma, S., Huang, T., Wang, A., Wang, X.: Accelerating BGV bootstrapping for
+
+large p using null polynomials over $\mathbb {Z}_{p^e}$. In: EUROCRYPT.
+
+vol. 14652, pp. 403­432 (2024)
+
+30. MATZOV: Report on the security of LWE: improved dual lattice attack (2022)
+
+31. May, A.: How to meet ternary LWE keys. In: CRYPTO. vol. 12826, pp. 701­731
+
+(2021)
+
+32. Micciancio, D., Regev, O.: Lattice-based cryptography. In: Post-Quantum Cryp-
+
+tography. Springer, Berlin Heidelberg (2009). https://doi.org/10.1007/978-3-540-
+
+88702-7_5
+
+33. Nguyen, P.Q.: Boosting the hybrid attack on NTRU: torus LSH, permuted
+
+HNF and boxed sphere, https://csrc.nist.gov/CSRC/media/Events/third-
+
+pqc-standardization-conference/documents/accepted-papers/nguyen-boosting-
+
+hybridboost-pqc2021.pdf
+
+34. Nick
+
+Howgrave-Graham,
+
+Joseph
+
+H.
+
+Silverman,
+
+W.W.:
+
+A meet-in-the-middle attack on an NTRU private key,
+
+https://www.researchgate.net/publication/2906622_A_Meet-In-The-
+
+Middle_Attack_on_an_NTRU_Private_Key
+
+35. NIST-PQC Round 3 submissions: https://csrc.nist.gov/Projects/post-quantum-
+
+cryptography/round-3-submissions
+
+36
+
+Bi et al.
+
+36. PALISADE: https://gitlab.com/palisade/palisade-release 37. Pouly, A., Shen, Y.: Provable dual attacks on learning with errors. In: EURO-
+CRYPT. vol. 14656, pp. 256­285 (2024) 38. Pouly, A., Shen, Y.: Discrete gaussian sampling for bkz-reduced basis. In: PQC.
+pp. 63­88 (2025) 39. Regev, O.: On lattices, learning with errors, random linear codes, and cryptogra-
+phy. In: STOC. pp. 84­93 (2009) 40. Son, Y., Cheon, J.H.: Revisiting the hybrid attack on sparse secret LWE and
+application to HE parameters. In: WAHC@CCS. pp. 11­20 (2019) 41. Wiemers, A., Ehlen, S.: A remark on the independence heuristic in the dual attack.
+Cryptology ePrint Archive, Paper 2023/1238 (2023) 42. Wunderer, T.: A detailed analysis of the hybrid lattice-reduction and meet-in-the-
+middle attack. J. Mathematical Cryptology 13(1), 1­26 (2019)
+
+

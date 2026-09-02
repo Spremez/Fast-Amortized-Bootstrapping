@@ -1,0 +1,2578 @@
+This article is full version (b) of the merged CRYPTO 2026 article "Careful with the Ring! Concrete Hardness Gaps Between LWE and MLWE" [44], available via DOI 10.1007/978-3-032-35377-1_15 from the Springer website. The merged article combines two independent concurrent submissions, namely eprint articles 2026/279 (by Ogilvie [62]) and 2026/366 (this article). We refer to these extended articles as full versions (a) and (b), respectively.
+Careful with the Ring: Enhanced Hybrid Decoding Attacks against Module/Ring-LWE
+Jianhua Hou1,2 and Haodong Jiang1,2( )
+1 Information Engineering University, Zhengzhou 450001, Henan, China 2 Henan Key Laboratory of Network Cryptography Technology, Zhengzhou 450001,
+Henan, China jianhua.hou@foxmail.com, hdjiang13@163.com
+Abstract. In order to reduce size and improve efficiency, many latticebased cryptographic schemes adopt structured variants of the Learning With Errors (LWE) problem, such as the Module-LWE and RingLWE. Nevertheless, when analyzing the concrete security of lattice-based schemes, these algebraic structures are usually not considered, given the absence of techniques to exploit them for accelerating known attacks. For the widely-used polynomial ring Zq[x]/(xN + 1), we first propose an enhanced hybrid decoding attack against Module/Ring-LWE by leveraging the ring structure to accelerate its guessing and decoding steps. Then, we theoretically show that compared to the prior hybrid decoding attack, our new attack can lead to a complexity improvement linear in N in the sparse secret setting. Moreover, we implement our new enhanced hybrid decoding attack on the benchmark instances established by [WSM+25, S&P], and achieve several new records. In particular, compared with state-of-the-art methods given by [KKN+26, EC], our approach is 17× to 114× faster on the known broken instances. Finally, we show how to estimate the concrete bit security with our new hybrid attack under the same model as in the lattice estimator, and perform the analyses of the latest sparse Ring-LWE parameter sets used in Fully Homomorphic Encryption (FHE) schemes including [JM22, EC], [CCKS23, CCS], [BCKS24, EC], [CHKS25, EC] and [AKP25, C]. The numerical results show that compared to the best-known attack, our enhanced attack can improve the attack complexity by up to 13 bits for all the considered parameter sets. In particular, under our new enhanced hybrid decoding attack, 12 out of the 16 parameter sets fall below the targeted 128-bit security level.
+Keywords: Module/Ring-LWE · Sparse LWE · Hybrid Decoding Attack · Fully Homomorphic Encryption · Cryptanalysis
+
+1 Introduction
+As a well-studied hard problem in lattice-based cryptography, Learning with Errors (LWE) problem [64] is described as follows. Given m LWE samples (a, b)  Znq ×Zq such that b = a·s+e, where a is chosen uniformly at random from Znq and the secret s (the error e, resp.) is sampled according to some distribution s (e, resp.), one is asked to find s. For the sake of efficiency and size considerations, many practical lattice-based cryptographic schemes choose to adopt structured variants of the LWE problem such as Ring-LWE [57,68] and Module-LWE [21,52]. Taking Module-LWE as an example, the instance is defined by (a, b)  Rq × Rq such that b = a · s + e (s  R, e  R), where R = Z[x]/(fN (x)) and Rq = R/qR. Here, the polynomial fN (x) is usually set to be xN + 1. As in the LWE instance, a is uniformly distributed, and s, e are small. When  is 1, Module-LWE becomes Ring-LWE. In particular, the lattice-based schemes recently standardized by NIST, Kyber [18] (FIPS 203) and Dilithium (FIPS 204) [13] are based on Module-LWE, and the Fully Homomorphic Encryption (FHE) scheme [3] to be standardized by ISO/IEC is based on Ring-LWE.
+Sparse Module/Ring-LWE. The current FHE schemes to be standardized allow for the secret distribution s to be uniform ternary [3,19], i.e., each coefficient of the secret polynomial is chosen independently and uniformly at random from the set {-1, 0, 1}. However, as shown in [34,19], in order to reduce the complexity of the bootstrapping step, many FHE implementations, such as [28,31,27,43,48,20,30,12,16,8,46,41,32], use a sparse secret for which all but a certain Hamming weight h (e.g., h  0.25 · N ) of the coefficients are zero. As the Homomorphic Encryption Standard group wrote in [3], the security of using sparse secrets is not well understood yet and they expect to specify concrete parameters for sparse secret keys in future versions of the standard. In addition, in order to widen the recommended parameter sets, Curtis and Player researched the feasibility and impact of standardizing sparse-secret LWE for Homomorphic Encryption, and presented numerous sparse parameter sets as alternatives [34].
+Hybrid Decoding Attack. Currently, there are several main strategies for solving the LWE problem and its structured variants (see [7] for a review), including primal attack [9], dual attack [2,42,58,25], hybrid decoding attack (also known as primal hybrid attack) [5,45,17,50,63], BKW attack [4], combinatorial attack [59], algebraic attack [10], etc. In particular, hybrid decoding attack is one of the most competitive methods in the sparse-secret regime, which combines key enumeration and lattice reduction. In detail, the hybrid decoding attack first reduces the LWE instance to dimension-reduced Bounded-Distance-Decoding (BDD) instances via some well-designed guessing strategies, and then uses the BDD solver to recover secrets. Different hybrid decoding attacks adopt different guessing strategies and BDD solvers. Recent several hybrid decoding attacks [5,63,45] have been included in the lattice-estimator3, which is the main tool to
+3 https://github.com/malb/lattice-estimator
+2
+
+analyze the concrete bit security of lattice-based schemes. In particular, virtually all current FHE schemes including the ones to be standardized [34,19] use the lattice-estimator to choose parameters for a target security level. However, all the known works on hybrid decoding attack, e.g., [5,63,45,50], just trivially take the Module-LWE (and Ring-LWE) instance as one single LWE instance, and ignore the algebraic structures.
+Benchmarks. Considering the LWE-based schemes that have been standardized by NIST (e.g., FIPS 203) and will be standardized by ISO/IEC (the upcoming FHE standard), Wenger et al. [71] provided the benchmarks for LWE secret recovery on standardized parameters to improve the understanding of concrete LWE security. Different from the Darmstadt Lattice Challenge [23], Wenger et al.'s Challenge is the first benchmark for small and low-weight (sparse) secrets. Several approaches including generic unique-SVP (uSVP) attack [6], MachineLearning (ML) based attack called SALSA [54,69], Cool & Cruel attack [61], dual hybrid Meet-in-the-Middle (MITM) [33] and hybrid decoding attack [63,51], have been implemented against Wenger et al.'s benchmarks. The state-of-the-art results and records are achieved with the hybrid decoding attack (see [63,51]).
+1.1 Our contribution
+In this paper, we first propose an enhanced hybrid decoding attack against Module/Ring-LWE exploiting the algebraic property of the underlying ring, then theoretically show that our enhanced attack can lead to a complexity improvement linear in N compared to the prior standard hybrid decoding attack in sparse secret setting, subsequently demonstrate the practical performance improvements on Wenger et al.'s benchmarks [71], and finally show the concrete influence on several latest sparse Ring-LWE parameters recently used in FHE.
+Our detailed contributions are as follows.
+1. We propose an enhanced hybrid decoding attack against Module/Ring-LWE that exploits the algebraic property of the underlying ring. For a ModuleLWE instance (a, b)  Rq × Rq with b = a · s + e, the standard hybrid decoding attack disregards the algebraic structure and merely treats it as an unstructured LWE instance. In each iteration of the standard hybrid decoding attack, the attack first guesses the possible values of the k dropped dimensions of the secret s, which yields a dimension-reduced BDD instance; a BDD solver is then applied to solve this reduced instance. We denote the success probability of each such iteration by pit. In our enhanced hybrid decoding attack, we multiply both sides of the equation b = a · s + e by xi for i = 0, 1, . . . , N - 1, which gives xi · b = a · (xi · s) + xi · e. This transformation corresponds to a new Module-LWE instance (a, xi · b) with the transformed secret xi · s. Notably, recovering any one of the transformed secrets xi · s suffices to reconstruct the original secret s. In the enhanced hybrid decoding attack, we leverage this property to improve the success probability of each
+3
+
+iteration, which we denote by pit. When the per-iteration cost is identical, a higher pit than pit reduces the number of iterations required for the enhanced hybrid decoding attack, thereby lowering the total attack complexity. 2. We provide a thorough theoretical analysis that proves our enhanced hybrid decoding attack achieves a speedup linear in N compared with the standard hybrid decoding attack in sparse secret setting. We set the per-iteration time cost of the enhanced hybrid decoding attack to be approximately equal to that of the standard hybrid decoding attack, and analyze the ratio pit/pit. Through formal mathematical derivation, we prove that this ratio grows linearly in N , which further implies a speedup linear in N in the total time complexity. We also conduct comprehensive experiments to validate the correctness of our theoretical claims. 3. We apply our enhanced hybrid decoding attack to the benchmark of ModuleLWE and Ring-LWE instances with sparse secrets proposed by Wenger et al. [71]. Across all tested instances, our enhanced hybrid decoding attack outperforms the unstructured baseline by a speedup factor ranging from 17 to 114. For instance, on the same hardware, the implementation of Pulles et al. [51,63] takes an average of 1.38 hours (4979.2 seconds) over five experimental runs with four parallel workers to solve the Ring-LWE instances with n = 1024, log q = 26, and a secret of Hamming weight 9. In contrast, our enhanced hybrid decoding attack requires an average of only 2.9 minutes (173.8 seconds) over five experimental runs with a single worker for the same instances, amounting to a 114.6× speedup over the baseline. Furthermore, we set new benchmark records via our enhanced hybrid decoding attack. For example, for the Ring-LWE instance with n = 1024 and log q = 26, the previously highest solvable secret Hamming weight was 11, while our attack can solve instances with a Hamming weight of 14.4 4. We show how to evaluate the concrete bit-security of Module/Ring-LWE based cryptographic schemes under our enhanced hybrid decoding attack in the cost model used in lattice-estimator. The hybrid decoding attack generally performs well against sparse secrets. Figure 1.1 plots the complexity of various methods when evaluated on sparse ternary secrets with different Hamming weights, from which one can observe that the enhanced hybrid decoding attack performs best when the Hamming weight is small. Since many FHE parameter sets are built around sparse ternary secrets, we use the enhanced hybrid decoding attack to reassess the bit-security of several representative FHE parameter sets. Concretely, among the 16 parameter sets used in [48,30,12,32,8], we find that 12 of them fail to meet the targeted 128-bit security level under our new enhanced hybrid decoding attack. Compared with the standard hybrid decoding attack (including guess-and-verify decoding and Howgrave-Graham decoding), the enhanced hybrid decoding
+4 Using our enhanced hybrid decoding attack, the estimated bit security of the instances is 61.1 (with the target success probability set to 0.99), and the actual solving time is 2.4 days. In contrast, the unstructured baseline yields a bit security of 66.8 (5.7 bits higher than ours), corresponding to an estimated solving time of 124.8 days.
+4
+
+attack reduces the bit-security by 5.7 to 13.0 bits and 4.1 to 12.2 bits, respectively. When applied to the 72 sparse secret parameter sets given by Curtis and Player [34], we observe that 45 parameter sets fail to meet the target security level under our new enhanced hybrid decoding attack.
+Remark 1.1. Our enhanced hybrid decoding attack has no impact on the concrete security of schemes such as Kyber and Dilithium, since the secrets of these schemes possess a relatively large Hamming weight. Under such parameter regimes, the enhanced hybrid decoding attack is not superior to the uSVP method (i.e., primal attack), as illustrated in Figure 1.1. However, we also remark that we just take the typical sparse parameter sets used in FHE [48,30,12,32,8] as examples to demonstrate the advantages of our algorithm. There are many other sparse parameter sets used in FHE schemes, e.g., [28,31,43,20,16,46,41], whose concrete security should be reconsidered but is not analyzed in this paper.
+Remark 1.2. Our work is not the first to discover and use the aforementioned algebraic property. In fact, this property has not only been used to strengthen the information-set-decoding (ISD) algorithm (known as "DOOM", see [66,38]) that is the main tool to analyze the concrete bit security of Quasi-Cyclic codebased scheme, such as HQC to be standardized by NIST, but also been exploited in hybrid attacks against NTRU [73, Sec. 5.2]. For sparse Module/Ring-LWE, the Cool & Cruel attack [61] and machine-learning-based attack [71] also use this property to improve the performance. However, all prior works on hybrid decoding attacks against Module/Ring-LWE ignored this algebraic property.
+Our code is available at the following GitHub repositories:
+­ https://github.com/identitymapping/enhanced_hybrid_attack ­ https://github.com/identitymapping/enhanced_lattice-estimator ­ https://github.com/identitymapping/enhanced_estimator_cp19
+2 Preliminaries
+2.1 Notations and Basic Definitions
+We denote [n] = {0, 1, . . . , n-1} for a positive integer n, and [a : b] = {a, . . . , b- 1} for integers a < b. Throughout this paper, log denotes the logarithm to the base 2. Vectors are denoted by bold lower case letters and are regarded as column vectors, e.g., v. Matrices are denoted by bold upper case letters, e.g., B. For a matrix B, we express it in terms of its column vectors as B = (b0, . . . , bn-1), where bi stands for the i-th column of B. The identity matrix of order n is denoted by In. The m-dimensional zero vector is denoted by 0m, and the m × n zero matrix is denoted by 0m×n. The Euclidean norm of a vector v is indicated by v. The cardinality of a set S is denoted by |S|. Given a matrix A  Rm×n, and sets I  [m], J  [n], A[I,J] denotes the submatrix of A consisting of the rows indexed by I and columns indexed by J. For a vector v  Rm and index
+5
+
+Algorithm Performance Comparison 100
+
+90
+
+log2 (time)
+
+80
+
+70
+
+60
+
+uSVP[ADPS16] enhanced g-v
+
+g-v[ACW19]
+
+50
+
+enhanced H-G H-G[How07]
+
+0
+
+100 Hamming Weight h 200
+
+300
+
+Fig. 1.1: Comparison of uSVP [9], guess-and-verify decoding attack [5], Howgrave-Graham decoding attack (with MITM) [45], enhanced guess-andverify decoding attack, and enhanced Howgrave-Graham decoding attack (with MITM). The results correspond to Ring-LWE instances with parameters n = 1024, q = 240, and a sparse ternary secret whose Hamming weight h is chosen from {16, 32, 48, 64, 96, 128, 192, 256} (we select these parameters with reference to [34, Fig. 3]). The error term is drawn from the discrete Gaussian distribution D with  = 3.19. The evaluation results are obtained using lattice-estimator.
+Note: In the figure, the time complexity of uSVP rises as h increases, with only a marginal increment.
+
+set J  [m], vJ denotes the subvector of v with coordinates at indices in J, vi denotes the i-th coordinate of v for i  [m], and HW(v) denotes the Hamming weight of v (i.e., the number of non-zero coordinates in v). If D is a distribution, then we write x  D to indicate that x is a random variable drawn at random from D. For a distribution D, its support, denoted by Supp(D), consists of all values taking non-zero probability under D; H(D) is its Shannon entropy. For a distribution  on Zn, we define its value set as Val() = x  Z : s  Supp(), i  [n] such that si = x , i.e., the set of all possible values taken by any coordinate of a random vector drawn from . We further define the nonzero value set Val+() = Val()\{0}. For a positive integer n1  n, we denote by |n1 the marginal distribution of  restricted to n1 dimensions (i.e., the distribution obtained by projecting a sample from  onto its first n1 coordinates). We say that  is permutation-sign symmetric if for every x = (x0, . . . , xn-1)  Supp(), every permutation   Sn (where Sn denotes the symmetric group of all permutations of {0, 1, . . . , n - 1}), and every sign vector  = (0, . . . , n-1)  {±1}n, we have Pr[x] = Pr ((0)x(0), . . . , (n-1)x(n-1)) . All these definitions naturally extend to distributions on R by viewing the coefficients of the polynomials as integer vectors in ZN .
+6
+
+2.2 Lattices
+
+A lattice   Rm is a discrete subgroup of Rm. For a matrix B  Rm×n, the lattice L spanned by the basis B is denoted L(B) = {Bx | x  Zn}. If
+ = L(B), we say that B is the basis of . We say that the dimension of
+L(B) is n, and the lattice is full-rank if m = n. The Gram-Schmidt orthogonalization basis of (b0, . . . , bn-1) is written as (b0, . . . , bn-1), abbreviated as GS basis for short. For any i  {0, . . . , n - 1}, i represents the orthogonal projection onto span(b0, . . . , bi-1), and i represents the orthogonal projection onto span(b0, . . . , bi-1). For indices satisfying 0  i < j  n, the local projected block (i(bi), . . . , i(bj-1)) is denoted B[i,j]. The lattice spanned by B[i,j] is referred to as L[i,j]. We adopt Bi and Li as abbreviations for B[i,n] and L[i,n], respectively.
+The volume of lattice L(B), denoted Vol(L(B)), equals the product i bi . The first minimum of a lattice L, written 1(L), refers to the length of the short-
+est non-zero vector contained in L. We also use Vol(B) and 1(B) as shorthands
+for Vol(L(B)) and 1(L(B)), respectively.
+
+Definition 2.1 (Gaussian Heuristic). For a random full-rank lattice L  Rn
+
+with volume Vol(L), the Gaussian Heuristic estimates the length of the shortest
+
+non-zero vector as
+
+GH(L)  n · Vol(L)1/n. 2e
+
+2.3 LWE, BDD and CVP
+
+Definition 2.2 (Search LWE). Let n, m, q be positive integers. Let s, e be distributions on Zn and Zm, respectively. We define the search LWE instance
+with parameters (n, m, q, s, e) as follows. Given a matrix A uniformly distributed in Zqm×n, and a vector b  Zqm such that b = As + e and (s, e)  (s, e), output s.
+
+Definition 2.3 (Bounded Distance Decoding (BDD)). Given a lattice
+
+  Rm with basis B  Rm×n, and a target vector t  Rm, where t = v + x,
+
+for
+
+some
+
+v
+
+
+
+
+
+and
+
+x
+
+
+
+Rm
+
+with
+
+x
+
+<
+
+1 () 2
+
+5
+
+,
+
+one
+
+is
+
+asked
+
+to
+
+find
+
+the
+
+lattice
+
+vector v.
+
+LWE instance (A, b)  Zqm×n × Zm q can be transformed to a BDD instance as follows. Define
+
+B=
+
+qIm A 0m×n cIn
+
+,
+
+t=
+
+b 0n
+
+,
+
+ = L(B)
+
+(2.1)
+
+where c > 0 is a scaling factor to be determined for balancing the standard deviations of the respective components [14]. Let
+
+x = t - B
+
+u s
+
+=
+
+e -cs
+
+,
+
+5
+
+The
+
+condition
+
+x
+
+<
+
+1 () 2
+
+in
+
+Definition
+
+2.3
+
+guarantees
+
+the
+
+uniqueness
+
+of
+
+the
+
+solu-
+
+tion.
+
+7
+
+where u  Zm is an integer vector. If s, e is sufficiently small, satisfying x <
+
+1 () 2
+
+,
+
+then
+
+(,
+
+t)
+
+is
+
+a
+
+BDD
+
+instance
+
+and
+
+its
+
+solution
+
+is
+
+t
+
+- x.
+
+Usually
+
+c
+
+is
+
+chosen
+
+to
+
+satisfy
+
+c
+
+s n
+
+
+
+e m
+
+.
+
+Thus,
+
+we
+
+can
+
+solve
+
+the
+
+LWE
+
+instance
+
+by
+
+solving
+
+the
+
+BDD
+
+instance (, t).
+
+Definition 2.4 (Closest Vector Problem (CVP)). Given a lattice   Rm with basis B  Rm×n, and a target vector t  Rm. One is asked to find a vector w   such that w - t  1(). If t = v + x, for some v   and x  Rm
+with x < 1(), then v is the solution to this CVP instance.
+
+2.4 Sparse LWE, Ring-LWE and Module-LWE
+
+In this work, we mainly consider LWE instances where the secret and error vectors are sampled from the following distributions:
+
+­ Ternary, B-: each coordinate is uniformly from {-1, 0, 1}.
+
+­ Binomial, B: each coordinate is from a centered Binomial distribution,
+
+obtained by sampling 2 uniform bits (a1, ..., a, b1, ..., b) and outputting
+
+ i=1
+
+ai
+
+-
+
+ i=1
+
+bi
+
+.
+
+­ Discrete Gaussian, D: each coordinate is from a discrete Gaussian distribu-
+
+tion over Z, with probability proportional to exp(-x2/(22)) for each x  Z
+
+(normalized to sum to 1).
+
+We also define sparse variants of the above secret distributions by fixing the
+
+number of non-zero secret coordinates (i.e. Hamming weight) to a given value h.
+
+For ternary secrets, this sparse distribution with exactly h non-zero coordinates
+
+is denoted by with exactly h
+
+Bnh-o.n-Fzoerrobcinooomrdiianlasteecsriestsd,etnhoetecdorbryesBpohn.6diLnWg Espwaristeh
+
+distribution such sparse
+
+secrets is called sparse LWE.
+
+To reduce size and improve efficiency, many lattice-based schemes are based
+
+on the variants of the LWE problem, including Ring-LWE and Module-LWE.
+
+In this paper, the polynomial rings are defined as Rq = Zq[x]/(fN (x)) and R = Z[x]/(fN (x)) where q is a prime, and fN (x) = xN + 1.7
+
+Definition 2.5 (Search Ring-LWE). A Ring-LWE instance is a pair (a, b) 
+Rq × Rq, where a is uniformly sampled from Rq, and b = a · s + e. The secret s  R is chosen according to the distribution s, and the error e  R is chosen according to the distribution e.8 The Search Ring-LWE asks to recover s given m Ring-LWE instances {(ai, bi = ais + ei) : i = 0, . . . , m - 1}.
+6 All distributions D, B-, B, Bh-, and Bh are permutation-sign symmetric, and we provide the reasons in Remark A.1.
+7 In many lattice-based schemes, N is chosen as a power of two, making both Rq and R 2-power cyclotomic rings, but our analysis in this paper does not rely on N being a power of two.
+8 We reuse the notations s and e to denote the distributions over R (and R as defined in Definition 2.6).
+
+8
+
+Definition 2.6 (Search Module-LWE). A Module-LWE instance is a pair (a, b)  Rq × Rq, where a is uniformly sampled from Rq , and b = a · s + e. The secret s  R is chosen according to the distribution s, and the error e  R is chosen according to the distribution e. The term  is called as the rank of the Module-LWE instance. The Search Module-LWE asks to recover s given m
+Module-LWE instances {(ai, bi = ai · s + ei) : i = 0, . . . , m - 1}.
+
+As defined above, a Ring-LWE instance is a special case of a Module-LWE instance with rank  = 1. Following the approach in [63], we transform a ModuleLWE instance to an unstructured LWE instance via two core maps:
+
+1. The coefficient embedding vec : Rq  ZqN , which maps a polynomial c =
+
+N -1 i=0
+
+cixi
+
+
+
+Rq
+
+to
+
+its
+
+coefficient
+
+vector
+
+vec(c)
+
+=
+
+(c0, TgvDec, . . . , cN-1).
+
+This map can extend naturally to modules as vec : Rq  Zq N . Its inverse
+
+map, the polynomial lifting poly : ZNq  Rq, maps a coefficient vector
+
+c = (c0, TgvDec, . . . , cN-1)  ZNq back to the corresponding polynomial
+
+poly(c) =
+
+N -1 i=0
+
+ci
+
+xi
+
+
+
+Rq ,
+
+and
+
+admits
+
+a
+
+natural
+
+extension
+
+to
+
+modules
+
+as
+
+poly : ZqN  Rq.
+
+2. The rotation map rot : Rq  ZqN×N , which converts a ring element c to a
+
+circulant matrix:
+
+rot(c) = vec(c), vec(cx), . . . , vec(cxN-1) ,
+
+and extends naturally to modules as rot : Rq  ZNq ×N . The definitions of the maps vec, poly, and map extend naturally to R and R.
+
+Remark 2.1. For simplicity, we regard an element of R as a vector over ZN (and vice versa) via the vec/poly maps, with context determining its precise meaning.
+
+Thus, given m Module-LWE instances {(ai, bi = ais + ei)  Rq × Rq : i = 0, . . . , m - 1}, with secret s, applying these maps yields an unstructured LWE instance:
+
+  rot(a0) 
+
+ vec(b0) 
+
+ A =   
+
+rot(a1) ...
+
+ ,b =   
+
+vec(b1) ...
+
+  
+
+
+
+Zm q N ×N
+
+×
+
+Zm q N .
+
+
+
+rot(am-1)
+
+vec(bm-1)
+
+(2.2)
+
+This LWE instance has a secret vector vec(s)  ZN , secret dimension n = N , and number of samples m = mN . Since a Ring-LWE instance is a special
+Module-LWE instance, its transformation to an unstructured LWE instance fol-
+lows an analogous procedure; thus, we omit the details here for brevity.
+
+9
+
+2.5 Lattice Algorithms
+Lattice enumeration and sieving. Lattice enumeration [49] and sieving [1] are both algorithms for finding short vectors in a lattice. The time complexity of sieving algorithms is typically exponential in the lattice dimension n, with the best known complexity being 20.292n+o(n) for solving Shortest Vector Problem (SVP) [15].
+Lattice reduction. Lattice reduction algorithms aim to transform a given lattice basis into a better basis with more orthogonal or shorter vectors. The most important algorithms include:
+­ Lenstra-Lenstra-Lovász (LLL) algorithm [53] : A polynomial-time algorithm that produces a basis where the vectors are relatively short and nearly orthogonal. LLL is fast but yields lattice bases of low quality.
+­ Block Korkine-Zolotarev (BKZ) algorithm [65] : A more powerful algorithm that works by solving SVP via enumeration or sieving in smaller dimensional blocks. The quality of BKZ-reduced bases depends on the block size . Larger  yields better bases but requires more computation.
+The Geometric Series Assumption (GSA) is commonly used to estimate the lengths of the GS basis after BKZ reduction, which assumes that the lengths of the GS basis form a geometric sequence.
+Babai's Nearest Plane. Given a BDD instance (B, t), if the basis B is well reduced, we can use Babai's Nearest Plane (NP) algorithm [11] to solve the BDD problem in polynomial time.
+CVP solver. If the basis B is not well reduced, Babai's NP algorithm fails to solve the BDD problem, and we may then resort to more powerful CVP solvers. Alternatively, the CVP can be transformed into SVP via Kannan's embedding [49], which can subsequently be solved using lattice enumeration or sieving algorithms. Additionally, Randomized Slicer [36,35] can also be employed, which enables solving large batches of CVP instances at the cost of a single CVP instance and has been implemented in existing works [72,70,50].
+Cost models and shape models. In this work, we use the sieving cost models [15,58]9 and quantum sieving model [26]10 to evaluate security, and employ GSA or the Chen-Nguyen simulator [29]11 to estimate the length of GS basis after BKZ reduction. 9 Known as red_cost_model=BKZ.sieve in LWE-estimator and red_cost_model=
+MATZOV in lattice-estimator, where LWE-estimator is an early version of latticeestimator. 10 Known as red_cost_model=ChaLoy21 in lattice-estimator. 11 Known as red_shape_model=GSA and red_shape_model=CN11 in lattice-estimator.
+10
+
+2.6 Hybrid Decoding Attack
+The hybrid decoding attack is an approach to solve LWE that combines key enumeration and lattice reduction. It is also known as the primal hybrid attack. One can use the lattice-estimator to estimate the cost of hybrid decoding attack. Given an LWE instance (A, b)  Zm q ×n × Zm q with secret vector s of Hamming weight h, according to Eq. (2.1), we can reduce it to a BDD instance ( = L(B), t) with t = v + x, v  . Let d = m + n. Then, we show how to solve this BDD instance using classical decoding, and how to solve this LWE instance via Howgrave-Graham decoding and guess-and-verify decoding following [5].
+
+Classical decoding. The classical decoding approach was introduced in [55,56],
+
+analyzed in [7,5], and has been integrated into lattice-estimator. In this approach,
+
+we first reduce the basis B via lattice reduction with block size Dec to obtain a well-reduced basis B. Then parameter Dec is determined to solve the lower-
+
+dimensional CVP on the projected sublattice d-Dec , which finds the vector
+
+in
+
+the
+
+projected
+
+sublattice
+
+that
+
+is
+
+closest
+
+to
+
+
+d-Dec
+
+(t).
+
+Finally,
+
+Babai's
+
+NP
+
+algorithm is used to obtain the full lattice vector. The details are as follows. Let
+
+t = v + x,
+
+v = B
+
+u1 u2
+
+,
+
+(2.3)
+
+for
+
+some
+
+u1
+
+
+
+Zd-Dec , u2
+
+
+
+ZDec ,
+
+applying
+
+the
+
+projection
+
+
+d-Dec
+
+to
+
+t
+
+yields
+
+
+d-Dec
+
+(t)
+
+=
+
+B [d-Dec ,d] u2
+
++
+
+
+d-Dec
+
+(x).
+
+(2.4)
+
+The
+
+parameter
+
+Dec
+
+is
+
+chosen
+
+to
+
+satisfy
+
+
+d-Dec
+
+(x)
+
+<
+
+GH(L(B[d-Dec,d])),
+
+then
+
+Eq. (2.4) defines a CVP instance on the projected sublattice. We can solve this
+
+CVP instance using the CVP solver to obtain u2 and the success probability is denoted as pCVP. From Eq. (2.3), we can deduce that
+
+t - v2 = B[0,d-Dec]u1 + x,
+
+for v2 = B
+
+0d-Dec u2
+
+.
+
+(2.5)
+
+Applying d-Dec to both sides of Eq. (2.5) yields
+
+d-Dec (t - v2) = B[0,d-Dec]u1 + d-Dec (x).
+
+(2.6)
+
+Then we use Babai's NP algorithm to recover u1 in Eq. (2.6), with the corresponding success probability pbabai. Finally we obtain the lattice vector v and solve the BDD instance (, t) successfully.
+The cost of this classical decoding approach is given by
+
+TDec
+
+=
+
+TBKZ(Dec, d) + TCVP(Dec) , pbabai · pCVP
+
+(2.7)
+
+where TBKZ(Dec, d) is the cost of lattice reduction in a d-dimensional lattice with block size Dec, and TCVP(Dec) is the cost of solving an Dec-dimensional CVP instance. The cost of the classical decoding approach can be estimated by lattice-estimator via the primal_bdd function.
+
+11
+
+Howgrave-Graham decoding. This hybrid decoding approach was proposed by Howgrave-Graham [45]. It was first used to attack NTRU and later be generalized to attack LWE [24,73]. It is a hybrid strategy of guess and lattice reduction. The guess phase can be accelerated through the MITM technique. We do not consider the analysis of integrating the MITM technique here, and a comprehensive analysis is provided in Section 5.2. Its main idea is to first guess that the Hamming weight of the k dropped dimensions of the secret vector s is at most hhgDec, then determine the exact values of these non-zero coordinates via enumeration, and finally apply Babai's NP algorithm to solve the (d-k)-dimensional BDD instance. The probability of successfully solving the BDD instance using Babai's NP algorithm pbabai is estimated in [75]. The cost of this hybrid decoding approach is
+
+ThgDec
+
+=
+
+TBKZ(hgDec, d - k) + |ShhgDec | · Tbabai(d - k) ,
+
+pbabai ·
+
+p hhgDec
+i=0 i
+
+(2.8)
+
+where |ShhgDec | =
+
+hhgDec i=0
+
+k i
+
+|Val+(s)|i
+
+denotes
+
+the
+
+search
+
+space
+
+for
+
+k
+
+dimen-
+
+sional
+
+vectors
+
+with
+
+Hamming
+
+weight
+
+at
+
+most
+
+hhgDec
+
+and
+
+pi
+
+=
+
+(hi )·(nk--hi ) (nk)
+
+is
+
+the
+
+probability that s has Hamming weight exactly i over the k dropped dimensions.
+
+The cost of the decoding approach can be estimated via the primal_hybrid
+
+function in lattice-estimator with babai=True fixed, by setting the parameter
+
+mitm to True (employing the MITM technique) or False (excluding the MITM
+
+technique).
+
+Guess-and-verify decoding. Howgrave-Graham decoding relies on Babai's NP algorithm as low-dimensional BDD solver, leading to a very low success probability. To address this limitation, Albrecht et al. [5] proposed another hybrid decoding strategy called guess-and-verify decoding, which replaces Babai's NP algorithm with a more powerful CVP solver with the subsequent application of Babai's NP algorithm to enhance the success probability in solving low-dimensional BDD problem (i.e., the classical decoding approach). The cost of this approach is
+
+TgvDec
+
+=
+
+TBKZ(gvDec, d - k) + |ShgvDec | · Tbdd(d - k) ,
+
+pbdd ·
+
+p hgvDec
+i=0 i
+
+(2.9)
+
+where Tbdd denotes the cost of solving a (d-k)-dimensional BDD instance via the classical decoding approach, and pbdd is the corresponding success probability. Specifically, when hgvDec = 0, this implies that we assume the values of all k dropped dimensions of s are zero. In this case, the guess-and-verify strategy degenerates into another hybrid decoding attack called drop-and-solve decoding [60,5]. Similarly, when employing Babai's NP algorithm to solve the (d - k)dimensional BDD instance, the guess-and-verify strategy degenerates into the Howgrave-Graham decoding. Algorithm 1 presents the pseudocode for guessand-verify decoding. In this algorithm, each selection of the subset I requires one
+
+12
+
+BKZ reduction on the lattice basis, along with multiple invocations of the low-
+
+dimensional BDD solver. Specifically, the success probability of each iteration
+
+in the guess-and-verify framework is given by pgvDec = pbdd ·
+
+p hgvDec
+i=0 i
+
+. In
+
+Algorithm 1, for a target success probability of 0.99, the number of iterations
+
+is set to Niters = log(1 - 0.99)/ log(1 - pgvDec). The cost of this decoding
+approach can be estimated by lattice-estimator through primal_hybrid function with settings babai=False and mitm=False.12
+
+The optimal attack parameters require balancing the running time of BKZ
+
+and guessing, setting
+
+|ShgDec| · Tbabai(d - k)  TBKZ(hgDec, d - k), |ShgvDec | · Tbdd(d - k)  TBKZ(gvDec, d - k).
+
+(2.10)
+
+Consequently, the constraints from (2.10) force hhgDec and hgvDec to remain small, as |Sh | increases quickly in h.
+
+Algorithm 1: Guess-and-verify decoding [5,63]
+
+Input: an LWE instance (A, b)  Zqm×n × Zm q with secret s drawn from s, HW(s) = h, k < n (the number of dropped dimensions), hgvDec (the
+
+guessed maximum Hamming weight of the k dropped dimensions),
+
+BKZ block size gvDec
+
+Output: the secret s
+
+1 Set Niters according to the target success probality;
+
+2 for iter = 1, 2, ..., Niters do
+
+3 Uniformly sample a subset I  {0, 1, . . . , n - 1} where |I| = n - k;
+
+4 Define complement subset J := {0, 1, . . . , n - 1} \ I;
+
+5
+
+AI := A[[0:m],I], AJ := A[[0:m],J];
+
+6
+
+BI :=
+
+q · Im AI 0(n-k)×m c · In-k
+
+;
+
+7 Apply BKZ algorithm with block size gvDec to BI and obtain a reduced
+
+basis BI ;
+
+8
+
+for h  {0, 1, . . . hgvDec} do
+
+9
+
+for all ~sJ  Val(s)k with HW(~sJ ) = h do
+
+10
+
+t :=
+
+b - AJ ~sJ 0n-k
+
+;
+
+11
+
+Treat (BI , t) as a BDD instance, solve it via the classical decoding
+
+approach and obtain v;
+
+12
+
+x := t - v ;
+
+13
+
+~sI := -x[m:m+n-k]/c;
+
+14
+
+~s := (~sI , ~sJ );
+
+15
+
+if ~s is a valid secret then
+
+16
+
+return ~s;
+
+17 return 
+
+12 Unlike Eq. (2.9) which computes the cost in an average sense, the lattice-estimator
+calculates the cost as Niters · TBKZ(gvDec, d - k) + |ShgvDec | · Tbdd(d - k) , with a default target success probability set to 0.99.
+
+13
+
+3 Enhanced Hybrid Decoding Attacks against Module/Ring-LWE
+In this section, we first present the enhanced hybrid decoding attack exploiting the algebraic structure, followed by an analysis showing that this attack yields a speedup linear in N in sparse secret setting.
+
+3.1 Leveraging the Algebraic Structure
+Since Ring-LWE is a special case of Module-LWE, we do not consider Ring-LWE separately and only present the analysis for Module-LWE.
+Given a Module-LWE instance (a, b)  Rq × Rq, where b = a · s + e with secret s  R and error e  R. Here we only consider Rq = Zq[x]/(fN (x)), R = Z[x]/(fN (x)) with fN (x) = xN + 1. If we multiply both sides of the equation b = a · s + e by xi, where i  {0, 1, . . . , N - 1}, we obtain:
+xi · b = xi · (a · s) + xi · e.
+
+By the commutativity of multiplication, we can rearrange the term xi · (a · s) to a · (xi · s). Thus, the equation simplifies to:
+
+xi · b = a xi · s + xi · e.
+
+(3.1)
+
+This is equivalent to obtaining N distinct Module-LWE instances, where a remains unchanged, while the target b, secret s and error e are transformed to xi ·b, xi · s and xi · e respectively. We only need to recover any one of the transformed secret xi ·s to derive the original secret s. Specifically, since xN  -1, the inverse of xi in R is -xN-i, and thus the original secret can be computed as
+s = -xN-i · (xi · s).
+
+Next, we provide the details of our enhanced hybrid decoding attack in Algorithm 3, which utilizes the algebraic structure to speed up the process. We first present an assumption that will be used in the subsequent analysis and its verification is provided in Appendix A.
+
+Assumption 1 Let s  R denote the secret of Module-LWE, where R = Z[x]/(xN + 1). The distribution of s is permutation-sign symmetric. Let n = N , and k < n be a positive integer. The guessing set S is selected according to Algorithm 2, and pS denotes the probability that vec(s)J  S for a uniformly random subset J  {0, 1, . . . , n - 1} with |J| = k. The success probabilities of the following two methods are identical (both equal to 1 - (1 - pS)N ):
+1. Sample a subset J  {0, 1, . . . , n-1} uniformly at random, where each subset satisfies |J| = k. A trial is considered successful if vec(s)J  S. Repeat this process N times, and prandom denotes the probability of achieving at least one success across the N trials.
+
+14
+
+2. Sample a subset J  {0, 1, . . . , n - 1} uniformly at random with |J| = k, and pshift denotes the probability that there exists at least one i  {0, 1, . . . , N -1} such that vec(xi · s)J  S.
+This means that pshift = prandom = 1 - (1 - pS)N .
+
+For each i  {0, 1, . . . , N - 1}, (a, xi · b) corresponds to a Module-LWE instance given by Eq. (3.1), where the secret of this instance is xi · s. Let s(i) denote vec(xi · s). We select the guessing set S according to Algorithm 2, where pS is the probability that sJ(i)  S for the subset J in Algorithm 3.
+If ~sJ = sJ(i) for some ~sJ  S, Algorithm 3 will invoke the BDD solver to successfully solve the (d - k)-dimensional BDD instance and obtain s(i) in Line
+17 with probability pbdd. The BDD solver can employ Babai's NP algorithm, the classical decoding approach, or the Batched-Tail-BDD algorithm integrated
+with Randomized Slicer [50, Alg. 4] for solving a batch of BDD instances. Finally, we only need to compute -xi · poly(s(i)) to obtain the original secret
+s  R. The computational complexity of this process (from Lines 11 to 19 in
+Algorithm 3) is |S|·Tbdd(d-k), with a corresponding guessing success probability of pS. Since this process is repeated N times and by Assumption 1, the success probability of Lines 10 to 19 in Algorithm 3 is pbdd · (1 - (1 - pS)N ). Adding the cost of BKZ, the total cost of Algorithm 3 is given by the following formula:
+
+TehDec
+
+=
+
+TBKZ(ehDec, d pbdd
+
+- k) + N · |S| · Tbdd(d · (1 - (1 - pS)N )
+
+-
+
+k) .
+
+(3.2)
+
+Remark 3.1. In Algorithm 2, pS is a constant probability for Strategy 1 and Strategy 2 according to [39, Theorem 3.6, Theorem 3.7]. Strategy 3 corresponds to the selection strategy used in guess-and-verify decoding, which essentially sorts vectors in descending order of probability and prioritizes vectors with higher probabilities. This is because when the secret is sparse, vectors with low Hamming weights correspond to higher probabilities. Beyond the aforementioned strategies, other selection strategies can also be incorporated into Algorithm 2.
+
+Remark 3.2. In Algorithm 3, when the algebraic structure is not leveraged: if Algorithm 2 adopts Strategy 3 with the classical decoding approach as the BDD solver, Algorithm 3 corresponds to guess-and-verify decoding; if Algorithm 2 adopts Strategy 3 with Babai's NP algorithm as the BDD solver, Algorithm 3 corresponds to Howgrave-Graham decoding; if Algorithm 2 adopts Strategy 2 and the BDD solver is chosen as the Batched-Tail-BDD algorithm integrated with Randomized Slicer [50, Alg. 4],13 Algorithm 3 corresponds to Algorithm 6 in [50] (when restricted to solving LWE problems).
+
+13 In this case, the term N · |S| · Tbdd(d - k) in Eq. (3.2) denotes the amortized time required to solve all N · |S| BDD instances. Moreover, Algorithm 3 batches these BDD instances and solves them using the Batched-Tail-BDD algorithm.
+15
+
+Algorithm 2: Guessing Set Selection Algorithm
+
+Input: Dimension of the vector to be sampled k; s (distribution of s) Output: Guessing set S (candidate set for sJ , where J  [N ] and |J| = k)
+such that Pr(sJ  S) = pS
+/* Strategy 1: select by probability (descending order),
+
+corresponding to [39, Alg. 2]
+
+*/
+
+1 S := ;
+
+2 Compute the corresponding probability of all vectors drawn from s|k;
+
+3 Add the top 2H(s|k) vectors with the highest probability to S;
+
+4 return S;
+
+/* Strategy 2: uniform selection, corresponding to [39, Alg. 3] and
+
+[50, Alg. 5]
+
+*/
+
+5 S := ;
+
+6 for i = 1, . . . , 2H(s|k)+1 do
+
+7
+
+x  s|k;
+
+8 S := S  {x};
+
+9 return S;
+
+/* Strategy 3: all vectors with Hamming weight  h, which
+
+specifically correspond to the strategy of guess-and-verify
+
+decoding
+
+*/
+
+10 S := ;
+
+11 for h  {0, 1, . . . , h} do
+
+12 for all x  Val(s)k with HW(x) = h do
+
+13
+
+S := S  {x};
+
+14 return S;
+
+16
+
+Algorithm 3: Enhanced hybrid decoding attack
+
+Input: m Module-LWE instance
+
+{(aj, bj = ajs + ej)  Rq × Rq : j = 0, . . . , m - 1} with N the degree of the polynomial ring, k < n the number of dropped dimensions, BKZ
+
+block size ehDec Output: the secret s  R
+
+1 Set Niters according to the target success probability; 2 According to Eq. (2.2), transform m Module-LWE instances into
+
+unstructured
+
+LWE,
+
+obtain
+
+A
+
+
+
+m
+Zq
+
+N
+
+×N
+
+,
+
+set
+
+m
+
+
+
+mN ,
+
+d
+
+=
+
+m
+
++
+
+n;
+
+3 for iter = 1, 2, ..., Niters do
+
+4 Uniformly sample a subset I  {0, 1, . . . , n - 1} where |I| = n - k;
+
+5 Define complement subset J := {0, 1, . . . , n - 1} \ I;
+
+6
+
+AI := A[[0:m],I], AJ := A[[0:m],J];
+
+7
+
+BI :=
+
+q · Im AI 0(n-k)×m c · In-k
+
+;
+
+8 Apply BKZ algorithm with block size ehDec to BI and obtain a reduced basis BI ;
+9 Choose guessing set S according to Algorithm 2, and assume that
+
+Pr(vec(sJ )  S) = pS;
+
+10 for i  {0, 1, . . . , N - 1} do
+
+/* When only i = 0 is considered, this corresponds to the
+
+case where the algebraic structure is not leveraged */
+
+11
+
+b(i) := vec(xi · b0); . . . ; vec(xi · bm-1) [0:m] ;
+
+12
+
+for all ~sJ  S do
+
+13
+
+t :=
+
+b(i) - AJ ~sJ 0n-k
+
+;
+
+14
+
+Treat (BI , t) as a BDD instance, solve this (d - k)-dimensional
+
+instance with a BDD solver at a success probability of pbdd, and
+
+obtain v;
+
+/* The BDD solver can employ Babai's NP algorithm,
+
+classical decoding approach, or the Batched-Tail-BDD
+
+algorithm integrated with Randomized Slicer [50, Alg.
+
+4]
+
+*/
+
+15
+
+x := t - v ;
+
+16
+
+~sI := -x[m:m+n-k]/c;
+
+17
+
+~s := (~sI , ~sJ );
+
+18
+
+if ~s is a valid secret then
+
+19
+
+return -xi · poly(~s);
+
+20 return 
+
+17
+
+3.2 Asymptotic analysis
+
+In this section, we present an asymptotic analysis of the speedup achieved by our enhanced hybrid decoding attack over the unstructured baseline. In Algorithm 3, by setting Algorithm 2 to adopt Strategy 3, the BDD solver to use the classical decoding approach, and leveraging the algebraic structure, we obtain the guessand-verify decoding utilizing the algebraic structure, referred to as enhanced guess-and-verify decoding. Our asymptotic analysis primarily focuses on comparing the standard guess-and-verify decoding and enhanced guess-and-verify decoding. Our results show that enhanced guess-and-verify decoding achieves a speedup linear in N for sparse Module/Ring-LWE.
+
+Remark 3.3. In the asymptotic analysis of this section, we only present the analysis for the guessing set selected according to Strategy 3 of Algorithm 2, which is consistent with the strategy adopted in the experiments of Section 4 and the bit security analysis of Section 5 in this paper. For sparse secret LWE, Strategy 3 is essentially identical to Strategy 1, both of which select vectors of the set in descending order of probability. Strategy 3, however, is more flexible: it allows selecting a small number of vectors corresponding to a small probability pS, whereas Strategy 1 requires selecting an exponential number of vectors corresponding to a constant probability. Strategy 2 uniformly samples 2H(s|k)+1 k-dimensional vectors from the truncated distribution s|k. For the same set size, the probability corresponding to Strategy 2 is slightly lower than that of Strategy 1. Thus, Strategy 3 serves as the optimal selection strategy for sparse secret LWE.
+
+Remark 3.4. In Algorithm 1, we enumerate all vectors with Hamming weight at most a given value h among the k dropped dimensions in each iteration. For the
+sake of simplifying the analysis in this section, we only consider the number of
+vectors and the enumeration success probability with Hamming weight exactly equal to h. This simplification is also justified by the fact that both the number of vectors with Hamming weight at most h and the enumeration success probability are dominated by those corresponding to Hamming weight exactly h when h is small,14 which is consistent with the parameter regime we consider in this work.
+
+Given m Module-LWE instances, we can use Eq. (2.2) to convert them into an unstructured LWE instance (A, b)  Zm q ×n × Zm q , where m = mN , n = N , d = m + n. Suppose the Hamming weight of s is h.
+If we employ the guess-and-verify decoding attack to solve this LWE instance
+with the parameter set (k, hgvDec = h1, gvDec = ), then the complexity corresponding to these parameters is
+
+TgvDec
+
+=
+
+TBKZ(, d - k) + |Sh1 | · Tbdd(d - k) , pbdd · ph1
+
+(3.3)
+
+14 We provide experimental validation of this statement, as detailed in Appendix B.
+
+18
+
+where |Sh1 | =
+
+k h1
+
+· |Val+(s)|h1 ,
+
+ph1
+
+=
+
+( ) ( ) h h1
+
+·
+
+n-h k-h1
+
+(nk)
+
+and
+
+|Sh1 | · Tbdd(d - k)
+
+
+
+TBKZ(, d - k).
+
+Let h2 be the maximum integer satisfying the following condition:
+
+N · |Sh 2 | · Tbdd(d - k)  TBKZ(, d - k).
+
+(3.4)
+
+With all other parameters kept unchanged (i.e., , k), the complexity corresponding to the aforementioned parameters under the enhanced guess-and-verify decoding attack is
+
+TegvDec
+
+=
+
+TBKZ(, d - k) + N · |Sh2 | · Tbdd(d pbdd · (1 - (1 - ph2 )N )
+
+-
+
+k) ,
+
+(3.5)
+
+where
+
+ph2
+
+=
+
+( ) ( ) h h2
+
+·
+
+n-h k-h2
+
+(nk)
+
+and
+
+|Sh2 | =
+
+k h2
+
+· |Val+(s)|h2 . Denote PgvDec = pbdd ·
+
+ph1 and PegvDec = pbdd · (1 - (1 - ph2 )N ).
+
+Comparing the complexity formulas in Eqs. (3.3) and (3.5) reveals two key
+
+differences between them: the multiplicative factors of Tbdd(d - k), which are |Sh1 | and N · |Sh 2 | respectively, and the corresponding success probabilities PgvDec and PegvDec. Since the numerators of both Eq. (3.5) and Eq. (3.3) are dominated by TBKZ(, d - k), we can conclude that TegvDec < TgvDec if PgvDec < PegvDec. Thus, we only need to analyze the relationship between PgvDec and
+PegvDec.
+
+We first present one lemma that will be used in the subsequent proof. The
+
+proof of Lemma 3.1 is provided in Appendix C.
+
+Lemma 3.1. For any p  [0, 1] and any positive integer N , if N p  1, then
+
+N p  1 - (1 - p)N  N p. 2
+
+Theorem 3.1. Let (A, b)  Rm×(+1) be an MLWE sample over R = Z[X]/(XN +
+
+1), with a secret of fixed Hamming weight h. Write n = N . For the same attack
+
+parameters k, , let |Sh 1 | and N ·|Sh 2 | be the sizes of optimal guessing sets for the hybrid decoding and enhanced hybrid decoding attacks respectively (Algorithms 1
+
+and
+
+3),
+
+with
+
+each
+
+hi
+
+<
+
+(k+1)(h+1) n+2
+
+.
+
+Suppose
+
+that
+
+for
+
+these
+
+parameters
+
+hybrid
+
+decoding has complexity TgvDec, while enhanced hybrid decoding has complexity
+
+TegvDec. Let p1 = ph1 , p2 = ph2 . If N p2  1 then
+
+TgvDec TegvDec
+
+= (N ),
+
+as N
+
+ ,
+
+whenever
+
+(h1
+
+- h2) log
+
+(h2
+
+(k - h2)(h - h2) + 1)(n - k - h + h2
+
++
+
+1)
+
+=
+
+O(1).
+
+(3.6)
+
+19
+
+Proof. As |Sh 1 | and N · |Sh 2 | are optimal and both have size at most TBKZ/Tbdd, we must have h2  h1 since otherwise we could increase h1 to h2 and increase
+the guessing probability. Then using Eq. (3.3) and Eq. (3.5), we have that
+
+TgvDec TegvDec
+
+=
+
+TBKZ(, d - k) + |Sh 1 |Tbdd pbdd · p1
+
+·
+
+pbdd · 1 - (1 - p2)N TBKZ(, d - k) + N |Sh 2 |Tbdd
+
+=  1 - (1 - p2)N . p1
+
+Since N p2  1, we have 1 - (1 - p2)N = (N p2) by Lemma 3.1. Therefore
+
+TgvDec TegvDec
+
+=
+
+N p2 p1
+
+.
+
+(3.7)
+
+Now
+
+pi
+
+=
+
+( )( ) n-h h k-hi hi (nk)
+
+=
+
+( )( n-k k h-hi hi (nh)
+
+)
+
+,
+
+so
+
+that
+
+p2 = h1! · (n - k - h + h1)! · (k - h1)! · (h - h1)! p1 h2! (n - k - h + h2)! (k - h2)! (h - h2)!
+
+h1-1 (j + 1) (n - k - h + j + 1)
+
+=
+
+.
+
+(k - j) (h - j)
+
+j=h2
+
+Taking logarithms and defining
+
+(k - j)(h - j)
+
+R(j) = log
+
+,
+
+(j + 1)(n - k - h + j + 1)
+
+we obtain
+
+log
+
+p2
+
+=
+
+h1 -1
+- R(j).
+
+p1
+
+j=h2
+
+(3.8)
+
+Lower bound for log(p2/p1) from the asymptotic condition. One can check that R(j) - R(j + 1) > 0 for all admissible j, because
+
+(k - j)(h - j)(j + 2)(n - k - h + j + 2)
+
+R(j) - R(j + 1) = log
+
+> 0.
+
+(k - j - 1)(h - j - 1)(j + 1)(n - k - h + j + 1)
+
+Thus R(j) is strictly decreasing. Consequently, for j  {h2, . . . , h1 - 1},
+
+R(j)  R(h2),
+
+and (3.8) gives
+
+log
+
+p2 p1
+
+
+
+-(h1
+
+- h2)R(h2).
+
+The Eq. (3.6) states that the right-hand side is -O(1); i.e., there exists a constant C > 0 such that for all sufficiently large N ,
+
+log p2  -C. p1
+
+(3.9)
+
+20
+
+Upper bound for log(p2/p1). Since pi can be seen as the probability function of
+
+the
+
+hypergeometric
+
+distribution,
+
+pi
+
+is
+
+monotonically
+
+increasing
+
+for
+
+hi
+
+<
+
+(k+1)(h+1) (n+2)
+
+[47].
+
+Given
+
+that
+
+h2
+
+
+
+h1
+
+<
+
+(k+1)(h+1) (n+2)
+
+,
+
+we
+
+obtain
+
+p2
+
+
+
+p1.
+
+Hence
+
+p2  1 = log p2  0.
+
+p1
+
+p1
+
+(3.10)
+
+Combining
+
+(3.9)
+
+and
+
+(3.10)
+
+yields
+
+2-C
+
+
+
+p2 p1
+
+
+
+1,
+
+and
+
+therefore
+
+p2 = (1). p1
+
+(3.11)
+
+Finally, substituting (3.11) into (3.7) gives
+
+TgvDec TegvDec
+
+=
+
+(N ),
+
+which completes the proof.
+
+
+
+We select several sparse secret RLWE parameter sets from [34] to verify the asymptotic result in Theorem 3.1. For a given parameter set n, q, h, we first derive the optimal attack parameters k, , h1 that achieve minimal complexity via the guess-and-verify decoding attack using the lattice-estimator. We then compute the complexity of the enhanced guess-and-verify decoding attack with fixed parameters k, , and further obtain the corresponding values of h2. The experimental results are presented in Table 3.1. Note that in all these instances the secret Hamming weight h is bounded (h = 64), i.e., h = O(1), which corresponds to the sparse secret setting, and the optimal guessing dimension k scales linearly with n, i.e., k = (n); under these conditions Eq. (3.6) is automatically satisfied, so the theorem applies. We plot T against log(n) (n = N ) using the data from Table 3.1, as shown in Fig. 3.1. The curve grows approximately linearly with log n with a slope close to 1, i.e., T  log n + c for some constant c. This indicates that TgvDec/TegvDec is proportional to n in practice, matching the theoretical (n) speedup.
+
+Table 3.1: Estimation results for RLWE parameters from [34] via the lattice-
+
+estimator under guess-and-verify and enhanced guess-and-verify decoding at-
+
+tacks. Here N = n; k, , h1 denote the optimal attack parameters for the
+
+guess-and-verify decoding attack. The fixed parameters k,  are fed into the
+
+enhanced guess-and-verify decoding attack to derive h2. Let p2 = 1 - (1 - p2)N ,
+
+V
+
+=
+
+(h1
+
+-
+
+h2)
+
+log
+
+(k-h2 )(h-h2 ) (h2 +1)(n-k-h+h2 +1)
+
+and T
+
+= log(TgvDec) - log(TegvDec).
+
+log(n) log(q) h h1 k  log(p1) log(TgvDec) h2 log(N p2) log(p2 ) log(TegvDec) V T
+
+10 14 64 11 660 281 -49.6 11 27 64 10 1205 290 -40.8 12 55 64 8 2375 264 -44.9 13 111 64 7 4673 258 -46.3 14 223 64 6 9439 246 -50.6 15 496 64 5 17980 226 -49.3
+
+163.0 157.9 155.1 155.6 157.4 151.7
+
+9 -46.5 8 -36.1 6 -39.8 5 -40.5 4 -44.4 3 -42.4
+
+-46.5 -36.1 -39.8 -40.5 -44.4 -42.4
+
+159.2 152.6 149.4 149.1 150.6 144.1
+
+7.1 3.9 6.5 5.3 7.1 5.7 7.5 6.4 8.1 6.9 8.4 7.6
+
+21
+
+14
+
+12
+
+ Value
+
+10
+
+8
+
+6
+
+T
+
+4
+
+y=x (reference line)
+
+10
+
+11
+
+12
+
+13
+
+14
+
+15
+
+log(n)
+
+Fig. 3.1: Variation of T with log(n) plotted from the data in Table 3.1
+
+4 Benchmarking the Enhanced Guess-and-verify Decoding Attack
+In this section, we benchmark the guess-and-verify decoding attack implemented by Pulles et al. in [63,51]15 and our enhanced guess-and-verify decoding attack.
+
+4.1 Experimental Setup
+
+Hardware Specifications. All benchmark experiments were conducted on two computing nodes (denoted as Y and Z) with distinct hardware configurations. Table 4.1 summarizes the detailed CPU and GPU specifications of these nodes, including the number of logical cores (per CPU and total quantity) and the quantity of NVIDIA GPUs deployed on each node. Note that while the table lists the full hardware resources available on each node, some experiments utilized a subset of the CPUs/GPUs (e.g., fewer logical cores or GPUs) to ensure fair and comparable performance evaluations between the two attacks.
+
+Table 4.1: Hardware used for our experiments.
+
+Name
+
+CPU (quantity × logical cores)
+
+GPU (quantity)
+
+Y Intel Xeon Platinum 8481 @2.0GHz (2 × 56) NVIDIA RTX 5090 (4) Z Intel Xeon Platinum 8180 @2.5GHz (2 × 28) NVIDIA RTX 4090 (8)
+
+Benchmark Instances from [71]. Wenger et al. designed a set of LWE instances to benchmark the performance of various attacks, which are categorized into two distinct benchmark configurations: benchmark settings for Kyber and
+15 https://github.com/ludopulles/GPUPrimalHybrid
+22
+
+benchmark settings for HE.16 The detailed parameter settings of these instances are as follows:
+1. Benchmark settings for Kyber: All settings use Module-LWE with n = N and N = 256. The secret distribution s is Bh , while the error distribution e is B with  = 2.
+2. Benchmark settings for HE: All settings use Ring-LWE with n = N = 1 · 1024. The secret distribution s is Bh-, and the error distribution e is the discrete Gaussian distribution D with  = 3.19.
+Consistent with the notation in [63], we abbreviate the LWE instances under these two parameter configurations as "Bin" and "Ter", respectively. For the benchmark instances, a key performance metric is the Hamming weight h: the higher the Hamming weight h that an algorithm can successfully solve, the more efficient the algorithm is deemed to be.
+In our experiments, the LWE instances used for benchmarking were generated using the code provided in [63,51]. These instances are produced by a pseudorandom number generator (PRNG) with a fixed seed, thus the same LWE instances can be reproducibly generated by specifying this fixed seed, ensuring the consistency and repeatability of the experimental results.
+Implementation Details of [63,51]. The guess-and-verify decoding attack implemented by Pulles et al. in [63,51] is a specialized variant of the standard guess-and-verify decoding attack, distinguished by its use of Babai's NP algorithm to solve low-dimensional BDD problems (and is also the HowgraveGraham decoding attack without MITM). In their implementation, the Hamming weight of the dropped dimensions is exactly equal to a given value (e.g., h) rather than less than or equal to it [63, Alg. 2]. Specifically, to accelerate the solution process, they first apply Babai's NP algorithm on the projection sublattice to filter candidate solutions, and then reapply Babai's NP algorithm to the full basis on these candidates to derive the final solution. Additionally, Pulles et al. execute Babai's NP algorithm in batches [37, App. A.1] and leverage GPU acceleration for matrix operations to further optimize runtime efficiency. They also provide the implementation of cuBLASter for lattice reduction, which is a GPU version of BLASter [37]. The results show that their optimized guess-and-verify decoding attack outperforms Nolte et al.'s Cool & Cruel attack [61] in both runtime and success rate [63, Tab. 3]. The complexity of their attack can be estimated by lattice-estimator through function primal_hybrid, with the parameters mitm=False, babai=True, red_cost_model=MATZOV and red_shape_model=CN11.17
+16 Both settings use the 2-power cyclotomic ring Rq = Zq[x]/(fN (x)), R = Z[x]/(fN (x)) where fN (x) = xN + 1 with N a power of two.
+17 They also made minor modifications to lattice-estimator to better simulate the reduction quality of BLASter [51, Sec. 5.3].
+23
+
+Implementation of our enhanced guess-and-verify decoding attack. We modified Pulles et al.'s code by referring to Lines 10 to 14 of Algorithm 3 to leverage the algebraic structure for acceleration. Specifically, for each i  [N ], we compute the corresponding b(i) (see Line 11 of Algorithm 3); since each b(i) corresponds to |S| BDD instances,18 we thus need to solve a total of N · |S| BDD instances (see Lines 12 to 14 of Algorithm 3). We also use Babai's NP algorithm in batches [37, App. A.1] with GPU acceleration to solve these BDD instances. Additionally, we modified the code of lattice-estimator (following Algorithm 3 and Eq. (3.2), we revised the probability computation and updated the periteration success probability to pbdd · (1 - (1 - pS)N )) to evaluate the bit security of these instances under the enhanced guess-and-verify decoding attack.
+4.2 Benchmark Results
+We benchmarked Pulles et al.'s implementation and ours on the servers listed in Table 4.1. We performed multiple runs of the experiments and recorded the wall time for successfully solving the LWE instances. Tables 4.2 and 4.3 compare the average wall time required to successfully solve the same LWE instances across the two implementations. The "Params" column denotes the parameters of the Module-LWE instances. The "succ." column in the tables denotes the ratio of successful runs to the total number of runs (i.e., successful runs / total runs). The "sec." column gives the bit security estimated by lattice-estimator by setting the target success probability to 0.99. "Atk para." is the abbreviation for attack parameters, and "S" is the abbreviation for server, indicating the server used in the experiments. "CPU-h" and "GPU-h" stand for CPU core hours and GPU hours, respectively. The "time-s" column refers to the average wall time (in seconds) for successful solving. "W" is the abbreviation for workers, which indicates the number of parallel processes for acceleration (1 GPU + multiple CPU cores per worker). For example, 1000 iterations with "W" set to 10 means 100 iterations per worker, enabling parallel execution. Server Y uses 1 GPU + 10 CPU cores per worker, and server Z uses 1 GPU + 5 CPU cores per worker. We set "W" to 1 for Module-LWE instances of type "Ter" due to the fewer iterations needed for the enhanced guess-and-verify decoding attack to reach the target success probability. For all tested benchmark instances, our attack reduces the bit security by 4.9 to 6.1 bits and yields a 17× to 114× speedup over the unstructured baseline.
+Remark 4.1. Since the number of workers used in benchmarking instances of type "Ter" differs in Tables 4.2 and 4.3, the wall time values should not be directly divided when calculating the speedup. Instead, we first multiply each wall time by the corresponding number of workers before division. For example, for the instance with type "Ter", log q = 26, h = 9, the speedup is calculated as 4979.2 · 4/(173.8 · 1)  114.6.
+18 Only a correct guess of ~sJ yields a valid BDD instance, yet we treat all cases (including incorrect guesses) as BDD instances and solve them accordingly.
+24
+
+Table 4.4 shows our new benchmark records obtained by using the enhanced guess-and-verify decoding attack. Given the long runtime, the total number of runs was set to 1 or 2 for all Module-LWE instances. For the benchmark settings for Kyber (type "Bin"), in the cases of log q = 12 (log q = 28, resp.), we improved the records from 11 (25) to 14 (26). The average solving time is 4.6 (2.6) days, with a reduction of 4.3 (4.7) bits in bit security,19 while the estimated solving time for the unstructured baseline is 90.6 (67.6) days. For the benchmark settings for HE (type "Ter"), in the cases of log q = 26 (log q = 29, resp.), we improved the records from 11 (12) to 14 (14). The average solving time is 2.4 (0.4) days, with a reduction of 5.7 (5.8) bits in bit security, while the estimated solving time for the unstructured baseline is 124.8 (22.3) days.
+5 Concrete Cryptanalysis on FHE Schemes
+5.1 Sparse secret FHE schemes
+Many FHE schemes adopt sparse secrets, which is designed to reduce the computational complexity of the bootstrapping step. In addition, FHE schemes are typically constructed based on the Ring-LWE problem, where the degree N of the polynomial ring is generally set to a large value. Based on the analysis in Section 3.2, the acceleration of the enhanced hybrid decoding attack exhibits a positive correlation with N ; consequently, this attack achieves favorable performance against such FHE schemes.
+We note that Curtis and Player researched the feasibility and impact of standardizing sparse-secret LWE for Homomorphic Encryption, and presented numerous sparse parameter sets as alternatives [34, Tab. 4]. The parameter sets used in FHE [48,30,12,32,8] also employ sparse secrets. We experimentally evaluate the performance of the enhanced hybrid decoding attack against these parameter sets.20
+5.2 Combination with MITM
+Wunderer presented a detailed analysis of the complexity of solving SVP via the hybrid attack combining MITM and Babai's NP algorithm, as well as the success probability of the MITM and Babai's NP algorithm [73,75]. And this analysis can be generalized to the BDD problem [75, Section 2]. Son and Cheon extended Wunderer's work to LWE with sparse and ternary secrets and provided a comprehensive analysis [67]. The success probability analysis conducted by [75,67] can be applied to the Howgrave-Graham decoding attack with the MITM technique and has been integrated into lattice-estimator.
+19 For the instance with log q = 28 and h = 26, we set the upper bound of the BKZ block size to 60 when estimating its bit security, so as to leverage cuBLASter for lattice reduction.
+20 These parameter sets all employ 2-power cyclotomic rings.
+25
+
+Table 4.2: Benchmark results (guess-and-verify decoding attack).
+
+Params
+
+Guess-and-verify decoding attack
+
+Atk para.
+
+avg. avg. avg.
+
+Type n log q h  m k h sec. succ. time-s CPU-h GPU-h W S
+
+Bin 2 · 256 12 11 46 72 403 3 57.5 6/6 24294.3  269.94 26.99 4 Y
+
+Bin 2 · 256 28 17 55 256 288 3 59.2 5/5 16270.8  180.79 36.16 8 Z
+
+Ter 1 · 1024 26 9 51 203 819 3 56.8 5/5 4979.2  55.32 5.53 4 Y Ter 1 · 1024 29 9 53 274 800 3 56.9 5/5 4863.9  54.04 10.81 8 Z
+
+Table 4.3: Benchmark results (enhanced guess-and-verify decoding attack). Here,  denotes the difference in bit security (vs. Table 4.2), and "spd" rep-
+
+resents the speedup multiple of average wall time (vs. Table 4.2).
+
+Params
+
+Enhanced guess-and-verify decoding attack
+
+Atk para.
+
+avg. avg. avg.
+
+Type n log q h  m k h sec. succ. time-s CPU-h GPU-h  spd W S
+
+Bin 2 · 256 12 11 42 67 409 2 52.6 6/6 754.8  8.39 0.84 4.9 32.1× 4 Y
+
+Bin 2 · 256 28 17 55 256 288 2 53.9 5/5 910.8  10.12 2.02 5.3 17.9× 8 Z
+
+Ter 1 · 1024 26 9 54 212 809 2 50.7 5/5 173.8  0.48 0.05 6.1 114.6× 1 Y Ter 1 · 1024 29 9 56 284 789 2 50.8 5/5 451.8  0.63 0.13 6.1 86.1× 1 Z
+
+Table 4.4: New benchmark records for the enhanced guess-and-verify decoding
+
+attack. Here, hp stands for the previous record that could be achieved according to [71, Tab. 9], [51, Tab. 2] and [63, Tab. 3].  denotes the difference in bit
+
+security (vs. unstructured baseline).
+
+Params
+
+Enhanced guess-and-verify decoding attack
+
+Atk para.
+
+avg. avg. avg.
+
+Type n log q h hp  m k h sec. succ. time-s CPU-h GPU-h  W S
+
+Bin 2 · 256 12 13 11 46 72 402 2 57.0 2/2 16742.7  186.03 18.60 4.5 4 Y
+
+Bin 2 · 256 12 14 11 46 72 402 2 59.3 1/1 395914.9  4399.05 439.91 4.3 4 Y
+
+Bin 2 · 256 28 26 25 59 256 277 2 63.9 1/1 226059.1  2511.77 251.18 4.7 4 Y
+
+Ter 1 · 1024 26 12 11 54 212 809 2 56.9 1/1 1499.6  16.66 1.67 5.7 4 Y Ter 1 · 1024 26 13 11 56 219 806 2 59.0 1/1 3739.9  41.55 4.16 5.7 4 Y Ter 1 · 1024 26 14 11 57 222 805 2 61.1 1/1 207592.3  2306.58 230.66 5.7 4 Y Ter 1 · 1024 29 13 12 58 291 786 2 58.5 1/1 8487.7  94.31 18.86 5.8 8 Z Ter 1 · 1024 29 14 12 59 295 785 2 60.5 1/1 35671.7  396.35 79.27 5.8 8 Z
+
+26
+
+In the Howgrave-Graham decoding attack, when the MITM technique is employed, the total cost of Babai's NP algorithm |ShhgDec | · Tbabai in Eq. (2.8) is reduced to |ShhgDec |·Tbabai, meaning that MITM provides a square-root speedup compared to exhaustive search but incurs a probability loss of pmitm, which is the success probability of MITM analyzed in [75,67]. The lattice-estimator utilizes the mitm_babai_probability function in prob.py to compute pmitm. Accordingly, the enhanced Howgrave-Graham decoding attack can still be accelerated by MITM based on [75, Sec. 3, Sec. 4]'s analysis. Let ShehgDec denotes the search space of ~sJ , where hehgDec represents the guessed maximum Hamming weight across the k dropped dimensions. After applying MITM, the cost N · |ShehgDec | · Tbabai can be reduced to N · |ShehgDec | · Tbabai with the MITM probability loss also computed by lattice-estimator.
+5.3 Evaluating the Bit Security of FHE schemes under Enhanced Hybrid Decoding Attack
+We mainly use lattice-estimator to evaluate the bit security of FHE schemes under enhanced hybrid decoding attack and we made the following modifications to lattice-estimator:
+1. In accordance with Algorithm 3 and Eq. (3.2), we revised the calculation of the probability part, updating the probability of each iteration to pbdd · (1 - (1 - pS)N ), which corresponds to the cost TBKZ(ehDec, d - k) + N · |S| · Tbdd(d - k).
+2. The lattice-estimator employs a combined approach of binary search and gradient descent (implemented in the local_minimum function in util.py) to find the optimal dropped dimensions k. However, this method may occasionally fall into local optima, leading to an abnormally high complexity in the final evaluation. We modified this part to an exhaustive two-stage search method: first a coarse-grained search with large step sizes, then a fine-grained search with small step sizes, to find the optimal k.
+For the sparse parameter sets in [34], in addition to the lattice-estimator, we also utilized the original code provided by the authors for evaluation.21 We revised this code in accordance with Algorithm 3 to evaluate the bit security under the enhanced hybrid decoding attack. In the code provided by Curtis et al., the security of the parameter sets is estimated using the cost model [15]22. We also present the evaluation results under the quantum cost model using a quantum sieving cost model based on [26]. We evaluated all 72 sparse parameter sets, and the corresponding results are summarized in Table D.1, Table D.2 and Table D.3 in Appendix D.
+Specifically, the results in Table D.1 were obtained via lattice-estimator with configurations red_cost_model=MATZOV and red_shape_model=GSA, while the
+21 The code is available at https://github.com/bencrts/hybrid_attacks with commit 451165df and is adapted from LWE-estimator, which is an early version of lattice-estimator. The estimation results derived from this code are conservative [34, Sec. 2.3].
+22 Known as BKZ.sieve in LWE-estimator
+27
+
+results in Table D.2 were derived from evaluations using the authors' original code, and those in Table D.3 (evaluation results under the quantum cost model) are obtained via lattice-estimator with configurations red_cost_model=ChaLoy 21 and red_shape_model=GSA.
+The results in Table D.1 and Table D.2 show that, among all 72 sparse parameter sets, 21 and 45 sets, respectively, fail to achieve the target bit security level  when the enhanced hybrid decoding attack is used. When not leveraging the algebraic structure, only 3 and 10 parameter sets in Table D.1 and Table D.2, respectively, fail to reach the target bit security .
+Remark 5.1. The reason why 10 parameter sets fail to achieve the target bit security even when using the code provided by Curtis et al. is that the authors subsequently updated their code (fixing several bugs and conducting more detailed analyzes), and we utilized their latest version of their code for all evaluations.
+We also plotted the curves of the reduced bits achieved by the enhanced hybrid decoding attack (compared to the unstructured baseline) against log(n) using the data from Table D.1, which are presented in Figure E.2 and Figure E.1 in Appendix E. Inspection of these figures shows that the larger log(n) is, the more reduced bits are obtained by the enhanced hybrid decoding attack compared to the unstructured baseline.
+For the parameter sets used in FHE schemes [48,30,12,32,8], we obtained the evaluation results using lattice-estimator, which are presented in Table 5.1. Our findings reveal that among the 16 parameter sets used in these schemes, 12 of them fail to meet the target 128-bit security level. Compared with the unstructured baseline, the enhanced guess-and-verify decoding attack and enhanced Howgrave-Graham decoding attack reduce the complexity by 5.7­13.0 bits and 4.1­12.2 bits, respectively. The evaluation results under the quantum cost model are presented by Table F.1 in Appendix F, which shows that the enhanced guess-and-verify decoding attack and the enhanced Howgrave-Graham attack can also respectively reduce the bit security by 4.2­11.2 bits and 4.2­11.3 bits compared to the unstructured baseline in quantum setting.
+Acknowledgments. We thank the anonymous reviewers of CRYPTO 2026 for their valuable comments. We thank Ruida Wang for introducing us to sparse-secret FHE schemes, and Tabitha Ogilvie for helpful discussions on the revisions to Section 3.2. The work of Jianhua Hou and Haodong Jiang was supported by the National Key R&D Program of China (No. 2024YFB4504600) and the National Natural Science Foundation of China (No. 62572482).
+28
+
+Table 5.1: Bit security of FHE schemes estimated by lattice-estimator with red_cost_model=MATZOV and red_shape_model=GSA. All these schemes are based on Ring-LWE (i.e., n = N , where N denotes the degree of the polynomial ring) and employ 2-power cyclotomic rings (i.e., Rq = Zq[x]/(xn + 1), R = Z[x]/(xn + 1) with n a power of two), with the error distribution e = D ( = 3.19), secret distribution s = Bh-, and modulus q. Specifically: "uSVP" denotes the complexity from the primal_usvp function; TgvDec is the complexity of the guess-and-verify decoding attack, obtained via the primal_hybrid function with settings mitm=False and babai=False; ThgDec is the complexity of the Howgrave-Graham decoding attack, calculated by the primal_hybrid function with settings mitm=True and babai=True; TegvDec and TehgDec respectively correspond to the complexities of the enhanced guess-and-verify decoding attack and enhanced Howgrave-Graham decoding attack. 1 = TgvDec - TegvDec, 2 = ThgDec - TehgDec. Values below 128 are bolded for emphasis.
+FHE scheme log(n) h log(q) uSVP TegvDec TgvDec 1 TehgDec ThgDec 2 [32, Sec. 5.2] 13 31 55 547.4 130.5 137.5 7.0 117.7 122.2 4.5 [32, Sec. 5.2] 14 31 100 641.6 137.5 143.2 5.7 122.3 126.4 4.1 [8, Sec. 7.1] 15 192 767 146.0 128.8 139.6 10.8 123.6 134.1 10.5 [8, Sec. 7.1] 16 192 1553 146.9 129.1 139.6 10.4 123.3 134.0 10.7 [8, Sec. 7.1] 17 192 3104 147.9 130.7 141.2 10.6 125.0 135.6 10.7 [12, Tab. 5] 14 256 424 129.8 119.5 127.5 8.0 117.0 125.9 8.9 [12, Tab. 7] 16 256 1598 141.4 128.7 137.8 9.1 125.0 134.0 9.1 [12, Tab. 3] 16 192 1555 144.3 128.9 139.4 10.5 123.1 133.8 10.8 [12, Tab. 3] 16 192 1546 147.0 129.7 140.2 10.6 123.8 134.5 10.8 [12, Tab. 3] 16 192 1550 146.9 129.4 139.9 10.5 123.5 134.2 10.7 [30, Tab. 3] 15 128 680 165.5 136.5 148.7 12.1 127.7 138.5 10.8 [30, Tab. 3] 16 128 1000 236.1 179.5 192.5 13.0 163.0 174.2 11.3 [48, Tab. 1] 16 256 1200 191.6 169.9 182.1 12.2 162.0 173.6 11.6 [48, Tab. 1] 16 256 1600 141.4 128.7 137.5 8.8 125.0 133.9 8.9 [48, Tab. 1] 17 256 2400 192.6 171.6 184.2 12.6 163.1 175.4 12.2 [48, Tab. 1] 17 256 3000 153.5 138.5 148.1 9.6 132.7 143.3 10.6
+29
+
+References
+1. Ajtai, M., Kumar, R., Sivakumar, D.: A sieve algorithm for the shortest lattice vector problem. In: Vitter, J.S., Spirakis, P.G., Yannakakis, M. (eds.) Proceedings on 33rd Annual ACM Symposium on Theory of Computing, July 6-8, 2001, Heraklion, Crete, Greece. pp. 601­610. ACM (2001), https://doi.org/10.1145/ 380752.380857
+2. Albrecht, M.R.: On dual lattice attacks against small-secret LWE and parameter choices in helib and SEAL. In: Coron, J., Nielsen, J.B. (eds.) Advances in Cryptology - EUROCRYPT 2017 - 36th Annual International Conference on the Theory and Applications of Cryptographic Techniques, Paris, France, April 30 - May 4, 2017, Proceedings, Part II. Lecture Notes in Computer Science, vol. 10211, pp. 103­129 (2017), https://doi.org/10.1007/978-3-319-56614-6_4
+3. Albrecht, M.R., Chase, M., Chen, H., Ding, J., Goldwasser, S., Gorbunov, S., Halevi, S., Hoffstein, J., Laine, K., Lauter, K.E., Lokam, S., Micciancio, D., Moody, D., Morrison, T., Sahai, A., Vaikuntanathan, V.: Homomorphic encryption standard. IACR Cryptol. ePrint Arch. p. 939 (2019), https://eprint.iacr.org/2019/ 939
+4. Albrecht, M.R., Cid, C., Faugère, J., Fitzpatrick, R., Perret, L.: On the complexity of the BKW algorithm on LWE. Des. Codes Cryptogr. 74(2), 325­354 (2015), https://doi.org/10.1007/s10623-013-9864-x
+5. Albrecht, M.R., Curtis, B.R., Wunderer, T.: Exploring trade-offs in batch bounded distance decoding. In: Paterson, K.G., Stebila, D. (eds.) Selected Areas in Cryptography - SAC 2019 - 26th International Conference, Waterloo, ON, Canada, August 12-16, 2019, Revised Selected Papers. Lecture Notes in Computer Science, vol. 11959, pp. 467­491. Springer (2019), https://doi.org/10. 1007/978-3-030-38471-5_19
+6. Albrecht, M.R., Göpfert, F., Virdia, F., Wunderer, T.: Revisiting the expected cost of solving usvp and applications to LWE. In: Takagi, T., Peyrin, T. (eds.) Advances in Cryptology - ASIACRYPT 2017 - 23rd International Conference on the Theory and Applications of Cryptology and Information Security, Hong Kong, China, December 3-7, 2017, Proceedings, Part I. Lecture Notes in Computer Science, vol. 10624, pp. 297­322. Springer (2017), https://doi.org/10. 1007/978-3-319-70694-8_11
+7. Albrecht, M.R., Player, R., Scott, S.: On the concrete hardness of learning with errors. J. Math. Cryptol. 9(3), 169­203 (2015), http://www.degruyter.com/view/ j/jmc.2015.9.issue-3/jmc-2015-0016/jmc-2015-0016.xml
+8. Alexandru, A., Kim, A., Polyakov, Y.: General functional bootstrapping using CKKS. In: Kalai, Y.T., Kamara, S.F. (eds.) Advances in Cryptology - CRYPTO 2025 - 45th Annual International Cryptology Conference, Santa Barbara, CA, USA, August 17-21, 2025, Proceedings, Part III. Lecture Notes in Computer Science, vol. 16002, pp. 304­337. Springer (2025), https://doi.org/10.1007/ 978-3-032-01881-6_10
+9. Alkim, E., Ducas, L., Pöppelmann, T., Schwabe, P.: Post-quantum key exchange - A new hope. In: Holz, T., Savage, S. (eds.) 25th USENIX Security Symposium, USENIX Security 16, Austin, TX, USA, August 10-12, 2016. pp. 327­343. USENIX Association (2016), https://www.usenix.org/conference/ usenixsecurity16/technical-sessions/presentation/alkim
+10. Arora, S., Ge, R.: New algorithms for learning in presence of errors. In: Aceto, L., Henzinger, M., Sgall, J. (eds.) Automata, Languages and Programming - 38th In-
+30
+
+ternational Colloquium, ICALP 2011, Zurich, Switzerland, July 4-8, 2011, Proceedings, Part I. Lecture Notes in Computer Science, vol. 6755, pp. 403­415. Springer (2011), https://doi.org/10.1007/978-3-642-22006-7_34 11. Babai, L.: On lovász' lattice reduction and the nearest lattice point problem. Comb. 6(1), 1­13 (1986), https://doi.org/10.1007/BF02579403 12. Bae, Y., Cheon, J.H., Kim, J., Stehlé, D.: Bootstrapping bits with CKKS. In: Joye, M., Leander, G. (eds.) Advances in Cryptology - EUROCRYPT 2024 - 43rd Annual International Conference on the Theory and Applications of Cryptographic Techniques, Zurich, Switzerland, May 26-30, 2024, Proceedings, Part II. Lecture Notes in Computer Science, vol. 14652, pp. 94­123. Springer (2024), https://doi.
+org/10.1007/978-3-031-58723-8_4 13. Bai, S., Ducas, L., Kiltz, E., Lepoint, T., Lyubashevsky, V., Schwabe, P., Seiler,
+G., Stehlé, D.: Crystals-dilithium: Algorithm specifications and supporting documentation (2018), https://pq-crystals.org/dilithium/ 14. Bai, S., Galbraith, S.D.: Lattice decoding attacks on binary LWE. In: Susilo, W., Mu, Y. (eds.) Information Security and Privacy - 19th Australasian Conference, ACISP 2014, Wollongong, NSW, Australia, July 7-9, 2014. Proceedings. Lecture Notes in Computer Science, vol. 8544, pp. 322­337. Springer (2014), https://doi.
+org/10.1007/978-3-319-08344-5_21 15. Becker, A., Ducas, L., Gama, N., Laarhoven, T.: New directions in nearest neighbor
+searching with applications to lattice sieving. In: Krauthgamer, R. (ed.) Proceedings of the Twenty-Seventh Annual ACM-SIAM Symposium on Discrete Algorithms, SODA 2016, Arlington, VA, USA, January 10-12, 2016. pp. 10­24. SIAM (2016), https://doi.org/10.1137/1.9781611974331.ch2 16. Bergerat, L., Chillotti, I., Ligier, D., Orfila, J., Roux-Langlois, A., Tap, S.: New secret keys for enhanced performance in (T)FHE. In: Luo, B., Liao, X., Xu, J., Kirda, E., Lie, D. (eds.) Proceedings of the 2024 on ACM SIGSAC Conference on Computer and Communications Security, CCS 2024, Salt Lake City, UT, USA, October 14-18, 2024. pp. 2547­2561. ACM (2024). https://doi.org/10.1145/ 3658644.3670376, https://doi.org/10.1145/3658644.3670376 17. Bernstein, D.J.: Asymptotics of hybrid primal lattice attacks. IACR Cryptol. ePrint Arch. p. 1892 (2023), https://eprint.iacr.org/2023/1892 18. Bos, J.W., Ducas, L., Kiltz, E., Lepoint, T., Lyubashevsky, V., Schanck, J.M., Schwabe, P., Seiler, G., Stehlé, D.: CRYSTALS - kyber: A cca-secure modulelattice-based KEM. In: 2018 IEEE European Symposium on Security and Privacy, EuroS&P 2018, London, United Kingdom, April 24-26, 2018. pp. 353­367. IEEE (2018), https://doi.org/10.1109/EuroSP.2018.00032 19. Bossuat, J., Cammarota, R., Chillotti, I., Curtis, B.R., Dai, W., Gong, H., Hales, E., Kim, D., Kumara, B., Lee, C., Lu, X., Maple, C., Pedrouzo-Ulloa, A., Player, R., Polyakov, Y., Lopez, L.A.R., Song, Y., Yhee, D.: Security guidelines for implementing homomorphic encryption. IACR Commun. Cryptol. 1(4), 26 (2024),
+https://doi.org/10.62056/anxra69p1 20. Bossuat, J., Troncoso-Pastoriza, J.R., Hubaux, J.: Bootstrapping for approximate
+homomorphic encryption with negligible failure-probability by using sparse-secret encapsulation. In: Ateniese, G., Venturi, D. (eds.) Applied Cryptography and Network Security - 20th International Conference, ACNS 2022, Rome, Italy, June 20-23, 2022, Proceedings. Lecture Notes in Computer Science, vol. 13269, pp. 521­ 541. Springer (2022), https://doi.org/10.1007/978-3-031-09234-3_26 21. Brakerski, Z., Gentry, C., Vaikuntanathan, V.: (leveled) fully homomorphic encryption without bootstrapping. ACM Trans. Comput. Theory 6(3), 13:1­13:36 (2014). https://doi.org/10.1145/2633600, https://doi.org/10.1145/2633600
+31
+
+22. Brassard, G., Høyer, P., Mosca, M., Tapp, A.: Quantum amplitude amplification and estimation. Contemporary Mathematics 305, 53­74 (2002)
+23. Buchmann, J., Büscher, N., Göpfert, F., Katzenbeisser, S., Krämer, J., Micciancio, D., Siim, S., van Vredendaal, C., Walter, M.: Creating cryptographic challenges using multi-party computation: The LWE challenge. In: Emura, K., Hanaoka, G., Zhang, R. (eds.) Proceedings of the 3rd ACM International Workshop on ASIA Public-Key Cryptography, AsiaPKC@AsiaCCS, Xi'an, China, May 30 - June 03, 2016. pp. 11­20. ACM (2016), https://doi.org/10.1145/2898420.2898422
+24. Buchmann, J., Göpfert, F., Player, R., Wunderer, T.: On the hardness of LWE with binary error: Revisiting the hybrid lattice-reduction and meet-in-the-middle attack. In: Pointcheval, D., Nitaj, A., Rachidi, T. (eds.) Progress in Cryptology - AFRICACRYPT 2016 - 8th International Conference on Cryptology in Africa, Fes, Morocco, April 13-15, 2016, Proceedings. Lecture Notes in Computer Science, vol. 9646, pp. 24­43. Springer (2016), https://doi.org/10.1007/ 978-3-319-31517-1_2
+25. Carrier, K., Meyer-Hilfiger, C., Shen, Y., Tillich, J.: Assessing the impact of a variant of matzov's dual attack on kyber. In: Kalai, Y.T., Kamara, S.F. (eds.) Advances in Cryptology - CRYPTO 2025 - 45th Annual International Cryptology Conference, Santa Barbara, CA, USA, August 17-21, 2025, Proceedings, Part I. Lecture Notes in Computer Science, vol. 16000, pp. 444­476. Springer (2025), https://doi.org/10.1007/978-3-032-01855-7_15
+26. Chailloux, A., Loyer, J.: Lattice sieving via quantum random walks. In: Tibouchi, M., Wang, H. (eds.) Advances in Cryptology - ASIACRYPT 2021 - 27th International Conference on the Theory and Application of Cryptology and Information Security, Singapore, December 6-10, 2021, Proceedings, Part IV. Lecture Notes in Computer Science, vol. 13093, pp. 63­91. Springer (2021), https: //doi.org/10.1007/978-3-030-92068-5_3
+27. Chen, H., Chillotti, I., Song, Y.: Improved bootstrapping for approximate homomorphic encryption. In: Ishai, Y., Rijmen, V. (eds.) Advances in Cryptology EUROCRYPT 2019 - 38th Annual International Conference on the Theory and Applications of Cryptographic Techniques, Darmstadt, Germany, May 19-23, 2019, Proceedings, Part II. Lecture Notes in Computer Science, vol. 11477, pp. 34­54. Springer (2019), https://doi.org/10.1007/978-3-030-17656-3_2
+28. Chen, H., Han, K.: Homomorphic lower digits removal and improved FHE bootstrapping. In: Nielsen, J.B., Rijmen, V. (eds.) Advances in Cryptology - EUROCRYPT 2018 - 37th Annual International Conference on the Theory and Applications of Cryptographic Techniques, Tel Aviv, Israel, April 29 - May 3, 2018 Proceedings, Part I. Lecture Notes in Computer Science, vol. 10820, pp. 315­337. Springer (2018), https://doi.org/10.1007/978-3-319-78381-9_12
+29. Chen, Y., Nguyen, P.Q.: BKZ 2.0: Better lattice security estimates. In: Lee, D.H., Wang, X. (eds.) Advances in Cryptology - ASIACRYPT 2011 - 17th International Conference on the Theory and Application of Cryptology and Information Security, Seoul, South Korea, December 4-8, 2011. Proceedings. Lecture Notes in Computer Science, vol. 7073, pp. 1­20. Springer (2011), https: //doi.org/10.1007/978-3-642-25385-0_1
+30. Cheon, J.H., Cho, W., Kim, J., Stehlé, D.: Homomorphic multiple precision multiplication for CKKS and reduced modulus consumption. In: Meng, W., Jensen, C.D., Cremers, C., Kirda, E. (eds.) Proceedings of the 2023 ACM SIGSAC Conference on Computer and Communications Security, CCS 2023, Copenhagen, Den-
+32
+
+mark, November 26-30, 2023. pp. 696­710. ACM (2023), https://doi.org/10. 1145/3576915.3623086 31. Cheon, J.H., Han, K., Kim, A., Kim, M., Song, Y.: Bootstrapping for approximate homomorphic encryption. In: Nielsen, J.B., Rijmen, V. (eds.) Advances in Cryptology - EUROCRYPT 2018 - 37th Annual International Conference on the Theory and Applications of Cryptographic Techniques, Tel Aviv, Israel, April 29 - May 3, 2018 Proceedings, Part I. Lecture Notes in Computer Science, vol. 10820, pp. 360­384. Springer (2018), https://doi.org/10.1007/978-3-319-78381-9_14 32. Cheon, J.H., Hanrot, G., Kim, J., Stehlé, D.: SHIP: A shallow and highly parallelizable CKKS bootstrapping algorithm. In: Fehr, S., Fouque, P. (eds.) Advances in Cryptology - EUROCRYPT 2025 - 44th Annual International Conference on the Theory and Applications of Cryptographic Techniques, Madrid, Spain, May 4-8, 2025, Proceedings, Part III. Lecture Notes in Computer Science, vol. 15603, pp. 398­428. Springer (2025), https://doi.org/10.1007/978-3-031-91131-6_14 33. Cheon, J.H., Hhan, M., Hong, S., Son, Y.: A hybrid of dual and meet-in-themiddle attack on sparse and ternary secret LWE. IEEE Access 7, 89497­89506 (2019), https://doi.org/10.1109/ACCESS.2019.2925425 34. Curtis, B.R., Player, R.: On the feasibility and impact of standardising sparsesecret LWE parameter sets for homomorphic encryption. In: Brenner, M., Lepoint, T., Rohloff, K. (eds.) Proceedings of the 7th ACM Workshop on Encrypted Computing & Applied Homomorphic Cryptography, WAHC@CCS 2019, London, UK, November 11-15, 2019. pp. 1­10. ACM (2019), https://doi.org/10.1145/ 3338469.3358940 35. Doulgerakis, E., Laarhoven, T., de Weger, B.: Finding closest lattice vectors using approximate voronoi cells. In: Ding, J., Steinwandt, R. (eds.) Post-Quantum Cryptography - 10th International Conference, PQCrypto 2019, Chongqing, China, May 8-10, 2019 Revised Selected Papers. Lecture Notes in Computer Science, vol. 11505, pp. 3­22. Springer (2019), https://doi.org/10.1007/978-3-030-25510-7_1 36. Ducas, L., Laarhoven, T., van Woerden, W.P.J.: The randomized slicer for CVPP: sharper, faster, smaller, batchier. In: Kiayias, A., Kohlweiss, M., Wallden, P., Zikas, V. (eds.) Public-Key Cryptography - PKC 2020 - 23rd IACR International Conference on Practice and Theory of Public-Key Cryptography, Edinburgh, UK, May 4-7, 2020, Proceedings, Part II. Lecture Notes in Computer Science, vol. 12111, pp. 3­36. Springer (2020), https://doi.org/10.1007/978-3-030-45388-6_1 37. Ducas, L., Pulles, L.N., Stevens, M.: Towards a modern LLL implementation. In: Hanaoka, G., Yang, B. (eds.) Advances in Cryptology - ASIACRYPT 2025 - 31st International Conference on the Theory and Application of Cryptology and Information Security, Melbourne, VIC, Australia, December 8-12, 2025, Proceedings, Part III. Lecture Notes in Computer Science, vol. 16247, pp. 65­99. Springer (2025), https://doi.org/10.1007/978-981-95-5099-9_3 38. Esser, A., May, A., Zweydinger, F.: Mceliece needs a break - solving mceliece1284 and quasi-cyclic-2918 with modern ISD. In: Dunkelman, O., Dziembowski, S. (eds.) Advances in Cryptology - EUROCRYPT 2022. Lecture Notes in Computer Science, vol. 13277, pp. 433­457. Springer (2022), https://doi.org/10. 1007/978-3-031-07082-2_16 39. Glaser, T., May, A., Nowakowski, J.: Entropy suffices for key guessing. IACR Cryptol. ePrint Arch. p. 797 (2023), https://eprint.iacr.org/2023/797 40. Grover, L.K.: A fast quantum mechanical algorithm for database search. In: Miller, G.L. (ed.) Proceedings of the Twenty-Eighth Annual ACM Symposium on the
+33
+
+Theory of Computing, Philadelphia, Pennsylvania, USA, May 22-24, 1996. pp. 212­219. ACM (1996), https://doi.org/10.1145/237814.237866 41. Guimarães, A., Pereira, H.V.L.: Fast amortized bootstrapping with small keys and polynomial noise overhead. In: Huang, C., Chen, J., Shieh, S., Lie, D., Cortier, V. (eds.) Proceedings of the 2025 ACM SIGSAC Conference on Computer and Communications Security, CCS 2025, Taipei, Taiwan, October 13-17, 2025. pp. 2967­2981. ACM (2025), https://doi.org/10.1145/3719027.3765181 42. Guo, Q., Johansson, T.: Faster dual lattice attacks for solving LWE with applications to CRYSTALS. In: Tibouchi, M., Wang, H. (eds.) Advances in Cryptology - ASIACRYPT 2021 - 27th International Conference on the Theory and Application of Cryptology and Information Security, Singapore, December 6-10, 2021, Proceedings, Part IV. Lecture Notes in Computer Science, vol. 13093, pp. 33­62. Springer (2021), https://doi.org/10.1007/978-3-030-92068-5_2 43. Han, K., Ki, D.: Better bootstrapping for approximate homomorphic encryption. In: Jarecki, S. (ed.) Topics in Cryptology - CT-RSA 2020 - The Cryptographers' Track at the RSA Conference 2020, San Francisco, CA, USA, February 24-28, 2020, Proceedings. Lecture Notes in Computer Science, vol. 12006, pp. 364­390. Springer (2020), https://doi.org/10.1007/978-3-030-40186-3_16 44. Hou, J., Jiang, H., Ogilvie, T.: Careful with the ring! concrete hardness gaps between LWE and MLWE. In: Heninger, N., Rosulek, M. (eds.) Advances in Cryptology - CRYPTO 2026 - 46th Annual International Cryptology Conference, Santa Barbara, CA, USA, August 17-20, 2026, Proceedings, Part III. Lecture Notes in Computer Science, vol. 16802, pp. 462­497. Springer (2026), https: //doi.org/10.1007/978-3-032-35377-1_15
+45. Howgrave-Graham, N.: A hybrid lattice-reduction and meet-in-the-middle attack against NTRU. In: Menezes, A. (ed.) Advances in Cryptology - CRYPTO 2007, 27th Annual International Cryptology Conference, Santa Barbara, CA, USA, August 19-23, 2007, Proceedings. Lecture Notes in Computer Science, vol. 4622, pp. 150­169. Springer (2007), https://doi.org/10.1007/978-3-540-74143-5_9
+46. Hwang, I., Min, S., Seo, J., Song, Y.: On the security and privacy of ckks-based homomorphic evaluation protocols. In: Hanaoka, G., Yang, B. (eds.) Advances in Cryptology - ASIACRYPT 2025 - 31st International Conference on the Theory and Application of Cryptology and Information Security, Melbourne, VIC, Australia, December 8-12, 2025, Proceedings, Part VII. Lecture Notes in Computer Science, vol. 16251, pp. 296­330. Springer (2025), https://doi.org/10. 1007/978-981-95-5122-4_10
+47. Johnson, N.L., Kemp, A.W., Kotz, S.: Univariate discrete distributions. John Wiley & Sons (2005)
+48. Jutla, C.S., Manohar, N.: Sine series approximation of the mod function for bootstrapping of approximate HE. In: Dunkelman, O., Dziembowski, S. (eds.) Advances in Cryptology - EUROCRYPT 2022 - 41st Annual International Conference on the Theory and Applications of Cryptographic Techniques, Trondheim, Norway, May 30 - June 3, 2022, Proceedings, Part I. Lecture Notes in Computer Science, vol. 13275, pp. 491­520. Springer (2022), https://doi.org/10. 1007/978-3-031-06944-4_17
+49. Kannan, R.: Improved algorithms for integer programming and related lattice problems. In: Johnson, D.S., Fagin, R., Fredman, M.L., Harel, D., Karp, R.M., Lynch, N.A., Papadimitriou, C.H., Rivest, R.L., Ruzzo, W.L., Seiferas, J.I. (eds.) Proceedings of the 15th Annual ACM Symposium on Theory of Computing, 25-
+34
+
+27 April, 1983, Boston, Massachusetts, USA. pp. 193­206. ACM (1983), https: //doi.org/10.1145/800061.808749 50. Karenin, A., Kirshanova, E., Nowakowski, J., May, A.: Fast slicer for batch-cvp: Making lattice hybrid attacks practical. In: Hanaoka, G., Yang, B. (eds.) Advances in Cryptology - ASIACRYPT 2025 - 31st International Conference on the Theory and Application of Cryptology and Information Security, Melbourne, VIC, Australia, December 8-12, 2025, Proceedings, Part III. Lecture Notes in Computer Science, vol. 16247, pp. 100­132. Springer (2025), https://doi.org/10. 1007/978-981-95-5099-9_4 51. Karenin, A., Kirshanova, E., Nowakowski, J., Postlethwaite, E.W., Pulles, L.N., Virdia, F., Viè, P.: Cool + cruel = dual, and new benchmarks for sparse LWE. To appear at EUROCRYPT 2026 (2026), https://eprint.iacr.org/2025/1002 52. Langlois, A., Stehlé, D.: Worst-case to average-case reductions for module lattices. Des. Codes Cryptogr. 75(3), 565­599 (2015). https://doi.org/10.1007/ S10623-014-9938-4, https://doi.org/10.1007/s10623-014-9938-4 53. Lenstra, A.K., Lenstra., H.W., Lovász, L.: Factoring polynomials with rational coefficients. Mathematische Annalen 261(4), 515­534 (1982). https://doi.org/ 10.1007/BF01457454 54. Li, C.Y., Wenger, E., Allen-Zhu, Z., Charton, F., Lauter, K.E.: SALSA VERDE: a machine learning attack on LWE with sparse small secrets. In: Oh, A., Naumann, T., Globerson, A., Saenko, K., Hardt, M., Levine, S. (eds.) Advances in Neural Information Processing Systems 36: Annual Conference on Neural Information Processing Systems 2023, NeurIPS 2023, New Orleans, LA, USA, December 10 - 16, 2023 (2023), http://papers.nips.cc/paper_files/paper/2023/ hash/a75db7d2ee1e4bee8fb819979b0a6cad-Abstract-Conference.html 55. Lindner, R., Peikert, C.: Better key sizes (and attacks) for lwe-based encryption. In: Kiayias, A. (ed.) Topics in Cryptology - CT-RSA 2011 - The Cryptographers' Track at the RSA Conference 2011, San Francisco, CA, USA, February 14-18, 2011. Proceedings. Lecture Notes in Computer Science, vol. 6558, pp. 319­339. Springer (2011), https://doi.org/10.1007/978-3-642-19074-2_21 56. Liu, M., Nguyen, P.Q.: Solving BDD by enumeration: An update. In: Dawson, E. (ed.) Topics in Cryptology - CT-RSA 2013 - The Cryptographers' Track at the RSA Conference 2013, San Francisco,CA, USA, February 25-March 1, 2013. Proceedings. Lecture Notes in Computer Science, vol. 7779, pp. 293­309. Springer (2013), https://doi.org/10.1007/978-3-642-36095-4_19 57. Lyubashevsky, V., Peikert, C., Regev, O.: On ideal lattices and learning with errors over rings. In: Gilbert, H. (ed.) Advances in Cryptology - EUROCRYPT 2010, 29th Annual International Conference on the Theory and Applications of Cryptographic Techniques, Monaco / French Riviera, May 30 - June 3, 2010. Proceedings. Lecture Notes in Computer Science, vol. 6110, pp. 1­23. Springer (2010). https://doi.org/10.1007/978-3-642-13190-5_1, https://doi.org/10. 1007/978-3-642-13190-5_1 58. MATZOV: Report on the security of lwe: Improved dual lattice attack (2022), https://api.semanticscholar.org/CorpusID:251600824 59. May, A.: How to meet ternary LWE keys. In: Malkin, T., Peikert, C. (eds.) Advances in Cryptology - CRYPTO 2021 - 41st Annual International Cryptology Conference, CRYPTO 2021, Virtual Event, August 16-20, 2021, Proceedings, Part II. Lecture Notes in Computer Science, vol. 12826, pp. 701­731. Springer (2021), https://doi.org/10.1007/978-3-030-84245-1_24
+35
+
+60. May, A., Silverman, J.H.: Dimension reduction methods for convolution modular lattices. In: Silverman, J.H. (ed.) Cryptography and Lattices, International Conference, CaLC 2001, Providence, RI, USA, March 29-30, 2001, Revised Papers. Lecture Notes in Computer Science, vol. 2146, pp. 110­125. Springer (2001),
+https://doi.org/10.1007/3-540-44670-2_10 61. Nolte, N., Malhou, M., Wenger, E., Stevens, S., Li, C.Y., Charton, F., Lauter,
+K.E.: The cool and the cruel: Separating hard parts of LWE secrets. In: Vaudenay, S., Petit, C. (eds.) Progress in Cryptology - AFRICACRYPT 2024 - 15th International Conference on Cryptology in Africa, Douala, Cameroon, July 10-12, 2024, Proceedings. Lecture Notes in Computer Science, vol. 14861, pp. 428­453. Springer (2024), https://doi.org/10.1007/978-3-031-64381-1_19 62. Ogilvie, T.: On the concrete hardness gap between MLWE and LWE. Cryptology ePrint Archive, Paper 2026/279 (2026), https://eprint.iacr.org/2026/279 63. Pulles, L.N., Vié, P.: Accelerating the primal hybrid attack against sparse LWE using gpus. IACR Cryptol. ePrint Arch. p. 1990 (2025), https://eprint.iacr.
+org/2025/1990 64. Regev, O.: On lattices, learning with errors, random linear codes, and cryptog-
+raphy. In: Gabow, H.N., Fagin, R. (eds.) Proceedings of the 37th Annual ACM Symposium on Theory of Computing, Baltimore, MD, USA, May 22-24, 2005. pp. 84­93. ACM (2005), https://doi.org/10.1145/1060590.1060603 65. Schnorr, C.: A hierarchy of polynomial time lattice basis reduction algorithms. Theor. Comput. Sci. 53, 201­224 (1987). https://doi.org/10.1016/ 0304-3975(87)90064-8, https://doi.org/10.1016/0304-3975(87)90064-8 66. Sendrier, N.: Decoding one out of many. In: Yang, B. (ed.) Post-Quantum Cryptography - 4th International Workshop, PQCrypto 2011. Lecture Notes in Computer Science, vol. 7071, pp. 51­67. Springer (2011), https://doi.org/10.1007/
+978-3-642-25405-5_4 67. Son, Y., Cheon, J.H.: Revisiting the hybrid attack on sparse secret LWE and appli-
+cation to HE parameters. In: Brenner, M., Lepoint, T., Rohloff, K. (eds.) Proceedings of the 7th ACM Workshop on Encrypted Computing & Applied Homomorphic Cryptography, WAHC@CCS 2019, London, UK, November 11-15, 2019. pp. 11­20. ACM (2019), https://doi.org/10.1145/3338469.3358941 68. Stehlé, D., Steinfeld, R., Tanaka, K., Xagawa, K.: Efficient public key encryption based on ideal lattices. In: Matsui, M. (ed.) Advances in Cryptology - ASIACRYPT 2009, 15th International Conference on the Theory and Application of Cryptology and Information Security, Tokyo, Japan, December 6-10, 2009. Proceedings. Lecture Notes in Computer Science, vol. 5912, pp. 617­635. Springer (2009), https://doi.org/10.1007/978-3-642-10366-7_36 69. Stevens, S., Wenger, E., Li, C.Y., Nolte, N., Saxena, E., Charton, F., Lauter, K.E.: Salsa fresca: Angular embeddings and pre-training for ML attacks on learning with errors. Trans. Mach. Learn. Res. 2025 (2025), https://openreview.net/forum?
+id=w4nd5695sq 70. Wang, G., Xia, W., Gu, D.: Heuristic algorithm for solving restricted SVP and
+its applications. In: Niederhagen, R., Saarinen, M.O. (eds.) Post-Quantum Cryptography - 16th International Workshop, PQCrypto 2025, Taipei, Taiwan, April 8-10, 2025, Proceedings, Part II. Lecture Notes in Computer Science, vol. 15578, pp. 119­152. Springer (2025), https://doi.org/10.1007/978-3-031-86602-9_5 71. Wenger, E., Saxena, E., Malhou, M., Thieu, E., Lauter, K.E.: Benchmarking attacks on learning with errors. In: Blanton, M., Enck, W., Nita-Rotaru, C. (eds.) IEEE Symposium on Security and Privacy, SP 2025, San Francisco, CA, USA,
+36
+
+May 12-15, 2025. pp. 279­297. IEEE (2025), https://doi.org/10.1109/SP61157. 2025.00058 72. van Woerden, W.: Randomized slicer implementation. https://github.com/ WvanWoerden/randomized-slicer (2020) 73. Wunderer, T.: Revisiting the hybrid attack: Improved analysis and refined security estimates. IACR Cryptol. ePrint Arch. p. 733 (2016), http://eprint.iacr.org/ 2016/733 74. Wunderer, T.: On the Security of Lattice-Based Cryptography Against Lattice Reduction and Hybrid Attacks. Ph.D. thesis, Darmstadt University of Technology, Germany (2018), http://tuprints.ulb.tu-darmstadt.de/8082/ 75. Wunderer, T.: A detailed analysis of the hybrid lattice-reduction and meet-in-themiddle attack. J. Math. Cryptol. 13(1), 1­26 (2019), https://doi.org/10.1515/ jmc-2016-0044
+37
+
+Appendices: supplementary material
+A Verification of Assumption 1
+We design the following experiments to verify the correctness of Assumption 1: First, s  R is randomly generated according to s = Bh-, where R =
+Z[x]/(xN + 1) and n = N . The guessing set S is selected via Algorithm 2 by adopting Strategy 3 and setting the parameter h (a parameter of Strategy 3, where S is defined as the set of all vectors with Hamming weight at most h), with the corresponding probability denoted as pS. Experiment 1: Sample a subset J  {0, 1, . . . , n-1} uniformly at random with |J| = k. A single trial is considered successful if vec(s)J  S. Repeat this trial N times; Experiment 1 is considered successful if at least one trial succeeds. Experiment 2: Sample a subset J  {0, 1, . . . , n - 1} uniformly at random with |J| = k. Experiment 2 is considered successful if there exists at least one i  {0, 1, . . . , N - 1} such that vec(xi · s)J  S.
+Both Experiment 1 and Experiment 2 are repeated T times. We denote the number of successful trials for Experiment 1 and Experiment 2 by succ1 and succ2, respectively, and compute their empirical success probabilities as succ1/T and succ2/T . The corresponding results are plotted in Figures A.1, A.2, A.3, and A.4. In these figures, the y-axis denotes the empirical success probability obtained by repeating the experiments T = 1000 times. The blue line is the theoretical success probability (i.e., 1 - (1 - pS)N ), the orange line is succ1/T (corresponding to prandom in Assumption 1), and the green line is succ2/T (corresponding to pshift in Assumption 1).
+Figures A.1 and A.2 show the results for  = 1 and  = 2, respectively, while Figures A.1, A.3, and A.4 correspond to k = 150, 350, and 450, respectively. From these plots, we observe that the three curves overlap to a large extent, which confirms the validity of Assumption 1.
+Additionally, we would like to clarify that polynomial rings employed in cryptographic schemes are typically the 2-power cyclotomic rings R = Z[x]/(fN (x)) with N a power of two, yet this assumption still holds even when N is not a power of two. As illustrated in Figure A.5, where we set N = 500, the three curves still overlap to a large extent.
+Remark A.1. In Assumption 1, the permutation-sign symmetry of the distribution s ensures that xi · s still follows s, since in the ring R = Z[x]/(xN + 1), multiplying s by xi can cause some coefficients to be negated and cyclically shifted. If this permutation-sign symmetry requirement is not satisfied, the assumption may no longer hold. All distributions used in this paper, namely D, B-, B, Bh-, and Bh, are permutation-sign symmetric. We provide the reasons below. For the non-sparse cases D, B-, B, each coordinate is drawn i.i.d. from a distribution symmetric about 0; hence the joint probability is invariant under
+38
+
+any permutation and any sign flip. For the sparse variants Bh-, Bh, the support is restricted to vectors of Hamming weight exactly h, with the non-zero positions chosen uniformly and their values drawn independently from the symmetric conditional distribution given non-zero. This construction preserves invariance under permutations (uniform choice of positions) and sign flips (conditional symmetry). Thus all these distributions are permutation-sign symmetric.
+
+Remark A.2. While we only select Strategy 3 from Algorithm 2 to generate the guessing set S for verifying our assumption, this nonetheless suffices to demonstrate that sampling J once in Experiment 2 (such that vec(xi · s)J  S holds for some i  {0, 1, . . . , N - 1}) yields the same effect as sampling J uniformly at random for N times in Experiment 1 (with vec(s)J  S holding for at least one trial), i.e., Experiment 2 still maintains a high degree of independence. Our assumption should therefore remain valid when other strategies from Algorithm 2 are adopted (i.e., when the guessing set S is different).
+Success Probabilities vs. Hamming Weight h
+1.0
+
+0.8
+
+Success Probability
+
+0.6
+
+0.4
+
+0.2
+
+Theoretical Probability Experiment 1 (Random Sampling)
+
+0.0
+
+30
+
+Experiment 2 (Fixed J + All Shifts) 33 36 39 Ham4m2ing We4i5ght h 48
+
+51
+
+54
+
+57
+
+Fig. A.1: For  = 1, N = 512, the x-axis represents h (ranging from 30 to 57) with k = 150. Algorithm 2 uses Strategy 3 with h = 5.
+
+B Experimental Validation of Remark 3.4
+
+We conduct experiments with parameters n = 512, k = 300, s = Bh- and h = 64, whose definitions are consistent with those in Algorithm 1.The pa-
+
+rameter h denotes the guessed maximum Hamming weight of the k dropped
+
+dimensions. The experimental results are illustrated in Figures B.1 and B.2. Let
+
+|Sh | =
+
+k h
+
+|Val+(s)|h ,
+
+|Sh |
+
+=
+
+h i=0
+
+k i
+
+|Val+(s)|i,
+
+and
+
+pi
+
+=
+
+(hi )·(nk--hi ) (nk)
+
+for
+
+i  {0, 1, . . . , h}. In the legend, "size" denotes log(|Sh |), "sum size" denotes
+
+log(|Sh |), "p" denotes log(ph ), and "sum p" denotes log
+
+h i=0
+
+pi
+
+. The results
+
+show that when h is small, log(|Sh |) and log(|Sh |) are very close, and log(ph )
+
+39
+
+Success Probabilities vs. Hamming Weight h
+
+1.0
+
+Theoretical Probability
+
+Experiment 1 (Random Sampling)
+
+0.8
+
+Experiment 2 (Fixed J + All Shifts)
+
+Success Probability
+
+0.6
+
+0.4
+
+0.2
+
+0.0 35 38 41 44 Ham4m7ing We5i0ght h 53 56 59 62
+
+Fig. A.2: For  = 2, N = 256, the x-axis represents h (ranging from 35 to 62) with k = 150. Algorithm 2 uses Strategy 3 with h = 6.
+
+Success Probabilities vs. Hamming Weight h
+
+1.0
+
+Theoretical Probability
+
+Experiment 1 (Random Sampling)
+
+0.8
+
+Experiment 2 (Fixed J + All Shifts)
+
+Success Probability
+
+0.6
+
+0.4
+
+0.2
+
+0.0 35 36 37 38 H3a9mmin4g0Weigh4t1h 42 43 44 45
+
+Fig. A.3: For  = 1, N = 512, the x-axis represents h (ranging from 35 to 45) with k = 300. Algorithm 2 uses Strategy 3 with h = 14.
+
+40
+
+Success Probabilities vs. Hamming Weight h
+
+1.0
+
+Theoretical Probability
+
+Experiment 1 (Random Sampling)
+
+0.8
+
+Experiment 2 (Fixed J + All Shifts)
+
+Success Probability
+
+0.6
+
+0.4
+
+0.2
+
+0.0 36 37 38 3H9ammin4g0Weight4h1 42 43 44
+
+Fig. A.4: For  = 1, N = 512, the x-axis represents h (ranging from 36 to 44) with k = 450. Algorithm 2 uses Strategy 3 with h = 28.
+
+Success Probabilities vs. Hamming Weight h
+
+1.0
+
+Theoretical Probability
+
+Experiment 1 (Random Sampling)
+
+0.8
+
+Experiment 2 (Fixed J + All Shifts)
+
+Success Probability
+
+0.6
+
+0.4
+
+0.2
+
+0.0 36 37 38 3H9ammin4g0Weight4h1 42 43 44
+
+Fig. A.5: For  = 1, N = 500, the x-axis represents h (ranging from 36 to 44) with k = 450. Algorithm 2 uses Strategy 3 with h = 28.
+
+41
+
+and log
+
+h i=0
+
+pi
+
+are also very close. This observation confirms that when h
+
+is small, both the number of vectors with Hamming weight at most h and the
+
+enumeration success probability are dominated by those corresponding to Ham-
+
+ming weight exactly h. When h is large (h > (k + 1)(h + 1)/(n + 2)), ph
+
+decreases as h increases,23 so ph is no longer the dominant term in
+
+h i=0
+
+pi.
+
+However, in practical attacks, h is always small due to the constraint imposed
+
+by Eq. (2.10).
+
+Size vs h
+
+size
+
+250
+
+sum size
+
+200
+
+log2(Size)
+
+150
+
+100
+
+50
+
+0
+
+0
+
+10
+
+20
+
+30 h
+
+40
+
+50
+
+60
+
+Fig. B.1: For n = 512, k = 300, h = 64: the x-axis represents h (ranging from 0 to 64). The y-axis entries "size" and "sum size" denote log(|Sh |) and log(|Sh |), respectively.
+
+C The proof of Lemma 3.1
+
+For the sake of convenience, we restate Lemma 3.1 below.
+
+Lemma C.1. For any p  [0, 1] and any positive integer N , if N p  1, then
+
+N p  1 - (1 - p)N  N p. 2 Proof. By the binomial theorem,
+
+1 - (1 - p)N =
+
+N
+(-1)m-1
+
+N
+
+pm.
+
+m
+
+m=1
+
+Let am =
+
+N m
+
+pm
+
+for
+
+m  1.
+
+The
+
+series
+
+is
+
+alternating.
+
+23 This is because ph can be seen as the probability function of the hypergeometric distribution. Specifically, ph is monotonically increasing when h < (k + 1)(h + 1)/(n + 2) and monotonically decreasing when h > (k + 1)(h + 1)/(n + 2) [47].
+
+42
+
+0
+
+p
+
+sum p
+
+20
+
+Probability vs h
+
+log2(Probability)
+
+40
+
+60
+
+80
+
+0
+
+10
+
+20
+
+30 h
+
+40
+
+50
+
+60
+
+Fig. B.2: For n = 512, k = 300, h = 64: the x-axis represents h (ranging
+
+from 0 to 64). The y-axis "p" and "sum p" denote log(ph ) and log
+
+h i=0
+
+pi
+
+,
+
+respectively.
+
+We first show that the sequence (am) is strictly decreasing. For any m  1,
+
+am+1 = N - m p. am m + 1
+
+The
+
+function
+
+f (m)
+
+=
+
+N -m m+1
+
+is
+
+decreasing
+
+in
+
+m,
+
+hence
+
+its
+
+maximum
+
+over
+
+m
+
+
+
+1
+
+is attained at m = 1:
+
+N -1
+
+f (m)  f (1) =
+
+.
+
+2
+
+Therefore
+
+am+1  N - 1 p  N p  1 < 1.
+
+am
+
+2
+
+22
+
+Thus am+1 < am for every m  1. Since the terms am are positive and strictly decreasing, the alternating sum
+satisfies
+N
+a1 - a2  (-1)m-1am  a1.
+m=1
+
+Therefore
+
+N p - N p2  1 - (1 - p)N  N p. 2
+
+For the lower bound we use
+
+N 2
+
+= N (N - 1)/2  N 2/2:
+
+Np -
+
+N
+
+p2  N p - N 2 p2 = N p
+
+Np 1-
+
+.
+
+2
+
+2
+
+2
+
+43
+
+Since
+
+Np
+
+
+
+1,
+
+we
+
+have
+
+1-
+
+Np 2
+
+
+
+1 2
+
+.
+
+Hence
+
+1
+
+-
+
+(1
+
+-
+
+p)N
+
+
+
+Np .
+
+2
+
+Together with the upper bound, this completes the proof.
+
+
+
+D Estimates for parameter sets in [34, Tab. 4]
+In this section, we present the evaluation results of the parameter sets proposed by Curtis and Player under the enhanced hybrid decoding attack. The results in Table D.1 were obtained via lattice-estimator with the configurations red_cost_model=MATZOV and red_shape_model=GSA, while those in Table D.2 were derived from evaluations with the authors' original code, and those in Table D.3 (evaluation results under the quantum cost model) were obtained via lattice-estimator with the configurations red_cost_model=ChaLoy21 and red_shape_model=GSA. Furthermore, when calculating the bit security of the hybrid decoding attack under the quantum cost model, we also take the squareroot speedup in searching step with Grover's algorithm [40,22] into account, as in [74, Sec. 7].
+From Tables D.1 and D.3, we observe that when h is small relative to n, the hybrid attack has significantly lower complexity than uSVP, which indicates that the hybrid attack is well-suited for LWE instances with secrets of small Hamming weight. The results in Table D.1 and Table D.2 show that, among all 72 sparse parameter sets, 21 and 45 sets, respectively, fail to achieve the target bit security level  when the enhanced hybrid decoding attack is used.
+Remark D.1. In Table D.1 and Table D.3, 1 and 2 equal 0 for several parameter sets, meaning that the enhanced hybrid attack yields no improvement over the standard hybrid attack. This occurs because the Hamming weight h is relatively large for these parameter sets, which makes the the complexity of the hybrid attack is minimized when no guessing is performed.
+
+44
+
+Table D.1: Estimates for parameter sets in [34, Tab. 4] using lattice-estimator with red_cost_model=MATZOV and red_shape_model=GSA. All these schemes are based on Ring-LWE (i.e., n = N , where N denotes the degree of the polynomial ring) and employ 2-power polynomial rings, with the error distribution e = D ( = 3.19), secret distribution s = Bh-, and modulus q. Specifically: "uSVP" denotes the complexity from the primal_usvp function; TgvDec is the complexity of the guess-and-verify decoding attack, obtained via the primal_hybrid function with settings mitm=False and babai=False; ThgDec is the complexity of the Howgrave-Graham decoding attack, calculated by the primal_hybrid function with settings mitm=True and babai=True; TegvDec and TehgDec respectively correspond to the complexities of the enhanced guessand-verify decoding attack and enhanced Howgrave-Graham decoding attack. 1 = TgvDec - TegvDec, 2 = ThgDec - TehgDec. The parameter  denotes the target bit security level,  = h/ (sparsity ratio of the secret). Values below  are bolded for emphasis.
+n   h log(q) uSVP TegvDec TgvDec 1 TehgDec ThgDec 2
+1024 128 0.5 64 14 219.3 157.6 163.0 5.5 149.4 151.8 2.4 1024 128 0.75 96 19 170.9 151.0 158.9 7.9 149.1 153.4 4.3 1024 128 1 128 21 157.2 151.0 154.6 3.6 153.7 158.8 5.2 1024 128 1.5 192 23 146.1 143.3 143.6 0.2 159.4 165.6 6.2 1024 192 0.5 96 9 311.4 257.7 260.4 2.8 237.8 239.2 1.4 1024 192 0.75 144 13 247.2 238.3 242.5 4.2 235.1 239.1 3.9 1024 192 1 192 14 236.2 231.4 232.0 0.6 251.8 255.7 3.9 1024 192 1.5 288 16 214.0 209.8 209.8 0.0 255.8 261.0 5.2 1024 256 0.5 128 7 355.2 325.2 325.2 0.0 355.8 355.8 0.0 1024 256 0.75 192 10 312.4 306.4 306.9 0.4 327.2 329.6 2.4 1024 256 1 256 11 298.5 292.6 292.6 0.0 347.0 350.0 3.0 1024 256 1.5 384 12 286.2 280.4 280.4 0.0 374.1 377.1 3.0 2048 128 0.5 64 27 244.7 151.2 157.9 6.7 140.6 144.9 4.3 2048 128 0.75 96 37 180.6 144.2 152.7 8.5 139.1 144.9 5.8 2048 128 1 128 41 164.0 142.7 150.9 8.3 141.9 148.6 6.7 2048 128 1.5 192 46 147.3 137.5 144.8 7.3 141.9 149.7 7.8 2048 192 0.5 96 19 345.2 227.8 234.0 6.2 209.7 213.1 3.4 2048 192 0.75 144 26 261.4 219.1 228.2 9.1 209.7 215.2 5.5 2048 192 1 192 29 236.3 218.5 227.9 9.4 215.3 221.5 6.2 2048 192 1.5 288 32 215.5 211.3 213.7 2.3 222.1 229.3 7.2 2048 256 0.5 128 15 427.7 307.2 312.1 4.9 279.4 283.0 3.7 2048 256 0.75 192 19 359.2 317.6 325.5 7.9 297.6 302.2 4.6 2048 256 1 256 22 314.6 306.8 311.7 4.8 300.8 306.2 5.4 2048 256 1.5 384 24 293.6 289.5 290.4 1.0 318.0 324.7 6.6 4096 128 0.5 64 55 254.2 147.0 155.1 8.2 134.4 139.8 5.5 4096 128 0.75 96 74 184.6 141.5 150.6 9.1 133.0 140.1 7.1 4096 128 1 128 83 165.1 137.6 147.5 9.9 133.2 141.2 8.0
+45
+
+Table D.1 ­ continued from previous page
+n   h log(q) uSVP TegvDec TgvDec 1 TehgDec ThgDec 2
+4096 128 1.5 192 92 148.4 133.9 142.2 8.3 133.1 142.1 8.9 4096 192 0.5 96 37 384.5 223.3 230.0 6.7 201.6 206.1 4.6 4096 192 0.75 144 52 272.5 210.4 218.5 8.2 197.1 203.8 6.7 4096 192 1 192 57 248.7 210.7 219.7 9.0 203.3 210.8 7.5 4096 192 1.5 288 64 220.8 202.7 212.4 9.7 203.9 212.6 8.7 4096 256 0.5 128 30 478.6 289.0 297.6 8.6 261.3 266.0 4.7 4096 256 0.75 192 39 371.9 290.1 298.2 8.2 270.9 276.8 6.0 4096 256 1 256 44 328.5 286.4 295.4 9.0 275.8 283.0 7.2 4096 256 1.5 384 49 294.9 279.9 289.5 9.6 281.9 290.2 8.3 8192 128 0.5 64 111 258.2 146.9 155.6 8.7 132.3 139.0 6.7 8192 128 0.75 96 148 188.5 141.2 151.9 10.7 130.7 139.0 8.2 8192 128 1 128 171 162.0 134.2 144.2 9.9 127.1 136.3 9.2 8192 128 1.5 192 186 149.4 131.6 140.8 9.2 127.9 137.6 9.7 8192 192 0.5 96 84 352.1 206.5 215.0 8.4 184.3 190.8 6.5 8192 192 0.75 144 100 291.8 215.1 224.9 9.8 196.9 204.7 7.8 8192 192 1 192 114 252.7 208.4 219.0 10.5 196.3 205.1 8.8 8192 192 1.5 288 130 219.1 196.9 206.8 9.9 192.0 202.0 10.0 8192 256 0.5 128 60 510.8 286.9 294.7 7.9 253.9 259.6 5.7 8192 256 0.75 192 79 380.1 283.0 292.1 9.1 258.6 266.1 7.5 8192 256 1 256 89 333.9 278.0 288.4 10.4 261.5 270.0 8.5 8192 256 1.5 384 98 300.3 272.4 283.1 10.8 266.6 276.3 9.7 16384 128 0.5 64 223 262.1 147.8 157.4 9.6 132.8 140.1 7.3 16384 128 0.75 96 300 189.4 141.5 152.4 10.9 129.3 138.6 9.3 16384 128 1 128 342 163.1 134.8 145.9 11.1 126.3 136.5 10.2 16384 128 1.5 192 377 146.5 130.5 140.2 9.7 125.7 135.5 9.8 16384 192 0.5 96 157 391.0 215.7 224.4 8.7 190.8 198.2 7.4 16384 192 0.75 144 201 295.7 216.2 226.9 10.7 194.9 203.7 8.8 16384 192 1 192 232 250.9 206.5 217.9 11.4 191.1 201.0 9.9 16384 192 1.5 288 265 217.4 193.1 203.7 10.6 184.9 195.8 10.9 16384 256 0.5 128 115 555.7 294.6 302.4 7.9 257.6 264.4 6.8 16384 256 0.75 192 161 381.2 279.5 290.6 11.2 252.2 260.8 8.5 16384 256 1 256 176 346.1 280.8 292.1 11.3 259.1 268.8 9.7 16384 256 1.5 384 202 295.7 263.9 275.0 11.1 252.2 263.2 11.0 32768 128 0.5 64 496 235.2 140.8 151.7 10.9 126.9 135.8 8.9 32768 128 0.75 96 619 184.9 139.4 151.1 11.7 127.5 137.7 10.2 32768 128 1 128 699 162.6 133.2 145.4 12.1 124.8 135.6 10.8 32768 128 1.5 192 767 146.0 128.8 139.6 10.8 123.6 134.1 10.5 32768 192 0.5 96 350 350.0 204.8 215.5 10.7 181.9 190.1 8.2 32768 192 0.75 144 411 291.1 214.2 225.6 11.4 192.6 202.6 9.9 32768 192 1 192 479 246.3 201.3 214.5 13.2 186.1 197.2 11.1 32768 192 1.5 288 523 221.3 196.1 208.0 11.9 186.7 198.0 11.3 32768 256 0.5 128 263 487.7 275.4 285.8 10.4 241.8 249.9 8.2 32768 256 0.75 192 313 399.1 288.5 300.0 11.5 257.4 267.1 9.7
+46
+
+Table D.1 ­ continued from previous page n   h log(q) uSVP TegvDec TgvDec 1 TehgDec ThgDec 2
+32768 256 1 256 361 338.8 276.5 288.7 12.2 253.1 264.0 10.9 32768 256 1.5 384 408 294.0 261.1 273.5 12.4 247.4 259.4 12.0
+
+Table D.2: Estimates for parameter sets in [34, Tab. 4] using their code with red_cost_model=BKZ.sieve and red_shape_model=GSA. The meanings of parameters n, h, q, TehgDec, ThgDec, 2,  and  are consistent with those in Table D.1. Values below  are bolded for emphasis.
+
+n   h log(q) TehgDec ThgDec 2
+
+1024 128 0.5 64 14 1024 128 0.75 96 19 1024 128 1 128 21 1024 128 1.5 192 23 1024 192 0.5 96 9 1024 192 0.75 144 13 1024 192 1 192 14 1024 192 1.5 288 16 1024 256 0.5 128 7 1024 256 0.75 192 10 1024 256 1 256 11 1024 256 1.5 384 12 2048 128 0.5 64 27 2048 128 0.75 96 37 2048 128 1 128 41 2048 128 1.5 192 46 2048 192 0.5 96 19 2048 192 0.75 144 26 2048 192 1 192 29 2048 192 1.5 288 32 2048 256 0.5 128 15 2048 256 0.75 192 19 2048 256 1 256 22 2048 256 1.5 384 24 4096 128 0.5 64 55 4096 128 0.75 96 74 4096 128 1 128 83 4096 128 1.5 192 92 4096 192 0.5 96 37 4096 192 0.75 144 52 4096 192 1 192 57 4096 192 1.5 288 64
+
+126.2 130.2 4.0 126.2 131.7 5.5 129.6 135.5 6.0 133.4 140.0 6.6 195.1 198.4 3.3 195.2 200.0 4.8 206.5 211.7 5.2 208.2 214.4 6.2 263.1 265.7 2.6 266.6 271.0 4.5 279.5 284.4 4.9 296.6 302.0 5.4 129.0 134.6 5.5 126.0 132.6 6.5 128.7 134.8 6.1 127.3 134.9 7.6 186.9 191.5 4.6 185.9 192.3 6.3 188.9 196.0 7.1 193.5 201.1 7.7 247.5 252.3 4.8 259.0 264.7 5.7 258.4 265.0 6.6 271.8 279.2 7.4 126.7 132.8 6.1 126.5 133.6 7.1 125.6 132.8 7.2 129.6 134.6 5.0 193.5 199.8 6.3 182.6 190.4 7.7 189.1 196.9 7.8 189.7 196.8 7.1
+
+47
+
+Table D.2 ­ continued from previous page
+
+n   h log(q) TehgDec ThgDec 2
+
+4096 256 0.5 128 30 4096 256 0.75 192 39 4096 256 1 256 44 4096 256 1.5 384 49 8192 128 0.5 64 111 8192 128 0.75 96 148 8192 128 1 128 171 8192 128 1.5 192 186 8192 192 0.5 96 84 8192 192 0.75 144 100 8192 192 1 192 114 8192 192 1.5 288 130 8192 256 0.5 128 60 8192 256 0.75 192 79 8192 256 1 256 89 8192 256 1.5 384 98 16384 128 0.5 64 223 16384 128 0.75 96 300 16384 128 1 128 342 16384 128 1.5 192 377 16384 192 0.5 96 157 16384 192 0.75 144 201 16384 192 1 192 232 16384 192 1.5 288 265 16384 256 0.5 128 115 16384 256 0.75 192 161 16384 256 1 256 176 16384 256 1.5 384 202 32768 128 0.5 64 496 32768 128 0.75 96 619 32768 128 1 128 699 32768 128 1.5 192 767 32768 192 0.5 96 350 32768 192 0.75 144 411 32768 192 1 192 479 32768 192 1.5 288 523 32768 256 0.5 128 263 32768 256 0.75 192 313 32768 256 1 256 361 32768 256 1.5 384 408
+
+243.4 249.3 5.9 250.4 257.6 7.2 251.6 259.2 7.6 257.1 265.4 8.3 128.4 136.2 7.8 125.6 134.5 8.9 123.8 132.2 8.4 129.1 135.4 6.2 180.7 188.2 7.4 193.7 201.6 7.9 188.6 197.3 8.6 186.8 195.6 8.8 246.1 253.2 7.1 247.6 255.4 7.9 249.1 257.8 8.7 253.9 263.4 9.5 132.7 140.9 8.3 129.6 138.5 8.8 125.6 135.0 9.4 128.3 136.0 7.7 193.4 201.6 8.2 191.0 200.2 9.2 188.3 197.8 9.5 186.3 195.3 9.0 257.5 265.3 7.8 246.4 255.3 8.9 253.8 262.7 8.9 250.5 259.3 8.8 126.6 135.6 9.0 127.9 138.0 10.1 125.8 136.0 10.2 126.9 135.7 8.8 181.7 189.6 7.8 191.4 201.6 10.2 186.5 197.2 10.7 191.8 199.5 7.7 241.0 249.4 8.4 255.9 266.4 10.6 252.7 263.0 10.3 251.2 259.6 8.5
+
+48
+
+Table D.3: Estimates for parameter sets in [34, Tab. 4] using lattice-estimator with red_cost_model=ChaLoy21 and red_shape_model=GSA using a quantum sieving cost model based on [26]. The meanings of parameters n, h, q, "uSVP", TegvDec, TgvDec, 1, TehgDec, ThgDec, 2,  and  are consistent with those in Table D.1. For the complexity evaluation of the (enhanced) Howgrave-Graham decoding attack under the quantum cost model, we do not employ the MITM technique; instead, the searching step achieves a square-root speedup via the quantum algorithm for both the (enhanced) guess-and-verify and (enhanced) Howgrave-Graham decoding attacks.
+n   h log(q) uSVP TegvDec TgvDec 1 TehgDec ThgDec 2
+1024 128 0.5 64 14 173.5 105.5 109.1 3.6 110.2 114.0 3.8 1024 128 0.75 96 19 128.5 99.2 104.3 5.0 104.0 109.2 5.2 1024 128 1 128 21 115.7 99.3 104.5 5.2 103.7 109.6 5.9 1024 128 1.5 192 23 105.4 99.0 104.6 5.6 103.3 110.1 6.8 1024 192 0.5 96 9 259.6 178.6 180.0 1.4 181.4 183.6 2.2 1024 192 0.75 144 13 199.2 165.3 169.7 4.4 170.4 175.0 4.7 1024 192 1 192 14 188.9 173.9 180.2 6.3 178.7 183.9 5.2 1024 192 1.5 288 16 168.3 168.4 168.4 0.0 175.7 181.9 6.2 1024 256 0.5 128 7 307.1 279.9 279.9 0.0 264.3 264.5 0.2 1024 256 0.75 192 10 259.6 244.6 245.8 1.2 241.9 245.3 3.3 1024 256 1 256 11 246.7 246.7 246.7 0.0 250.9 255.5 4.5 1024 256 1.5 384 12 235.2 235.1 235.1 0.0 264.2 268.5 4.3 2048 128 0.5 64 27 195.3 104.2 108.9 4.7 107.6 112.3 4.7 2048 128 0.75 96 37 136.2 96.6 102.9 6.4 100.0 106.3 6.4 2048 128 1 128 41 120.8 95.2 102.1 6.9 98.6 105.6 7.0 2048 128 1.5 192 46 105.4 91.6 98.1 6.5 94.8 101.8 7.0 2048 192 0.5 96 19 287.8 158.5 163.0 4.5 163.3 167.7 4.4 2048 192 0.75 144 26 210.7 152.0 158.0 6.1 156.8 162.9 6.1 2048 192 1 192 29 187.6 151.8 158.6 6.8 156.7 163.7 6.9 2048 192 1.5 288 32 168.3 152.0 159.1 7.1 156.6 164.4 7.8 2048 256 0.5 128 15 363.7 213.4 218.1 4.8 218.8 223.1 4.3 2048 256 0.75 192 19 300.7 221.3 228.6 7.3 226.8 232.4 5.6 2048 256 1 256 22 259.6 217.6 224.4 6.8 223.7 230.1 6.4 2048 256 1.5 384 24 240.3 224.8 231.8 6.9 230.7 238.1 7.4 4096 128 0.5 64 55 203.0 103.4 109.0 5.6 105.6 111.0 5.5 4096 128 0.75 96 74 138.8 95.8 103.2 7.4 97.8 105.2 7.4 4096 128 1 128 83 120.8 92.2 100.3 8.1 94.5 102.4 7.9 4096 128 1.5 192 92 105.4 89.2 96.5 7.3 91.3 98.7 7.4 4096 192 0.5 96 37 322.5 159.5 165.4 5.9 163.0 168.4 5.5 4096 192 0.75 144 52 219.7 148.9 156.2 7.2 152.2 159.4 7.2 4096 192 1 192 57 197.9 149.8 157.8 8.0 153.2 161.2 8.0 4096 192 1.5 288 64 172.2 145.7 153.8 8.1 148.8 157.4 8.6 4096 256 0.5 128 30 408.6 208.8 214.2 5.4 213.0 218.4 5.4
+49
+
+Table D.3 ­ continued from previous page
+n   h log(q) uSVP TegvDec TgvDec 1 TehgDec ThgDec 2
+4096 256 0.75 192 39 311.0 209.2 216.2 6.9 213.8 220.7 6.9 4096 256 1 256 44 271.1 208.2 216.1 7.8 212.9 220.7 7.8 4096 256 1.5 384 49 240.3 207.3 215.6 8.3 211.6 220.4 8.9 8192 128 0.5 64 111 205.6 104.2 110.8 6.6 105.5 112.0 6.6 8192 128 0.75 96 148 141.3 96.6 104.8 8.3 97.7 106.0 8.3 8192 128 1 128 171 116.9 89.7 98.4 8.7 90.8 99.6 8.8 8192 128 1.5 192 186 105.4 88.0 95.5 7.5 89.0 96.8 7.7 8192 192 0.5 96 84 291.7 149.7 156.4 6.8 151.4 158.1 6.7 8192 192 0.75 144 100 236.4 154.7 163.0 8.3 156.7 164.9 8.1 8192 192 1 192 114 200.5 149.5 158.7 9.2 151.6 160.7 9.2 8192 192 1.5 288 130 169.6 141.5 150.7 9.2 143.7 152.8 9.1 8192 256 0.5 128 60 436.9 210.4 216.9 6.5 213.3 219.8 6.5 8192 256 0.75 192 79 317.4 207.3 215.5 8.2 210.2 218.3 8.1 8192 256 1 256 89 275.0 204.7 213.7 9.0 207.7 216.7 9.0 8192 256 1.5 384 98 244.2 203.7 213.3 9.6 206.7 216.4 9.8 16384 128 0.5 64 223 208.2 105.7 113.5 7.7 106.6 114.0 7.4 16384 128 0.75 96 300 141.3 96.3 105.6 9.3 97.0 106.3 9.3 16384 128 1 128 342 116.9 90.5 99.8 9.3 91.4 100.4 9.1 16384 128 1.5 192 377 101.5 86.7 94.7 8.0 87.3 95.4 8.1 16384 192 0.5 96 157 326.4 159.0 166.4 7.4 160.1 167.6 7.5 16384 192 0.75 144 201 239.0 156.2 165.3 9.1 157.4 166.5 9.1 16384 192 1 192 232 197.9 148.2 158.3 10.0 149.3 159.6 10.2 16384 192 1.5 288 265 167.1 139.0 148.7 9.6 139.9 149.9 10.0 16384 256 0.5 128 115 476.7 219.9 227.4 7.5 221.8 229.0 7.2 16384 256 0.75 192 161 317.4 206.9 216.0 9.1 208.8 217.7 8.9 16384 256 1 256 176 285.3 208.5 218.6 10.1 210.4 220.4 10.0 16384 256 1.5 384 202 239.0 197.4 207.7 10.3 199.1 209.6 10.4 32768 128 0.5 64 496 182.5 100.0 108.6 8.6 100.4 109.0 8.6 32768 128 0.75 96 619 136.2 94.7 104.9 10.2 95.2 105.3 10.1 32768 128 1 128 699 115.7 89.1 99.2 10.1 89.3 99.4 10.1 32768 128 1.5 192 767 100.2 86.0 93.7 7.8 86.4 94.1 7.7 32768 192 0.5 96 350 287.8 151.2 159.7 8.6 151.8 160.3 8.5 32768 192 0.75 144 411 233.9 155.7 165.7 10.0 156.3 166.5 10.2 32768 192 1 192 479 192.8 145.3 156.1 10.8 145.6 156.8 11.1 32768 192 1.5 288 523 169.6 141.7 152.5 10.8 143.2 153.1 9.9 32768 256 0.5 128 263 413.8 207.9 215.7 7.8 208.5 216.8 8.3 32768 256 0.75 192 313 332.8 215.5 225.7 10.2 216.8 226.4 9.6 32768 256 1 256 361 277.6 206.3 217.4 11.1 207.2 218.3 11.0 32768 256 1.5 384 408 236.4 197.0 208.3 11.3 197.3 208.8 11.5
+50
+
+E The Analysis of Estimate Results in Table D.1
+In this section, we plot the curves of the reduced bits achieved by the enhanced hybrid decoding attack compared to the unstructured baseline (i.e., 1, 2) against log(n), using the data from Table D.1.
+We group the data by Hamming weight h and calculate the values of 1 and 2 for different n and , then plot the variation curves of 1 and 2 with log(n). The resulting curves are presented in Figure E.1.
+Figure E.2 is created by combining all curves from Figure E.1 into a single plot.
+Inspection of these two figures reveals that the values of 1 and 2 increase as log(n) increases, which implies that a larger log(n) corresponds to more reduced bits achieved by the enhanced hybrid decoding attack relative to the unstructured baseline. Remark E.1. The data in Figure 3.1 represent the improvement in the success probability of the enhanced hybrid decoding attack over the standard hybrid decoding attack under the same parameters (e.g., , k). In contrast, Figures E.1 and E.2 illustrate the improvement in the total complexity of the enhanced hybrid decoding attack over the standard hybrid decoding attack, where both attacks are evaluated under their respective optimal parameters (which may differ).
+F Estimates for FHE Schemes under Quantum Cost Model
+In this section, we present the bit security of the parameter sets used in FHE schemes [48,30,12,32,8] under the quantum cost model, using the quantum sieving cost model based on [26] and quantum algorithm to accelerate the searching step as in [74, Sec. 7]. The estimated results are presented in Table F.1.
+As shown in Table F.1, under the quantum cost model, the enhanced guessand-verify decoding attack and the enhanced Howgrave-Graham attack reduce the bit security by 4.2­11.2 bits and 4.2­11.3 bits compared to the unstructured baseline, respectively.
+51
+
+Value
+
+Value
+
+h = 64 1 and 2 vs log2(n) for Each h (by )
+
+h = 96
+
+14
+
+12
+
+10
+
+8
+
+6
+
+4
+
+2 0
+
+y = x (reference line)
+
+1 2
+
+( (
+
+=128) =128)
+
+h = 128
+
+h = 144
+
+y = x (reference line)
+
+1 2 1 2
+
+( ( ( (
+
+=128) =128) =192) =192)
+
+14
+
+12
+
+10
+
+8
+
+6
+
+4 2 0
+
+y = x (reference line)
+
+1 2 1 2
+
+( ( ( (
+
+=128) =128) =256) =256)
+
+h = 192
+
+h = 256
+
+y = x (reference line)
+
+1 2
+
+( (
+
+=192) =192)
+
+14
+
+12
+
+10
+
+8
+
+6 4 2 0
+
+y = x (reference line)
+
+1 2 1 2 1 2
+
+( ( ( ( ( (
+
+=128) =128) =192) =192) =256) =256)
+
+h = 288
+
+h = 384
+
+y = x (reference line)
+
+1 2
+
+( (
+
+=256) =256)
+
+14
+
+12
+
+10
+
+8
+
+6
+
+4
+
+2 0
+
+y = x (reference line)
+
+1 2
+
+( (
+
+=192) =192)
+
+y = x (reference line)
+
+1 2
+
+( (
+
+=256) =256)
+
+10
+
+11
+
+12
+
+13
+
+14
+
+15 10
+
+11
+
+12
+
+13
+
+14
+
+15
+
+log2(n)
+
+log2(n)
+
+Fig. E.1: Variation curves of 1 and 2 with log(n) for different h and , using data from Table D.1. Each h corresponds to a separate plot.
+
+Value
+
+Value
+
+52
+
+1 Value
+
+1 vs log2(n) (All h and )
+
+14
+
+12
+
+10
+
+8
+
+6
+
+4
+
+=128, h=64
+
+=192, h=144
+
+=256, h=192
+
+2
+
+=128, h=96
+
+=192, h=192
+
+=256, h=256
+
+=128, h=128
+
+=192, h=288
+
+=256, h=384
+
+=128, h=192
+
+=256, h=128
+
+y = x (reference line)
+
+0
+
+=192, h=96
+
+10
+
+11
+
+12
+
+13
+
+14
+
+15
+
+log2(n)
+
+2 vs log2(n) (All h and )
+
+14
+
+12
+
+10
+
+8
+
+6
+
+4
+
+=128, h=64
+
+=192, h=144
+
+=256, h=192
+
+2
+
+=128, h=96
+
+=192, h=192
+
+=256, h=256
+
+=128, h=128
+
+=192, h=288
+
+=256, h=384
+
+=128, h=192
+
+=256, h=128
+
+y = x (reference line)
+
+0
+
+=192, h=96
+
+10
+
+11
+
+12
+
+13
+
+14
+
+15
+
+log2(n)
+
+Fig. E.2: Variation curves of 1 and 2 with log(n) for different h and , using data from Table D.1. 1 and 2 each correspond to a separate plot.
+
+2 Value
+
+53
+
+Table F.1: Bit security of FHE schemes estimated by lattice-estimator with red_cost_model=ChaLoy21 and red_shape_model=GSA using a quantum sieving cost model based on [26]. The meanings of parameters n, h, q, "uSVP", TegvDec, TgvDec, 1, TehgDec, ThgDec and 2 are consistent with those in Table D.1. For the complexity evaluation of the (enhanced) Howgrave-Graham decoding attack under the quantum cost model, we do not employ the MITM technique; instead, the searching step achieves a square-root speedup via the quantum algorithm for both the (enhanced) guess-and-verify and (enhanced) Howgrave-Graham decoding attacks.
+FHE scheme log(n) h log(q) uSVP TegvDec TgvDec 1 TehgDec ThgDec 2 [32, Sec. 5.2] 13 31 55 470.3 99.0 104.4 5.4 100.1 104.3 4.2 [32, Sec. 5.2] 14 31 100 555.1 104.9 109.1 4.2 105.5 110.1 4.6 [8, Sec. 7.1] 15 192 767 100.2 86.0 93.7 7.8 86.4 94.1 7.7 [8, Sec. 7.1] 16 192 1553 100.2 84.2 93.3 9.2 84.4 93.4 9.0 [8, Sec. 7.1] 17 192 3104 100.2 85.6 94.2 8.6 85.6 94.2 8.6 [12, Tab. 5] 14 256 424 86.1 77.7 83.6 5.9 78.3 84.2 5.9 [12, Tab. 7] 16 256 1598 95.1 85.0 91.1 6.2 85.2 91.3 6.1 [12, Tab. 3] 16 192 1555 97.7 84.0 93.1 9.2 84.2 93.3 9.2 [12, Tab. 3] 16 192 1546 100.2 84.6 93.7 9.0 84.9 94.0 9.1 [12, Tab. 3] 16 192 1550 100.2 84.4 93.5 9.2 84.6 93.6 9.0 [30, Tab. 3] 15 128 680 118.2 92.1 102.0 9.9 92.3 102.3 10.0 [30, Tab. 3] 16 128 1000 182.5 127.4 138.7 11.2 127.7 139.0 11.3 [48, Tab. 1] 16 256 1200 141.3 120.6 130.1 9.5 120.6 130.4 9.8 [48, Tab. 1] 16 256 1600 95.1 84.7 91.1 6.4 85.0 91.3 6.4 [48, Tab. 1] 17 256 2400 141.3 120.3 131.3 10.9 120.3 131.5 11.2 [48, Tab. 1] 17 256 3000 105.4 92.3 99.8 7.5 92.3 100.0 7.7
+54
+
+
