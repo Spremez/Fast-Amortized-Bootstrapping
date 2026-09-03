@@ -8,13 +8,13 @@
 \contentsline {section}{\numberline {5}安全分析与参数定案}{4}{section.5}%
 \contentsline {subsection}{\numberline {5.1}攻击组合与最终参数}{4}{subsection.5.1}%
 \contentsline {subsection}{\numberline {5.2}条件熵修正（本工作方法）}{5}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}层安全审计（最终参数下全层达标）}{5}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}多参数集修正表（逐环推导）}{5}{subsection.5.4}%
-\contentsline {section}{\numberline {6}实验矩阵（终版数据）}{5}{section.6}%
-\contentsline {subsection}{\numberline {6.1}性能主表（对比基准 = 686 同机、同场次、同新安全性）}{5}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}r-扩展性与正确性}{6}{subsection.6.2}%
-\contentsline {subsection}{\numberline {6.3}自举后容量（余量作为输出维度）}{6}{subsection.6.3}%
-\contentsline {subsection}{\numberline {6.4}与 TFHE-rs 的同机参照与 occupancy}{6}{subsection.6.4}%
-\contentsline {subsection}{\numberline {6.5}失效概率（三层证据）}{6}{subsection.6.5}%
+\contentsline {subsection}{\numberline {5.3}层安全审计（输入/packing 达标；BSK 见决策点）}{5}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}多参数集修正表（逐环推导）}{6}{subsection.5.4}%
+\contentsline {section}{\numberline {6}实验矩阵（终版数据）}{6}{section.6}%
+\contentsline {subsection}{\numberline {6.1}性能主表（对比基准 = 686 同机、同场次、同新安全性）}{6}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}r-扩展性、E-PF 与正确性}{6}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}自举后容量（余量作为输出维度）}{7}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}与 TFHE-rs 的同机参照与 occupancy}{7}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}失效概率（三层证据）}{7}{subsection.6.5}%
 \contentsline {section}{\numberline {7}否定性结果（对社区有价值）}{7}{section.7}%
 \contentsline {section}{\numberline {8}工件与复现索引}{7}{section.8}%

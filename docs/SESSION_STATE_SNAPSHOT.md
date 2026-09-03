@@ -461,3 +461,15 @@ dell SQ 11.63s vs 旧机 12.2-14.97s（负载 16-29）→ dell 静机比值口�
 
 - V5B（旧估计器，dell）已出：inkey usvp 898.6/902.2/904.1/919.6（h=39/41/42/52，β≈1194）；BSK σ2⁻⁵⁰ usvp 211.6/dual 318.3；σ2⁻³⁹ usvp 310.5/dual 229.6。已入 tex 表 2（min 仍由 HD 136.2/T3′/MITM 决定，结论不变）。
 - V5A 原脚本两 bug（OLD 包遮蔽 + LDistribution.* 不存在 API）⇒ 重写 **e4_v5a2.sage**（E.nd.* + Xs=/Xe=，primal_usvp + dual_hybrid + rough，dual 超 45min 跳过）已在 dell nohup 运行。
+
+### 21.4 E4 复算臂 V5A2/V5A3 完成 —— BSK 层决策点（新开口，待用户定夺）
+
+- **V5A2**（新 lattice-estimator，修复 API 后，dell e4_v5a2.out）：inkey h=39/41/42/52 → usvp 364.1/365.2/365.7/370.5，dual-hybrid 346.7/347.3/347.8/350.2（均非绑定，绑定仍为 MITM 131.8 / T3′ 133.5）；BSK（均匀 SparseTernary 256+256）σ2⁻⁵⁰ → usvp 131.4、dual-hybrid **128.9**；σ2⁻³⁹ → 169.4/164.0。旧估计器（V5B，不利用稀疏性）usvp 211.6/dual 318.3 系口径差异，已记录。
+- **V5A3**（BSK 交替符号诚实模型 = SparseBinary(512) 等价：熵 log₂C(2048,512)+1，同 ‖s‖）：σ_G=2⁻⁵⁰ → usvp 130.8、**dual-hybrid 127.9 ❌(<128)**；2⁻⁵¹ → 128.1/125.6 ❌；**2⁻⁴⁹ → 133.5/130.4 ✓**。
+- **定性**：BSK 违规由交替符号实现细节（gen_sparse_array val*=-1 ⇒ 符号由支撑集决定）造成，非 σ 本身；HD=136.2（合并论文代码）系均匀符号模型 = 乐观上界。输入层定案（h=42/t=7/σ_in 不动，min 131.8）**不变**。
+- **三选项（均已实测）**：A) σ_G→2⁻⁴⁹（min 130.4，+≈1 bit 选择子噪声，瞬时余量≈1.4 bit，门/DFR 复跑）；B) keygen 改均匀符号（min 128.9，σ/噪声不动，代码改动+全量基准复跑）；C) 维持并披露 127.9（不达 128，仅记录）。
+- 已入 expert_review.tex §5.1 决策框（orange）+ 表2/表3 更新；V5A2/V5A3 脚本：scripts/e4_v5a2.sage、scripts/e4_v5a3_bsk_alt.sage（均已 scp 至 dell）。
+
+### 21.5 S7 收官（stage368-C）
+
+- 10-trial 目标噪声审计（make 路线，h 39→42 补丁）：points=81920，pair_failures=0，pair_log2_sigma_torus=−7.542（模型预期 −2.212/−2.214），**final-output gate: Pass**。STAGE368 全五节 COMPLETE（UTC 10:54）。

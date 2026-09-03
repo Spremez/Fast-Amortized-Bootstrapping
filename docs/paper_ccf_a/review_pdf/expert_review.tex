@@ -35,7 +35,7 @@
 本资料整合本工作的\textbf{算法理论}与\textbf{实验佐证}，供同态密码专家进行双重审核。全部数字可溯源至代码仓库 \texttt{repro/} 工件与 git 提交记录。
 
 \begin{keybox}
-\textbf{完成度（截至本资料生成）}：安全组合定案、终版性能主表、层安全审计、容量曲线（h=41/$\sigma$+11 口径）、TFHE-rs 同机锚点、occupancy/break-even、DFR 三层证据、多参数集修正推导（4096/5-bit 已\textbf{实测}）均已\textbf{完成}。本轮 stage368 收官新增：r=8 静机复测、E-PF 融合 A/B、postops 交替翻转分诊（5 变体，判为测量伪象）、S5 多参数集实测（4096 门测试 0/4096 失配）。在途（不改变主表方向）：10-trial 噪声@最终参数、E4 新估计器独立复算臂（V5A2）。\textbf{勘误}：早前 r-lane 表中路径A $4.32$ ms/msg 系误取 pathA 构建二进制的 stock 对照列（跨构建代码布局漂移实测达 $23\%$）；本版全部 r-lane 结论已改为\textbf{同构建内部对照}口径（表~\ref{tab:rlane}）。
+\textbf{完成度（截至本资料生成）}：安全组合（输入层定案）、终版性能主表、层安全审计、容量曲线（h=41/$\sigma$+11 口径）、TFHE-rs 同机锚点、occupancy/break-even、DFR 三层证据、多参数集修正（4096/5-bit 已\textbf{实测}）、stage368 全部五节（r=8 静机、E-PF A/B、S7 十次目标噪声审计门 \textbf{Pass}（10 trial $\times$ 81{,}920 点，pair 失败 0）、postops 翻转分诊结案、S5 实测）均已\textbf{完成}。\textbf{新开口（\S5.1 决策框）}：V5A2/A3 新估计器复算发现 BSK 层在交替符号诚实模型下 $2^{127.9}<128$，三个已实测修正选项待定夺。在途：8192 环族实测。\textbf{勘误}：早前 r-lane 表中路径A $4.32$ ms/msg 系误取 pathA 构建二进制的 stock 对照列（跨构建代码布局漂移实测达 $23\%$）；本版全部 r-lane 结论已改为\textbf{同构建内部对照}口径（表~\ref{tab:rlane}）。
 \end{keybox}
 
 \section{参数体系（$\theta$ 向量，实码值）}
@@ -164,15 +164,21 @@ DualSubCMUX 中一对输出共享一次 $X^{-1}$ 旋转与一次向量化双减�
 \toprule
 层/参数 & uSVP & dual & HD & MITM-hyb & $T3'$ & min \\
 \midrule
-输入 $h{=}39$ & 898.6 & — & 不可行 & 126.2 & 124.5 & \textbf{124.5} \\
-输入 $h{=}41$ & 902.2 & — & — & 130.0 & 130.5 & 130.0 \\
-\textbf{输入 $h{=}42$} & 904.1 & — & — & \textbf{131.8} & 133.5 & \textbf{131.8} \\
-输入 $h{=}52$ & 919.6 & — & — & 149.4 & 165.4 & 149.4 \\
-\textbf{BSK $\sigma{=}2^{-50}$} & 211.6 & 318.3 & \textbf{136.2} & — & — & \textbf{136.2} \\
-BSK $\sigma{=}2^{-39}$ & 310.5 & 229.6 & 175.1 & — & — & 175.1 \\
+输入 $h{=}39$ & 364.1 & 346.7 & 不可行 & 126.2 & 124.5 & \textbf{124.5} \\
+输入 $h{=}41$ & 365.2 & 347.3 & — & 130.0 & 130.5 & 130.0 \\
+\textbf{输入 $h{=}42$} & 365.7 & 347.8 & — & \textbf{131.8} & 133.5 & \textbf{131.8} \\
+输入 $h{=}52$ & 370.5 & 350.2 & — & 149.4 & 165.4 & 149.4 \\
+BSK $\sigma{=}2^{-50}$（交替符号） & 130.8 & \textbf{127.9} & 136.2$^{*}$ & — & — & \textbf{127.9} $\triangle$ \\
+BSK $\sigma{=}2^{-49}$（选项A） & 133.5 & 130.4 & — & — & — & 130.4 \\
 \bottomrule
 \end{tabular*}
 \end{table}
+
+\noindent{}$^{*}$HD（合并论文代码）以\textbf{均匀}符号模型测得，对交替符号实现为乐观上界。格列为新版 lattice-estimator（其 dual-hybrid 含稀疏猜测）；旧估计器（不利用稀疏性）给出 usvp 211.6 / dual 318.3，已作为口径差异记录。输入层定案不受影响（131.8）。
+
+\begin{keybox}[colback=orange!6, colframe=orange!60!black]
+\textbf{BSK 层决策点（V5A2/V5A3 实测，2026-09-03）}：实现的三元输出密钥为\textbf{交替符号}（符号由支撑集决定，熵 $=\log_2\binom{2048}{512}+1$），等价建模为 SparseBinary(512)。新估计器 dual-hybrid 在现行 $\sigma_G{=}2^{-50}$ 下给出 $\mathbf{2^{127.9}<128}$（差 0.1 bit）。三个已实测选项待定夺：\textbf{A)} $\sigma_G\to2^{-49}$：min $=130.4$（余量 2.4 bit），代价 $\approx+1$ bit 选择子噪声（瞬时余量 $60-58.6\approx1.4$ bit，门测试/DFR 需复跑）；\textbf{B)} keygen 改\textbf{均匀}符号（恢复 $256{+}256$ 熵模型）：min $=128.9$（余量 0.9 bit），$\sigma$ 与噪声不变，代价 = 密钥生成代码改动 + 全量基准复跑；\textbf{C)} 维持现实现并如实披露 127.9（不满足 128 目标，仅作记录）。输入层 $h{=}42$/$t{=}7$ 定案\textbf{不变}。
+\end{keybox}
 
 \begin{keybox}
 \textbf{最终参数：$h{=}42$，$t{=}7$，$\sigma_G{=}2^{-50}$（原值）。}系统安全 $=\min(131.8,\,136.2)=131.8\ge 128$。三方独立验证：闭式 $T3'{=}133.5$、估计器 lattice-MITM $131.8$（两线相差 $<2$ bit 互证）、合并论文自身代码在 BSK 层 $136.2$。$h{=}39$（686 原参数）在正确条件熵建模下为 $124.5$，\textbf{不达标}。
@@ -186,7 +192,7 @@ T3'(n,h,t)=\bigl(\log_2\tbinom{n}{h}\;-\;\mathrm{loss}(n,h,t)\;-\;\log_2 n\;-\;\
 \]
 实现的三元密钥采用\textbf{交替符号}（符号熵 1 bit 而非 $h$ bit），已如实计入建模；该层组合安全仍远高于格层，绑定层不变。
 
-\subsection{层安全审计（最终参数下全层达标）}
+\subsection{层安全审计（输入/packing 达标；BSK 见决策点）}
 
 \begin{table}[htbp]
 \centering
@@ -198,7 +204,7 @@ T3'(n,h,t)=\bigl(\log_2\tbinom{n}{h}\;-\;\mathrm{loss}(n,h,t)\;-\;\log_2 n\;-\;\
 密钥层 & 形状 & min \\
 \midrule
 输入 & 2048, $h{=}42$, 条件间隙 & \textbf{131.8} \\
-BSK & 2048, 三元 512, $\sigma{=}2^{-50}$ & \textbf{136.2} \\
+BSK & 2048, 三元 512 交替, $\sigma{=}2^{-50}$ & 127.9 $\triangle$（决策点，\S5.1） \\
 packing & 2048, $h{=}256$, $\sigma{=}2^{-44}$ & \textbf{224.3} \\
 HWR-KSK & 输入密钥域样本（并入输入层行） & — \\
 \bottomrule
