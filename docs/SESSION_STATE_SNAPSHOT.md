@@ -473,3 +473,12 @@ dell SQ 11.63s vs 旧机 12.2-14.97s（负载 16-29）→ dell 静机比值口�
 ### 21.5 S7 收官（stage368-C）
 
 - 10-trial 目标噪声审计（make 路线，h 39→42 补丁）：points=81920，pair_failures=0，pair_log2_sigma_torus=−7.542（模型预期 −2.212/−2.214），**final-output gate: Pass**。STAGE368 全五节 COMPLETE（UTC 10:54）。
+
+### 21.6 审核 PDF v4（回应用户 2026-09-03 反馈清单）+ stage369 排档 + 精度边界实测
+
+**v4 新增**（expert_review_final.pdf，12 页）：术语与口径盒（stock/SQ/路径A/构建/686×r 定义，回应"stock 构建没看懂"）；SQ 完整算法（Algorithm 3：setup 量化→稀疏步×精度位 NCMUX/CMUX_Q/SubA_Q→尾声提升）；矩阵摊销专节（表：686×4 52.4s=2.13ms/bit vs stock/SQ r-lane 43.2/43.4=1.76/1.77 vs 路径A 41.0=1.67ms/bit=1.28×；EP 结构 616,448 vs 2,465,792=1/r；边际 lane 16.2s>r 独立标量 13.10s ⇒ 摊销饱和 r≈2–4）；路径A=矩阵自举确认段（结构计数）；相关工作定位表（10 项，Bergerat TCHES'25 Sharing-the-Mark 列为关键未审项）；SQ⊕路径A 叙事节（互补不复合，勘误后路径A 价值=矩阵形式本身）；覆盖矩阵表（排档标注）；A0/CAL 旧安全强度行已删。
+
+**stage369**（repro_stage369，负载门控，A–F 六节）首战结果：
+- **p=7@2048（σ_in=2⁻¹⁹）**：SQ 5.71 vs 686 6.30 ms/msg=**0.906**，但 **SQ 门 Fail 46/2048**（噪声 56.56 vs 预算线 56）——SQ 的 q-bit 舍入地板（≈2⁻⁵⁶·⁶@q=16）在 p≥7 成为绑定约束；stock 噪声随 σ_in 变小降至 53.95（通过）。**SQ 适用域实测边界：n=2048 族 p≤5（q=16）**；候选修复：q=15 重扫（SAB_SQ_Q 构建钮已在 COMMON，地板降 1 bit，Lemma 1 反向），待排 stage370。
+- **p=9@2048**：双臂饱和（噪声 62.85/62.86，1188/2048 失配）——**族精度上限 p≤7（stock）/p≤5（SQ@q16）**，否定性结果入册。
+- 其余节（B 4096 补全 / C 8192 / D r 细扫 / E BSK 选项A / F 主表扩样）在途。

@@ -21,7 +21,8 @@
 \newtheorem{lemma}[theorem]{引理}
 \renewcommand{\proofname}{证明}
 
-\newtcolorbox{keybox}[1][]{colback=blue!4, colframe=blue!40!black, boxrule=0.6pt, arc=2pt, left=6pt, right=6pt, top=4pt, bottom=4pt, #1}
+\tcbuselibrary{breakable}
+\newtcolorbox{keybox}[1][]{breakable, colback=blue!4, colframe=blue!40!black, boxrule=0.6pt, arc=2pt, left=6pt, right=6pt, top=4pt, bottom=4pt, #1}
 
 \title{空}
 \date{}
@@ -35,7 +36,28 @@
 本资料整合本工作的\textbf{算法理论}与\textbf{实验佐证}，供同态密码专家进行双重审核。全部数字可溯源至代码仓库 \texttt{repro/} 工件与 git 提交记录。
 
 \begin{keybox}
-\textbf{完成度（截至本资料生成）}：安全组合（输入层定案）、终版性能主表、层安全审计、容量曲线（h=41/$\sigma$+11 口径）、TFHE-rs 同机锚点、occupancy/break-even、DFR 三层证据、多参数集修正（4096/5-bit 已\textbf{实测}）、stage368 全部五节（r=8 静机、E-PF A/B、S7 十次目标噪声审计门 \textbf{Pass}（10 trial $\times$ 81{,}920 点，pair 失败 0）、postops 翻转分诊结案、S5 实测）均已\textbf{完成}。\textbf{新开口（\S5.1 决策框）}：V5A2/A3 新估计器复算发现 BSK 层在交替符号诚实模型下 $2^{127.9}<128$，三个已实测修正选项待定夺。在途：8192 环族实测。\textbf{勘误}：早前 r-lane 表中路径A $4.32$ ms/msg 系误取 pathA 构建二进制的 stock 对照列（跨构建代码布局漂移实测达 $23\%$）；本版全部 r-lane 结论已改为\textbf{同构建内部对照}口径（表~\ref{tab:rlane}）。
+\textbf{完成度（截至本资料生成）}：安全组合（输入层定案）、终版性能主表、层安全审计、容量曲线、TFHE-rs 同机锚点、occupancy/break-even、DFR 三层证据、多参数集修正（4096/5-bit 已实测）、stage368 全五节（r=8、E-PF、S7 门 \textbf{Pass}、postops 分诊结案、S5）。\textbf{新开口（\S5.1 决策框）}：BSK 层在交替符号诚实模型下 $2^{127.9}<128$，三选项待定夺。\textbf{stage369 已排档（dell，负载门控）}：p=7/9@2048、4096 pathA/SQ r-lane 与 p=5、8192（h=34,t=10）、r=1..8 边际 lane 细扫、BSK 选项A 噪声门、主表 6 试扩样——见覆盖矩阵（表~\ref{tab:cover}）。\textbf{勘误}：早前路径A $4.32$ ms/msg 系误取 pathA 构建的 stock 对照列（跨构建漂移实测达 $23\%$）；全部 r-lane 结论已改为同构建内部对照（表~\ref{tab:rlane}）。
+
+\begin{keybox}
+\textbf{术语与口径（回应审核反馈，先读此盒再看正文）}
+\begin{itemize}
+\item \textbf{686 标量}＝Guimar\~aes--Pereira (2025/686) 的原始逐消息自举（本仓库标量探针中的 \texttt{SAB\_scalar} 臂），一切"vs 686"的真基线；\textbf{686$\times$r}＝独立执行 $r$ 次该标量自举。
+\item \textbf{stock r-lane}＝686 的外积范式搬运到 PVW-TMLWE 共享掩码累加器后的矩阵形式实现（未启用任何本文旗标）——矩阵形式的\textbf{对照}，不是 686 原文自带的形态。
+\item \textbf{SQ}＝尺度量化外积变体（贡献 2，\S3.3/\S4）；\textbf{路径A}＝矩阵外积 MV-EP + 7 融合旗标的工程优化（贡献 1，\S3.2）。
+\item \textbf{构建（binary）}＝同一探针源码 \texttt{probe\_pvw\_sq.c} 在不同编译旗标/链接对象下的可执行文件（stock / sqmat / pathA 三种）。E-PF 实测同一 stock 算法跨构建墙钟漂移 $-7\%\sim-23\%$（代码布局效应），故\textbf{跨构建绝对值不可比}，全部 r-lane 结论只取\textbf{同构建内部对照}。
+\end{itemize}
+\end{keybox}
+
+\subsection{贡献叙事：SQ 与路径A 为何同篇}
+
+目标单一：\textbf{在 CRYPTO'26 稀疏密钥安全修正下，把 686 的摊销稀疏自举做成 128-bit 且实用}。两条互补技术线覆盖两个工作点：
+
+\begin{itemize}
+\item \textbf{SQ（单输出/低 $r$ 制度）}：消 gadget 分解，标量 $0.897\times$，且 $\Delta{=}2^{-32}$ 抑制换来 $\sigma$ 余量（引理~\ref{lem:1}）——安全修正（$\sigma$ 梯度）下唯一保住噪声预算的标量加速线；跨精度稳定（3-bit $0.897$、5-bit $0.893$、4096 $0.93$）。
+\item \textbf{路径A（矩阵自举/多输出制度）}：PVW-TMLWE 共享掩码 + MAT-TRGSW 把 $(h{+}1)\rho n$ 次外积从"每输出"变为"$r$ 输出共享"（结构上 $1/r$，\S3.2），对 686$\times4$ 实测 $1.28\times$。
+\end{itemize}
+
+二者\textbf{不复合}（SQ 与分解生命周期旗标构建不兼容，\S 否定性结果）——因此是并列的两条硬化--加速路径而非叠加，取舍由工作点决定（$r{=}1$ 且重噪声预算 $\to$ SQ；$r\ge2$ 重吞吐 $\to$ 矩阵形式）。勘误后如实声明：路径A 在同构建 stock r-lane 之内\textbf{未反超}（$+5\%\sim16\%$，$r\le8$），其当前价值是矩阵形式本身（结构 EP 摊销、门测试全过、对 686$\times r$ 的 $1.2$--$1.3\times$），而非对 stock r-lane 的加速。
 \end{keybox}
 
 \section{参数体系（$\theta$ 向量，实码值）}
@@ -117,9 +139,37 @@ $\rho$（$r\_prec$） & 7 & \\
 
 DualSubCMUX 中一对输出共享一次 $X^{-1}$ 旋转与一次向量化双减：$(rot{-}p,\ rot{-}q)$ 一次算得，两输出各做一次 MV-EP。蝶形拓扑保证每个旋转尾恰参与 2 个输出的代数恒等式，故 $k{=}2$ 是结构上限（$k$-sub 推广被拓扑排除）。
 
+\textbf{路径A 是否为"矩阵自举"——是，且有结构计数证据}：686 原文只有标量形式（一次盲旋转服务 1 个输出，外积数 $(h{+}1)\rho n$ \textbf{每输出}）；路径A（以及作为对照的 stock r-lane）把累加器改为 $r$ 体共享掩码的 PVW-TMLWE、选择子改为 $(1{+}r)\ell$ 行 MAT-TRGSW，\textbf{一次盲旋转同时产出 $r$ 个输出 TRLWE}，外积总数 $(h{+}1)\rho n=43\cdot7\cdot2048=616{,}448$ \textbf{总计}（与 $r$ 无关）——对 686$\times r$ 是结构上的 $1/r$。实测墙钟收益 $1.2$--$1.3\times$（\S6.2）小于结构收益的原因：单个 MV-EP 需处理 $(1{+}r)\ell$ 行分解与 $r$ 体系数（操作数变大），且 packing/KS 等共享部分不随 $r$ 摊薄。路径A 与 stock r-lane 的差别\textbf{只在}外积核（stock 逐体系数 vs MV-EP 矩阵核 + 7 融合旗标）；矩阵形式本身两条 lane 共有。
+
 \subsection{SQ 尺度量化外积（本文贡献 2）}
 
 累加器全程维护在 $Q=2^{q}$（$q{=}16$）尺度：setup 量化 $\times 2^q$，每次外积后融合重缩放 $\gg (64{-}q)$ 保持尺度；选择子按 $B_g{=}2^{q}$ 加密，从而\textbf{gadget 分解被消除}（$Q$ 尺度累加器本身即单一数位）。NCMUX 为精确升移 $\ll(64{-}q)$、复用 stock 自同构 KS、舍入降移（每步一次 $q$-bit 舍入）。速度收益集中在标量（SQ/686 $=0.897$），随 $r$ 按 $\approx 1/r$ 衰减至平价；硬化收益双形态保持（\S4.3）。
+
+\begin{algorithm}[htbp]
+\caption{SQ 尺度量化盲旋转（完整流程；单输出，$Q{=}2^{q}$，$q{=}16$）}
+\label{alg:sq}
+\begin{algorithmic}[1]
+\Require 输入 TRLWE $\mathrm{in}{=}(a,b)$（$s_{\mathrm{in}}$ 下），测试向量 TV，SQ 密钥材料（$B_g{=}2^{q}$ 选择子、packing/hw KS）
+\State $c \leftarrow \mathrm{round}(\mathrm{TV}\cdot 2^{q})$ \Comment{setup 量化：消息占高位，$|c|_\infty<2^{q}$}
+\State $acc \leftarrow X^{b}\!\cdot\!c$；预计算选择子\textbf{整数谱} $\hat C$ \Comment{原始 DFT 域，整系数}
+\For{每个稀疏步 $i\in[0,h]$（$s_{\mathrm{in}}$ 支撑与末位）}
+  \For{$\text{bit}\in[0,\rho)$，$w\leftarrow 2^{\text{bit}}$}
+    \For{换位槽 $j$} \Comment{NCMUX，$Q$ 尺度版}
+      \State $t \leftarrow acc_j \ll (64-q)$ \Comment{精确升移至 torus 全幅（无舍入）}
+      \State $t \leftarrow \mathrm{KS}_{\mathrm{aut}}\bigl(X^{-1}\!\cdot\! t\bigr)$ \Comment{复用 stock 自同构 KS}
+      \State $acc_j \leftarrow \mathrm{round}\bigl(t \gg (64-q)\bigr)$ \Comment{舍入降移回 $Q$ 尺度（1 次 $q$-bit 舍入）}
+    \EndFor
+    \For{直达槽 $j$}
+      \State $acc_j \leftarrow \mathrm{CMUX}_{Q}(\hat C_{\mathrm{bit}},\ acc_j)$ \Comment{整数谱卷积 $\otimes$ + 融合尾声 $(\mathrm{acc}\ll\mathrm{rescale}){+}\mathrm{addend}$，\textbf{无 gadget 分解}}
+    \EndFor
+  \EndFor
+  \State $acc \leftarrow \mathrm{SubA}_{Q}(acc,\ \text{数位})$ \Comment{数位减；融合重缩放维持 $|acc|_\infty\le 2^{q-1}$ 不变量}
+\EndFor
+\State \Return 逐槽常数抽取 $\to$ PackingKS $\to$ $\mathrm{KS}_{\mathrm{hw}}$ $\to$ 末尾 $Q\!\to\!$torus 精确移位提升
+\end{algorithmic}
+\end{algorithm}
+
+与 stock 的逐条对照：stock 每次外积需 $\ell$ 级 gadget 分解（$B_g{=}2^{23}$）+ 数位放大噪声；SQ 的分解为\textbf{空运算}（累加器已在 $Q$ 尺度＝单一数位），代价转为每 NCMUX 一次 $q$-bit 舍入——定理~\ref{thm:1} 保证消息路径不受舍入影响，引理~\ref{lem:1} 量化噪声差 $\Delta{=}2^{-32}$。
 
 \section{SQ 理论：正确性与噪声}
 
@@ -213,7 +263,7 @@ HWR-KSK & 输入密钥域样本（并入输入层行） & — \\
 
 \subsection{多参数集修正表（逐环推导）}
 
-$h{=}42$ 是 $n{=}2048$ 输入环族（跨精度）的定案，\textbf{非全局常数}：逐环以三联约束 $T3'\ge128\ \wedge\ \mathrm{MITM}\ge128\ \wedge\ \mathrm{BSK}\ge128$ 求解。$n{=}4096$：原 $h{=}32$ 坍至 $117.5$，修正为 $h{=}42@\mathrm{t}8$（$T3'{=}154.1$；\textbf{已实测}：SQ/686 $=0.93$，噪声 $58.06/58.34$，门测试 $0/4096$ 失配，RS 11 次尝试 $r\_prec{=}8$ 与推导一致）；5-bit（$n{=}2048$，同 $h{=}42$）\textbf{已实测}：SQ/686 $=0.893$，噪声 $56.73/55.65$，门测试 $0/2048$；4096 r-lane stock 对照平价（$1.001$--$1.003$）。$n{=}8192$：修正为 $h{=}34@\mathrm{t}10$（$146.6$，实测排队）。
+$h{=}42$ 是 $n{=}2048$ 输入环族（跨精度）的定案，\textbf{非全局常数}：逐环以三联约束 $T3'\ge128\ \wedge\ \mathrm{MITM}\ge128\ \wedge\ \mathrm{BSK}\ge128$ 求解。$n{=}4096$：原 $h{=}32$ 坍至 $117.5$，修正为 $h{=}42@\mathrm{t}8$（$T3'{=}154.1$；\textbf{已实测}：SQ/686 $=0.93$，噪声 $58.06/58.34$，门测试 $0/4096$ 失配，RS 11 次尝试 $r\_prec{=}8$ 与推导一致）；5-bit（$n{=}2048$，同 $h{=}42$）\textbf{已实测}：SQ/686 $=0.893$，噪声 $56.73/55.65$，门测试 $0/2048$；4096 r-lane stock 对照平价（$1.001$--$1.003$；pathA/sqmat@4096 与 $p{=}5$ 排档 stage369-B）。$n{=}8192$：修正为 $h{=}34@\mathrm{t}10$（$146.6$，排档 stage369-C）。
 
 \section{实验矩阵（终版数据）}
 
@@ -221,19 +271,21 @@ $h{=}42$ 是 $n{=}2048$ 输入环族（跨精度）的定案，\textbf{非全局
 
 \begin{table}[htbp]
 \centering
-\caption{标量（$n{=}2048$ 批，3-bit，中位；dell 静机负载 $\approx 2$）}
+\caption{标量多参数集（全部 FINAL 安全；ms/msg，中位；dell 静机；3 试×内部重复）。A0（$h{=}39$）/CAL（$h{=}41,\sigma{+}11$）旧行已按 2026-09-03 指示移除——旧安全强度实测不再需要（git 历史可溯，其 SQ/686 比值 $0.894$--$0.898$ 曾用于稳定性交叉验证）}
 \label{tab:scalar}
 \small
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} l cccc c}
 \toprule
-配置 & SQ & 686 & SQ/686 & 噪声 SQ/686 \\
+环$\times$精度 & SQ & 686 & SQ/686 & 噪声 SQ/686 & 门 \\
 \midrule
-Final（$h{=}42,\sigma{+}0$） & \textbf{5.74} ms/msg & 6.40 & \textbf{0.897} & 57.60/57.69 \\
-A0 原参数（$39,+0$） & 5.36 & 6.00 & 0.894 & 57.45/57.43 \\
-CAL（$41,+11$） & 5.68 & 6.32 & 0.898 & 57.73/58.72 \\
+2048$\times$3-bit & \textbf{5.74} & 6.40 & \textbf{0.897} & 57.60/57.69 & Pass \\
+2048$\times$5-bit & 5.71 & 6.39 & 0.893 & 56.73/55.65 & Pass 0/2048 \\
+4096$\times$3-bit（$t{=}8$） & 6.50 & 6.97 & 0.93 & 58.06/58.34 & Pass 0/4096 \\
 \bottomrule
 \end{tabular*}
 \end{table}
+
+安全修正的完整代价（同机同场）：$h$ 由 39 增至 42 仅 $+6.5\%$（stock）/$+7.2\%$（SQ），$\sigma$ 不动。p=7/9（2048）与 8192 环族排档中（stage369-A/C）。
 
 \begin{table}[htbp]
 \centering
@@ -253,6 +305,27 @@ SQ r-lane（stock 构建） & 5.29 & $1.005\times$（平价） \\
 
 同场次对 $4\times$686 标量（$52.4$ s，摊销收益）：路径A $1.28\times$，SQ/stock r-lane $1.21\times$，SQ 标量 $\times4$ 为 $1.11\times$。\textbf{安全修正的完整代价}（同机同场）：$h$ 由 39 增至 42 仅 $+6.5\%$（stock）/$+7.2\%$（SQ），$\sigma$ 不动。
 
+\subsection{矩阵自举 vs 686$\times r$：每输出 / 每 bit / 边际 lane 摊销}
+
+\begin{table}[htbp]
+\centering
+\caption{摊销分解（$r{=}4$，FINAL，2048$\times$3-bit；总时列为跨探针/跨构建绝对值，含 $\pm23\%$ 布局不确定性——同时参看同构建内部比值（表~\ref{tab:rlane}）与结构计数列）}
+\label{tab:amort}
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} l ccccc}
+\toprule
+方案 & 总时 (s) & 每输出 (s) & 每 bit (ms) & vs $686\times4$ & EP 结构 \\
+\midrule
+686 标量$\times4$ & 52.4 & 13.10 & 2.13 & $1.00\times$ & $4(h{+}1)\rho n{=}2{,}465{,}792$ \\
+stock r-lane & 43.2 & 10.8 & 1.76 & $1.21\times$ & $(h{+}1)\rho n{=}616{,}448$ \\
+SQ r-lane & 43.4 & 10.9 & 1.77 & $1.21\times$ & $616{,}448$（SQ 形式）\\
+\textbf{路径A r-lane} & \textbf{41.0} & \textbf{10.2} & \textbf{1.67} & $\mathbf{1.28\times}$ & $616{,}448$（MV-EP）\\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+结构层：外积数对 686$\times r$ 是 $1/r$（$616{,}448$ vs $2{,}465{,}792$）；墙钟只兑现 $1.2$--$1.3\times$，因为单个 MV-EP 处理 $(1{+}r)\ell$ 行分解与 $r$ 体系数，且共享段（packing/KS）不随 $r$ 摊薄。\textbf{边际 lane}（stock 构建，$r{=}4\to8$ 实测）：$(107.98-43.18)/4=16.2$ s/额外 lane，\textbf{已贵于}一次独立 686 标量自举（13.10 s）$\Rightarrow$ 摊销在 $r\ge4$ 饱和，甜点 $r{=}2$--$4$；$r\in\{1..8\}$ 细扫排档中（stage369-D）后将给出逐点边际曲线。每 bit 口径按 $p{=}3$（$2048{\cdot}4{\cdot}3{=}24{,}576$ 有用 bit/批）。
+
 \subsection{r-扩展性、E-PF 与正确性}
 
 \textbf{同构建内部对照}（路径A/同构建 stock；r=8 为静机复测 t1 干净批次）：$r{=}2$: $1.12$；$r{=}4$: $1.16$；$r{=}6$: $1.10$；$r{=}8$: $1.05$——路径A 在实测 $r\le 8$ 范围内\textbf{未超过} stock r-lane，差距随 $r$ 收窄，外推交叉点 $r\approx 9$--$12$（未实测验证）。SQ r-lane 对 stock 在全 $r$ 平价（$0.98$--$1.02$，跨三种构建稳定）。每 lane 成本随 $r$ 单调上升（stock 构建 stock：$5.25\to 6.59$ ms/msg，$r{=}4\to 8$），摊销甜点 $r{=}2$--$4$；全部 $r$ 门测试通过（正确性与 $r$ 无关，r=8 亦 Pass）。\textbf{E-PF A/B}（路径A 侧旗标/对象对 SQ 臂的影响）：matflags 构建 SQ 臂 $+0.2\%$--$1.2\%$，stock 构建 $-4.8\%$--$+0.5\%$，而\textbf{同一 stock 算法}跨构建漂移 $-7\%$--$23\%$——证明跨构建绝对值比较无效，且旗标本身近乎免费。
@@ -269,12 +342,63 @@ SQ r-lane（stock 构建） & 5.29 & $1.005\times$（平价） \\
 
 解析层：实测最大相位偏差 $57.60$ 对预算 $60$，高斯尾部给出逐槽 $p_{\mathrm{fail}}\lesssim 2^{-100}$ 量级（certified 版待定稿数值化）。实证层：累计 $>10^6$ 次槽解码零失败，Clopper--Pearson 单侧 95\% 上界 $p<3\times10^{-6}\approx 2^{-18.4}$（如实标注实证上界与解析主张的区别）。稀有事件估计列为可选第三层。
 
+\subsection{实测覆盖矩阵与排档（回应"数据规模/覆盖不全"反馈）}
+
+\begin{table}[htbp]
+\centering
+\caption{实测覆盖（✓=已实测含门测试；排档X=stage369 对应节，负载门控在途；—=未计划）}
+\label{tab:cover}
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} l ccccc}
+\toprule
+环$\times$精度 & SQ 标量 & 686 标量 & r-lane stock & r-lane SQ & r-lane 路径A \\
+\midrule
+2048$\times$3 & \checkmark & \checkmark & \checkmark\,$r{\in}\{2,4,6,8\}$ & \checkmark & \checkmark\,$r{\in}\{2,4,6,8\}$ \\
+2048$\times$5 & \checkmark & \checkmark & — & — & — \\
+2048$\times$7/9 & 排档A & 排档A & — & — & — \\
+4096$\times$3 & \checkmark & \checkmark & \checkmark\,(1.001) & 排档B & 排档B \\
+4096$\times$5 & 排档B & 排档B & — & — & — \\
+8192$\times$3 & 排档C & 排档C & 排档C & — & 排档C \\
+$r$ 细扫 $1..8$ & — & — & 排档D & — & 排档D \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+样本量现状：标量各 3 试、r-lane 2 试$\times$3 rep、DFR 累计 $>10^6$ 槽；主表 6 试扩样（排档F）与 BSK 选项A 噪声门（排档E）在途。加行即加试的全部钮（$N$/$p$/$r$/$\sigma$ 均为探针环境变量），补测无需改码。
+
+\section{相关工作定位（实测锚点如实标注）}
+
+\begin{table}[htbp]
+\centering
+\caption{相关工作与本文的关系（机制层定位；同机实测列如实区分）}
+\label{tab:related}
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} p{3.6cm} p{2.3cm} p{4.6cm} c}
+\toprule
+工作 & 机制 & 与本文关系 & 同机实测 \\
+\midrule
+2025/686（CCS'25） & 稀疏小钥匙 SAB & 基线；本文＝其矩阵化＋SQ＋修正口径 & \textbf{\checkmark} 同场次 \\
+2023/014（ASIACRYPT'23） & 摊销自举 revisit & 前代基线族 & $\times$ \\
+2025/696 & 不完全 NTT & 正交加速线 & $\times$ \\
+Micciancio--Sorrell（ICALP'18） & 环打包同时刷新 & 多消息摊销理论源头 & $\times$ \\
+Liu--Wang（ASIACRYPT'23） & $<$7ms 摊销功能自举 & 摊销功能自举强基线 & $\times$ \\
+2025/022 & 外积树 & 外积计数优化相邻线 & $\times$ \\
+Bergerat 等（TCHES'25(4)） & 共享掩码打包消息 & 最相邻；\textbf{关键未审项}（新颖性措辞待全文对照） & $\times$ \\
+TFHE-rs v1.8.0 & 逐消息 PBS & 低延迟制度锚点 & \textbf{\checkmark} 9.560 ms/PBS \\
+2025/1711 & 尺度化外积（FHEW） & SQ 思想源头；本文＝定理化＋SAB 集成＋$\sigma$ 余量 & — \\
+CRYPTO'26 合并（279+366） & 稀疏密钥攻击 & 安全修正来源（代码已用于 HD/MITM） & — \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+定位纪律：本文全部性能主张\textbf{只对已实测锚点}（686 同机同场次、TFHE-rs 同机）负责；其余工作仅作机制层定位（URL 均已核验并存档于 \texttt{literature/}），不引用其自称数字进行跨机比较。
+
 \section{否定性结果（对社区有价值）}
 
 SQ 与 7 个融合旗标中作用于分解生命周期的部分\textbf{构建不兼容}（同一输出路径冲突，可复现的冲突矩阵）；$k$-sub 推广被蝶形拓扑排除（证明而非性能猜测）；数位宽度微变体已被 stage314 实测关闭（微核 $1.045\times$ 稀释至全 SAB $0.997\times$）；配对堆叠 EP 因成本模型修正而撤回；\textbf{路径A 在终参与 $r\le 8$ 未超越同构建 stock r-lane}（$+5\%$--$16\%$，随 $r$ 收窄）——早前 $1.21\times$ 加速结论系跨构建列误标，已由 E-PF A/B 与通道审计更正（勘误记录于 \S1）。
 
 \section{工件与复现索引}
 
-{\sloppy 安全：\texttt{scripts/e1\_conditional\_entropy.py}、\texttt{scripts/e4\_v5*.sage}、dell \texttt{e4v5*.log}/\texttt{e3.log}。性能：\texttt{repro/dell\_phase2/}（主表）、\texttt{repro/stage358..367}（σ 梯度、r-扩展、噪声、容量、平衡档）。理论：\texttt{docs/paper\_ccf\_a/theory\_for\_review.md}、\texttt{review\_package.md}。实现：\texttt{src/sab\_sq.c}、\texttt{src/sab\_pvw\_sq.c}、\texttt{src/sab\_pvw.c}、\texttt{src/mosfhet/src/mattrgsw.c}。全部阶段有 git 提交与服务器日志双重溯源。\par}
+{\sloppy 安全：\texttt{scripts/e1\_conditional\_entropy.py}、\texttt{scripts/e4\_v5*.sage}（含 v5a2/v5a3 新估计器臂）、dell \texttt{e4v5*.log}/\texttt{e3.log}。性能：\texttt{repro/dell\_phase2/}（主表）、\texttt{repro/stage358..367}、\texttt{repro\_stage368}（收官五节）、\texttt{repro/stage369\_coverage}（覆盖矩阵排档）。理论：\texttt{docs/paper\_ccf\_a/theory\_for\_review.md}、\texttt{review\_package.md}。实现：\texttt{src/sab\_sq.c}、\texttt{src/sab\_pvw\_sq.c}、\texttt{src/sab\_pvw.c}、\texttt{src/mosfhet/src/mattrgsw.c}。相关工作核验：\texttt{literature/related\_literature\_matrix.csv}。全部阶段有 git 提交与服务器日志双重溯源。\par}
 
 \end{document}

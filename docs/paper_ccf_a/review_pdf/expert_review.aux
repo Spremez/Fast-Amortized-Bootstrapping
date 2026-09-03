@@ -3,39 +3,51 @@
 \providecommand*\HyPL@Entry[1]{}
 \HyPL@Entry{0<</S/D>>}
 \@writefile{toc}{\contentsline {section}{\numberline {1}目的与完成度声明}{2}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}参数体系（$\theta $ 向量，实码值）}{2}{section.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces 最终参数向量（代码可验证值）}}{2}{table.1}\protected@file@percent }
-\newlabel{tab:theta}{{1}{2}{最终参数向量（代码可验证值）}{table.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}三个自举算法}{2}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}686 基线（标量，已发表）}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}贡献叙事：SQ 与路径A 为何同篇}{2}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}参数体系（$\theta $ 向量，实码值）}{3}{section.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces 最终参数向量（代码可验证值）}}{3}{table.1}\protected@file@percent }
+\newlabel{tab:theta}{{1}{3}{最终参数向量（代码可验证值）}{table.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}三个自举算法}{3}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}686 基线（标量，已发表）}{3}{subsection.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}矩阵外积拓展（本文贡献 1；路径A为其工程优化）}{3}{subsection.3.2}\protected@file@percent }
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces 矩阵形式摊销稀疏自举（外层）}}{3}{algorithm.1}\protected@file@percent }
-\newlabel{alg:mat}{{1}{3}{矩阵外积拓展（本文贡献 1；路径A为其工程优化）}{algorithm.1}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces MonomialMul：累加器数组的蝶形旋转（每精度位）}}{3}{algorithm.2}\protected@file@percent }
-\newlabel{alg:bfly}{{2}{3}{矩阵外积拓展（本文贡献 1；路径A为其工程优化）}{algorithm.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}SQ 尺度量化外积（本文贡献 2）}{4}{subsection.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}SQ 理论：正确性与噪声}{4}{section.4}\protected@file@percent }
-\newlabel{thm:1}{{1}{4}{消息路径精确性}{theorem.1}{}}
-\newlabel{lem:1}{{2}{4}{$\Delta $ 抑制}{theorem.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}安全分析与参数定案}{4}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}攻击组合与最终参数}{4}{subsection.5.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces 安全组合表（bit；$T3'$ 为本工作含条件熵修正的闭式组合界）}}{5}{table.2}\protected@file@percent }
-\newlabel{tab:sec}{{2}{5}{安全组合表（bit；$T3'$ 为本工作含条件熵修正的闭式组合界）}{table.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}条件熵修正（本工作方法）}{5}{subsection.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}层安全审计（输入/packing 达标；BSK 见决策点）}{5}{subsection.5.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces 逐层审计（min，bit）}}{5}{table.3}\protected@file@percent }
-\newlabel{tab:layers}{{3}{5}{逐层审计（min，bit）}{table.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}多参数集修正表（逐环推导）}{6}{subsection.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}实验矩阵（终版数据）}{6}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}性能主表（对比基准 = 686 同机、同场次、同新安全性）}{6}{subsection.6.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces 标量（$n{=}2048$ 批，3-bit，中位；dell 静机负载 $\approx 2$）}}{6}{table.4}\protected@file@percent }
-\newlabel{tab:scalar}{{4}{6}{标量（$n{=}2048$ 批，3-bit，中位；dell 静机负载 $\approx 2$）}{table.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces r-lane（$r{=}4$，Final）：同一盲旋转服务 $2048\times 4$ 查询。E-PF 实测表明同一算法跨构建二进制的绝对值漂移达 $23\%$，故仅\textbf  {同构建内部对照}有效}}{6}{table.5}\protected@file@percent }
-\newlabel{tab:rlane}{{5}{6}{r-lane（$r{=}4$，Final）：同一盲旋转服务 $2048\times 4$ 查询。E-PF 实测表明同一算法跨构建二进制的绝对值漂移达 $23\%$，故仅\textbf {同构建内部对照}有效}{table.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}r-扩展性、E-PF 与正确性}{6}{subsection.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}自举后容量（余量作为输出维度）}{7}{subsection.6.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}与 TFHE-rs 的同机参照与 occupancy}{7}{subsection.6.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}失效概率（三层证据）}{7}{subsection.6.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}否定性结果（对社区有价值）}{7}{section.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {8}工件与复现索引}{7}{section.8}\protected@file@percent }
-\gdef \@abspage@last{7}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces 矩阵形式摊销稀疏自举（外层）}}{4}{algorithm.1}\protected@file@percent }
+\newlabel{alg:mat}{{1}{4}{矩阵外积拓展（本文贡献 1；路径A为其工程优化）}{algorithm.1}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces MonomialMul：累加器数组的蝶形旋转（每精度位）}}{4}{algorithm.2}\protected@file@percent }
+\newlabel{alg:bfly}{{2}{4}{矩阵外积拓展（本文贡献 1；路径A为其工程优化）}{algorithm.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}SQ 尺度量化外积（本文贡献 2）}{5}{subsection.3.3}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {3}{\ignorespaces SQ 尺度量化盲旋转（完整流程；单输出，$Q{=}2^{q}$，$q{=}16$）}}{5}{algorithm.3}\protected@file@percent }
+\newlabel{alg:sq}{{3}{5}{SQ 尺度量化外积（本文贡献 2）}{algorithm.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}SQ 理论：正确性与噪声}{5}{section.4}\protected@file@percent }
+\newlabel{thm:1}{{1}{5}{消息路径精确性}{theorem.1}{}}
+\newlabel{lem:1}{{2}{6}{$\Delta $ 抑制}{theorem.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}安全分析与参数定案}{6}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}攻击组合与最终参数}{6}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces 安全组合表（bit；$T3'$ 为本工作含条件熵修正的闭式组合界）}}{6}{table.2}\protected@file@percent }
+\newlabel{tab:sec}{{2}{6}{安全组合表（bit；$T3'$ 为本工作含条件熵修正的闭式组合界）}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}条件熵修正（本工作方法）}{7}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}层安全审计（输入/packing 达标；BSK 见决策点）}{7}{subsection.5.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces 逐层审计（min，bit）}}{7}{table.3}\protected@file@percent }
+\newlabel{tab:layers}{{3}{7}{逐层审计（min，bit）}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}多参数集修正表（逐环推导）}{7}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}实验矩阵（终版数据）}{7}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}性能主表（对比基准 = 686 同机、同场次、同新安全性）}{7}{subsection.6.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces 标量多参数集（全部 FINAL 安全；ms/msg，中位；dell 静机；3 试×内部重复）。A0（$h{=}39$）/CAL（$h{=}41,\sigma {+}11$）旧行已按 2026-09-03 指示移除——旧安全强度实测不再需要（git 历史可溯，其 SQ/686 比值 $0.894$--$0.898$ 曾用于稳定性交叉验证）}}{8}{table.4}\protected@file@percent }
+\newlabel{tab:scalar}{{4}{8}{标量多参数集（全部 FINAL 安全；ms/msg，中位；dell 静机；3 试×内部重复）。A0（$h{=}39$）/CAL（$h{=}41,\sigma {+}11$）旧行已按 2026-09-03 指示移除——旧安全强度实测不再需要（git 历史可溯，其 SQ/686 比值 $0.894$--$0.898$ 曾用于稳定性交叉验证）}{table.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces r-lane（$r{=}4$，Final）：同一盲旋转服务 $2048\times 4$ 查询。E-PF 实测表明同一算法跨构建二进制的绝对值漂移达 $23\%$，故仅\textbf  {同构建内部对照}有效}}{8}{table.5}\protected@file@percent }
+\newlabel{tab:rlane}{{5}{8}{r-lane（$r{=}4$，Final）：同一盲旋转服务 $2048\times 4$ 查询。E-PF 实测表明同一算法跨构建二进制的绝对值漂移达 $23\%$，故仅\textbf {同构建内部对照}有效}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}矩阵自举 vs 686$\times r$：每输出 / 每 bit / 边际 lane 摊销}{8}{subsection.6.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces 摊销分解（$r{=}4$，FINAL，2048$\times $3-bit；总时列为跨探针/跨构建绝对值，含 $\pm 23\%$ 布局不确定性——同时参看同构建内部比值（表~\ref {tab:rlane}）与结构计数列）}}{8}{table.6}\protected@file@percent }
+\newlabel{tab:amort}{{6}{8}{摊销分解（$r{=}4$，FINAL，2048$\times $3-bit；总时列为跨探针/跨构建绝对值，含 $\pm 23\%$ 布局不确定性——同时参看同构建内部比值（表~\ref {tab:rlane}）与结构计数列）}{table.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}r-扩展性、E-PF 与正确性}{8}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}自举后容量（余量作为输出维度）}{9}{subsection.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}与 TFHE-rs 的同机参照与 occupancy}{9}{subsection.6.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.6}失效概率（三层证据）}{9}{subsection.6.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.7}实测覆盖矩阵与排档（回应"数据规模/覆盖不全"反馈）}{9}{subsection.6.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces 实测覆盖（✓=已实测含门测试；排档X=stage369 对应节，负载门控在途；—=未计划）}}{9}{table.7}\protected@file@percent }
+\newlabel{tab:cover}{{7}{9}{实测覆盖（✓=已实测含门测试；排档X=stage369 对应节，负载门控在途；—=未计划）}{table.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}相关工作定位（实测锚点如实标注）}{10}{section.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces 相关工作与本文的关系（机制层定位；同机实测列如实区分）}}{10}{table.8}\protected@file@percent }
+\newlabel{tab:related}{{8}{10}{相关工作与本文的关系（机制层定位；同机实测列如实区分）}{table.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}否定性结果（对社区有价值）}{10}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}工件与复现索引}{11}{section.9}\protected@file@percent }
+\gdef \@abspage@last{11}
