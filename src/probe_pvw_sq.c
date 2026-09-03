@@ -116,7 +116,10 @@ static void run_timing(void){
     if(e) target_r_prec = strtoull(e, NULL, 0);
   }
   TRLWE_Key input_key, packing_key;
-  RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), target_r_prec);
+  clock_t t_kg = clock();
+  const uint64_t attempts = RS_sparse_binary_key(&input_key, in_N, in_k, h,
+      pow(2, -15), target_r_prec);
+  printf("RS attempts = %lu\n", (unsigned long) attempts);
   RS_sparse_binary_key(&packing_key, in_N, in_k, 256, pow(2, -44), 7);
   const uint64_t r_prec = get_min_prec(input_key);
   printf("r_prec = %lu\n", (unsigned long) r_prec);
@@ -126,6 +129,8 @@ static void run_timing(void){
       pvw_key, prec, b_packing, ell_packing, t_ks, b_ks, h, r_prec, 1, bg_bit);
   SAB_PVW_SQ_Key sq = sab_pvw_sq_new_binary_full_key(input_key, packing_key,
       pvw_key, prec, b_packing, ell_packing, t_ks, b_ks, h, r_prec, 1, bg_bit);
+  printf("[keygen full] %.1fs (input RS %lu attempts + packing + pvw + BSKs)\n",
+         (double)(clock() - t_kg) / CLOCKS_PER_SEC, (unsigned long) attempts);
 
   TorusPolynomial input_msg = polynomial_new_torus_polynomial(in_N);
   for (int i = 0; i < in_N; i++)

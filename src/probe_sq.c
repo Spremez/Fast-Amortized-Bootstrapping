@@ -172,7 +172,14 @@ int main(){
          (int) aut_l, (int) aut_bg, (int) pack_ell, (int) pack_bg);
 
   TRLWE_Key input_key;
-  RS_sparse_binary_key(&input_key, in_N, in_k, h_in, sigma_in, target_r_prec);
+  {
+    clock_t t_kg = clock();
+    const uint64_t attempts = RS_sparse_binary_key(&input_key, in_N, in_k, h_in,
+        sigma_in, target_r_prec);
+    printf("RS attempts = %lu\n", (unsigned long) attempts);
+    printf("[keygen input RS] %.1fs\n",
+           (double)(clock() - t_kg) / CLOCKS_PER_SEC);
+  }
   printf("[sqchk] born: input=%p input_dft=%p %s\n",
          (void*) input_key->s[0]->coeffs, (void*) input_key->s_dft[0]->coeffs,
          input_key->s[0]->coeffs == input_key->s_dft[0]->coeffs ? "ALIASED!!" : "distinct");
