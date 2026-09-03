@@ -89,8 +89,17 @@ int main(void){
 /* S2 timing mode: full SET_2_3_2048 shape, fairness point via SAB_SQ_H,
  * r via SAB_PVW_SQ_R (default 4); SQ vs stock sab_pvw back-to-back. */
 static void run_timing(void){
-  const int in_N = 2048, in_k = 1, out_N = 2048, out_k = 1;
-  const int bg_bit = 23, prec = 3;
+  int in_N = 2048, out_N = 2048, prec = 3;
+  {
+    const char * e = getenv("SAB_PVW_SQ_N");
+    if(e) in_N = atoi(e);
+    e = getenv("SAB_PVW_SQ_OUTN");
+    if(e) out_N = atoi(e);
+    e = getenv("SAB_PVW_SQ_PREC");
+    if(e) prec = atoi(e);
+  }
+  const int in_k = 1, out_k = 1;
+  const int bg_bit = 23;
   const int ell_packing = 2, b_packing = 14, t_ks = 12, b_ks = 1;
   uint64_t h = 39, r = 4, reps = 3;
   int sigma_shift = 0;   /* 2026/279 hardening: raises the BSK key sigma,
