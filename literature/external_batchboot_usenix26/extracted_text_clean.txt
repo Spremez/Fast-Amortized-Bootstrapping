@@ -1,0 +1,2254 @@
+
+===== PAGE 1 =====
+BatchBoot: Fast Batched Bootstrapping for TFHE scheme and
+Practical Applications
+Zhihao Li1, Hongyu Wang2, Yuan Zhao1, Lichun Li1, Zhiwei Wang3∗
+Jiaxing He1, Changzheng Wei1, Ying Yan1, and Lifeng Guo2
+1Ant Digital Technologies, Ant Group 2Shanxi University
+3State Key Laboratory of Cyberspace Security Defense, Institute of Information Engineering, CAS
+{lzh458070, caesar.zy, lichun.llc, jiaxing.hjx, changzheng.wcz, fuying.yy}@antgroup.com
+{wanghongyu, lfguo}@sxu.edu.cn, wangzhiwei@iie.ac.cn
+Abstract
+Torus-based Fully Homomorphic Encryption (TFHE) is
+distinguished by its unique bootstrapping mechanism, which
+enables arbitrary computation while refreshing the noise bud-
+get. However, this mechanism exhibits limited scalability
+since it can handle only asingleencrypted message at a time.
+To address this, recent studies have proposedbatchedboot-
+strapping schemes that allow TFHE to process ciphertexts
+in parallel, thereby achieving promising amortization bene-
+fits. Despite these advances, this emerging direction remains
+underexplored, leaving ample room for further investigation.
+In this paper, we present BATCHBOOT, an efficient batched
+bootstrapping framework for TFHE that enables amortized
+processing of encrypted messages. Specifically, our work
+makes three key contributions. First, we redesign the core
+submodule, i.e., homomorphic polynomial multiplication, to
+substantially reduce the reliance on expensive FFT opera-
+tions. Second, we propose a sparsity-aware message packing
+strategy that flexibly supports varying packing scales. Third,
+we extend functional bootstrapping to circuit bootstrapping,
+thereby greatly enhancing the expressiveness of supported
+functions. Together, these contributions enable BATCHBOOT
+to deliver a 2.4× speedup over the state-of-the-art batched
+scheme (Guimarães et al., CCS’25) and a 43.8× improvement
+over the non-batched TFHE-rs implementation.
+At the application level, we highlight the versatility of
+BatchBoot through two practical use cases. First, we present
+the first TFHE-based PSI protocol under the unbalanced set-
+ting, which achieves a 294× reduction in communication cost
+and a 4.1× speedup compared to the best BFV-based solution
+(PEPSI, USENIX Security’24). Second, we design an 8-bit
+FHE instruction set based on the BATCHCBOOTthat delivers
+up to a 5.4× speedup over the existing results (Wang et al.,
+CCS’25).
+∗Zhiwei Wang is the corresponding author.
+1 Introduction
+Fully Homomorphic Encryption (FHE) is a cornerstone of
+privacy-preserving computation, enabling arbitrary operations
+directly on encrypted data without compromising confiden-
+tiality [31]. Over the past decade, two primary classes of
+FHE schemes have emerged, reflecting different trade-offs be-
+tween functionality and efficiency. Word-wise schemes, such
+as BGV [10], BFV [30], and CKKS [19], pack multiple plain-
+texts into a single ciphertext to enable SIMD-style execution.
+However, their reliance on high-degree polynomial approx-
+imations for non-linear functions (e.g., comparisons) incurs
+prohibitive computational costs and accuracy loss. In contrast,
+bit-wise schemes such as FHEW [28, 44] and TFHE [20, 22]
+are optimized for Boolean and circuit-based computation. By
+embedding logic gates into the bootstrapping process, these
+schemes natively support expressive, unbounded non-linear
+operations with far greater efficiency, positioning TFHE as
+the preferred choice for general-purpose workloads.
+The core strength of TFHE lies in functional bootstrap-
+ping (FBS) [9], also known as programmable bootstrapping
+(PBS) [23], which evaluates arbitrary functions via look-up
+tables (LUTs) while refreshing noise to sustain long compu-
+tation chains. For example, TFHE-rs [12] uses FBS to im-
+plement complex logic and relational operations. After that,
+TFHE incorporates multi-valued bootstrapping [13, 23] for
+computing multiple functions in one call and circuit boot-
+strapping (CBS) [21, 40, 50] for multi-input functions and
+higher-precision operations. These advances broaden TFHE’s
+expressiveness and practical applicability.
+Despite these innovations, TFHE remains fundamentally
+limited by the lack of batching and message-packing mecha-
+nisms, creating a major bottleneck for high-throughput and
+vectorized workloads. Some work [27, 34, 45] exploresbatch-
+friendlyalgorithms for TFHE schemes that amortize boot-
+strapping costs across multiple messages, but practical adop-
+
+===== PAGE 2 =====
+tion is constrained by large parameter sizes and rapid noise
+growth. A recent breakthrough, AmortBoot [33], introduced
+an amortization framework and implementation that improved
+both computational efficiency and key size, setting a new
+benchmark for memory efficiency, scalability, and real-world
+applicability in large-scale homomorphic computation.
+1.1 Problems and Challenges
+Our investigation reveals that existing batched (or amortized)
+designs continue to exhibit several critical limitations, which
+remain pressing challenges for the field. The following cri-
+tique assumes familiarity with TFHE building blocks and
+batched bootstrapping. Unfamiliar readers may reference
+these foundations in Sec. 2 and Sec. 3 before proceeding.
+❶ Excessive FFT invocations leads to poor performance.
+To achieve batched bootstrapping, the prevailing approach
+leverages the sparsity of the RLWE secret key, attaining a
+complexity of O(hnlogn) , i.e., O(hlogn) per message, where
+n and h (h<n ) denote the dimension and Hamming weight
+of the secret key, respectively. Although this asymptotic im-
+provement represents a significant algorithmic advance, it still
+depends on FFT-intensive subroutines in the core construction.
+These subroutines not only limit the realized performance
+gains but also constitute a fundamental bottleneck to scala-
+bility, underscoring the need to rethink algorithmic design to
+advance the performance frontier.
+❷ Sparse message packing remains unexplored.Existing
+techniques primarily assume afull-packingregime, where all
+n ciphertext slots are simultaneously populated. In practice,
+however, diverse applications demand varying degrees of spar-
+sity in packing, which cannot be efficiently accommodated
+under this assumption. This rigidity stems from the inher-
+ent structure of RLWE decryption, where the computational
+complexity scales with the ciphertext dimension n rather than
+the actual number of active slots. The lack of sparsity-aware
+optimizations thus reveals a fundamental mismatch between
+algorithmic design and workload characteristics.
+❸ Existing schemes compromise on functional general-
+ity.Existing schemes are limited to functional bootstrapping,
+which supports only single-input LUTs with 8-bit precision.
+In contrast, for more variants, such as multi-input LUT eval-
+uation, the circuit bootstrapping needs to be introduced to
+support these functions, rather than merely adjusting the en-
+coding. Extending batched bootstrapping to incorporate these
+features is not only technically challenging, requiring careful
+parameter-level optimizations, but also critical for realizing
+the full practical potential of TFHE-based systems.
+1.2 Our contributions
+To address these challenges, we propose BATCHBOOT, a
+novel batched bootstrapping framework that significantly en-
+hances both efficiency and functionality. Specifically, we re-
+duce the overhead of expensive FFTs by restructuring the
+batched bootstrapping subroutines. Additionally, we intro-
+duce an efficient sparse packing method derived from the
+MLWE decryption paradigm. Finally, we present the first
+batch circuit bootstrapping extension that broadens bootstrap-
+ping functionality. The effectiveness of BATCHBOOTis vali-
+dated through empirical deployment on PSI and instruction
+set architectures. Our contributions are as follows:
+Efficient batched bootstrapping through significant FFT
+reduction.To address issue ❶, BATCHBOOTemploys two
+key strategies that substantially reduce the number of costly
+FFT operations. First, we develop a multi-bit CMux variant
+for batched bootstrapping, effectively reducing both the num-
+ber of iterations and the FFTs, compared to the single-bit
+CMux method used in AmortBoot [33]. Second, we observe
+that automorphism operations can be post-processed after per-
+forming the FFT and redesign the polynomial multiplication
+pipeline for homomorphic evaluation. This enables FFT com-
+putation sharing between automorphism and CMux, thereby
+removing the additional FFT burden traditionally associated
+with automorphism. As a result, our approach reduces FFT
+operations, delivering a 2.4× speedup over the optimal amor-
+tization scheme (AmortBoot) and a 43.8× improvement over
+the non-batched TFHE-rs implementation.
+Sparsity-aware message packing leveraging the MLWE
+decryption paradigm. To overcome issue ❷, BATCHBOOT
+incorporates an MLWE-based decryption paradigm to enable
+sparsity-aware optimization. In the sparse packing setting,
+where an RLWE ciphertext encodes only n <n messages,
+we apply RLWE-to-MLWE extraction to derive a lower-
+dimensional MLWE ciphertext. This transformation reduces
+the polynomial degree from n to n while preserving the se-
+cret key’s sparsity, thereby maintaining the efficiency benefits
+of sparse structures. Consequently, the computational com-
+plexity drops from O(hnlogn) to O(hnlogn ), yielding per-
+formance improvements that scale linearly with the packing
+sparsity compared to the full-packing setting.
+Extended functional expressiveness through batched cir-
+cuit bootstrapping. We address issue ❸ by extending
+BATCHBOOTfrom functional bootstrapping to circuit boot-
+strapping to deal with multi-input LUT evaluation, resulting in
+BATCHCBOOT. Our design builds upon the circuit bootstrap-
+ping paradigm [40]. Specifically, the architecture proposed
+in [40] splits the circuit bootstrapping process into two sub-
+routines: the ciphertext conversion from LWE to RGSW, and
+LUT evaluation by performing external operations within a
+tree-like structure. We note that in the first phase, the BATCH-
+BOOTcan be utilized to efficiently perform batch ciphertext
+conversions from RLWE to RGSWs, thereby enhancing per-
+formance. To the best of our knowledge, this is the first work
+that supports batch circuit bootstrapping. Benchmark results
+on 12-bit input/output LUTs demonstrate speedups ranging
+
+===== PAGE 3 =====
+from 4.9× to 134.3× over the non-batched method in [50].
+Application I: Communication-friendly private set inter-
+section (PSI) protocol. We present the first TFHE-based
+PSI protocol designed to minimize communication over-
+head. Leveraging BATCHBOOT, our design supports cipher-
+text transmission with an exceptionally small modulus (as
+low as 12 bits), whereas BFV-based schemes typically re-
+quire larger FHE parameters, such as 100–200-bit moduli.
+This results in at least a two-order-of-magnitude reduction in
+communication cost relative to existing FHE-based PSI solu-
+tions. Moreover, in certain unbalanced settings, our protocol
+surpasses the state-of-the-art solution [43]; for example, it
+achieves a 4.1× speedup on datasets where the client holds
+2,048 elements and the server has 228 elements.
+Application II: High-performance 8-bit instruction set im-
+plementation. We further develop an optimized 8-bit FHE
+instruction set encompassing fundamental operations such
+as AND, ADD, MUL, and MAX. Leveraging the BATCHC-
+BOOTalgorithm, we enable the evaluation of multiple distinct
+instruction sets within a single bootstrapping operation, in-
+corporating customized designs tailored to the unique charac-
+teristics of each set. Compared to prior solutions limited to a
+single instruction set [49,50], our approach delivers 3.3×-6.5×
+amortized performance improvements.
+2 Preliminary
+We first present some definitions of symbols in Appendix B.1
+and then introduce some necessary background for FHE
+schemes.
+2.1 Ciphertexts Types
+GLWE ciphertext [4].Given the secret keyS = (s0, ...,sk−1)∈
+Rk
+N, the message m∈R N,p can be encrypted into GLWE
+ciphertext as (a0,· · ·,ak−1,b)∈R k
+N,Q, where b= ∑k−1
+i=0 ai ·
+si +△m+emodQ , where △=
+j
+Q
+p
+m
+, (a0,· · ·,ak−1) are uni-
+formly sampled from RN,Q, and the error e is sampled from
+the Gaussian Distribution χ. Here p,Q are the plaintext and
+ciphertext modulus, k and N are the dimension and degree of
+the GLWE, respectively, and we define em=△m+e.
+To avoid confusion, a GLWE ciphertext where N=
+1 is termed anLWEciphertext [47], denoted (a,b)∈
+LWEk
+s,p/Q (m). When k=1 and N>1 , it is called the ring
+LWE (RLWE) ciphertext [42], that is(a,b)∈RLWE N
+s,p/Q (m).
+A GLWE with k>1 and N>1 is referred to as
+MLWEk,N
+S,p/Q (m). These ciphertexts support homomorphic ad-
+dition and scalar multiplication. In addition, we may omit
+some parameters for notation simplicity.
+Gadget RLWE ciphertext [44].Given the gadget vectorg =
+(B0, ...,Bd−1), the gadget RLWE ciphertext is defined as
+RLWE′(m) = (RLWE(B0 ·m),· · ·,RLWE(Bd−1 ·m)).
+RGSW ciphertext [28].RGSW encryption of the message
+m is defined as RGSW(m) = (RLWE′(−s·m),RLWE ′(m)),
+wherehalf(RGSW(m))denotes ciphertext RLWE ′(m).
+2.2 Building Blocks
+Gadget Decomposition( Decom). For a modulus Q, and a
+base B, the gadget vector is defined asg = (B0, ...,Bd−1) =l
+Q
+Bd
+m
+,
+l
+Q
+Bd
+m
+·B, ...,
+l
+Q
+Bd
+m
+·B d−1
+
+. Then, given a polynomial
+a∈R Q, the approximate decomposition can be used to output
+(a0, ...,ad−1) such that a= ∑d−1
+i=0 ai ·
+l
+Q
+Bd−i
+m
+. Note that the ap-
+proximate gadget decomposition introduces an approximate
+errorε, i.e.,
+
+g−1(a),g
+
+≡a+ε, where||ε|| ≤ 1
+2
+l
+Q
+Bd
+m
+.
+Gadget Product( GP). Given a polynomial t∈R Q, let
+(t0, ...,td−1) =Decom(t) is the result of the gadget decom-
+position with respect to the gadget vectorg = (B0, ...,Bd−1).
+The Gadget product⊙is defined by:
+t⊙RLWE ′(m):=
+d−1
+∑
+i=0
+ti ·RLWE(B i ·m) =RLWE(t·m).
+External Product( EP). Given ciphertexts RLWE(m1) =
+(a,b)and RGSW(m 2), the external product is defined by:
+RLWE(m1)⊡RGSW(m 2)
+=a⊙RLWE ′ (−s·m 2) +b⊙RLWE′ (m2)
+=RLWE(m 1 ·m 2 +e 1 ·m 2).
+The external product outputs encryption of the product of
+m1 and m2. Note that the gadget product and external products
+involve polynomial operations, which can be accelerated with
+the Fast Fourier Transform (FFT).
+CMux Gate( CMux). The CMux gate takes as inputs two
+RLWE ciphertexts c0,c 1 and a RGSW ciphertext C∈
+RGSW(m), and CMux operation is defined as
+CMux(c0,c 1,C) =c0 + (c1 −c 0)⊡C=
+(
+c0,ifm=0 ;
+c1,elsem=1,
+where m satisfies m∈ {0,1 }. We present the noise growth for
+VGP,V EP, andV CMux in Appendix B.2.
+Sample Extraction( SE). Given the ciphertext c= (a,b)∈
+RLWEN
+s,Q(m), the sample extraction operation can extract N
+LWE ciphertexts associated with the coefficient terms. For ex-
+ample, for the first term, we can define SampleExtract(ct) =
+(a0,−a N−1, ...,−a1,b 0)∈LWE N
+Coef(s),Q (Coef(m)[0]).
+RLWE-to-MLWE Extraction( RtM.Ext). Given an RLWE
+ciphertext (a,b)∈RLWE N
+s,p/Q (m), where m= ∑n−1
+i=0 mi ·
+X i· N
+n . Let m′ = ∑n−1
+i=0 mi ·X i, we can extract the MLWE ci-
+phertext as (a′
+0, ...,a′
+k−1,b ′)∈MLWE k,n
+S,p/Q (m′), where k=
+N
+n , (a′
+0, ...,a′
+k−1) =RingSwitch k,N (a),S = (s′
+0, ...,s′
+k−1) =
+
+===== PAGE 4 =====
+RingSwitch(s), and b′ =RingSwitch(b) k,N [0]. We show the
+details ofRingSwitchin Appendix B.3.
+Modulus Switching( MS). Given an RLWE ciphertext c∈
+RLWEN
+s,p/Q (m), the modulus switching ModSwitchQ→q(c)
+can change the ciphertext modulus from Q to q as
+RLWEN
+s,p/q (m)as shown in Appendix B.3.
+Key Switching( KS). It can convert a ciphertext encrypted
+under the secret key s1 into a ciphertext encrypted under the
+new secret key s2 with the key switching key. In addition, the
+RLWE key switching variant scheme switchingSchemSwitch
+[27, 40, 51] can embed the secret key s into the message.
+We show the RLWE key switching (RL WE.KeySwitch) and
+scheme switching steps [22] in Appendix B.3.
+Homomorphic Automorphism( HomoAuto). There are N
+automorphisms as τ j :m(X)→m(X j) for j∈Z ∗
+2N for
+ZQ[X]/(X N +1). Given ciphertextc= (a,b)∈RLWE N
+s,Q(m),
+and the RLWE key switching key Atkτ j ∈RLWE ′
+s(s(X j)),
+the Homomorphic automorphism HomAutoτ j (ct,Atk τ j ) is
+divided into two steps: first performs Auto:τ j(c) =
+(a(X j),b(X j))∈RLWE N
+τ j(s),Q(τ j(m)); and applies the
+RLWE key switching from the secret keys(X j)tos(X).
+Homomorphic Trace( HomoTrace). For the polynomial ring
+RN and its residue ring RN,Q, the tower of finite fields is
+expressed as E=K N ≥K N/2 ≥ · · · ≥K1 =K , where Kn
+denotes the (2n)-th cyclotomic field for a power-of-two n.
+Then, the trace TrKN /Kn can be defined as TrKN /Kn(m(X)) =
+∑n−1
+i=0 mi·N/n ·X i·N/n, which can be evaluated throughlog2 N/n
+automorphism operations. The homomorphic trace algorithm
+TrKN /Kn is described in Appendix B.4.
+Repacking( Repack). Given n RLWE ciphertexts
+RLWEN
+s,Q(m j) = (aj,b j) for i∈[0,n−1] , the repacking algo-
+rithm can pack the first items of ciphertexts (m0,0, ...,mN−1,0)
+into a new RLWE ciphertext em= ∑n−1
+i=0 mi·N/n ·X i·N/n, where
+n|N(n<N) are referred to as sparse packing ( SRepack).
+This paper uses the methods [14, 38] that need to perform the
+HomoAuto and Homotrace operations. Detailed algorithms
+and noise growth are presented in Appendix B.4.
+2.3 Functional Bootstrapping
+Functional bootstrapping (FBS) [9] can evaluate the arbitrary
+function in bootstrapping. Specifically, given a ciphertext
+c∈LWE n
+s,p/q (m), FBS can output a new ciphertext that en-
+crypts f(m) as shown in Alg. 1. For the arbitrary function
+f:Z p →Z pout, we can embed it into a polynomial testP as
+shown in line 1. Note that we set pout =p by default, unless
+otherwise specified. Then, the modulus switching is used to
+convert the ciphertext fromq to 2N. After performing the lines
+3-6 through nCMux operations (referred to as blind rotation
+in [20]), we obtain the RLWE ciphertext RLWE(testP·X em),
+where em=△ ·m+e and △= 2N
+p . Then, the desired result
+is preserved in the constant term of the polynomial. Finally,
+Algorithm 1Functional Bootstrapping (FBS).
+Input:
+LWE ciphertextc= (a,b)∈LWE n
+s,p/q (m).
+Bootstrapping key Bsk: {RGSWs,Q(si)} for i∈[0,n−1] .
+Output:
+LWE ciphertext off(m).
+1:SettestP=− ∑N−1
+i=0
+j
+Q
+pout
+m
+·f
+j
+ip
+2N
+m
+·X N−i−1
+2:(a,b) =ModSwitch q→2N(c)
+3:acc=testP(X)·X b,
+4:fori=0 ton−1 do
+5:acc=CMux(acc,X −ai ·acc,Bsk i),
+6:end for
+7:returnSampleExtraction(acc)
+we can use the sample extraction to obtain the LWE cipher-
+text of f(m) . Essentially, the bootstrapping performs LWE
+decryption on the exponent ofX.
+3 Revisiting Previous Batched Bootstrapping
+Guimarães et al. [33] present AmortBoot that aims to boot-
+strap an RLWE ciphertext instead of the LWE ciphertext,
+where the RLWE encrypts a polynomial m(X) =∑n−1
+i=0 mi ·X i.
+In detail, given the ciphertext RLWEn
+s,p/q (m), this procedure
+can generate n ciphertexts, that is RLWE(testPi ·X emi) for
+i∈[0,n−1] . This multiplication testPi ·X emi subsequently
+results in the encryption off(m 0), ...,f(mn−1).
+To obtain n ciphertext RLWE(testPi ·X emi) simultaneously,
+one needs to compute m(X) =b(X)−a(X)·s(X) on the ex-
+ponent of X in a single bootstrapping. AmortBoot exploits the
+sparsity of the RLWE secret key, which accelerates the poly-
+nomial multiplication process. When the secret key is chosen
+from a sparse binary key distribution with a Hamming weight
+of h (h<n )1, RLWE decryption formula can be expressed as
+b−a·s=b−a ∑
+j∈idx(s)
+X j =b− ∑
+j∈idx(s)
+ 
+n−1
+∑
+i=0
+a(X)
+!
+e⊙X j,
+(1)
+where j∈idx(s) represents the set containing the degrees
+of nonzero coefficients of s, n is the degree of RLWE, and
+e⊙ represents a monomial-by-polynomial multiplication. For
+instance, ifs(X) =1+1·X 5 +1·X 7, we have j= (0,5,7). For
+the cleartext, the Eq. 1 can be computed in O(hn) operations.
+However, since the index j is related to the secret key, it is
+encrypted into the bootstrapping key. After that, AmortBoot
+[33] rewrites the Eq. 1 as
+
+b e⊙X −j 0 −a
+ e⊙X j0−j 1 −a
+ e⊙X j1−j 2 · · · −a
+ e⊙X jh, (2)
+which can be efficiently computed in the exponent of X by
+using external products. Note that since a is a public poly-
+1As many notable FHE schemes [1, 19, 33, 37] have done.
+
+===== PAGE 5 =====
+nomial, subtracting it in the exponent can be achieved by
+multiplying all X −ai. Moreover, AmortBoot [33] constructs
+a sub-procedure MPmul to evaluate e⊙. This process can be
+generalized to compute the multiplication u·X v modX n +1
+in the exponent, and v can be instantiated for all possible
+values ofj i −j i+1. After that, Eq. 2 can be reduced to
+MPmul
+
+. . .MPmul
+
+MPmul
+
+b,X−˜j0
+
+−a,X ˜j0−˜j1
+
+· · · −a,X˜jh
+
+.
+(3)
+Note that, during the homomorphic computation process, all
+coefficients of u are encrypted into RLWE(Xui) as inputs,
+while v∈[−n,n] is encrypted and encapsulated within the
+bootstrapping key, denoted as Bsk. Essentially, multiplying
+by X v is to rotate the coefficients of u by v positions. For this
+positive v rotations2, the multiplication u·X v modX n +1
+has the following map
+(u0,u 1, . . . ,un−1)7→
+(−un−v,−u n−v+1, . . . ,−un−1| {z }
+negatevpositions
+,u 0,u 1, . . . ,un−v−1).
+Because the RLWE is instantiated in the cyclotomic polyno-
+mial Z[X]/ ⟨X n +1 ⟩, we also need to multiply v of them by
+−1 in some positions.
+In this process, one can process each coefficient in sequence
+in this map. More precisely, MPmul further decomposes v as
+v= ∑ℓ−1
+i=0 2i ·v i, and sequentially multipliesX 20v0, ...,X2ℓ−1vℓ−1
+for each coefficient (position). It is clear that multiplying by
+X 2ivi is equal to evaluating the following equation:
+f(u 0, . . . ,un−1)7→
+ (u0,u 1, . . . ,un−1)ifv i =0,
+−un−2i, . . . ,−un−1,u 0, . . . ,un−2i−1
+
+ifv i =1.
+Then, according to the inputvi ∈ {0,1 }, one can use the CMux
+to pick out the corresponding value. Hence, for the output
+coefficient range 2i ≤j≤n−1 , given the Bski =RGSW(v i),
+the homomorphic computation for this step is shown as fol-
+lows
+ˆcj = (cj−2i −c j)⊡Bsk i +c j =
+(
+c j−2i,ifv i =0 ;
+c j,elsev i =1.
+For the first 2i coefficients, we first apply the HomoAutoτ−1 :
+X7→X −1 to get the encryption of X −un−2i+j , and perform the
+CMux as
+ˆcj = (HomoAuto−1(cn−2i+j )−c j)⊡Bsk i +c j. (4)
+This process involvesnℓCMux andℓ(2 ℓ −1)automorphism
+operations as shown in [33], where 2l <n in practical param-
+eters.
+2Followed by a similar method for handling negative values.
+4 Design Overview of BatchBoot
+In this section, we propose some novel batched bootstrapping
+algorithms that support functional evaluations for multiple
+messages. Afterwards, we conduct a comprehensive evalua-
+tion of the correctness and noise growth of these algorithms.
+4.1 Efficient MPmul Procedure
+This section proposes a more efficient MPmul ( EMPmul)
+procedure. At a fine-grained level, external product ⊡ and
+HomoAuto involve gadget decomposition and FFT (used in
+accelerating polynomial multiplication). For example, the
+evaluation of ˆcj = (cj−2i −c j)⊡Bsk i +c j can be broken
+down into five steps. 1) Apply the gadget decomposition
+on c j−2i −c j with the coefficient representation; 2) Per-
+form FFTs on the result of the decomposition; 3) Evaluate
+Hadamard multiplication with Bski, where Bski is prepro-
+cessed into FFT form; 4) Perform the inverse FFT (iFFT)
+to recover the coefficient representation; 5) Compute ho-
+momorphic addition with c j. In addition, in Eq. 4, i.e.,
+ˆcj = (HomAuto−1(cn−2i+j )−c j)⊡C i +c j, HomAuto−1 also
+needs to perform additional FFTs (see Sec. 2.2) , and then
+this implementation can be summarized as
+HomoAuto−1(c)⊡7→Auto+Decom+FFT+Hadm+iFFT| {z }
+HomoAuto
++Decom+FFT+Hadm+iFFT| {z }
+External product
+, (5)
+Since FFTs exhibit a computational complexity of
+O(nlogn) , as opposed to the O(n) complexity of Hadamard
+multiplication, FFT operations represent the main compu-
+tational bottleneck in Eq. 5. Overall, the method of Sec. 3
+requires approximately 2(2d+2)·nℓ FFTs, where d is the
+length of the gadget decomposition.
+Our method.We design the EMPmul to evaluate two-input
+bits for v instead of a single-input bit, which can reduce
+the number of time-consuming FFTs from 2(2d+2)·nℓ to
+(d+1)·nℓ . For simplicity, we focus on the case v>0 (v<0
+is shown in Appendix C.1), and then the sequential multipli-
+cationX 2ivi andX 2i+1vi+1 has the map as:
+f(u 0, . . . ,un−1)7→
+
+
+
+
+u0, . . . ,un−1
+
+ifv i:i+1 = (0,0)
+−un−2i , . . . ,−un−1,u 0, . . . ,un−2i−1
+
+ifv i:i+1 = (1,0)
+−un−2i+1 , . . . ,−un−1,u 0, . . . ,un−2i+1−1
+
+ifv i:i+1 = (0,1)
+−un−2i−2i+1 , . . . ,−un−1,u 0, . . . ,un−2i−2i+1−1
+
+ifv i:i+1 = (1,1)
+(6)
+Let us first consider these non-negative positions, i.e.,
+2i +2 i+1 ≤j≤n−1 . The multi-bit CMux operation can
+be employed directly to evaluate the function as
+
+===== PAGE 6 =====
+Table 1: Setup of bootstrapping keys for multi-bit CMux.
+Bsk Bsk i,0 Bski,1 Bski,2 Bski,3 Value
+Bsk+
+RGSW(0)RGSW(0)RGSW(0)RGSW(1)vi =0;vi+1=0
+RGSW(1)RGSW(0)RGSW(0)RGSW(0)vi =1;vi+1=0
+RGSW(0)RGSW(1)RGSW(0)RGSW(0)vi =0;vi+1=1
+RGSW(0)RGSW(0)RGSW(1)RGSW(0)vi =1;vi+1=1
+Bsk−
+RGSWτ−1(0)RGSWτ−1(0)RGSWτ−1(0)RGSW(1)vi =0;vi+1=0
+RGSWτ−1(1)RGSWτ−1(0)RGSWτ−1(0)RGSW(0)vi =1;vi+1=0
+RGSWτ−1(0)RGSWτ−1(1)RGSWτ−1(0)RGSW(0)vi =0;vi+1=1
+RGSWτ−1(0)RGSWτ−1(0)RGSWτ−1(1)RGSW(0)vi =1;vi+1=1
+ˆcj =c j−2i ⊡Bsk +
+i,0 +c j−2i+1 ⊡Bsk +
+i,1
++c j−2i−2i+1 ⊡Bsk +
+i,2 +c j ⊡Bsk +
+i,3
+=
+
+
+
+c j,ifv i =0;v i+1 =0 ;
+c j−2i,ifv i =1;v i+1 =0 ;
+c j−2i+1,ifv i =1;v i+1 =0;
+c j−2i−2i+1 ,ifv i =1;v i+1 =1
+(7)
+to obtain the desired result, where bootstrapping keys are set
+up in Tab. 1. However, the situation is more complex for the
+first 2i +2 i+1 indexes, since the additional automorphismX7→
+X −1 needs to be performed. To eliminate the time-consuming
+FFT induced by automorphism, we introduce the following
+method.
+Parametrized External Product.We first review the
+parametrized external product proposed by Bernard et al. [7].
+Specifically, the variant RGSW ciphertext associated with the
+automorphismτ −1 is defined as
+RGSWτ−1
+s (m1) = (RLWE′
+s(−τ−1(s)·m 1),RLWE′
+s(m1)).
+Then, given ciphertext c= (a,b)∈RLWE s (m2), the vari-
+ant external product associated with τ−1, denote as ⊡τ−1, is
+evaluated as:
+RLWE(m2)⊡ τ−1 RGSWτ−1
+s (m1)
+=τ −1(a)⊙RLWE ′ (−τ−1(s)·m 2) +τ−1(b)⊙RLWE ′ (m2)
+=RLWE(−τ −1(a)·τ −1(s)·m 2 +τ −1(b)·m 2)
+=RLWE(τ −1(m1)·m 2 +τ −1(e1)·m 2).
+In fact, this step integrates the automorphism τ−1 and mul-
+tiplication into a single external product operation, thereby
+avoiding the additional RLWE key switching (including
+FFTs) induced by the automorphism. Nevertheless, even
+so, the problem remains fundamentally unsolved. This is
+because both operations c⊡ and HomoAuto−1(c)⊡ may
+be applied simultaneously to the input ciphertext c, such as
+cn−2i,c n−2i+1 ,c n−2i−2i+1 in Eq. 6. We observe that theAuto−1
+can penetrate both gadget decomposition and FFT operations,
+enabling us to deal withAuto −1 in the FFT domain.
+Then, we can perform Eq. 8 instead of Eq. 5, where the
+external product and automorphism share the instance of the
+Decomand FFT operations.
+Auto−1(c)⊡τ−1 7→Decom+FFT+
+(
+Auto+Hadm(Bsk−)
+Hadm(Bsk+) +iFFT
+(8)
+Note that the penetration technique (termed as Hoisting [8])
+has been applied in the BFV and CKKS schemes, but we inte-
+grate this technique into TFHE for the first time to minimize
+FFT computations. Moreover, for the remaining intervals of
+the map of Eq. 6, we can further break it down into three
+intervals 0∼2 i −1,2 i ∼2 i+1 −1,2 i+1 ∼2 i +2 i+1 −1 . For
+instance, for the first 2i indexes, by integrating the multi-bit
+CMux and the parametrized external product technique, we
+can perform
+ˆcj =c n−2i+j ⊡τ−1 Bsk−
+i,0 +c n−2i+1+j ⊡τ−1 Bsk−
+i,1
++c n−2i−2i+1+j ⊡τ−1 Bsk−
+i,2 +c j ⊡Bsk +
+i,3
+=
+
+
+
+c j,ifv i =0;v i+1 =0 ;
+−cn−2i+j ,ifv i =1;v i+1 =0 ;
+−cn−2i+1+j ,ifv i =1;v i+1 =0;
+−cn−2i−2i+1+j ,ifv i =1;v i+1 =1.
+(9)
+to deal with this case. The remaining indices and complete
+procedural steps are outlined in Alg. 2, where the symbol
+⊠ represents the external product computed within the FFT
+domain. Note that our approach executes the (i)FFT only once
+for all input and output ciphertexts c0, ...,cn−1 as shown in
+lines 3 and 18, thus minimizing the FFTs in the iterative layers
+and eliminating the extra FFTs induced by automorphisms.
+Finally, we show the noise growth in the lemma 4.1.
+Lemma 4.1.Input a list ci ∈RLWE(X ui) for 0≤i≤n with
+error variance Var(cin), bootstrapping Bsk±
+i,j for 0≤i≤ℓ ,
+Alg. 2 outputs a list for the encryption for t(X) =u(X)·X v
+modX n +1, and its variance satisfies
+VEMP <Var(c in) +2ℓ·VEP,
+where VCMux is associated with Bsk. The complete proof is
+present in Appendix C.2.
+Table 2: Computation cost for different input bits of EMPmul.
+Input-bitsδ=1δ=2δ=3δ=4
+FFT 2(d+1)nℓ(d+1)nℓ2(d+1)nℓ/3(d+1)nℓ/2
+Hadamard-Mult 4dnℓ8dnℓ12dnℓ16dnℓ
+Remark1. Our Alg. 2 (EMPmul) can be extended to larger δ-
+input bits forv inputs by using theδ-bit CMux operation. Note
+that larger inputs reduce FFT calls but increase Hadamard
+
+===== PAGE 7 =====
+Algorithm 2Efficient Monomial-polynomial multiplication
+(EMPmul).
+Input:
+A list ci ∈RLWE(X ui) for 0≤i≤n representing a poly-
+nomialu(X)encrypted in the exponent.
+The bootstrapping key Bski,j for 0≤i< ℓ/2−1 and
+0≤j≤3 as shown in Tab 1, which is associated with an
+encrypted valuev.
+Output:
+A list ˆci ∈RLWE(X wi) for polynomial t(X) =u(X)·X v
+modX n +1, where 0≤i≤n.
+1:fori=0 toℓ/2−1 do
+2:forj=0 ton−1 do
+3:ˆc j =FFT◦Decom(c j)
+4:end for
+5:forj=0 to 2 2i −1 do
+6:
+ˆcj =c n−22i+j ⊠τ −1Bsk−
+2i,0
++c n−22i+1+j ⊠τ −1Bsk−
+2i,1
++c n−22i−22i+1+j ⊠τ −1Bsk−
+2i,2 +c j ⊠Bsk +
+2i,3
+7:end for
+8:forj=2 2i to 22i+1 −1 do
+9:
+ˆcj =c j−22i ⊠Bsk +
+2i,0
++c n−22i+1+j ⊠τ −1Bsk−
+2i,1
++c n−22i−22i+1+j ⊠τ −1Bsk−
+2i,2 +c j ⊠Bsk +
+2i,3
+10:end for
+11:forj=2 2i+1 to 22i +2 2i+1 −1 do
+12:
+ˆcj =c j−22i ⊠Bsk +
+2i,0
++c j−22i+1 ⊠Bsk +
+2i,1
++c n−22i−22i+1+j ⊠τ −1Bsk−
+2i,2 +c j ⊠Bsk +
+2i,3
+13:end for
+14:forj=2 2i +2 2i+1 ton−1 do
+15:
+ˆcj =c j−22i ⊠Bsk +
+2i,0 +c j−22i+1 ⊠Bsk +
+2i,1
++c j−22i−22i+1 ⊠Bsk +
+2i,2 +c j ⊠Bsk +
+2i,3
+16:end for
+17:forj=0 ton−1 do
+18:ˆc j =iFFT(c j)
+19:end for
+20:(c 0, ...,cn−1)←(ˆc 0, ...,ˆcn−1)
+21:end for
+22:return(c 0, ...,cn−1)
+multiplications and key sizes, and the computation cost anal-
+ysis is provided in Tab. 2. In consideration of the trade-off
+between performance and key sizes, we use δ=2 as the de-
+fault parameter in all experimental evaluations (corresponding
+to Alg. 2).
+4.2 Sparse Batched Bootstrapping
+Building on the EMPmul procedure, it is easy to construct
+the BATCHBOOTby the Eq. 3 as shown in Alg. 3, which
+bootstrapsnmessages under the full packing case. However,
+scenarios may arise where bootstrapping a subset of n mes-
+sages (n |n ) is required, analogous to the thin bootstrapping
+mechanism used in BFV/CKKS [17, 35]. We note that the
+computational cost of thin bootstrapping will decrease if n is
+reduced. However, in the bootstrapping philosophy of Sec. 3,
+the computational overhead does not change under the sparse
+packing case.
+To address this issue, we propose an efficient batched boot-
+strapping for the sparse-aware packing. In detail, given the
+ciphertext RLWEn
+s,q(m) for m= ∑n−1
+i=0 mi·n/n ·X i·n/n, we can
+use the RLWE-to-MLWE extraction to generate the MLWE
+ciphertext as (a0, ...,ak−1,b)∈MLWE k,n
+s,q (m), where k=n/n ,
+andS = (s0, ...,sk−1) =RingSwitch(s). According to the
+MLWE decryption, we have m=b− ∑k−1
+i=0 ai ·s i. Note that
+this extraction process preserves the sparsity for the secret
+key, i.e.,h= ∑k−1
+i=0 hw(si). Then, we can rewrite the decryption
+formula as
+b−
+k−1
+∑
+i=0
+ai ·s i =b−
+k−1
+∑
+i=0
+∑
+j∈idx(si)
+ n−1
+∑
+t=0
+a(X)
+!
+e⊙X j.
+This process enables sequentially performing h+kEMPmul
+through the MLWE decryption, but with a lower degree of
+the polynomial n =n/k . To elaborate further, let the output
+of i−1 -th iteration be acc, the i-th iteration can be evaluated
+as follows
+acce⊙X−ji,0−a e⊙Xji,0−ji,1−a−e⊙Xji,1−ji,2· · · −a e⊙Xji,hw(si).
+(10)
+After that, we can setv i = (vi,0, ...,vi,hw(si)) = (−ji,0,j i,0 −
+ji,1, ...,ji,hw(si)) for 0≤i≤k−1 , and encapsulate allv i as
+the bootstrapping BSKi as shown in Tab. 1, whereBSKi,j =n
+Bsk±
+i,j,0 , ...,Bsk±
+i,j,3
+o
+. We show the detailed steps in Alg. 3,
+and analyze the computational complexity for the full packing
+and sparse packing cases as follows.
+• Full packingcase necessitates h+1 EMPmul, and each
+EMPmul involves O(vlogn) external products. Since
+v<n , the overall computation overhead result in O((h+
+1)nlogn)external product operations.
+• Sparse packingcase needs to perform the h+k EMP-
+mul, but with a lower degree of n, resulting in a total
+of O((h+k)·n logn ) external product operations. Note
+that in general settings, we havek<h<n.
+Remark2. After performing the accumulation process, it
+outputs n RLWE ciphertext as RLWEN
+es,Q(m j) = (aj,b j) as
+shown in line 7 and line 17. If one wants to proceed with the
+next batched bootstrapping, these m0,0, . . . ,mn−1,0 need to be
+
+===== PAGE 8 =====
+Algorithm 3Batched Bootstrapping
+Input:
+The RLWE ciphertext c∈RLWE n
+s,q(m) under a sparse
+secret key s, where m(X) =∑n−1
+i=0 miX i· n
+n . The bootstrap-
+ping key BSK encrypting the binary decomposition for
+v0, ...,vh as shown in Eq. 10 and Tab 1 under a secret key
+es. The automorphism keys Auki : RLWE′
+es,Q(τi(es)) used
+in RLWE packing.
+The RLWE key switching key Rlk: RLWE ′
+s(es). n test
+polynomials testPi that encode the functions f0, ...,fn−1
+as shown in Alg. 1.
+Output:
+The RLWE ciphertext that encrypts new message m′ =
+∑n−1
+i=0 fi(mi)X i· n
+n .
+/* Full Packing Casen =n*/
+1:(a,b)←ModSwitch q→2N(c)
+2:Letacc 0 = (c0, ...,cn−1), wherec i =testP i ·X bi
+3:fori=0 tohdo
+4:acc i ←EMPmul(acc i,BSK i)
+5:acc i = (acci,0 ·X −a0, ...,acci,n−1 ·X −an−1)
+6:end for
+7:acc h ←EMPmul(acc h,BSK h)
+8:c ′ =Repack(acc h,Auk)
+9:c ′ =RL WE.KeySwitches→s(c′,Rlk)
+10:returnc ′
+/* Sparse Packing Casen |n*/
+11:(a 0, ...,ak−1,b)←RtM.Ext n→k,n(ModSwitchq→2N(c))
+12:Letacc 0,0 = (c0, ...,cn−1), wherec i =testP i ·X bi
+13:fori=0 tok−1 do
+14:forj=0 tohw(s i)do
+15:acc i,j ←EMPmul(acc i,j ,BSK i,j )
+16:acc i,j = (acci,j,0 ·X −ai,0, ...,acci,j,n−1 ·X −ai,n−1)
+17:end for
+18:acc i,hw(si) ←EMPmul(acc i,hw(si),Bsk i,hw(si))
+19:c ′ =SRepack(acc k−1,hw(sk−1),Auk)
+20:c ′ =RL WE.KeySwitches→s(c′,Rlk)
+21:returnc ′
+repacked into a new RLWE ciphertext under the sparse secret
+key. We adopted the sparse-secret encapsulation technique of
+AmortBoot [33]. In detail, the RLWE repacking procedure
+first packs these ciphertexts into an RLWE encryption under
+secret key es, and subsequently performs key-switching to the
+secret key s associated with the input RLWE, which possesses
+a lower Hamming weight. Since the computational overhead
+of this step has a negligible effect on the overall performance,
+we offer the algorithm description in Appendix B.4. Finally,
+we show the noise growth in Lemma 4.2.
+Lemma 4.2.Input a ciphertext RLWEn
+s,q(m), some func-
+tion fi, and the associated key BSK, Auk, Rlk, the batched
+bootstrapping outputs a new RLWE, which can be further
+categorized into the following two cases:
+1. Full packing outputs encryption of m′ = ∑n−1
+i=0 fi(mi)X i,
+and the error variance satisfies VBoot <(h+1)·V EMP +
+VPack +V RKS.
+2. Sparse packing outputs encryption of m′ =
+∑n−1
+i=0 fi(mi)X i· n
+n , where the error variance of satis-
+fiesV SBoot <(h+k)·V EMP +V SPack +V RKS.
+Here VEMP, VPack , VSPack, VRKS are associated with BSK,
+Auk, and Rlk. Note that in the sparse packing, the sparsity
+parameter k increases noise growth. However, in practical
+parameter settings where k≪h , the resulting additional noise
+growth is negligible compared to that under the full packing
+case. The complete proof is present in Appendix C.2.
+4.3 Batched Circuit Bootstrapping
+Existing batched bootstrapping, including Alg. 3, focuses on
+the functional bootstrapping that can only evaluate the single-
+input function, i.e., f(x):Z p →Z pout, and has low message
+precision ( p<2 8). When higher precision is required, its
+efficiency decreases significantly due to the necessity of en-
+larging the system parameters. We note that the circuit boot-
+strapping [21] and emerging variants [38, 40, 51] effectively
+support a wider variety of functions without parameter infla-
+tion, such as the higher precision via multi-input function, e.g,
+f(x 1,x 2):Z p ×Z p →Z pout. We propose the BATCHCBOOT,
+a batched circuit bootstrapping that integrates the method
+of [40] (called EP-CBS). In particular, the workflow of EP-
+CBS can be divided into two subroutines, ciphertext conver-
+sion from LWE(m) to RGSW(X em) and LUT evaluation with
+the external product tree. Our main insight is that BATCH-
+BOOTcan be used in the first stage to obtain better amortized
+results. Our approach is presented in the following two steps.
+Step 1: Half.BatchCBS. The ciphertext conversion from
+LWE(m) to RGSW(X em) is constructed in EP-CBS through
+an expensive blind rotation as shown in Alg. 1. Based on the
+BATCHBOOT, we construct a batched ciphertext conversion
+from RLWEn
+s,q(m) to RGSW(X emi), for i∈[0,n−1] , denoted
+as Half.BatchCBS. Specifically, we begin by converting the
+ciphertext modulus from q to 2N
+d and scaling the ciphertext by
+a factor of d, adhering to the encoding technique presented in
+EP-CBS [40]. This operation clears thelog2 d least significant
+bits (LSBs) of the encoding space. These zeroed bits subse-
+quently allow for the gadget vector to be embedded within
+the initial accumulator. To illustrate, for d=2 , the n initial
+accumulators are configured asacc i = B0 ·X bi + B1 ·X bi+1.
+By performing BATCHBOOTwithout repacking, it out-
+puts n RLWE ciphertexts, that are ci =RLWE N
+es,Q(B0X emi +
+B1X emi+1), for 0≤i≤n−1 . After that, we can perform the
+ciphertext conversion of EP-CBS [40]
+RLWE(B0X emi + B1X emi+1) HomoTrace− →
+RLWE′(X emi) SchemeSwitch− →RGSW(X emi).
+
+===== PAGE 9 =====
+Algorithm 4Batched Circuit Bootstrapping
+Input:
+The RLWE ciphertext c∈RLWE n
+s,p/q (m) under a sparse
+secret keys, wherem(X) = ∑n−1
+i=0 miX i.
+The bootstrapping keyBSKused in Alg. 3.
+The automorphic keyAukas shown in Alg. 5.
+The scheme switching keySsk: RLWE ′
+es(es2).
+Gadget vectorg = (B0, ...,Bd−1) corresponding to the
+output RGSW.
+A multi-input functionf:[0,p−1] β →[0,p−1] γ.
+Output:
+Some ciphertexts off(m 0, ...,mβ−1).
+1:Let(a,b) =ModSwitch q→2N/d(c)· dmod 2N
+2:fori=0 ton−1 do
+3:acc i = B0 ·X bi +· · ·+Bd−1 ·X bi+d−1
+4:end for
+5:(c 0, ...,cn−1)←BatchBoot(acc 0, ...,accn−1,BSK) /*
+Perform lines 2-6 of Alg. 3 */
+6:fori=0 ton−1 do
+7:forj=0 to d−1 do
+8:c i,j =c i ·X −j
+9: Ci,j+ d =HomoTrace.Tr RN /RN/d (ci,j ,Auk)
+10: Ci,j =Scheme.Switch( Ci,j+ d,Ssk))
+11:end for
+12:end for
+13:fori=0 toγ−1 do
+14:c ′
+i =EP.Tree(C0, ...,Cβ−1). /* Perform external prod-
+uct tree in Alg. 8 *, whereβ<n./
+15:end for
+16:returnc ′
+0, ...,c′
+γ−1
+as shown in lines 6-12 of Alg. 4. Here, since B0 and B1
+fall into distinct equivalence classes, the HomoTrace (HT)
+TrRN /RN/2
+3 is employed to generate the RLWE(B0 ·X emi). Sub-
+sequently, the term B1 is rotated to align with B0 (via multi-
+plication by X −i), and the HomoTrace is repeated to produce
+a second RLWE ciphertext forB1. This procedure generalizes
+to any length d, ultimately yielding a gadget RLWE cipher-
+text RLWE′(X emi). Finally, the secret key es is embedded into
+the ciphertext RLWE(−Bies·X emi) through d times scheme
+switching as shown in Appendix B.3, and the 2d ciphertexts
+make up the ciphertext RGSW(X emi).
+Step 2: External product tree. Upon receiving RGSW ci-
+phertexts RGSW(X emi) generated by Half.BatchCBS, we use
+the external product tree proposed in EP-CBS to compute the
+multi-input function, such as f(m 0,m 1). Given the ciphertexts
+RGSW(X em0) and RGSW(X em1) through the batched circuit
+bootstrapping, one can first perform p external products at the
+first level. The results are then repacked into a new RLWE
+3We show the algorithm for general case TrRN /Rn and noise growth in
+Appendix B.4, and more details can be referred to [38, 40].
+ciphertext, corresponding to the second level of the test poly-
+nomial form. The final result is obtained after completing the
+last level.
+Alg. 8 formalizes this for a generic function f:[0,p−
+1]β →[0,p−1] γ. For each sub-function f:[0,p−1] β →
+[0,p−1] , the multi-valued bootstrapping method [13] (as
+shown in Appendix A) can be used at the first level,4 which
+reduces pβ−1 external products. Hence, this process involves
+γ· ∑β−2
+i=0 pi =γ· pβ−1−1
+p−1 external products, and γ· ∑p−2
+i=0 pi =
+γ· pβ−1−1
+p−1 repacking operations. We omit the associated cor-
+rectness analysis, which can be obtained directly from the
+external product and repacking steps. For a more detailed
+analysis, please refer to scheme [40], and the noise growth
+is presented in Appendix C.2. Finally, we adopt the notation
+BatchCBSp,β,γ for configurations parameterized by message
+precision p, input size β in EP.Tree, and the number invoca-
+tionsγforEP.Treestep.
+5 Application for Batched Bootstrapping
+In this section, we show two practical applications for the
+proposed batch bootstrapping: private set intersection and
+8-bit FHE instruction sets.
+5.1 Application I: Private Set Intersection
+5.1.1 Universal Techniques for PSI
+In PSI settings, sender holds a setX of size Nx, and the receiver
+holds a set of size Ny. Both sets consist of σ-bit strings. Like
+most FHE-based PSI protocols, our protocol is particularly
+powerful against unbalanced PSI, where the sender’s set is
+much larger than the receiver’s set, i.e. Ny ≪N x. The ideal
+PSI functionality outputs X∩Y to the receiver and nothing to
+the sender. Hashing-to-bins can reduce the total number of
+comparisons and the cost of each comparison in a PSI protocol
+[25,43]. Elements are distributed into a predetermined number
+of bins, and comparisons are only performed between client
+and server elements in the same bin. Since the bin in which an
+element is placed is determined using hashes of that element,
+it is necessary to pad each bin with dummy elements up to
+a predetermined size ω to prevent the load of the bins from
+leaking information about the dataset. The hash functions
+required in PSI are as follows:
+• Cuckoo hashing[46]. Cuckoo hashing can place Ny ele-
+ments in b=ςN y bins, for some constant ς, and each bin
+holds at most one element. Typically, the placement of
+each element is determined using k=3 hash functions,
+andb≈1.27N y.
+4Details of this part can be found in Sec. 4 of [40].
+
+===== PAGE 10 =====
+Figure 1: Dataset Preprocessing for client.
+• Permutation-based Hashing[25, 43]. Permutation hash-
+ing can reduce the length of the elements being compared
+fromσtoσ ′ =σ−c, wherec= ⌈log2 b⌉.
+5.1.2 PSI protocol with Batched Bootstrapping
+Our PSI protocol involves three stages: dataset preprocessing,
+server computation, and client decryption.
+Step 1: Dataset Preprocessing.The parties first agree on
+FHE and PSI parameters such as n,p,p out,q=2N , and b, ω,
+σ, σ′. Then, the client and server can asynchronously prepro-
+cess their datasets to prepare them for the next stage. Specifi-
+cally, the preprocessing of the server is as follows: use permu-
+tation hash and insert these items into a two-dimensional hash
+table B x using h hash functions H1, ...,Hh, where B x has b
+bins and each bin hasω elements, labeled asBx[i][j]∈ {0,1 }σ′
+for i∈[0,b−1],j∈[0,ω−1] ; and then decompose all ele-
+ments of B x with the base p, i.e., x= ∑ℓ−1
+i=0 pi ·x i (ℓ=log p 2σ′
+)
+to obtain ℓ sub-tables B x
+0, ...,Bx
+ℓ−1, where p is the plaintext
+modulus of FHE; finally, encode eachBx[i][j] as a polynomial
+TBk
+i,j =X −△·Bx
+k[i][j] ∑
+△/2
+i=−△/2 X −i, where△= N
+p .
+On the other hand, the client first performs the permutation
+with Cuckoo hash that outputs a one-dimensional hash table
+B y with 1.27Ny elements. After that, it decomposes all ele-
+ments to obtain ℓ sub-tables B y
+0, ...,By
+ℓ−1. Finally, the client
+concatenates each sub-table and fills it with ⌈ℓ1.27·N y/n⌉
+plaintext polynomials, then encrypts them into RLWE cipher-
+text with modulus q as shown in Fig. 1. Note that through the
+decomposition, we can deal with large data sizes σ′ >log 2 p,
+which also means that we need to compare x and y with a
+match being successful when all corresponding xi and yi are
+equal fori∈[0, ℓ−1].
+Step 2: PSI Computation.In this phase, the client generates
+the evaluation keys as shown in Alg. 3, and then transmits the
+evaluation keys and ciphertexts to the server. The server re-
+ceives the ciphertexts and performs batched bootstrapping for
+all ciphertexts. This process produces the intermediate cipher-
+texts corresponding to the elements of sub-tables B y
+0, ...,By
+ℓ−1
+as RLWE(X
+gB y
+k [i]) as shown in lines 1-7 of Alg. 3, where
+gB y
+k [i] =△ ·By
+k [i] +e, and e is noise of RLWE that satisfies
+|e|< △
+2 . Then, the server evaluates the equivalence operation
+RLWE(X
+gBy
+k [i])·TB x
+i,j =RLWE(X
+gBy
+k [i])·X −△·Bx[i][j]
+△/2
+∑
+i=−△/2
+X−i
+=RLWE
+ 
+X△·By
+k [i]−△·Bx[i][j]
+△/2
+∑
+i=−△/2
+Xe−i
+!
+=RLWE(mb +∗).
+for all j∈[0,ω−1] , i∈[0,b−1] , k∈[0, ℓ−1] , and uses the
+sample extraction to obtain LWE ciphertexts of mb. Note
+that we can conclude that if B x
+k [i] equals B y
+k [i][j] , mb =1 ;
+otherwise, it equals 0.
+Subsequently, the server carries out the aggregation op-
+erations by LWE additions. The first step is to sum all ele-
+ments of each bin as ck,i = ∑ω−1
+j=0 ck,i,j with the result being
+an encrypted value of either 0 or 1. The second aggregation
+step sums all sub-tables as ci = ∑ℓ−1
+k=0 ck,i to get b LWE ci-
+phertexts. At this moment, the encrypted value mi satisfies
+mi ∈ {0, ℓ−1}, where mi =ℓ corresponds to a successful
+intersection result. In addition, to prevent information leak-
+age, the server selects a random ri ←Z ∗
+pout
+5 and computes
+c′ = (ci −ℓ)·r i, for i∈[0,n−1] . This step serves to mask the
+other information, and a successful intersection implies that
+the encryption yields 0. To reduce the communication, the
+server uses Repack operation to integrate these LWE cipher-
+texts into an RLWE ciphertext. Finally, we apply bootstrap-
+ping once again to refresh the noise, ensuring that the final
+output noise is independent of the noise generated during the
+PSI computation step, as shown in [48]. Notably, we avoid
+the use of noise flooding techniques [15, 16, 43], as it results
+in an undesirable expansion of the system parameters.
+Step 3: Decryption.In the decryption stage, the client de-
+crypts the ciphertext received from the server to obtain the
+indicator vector. The indicator vector identifies whether a
+match has been found in the server set for each element in the
+client set. The client then extracts the indices encrypted as 0
+and generates the intersection result.
+5.1.3 Analysis of Our PSI Protocol
+Security Analysis.Our PSI protocol operates in the semi-
+honest model, i.e., the client and server follow the protocol
+but may try to infer extra information. Client input privacy is
+guaranteed due to the use of homomorphic encryption. On the
+one hand, the random number r is selected to prevent informa-
+tion leakage of each bin. On the other hand, considering that
+the noise level in homomorphic encryption texts may reveal
+additional information about the server dataset, we use the
+bootstrapping method (also known as sanitisation, see [48])
+to refresh the noise level, thereby protecting circuit privacy.
+5ri ∈[0,p out −1],andp out is set to a prime number greater thanℓ.
+
+===== PAGE 11 =====
+Communication Complexity.The total communication com-
+plexity consists of the request and response messages. In
+the request process, we have ℓ=
+l
+2σ′
+p
+m
+tables, each contain-
+ing 1.27·N y elements. These elements are then encrypted,
+resulting in a total of nreq = ⌈ℓ1.27·N y/n⌉ ciphertexts. In
+addition, since we use RLWE symmetric encryption, the part
+of a can be replaced by random seeds, thus reducing the ci-
+phertext size by half. In the response phase, the server only
+returns nres = ⌈1.27·N y/n⌉ ciphertexts, after applying mod-
+ulus switching to scale the ciphertext modulus down to an
+input modulus q. A key advantage of our protocol is the com-
+pact FHE parameter set, notably a 12-bit ciphertext modulus
+q. Consequently, the overall communication amount is mini-
+mized to about 15 KB. This optimization is a unique feature
+of our TFHE bootstrapping design and is infeasible for any
+past or future PSI implementation relying on BFV .
+Computation Complexity.The computational cost of our
+protocol comprises nreq +n res BATCHBOOTprocesses, ℓω·b
+scalar multiplications for RLWE, and ℓω·b+ℓb LWE cipher-
+text additions. In addition, we set the temporary ciphertext
+modulus to the machine word size (i.e., Q=2 64), leading to
+a substantial improvement in computational efficiency. We
+present a detailed performance and comparison analysis in
+Sec. 6.2.
+5.2 Application II: FHE Instruction Sets
+The FHE instruction set can handle addition, multiplica-
+tion arithmetic operations, and logical operations. Zama [12]
+achieves these universal instruction sets based on the non-
+batch TFHE scheme, and further designs a privacy-preserving
+fhEVM coprocessor [26] for blockchain. Currently, several
+TFHE-based techniques can be utilized to construct these pro-
+cessors, including gate bootstrapping [12], tree-based boot-
+strapping [49], and circuit bootstrapping [50]. Nevertheless,
+these methods are limited to processing only one encrypted
+and one instruction set at a time. We employ BATCHCBOOT
+for batch computation of the instruction set, specifically tar-
+geting 8-bit messages as in state-of-the-art methods [49, 50].
+We customize each instruction according to its operational
+characteristics, thereby ensuring efficient execution following
+the approach adopted in [49]. The proposed methodology
+comprises the following steps.
+Message encoding and encryption.For the 8-bit instruc-
+tion set, we aim to compute f(u,v) , such as the ADD(u,v) =
+u+v(mod 2 8), where u,v∈Z 28. Given 2n messagesu =
+(u0, ...,un−1) andv = (v0, ...,vn−1), we first decompose each
+message into two 4-bit, i.e., ui =u i,L +16·u j,M, which means
+that p=2 4 in FHE system parameters. After that, we can
+encrypt these decomposed messages into four RLWE cipher-
+texts(c u,L,c u,M,c v,L,c v,M).
+Instruction Sets Evaluation.In the evaluation of the
+general 16-bit-to-8-bit LUT, i.e. BatchCBS4,4,2, we per-
+form Half.BatchCBS on these ciphertexts to obtain n
+ciphertext tuples, and each tuple containing ciphertexts
+RGSW(X eui,L ),RGSW(X eui,M ),RGSW(X evi,L ),RGSW(X evi,M ).
+Then, we can construct two external product trees, i.e., β=4
+and γ=2 in Alg. 8, to evaluate the general LUT. This
+process demands four Half.BatchCBS invocations, along
+with 2×16 2 ×n=512n instances of repacking and an equal
+number (512n) of external product operations. The
+Trama et al. [49] point out that the number of homomorphic
+operations can be reduced based on the characteristics of the
+instruction set. For example, the AND instruction can be
+defined as AND(u,v) = (uM &v M,u L &v L). Then, we can
+use two sub-procedures
+BatchCBS4,2,1(cu,M,c v,M,AND)
+BatchCBS4,2,1(cu,L,c v,L,AND)
+to evaluate uM&vM and uL&vL, respectively. Since the level
+of the external product tree is two (i.e., β=2 ), we can reduce
+the number of external products operations and repacking
+steps from 512n to 2n. We show the computational costs for
+different instruction sets in Tab 3, with detailed computation
+steps for each instruction outlined in [49].
+Table 3: Computational costs for various 8-bit instruction sets.
+InstructionsHalf.BatchCBSExternal product Repacking
+AND/XOR/OR 4 2n2n
+ADD/SUB 6 4n4n
+MUL 6 4n4n
+EQ 6 3n3n
+LT(E)/GT(E) 8 5n5n
+MIN/MAX 12 10n10n
+6 Evaluation
+6.1 Methodology
+Our algorithms mainly involve two ciphertext types: RLWE
+and RGSW, which serve as input ciphertext and bootstrapping
+keys. By default, the ciphertext modulus is set to 264, unless
+stated otherwise. The bootstrapping keys include bootstrap-
+ping key Bsk, automorphism key Auk, scheme switching key
+Ssk, and RLWE sparse switching key Rlk, each associated
+with the length d and base B used in the approximate gadget
+decomposition. We show the standard deviation of noise for
+different evaluation keys in Tab. 9 of Appendix C.3. We use
+the lattice estimator6 to evaluate the security, where the secu-
+rity levels of these parameters exceed 128 bits. For the sparse
+secret key, we adopt the strategy [33] where the key generation
+6https://github.com/malb/lattice-estimator.
+
+===== PAGE 12 =====
+process has a high probability of satisfying ji −j i+1 <n/h .
+The security level is determined by using the Lattice Esti-
+mator [2] using the default reduction model and dual hybrid
+attack with meet-in-the-middle optimizations from [18]. Note
+that Rlk involves a larger standard deviation because it uses
+sparse keys for encryption. Then, in Appendix D.1, we show
+the parameters of BATCHBOOTin Tab. 10 and BATCHCBOOT
+in Tab. 11, respectively. Finally, under these parameters, we
+can calculate a concrete decryption failure rate. The detailed
+calculation process can be found in Appendix C.4.
+6.2 Performance for Batched Bootstrapping
+We show some experimental results for BATCHBOOT, and all
+of our algorithms are executed in the MOSFHE [32] library.
+The benchmarking experiments were conducted on a cloud
+server equipped with an Intel(R) Xeon(R) Gold 6258R CPU
+@ 2.70GHz and 32 GB of RAM. The operating system was
+Ubuntu 22.04.4 LTS, and the code was compiled with g++
+14.2.0, which supports A VX-512 instruction set optimization.
+The single-threaded performance results of our Alg. 3 are
+presented in Tab. 4. We compare it with the state-of-the-art
+batched [33] and non-batched [12] implementations across
+various levels of message precision.
+Table 4: Performance, key sizes, and decryption failure rate.
+Note that set SBooti,k is associated with the same set of pa-
+rameters Booti and n =n/k , which is used in sparse packing
+case.
+Scheme Sets log 2p PackedMess. TotalTime Amort.Time FailureProb. KeySizes Speedup
+TFHE-rs [12] Def 2 1 9.8 ms 9.8ms 2 −53 76.3 MB2.74×
+AmortBoot [33]Boot2 2 2048 16.57s 8.09 ms 2 −120 17.1 MB2.2×
+BatchBootBoot2 2 2048 7.32s3.57ms 2 −120 59.6 MB –
+BatchBootSBoot2,2 2 10243.83s 3.74 ms 2 −120 70.5 MB –
+TFHE-rs [12] Def 4 1 13.6 ms 13.6 ms 2 −53 52.1 MB3.77×
+AmortBoot [33]Boot4 4 2048 17.72s 8.65 ms 2 −94 18.4 MB2.4×
+BatchBootBoot4 4 2048 7.39s3.6ms 2 −94 64.1 MB –
+BatchBootSBoot4,2 4 10243.86s 3.71 ms 2 −94 75.8 MB –
+TFHE-rs [12] Def 6 1 131.1 ms 131.1 ms 2 −53 488.5 MB15.55×
+AmortBoot [33]Boot6 6 4096 36.53s 8.92 ms 2 −64 18.6 MB1.05×
+BatchBootBoot6 6 4096 34.57s8.43ms 2 −64 120.1 MB –
+BatchBootSBoot6,2 6 204818.31s 8.94 ms 2 −64 142 MB –
+TFHE-rs [12] Def 8 1 1.1 s 1.1 s 2 −53 3.25 GB43.8×
+AmortBoot [33]Boot8 8 4096 234.88 s 57.34 ms 2−62 76.6 MB2.27×
+BatchBootBoot8 8 4096 102.86s25.11ms 2 −62 205.3 MB –
+BatchBootSBoot8,2 8 204854.54s 26.63 ms 2 −62 242.6 MB –
+Compared to TFHE-rs (using their default parameters 7),
+we achieve gains of up to 43.8 times under 8-bit precision. Af-
+ter that, we implement the open source codes8 corresponding
+to scheme [33] in the same test environment. Our method
+achieves a speedup of up to 2.4× compared to [33] due
+to a drastic reduction in FFT operations. Interestingly, we
+can reduce the latency from 7.39 s to 3.83 s for 4-bit LUT
+7https://github.com/zama-ai/tfhe-rs
+8https://github.com/antoniocgj/Fast-Amortized-Bootstrapping
+while maintaining approximately the same amortization re-
+sults through the sparse packing case, which is not feasible
+with [33]. Tab. 4 also shows the comparison of the boot-
+strapping key sizes for different schemes. Although the key
+sizes of BATCHBOOTare larger than [33], the performance
+gains of BATCHBOOTare substantial. Additionally, the boot-
+strapping key is generated only once and therefore does not
+become a bottleneck in practical applications. On the other
+hand, we note that BatchBoot exhibits excellent scalability in
+multi-core CPU environments, since FFT and external prod-
+ucts in the EMPmul procedure are inherently independent
+operations. Multi-threading experiments show that latency
+decreased from 102.8 s to 19 s under the 8-bit message pre-
+cision by using 8 threads as shown in Tab.12, and more de-
+tailed performance results and comparisons are present in
+Appendix D.2.
+Table 5: Performance comparison with the CKKS functional
+bootstrapping.
+Scheme Packed
+Mess.
+4-4 LUT 6-6 LUT
+Total Time Amort. Time Total Time Amort. Time
+CKKS [3]
+65536 9.93 s 0.15 ms 12.7 s 0.19 ms
+2048 5.58 s 2.72 ms 6.97 s 3.4 ms
+512 5.35 s 10.4 ms 6.57 s 12.8 ms
+BatchBoot2048 7.39 s 3.6 ms 18.31 s 8.94 ms
+512 2.11 s 4.13 ms 5.4 s 10.7 ms
+In addition, we compare BATCHBOOTwith the state-of-
+the-art CKKS functional bootstrapping [3] by executing their
+open-source code9, where the performance results are sum-
+marized in Tab. 5. From the result, we can derive the fact
+that CKKS bootstrapping performs better in the fully packing
+mode. However, under some sparse packing (e.g., 512 slots),
+BATCHBOOTachieves 2.5× improvement under 4-bit LUT
+evaluation by leveraging better sparse packing techniques.
+Moreover, our scheme still offers two additional advantages
+over CKKS-based bootstrapping. Firstly, CKKS relies on a
+super-polynomial modulus, while BATCHBOOTis built on
+a polynomial-modulus RLWE assumption with stronger se-
+curity as shown in Appendix A. Secondly, CKKS bootstrap-
+ping entails huge key sizes, typically on the order of giga-
+bytes in [3, 5, 6, 29, 36]. Even though HERMES [4] incorpo-
+rates some optimization techniques to reduce bootstrapping
+key sizes, it still requires a key size of 673 MB under func-
+tional bootstrapping parameters. In contrast, BATCHBOOT
+achieves a 3.2−11.3× reduction in key sizes. Finally, we also
+present the peak memory usage in single-threaded setting in
+Tab. 13 of Appendix D. For 2-bit and 4-bit LUT parameters,
+BATCHBOOTutilizes 360 MB of memory, while CKKS-based
+scheme [29] demands a minimum of 13.8 GB. This signifi-
+cant disparity underscores the superior memory efficiency of
+9https://github.com/openfheorg/openfhe-development/tree/main/src/pke
+
+===== PAGE 13 =====
+Table 6: Performance comparison for PSI protocols.
+Ny Nx PEPSI[43]BatchBoot
+ωTime (s) Comm.ωTime (s) Comm.
+224
+1024 6710 9.6 4.21 MB 25616 13.82/0.7×15 KB/287×
+2048 6710 10.5 4.21 MB 20288 13.85/0.75×30 KB/143×
+4096 6710 19 8.32 MB 10367 13.92/1.36×51 KB/170×
+228
+1024 100565 152.9 4.32 MB 397376 66.89/2.28×15 KB/294×
+2048 100565 152.9 4.32 MB 313363 67.26/2.27×30 KB/147×
+4096 100565 279.9 8.32 MB 157572 67.34/4.1×51 KB/170×
+232
+1024 N/A N/A N/A 6308095 870.93 15 KB
+2048 N/A N/A N/A 4968820 873.67 30 KB
+4096 N/A N/A N/A 2487973 874.98 51 KB
+BATCHBOOT.
+6.3 Performance for PSI Protocol
+For the PSI protocol, we run experiments with σ=32 bit ele-
+ments. By using the permutation-based hashing, we can obtain
+κ= ⌈log2 b⌉. Thus, the hash size of elements is σ′ =σ−κ
+bits, where b≥2 11 in our setting. We use the parameter set
+PSI.Boot6, and split each element of Ny into four digits as
+detailed in Sec. 5.1. Tab. 6 shows a comparison of runtime
+and communication costs with the scheme [43]. Here the size
+Ny is set to 1024, 2048, and 4096, and the size of Nx is chosen
+as 224, 228 and 232. The server bin load ω is determined by
+the server set size and the number of bins, where we adopt
+the method [43, 46] to obtain the upper bounds for ω [43, 46]
+and validate them experimentally via binning simulations.
+The results indicate that our protocol achieves a dramatic re-
+duction of two orders of magnitude (143–294×). In addition,
+we also show the runtimes for PSI under 32 threads. From
+the experimental results, we observe that for some smaller
+parameter sets (e.g., Nx =2 24 and Ny =2048 ), our scheme
+incurs higher latency. In contrast, a performance gain of 4.1
+times is achieved over PEPSI [43] whenNx is scaled to 228. In
+addition, our solution can also support larger datasets, such as
+Nx =2 32, whereas existing solutions do not show execution
+results in this case. Therefore, our proposed method is particu-
+larly advantageous for deployment in bandwidth-sensitive en-
+vironments or for processing substantial data volumes. Finally,
+we present further comparative analyses (such as comparisons
+with [25]) in Appendix A.
+6.4 Performance for General LUT Evaluation
+For the batched circuit bootstrapping, since Alg. 4 introduces
+larger noise growth than Alg. 3 (as shown in Lemma C.2),
+we need to reset the parameters. We add the parameters B, d,
+and the scheme switching key Ssk in Tab. 11. These elements
+are used in Alg. 4 and can support a message precision of
+p=2 4 for each sub-block. We first show the performance
+with general LUTs using our batched circuit bootstrapping
+Table 7: Amortization performance of general LUT.
+Method 8-to-8 LUT 12-to-12 LUT Speedup
+TBC+ [49] 160.15 ms 4.6 s12.06/134.3×
+WHS+ [50] 112.74 ms 170.62 ms8.5/4.9×
+LSL+ [40] 630 ms 1.12 s47/35×
+BatchBoot 13.27ms34.24ms –
+Table 8: Performance of 8-bit instruction sets.
+Instructions TBC+ [49] WHS+ [50]BatchCBoot Speedup
+AND/OR/XOR 184 ms 227 ms 28.14 ms6.5×
+ADD/SUB 493 ms 227 ms 42.68 ms5.3×
+MUL 504 ms 227 ms 42.68 ms5.3×
+EQ 276 ms 227 ms 42.21 ms5.4×
+LT(E)/GT(E) 437 ms 227 ms 56.75 ms4×
+MIN/MAX 825 ms 227 ms 68.3 ms3.3×
+as shown in Tab. 7. Under the 8-bit case, i.e., β=γ=2 in
+Alg. 4, our method is8.5-47 × faster than the previous circuit
+bootstrapping methods (TBC+ [49], WHS+ [50], LSL+ [40])
+in terms of amortized results based on the benchmarks they
+provided. Finally, we evaluate 8-bit FHE instruction sets us-
+ing the methodology from Sec. 5.2. We implement 6 practical
+instruction sets, including AND, ADD, MUL, etc., where the
+computational overhead of instruction evaluation can be opti-
+mized according to its circuit complexity. The amortization
+analysis reveals a3.3-6.5× performance improvement across
+these instruction sets.
+7 Conclusion
+This paper presents BATCHBOOT, a batched bootstrapping
+method for TFHE that processes multiple ciphertexts simulta-
+neously. We design efficient homomorphic polynomial multi-
+plication to reduce the number of FFT operations, and intro-
+duce an MLWE-based decryption paradigm for sparse pack-
+ing, ensuring linear complexity in packing density. We extend
+the functionality through circuit bootstrapping, enabling the
+evaluation of more general functions. Overall, BATCHBOOT
+yields a 2.4× speedup over state-of-the-art batched schemes
+and a 43.8× improvement over non-batched implementations.
+Practical applications include a PSI protocol and an 8-bit FHE
+instruction set; our approach achieves a 294× reduction in
+communication overhead and a 4.1× performance gain over
+previous BFV-based PSI protocols, and up to 6.5× computa-
+tional speedup for the instruction set.
+
+===== PAGE 14 =====
+Ethical Considerations
+We have assessed the value of publishing this work against po-
+tential implications. 1. Identification of Stakeholders. We per-
+formed a comprehensive analysis of all parties who could be
+affected by our proposed BatchBoot algorithm, PSI protocols,
+and FHE instruction set design. The following stakeholders
+were identified: Researchers in privacy-preserving and cryp-
+tography: These individuals may use and extend our efficient
+BatchBoot algorithm. Users or devices requiring private Set
+Intersection can utilize our proposed PSI to reduce latency
+and communication overhead. Compiler and systems develop-
+ers targeting encrypted computing: FHE instruction set helps
+separate programming from cryptographic details, reduces
+latency for encrypted operations, and can lower barriers to
+practical privacy-preserving analytics in regulated domains.
+2. Potential Impacts on Stakeholders. Impacts during the re-
+search process: The research process poses minimal ethical
+risk because: All experiments use public benchmark datasets
+or random number which contain no personally identifiable
+information. No sensitive organizational or user data were
+accessed. These properties ensure that the research caused no
+direct harm to any stakeholder. 3. Mitigations. We release only
+the artifacts essential for benchmark reproduction, document-
+ing all underlying assumptions and limitations. Production
+deployments should enforce rigorous key management, fine-
+grained access control, rate limiting, comprehensive audit
+logging, and periodic compliance reviews to mitigate resid-
+ual risks. 4. Rationale for Conducting and Publishing the
+Research. The motivations for publishing our work are as fol-
+lows: Advancing batched TFHE has tangible practical value,
+as it can reduce both computational and communication over-
+head in PSI protocols. Making the technology publicly avail-
+able enables the academic community to validate, optimize,
+and securely build upon its foundations. Given these bene-
+fits—along with the minimal associated risks and the presence
+of robust mitigation measures—we believe that the overall
+ethical impact of conducting and publishing this research is
+substantially positive.
+Open Science
+Following the open science policy, we are dedicated to guar-
+anteeing that our work is transparent and easily available. Our
+work facilitates the analysis of batch bootstrapping while en-
+suring data confidentiality and security, thus promoting open
+science and collaboration. The code for Batchboot is available
+athttps://doi.org/10.5281/zenodo.17936945.
+References
+[1] Albrecht, M., Chase, M., Chen, H., Ding, J., Goldwasser,
+S., Gorbunov, S., Halevi, S., Hoffstein, J., Laine, K.,
+Lauter, K., et al.: Homomorphic encryption standard.
+In: Protecting privacy through homomorphic encryp-
+tion, pp. 31–62. Springer (2022)
+[2] Albrecht, M.R., Player, R., Scott, S.: On the concrete
+hardness of learning with errors. Journal of Mathemati-
+cal Cryptology9(3), 169–203 (2015)
+[3] Alexandru, A., Kim, A., Polyakov, Y .: General func-
+tional bootstrapping using ckks. In: Annual International
+Cryptology Conference. pp. 304–337. Springer (2025)
+[4] Bae, Y ., Cheon, J.H., Kim, J., Park, J.H., Stehlé, D.: HER-
+MES: efficient ring packing using mlwe ciphertexts and
+application to transciphering. In: Annual International
+Cryptology Conference. pp. 37–69. Springer (2023)
+[5] Bae, Y ., Cheon, J.H., Kim, J., Stehlé, D.: Bootstrapping
+bits with CKKS. In: Annual International Conference
+on the Theory and Applications of Cryptographic Tech-
+niques. pp. 94–123. Springer (2024)
+[6] Bae, Y ., Kim, J., Stehlé, D., Suvanto, E.: Bootstrapping
+small integers with CKKS. In: International Conference
+on the Theory and Application of Cryptology and Infor-
+mation Security. pp. 330–360. Springer (2025)
+[7] Bernard, O., Joye, M.: Bootstrapping (t)FHE ciphertexts
+via automorphisms: Closing the gap between binary
+and gaussian keys. Cryptology ePrint Archive, Paper
+2025/163 (2025), https://eprint.iacr.org/2025/
+163
+[8] Bossuat, J.P., Mouchet, C., Troncoso-Pastoriza, J.,
+Hubaux, J.P.: Efficient bootstrapping for approximate
+homomorphic encryption with non-sparse keys. In: An-
+nual International Conference on the Theory and Ap-
+plications of Cryptographic Techniques. pp. 587–617.
+Springer (2021)
+[9] Boura, C., Gama, N., Georgieva, M., Jetchev, D.: Sim-
+ulating homomorphic evaluation of deep learning pre-
+dictions. In: International Symposium on Cyber Secu-
+rity Cryptography and Machine Learning. pp. 212–230.
+Springer (2019)
+[10] Brakerski, Z.: Fully homomorphic encryption without
+modulus switching from classical GapSVP. In: Annual
+Cryptology Conference. pp. 868–886. Springer (2012)
+[11] Brakerski, Z., Langlois, A., Peikert, C., Regev, O., Stehlé,
+D.: Classical hardness of learning with errors. In: Pro-
+ceedings of the forty-fifth annual ACM symposium on
+Theory of computing. pp. 575–584 (2013)
+[12] Brenna, L., Singh, I.S., Johansen, H.D., Johansen, D.:
+TFHE-rs: A library for safe and secure remote comput-
+ing using fully homomorphic encryption and trusted
+execution environments. Array13, 100118 (2022)
+
+===== PAGE 15 =====
+[13] Carpov, S., Izabachène, M., Mollimard, V .: New tech-
+niques for multi-value input homomorphic evaluation
+and applications. In: Topics in Cryptology–CT-RSA
+2019: The Cryptographers’ Track at the RSA Confer-
+ence 2019, San Francisco, CA, USA, March 4–8, 2019,
+Proceedings. pp. 106–126. Springer (2019)
+[14] Chen, H., Dai, W., Kim, M., Song, Y .: Efficient homo-
+morphic conversion between (ring) LWE ciphertexts. In:
+International Conference on Applied Cryptography and
+Network Security. pp. 460–479. Springer (2021)
+[15] Chen, H., Huang, Z., Laine, K., Rindal, P.: Labeled psi
+from fully homomorphic encryption with malicious se-
+curity. In: Proceedings of the 2018 ACM SIGSAC Con-
+ference on Computer and Communications Security. pp.
+1223–1237 (2018)
+[16] Chen, H., Laine, K., Rindal, P.: Fast private set intersec-
+tion from homomorphic encryption. In: Proceedings of
+the 2017 ACM SIGSAC Conference on Computer and
+Communications Security. pp. 1243–1255 (2017)
+[17] Cheon, J.H., Han, K., Kim, A., Kim, M., Song, Y .: Boot-
+strapping for approximate homomorphic encryption. In:
+Annual International Conference on the Theory and Ap-
+plications of Cryptographic Techniques. pp. 360–384.
+Springer (2018)
+[18] Cheon, J.H., Hhan, M., Hong, S., Son, Y .: A hybrid of
+dual and meet-in-the-middle attack on sparse and ternary
+secret lwe. IEEE Access7, 89497–89506 (2019)
+[19] Cheon, J.H., Kim, A., Kim, M., Song, Y .: Homomorphic
+encryption for arithmetic of approximate numbers. In:
+International Conference on the Theory and Application
+of Cryptology and Information Security. pp. 409–437.
+Springer (2017)
+[20] Chillotti, I., Gama, N., Georgieva, M., Izabachene, M.:
+Faster fully homomorphic encryption: Bootstrapping
+in less than 0.1 seconds. In: Advances in Cryptology–
+ASIACRYPT 2016: 22nd International Conference on
+the Theory and Application of Cryptology and Infor-
+mation Security, Hanoi, Vietnam, December 4-8, 2016,
+Proceedings, Part I 22. pp. 3–33. Springer (2016)
+[21] Chillotti, I., Gama, N., Georgieva, M., Izabachène, M.:
+Faster packed homomorphic operations and efficient
+circuit bootstrapping for TFHE. In: International Con-
+ference on the Theory and Application of Cryptology
+and Information Security. pp. 377–408. Springer (2017)
+[22] Chillotti, I., Gama, N., Georgieva, M., Izabachène, M.:
+TFHE: fast fully homomorphic encryption over the torus.
+Journal of Cryptology33(1), 34–91 (2020)
+[23] Chillotti, I., Ligier, D., Orfila, J.B., Tap, S.: Improved
+programmable bootstrapping with larger precision and
+efficient arithmetic circuits for TFHE. In: International
+Conference on the Theory and Application of Cryptol-
+ogy and Information Security. pp. 670–699. Springer
+(2021)
+[24] Chung, H., Kim, H., Kim, Y .S., Lee, Y .: Amortized large
+look-up table evaluation with multivariate polynomials
+for homomorphic encryption. Cryptology ePrint Archive
+(2024)
+[25] Cong, K., Moreno, R.C., da Gama, M.B., Dai, W., Il-
+iashenko, I., Laine, K., Rosenberg, M.: Labeled PSI
+from homomorphic encryption with reduced compu-
+tation and communication. In: Proceedings of the 2021
+ACM SIGSAC Conference on Computer and Commu-
+nications Security. pp. 1135–1150 (2021)
+[26] Dahl, M., Danjou, C., Demmler, D., Frederiksen, T.,
+Ivanov, P., Joye, M., Rotaru, D.: fhevm: Confidential
+evm smart contracts using fully homomorphic encryp-
+tion (2023)
+[27] De Micheli, G., Kim, D., Micciancio, D., Suhl, A.:
+Faster amortized fhew bootstrapping using ring automor-
+phisms. p. 322–353. Springer-Verlag, Berlin, Heidelberg
+(2024)
+[28] Ducas, L., Micciancio, D.: FHEW: bootstrapping homo-
+morphic encryption in less than a second. In: Annual in-
+ternational conference on the theory and applications of
+cryptographic techniques. pp. 617–640. Springer (2015)
+[29] Dumezy, J., Alexandru, A., Polyakov, Y ., Clet, P.E.,
+Chakraborty, O., Boudguiga, A.: Evaluating larger
+lookup tables using ckks. IACR Cryptol. ePrint Arch.
+2025, 1301 (2025), https://api.semanticscholar.
+org/CorpusID:280038428
+[30] Fan, J., Vercauteren, F.: Somewhat practical fully homo-
+morphic encryption. Cryptology ePrint Archive (2012)
+[31] Gentry, C.: Fully homomorphic encryption using ideal
+lattices. In: Proceedings of the forty-first annual ACM
+symposium on Theory of computing. pp. 169–178
+(2009)
+[32] Guimarães, A., Borin, E., Aranha, D.F.: Mosfhet: Opti-
+mized software for fhe over the torus. Journal of Cryp-
+tographic Engineering14(3), 577–593 (2024)
+[33] Guimarães, A., Pereira, H.V .: Fast amortized bootstrap-
+ping with small keys and polynomial noise overhead.
+In: Proceedings of the 2025 ACM SIGSAC Conference
+on Computer and Communications Security. pp. 2967–
+2981 (2025)
+
+===== PAGE 16 =====
+[34] Guimarães, A., Pereira, H.V ., Van Leeuwen, B.: Amor-
+tized bootstrapping revisited: Simpler, asymptotically-
+faster, implemented. In: International Conference on the
+Theory and Application of Cryptology and Information
+Security. pp. 3–35. Springer (2023)
+[35] Halevi, S., Shoup, V .: Bootstrapping for helib. Journal
+of Cryptology34(1), 7 (2021)
+[36] Kim, J., Noh, T.: Modular reduction in CKKS. Cryptol-
+ogy ePrint Archive (2024)
+[37] Kluczniak, K., Schild, L.: FDFB: Full domain functional
+bootstrapping towards practical fully homomorphic en-
+cryption. IACR Transactions on Cryptographic Hard-
+ware and Embedded Systems2023, Issue 1, 501–537
+(2022)
+[38] Lee, K.H., Yoon, J.W.: Homomorphic field trace re-
+visited : Breaking the cubic noise barrier. Cryptol-
+ogy ePrint Archive, Paper 2025/1088 (2025), https:
+//eprint.iacr.org/2025/1088
+[39] Lee, Y ., Micciancio, D., Kim, A., Choi, R., Deryabin,
+M., Eom, J., Yoo, D.: Efficient FHEW bootstrapping
+with small evaluation keys, and applications to threshold
+homomorphic encryption. In: Advances in Cryptology–
+EUROCRYPT 2023: 42nd Annual International Confer-
+ence on the Theory and Applications of Cryptographic
+Techniques, Lyon, France, April 23-27, 2023, Proceed-
+ings, Part III. pp. 227–256. Springer (2023)
+[40] Li, Z., Shen, X., Lu, X., Wang, R., Zhao, Y ., Wang, Z.,
+Wei, B.: Leveled functional bootstrapping via external
+product tree. Cryptology ePrint Archive, Paper 2025/022
+(2025),https://eprint.iacr.org/2025/022
+[41] Liu, Z., Wang, Y .: Amortized functional bootstrapping in
+less than 7 ms, with o˜(1) polynomial multiplications. In:
+International Conference on the Theory and Application
+of Cryptology and Information Security. pp. 101–132.
+Springer (2023)
+[42] Lyubashevsky, V ., Peikert, C., Regev, O.: On ideal lat-
+tices and learning with errors over rings. Journal of the
+ACM (JACM)60(6), 1–35 (2013)
+[43] Mahdavi, R.A., Lukas, N., Ebrahimianghazani, F.,
+Humphries, T., Kacsmar, B., Premkumar, J., Li, X., Oya,
+S., Amjadian, E., Kerschbaum, F.: Pepsi: Practically ef-
+ficient private set intersection in the unbalanced setting.
+In: 33rd USENIX Security Symposium. pp. 6453–6470
+(2024)
+[44] Micciancio, D., Polyakov, Y .: Bootstrapping in FHEW-
+like cryptosystems. In: Proceedings of the 9th on Work-
+shop on Encrypted Computing & Applied Homomor-
+phic Cryptography. pp. 17–28 (2021)
+[45] Micciancio, D., Sorrell, J.: Ring packing and amortized
+FHEW bootstrapping. Cryptology ePrint Archive (2018)
+[46] Pagh, R., Rodler, F.F.: Cuckoo hashing. Journal of Al-
+gorithms51(2), 122–144 (2004)
+[47] Regev, O.: On lattices, learning with errors, random
+linear codes, and cryptography. Journal of the ACM
+(JACM)56(6), 1–40 (2009)
+[48] Smart, N.P., Walter, M.: Error-simulatable sanitization
+for TFHE and applications. IACR Communications in
+Cryptology2(3) (2025)
+[49] Trama, D., Boudguiga, A., Clet, P.E., Sirdey, R., Ye, N.:
+Designing a general-purpose 8-bit (t) fhe processor ab-
+straction. IACR Transactions on Cryptographic Hard-
+ware and Embedded Systems2025(2), 535–578 (2025)
+[50] Wang, R., Ha, J., Shen, X., Lu, X., Chen, C., Wang, K.,
+Lee, J.: Refined tfhe leveled homomorphic evaluation
+and its application. In: Proceedings of the 2025 ACM
+SIGSAC Conference on Computer and Communications
+Security. pp. 2309–2323 (2025)
+[51] Wang, R., Wen, Y ., Li, Z., Lu, X., Wei, B., Liu, K., Wang,
+K.: Circuit bootstrapping: faster and smaller. In: An-
+nual International Conference on the Theory and Ap-
+plications of Cryptographic Techniques. pp. 342–372.
+Springer (2024)
+A Related Work
+This section presents related work and provides some com-
+parison results.
+BFV/CKKS-based functional bootstrapping.A recent se-
+ries of works [3, 5, 6, 24, 36, 41] develop BFV and discrete
+CKKS schemes to support amortized functional bootstrap-
+ping. These schemes use polynomial interpolation to evaluate
+arbitrary functions while reducing error based on the noise
+cleaning technique. Note that BFV/CKKS schemes are char-
+acterized by significant noise growth and large parameters,
+which often necessitate stronger security assumptions. More
+precisely, if one can efficiently solve (R)LWE instances in di-
+mension N with modulus Q and discrete Gaussian error with
+parameter σ, then one can also solve hard problems such as
+the approximate shortest vector problem,GapSVPγ, in dimen-
+sion N with approximation factor γ=O(N·Q/σ) [11,47]. To
+ensure correctness under higher noise in BFV/CKKS schemes,
+the ciphertext modulus Q must be chosen considerably larger
+than the error bound e, leading to increased γ for the under-
+lying lattice problem that governs security. As γ grows, the
+associated lattice problems such as GapSVPγ become easier
+to solve. Consequently, assuming the worst-case hardness
+of GapSVPγ becomes a stronger security assumption as γ
+increases.
+
+===== PAGE 17 =====
+FHEW/TFHE-based batch functional bootstrapping.In
+Se. 6.2, we provide the comparison and analysis of the state-
+of-the-art scheme [33]. We note that there is another route
+for batch functional bootstrapping for FHEW/TFHE schemes
+[27, 34, 45]. These schemes use the NTT to evaluate poly-
+nomial multiplication in RLWE decryption without utilizing
+the sparsity of the secret key. This method can reduce the
+complexity to O(nlogn) . However, to keep the noise in ap-
+proximate polynomial factors, the recursive depth is limited
+to a small constant. A concrete implementation is presented
+in [34], with the amortization result of 851 ms under 7 mes-
+sage precision bits. Our method significantly outperforms this,
+with a 34× speedup. Furthermore, their approach requires very
+large bootstrapping keys (65.3 GiB in total), our scheme re-
+duces it to just 205.3 MB, a reduction by a factor of 584.
+Other FHE-based PSI.The FHE-based PSI protocol [16]
+was proposed by Chen et al. in 2017, which focuses on unbal-
+anced settings by using the BFV scheme. Their foundational
+idea was to represent the equality operation via an interpola-
+tion polynomial. This evaluation reveals an intersection if the
+client’s element exists in the server’s set, result equals to zero;
+otherwise, the result is a random number. To improve perfor-
+mance, Cong et al. [25] introduce some optimizations, such
+as incorporating extremal postage-stamp bases and Frobenius
+operation, to reduce multiplicative depth and support for el-
+ements of arbitrary bit length. Regarding parameter settings
+n=2 28 and m=4096 , the overall latency of the protocol is
+2133 s under 32 threads, which is 31 times slower than our PSI
+solution. However, their protocol achieves faster server-side
+online computation. Specifically, their method requires only
+2.5 s for online time, which is 20.4× faster than our method
+(51 s in our method). Moreover, our approach yields a 357×
+reduction in communication overhead, substantially alleviat-
+ing network bandwidth constraints and enhancing scalability
+for large-scale deployments.
+B Fundamental Algorithms and Noise Growth
+B.1 Notations
+The lower-case regular bold letters indicate vectors in this pa-
+per. For a real numberr, we write the floor, ceiling, and round
+functions as ⌊r⌋ ⌈r⌉ ⌊r⌉, respectively. We useZQ to denote the
+Qring of integers Z/QZ in the range [−Q/2,Q/2)∩Z . In ad-
+dition, we use the cyclotomic ring RN,Q =Z Q[X]/
+
+X N +1
+
+,
+where N is an integer to the power of 2, and its coefficients are
+from ZQ. The notation ai or a[i] is used to index the vector and
+polynomial coefficients. We use s or s(X) to denote polyno-
+mials, and si represents the i-th coefficient of the polynomial,
+where its coefficient vector is Coef(s) = (s0, . . . ,sN−1)∈Z N
+Q.
+Furthermore, we use Var(a) to denote the variance of the
+Gaussian distribution for a∈R , and Vstep to indicate the vari-
+ance accumulated during step execution.
+B.2 Noise Growth for GP, EP, and CMux
+For the gadget product with the gadget vectorg =
+(B0, ...,Bd−1), the error variance of the gadget product re-
+sult is bounded by VGP = B2
+12 dN·Var(c in) +N
+12 ·
+l
+Q
+Bd
+m2
+as shown in [22], where Var(cin) is the error variance of
+the input gadget RLWE. Since the external product requires
+two gadget products, we can derive the noise variance as
+VEP = B2
+6 dN·Var(C in) +N
+12 ·
+l
+Q
+Bd
+m2
+, where Var(Cin) is the
+error variance of the input RGSW ciphertext. Furthermore, the
+CMux has an additional subtraction from the external product,
+so the noise variance is twice that of the first term of external
+product, i.e.,V CMux = B2
+3 dN·Var(C in) +N
+12 ·
+l
+Q
+Bd
+m2
+.
+B.3 Homomorphic Operations
+Modulus Switching( MS). Given an RLWE ciphertext c=
+(a,b)∈RLWE n
+s,p/Q (m) with error variance Var(cin), the mod-
+ulus switching algorithm computes ModSwitchQ→q(c) =j
+q
+Q ·a
+m
+,
+j
+q
+Q ·b
+m
+. It is easy to verify that the ciphertext
+is a correct ciphertext under modulo q, and its variance is
+VMS ≤( q
+Q )2 ·Var(c in) +||s||2
+2+1
+12 , where the factor 1
+12 is the
+standard deviation of a uniform distribution in [−1/2,1/2].
+For the binary secret key with h Hamming Weight, we have
+VMS ≤( q
+Q )2 ·Var(c in) +h+1
+12 .
+RLWE key switching ( RKS).The RLWE key switching can
+convert the ciphertext RLWEs1,Q(m) to a new ciphertext
+RLWEs2,Q(m). Given the c= (a,b)∈RLWE s1,Q(m), and
+the key switching key Rlk=RLWE ′
+s2,Q(s1), the RLWE key
+switching operation performs RL WE.KeySwitch(c,Rlk) =
+(0,b)−a⊙Rlk , which outputs the ciphertext RLWEs2,Q(m),
+where the correctness can be found in [22, 39]. The error
+varianceV RKS is the same as that of the gadget productV GP.
+Scheme switching ( SS).We can use the scheme switching
+[27,40,51] to embed the secret key s into the message. Specif-
+ically, given the key switching key Ssk=RLWE ′
+s,Q(s2), and
+the ciphertext c= (a,b)∈RLWE s,Q(m), we can compute
+Scheme.Switch(c,Ssk) =a⊙Ssk+ (b,0), which outputs ci-
+phertext RLWEs,Q(−s·m) as shown in [27, 51], where the
+error variance satisfiesV SS ≤ N
+2 ·Var(c in) +VRKS.
+RingSwitch( RS). Ring switching can switch the polynomial
+ring RN,Q to the subset and coset for polynomialRN/k,Q, where
+both k and N are powers of 2, and k|N. Given a polyno-
+mial m(X) =m 0 +m 1X+· · ·+mN−1X N−1, we define the
+ring switching as (m0, ...,mk−1)←RingSwitch(m) , where
+mi(X) =miX i +m k+iX+· · ·+m(N/k−1)k+i X N/k−1 ∈R N/k,Q.
+This process does not increase noise, and please refer to
+work [4] for more details.
+
+===== PAGE 18 =====
+Algorithm 5HomoTrace for Tr KN /Kn
+Input:
+The RLWE ciphertextc= (a,b)∈RLWE N
+s,Q(m(X)).
+The automorphism keys Auki =RLWE ′
+s,Q(τi(s)), where
+i∈
+
+2logN−k+1 +1
+	
+andk∈[1,logN].
+Output:
+RLWE ciphertextc ′ ∈RLWE(Tr KN /Kn(m)).
+1:fori=log 2 n+1 to log 2 Ndo
+2:c ′ =ModSwitch Q→Q/2(c′)
+3:c ′ =ModRaise Q/2→Q(c′)
+4:c ′ =c ′ +HomoAuto τ2i+1 (c′,Auk 2i+1),
+5:end for
+6:returnc ′.
+B.4 HomoTrace and Repacking
+Homomorphic Trace( HomoTrace). We show the HomoTrace
+operation for TrKN /Kn (n|N) as shown in Alg. 5. Specifi-
+cally, given the ciphertext RLWE(m(X)) for m(X) =m0 +
+· · ·+mN−1X N−1, this algorithm outputs a new ciphertext
+RLWE(TrKN /Kn(m)), where TrKN /Kn(m(X)) =∑n−1
+i=0 mi·N/n ·
+X i·N/n. Note that this algorithm also incurs an expansion by a
+factor of N/n. Here, we use the method of RevHomTrace [38]
+to remove the effect of this factor inflation by evaluating
+the change in ModSwitch and ModRaise between Q and
+Q/2. In addition, the error variance of HomoTrace is bound
+by VHT ≤log 2( N
+n )·V Auto +4log 2( N
+n )·V MS +Var(Auk). For
+more details, please refer to [38].
+Repacking. (Repack) Given n LWE ciphertexts or RLWE ci-
+phertexts as RLWEN
+s,Q(m j) = (aj,b j), where i∈[0,n−1] and
+n|N. We can pack these ciphertexts into an RLWE ciphertexts
+as shown in Alg. 6. Here, we consider two scenarios based on
+the number of ciphertextsnto be packed.
+• Sparse packing casen|N. In this case, all ciphertexts are
+first integrated into an RLWE that encrypts ∑n−1
+j=0 m j,0 ·X j· N
+n ·
+∑
+N
+n −1
+k=0 ∗X k through the repacking. Next, theTrKN /Kn is used to
+eliminate redundancies Alg. 5. Therefore, the repacking pro-
+cess requires n
+2 + n
+4 +· · ·+1+log(N/n) =n−1+log(N/n)
+automorphisms, and the error variance can be summarized as
+VPack = (log2 n+log 2(N/n))·(V Auto +4V MS) +Var(cin).
+• Full packing casen=N. In this case, we apply the au-
+tomorphism technique to combine them into an RLWE ci-
+phertext, and this process requires N
+2 + N
+4 +· · ·+1=N−1
+automorphisms. The error variance is bound by VPack =
+log2 N·(V Auto +4V MS) +Var(cin)as shown in [38].
+C Algorithm and Analysis for BatchBoot
+C.1 EMPmul for negative number
+Recall that the Alg. 2 presents the EMPmul procedure with
+the positive integer v. Here, the Alg. 7 shows the case for
+Algorithm 6RLWE ciphertext repacking (RL WE.Repack).
+Input:n RLWE samples c j ∈RL WEN
+s,Q(mi), j∈[0,n−1] ,
+wheren|N.
+The automorphism keys Auki =RLWE ′
+s,Q(τi(s)), where
+i∈
+
+2logN−k+1 +1
+	
+andk∈[1,logN].
+Output:An RLWE ciphertextct ′ ∈RL WEs(m)).
+1:fori=1 to logndo
+2:forj=0 ton/2 i −1 do
+3: ec j =c j −X
+N
+2i ·c j+n/2i,
+4: ec j =ModSwitch Q→Q/2(c′)
+5: ec j =ModRaise Q/2→Q(c′)
+6:c j = ec j +HomoAuto τi(ec j,Auk) +X
+N
+2i ·c j+n/2i,
+7:end for
+8:end for
+9:ifn<N,returnct ′ =Eval.Tr KN /Kn(c0).
+10:ifn=N,returnc 0.
+negative v, i.e, v∈[−n,0] . For the negative, the encrypted
+message will be rotated to the left. This means the sub-loop
+order and output ciphertext indices must be reversed, while
+its noise growth remains the same as Alg. 2.
+C.2 Correctness and noise growth
+Proof of Lemma 4.1Firstly, Alg. 2 performs ℓ/2 iterations,
+each iteration involves four external products. Its correctness
+can be obtained directly from the multi-bit CMux gates and
+the parameterized external product. In addition, for the noise
+growth, Alg. 2 removes the noise from the automorphism, but
+introduces the noise growth of four external products. Since
+the noise variance of the external product is additive, afterℓ/2
+iterations, we can conclude thatV EMp <Var(c in) +2ℓ·VEP.
+Proof of Lemma 4.2. Alg. 3 first performs h+kEMPmul
+operations (Alg. 2), with additive noise as stated in Lemma
+4.2. The resulting ciphertexts are then repacked into a new
+RLWE ciphertext, with error variance analyzed in Sec. B.4.
+Finally, RLWE key switching adjusts the key to match the
+original secret key input, bounding the error variance by
+VBoot <(h+k)·V EMP +V Pack +V RKS
+<2(h+k)ℓ·V CMux +log 2 N·(V Auto +4V MS) +VRKS.
+Lemma C.1.Input an RLWE ciphertext ct∈RLWE n
+s,q(m),
+the bootstrapping key Bsk, automorph key Auk, and RLWE
+key switching key Rvk. Alg. 4 outputs a n encryption for
+RGSWN
+es,Q(X emi)fori∈[0,n−1], and its variance satisfies
+VCBoot ≤N(h+k)ℓ·V CMux + N·log 2 d
+2 ·VAuto +VRKS.
+Proof of Lemma C.1. Alg. 4 first performs BatctBoot as
+shown in Alg. 3 without repacking, which outputs n RLWE
+
+===== PAGE 19 =====
+Algorithm 7Efficient MPmul for negative number
+Input:
+A list ci ∈RLWE(X ui) for 0≤i≤n representing a poly-
+nomialu(X)encrypted in the exponent.
+The bootstrapping key Bski,j for 0≤i< ℓ/2−1 and
+0≤j≤3 as shown in Tab 1, which is associated with an
+encrypted value−v,(v>0).
+Output:
+A list ˆci ∈RLWE(X wi) for polynomial w(X) =u(X)·
+X −v modX n +1, where 0≤i≤n.
+1:fori=0 toℓ/2−1 do
+2:forj=0 ton−1 do
+3:ˆc j =FFT◦Decom(c j)
+4:end for
+5:forj=0 ton−2 2i −2 2i+1 −1 do
+6:
+ˆcj =c j+22i ⊠Bsk +
+2i,0 +c j+22i+1 ⊠Bsk +
+2i,1
++c j+22i+22i+1 ⊠Bsk +
+2i,2 +c j ⊠Bsk +
+2i,3
+7:end for
+8:forj=n−2 2i −2 2i+1 ton−2 2i+1 −1 do
+9:
+ˆcj =c j+22i ⊠Bsk +
+2i,0
++c j+22i+1 ⊠Bsk +
+2i,1
++c j+22i+22i+1−n ⊠τ −1Bsk−
+2i,2
++c j ⊠Bsk +
+2i,3
+10:end for
+11:forj=n−2 2i+1 ton−2 2i −1 do
+12:
+ˆcj =c j+22i ⊠Bsk +
+2i,0
++c j+22i+1−n ⊠τ −1Bsk−
+2i,1
++c j+22i+22i+1−n ⊠τ −1Bsk−
+2i,2
++c j ⊠Bsk +
+2i,3
+13:end for
+14:forj=n−2 2i ton−1 do
+15:
+ˆcj =c j+22i−n ⊠τ −1Bsk−
+2i,0
++c j+22i+1−n ⊠τ −1Bsk−
+2i,1
++c j+22i+22i+1−n ⊠τ −1Bsk−
+2i,2
++c j ⊠Bsk +
+2i,3
+16:end for
+17:forj=0 ton−1 do
+18:ˆc j =iFFT(c j)
+19:end for
+20:(c 0, ...,cn−1)←(ˆc 0, ...,ˆcn−1)
+21:end for
+22:return(c 0, ...,cn−1)
+Algorithm 8External Product Tree (EPT).
+Input:β RGSW ciphertexts Ck =RGSW(X emk ), for k∈
+[0,β−1].
+pβ−1 polynomials testPi that encode the LUT f:[0,p in −
+1]β →[0,p out −1], where t∈[0,p β −1] , where testPi =
+− ∑N−1
+j=0
+j
+Q
+pout
+m
+·f
+
+t,
+j
+j p
+2N
+m
+·X N− N
+p −j−1
+Output:An RLWE ciphertext, where its zeroth term corre-
+sponds tof(m 0, ...,mβ−1).
+1:fork=0 toβ−1 do
+2:fori=0 top β−k−1 −1 do
+3:c k,i =testP i ⊡Ck,
+4:end for
+5:fori=1 top β−k−2 do
+6:testP i−1 =RL WE.Repack(ck,(i−1)p , ...,ck,ip−1 )·
+∑
+2N/p−1
+i=0 −X i
+7:end for
+8:end for
+9:returntestP 0.
+ciphertexts. After that, it uses HomoTrace to extract the ci-
+phertext associated with Bi. This step can generate the gadget
+RLWE ciphertext. Finally, the scheme switching is used to
+embed the secret key. The noise in these steps is additive, so
+we have
+VCBoot < N
+2 ((h+k)·V EMp +V HT) +VRKS
+<N(h+k)ℓ·V CMux + N·log 2 d
+2 ·V Auto +V RKS.
+Lemma C.2.Input β RGSW ciphertext Ck ∈RGSW(X emi)
+with the noise variance Vin, and the automorphism key Auk,
+Alg. 8 outputs the ciphertext of f(m 0, ...,mβ−1), where the
+variance satisfies
+VEPT ≤β·V EP ·Vin + (β−1)·V Pack.
+Proof of Lemma C.2. The correctness of Alg. 8 can be di-
+rectly obtained from the correctness of the external product
+and functional bootstrapping. It is worth noting that this algo-
+rithm introduces a multiplicative noise growth. By carrying
+the variance of the CBS (lemma C.1) into the variance of
+the initial external product, we can obtain the final error vari-
+ance batched circuit bootstrapping as follows Vout <β·V EP ·
+(N(h+k)ℓ·V CMux + N·log2 d
+2 ·V Auto +V RKS) + (β−1)·VPack.
+For a more detailed noise analysis, please refer to [40].
+C.3 Security and standard deviations
+In this subsection, we show the standard deviations of the
+initial noise corresponding to various bootstrapping keys and
+ciphertexts in Tab. 9. All parameter settings satisfy the 128-bit
+security level through the lattice estimator.
+
+===== PAGE 20 =====
+Table 9: Security and standard deviations for FHE parameters
+using the lattice estimator.
+Setsh N QStdλ
+Boot 2 39 2048 2 64 2 −15 >128
+Boot 2 512 2048 2 64 2 −53 >128
+Boot 4 42 2048 2 64 2 −17 >128
+Boot 4 512 2048 2 64 2 −53 >128
+Boot 6 33 4096 2 64 2 −21 >128
+Boot 6 512 2048 2 64 2 −53 >128
+Boot 8 34 4096 2 64 2 −24 >128
+Boot 8 512 4096 2 64 2 −56 >128
+C.4 Failure Probability
+Given a ciphertext with Gaussian-distributed noise e with
+standard deviation Std, we can compute the probability of de-
+cryption failure. Notice that we are leaving one bit of padding
+for the message to avoid the negacyclicity as done in [33], i.e.,
+mi ∈Z p and △=q/2 p+1. Therefore, the message mi ∈Z p
+is correctly bootstrapped with probability Pr[e<q/2 p+2] =
+erf
+
+q/2p+2
+√
+2·StdM
+
+, where StdM denotes the maximum standard
+deviation of noise throughout the evaluation process. For ex-
+ample, in Alg. 3, the maximum standard deviation satisfies
+StdM = (VBoot +V MS)
+1
+2 . Finally, we present more detailed
+results for decryption failure rates in Tab. 4.
+D Parameter Settings and Performance Re-
+sults
+D.1 FHE Parameter Settings
+we present the parameters of BATCHBOOTin Tab. 10 and
+BATCHCBOOTin Tab. 11, respectively.
+Table 10: Parameters of BATCHBOOTof Alg. 3 where the set
+PSI.Boot6 is used in PSI.
+Para. Setsp n h N B Bsk dBsk BAuk dAuk BRlk dRlk
+Boot2 22 211 39 2 11 223 1 2 23 1 2 12
+Boot4 24 211 42 2 11 223 1 2 23 1 2 14
+Boot6 26 212 33 2 12 223 1 2 23 1 2 17
+Boot8 28 212 34 2 13 223 1 2 23 1 2 17
+PSI.Boot6 26 211 39 2 11 215 2 2 15 2 2 12
+Table 11: Parameters of BATCHCBOOTof Alg. 4.
+Setsp n h N B Bsk dBsk BAuk dAuk BRvk dRvk B d
+CBoot4 24 211 39 2 11 215 2 2 15 2 2 15 2 2 4 4
+D.2 Performance Results
+This section shows more detailed implementation results. We
+first present the performance results for multithreaded exe-
+cution in Tab. 12. Our experimental findings indicate that
+our algorithm directly benefits from an increased number of
+threads. Finally, we present the peak memory usage in Tab. 13.
+Table 12: Multi-threaded execution result for Batchboot,
+whereTrepresents the number of threads.
+Params. Packed Mess.T=1T=2T=4T=8T=16
+Boot8 4096 102.8 s 55.3 s 29.2 s 19 s 14.7 s
+Table 13: Peak memory usage for the evaluation of LUTs in
+the single-threaded setting, where the parameters use the fully
+packing parameters corresponding to Tab. 4.
+2-bit LUT 4-bit LUT 6-bit LUT 8-bit LUT
+Peak RAM 360 MB 360 MB 1425 MB 3743 MB

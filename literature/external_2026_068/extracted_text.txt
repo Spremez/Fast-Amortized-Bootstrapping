@@ -1,0 +1,1322 @@
+
+===== PAGE 1 =====
+Practical Amortized Bootstrapping for
+NTRU-Based FHE
+Wun-Ting Lin and Ja-Ling Wu
+National Taiwan University, Taipei, Taiwan
+d07922020@ntu.edu.tw,wjl@cmlab.csie.ntu.edu.tw
+Abstract.Fully homomorphic encryption (FHE) enables computation on encrypted
+data. NTRU-based FHE offers compact ciphertexts—a single ring element rather
+than a tuple—but FINAL, the leading NTRU-based scheme, represents its ciphertexts
+and decryption in matrix form that hides the polynomial-ring structure on which
+recent automorphism-based amortized bootstrapping relies.
+We reformulate FINAL in the standard polynomial-ring setting and express its decryp-
+tion as coefficient-wise inner products compatible with FHEW-style accumulators.
+This preserves the required ring automorphisms and lets us adapt monomial-by-
+polynomial amortized bootstrapping to NTRU ciphertexts with sparse secret keys:
+for a secret of Hamming weighth, the dominant per-coefficient work drops from
+O(nℓQ)to O(hℓpos)external-product operations, whereℓQ andℓpos denote the gadget-
+decomposition lengths of the standard and position-based bootstrapping keys, re-
+spectively. Concrete parameters are selected by a joint optimization that combines a
+refined average-case noise analysis with security validation via NTRU fatigue analysis
+and the Lattice Estimator under sparse-secret distributions.
+Our highly optimized single-threaded C++ implementation based on Intel HEXL
+bootstraps a message coefficient in2.68ms at n = 8192—45× faster than FINAL and
+2.6× faster than TFHE-rs. The bootstrapping key does not scale withn (11.28MB
+at n = 8192). Packed ciphertexts cost about 8 bytes per message bit, and the total
+key material remains below that of state-of-the-art amortized RLWE bootstrapping.
+Keywords:Fully Homomorphic Encryption·NTRU·Amortized Bootstrapping
+1 Introduction
+Fully homomorphic encryption (FHE) enables computation directly on encrypted data,
+but bootstrapping remains a major performance bottleneck—particularly in FHEW-
+style bitwise schemes, where it refreshes ciphertexts and evaluates nonlinear operations.
+Therefore, reducing the cost and memory footprint of bootstrapping is therefore a central
+challenge in designing practical FHE schemes.
+NTRU-based FHE is attractive because its ciphertexts are compact: a single ring
+element rather than a tuple of them. Early constructions such as LTV [LTV12] and
+BLLN [BLLN13] were later broken in the overstretched parameter regime [ABD16, KF17],
+but Ducas and van Woerden showed how to avoid this regime [DvW21], and Bonte
+et al. [BIP+22] subsequently demonstrated FINAL, an NTRU-based FHE scheme with
+competitive bootstrapping performance under conservative parameters.
+The key idea behind FINAL is a matrix-NTRU formulation that expresses decryption as
+an inner product, which can be evaluated homomorphically inside an FHEW-style accumu-
+lator. This advantage comes at a structural cost: monomial-by-polynomial (MPMul) amor-
+tized bootstrapping packsn messages into a single accumulator polynomial and traverses
+the secret key through monomial multiplications and Galois automorphisms—inherently
+
+===== PAGE 2 =====
+2 Practical Amortized Bootstrapping for NTRU-Based FHE
+ring operations with no natural counterpart once ciphertexts are treated as matrices and
+vectors overZq. FINAL therefore retains compact NTRU ciphertexts but cannot directly
+benefit from automorphism-based amortization.
+Can we obtain an NTRU-based FHE scheme that simultaneously preserves compact
+NTRU ciphertexts, supports FHEW-style bootstrapping, and enables amortized bootstrap-
+ping via polynomial automorphisms? Returning to the standard polynomial formulation of
+NTRU [HPS98], we decompose the decryption product into coefficient-wise inner products.
+This decomposition plays the same role as FINAL’s matrix lifting—making decryption
+compatible with FHEW-style accumulators—while operating natively within the ring.
+This ensures that ciphertexts and secret keys are kept as ring elements, leaving the
+automorphisms required for amortization fully accessible.
+Building on this observation, we adapt the MPMul-based amortized bootstrapping to
+NTRU ciphertext. Guimarães and Pereira [GP25] originally developed this technique for
+RLWE ciphertext. The adaptation is nontrivial—NTRU accumulator ciphertexts are scalar
+ring elements of the formg/f rather than RLWE tuples, and accumulator operations must
+preserve this structure—and is achieved through a difference-vector representation of the
+sparse secret-key positions and an NTRU-compatible MPMul procedure for accumulator
+ciphertexts. For a sparse ternary secret of Hamming weighth, the procedure traverses
+only theh nonzero key positions instead of alln, reducing the amortized cost per refreshed
+coefficient fromO(nℓQ)to O(hℓ pos)—where ℓpos =O(logR pos)is the short gadget length
+induced by the boundRpos on the gaps between nonzero positions—and shrinking the
+dominant bootstrapping-key material to sparse position-dependent keys. We further
+shorten all gadget lengths via an approximate gadget decomposition, and derive concrete
+parameters via a joint optimization that combines a refined average-case noise analysis
+with a failure-probability target of2−64; security is validated against the NTRU fatigue
+analysis and the Lattice Estimator for sparse secrets.
+We benchmark an optimized C++ implementation, accelerated with Intel HEXL and
+executed single-threaded on identical hardware, against the reference implementation
+of FINAL [BIP+22], the highly optimized TFHE-rs library [Zam22], and the amortized
+bootstrapping of Guimarães and Pereira [GP25]. The amortized cost per refreshed message
+decreases monotonically with the packing dimension, from5.02ms at n = 1024to2 .68ms
+at n = 8192—speed-ups of24 .14× to45 .22× over FINAL and of1.41× to2 .65× over
+TFHE-rs—while staying within1.35× (n = 2048) to1.17× (n = 8192) of GP25, with the
+gap narrowing asn grows. Our key material is strictly smaller: the bootstrapping key
+does not scale withn and shrinks to11.28MB at n = 8192—7.7× below FINAL’s and
+consistently below GP25’s—the total key size is up to1.98× smaller than GP25’s, and
+packed ciphertexts cost about8bytes per message bit, half of GP25’s per-slot footprint
+and roughly a400×density improvement over single-bit FHE schemes.
+In summary, our main contributions are as follows:
+• Anaccumulator-compatiblereformulationofNTRUdecryptionascoefficient-
+wise inner products, showing that FHEW-style bootstrapping is directly compatible
+with the standard polynomial formulation of NTRU—without FINAL’s matrix lifting,
+and while preserving the ring automorphisms required for amortization.
+• An amortized bootstrapping procedure for NTRU ciphertexts with sparse
+ternary keys, combining an NTRU-compatible MPMul with a difference-vector
+encoding of secret-key positions, reducing the per-coefficient cost fromO(nℓQ)to
+O(hℓ pos)and correspondingly shrinks the bootstrapping key.
+• A refined noise analysis and joint parameter optimizationwith approximate
+gadget decompositions under a failure-probability target. Security is validated using
+NTRU fatigue analysis and the Lattice Estimator, together with an optimized
+
+===== PAGE 3 =====
+W.T. Lin and J.L. Wu 3
+C++/HEXL implementation evaluated single-threaded against FINAL, TFHE-rs,
+and GP25 on identical hardware.
+2 Preliminaries
+2.1 Notation
+Throughout this paper, we denote the security parameter byλ. For an integerd≥ 1, we
+write[ d] :={0, 1,...,d− 1}. Letn = 2k and N = 2K for some positive integersk and K.
+We usenfor the dimension of the base ring andNfor the dimension of the accumulator
+ring. We define the cyclotomic ringsR := Z[X]/⟨Xn + 1⟩ and ˆR := Z[X]/⟨XN + 1⟩. For
+moduli q and Q, their corresponding quotient rings areRq :=R/qR∼= Zq[X]/⟨Xn + 1⟩
+and ˆRQ := ˆR/QˆR∼= ZQ[X]/⟨XN + 1⟩. The modulusq is used by the base encryption
+scheme, whereasQis used by the accumulator scheme.
+For a modulusµ, letIµ := [−⌊µ/2⌋,⌈µ/2⌉)∩Z and denote by[z]c
+µ the centered
+representative ofz∈Z µ inIµ. Centered lifting is applied coefficient-wise to vectors and
+polynomials. Vectors are written in bold lowercase and polynomials in italic lowercase. For
+a(X) = ∑n−1
+i=0 aiXi∈R q, we writea:= ( a0,...,a n−1)T and~a :=
+(
+[a0]c
+q,..., [an−1]c
+q
+)T
+and define∥a∥∞ :=∥~a∥∞. The same conventions apply toˆRQ with( n,q )replaced by
+(N,Q ). We freely identify a polynomial with its coefficient vector when no confusion arises.
+For polynomialsa,b of dimensiond, their coefficient-wise product and inner product
+are respectively represented asa◦b :=∑d−1
+i=0 aibiXi and⟨a,b⟩ :=∑d−1
+i=0 aibi. We write
+a◦2 :=a◦a. In particular, for binary polynomialsaandb,(a−b) ◦2 =a+b−2(a◦b).
+We denote the set of signed monomials byM:={±b·Xk :b∈{0,1},k∈N}.
+2.2 Gadget Decomposition and Security Assumptions
+Gadget decomposition.We describe gadget decomposition uniformly for the base and
+accumulator rings. LetSµ := Zµ[X]/⟨Xd + 1⟩, where(d,µ )is either( n,q )or( N,Q ). Fix
+a power-of-two decomposition baseB≥ 2, and letℓµ :=⌈logBµ⌉ denote the number of
+digits. SinceB is even,DB = [−B/2, B/2)∩Z, the balanced digit set, is not symmetric
+about zero; this asymmetry affects the second moment of the digit distribution and is
+accounted for in the Section 5.4 noise analysis.
+We define thegadget vector gµ := (B0, B1, ..., Bℓµ−1)T ∈Z ℓµ
+µ . For any k∈Z µ,
+we define itsbase-B decompositionas g−1
+µ (k) := ( k0, k1, ..., kℓµ−1)T ∈D ℓµ
+B for all i,
+satisfying⟨g−1
+µ (k),g µ⟩≡k (modµ ). For a polynomiala =∑d−1
+i=0 aiXi∈S µ, we extend
+the decomposition coefficient-wise: g−1
+µ (a) :=∑d−1
+i=0 g−1
+µ (ai)·X i∈S ℓµ
+µ . Taking the inner
+product withgµ reconstructs the polynomial inSµ:
+⟨g−1
+µ (a),g µ⟩=
+d−1∑
+i=0
+ai·X i =a.
+We omit the modulus subscript when clear from context, writinggandg−1(·).
+We also use theapproximategadget decomposition [CGGI16], which retains only theℓ≤
+ℓµ most significant digits. Letε :=ℓµ−ℓ. The gadget vector isgµ,ℓ := (Bε, ..., Bℓµ−1)T∈
+Zℓ
+µ, and reconstruction holds up to a rounding error:⟨g−1
+µ,ℓ(a),g µ,ℓ⟩ =a−e dec(a)in Sµ,
+with∥e dec(a)∥∞≤B ε/2.
+NTRU assumption.The security of our scheme relies on the standard NTRU assump-
+tion [HPS98]: for f,g sampled from a small-coefficient distributionχσ overR with f
+invertible inRq, the public keyh := g·f −1∈R q is computationally indistinguishable
+
+===== PAGE 4 =====
+4 Practical Amortized Bootstrapping for NTRU-Based FHE
+from a uniformly random element ofRq. We assume parameters are chosen outside the
+overstretched regime [ABD16, KF17]; the concrete security evaluation, including the secret
+key’s sparsity, is presented in Section 5.
+2.3 FHEW-Style Bootstrapping
+FHEW-style bootstrapping [DM15, CGGI16] refreshes a noisy ciphertext ct∈R q by
+homomorphically evaluating its decryption inside an accumulator:ct is lifted into an
+accumulator ciphertext overˆRQ initialized with a test polynomial, the accumulator is
+blind-rotated using a bootstrapping keybsk. Because bsk encrypts the base secret key under
+the accumulator scheme, the refreshed message is extracted—typically as the constant
+term of the resulting polynomial—and modulus- and key-switching convert the result
+back to the base key. We follow this paradigm, but instantiate both the base and the
+accumulator scheme with NTRU ciphertexts; the realization of blind rotation via NTRU
+external products is presented in Section 3.3.
+3 Polynomial NTRU FHE Scheme
+FINAL [BIP+22] expresses decryption as an inner product between a ciphertext and the
+first column col0(F−1)of the inverse secret-key matrix. This representation is well suited
+to accumulator-based bootstrapping, but Galois automorphisms and monomial shifts—the
+operations on which MPMul-based amortization relies—have no natural counterpart in
+this matrix–vector form. We therefore restate the relevant NTRU operations directly over
+the polynomial ring: the reformulation preserves the decryption structure required by
+the accumulator while supporting the automorphism and monomial interface used by the
+amortized procedure of Section 4.
+3.1 Polynomial-Ring NTRU Base Scheme
+We now describe the polynomial-ring NTRU base scheme used in our construction. The
+scheme follows the NTRU encryption structure underlying FINAL [BIP+22] and represents
+ciphertexts and secret keys directly as elements of the polynomial ring. All operations
+take place in the cyclotomic ringRq introduced in Section 2.1. Fresh ciphertexts encode a
+message in Z4 and use the scaling factor∆ :=⌊q/4⌉, whereas the outputs of homomorphic
+NAND gates carry a message inZ2 and therefore use∆ :=⌊q/2⌉.
+•NTRU.ParamGen (1λ): On input the security parameterλ, output a parameter tuple
+(n,q,σ).
+•NTRU.KeyGen (n,q,σ ): Samplef′←χ n
+σ and setf := 1 + 4f′; resamplef′ untilf is
+invertible inRq. Sample a ternary polynomialgevk∈R q and define the evaluation
+keyevk:=
+(
+gevk +⌊5q/8⌉
+)
+·f−1∈R q. Output(sk,evk)withsk:=f.
+•NTRU.Enc (m,sk ): Given a binary polynomialm =∑n−1
+i=0 miXi∈R q with mi∈
+{0,1}, sampleg←χ n
+σ and output
+c:= (g+ ∆·m)·f −1∈R q.
+•NTRU.Dec (c,sk ): Computer :=c·f (modq)and output m′ :=⌊2r/q⌉mod 2, where
+rounding and reduction are applied coefficient-wise.
+Lemma 1(Decryption Correctness).Let c := (g + ∆·m )·f−1∈R q, which encrypts a
+binary polynomialm =∑n−1
+i=0 miXi with mi∈{ 0, 1} at scale∆ =⌊q/2⌉. If the centered
+error satisfies∥e∥∞ <∆/2, thenNTRU.Dec(c,sk) =m.
+The proof of Lemma 1 is deferred to Appendix A.
+
+===== PAGE 5 =====
+W.T. Lin and J.L. Wu 5
+Table 1:Ciphertext formats in the accumulator scheme.
+F ormat Encrypts Used for
+EncSaccumulator state / test vector bootstrapping state
+EncVsigned monomial inMor zero external product / CMux
+Homomorphic NANDFor binary polynomials a,b∈R q, the target NAND polynomial
+is defined coefficient-wise as
+y:=NAND(a,b) = 1−a◦b,withy i = 1−a ibi,
+where1∈R q denotes the all-ones polynomial∑n−1
+i=0 Xi in this Hadamard context.
+•NTRU.Nand (c0,c 1,evk ): Given fresh encryptionsc0 = (g0 + ∆·a )·f−1 and c1 =
+(g1 + ∆·b)·f −1 of binary polynomialsa,b∈R q, outputc NAND :=evk−c 0−c 1.
+Lemma 2(Correctness of NTRU.Nand).Let c0 and c1 be fresh encryptions of binary
+polynomialsa and b as above, and letevk be generated from the ternary polynomialgevk.
+Denote byg 0, g1∈Z n
+q the coefficient vectors ofg0 and g1, respectively. If
+⏐⏐(g0)i + (g1)i
+⏐⏐<
+(q− 20)/8for every i∈{ 0,...,n− 1}, then NTRU.Nand(c0,c 1,evk )outputs a valid binary-
+output ciphertext ofy=NAND(a,b) = 1−a◦b.
+The proof of Lemma 2 is deferred to Appendix B.
+3.2 Accumulator-Compatible Decryption Reformulation
+Decryption as Coefficient-Wise Inner ProductsThe decryption step described above
+requires a polynomial multiplication of the ciphertext by the secret key. To evaluate this
+operation homomorphically using an FHEW-style accumulator, we rewrite the polynomial
+multiplication as a set of inner products, one for each output coefficient. Leta(X) =∑n−1
+i=0 ai·X i and f(X) = ∑n−1
+i=0 fi·X i be two polynomials inRq = Zq[X]/⟨Xn + 1⟩.
+Their negacyclic product isc(X) =a(X)·f (X) =∑n−1
+k=0ckXk. For each coefficient index
+0≤k<n, the coefficientc k is given byck =∑k
+i=0ak−i·fi−∑n−1
+i=k+1an+k−i·fi.
+Equivalently,ck can be expressed as the inner product of the coefficient vectors of
+a(X−1)·X k and the coefficient vector off(X):
+ck =
+⟨
+a(X−1)·X k, f(X)
+⟩
+.(1)
+This formulation is compatible with FHEW-style accumulators, which compute inner
+products between public coefficient vectors and encrypted secret-key coefficients.
+Hence, we can compute each output coefficient using an accumulator:
+a(X)·f(X)↦−→
+{⟨
+a(X−1)·X k, f(X)
+⟩}
+0≤k<n.
+This reformulation provides the ring-automorphism and monomial-operation interface
+used by the amortized procedure below.
+3.3 NTRU-based Accumulator Scheme
+Scalar and Vector Accumulator CiphertextsBuilding on the basic NTRU scheme in
+Section 3.1, we now introduce a companionaccumulator schemethat supports external
+products, the algebraic primitive underlying accumulator-based bootstrapping. The scheme
+operates over the larger ringˆRQ and provides two ciphertext formats, as shown in Table 1:
+
+===== PAGE 6 =====
+6 Practical Amortized Bootstrapping for NTRU-Based FHE
+EncS encodes a ternary polynomial as a single ring element, whereasEncV encodes
+either a signed monomial or zero via gadget decomposition. Unlike the basic NTRU
+encryption(g +∆·m)·f−1, both formats decouple the noise term from the message scaling.
+This structural choice is motivated by noise-growth considerations: keeping the noise of
+the formh·f −1
+Q separate from∆ ·u yields tighter noise accumulation under repeated
+external products.
+•ACC.ParamGen (1λ): On input the security parameterλ, output a parameter tuple
+(N,Q,ς,B,ℓ Q), whereB denotes the gadget decomposition base andℓQ :=⌈logBQ⌉.
+•ACC.KeyGen (N,Q,ς ): Sample f′
+Q←χ N
+ς and setfQ := 1 + 4f′
+Q; resamplef′
+Q until
+fQ is invertible in ˆRQ. Outputsk:=f Q.
+•ACC.EncS (u,sk ): Given a ternary polynomialu∈ ˆRQ, sample h←χ N
+ς and set
+∆ :=⌊Q/4⌉. Output the scalar ciphertext
+c:=h·f −1
+Q + ∆·u∈ ˆRQ.
+•ACC.EncV (v,sk ): Givenv∈M∪{ 0}, definethegadgetvector g := (B0,B 1,...,B ℓQ−1)T
+and sampleh= ( h0,h 1,...,h ℓQ−1)T with eachhi←χ N
+ς . Output the vector cipher-
+text
+c:=h·f −1
+Q +g·v∈ ˆRℓQ
+Q .
+External Product.Theexternal productbetween a scalar ciphertext c and a vector
+ciphertextcis defined as
+cmult :=c⊡c:=g −1(c)·c∈ ˆRQ,
+where g−1(·)denotes the gadget decomposition with respect tog. Since g−1(c)·g =c, a
+direct expansion shows thatcmult is a valid scalar encryption of the polynomial product
+u·v , provided the resulting noise termhmult remains sufficiently small. The detailed
+algebraic expansion and correctness proof are deferred to Appendix C.
+For the message component to decode correctly, we require∥u·v∥ ∞ < 4; otherwise,
+the scaled message∆· (u·v )overflows modulo Q, producing an ill-formed ciphertext.
+This condition holds in our setting. Ifv∈M , multiplication byv in ˆRQ is a signed cyclic
+permutation of the coefficients ofu; ifv = 0, the product is zero. Hence,∥u·v∥ ∞≤
+∥u∥∞≤1.
+4 Amortized Bootstrapping for NTRU-Based FHE
+4.1 Amortized Bootstrapping via Sparse-KeyMPMul
+The MPMul-based amortization of Guimarães and Pereira [GP25] was developed for RLWE,
+where ciphertexts are tuples of ring elements; NTRU accumulator ciphertexts are scalar
+ring elements of the formg/f, so the required monomial operations must be realized
+while preserving this structure. Beyond the decryption reformulation in Section 3.2, our
+construction uses three components: sparse-key polynomial multiplication, sign selection
+for ternary coefficients, and an automorphism key switching step that maps ciphertexts
+associated with fQ(X−1)back to fQ(X). A dense coefficient-wise evaluation would
+require n2 external accumulator for then outputs of a packed ciphertext; the amortized
+construction instead useshMPMul invocations, whereh is the Hamming weight of the
+sparse key.
+
+===== PAGE 7 =====
+W.T. Lin and J.L. Wu 7
+Sparse-Key Polynomial Multiplication.We first describe, at the plaintext level, how
+the sparsity of a secret keyf∈R q accelerates the polynomial producta·f that appears
+in the homomorphic decryption circuit. Assumef is sparse and ternary, with Hamming
+weighth, and letidx(f) :={j :fj̸= 0} with|idx(f)| =h. For an arbitrary polynomial
+a∈R q, the producta·fadmits the sparse expansion
+a(X)·f(X) =
+∑
+j∈idx(f)
+fj·a(X)⊙X j =
+∑
+j∈idx(f)
+MPMul
+(
+fj·a(X), Xj)
+,(2)
+where⊙ denotes monomial-by-polynomial multiplication inRq, and MPMul(p,Xj) :=
+p⊙X j is the algorithmic implementation of this operation in the homomorphic setting.
+Since fj∈{− 1, +1} for everyj∈idx (f), each scalar multiplicationfj·a (X)reduces to a
+sign choice, so the product costs exactlyhmonomial-by-polynomial multiplications.
+In the next subsection, we lift this decomposition to the ciphertext domain: the
+polynomial a is encoded as a list of accumulator ciphertexts{ci}n−1
+i=0 in ˆRQ, with eachci
+a homomorphic encryption of the monomialXai; the bounded differences between the
+nonzero positions are provided in encrypted form through the bootstrapping keys; and
+each MPMul becomes a sequence of external products that homomorphically realizes the
+list-level negacyclic rotation corresponding to multiplication byXj.
+MPMul over NTRU Accumulator Ciphertexts.We now describe the homomorphic
+counterpart of the sparse-key multiplication(2). Let u∈R q be a message polynomial
+whose coefficientsui∈Z q are encrypted, for0≤i<n , as a list of accumulator ciphertexts
+c=
+{
+ci :=ACC.EncS(X ui)
+⏐⏐0≤i<n
+}
+, ci∈ ˆRQ,
+that is, each message coefficient is lifted to a monomial in the exponent of an accumulator
+polynomial in ˆRQ.
+Given a shift amountv∈Z satisfying0 ≤v < R pos, supplied through the boot-
+strapping keys defined below, the operationMPMul
+(
+c,bsk rot)
+outputs a ciphertext list
+c′ = (c′
+0,...,c ′
+n−1)encrypting u(X)·X v ∈ Rq; that is, c′
+i = ACC.EncS(Xu′
+i)where
+(u′
+0,...,u ′
+n−1)is the coefficient vector ofu⊙X v.
+Decomposition of the shift.Let ℓpos :=⌈log2Rpos⌉, whereRpos upper-bounds the entries
+of the position-difference vector of the sparse keyf (i.e., the consecutive offsets between
+elements ofidx(f)). Write the binary expansion
+Decomp(v) =
+(
+v0,v 1,...,v ℓpos−1
+)
+∈{0,1} ℓpos, v=
+ℓpos−1∑
+i=0
+vi·2i.
+Theshiftthenfactorsintoaproductofconditionalpower-of-twoshifts: Xv =∏ℓpos−1
+i=0 Xvi·2i
+.
+Power-of-two list rotation.Multiplication of u∈R q byX2i
+acts on the coefficient vector
+as a negacyclic rotation by2i. At the ciphertext level, this is realized by rearranging the
+listcand homomorphically negating the wrapped entries: when vi = 1, the post-shift
+coefficient vector becomes
+(
+u′
+0,...,u ′
+n−1
+)
+=
+(
+−un−2i, ...,−u n−1/bracehtipupleft/bracehtipdownright/bracehtipdownleft/bracehtipupright
+2i entries, negated
+, u0, ..., un−2i−1/bracehtipupleft/bracehtipdownright/bracehtipdownleft/bracehtipupright
+n−2i entries
+)
+,
+where the negation of the wrapped entries reflects the relationXn =−1in Rq and is
+implemented homomorphically via the automorphismX↦→X−1 on the corresponding
+accumulator ciphertexts. When vi = 0, the list remains unchanged. Iterating this
+conditional rotation fori= 0,1,...,ℓ pos−1yields a list that encryptsu⊙X v.
+
+===== PAGE 8 =====
+8 Practical Amortized Bootstrapping for NTRU-Based FHE
+Algorithm 1:Monomial-by-polynomial multiplication
+Input:c= (c 0,...,c n−1): a list of accumulator ciphertexts with
+ct =ACC.EncS(X ut)∈ ˆRQ;
+bskrot
+j =
+(
+bskrot
+0,j,...,bsk rot
+ℓpos−1,j
+)
+: bootstrapping keys encoding the binary expansion of
+the shiftvassociated with thej-th nonzero coefficient off;
+kskaut: key-switching key for the automorphismX↦→X−1
+Output: ˆc= (ˆc0,...,ˆc n−1): a ciphertext list withˆct =ACC.EncS
+(
+X(u⊙Xv)t
+)
+1for0≤i<ℓ pos do
+2for0≤t<2 i do
+3c rot←Automorphism(c n−2i+t,−1,ksk aut)−c t;
+4ˆc t←c rot ⊡bsk rot
+i,j +c t ;// wrapped
+5for2 i≤t<ndo
+6c rot←c t−2i−c t;
+7ˆc t←c rot ⊡bsk rot
+i,j +c t ;// non-wrapped
+8c← ˆc;
+9returnc;
+Encoding the shift bits.The bits {vi} are integrated into the scheme via dedicated
+bootstrapping keys. For each nonzero-position indexj∈{ 0,...,h− 1} and each bit index
+i∈{0,...,ℓ pos−1}, define
+bskrot
+i,j :=
+{
+ACC.EncV(0), v (j)
+i = 0,
+ACC.EncV(1), v (j)
+i = 1,
+(3)
+where v(j)
+i denotes thei-th bit of the position difference associated with thej-th nonzero
+coefficient off. The full key bundle for a singleMPMul is bskrot
+j :=
+(
+bskrot
+0,j,...,bsk rot
+ℓpos−1,j
+)
+.
+Each bskrot
+i,j drives, via an external product, thei-th conditional rotation, selecting between
+the identity (v(j)
+i = 0) and a rotation by2i (v(j)
+i = 1). The full algorithmic realization of
+MPMulis given in Algorithm 1.
+Sign Handling for Ternary CoefficientsLet f =∑n−1
+i=0 fiXi∈R q be a sparse ternary
+secret key, withfi∈{− 1, 0, 1}. We denote byidx(f) :={j :fj̸= 0} the set of indices
+corresponding to the non-zero coefficients off.
+For binary secret coefficients, the bootstrapping procedure only needs to distinguish
+whether a coefficient is zero or non-zero. In contrast, for ternary coefficients, the accumu-
+lator update also depends on the sign of each non-zero coefficient. Therefore, for every
+j∈idx (f), we introduce an additional sign bootstrapping keybsksign
+j that encrypts the
+sign bitsj := 1−fj
+2 ∈{0,1}. Equivalently,
+bsksign
+j :=
+{
+ACC.EncV(1),iff j =−1,
+ACC.EncV(0),iff j = 1. (4)
+During bootstrapping, the accumulator componentACCk must be updated based on the
+signed contribution offj. Letp := ACCk·X ¯ak andz := ACCk·X−¯ak denote the two possible
+signed rotations. Under our convention,p is selected whenfj = 1, andz is selected when
+fj =−1. This selection can be implemented homomorphically as
+(z−p)⊡bsk sign
+j +p.
+Indeed, iffj = 1, bsksign
+j encrypts0, and the result isp, which corresponds to a rotation
+by ¯ak; iffj =−1, bsksign
+j encrypts1, and the result isz, which corresponds to a rotation
+by−¯ak. Thus, the same accumulator update can handle ternary coefficients.
+
+===== PAGE 9 =====
+W.T. Lin and J.L. Wu 9
+Algorithm 2:Amortized Bootstrapping
+Input:ct∈R q: base-scheme ciphertext encrypting a binary polynomial
+m=
+∑n−1
+i=0 miX i;
+{bskrot
+i,j}0≤i<ℓpos,0≤j<h:bsk rot
+i,j encrypts thei-th bit ofd[j], wheredis the position
+difference vector ofidx(f) ={j 0,...,j h−1};
+{bsksign
+j }0≤j<h: sign-encoding keys for thehnonzero coefficients off;
+kskaut: key-switching key for the automorphismX↦→X−1;
+kskext: key-switching key fromfQ∈ ˆRQ tof∈R q
+Output:ct ′∈R q: a fresh base-scheme ciphertext encrypting the samem
+1(¯a0,...,¯a n−1)←
+⌊
+2N·ct/q
+⌉
+∈Z n
+2N;
+2ACC k←⌊Q/8⌉·X N/2·
+∑N−1
+i=0 X i for0≤k<n;
+3for0≤j <hdo
+4for0≤k<ndo
+5p←ACC k·X ¯ak;
+6z←ACC k·X−¯ak;
+7ACC k←(z−p)⊡bsk sign
+j +p;// sign rotation
+8ACC←MPMul
+(
+ACC,bsk rot
+j ,ksk aut)
+;// shift byd[j]
+9ACC k←ACC k +⌊Q/8⌉·
+∑N−1
+i=0 X i for0≤k<n;
+10ACC←{ACC 0,...,ACC n−1};
+11ACC←ModSwitch(ACC);//Q→q
+12ct ′←KeySwitch(ACC,ksk ext);//f Q→f
+13returnct ′;
+Amortized Bootstrapping AlgorithmWe now assemble the full amortized bootstrapping
+procedure based onMPMul. The key idea is to exploit the sparsity of the ternary secret keyf
+and to evaluate the polynomial multiplicationa·f as a sequence of monomial-by-polynomial
+multiplications.
+Letf =∑
+j∈idx(f) fjXj be a sparse ternary polynomial with Hamming weighth, where
+fj∈{− 1, 1} for everyj∈idx (f). Let n > j0 > j1 >···> j h−1≥ 0be the non-zero
+indices off, sorted in descending order. We define the difference vectord:=diff(f)as
+d[i] =
+{
+ji−ji+1,if0≤i<h−1,
+ji,ifi=h−1.
+By construction,d[ i]≥ 0for all i. Here, Rpos is a key-generation parameter. When
+sampling the sparse ternary key, we check whether its difference vector satisfiesd[i]<R pos
+for all0≤i<h ; otherwise, the key is rejected and a new sparse key is sampled. Hence,
+for every sampled key used in the scheme, we haved∈ [0,R pos)h. This bounded-difference
+representation reduces the cost of eachMPMul evaluation because the monomial exponent
+can be represented using only⌈log2Rpos⌉bits.
+The multiplicationa·f can be refactored into a nested sequence of rotations and
+additions. We define the recurrenceS0 :=a·f j0 andSt+1 := MPMul(St,X d[t]) +a·f jt+1 for
+0≤t<h− 1. By induction, the state aftert steps isSt =∑t
+ℓ=0a·f jℓXjℓ−jt. Applying
+one final shift byd[h− 1] =jh−1 reconstructs the full product:MPMul(Sh−1,X d[h−1]) =∑h−1
+ℓ=0 a·f jℓXjℓ =a·f.
+In the homomorphic realization, each addition ofa·f jt is carried out coefficient-wise by
+the sign-selection step above, each list shiftX d[t] is performed with oneMPMul invocation,
+and each accumulatorACCk is initialized with the test vector so that the refreshed message
+can be extracted from the resulting exponent. The procedure thus useshMPMul invocations
+per packed ciphertext. The full procedure is presented in Algorithm 2.
+
+===== PAGE 10 =====
+10 Practical Amortized Bootstrapping for NTRU-Based FHE
+4.2 Modulus Switching and Key Switching
+The final stage of bootstrapping converts the accumulator output—which encodes the
+homomorphically decrypted message acrossn accumulator ciphertexts in theACC.EncS
+form—back into the base encryption scheme, where the message is represented as a
+single polynomial ciphertext underNTRU.Enc. This stage consists of two steps: modulus
+switching, which reduces the ciphertext modulus fromQ to q while keeping the ciphertext
+in ˆR, followed by key switching, which transforms the resultingn ciphertexts in ˆRq into a
+single ciphertext of the base scheme inRq.
+Modulus SwitchingLet q andQ denote the moduli of the base and accumulator schemes,
+respectively. We perform modulus switching to map a ciphertextc∈ ˆRQ with coef-
+ficient vectorc= ( c0,c 1,...,c N−1)T to a ciphertext c′ ∈ ˆRq with coefficient vector
+c′ = (c′
+0,c′
+1,...,c ′
+N−1)T by scaling each coefficient asc′
+i =
+⌊
+ci· q
+Q
+⌉
+, for0≤i<N.
+Key SwitchingThe construction incorporates two key switching procedures. The first
+transforms a ciphertext encrypted underfQ(X−1)into one encrypted underfQ. This step
+is required byMPMul to handle the sign change of coefficients during rotation. The second
+step transforms then ciphertexts of the accumulator scheme (under keyfQ) into a single
+ciphertext of the base scheme (under keyf). We refer to the former asautomorphism key
+switching, associated with keykskaut, and to the latter asexternal key switching, using
+keyksk ext.
+Automorphism Key Switching.Let a∈ ˆRQ be a ciphertext encrypting the i-th
+coefficient mi of a messagem under the secret keys :=fQ(X−1), whose coefficient vector
+is( fQ,0,−f Q,N−1, ...,−f Q,1)T. The goal of automorphism key switching is to produce
+a new ciphertextb∈ ˆRQ that encrypts the same coefficientmi under the secret keyfQ,
+whose coefficient vector is(fQ,0, fQ,1, ..., fQ,N−1)T. Following the structure ofACC.EncV,
+we define the automorphism key switching key askskaut =h ·f−1
+Q + g·s∈ ˆRℓQ
+Q , where
+ℓQ =⌈logBQ⌉ andh= ( h0,h 1,...,h ℓQ−1)T with eachhi←χ N
+ς . Let( ˜a0,...,˜a ℓQ−1) :=
+g−1(a)denote the gadget decomposition ofa. The output ciphertext is then computed as
+b=
+ℓQ−1∑
+i=0
+kskaut
+i ·˜ai ∈ ˆRQ.
+The correctness proof is deferred to Appendix D.
+External Key SwitchingLet the output of modulus switching be ACC′ ={bk}n−1
+k=0,
+where eachbk =∑N−1
+j=0 bk,jXj∈ ˆRq is an accumulator ciphertext inACC.EncS form. The
+constant coefficient of the phasebkfQ contains the scaled encoding of thek-th target
+coefficient, together with its error. External key switching assembles thesen accumulator
+ciphertexts into one ciphertext in the base-ring NTRU form under the keyf.
+Reorganization intoN polynomials.Let ct(·)denote constant-coefficient extraction. Writ-
+ingf Q = (s0,s 1,...,s N−1)T and ˜bk := (bk,0,−bk,N−1,...,−b k,1)T, we havect(bkfQ) =∑N−1
+i=0
+˜bk,isi. Therefore, the polynomial collecting the constant coefficients of thenaccu-
+mulator phases can be written as
+Φ(X) :=
+n−1∑
+k=0
+ct(bkfQ)Xk =
+n−1∑
+k=0
+(N−1∑
+i=0
+˜bk,isi
+)
+Xk =
+N−1∑
+i=0
+siPi(X),(5)
+where Pi(X) :=∑n−1
+k=0
+˜bk,iXk∈R q,0 ≤i<N . Under the correctness condition,Φ(X)is
+the scaled encoding of the target message polynomial plus the accumulated error. This
+
+===== PAGE 11 =====
+W.T. Lin and J.L. Wu 11
+Table 2:Summary of auxiliary keys used in amortized bootstrapping.
+Name Purpose / Operation
+BSKrot Rotation for sparse-position differences
+BSKsign Sign selection for ternary coefficients
+KSKaut Automorphism key switching (X↦→X−1)
+KSKext Accumulator-to-base key switching
+regrouping converts then length-N phase computations intoN polynomial operations in
+the base ring, with each source-key coefficientsi appearing as a scalar.
+Key generation and switching.Following the structure ofACC.EncV but adapted to the
+base ringRq, we define one gadget-decomposed key per indexi∈ [0,N )that encrypts
+the source-key (accumulator scheme) coefficientsi under the target key (base scheme)f:
+kskext
+i =h i·f−1 + g·s i∈R ℓq
+q , for0≤i<N , wherehi = (hi,0,...,h i,ℓq−1)T with each
+hi,j←χ n
+σ, andℓq =⌈log Bq⌉. The total key consists ofN·ℓq polynomials inRq.
+The target ciphertext in base NTRU form is then computed by gadget-decomposing
+eachP i and accumulating the inner products with the corresponding key:
+c(X) =
+N−1∑
+i=0
+⟨
+g−1(Pi),ksk ext
+i
+⟩
+∈ Rq.
+The correctness proof is deferred to Appendix E. We summarize the auxiliary keys used in
+amortized bootstrapping in Table 2.
+4.3 Complexity and Key-Size Analysis
+We compare the core bootstrapping computation of our amortized construction with the
+FINAL [BIP+22], which serves as the closest NTRU-based baseline. Throughout this
+comparison,ℓQ :=⌈logBQ⌉ denotes the accumulator gadget level,h denotes the Hamming
+weight of the sparse NTRU secret, andℓpos :=⌈log2Rpos⌉ denotes the number of bits used
+to encode a bounded sparse-position difference.
+A ciphertext in our base ring packsn message coefficients. The amortized procedure
+useshMPMul invocations. For each nonzero secret coefficient, it performs one sign-selection
+external product per output andℓpos conditional-rotation external products per output.
+The conditional-selection computation therefore usesO
+(
+nh(ℓpos +1)
+)
+=O
+(
+nhℓpos
+)
+external
+products per packed ciphertext, orO
+(
+h(ℓpos + 1)
+)
+=O
+(
+hℓpos
+)
+per output coefficient. The
+rotation bootstrapping key containshℓpos EncV ciphertexts, and the sign bootstrapping
+key contains h additional EncV ciphertexts. Since each EncV ciphertext contains ℓQ
+accumulator-ring elements, the combined size ish(ℓpos + 1)ℓQ accumulator-ring elements.
+In contrast, the bootstrapping key size of the base version has sizenℓQ.
+FINAL uses a matrix-NTRU representation in which each ciphertext encodes a single
+message bit. Its bootstrapping procedure evaluates a signle decryption inner product of
+length n, requiringO(n)accumulator-external products, orO(nℓQ)accumulator-ring mul-
+tiplications, per output bit. Processingn independent output bits therefore requiresO(n2)
+accumulator-external products. The corresponding bootstrapping key containsO(nℓQ)
+accumulator-ring elements. Table 3 compares the core external-product computation with
+the associated bootstrapping keys.
+
+===== PAGE 12 =====
+12 Practical Amortized Bootstrapping for NTRU-Based FHE
+Table 3:Complexity comparison.
+Method Per outputnoutputs BSK size
+FINAL [BIP+22]O(nℓ Q)O(n 2ℓQ)nℓ Q
+ProposedO(hℓ pos)O(nhℓ pos)h(ℓ pos + 1)ℓQ
+5 Security and Noise Analysis
+5.1 Security Model and Assumptions
+IND-CPA SecurityThe security of both encryption schemes and all auxiliary keys reduces
+to the decisional NTRU assumption over their respective ringsRq and ˆRQ. Under this
+assumption, fresh ciphertexts—including the base schemec = (g + ∆·m )·f−1 and the
+accumulator forms ACC.EncS and ACC.EncV—are computationally indistinguishable from
+uniform samples due to randomization with fresh NTRU-distributed noise terms. Similarly,
+the pseudorandomness of all auxiliary keys is guaranteed by the same encryption scheme,
+under the standard circular-security assumption required for bootstrapping.
+Circular SecurityBootstrapping additionally publishes encryptions of key material under
+related keys (e.g., BSKrot and kskext), as in FHEW [DM15], TFHE [CGGI16], and FI-
+NAL [BIP+22], we assume weak circular security: these key-dependent encryptions remain
+indistinguishable from encryptions of independent messages. No known attacks exploit
+this circular structure in NTRU-based schemes.
+5.2 Avoiding overstretched NTRU
+For concrete security, we bound the admissible ciphertext moduli using theNTRU Fatigue
+script by Ducas and van Woerden [DvW21], which verifies parameters against sublattice
+attacks. We set the key-distribution variance toσ2 = 0.5, corresponding to our ternary
+key distribution withPr[X = 0] = 1
+2 and Pr[X = 1] = Pr[X =−1] = 1
+4. The NTRU type
+is set tocirculantin the script to distinguish it from the matrix variant; we argue that the
+anti-circulant ring used in our scheme does not weaken security relative to the circulant
+case considered in the script.
+To convert a BKZ block sizeβ into a security level, we adopt the same classical cost
+model used by TFHE [CGGI16] and FINAL [BIP+22]: a security level ofλ bits requires
+T (d,β )≥ 2λ, whereT (d,β ) := 20.292·β+16.4+log2(8·d), andd = 2n for an NTRU ciphertext
+in dimensionn. We writeβ128 for the smallest block size such thatT (d,β 128)≥ 2128 at
+the respective lattice dimension.
+Rather than fixing the moduli in advance, we use the script to determine, for each
+candidate ring dimension, the largest modulus that remains outside the overstretched
+regime and still yields a predicted attack block size that meetsβ128. Table 4 reports these
+boundaries, quantized to the largest NTT-friendly primes supported by our implementation,
+along withβ128 and the corresponding certified levelλ = log2T (d,β 128). The boundary
+at dimensionn upper-bounds the base modulusq, and the boundary at dimensionN
+upper-bounds the accumulator modulusQ; the parameter selection in Section 6.2 draws
+moduli only from within these limits.
+Since every admissible modulus lies outside the overstretched regime, sublattice attacks
+are no easier than generic key-recovery attacks on lattice-based schemes, and the BKZ-
+based bound above provides a meaningful estimate of the classical security level. The
+Hamming weighth of the sparse secret introduces an additional attack surface, which we
+evaluate separately in the next subsection using the Lattice Estimator [DvW21].
+
+===== PAGE 13 =====
+W.T. Lin and J.L. Wu 13
+Table 4:Largest moduli attaining 128-bit NTRU security.
+Dimension Maximal modulusβ 128 λ
+1024 925,697 (≈2 19.82) 335 128.22
+2048 1,208,020,993 (≈2 30.17) 331 128.05
+4096 48,734,206,795,777 (≈2 45.47) 328 128.18
+8192 266,002,186,081,541,160,961 (≈2 67.85) 324 128.01
+5.3 Sparse-Key Security
+In amortized bootstrapping, we use a secret key with Hamming weighth, which is
+known to be vulnerable to the dual hybrid attack with meet-in-the-middle optimiza-
+tion [CHHS19]. We therefore evaluate every candidate key configuration with the Lattice
+Estimator [DvW21]: for each candidate Hamming weighth and each candidate base mod-
+ulus q below the corresponding boundary in Table 4, we denote byλ0(h,q )the resulting
+security level, defined as the minimumrop value across all attacks supported by the
+estimator. Throughout this analysis, the noise distribution is fixed atσ=
+√
+1/2≈0.707.
+The per-message cost of amortized bootstrapping scales with both h and ℓpos =
+⌈log2Rpos⌉, so small values of both are preferable. However, the rejection sampling used
+to enforce the position-boundRpos conditions the key distribution, thereby compromising
+security. We therefore define the effective security of a candidate(h,q,R pos)as λ :=
+λ0(h,q )−δ , whereδ is the rejection-induced loss quantified below. We deem a candidate
+admissible only ifλ≥ 128. The joint selection of(h,R pos)and the remaining scheme
+parameters over this admissible space is deferred to the runtime-driven optimization in
+Section 6.2.
+Rejection SamplingTo reduce the per-step cost of the external product, we apply
+rejection sampling during key generation and compute the corresponding security loss
+following the methodology of Guimarães and Pereira [GP25]. Letd := diff(f)denote the
+sequence of gaps between consecutive non-zero positions of the sparse secretf, and let
+Rpos be an upper bound on these gaps. During key generation, we accept a candidate key
+only if|d[i]|<R pos, for all0≤i<h.
+To quantify the impact of this restriction on the key distribution, we sample a large
+number of random keys (e.g.,105), computeM(f) := max0≤i<h|d[i]|, and estimate the
+acceptance probability aspacc(Rpos) := Pr[M(f) < Rpos]. The security loss induced by
+rejection sampling is then defined asδ:=−log 2pacc(Rpos).
+Equivalently, the rejection-conditioned key distribution loses approximatelyδ bits of
+security compared with uniform sampling over the original sparse-key support. We discard
+candidate( h,R pos)pairs with low acceptance probability because NTRU key generation
+independently rejects non-invertible candidates and a low acceptance rate would compound
+the two rejection conditions, making sampling impractical.
+Table 5 summarizes, for each ring dimensionn, the sparse-key configuration selected by
+the optimization: the estimator outputλ0 (at the selected base modulusq), the acceptance
+probability pacc together with the induced lossδ, and the effective securityλ =λ0−δ ,
+which exceeds the 128-bit target in all cases.
+5.4 Noise Analysis and Correctness
+Noise Model and NotationWe track noise by thevarianceof each ciphertext’s error term.
+Assuming all noise sources are independent and subGaussian, we convert variance into a
+high-probability magnitude bound using the central-limit heuristic. This yields an average-
+case analysis in the spirit of FHEW [DM15], TFHE [CGGI16], and FINAL [BIP+22]. For
+
+===== PAGE 14 =====
+14 Practical Amortized Bootstrapping for NTRU-Based FHE
+Table 5:Sparse-key security analysis.
+DimensionnHamming weighth R pos λ0 pacc δ λ
+1024 782 6 128.80 0.62 0.70 128.10
+2048 462 7 132.90 0.036 4.80 128.10
+4096 322 9 129.20 0.61 0.72 128.48
+8192 262 10 129.90 0.36 1.46 128.44
+a vector ciphertextc, we writeE(c) := maxj Var(err(cj)), and for a scalar ciphertextc we
+useE(c) := Var(err(c)). The notation used in this section is summarized below.
+•σ,ς : the noise standard deviations for the base and accumulator schemes, respectively.
+•B q,BQ,B aut: gadget bases for the base-scheme, accumulator, and automorphism
+key-switching gadgets, respectively.
+•ℓ q :=⌈logBqq⌉, ℓQ :=⌈logBQQ⌉, andℓaut :=⌈logBautQ⌉: decomposition levels for
+the base, accumulator, and automorphism key-switching keys, respectively.
+•γ 2: variance of a single gadget digit, assumingg−1(·)is γ-subGaussian. Since the
+gadget baseB is even, the digits lie in theasymmetricinterval[−B/2,B/ 2)and
+have mean−1/2and varianceγ 2 = (B2 + 2)/12.
+•ℓ pos :=⌈log2Rpos⌉: rotation-decomposition depth inMPMul, whereRpos is the position
+bound in Section 4.1.
+Fresh Ciphertexts, NAND and External ProductA fresh base-scheme ciphertextc =
+(g + ∆·m )·f−1 has phasec·f = g + ∆·m, so its noise isg←χ n
+σ. The NAND gate
+output cNAND = evk−c 0−c 1 accumulates three independent fresh-noise terms, along
+with the rounding error from scaling. By Lemma 2, correctness of NAND requires
+∥g0 +g 1∥∞ < q−20
+8 , which translates to a per-coefficient threshold ofq/16−5/4.
+The external product is the fundamental building block of all bootstrapping operations.
+We present a single bound and reuse it below.
+Lemma 3(External-product noise).Let c be a scalar ciphertext encryptingu, and letca
+vector ciphertext encryptingv∈M in the accumulator scheme. Then the noise variance of
+cout :=c⊡csatisfies
+E(cout)≤E(c) +N·ℓ Q·γ 2
+Q·E(c).
+Amortized BootstrappingAmortized bootstrapping consists of an initial test vector,h
+iterations—each consisting of oneMPMul call and one sign-correction external product—
+modulus switching fromQ to q, and external key switching back to the base scheme. The
+initial accumulator and the two switching procedures contribute:
+•Initial accumulator noise:E ACC0≤4Nς 2.
+•Modulus switching:E ms := 1 + 16Nς2.
+•External key switching:E ks :=n·N·ℓ q·γ 2
+q·E(ksk ext).
+For the per-iteration terms, let
+∆Eep :=N·ℓ Q·γ 2
+Q·E(bsk rot),
+Eksaut :=N·ℓ aut·γ 2
+aut·E(ksk aut),
+Esign :=N·ℓ Q·γ 2
+Q·E(bsk sign).
+
+===== PAGE 15 =====
+W.T. Lin and J.L. Wu 15
+A single MPMul call inflates the noise by at mostEMPMul≤ℓ pos·
+(
+∆Eep +Eksaut
+)
+. After
+h such iterations, together with modulus and external key switching, the output noise
+satisfies
+Eout ≤
+(
+q
+Q
+)2(
+EACC0 +h·(E MPMul +E sign)
+)
++E ms +E ks.
+CorrectnessUnder the central-limit heuristic, each error coefficient in a refreshed cipher-
+textapproximatelyfollowsacenteredGaussiandistributionwithvariance Eout. Wemeasure
+correctness by theper-slotfailure probability:p fail := Pr
+[
+|e|≥ q
+16− 5
+4
+]
+,e∼N(0, E out).
+Theorem 1(Bootstrapping correctness, average case).For the parameter sets selected in
+Section 6.2, each error coefficiente of the refreshed ciphertextc′ produced by amortized
+bootstrapping satisfies|e|< q
+16− 5
+4, except with probabilitypfail over the randomness of
+the fresh noise samples, and henceNTRU.Dec(c′)recovers each refreshed message with
+probability at least1−p fail.
+6 Implementation and Evaluation
+6.1 Implementation
+We implemented the proposed polynomial-NTRU FHE scheme with sparse-key amortized
+bootstrapping in C++. Polynomial multiplication dominates both external products and
+key switching, so we accelerate these operations using Intel HEXL [BKS+21] for NTT-based
+multiplication and coefficient-wise modular arithmetic. As required by HEXL, we restrict
+the ring dimensions to powers of two and choose moduli such thatq≡ 1 ( mod 2n)and
+Q≡ 1 ( mod 2N); this NTT-friendliness constraint is already reflected in the modulus
+boundaries of Table 4.
+Approximate Gadget DecompositionAn external product with decomposition lengthℓ
+requiresℓ+1transforms— ℓ forward NTTs for the digit polynomials plus one inverse NTT—
+so ℓ directly scales the dominant cost of bootstrapping. To shorten the decomposition
+beyond what an exact gadget allows, we also support anapproximatesigned gadget: for a
+power-of-two baseB = 2b and modulusM, the least significantdrop bits of the input are
+rounded away before decomposition, leavingℓ =⌈(⌈log2M⌉−drop )/b⌉ digits instead of
+⌈logBM⌉. For instance, reducingℓQ from2to1removes one-third of the transforms for
+each external product.
+The rounding introduces an errorε uniformly distributed on(−2drop−1, 2drop−1], so
+Var(ε) = 4drop/12. In an external product, this error is multiplied by the scaled accumulator
+secretfQ = 1+4f′
+Q, whose coefficients have varianceσ2
+fQ = 16· 1
+2 = 8under our ternary key
+distribution. Thus, every invocation of an approximate gadget adds∆Edrop :=N· 4drop
+12 ·σ 2
+fQ
+to the corresponding per-invocation increment in Section 5.4:∆Eep and Esign gain the
+term with dropQ, Eksaut with dropaut, and the external key switching gains∆Edrop with
+dropq—in that case without the factorn, since the rounding couples only to theN scalar
+coefficients. An exact decomposition (drop = 0) incurs no such term. Whether a shorter-
+but-noisier gadget pays off therefore depends on the remaining noise budget, which is
+determined by the parameter search below.
+6.2 Parameter Selection
+For each base dimensionn, we select all remaining parameters—the accumulator dimension
+N, the moduliq and Q, the sparse-key pair(h,ℓ pos), and the three gadget configurations
+(Bq,ℓq,dropq),(BQ,ℓQ,dropQ), and(Baut,ℓ aut,drop aut)—via a joint search that minimizes
+
+===== PAGE 16 =====
+16 Practical Amortized Bootstrapping for NTRU-Based FHE
+Table 6:Parameter sets selected by the joint optimization.
+n N q Q h R pos (Bq,ℓ q,drop q) (B Q,ℓ Q,drop Q) (B aut,ℓ aut,drop aut)
+1024 1024 796,673 925,697 782 6 (2,15,5) (16,5,0) (4,10,0)
+2048 1024 946,177 925,697 462 7 (4,7,6) (16,5,0) (8,7,0)
+4096 1024 1,892,353 925,697 322 9 (4,8,5) (16,5,0) (16,5,0)
+8192 1024 5,767,169 925,697 262 10 (16,4,7) (16,5,0) (16,5,0)
+the predicted bootstrapping runtime over the space defined by the security analysis in
+Sections 5.2 and 5.3 and the correctness requirement in Section 5.4:
+• Moduli. q and Q range over NTT-friendly primes below the bounds in Table 4 for
+dimensionsnandN, respectively, withN∈{1024,2048,4096,8192}.
+• Sparse key.A pair( h,ℓ pos)is admissible only ifλ0(h,q )−δ (h,ℓ pos)≥ 128, whereλ0
+is precomputed once using the Lattice Estimator on a per-dimension(h,q )grid, and
+δis estimated via Monte-Carlo sampling of the gap distribution.
+• Correctness.The model-predicted per-slot failure probability—computed from the
+closed-form bound Eout in Section 5.4 and extended by the approximate-gadget
+terms∆E drop in Section 6.1—must satisfypfail≤2−64.
+Since transforms dominate the runtime, the objective is a transform-weighted proxy:
+eachk-dimensional NTT is weighted by its costCk :=klog 2k, enabling direct comparison
+of configurations with different accumulator dimensions. Counting the forward and inverse
+transforms of all external products, the automorphism key switching, and the final external
+key switching yields
+Cost =
+(
+hn
+[
+(ℓpos + 1)(ℓQ + 1) + 1
+]
++h
+(
+2ℓpos−1
+)(
+ℓaut + 1
+))
+CN +
+(
+Nℓq + 1
+)
+Cn.
+The search proceeds in two levels. The outer level iterates over the admissible space
+(N,q,Q,h,ℓ pos). For each such tuple, the correctness target is converted to a noise budget
+Eout≤E max(q)using the complementary error function, and the inner level allocates this
+budgetacrossthethreegadgets: foreachgadgetandeachachievablelength ℓweprecompute
+the noise-minimal pair(B,drop )—a Pareto frontier over bases and drop amounts—and
+then scan the combinations of lengths, keeping the cheapest one whose total noise fits the
+budget. Approximate gadgets are thus selected automatically whenever the transforms
+they save outweigh the noise they introduce. Table 6 reports the resulting parameter sets;
+by construction, each set provides at least 128-bit classical security and a per-slot failure
+probability below2−64. Notably, the search converges to a single accumulator configuration
+(N,Q ) = (1024, 925,697)—the boundary modulus of Table 4—for all four base dimensions,
+and uses the approximate gadget only on the base-ring side (dropQ = dropaut = 0).
+Discarding5–7low-weight bits shortens ℓq to as little as4and, as a side effect, shrinks
+the external key-switching key.
+6.3 Experimental Setup
+All experiments were conducted on an AWS EC2c8a.xlarge instance running Ubuntu
+24.04 LTS. The proposed framework is implemented in C++ with Intel HEXL acceleration,
+as described in Section 6.1. For performance comparisons, we benchmarked the reference
+implementation of FINAL [BIP+22], the leading NTRU-based FHE scheme; the highly
+optimized Rust implementation of TFHE [CGGI16,Zam22] (Zamatfhe-rs) in itsBoolean
+configuration, the state of the art in single-bit LWE-based bootstrapping; and the amortized
+bootstrapping implementation of Guimarães and Pereira (GP25) [GP25], which provides
+
+===== PAGE 17 =====
+W.T. Lin and J.L. Wu 17
+Table 7:Bootstrapping performance comparison. Represented in milliseconds (ms).
+SchemenLatency Amortized vs FINAL vs TFHE vs GP25
+FINAL 1 121.20 121.20 — — —
+TFHE 1 7.10 7.10 — — —
+GP25 2048 5184.67 2.53 — — —
+GP25 4096 9662.89 2.36 — — —
+GP25 8192 18737.01 2.29 — — —
+Proposed 1024 5143.73 5.0224.14×1.41×—
+Proposed 2048 6990.68 3.4135.54×2.08×0.74×
+Proposed 4096 12314.39 3.0140.27×2.36×0.78×
+Proposed 8192 21964.20 2.6845.22×2.65×0.85×
+parameter sets only forn∈{ 2048, 4096, 8192} — all on the same hardware configuration.
+Unless otherwise specified, all evaluations were performed in a single-threaded setting
+without GPU acceleration to ensure a fair and consistent architectural comparison.
+To keep the correctness targets aligned, GP25 is configured with the fastest available key-
+switching parametertks whose failure probability still meets our targetpfail≤ 2−64. Due to
+the coarse granularity oftks, the resulting configurations fall well below the target (between
+2−101 and2−118), but the next faster setting would already violate it. TFHE’s default
+parameters target2−64, matching ours, while FINAL’s reference parameters correspond to
+pfail≤2−59.7, slightly above the target; we nevertheless report its stock configuration.
+6.4 Performance
+Table 7 reports the bootstrapping performance of our scheme against these three baselines.
+Each entry reports average wall-clock times measured over 100 runs: per-batch latency
+and amortized time per bootstrappedmessage coefficient. For amortized schemes, the
+latter equals the per-batch time divided by the number of refreshed messages; for FINAL
+and TFHE, which encrypt a single bit per ciphertext, the two coincide.
+The per-coefficient cost of the proposed scheme decreases monotonically with the
+packing dimension, from5.02ms at n = 1024to2 .68ms at n = 8192, consistent with the
+O(hℓpos)per-coefficient complexity established in Section 4.3. The admissible Hamming
+weighth shrinks asn grows, so amortization improves with the packing factor. A single
+accumulator dimensionN= 1024suffices across all parameter sets.
+On a per-coefficient basis, the proposed scheme outperforms FINAL by24.14× to
+45.22× and the highly optimized TFHE baseline (7.10ms per bit) by1.41× to2.65×, while
+each packed ciphertext additionally carriesn message bits. Compared with GP25, our
+per-coefficient cost is1.17× to1 .35× higher, with the gap narrowing asn grows. We note
+that GP25 also relies on a two-key accumulator technique that our implementation does not
+incorporate; whether and to what extent this technique applies to our polynomial-NTRU
+setting is left for future work.
+6.5 Key and Ciphertext Size
+We measure storage overhead by direct measuring the bootstrapping keys and ciphertexts
+in memory. Unlike theoretical estimates, these figures reflect the actual memory footprint
+of live objects at runtime. Table 8 breaks the auxiliary keys into the bootstrapping key
+(BSK) and the external key-switching key (KSK).
+The BSK highlights the advantage of the amortized approach: it does not scale with
+the packing dimensionn but instead depends on the Hamming weighth and the position
+bound Rpos. It shrinks from21.53MB at n = 1024to11 .28MB at n = 8192—4× to
+
+===== PAGE 18 =====
+18 Practical Amortized Bootstrapping for NTRU-Based FHE
+Table 8:Ciphertext and auxiliary key sizes.
+SchemenCtxt (KB) B/bit BSK (MB) KSK (MB) T otal (MB)
+FINAL 1 3.15 3224.0 86.41 34.89 121.30
+TFHE 1 3.18 3260.0 — 124.43
+GP25 2048 32.06 16.03 18.02 128.58 146.60
+GP25 4096 64.06 16.02 16.89 256.86 273.75
+GP25 8192 128.06 16.01 16.51 513.42 529.93
+Proposed 1024 8.07 8.07 21.53 121.08 142.61
+Proposed 2048 16.07 8.04 14.51 112.52 127.03
+Proposed 4096 32.07 8.02 12.62 256.59 269.21
+Proposed 8192 64.07 8.01 11.28 256.30 267.58
+Table 9:Failure probabilities.
+n1024 2048 4096 8192
+Predicted2 −64.0 2−64.2 2−64.4 2−64.5
+Measured2 −69.8 2−76.8 2−110.5 2−103.7
+7.7× smaller than FINAL’s bootstrapping key and consistently below GP25’s. The total
+footprint is instead dominated by the KSK, which scales withnℓq; here the approximate
+base-ring gadget of Section 6.1 pays off a second time because discarding low-weight bits
+shortens ℓq and, consequently, the KSK. Overall, the proposed scheme requires less key
+material than GP25 across all common dimensions (1.15× less atn = 2048, and up to
+1.98×atn= 8192).
+Regarding ciphertext size, our individual packed ciphertexts are larger than the single-
+bit ciphertexts of FINAL and TFHE, but they are significantly more compact per message:
+normalized by the packing factorn, the storage cost is about8bytes per bit across
+all dimensions—over400× lower than the single-bit constructions and half of GP25’s
+∼16bytes per slot. This combination of compact bootstrapping keys and high per-slot
+density makes the proposed scheme particularly attractive when ciphertext bandwidth is
+at a premium.
+6.6 Failure Probability
+To document the correctness margin of the selected parameter sets, we evaluate the per-slot
+failure probability in Section 5.4,
+pfail ≈erfc
+(q/16−5/4
+σout
+√
+2
+)
+,
+in two ways: with the model predictionσout =√Eout used by the parameter search
+(predicted) and with the empirical standard deviation of the observed output noise (mea-
+sured). The latter is computed over100bootstrapping trials per parameter set: each
+trial encrypts two fresh random binary vectors, evaluates a coefficient-wise NAND gate,
+bootstraps the result, and records the signed error for each output coefficient against the
+ground truth, yielding100n error samples per set; no decryption failures occurred in any
+run. Table 9 lists both. The predicted values fall directly on the target (2−64.0 to2−64.5)
+across all dimensions, indicating that the joint optimization in Section 6.2 uses the full
+noise budget to achieve the target performance. The measured noise is4%–24%below the
+bound, yielding failure probabilities between2−69.8 and2−110.5, which confirms that the
+average-case analysis is conservative yet reasonably tight.
+
+===== PAGE 19 =====
+W.T. Lin and J.L. Wu 19
+7 Conclusion and Future Work
+We revisited NTRU-based FHE, motivated by the refined security analysis of Ducas and van
+Woerden [DvW21] and the FINAL construction of Bonte et al. [BIP+22]. Reformulating
+FINAL’s matrix-based construction in the standard polynomial-ring setting restores
+the algebraic structure required for automorphism-based amortization; combining an
+NTRU-compatible MPMul with sparse ternary secrets then reduces the per-coefficient
+bootstrapping cost fromO(nℓQ)to O(hℓpos)and corresponding bootstrapping-key size.
+We further shortens the gadget length through an approximate base-ring decomposition.
+Concrete security is established by a two-step parameter selection procedure that combines
+the NTRU fatigue analysis with the Lattice Estimator under a given failure probability
+target.
+Our single-threaded C++/HEXL implementation refreshes a message coefficient in
+2.68ms at n = 8192—up to45× faster than FINAL and2.65× faster than TFHE-rs—with
+an11.28MB bootstrapping key that does not grow withn and packed ciphertexts of about
+8 bytes per message bit. These results establish polynomial-NTRU FHE as a competitive
+alternative to mainstream bitwise schemes and the more economical option in key- and
+bandwidth-constrained deployments.
+The most immediate open question is whether GP25’s two-key accumulator technique
+applies to the polynomial-NTRU setting, which would close the remaining1.17× to1 .35×
+runtime gap. Beyond this, compressing the key-switching key—now the dominant part of
+the total footprint—and exploiting multi-threading or GPU acceleration are natural next
+steps.
+A Proof of Lemma 1
+Proof. Since c·f =g + ∆·m (modq ), the phase equalsr :=c·f =g + ∆·m−uq for
+someu∈Z. Writing∆ =⌊q/2⌉=q/2 +ϵwith|ϵ|≤1/2, decryption computes
+m′ =
+⌊2r
+q
+⌉
+=
+⌊2g+ 2ϵm
+q +m−2u
+⌉
+=
+⌊2g+ 2ϵm
+q
+⌉
++m(mod 2),
+where the integer termm− 2u is pulled outside the rounding and−2u vanishes modulo2.
+Hence m′ =m whenever|(2gi + 2ϵmi)/q|< 1/2for all0 ≤i<n . Since g is ternary,m
+binary, and|ϵ|≤1/2, the term is bounded by3/q <1/2forq >6, hencem ′ =m.
+B Proof of Lemma 2
+Proof. Write⌊q/4⌉ =q/4 +ϵ′ and⌊5q/8⌉ = 5q/8 +ϵ with|ϵ|,|ϵ′|≤ 1/2. Using the identity
+(a−b) ◦2 =a+b−2(a◦b)from Section 2.1,
+cNAND·f= (evk−c 0−c 1)·f
+=
+(
+g+ 5q
+8 +ϵ
+)
+−
+(
+g0 + q
+4a+ϵ ′a
+)
+−
+(
+g1 + q
+4b+ϵ ′b
+)
+=g−g 0−g 1 +e+δ+ q
+2y,
+where y := 1 −a◦b , e := ϵ−ϵ ′(a +b)satisfies |ei| ≤1/2 + (1/2)· 2 = 3 /2, and
+δ := q
+8− q
+4(a−b )◦2 has entriesδi =±q/8. As in Lemma 1, sincey∈{ 0, 1}n can be pulled
+outside the rounding, decryption gives
+y′ =
+⌊2(g−g 0−g 1 +e) + 2δ
+q
+⌉
++y(mod 2),
+
+===== PAGE 20 =====
+20 Practical Amortized Bootstrapping for NTRU-Based FHE
+soy′
+i =yi whenever
+⏐⏐2(gi−g 0,i−g 1,i +ei)/q± 1/4
+⏐⏐< 1/2, which holds in particular when
+|gi−g 0,i−g 1,i +ei|<q/ 8. By the triangle inequality with|gi|≤ 1and |ei|≤ 3/2, this is
+guaranteed by the lemma’s hypothesis
+|g0,i +g 1,i|< q
+8− 5
+2 = q−20
+8 ,for all0≤i<n.
+Thereforey′ =y, completing the proof.
+C Correctness of the External Product
+Recallc =g/fQ + ∆·u andc=g /fQ + g·v , whereg= ( g0,...,g ℓQ−1)collects fresh noise
+polynomials andv∈M is a signed monomial. By the defining propertyg−1(c)·g =c of
+the gadget decomposition,
+c⊡c=g −1(c)·c=g −1(c)·g/f Q +c·v=
+(
+g−1(c)·g+g·v
+)
+/bracehtipupleft/bracehtipdownright/bracehtipdownleft/bracehtipupright
+=:g mult
+/fQ + ∆·u·v,
+which has exactly the form of a scalar encryption ofu·v in the accumulator scheme.
+Correctness requiresgmult to stay within the rounding tolerance and∥u·v∥ ∞ < 4; the
+latter is immediate sincevis a signed monomial anduis ternary.
+D Proof of Automorphism Key Switching
+Proof. Let ˜s:=fQ(X−1)and let ˜c∈ ˆRQ satisfy ˜c·˜s= ˜g+ ∆˜u. With ci := g−1(˜c)i, so
+that∑
+ici·B i = ˜c, and kskaut
+i = (hi + ˜s·Bi)·f−1
+Q with fresh noisehi←χ N
+ς , the output
+c′ =∑ℓQ−1
+i=0 kskaut
+i ·ci satisfies
+c′·fQ =
+ℓQ−1∑
+i=0
+(hi + ˜s·Bi)·c i =
+ℓQ−1∑
+i=0
+hi·ci + ˜s·˜c=
+ℓQ−1∑
+i=0
+hi·ci + ˜g
+/bracehtipupleft/bracehtipdownright/bracehtipdownleft/bracehtipupright
+=:g ′
++∆˜u.
+Hencec′ is a valid encryption of˜uunder the target keyfQ, and decrypts correctly provided
+g′ remains within the decryption tolerance.
+E Proof of External Key Switching
+Proof. Let{bk}n−1
+k=0 ⊂ ˆRq be the ciphertexts produced by modulus switching, whose
+constant terms satisfyct(bkfQ) =ek,0 + ∆·uk,0 with mk =uk,0, whereek,0 denotes the
+constant term oferr(bk). With Pi and kskext
+i as defined in Section 4.2, multiplying the
+outputc′ =∑
+i,l kskext
+i,l·g−1(Pi)l by the target keyf and using∑
+l g−1(Pi)l·Bl =Pi gives
+c′·f=
+∑
+i,l
+hi,l g−1(Pi)l
+/bracehtipupleft/bracehtipdownright/bracehtipdownleft/bracehtipupright
+=:gh
++
+N−1∑
+i=0
+siPi =g h + Φ(X),
+where the last equality is the regrouping identity(4.2). Substituting ct(bkfQ) =ek,0+∆uk,0
+intoΦ(X) =∑
+k ct(bkfQ)Xk yieldsΦ( X) =∑
+kek,0Xk + ∆·m; hencec′ = (g′ + ∆·m )·
+f−1∈R q with g′ := gh +∑
+kek,0Xk is a valid encryption ofm under the base keyf,
+providedg′ remains within the decryption tolerance.
+
+===== PAGE 21 =====
+W.T. Lin and J.L. Wu 21
+References
+[ABD16] Martin R. Albrecht, Shi Bai, and Léo Ducas. A subfield lattice attack on over-
+stretched NTRU assumptions - cryptanalysis of some FHE and graded encoding
+schemes. In Matthew Robshaw and Jonathan Katz, editors,CRYPTO 2016,
+Part I, volume 9814 ofLNCS, pages 153–178. Springer, Berlin, Heidelberg,
+August 2016.
+[BIP+22] Charlotte Bonte, Ilia Iliashenko, Jeongeun Park, Hilder V. L. Pereira, and
+Nigel P. Smart. FINAL: Faster FHE instantiated with NTRU and LWE. In
+Shweta Agrawal and Dongdai Lin, editors,ASIACRYPT 2022, Part II, volume
+13792 ofLNCS, pages 188–215. Springer, Cham, December 2022.
+[BKS+21] Fabian Boemer, Sejun Kim, Gelila Seifu, Fillipe D. M. de Souza, and Vinodh
+Gopal. Intel HEXL: Accelerating homomorphic encryption with intel AVX512-
+IFMA52. Cryptology ePrint Archive, Report 2021/420, 2021.
+[BLLN13] Joppe W. Bos, Kristin Lauter, Jake Loftus, and Michael Naehrig. Improved
+security for a ring-based fully homomorphic encryption scheme. In Martijn
+Stam, editor,14th IMA International Conference on Cryptography and Coding,
+volume 8308 ofLNCS, pages 45–64. Springer, Berlin, Heidelberg, December
+2013.
+[CGGI16] Ilaria Chillotti, Nicolas Gama, Mariya Georgieva, and Malika Izabachène.
+Faster fully homomorphic encryption: Bootstrapping in less than 0.1 seconds.
+In Jung Hee Cheon and Tsuyoshi Takagi, editors,ASIACRYPT 2016, Part I,
+volume 10031 ofLNCS, pages 3–33. Springer, Berlin, Heidelberg, December
+2016.
+[CHHS19] Jung Hee Cheon, Minki Hhan, Seungwan Hong, and Yongha Son. A hybrid
+of dual and meet-in-the-middle attack on sparse and ternary secret LWE.
+Cryptology ePrint Archive, Report 2019/1114, 2019.
+[DM15] Léo Ducas and Daniele Micciancio. FHEW: Bootstrapping homomorphic
+encryption in less than a second. In Elisabeth Oswald and Marc Fischlin,
+editors,EUROCRYPT 2015, Part I, volume 9056 ofLNCS, pages 617–640.
+Springer, Berlin, Heidelberg, April 2015.
+[DvW21] Léo Ducas and Wessel P. J. van Woerden. NTRU fatigue: How stretched is over-
+stretched? In Mehdi Tibouchi and Huaxiong Wang, editors,ASIACRYPT 2021,
+Part IV, volume 13093 ofLNCS, pages 3–32. Springer, Cham, December 2021.
+[GP25] Antonio Guimarães and Hilder V. L. Pereira. Fast amortized bootstrapping with
+small keys and polynomial noise overhead. In Chun-Ying Huang, Jyh-Cheng
+Chen, Shiuh-Pyng Shieh, David Lie, and Véronique Cortier, editors,ACM CCS
+2025, pages 2967–2981. ACM Press, October 2025.
+[HPS98] Jeffrey Hoffstein, Jill Pipher, and Joseph H. Silverman. NTRU: A ring-based
+public key cryptosystem. InThird Algorithmic Number Theory Symposium
+(ANTS), volume 1423 ofLNCS, pages 267–288. Springer, June 1998.
+[KF17] Paul Kirchner and Pierre-Alain Fouque. Revisiting lattice attacks on over-
+stretched NTRU parameters. In Jean-Sébastien Coron and Jesper Buus Nielsen,
+editors,EUROCRYPT 2017, Part I, volume 10210 ofLNCS, pages 3–26.
+Springer, Cham, April / May 2017.
+
+===== PAGE 22 =====
+22 Practical Amortized Bootstrapping for NTRU-Based FHE
+[LTV12] Adriana López-Alt, Eran Tromer, and Vinod Vaikuntanathan. On-the-fly
+multiparty computation on the cloud via multikey fully homomorphic encryption.
+In Howard J. Karloff and Toniann Pitassi, editors,44th ACM STOC, pages
+1219–1234. ACM Press, May 2012.
+[Zam22] Zama. TFHE-rs: A Pure Rust Implementation of the TFHE Scheme for Boolean
+and Integer Arithmetics Over Encrypted Data, 2022.https://github.com/
+zama-ai/tfhe-rs.

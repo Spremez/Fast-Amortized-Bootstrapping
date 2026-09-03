@@ -35,7 +35,7 @@
 本资料整合本工作的\textbf{算法理论}与\textbf{实验佐证}，供同态密码专家进行双重审核。全部数字可溯源至代码仓库 \texttt{repro/} 工件与 git 提交记录。
 
 \begin{keybox}
-\textbf{完成度（截至本资料生成）}：安全组合定案、终版性能主表、r-扩展性（r=2/4/6）、层安全审计、容量曲线（h=41/$\sigma$+11 口径）、TFHE-rs 同机锚点、occupancy/break-even、DFR 三层证据、多参数集修正推导均已\textbf{完成}。在途（不改变主表方向）：r=8 静机复测、postops 在最终参数下的交替翻转分诊、10-trial 噪声@最终参数、E-PF 部分融合 A/B、4096/5-bit 实测收割（首项已 Pass：4096 修正点 h=42 门测试 0/4096 失配）。
+\textbf{完成度（截至本资料生成）}：安全组合定案、终版性能主表、层安全审计、容量曲线（h=41/$\sigma$+11 口径）、TFHE-rs 同机锚点、occupancy/break-even、DFR 三层证据、多参数集修正推导（4096/5-bit 已\textbf{实测}）均已\textbf{完成}。本轮 stage368 收官新增：r=8 静机复测、E-PF 融合 A/B、postops 交替翻转分诊（5 变体，判为测量伪象）、S5 多参数集实测（4096 门测试 0/4096 失配）。在途（不改变主表方向）：10-trial 噪声@最终参数、E4 新估计器独立复算臂（V5A2）。\textbf{勘误}：早前 r-lane 表中路径A $4.32$ ms/msg 系误取 pathA 构建二进制的 stock 对照列（跨构建代码布局漂移实测达 $23\%$）；本版全部 r-lane 结论已改为\textbf{同构建内部对照}口径（表~\ref{tab:rlane}）。
 \end{keybox}
 
 \section{参数体系（$\theta$ 向量，实码值）}
@@ -207,7 +207,7 @@ HWR-KSK & 输入密钥域样本（并入输入层行） & — \\
 
 \subsection{多参数集修正表（逐环推导）}
 
-$h{=}42$ 是 $n{=}2048$ 输入环族（跨精度）的定案，\textbf{非全局常数}：逐环以三联约束 $T3'\ge128\ \wedge\ \mathrm{MITM}\ge128\ \wedge\ \mathrm{BSK}\ge128$ 求解。$n{=}4096$：原 $h{=}32$ 坍至 $117.5$，修正为 $h{=}42@\mathrm{t}8$（$T3'{=}154.1$，实测门测试已通过）；$n{=}8192$：修正为 $h{=}34@\mathrm{t}10$（$146.6$，实测排队）。
+$h{=}42$ 是 $n{=}2048$ 输入环族（跨精度）的定案，\textbf{非全局常数}：逐环以三联约束 $T3'\ge128\ \wedge\ \mathrm{MITM}\ge128\ \wedge\ \mathrm{BSK}\ge128$ 求解。$n{=}4096$：原 $h{=}32$ 坍至 $117.5$，修正为 $h{=}42@\mathrm{t}8$（$T3'{=}154.1$；\textbf{已实测}：SQ/686 $=0.93$，噪声 $58.06/58.34$，门测试 $0/4096$ 失配，RS 11 次尝试 $r\_prec{=}8$ 与推导一致）；5-bit（$n{=}2048$，同 $h{=}42$）\textbf{已实测}：SQ/686 $=0.893$，噪声 $56.73/55.65$，门测试 $0/2048$；4096 r-lane stock 对照平价（$1.001$--$1.003$）。$n{=}8192$：修正为 $h{=}34@\mathrm{t}10$（$146.6$，实测排队）。
 
 \section{实验矩阵（终版数据）}
 
@@ -231,33 +231,33 @@ CAL（$41,+11$） & 5.68 & 6.32 & 0.898 & 57.73/58.72 \\
 
 \begin{table}[htbp]
 \centering
-\caption{r-lane（$r{=}4$，Final）：同一盲旋转服务 $2048\times4$ 查询}
+\caption{r-lane（$r{=}4$，Final）：同一盲旋转服务 $2048\times4$ 查询。E-PF 实测表明同一算法跨构建二进制的绝对值漂移达 $23\%$，故仅\textbf{同构建内部对照}有效}
 \label{tab:rlane}
 \small
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} l c c}
 \toprule
-方案 & ms/msg/lut & 内部比值 \\
+方案（构建二进制） & ms/msg/lut & 同构建内部对照 \\
 \midrule
-stock r-lane（686 矩阵化） & 5.25 & $1.00\times$ \\
-SQ r-lane & 5.29 & $1.01\times$ \\
-\textbf{路径A（7 融合旗标）} & \textbf{4.32} & \textbf{$1.21\times$ vs stock；$1.16\times$ vs SQ} \\
+stock r-lane（stock 构建） & 5.25 & 基准 \\
+SQ r-lane（stock 构建） & 5.29 & $1.005\times$（平价） \\
+路径A（pathA 构建） & 5.00 & 同构建 stock $4.31$ $\Rightarrow$ $\mathbf{1.16\times}$（更慢） \\
 \bottomrule
 \end{tabular*}
 \end{table}
 
-同场次对 $4\times$686 标量（$52.4$ s）：路径A $1.48\times$，SQ 标量 $\times4$ 为 $1.33\times$。\textbf{安全修正的完整代价}（同机同场）：$h$ 由 39 增至 42 仅 $+6.5\%$（stock）/$+7.2\%$（SQ），$\sigma$ 不动。
+同场次对 $4\times$686 标量（$52.4$ s，摊销收益）：路径A $1.28\times$，SQ/stock r-lane $1.21\times$，SQ 标量 $\times4$ 为 $1.11\times$。\textbf{安全修正的完整代价}（同机同场）：$h$ 由 39 增至 42 仅 $+6.5\%$（stock）/$+7.2\%$（SQ），$\sigma$ 不动。
 
-\subsection{r-扩展性与正确性}
+\subsection{r-扩展性、E-PF 与正确性}
 
-路径A 对 SQ 的逐进程背靠背比值：$r{=}2$: $1.117$（$2.10$ ms/msg/lut）；$r{=}4$: $1.16$；$r{=}6$: $1.10$。每 lane 成本随 $r$ 单调上升，摊销甜点 $r{=}2$--$4$；全部 $r$ 门测试通过（正确性与 $r$ 无关）。$r{=}8$ 静机复测在途。
+\textbf{同构建内部对照}（路径A/同构建 stock；r=8 为静机复测 t1 干净批次）：$r{=}2$: $1.12$；$r{=}4$: $1.16$；$r{=}6$: $1.10$；$r{=}8$: $1.05$——路径A 在实测 $r\le 8$ 范围内\textbf{未超过} stock r-lane，差距随 $r$ 收窄，外推交叉点 $r\approx 9$--$12$（未实测验证）。SQ r-lane 对 stock 在全 $r$ 平价（$0.98$--$1.02$，跨三种构建稳定）。每 lane 成本随 $r$ 单调上升（stock 构建 stock：$5.25\to 6.59$ ms/msg，$r{=}4\to 8$），摊销甜点 $r{=}2$--$4$；全部 $r$ 门测试通过（正确性与 $r$ 无关，r=8 亦 Pass）。\textbf{E-PF A/B}（路径A 侧旗标/对象对 SQ 臂的影响）：matflags 构建 SQ 臂 $+0.2\%$--$1.2\%$，stock 构建 $-4.8\%$--$+0.5\%$，而\textbf{同一 stock 算法}跨构建漂移 $-7\%$--$23\%$——证明跨构建绝对值比较无效，且旗标本身近乎免费。
 
 \subsection{自举后容量（余量作为输出维度）}
 
-三层口径：瞬时余量 $= 60-\log_2(\text{最大相位偏差})$；生命周期 $H_{\mathrm{bits}}=\tfrac12\log_2(V_{\mathrm{cap}}/V_{\mathrm{out}})$；容量曲线（自举后施加 $k$ 次乘一 TRGSW 外积逐次测噪）。电路键 $\sigma_G{=}2^{-25}$ 下 8 步噪声平坦（斜率 $<0.05$ bit/EP，外推深度 $\approx 5\times10^4$ 次 EP）；两个零容量边界案例（SAB 级 gadget 单数位截断；输入键 $\sigma{=}2^{-15}$ 放大至半环面）与外积噪声公式 $\sqrt{\ell N}\,B_g/\sqrt{12}\,\sigma_G$ 的饱和点定量验证（$2^{-1.8}\approx$ 观测 $2^{63}$）。
+三层口径：瞬时余量 $= 60-\log_2(\text{最大相位偏差})$；生命周期 $H_{\mathrm{bits}}=\tfrac12\log_2(V_{\mathrm{cap}}/V_{\mathrm{out}})$；容量曲线（自举后施加 $k$ 次乘一 TRGSW 外积逐次测噪）。电路键 $\sigma_G{=}2^{-25}$ 下 8 步噪声平坦（斜率 $<0.05$ bit/EP，外推深度 $\approx 5\times10^4$ 次 EP）；两个零容量边界案例（SAB 级 gadget 单数位截断；输入键 $\sigma{=}2^{-15}$ 放大至半环面）与外积噪声公式 $\sqrt{\ell N}\,B_g/\sqrt{12}\,\sigma_G$ 的饱和点定量验证（$2^{-1.8}\approx$ 观测 $2^{63}$）。\textbf{交替翻转分诊（终参下，5 变体）}：奇数步恒读 $63.00$、偶数步平坦 $57.60$--$57.75$ 的交替模式在 $L{=}8/B_g{=}2^8$ 与 $L{=}16/B_g{=}2^4$ 之间不变，且对 $\sigma_G$ 不敏感直至 $2^{-35}$（此时真实噪声回绕在物理上不可能）——判为\textbf{奇数步测量路径伪象}（符号/参考位问题），非噪声增长；$\sigma_G{=}2^{-15}$ 时全部步饱和（真饱和案例，与公式一致）。容量结论以偶数步链为准，维持不变。
 
 \subsection{与 TFHE-rs 的同机参照与 occupancy}
 
-同机（dell）TFHE-rs v1.8.0 默认 128-bit 经典参数：\textbf{9.560 ms/PBS}（30 次操作精确计数 330 次 PBS，解密校验通过；其参数未按 2026 攻击修正——已标注）。满占用吞吐对比 $4.32$ vs $9.56$ ms/查询 $= 2.2\times$；临界占用率 $\kappa^\ast = T_{\mathrm{batch}}/(nrT_{\mathrm{pbs}})$：$r{=}4$ 时 $18.4\%$，$r{=}1$ 时 $36.8\%$。
+同机（dell）TFHE-rs v1.8.0 默认 128-bit 经典参数：\textbf{9.560 ms/PBS}（30 次操作精确计数 330 次 PBS，解密校验通过；其参数未按 2026 攻击修正——已标注）。满占用吞吐：路径A $5.00$ ms/查询 $\Rightarrow 1.91\times$；SQ r-lane $5.29\Rightarrow 1.81\times$；SQ 标量 $5.74\Rightarrow 1.67\times$。临界占用率 $\kappa^\ast = T_{\mathrm{batch}}/(nrT_{\mathrm{pbs}})$（$nrT_{\mathrm{pbs}}{=}78.3$ s，$r{=}4$）：路径A $52.3\%$，SQ/stock r-lane $\approx 55\%$；$r{=}1$（SQ 标量）$60.1\%$。即批摊销相对逐消息 PBS 需 $>\!50\%$ 占用率才占优——两种制度（批量吞吐 vs 低延迟）的取舍已如实标注。
 
 \subsection{失效概率（三层证据）}
 
@@ -265,7 +265,7 @@ SQ r-lane & 5.29 & $1.01\times$ \\
 
 \section{否定性结果（对社区有价值）}
 
-SQ 与 7 个融合旗标中作用于分解生命周期的部分\textbf{构建不兼容}（同一输出路径冲突，可复现的冲突矩阵）；$k$-sub 推广被蝶形拓扑排除（证明而非性能猜测）；数位宽度微变体已被 stage314 实测关闭（微核 $1.045\times$ 稀释至全 SAB $0.997\times$）；配对堆叠 EP 因成本模型修正而撤回。
+SQ 与 7 个融合旗标中作用于分解生命周期的部分\textbf{构建不兼容}（同一输出路径冲突，可复现的冲突矩阵）；$k$-sub 推广被蝶形拓扑排除（证明而非性能猜测）；数位宽度微变体已被 stage314 实测关闭（微核 $1.045\times$ 稀释至全 SAB $0.997\times$）；配对堆叠 EP 因成本模型修正而撤回；\textbf{路径A 在终参与 $r\le 8$ 未超越同构建 stock r-lane}（$+5\%$--$16\%$，随 $r$ 收窄）——早前 $1.21\times$ 加速结论系跨构建列误标，已由 E-PF A/B 与通道审计更正（勘误记录于 \S1）。
 
 \section{工件与复现索引}
 
