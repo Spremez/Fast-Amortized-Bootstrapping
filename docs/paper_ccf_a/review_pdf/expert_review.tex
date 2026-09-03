@@ -1,0 +1,274 @@
+\documentclass[11pt]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[colorlinks=true, linkcolor=blue!60!black, citecolor=darkgray, urlcolor=blue!60!black, bookmarks=true, bookmarksnumbered=true, unicode=true]{hyperref}
+\widowpenalty=10000
+\clubpenalty=10000
+
+\newtheorem{theorem}{定理}
+\newtheorem{lemma}[theorem]{引理}
+\renewcommand{\proofname}{证明}
+
+\newtcolorbox{keybox}[1][]{colback=blue!4, colframe=blue!40!black, boxrule=0.6pt, arc=2pt, left=6pt, right=6pt, top=4pt, bottom=4pt, #1}
+
+\title{空}
+\date{}
+
+\begin{document}
+\tableofcontents
+\newpage
+
+\section{目的与完成度声明}
+
+本资料整合本工作的\textbf{算法理论}与\textbf{实验佐证}，供同态密码专家进行双重审核。全部数字可溯源至代码仓库 \texttt{repro/} 工件与 git 提交记录。
+
+\begin{keybox}
+\textbf{完成度（截至本资料生成）}：安全组合定案、终版性能主表、r-扩展性（r=2/4/6）、层安全审计、容量曲线（h=41/$\sigma$+11 口径）、TFHE-rs 同机锚点、occupancy/break-even、DFR 三层证据、多参数集修正推导均已\textbf{完成}。在途（不改变主表方向）：r=8 静机复测、postops 在最终参数下的交替翻转分诊、10-trial 噪声@最终参数、E-PF 部分融合 A/B、4096/5-bit 实测收割（首项已 Pass：4096 修正点 h=42 门测试 0/4096 失配）。
+\end{keybox}
+
+\section{参数体系（$\theta$ 向量，实码值）}
+
+表~\ref{tab:theta} 给出最终参数（Final，SET\_2\_3\_2048 族）的完整参数向量。所有密钥层的安全含义在 \S5 逐一审计。
+
+\begin{table}[htbp]
+\centering
+\caption{最终参数向量（代码可验证值）}
+\label{tab:theta}
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} l l l}
+\toprule
+符号 & 值 & 说明 \\
+\midrule
+$n=N_{\mathrm{acc}}=N_{\mathrm{out}}$ & 2048 & 输入/累加器/输出环维数 \\
+$q$（torus） & $2^{64}$ & \\
+输入密钥 $s_{\mathrm{in}}$ & 二值稀疏 $h{=}42$，条件于最大间隙 $\le 2^7{-}1$ & 拒绝采样 \\
+$\sigma_{\mathrm{in}}$ & $2^{-15}$（绝对 $2^{49}$） & \\
+输出密钥 $s_{\mathrm{out}}$ & 三元 $h_{\mathrm{out}}{=}512$，\textbf{交替符号} & 如实建模 \\
+$\sigma_G$（BSK） & $2^{-50}$（原值，\textbf{不修正}） & 见 \S5.1 \\
+packing 密钥 & 二值 $h{=}256$，$\sigma_{\mathrm{PKS}}{=}2^{-44}$ & \\
+$Q$（SQ 尺度） & $2^{16}$ & \S4 \\
+gadget（stock/路径A） & $B_g{=}2^{23}$，$\ell{=}1$ & \\
+$\rho$（$r\_prec$） & 7 & \\
+消息精度 $p$ & 3（族内 5/7/9 同 $h{=}42$） & \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\section{三个自举算法}
+
+\subsection{686 基线（标量，已发表）}
+
+输入 TRLWE $\mathrm{in}=(a,b)$（$s_{\mathrm{in}}$ 下）与测试向量 TV。初始化 $acc_i = X^{b_i}\!\cdot\!TV$（$i\in[n)$）。对 $s_{\mathrm{in}}$ 的 $h{+}1$ 个稀疏步，每步对\textbf{整个 $n$ 数组}做单项乘（每精度位：换位槽 NCMUX = $X^{-1}$ 自同构 + KS 后 CMUX；直达槽 CMUX）并做数位减 SubA。外积总数 $S=(h{+}1)\rho n$。尾声为逐槽抽取 + packing KS + hw-KS。
+
+\subsection{矩阵外积拓展（本文贡献 1；路径A为其工程优化）}
+
+累加器元素由 TRLWE 改为 \textbf{PVW-TMLWE}（1 个掩码 $a$ 与 $r$ 个体 $b_j$ 共享），选择子由 TRGSW 改为 \textbf{MAT-TRGSW}（$(1{+}r)\ell$ 行）。矩阵外积
+\[
+\mathrm{MV\text{-}EP}(c,C)\;=\;\sum_{i\le r,\; j<\ell}\ \mathrm{Decomp}_j(c_i)\otimes C[i\ell+j]
+\]
+一次盲旋转服务 $n\times r$ 个消息--LUT 查询；外积计数不变而每 lane 摊销 $\div r$；分解行数由 $2r$ 降至 $(1{+}r)$（共享掩码的结构性节省）。
+
+\begin{algorithm}[htbp]
+\caption{矩阵形式摊销稀疏自举（外层）}
+\label{alg:mat}
+\begin{algorithmic}[1]
+\Require $\mathrm{in}=(a,b)$；PVW 测试向量 $\mathit{tv}$（$r$ 路 LUT）；密钥 $\{C[\text{step}][\text{bit}]\}$、aut$_{-1}$、packing KS $\times r$、hw-KS
+\Ensure $out[0..r{-}1]$
+\For{$i\in[0,n)$} $acc_i \leftarrow X^{\lceil 2^{64} b_i\rceil_{2N}}\cdot \mathit{tv}$ \EndFor
+\For{$\text{step}\in[0,h]$}
+  \State $acc \leftarrow \mathrm{MonomialMul}(acc,\,C[\text{step}])$ \Comment{算法~\ref{alg:bfly}}
+  \State $\mathrm{SubA}(acc,\,\bar a)$ \Comment{零数位快路径跳过整次 MV-EP}
+\EndFor
+\For{$\text{lane}\in[0,r)$}
+  \State $ext \leftarrow$ 逐槽常数抽取$(acc,\text{lane})$
+  \State $out[\text{lane}] \leftarrow \mathrm{KS}_{\mathrm{hw}}(\mathrm{PackingKS}(ext))$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{MonomialMul：累加器数组的蝶形旋转（每精度位）}
+\label{alg:bfly}
+\begin{algorithmic}[1]
+\For{$\text{bit}\in[0,\rho)$}，$w\leftarrow 2^{\text{bit}}$
+  \For{$j\in[0,w)$} \Comment{换位槽：负旋转}
+     \State $rot \leftarrow X^{-1}\!\cdot acc^{\mathrm{in}}_{n-w+j}$（自同构 + aut$_{-1}$ KS）
+     \State $(out_j,\ out_{j+w}) \leftarrow \mathrm{DualSubCMUX}(acc^{\mathrm{in}}_j,\ rot,\ acc^{\mathrm{in}}_{j+w},\ C[\text{bit}])$
+  \EndFor
+  \For{$j\in[w,\,n{-}w)$} \Comment{直达槽}
+     \State $out_{j+w} \leftarrow acc^{\mathrm{in}}_{j+w} + \mathrm{MV\text{-}EP}(C,\ acc^{\mathrm{in}}_j - acc^{\mathrm{in}}_{j+w})$
+  \EndFor
+\EndFor
+\State 交换缓冲
+\end{algorithmic}
+\end{algorithm}
+
+DualSubCMUX 中一对输出共享一次 $X^{-1}$ 旋转与一次向量化双减：$(rot{-}p,\ rot{-}q)$ 一次算得，两输出各做一次 MV-EP。蝶形拓扑保证每个旋转尾恰参与 2 个输出的代数恒等式，故 $k{=}2$ 是结构上限（$k$-sub 推广被拓扑排除）。
+
+\subsection{SQ 尺度量化外积（本文贡献 2）}
+
+累加器全程维护在 $Q=2^{q}$（$q{=}16$）尺度：setup 量化 $\times 2^q$，每次外积后融合重缩放 $\gg (64{-}q)$ 保持尺度；选择子按 $B_g{=}2^{q}$ 加密，从而\textbf{gadget 分解被消除}（$Q$ 尺度累加器本身即单一数位）。NCMUX 为精确升移 $\ll(64{-}q)$、复用 stock 自同构 KS、舍入降移（每步一次 $q$-bit 舍入）。速度收益集中在标量（SQ/686 $=0.897$），随 $r$ 按 $\approx 1/r$ 衰减至平价；硬化收益双形态保持（\S4.3）。
+
+\section{SQ 理论：正确性与噪声}
+
+\begin{theorem}[消息路径精确性]
+\label{thm:1}
+在无回绕条件 $|c|_\infty \le 2^{q-1}$ 下，对盲旋转调度的每一步，
+\[
+\bigl(\mu\cdot 2^{64-q}\ \star\ c\bigr)\ \gg\ (64-q)\;=\;\mu\cdot c,
+\]
+且 SQ 盲旋转的输出消息与 stock 盲旋转（同 TV、同密钥）一致。
+\end{theorem}
+
+\begin{proof}
+对调度步归纳。基础：setup 量化 $c_0=\mathrm{round}(\text{torus}\cdot 2^{q})$，消息占据高位，$|c_0|_\infty<2^q$，条件成立。归纳步：外积核为整数卷积（spqlios 低字对 $2^{64}$ 精确）加移位；整数卷积对消息线性，且无回绕条件保证中间乘积不溢出，故消息项经 $\times 2^{64-q}$ 再右移 $64{-}q$ 恰好还原为 $\mu\cdot c$；噪声项由引理~\ref{lem:1} 刻画。融合重缩放的舍入 $R$ 满足 $|R|_\infty\le 2^{q-1}$（单次 $q$-bit 舍入），维持尺度不变量与无回绕条件。归纳终止时累加器仍在 $Q$ 尺度，末尾 torus 提升为精确移位。故消息路径总舍入为零，仅有每次 NCMUX 一位的 $q$-bit 舍入噪声累积。
+\end{proof}
+
+\begin{lemma}[$\Delta$ 抑制]
+\label{lem:1}
+选择子噪声 $e$（标准差 $\sigma_G$）进入累加器的系数为：stock $\sigma\cdot 2^{27.1}$（KS 噪声 $\propto\sigma\cdot 2^{B_g}$，约 140 次/槽），SQ 为 $\sigma\cdot 2^{q+3.5}$；二者之比为
+\[
+\Delta \;=\; Q^2/T \;=\; 2^{\,2q-64}\;=\;2^{-32}\quad(q=16),
+\]
+即 $q$ 每降低 1 bit 换取 2 bit 的 $\sigma$ 余量。
+\end{lemma}
+
+推导要点：$Q$ 尺度下选择子噪声需经（$\times 2^{64-q}$ 谱乘）与（$\gg 64{-}q$ 重缩放）对消，净系数 $2^{-(64-q)}\cdot 2^{q}=2^{2q-64}$；而 stock 的分解数位放大 $B_g/2\approx 2^{22}$ 与约 140 次 KS 累积给出 $2^{27.1}$。
+
+\textbf{理论优势三线（均有实测）}：(i) 速度——消分解使标量 SQ/686 $=0.897$（三配置 $0.894$--$0.898$ 稳定）；(ii) 余量——$\sigma{+}15$ 后 SQ 噪声 59.36，与引理预测 $59.1$ 相差 $<1$ bit，三档 $\sigma$ 均如此；(iii) 结构解耦——SQ 对 $\sigma_G$ 不敏感（平衡档实验：stock 付 $17\%$ 得 $+0.9$ bit，SQ 零收益零损失）。
+
+\section{安全分析与参数定案}
+
+\subsection{攻击组合与最终参数}
+
+组合取各攻击之\textbf{最小值}（不叠加）。攻击面：uSVP、dual-hybrid、HD（合并论文公开代码）、lattice-MITM-hybrid（新版 lattice-estimator）、组合层闭式界 $T3'$（本工作）。
+
+\begin{table}[htbp]
+\centering
+\caption{安全组合表（bit；$T3'$ 为本工作含条件熵修正的闭式组合界）}
+\label{tab:sec}
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} l ccccc c}
+\toprule
+层/参数 & uSVP & dual & HD & MITM-hyb & $T3'$ & min \\
+\midrule
+输入 $h{=}39$ & 898.6 & — & 不可行 & 126.2 & 124.5 & \textbf{124.5} \\
+输入 $h{=}41$ & 902.2 & — & — & 130.0 & 130.5 & 130.0 \\
+\textbf{输入 $h{=}42$} & 904.1 & — & — & \textbf{131.8} & 133.5 & \textbf{131.8} \\
+输入 $h{=}52$ & 919.6 & — & — & 149.4 & 165.4 & 149.4 \\
+\textbf{BSK $\sigma{=}2^{-50}$} & 211.6 & 318.3 & \textbf{136.2} & — & — & \textbf{136.2} \\
+BSK $\sigma{=}2^{-39}$ & 310.5 & 229.6 & 175.1 & — & — & 175.1 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\begin{keybox}
+\textbf{最终参数：$h{=}42$，$t{=}7$，$\sigma_G{=}2^{-50}$（原值）。}系统安全 $=\min(131.8,\,136.2)=131.8\ge 128$。三方独立验证：闭式 $T3'{=}133.5$、估计器 lattice-MITM $131.8$（两线相差 $<2$ bit 互证）、合并论文自身代码在 BSK 层 $136.2$。$h{=}39$（686 原参数）在正确条件熵建模下为 $124.5$，\textbf{不达标}。
+\end{keybox}
+
+\subsection{条件熵修正（本工作方法）}
+
+实现中输入密钥经拒绝采样直至最大环形间隙 $\le 2^{t}-1$。均匀丢弃使条件分布均匀于接受族，故熵损失恰为 $-\log_2 p_{\mathrm{accept}}$；$p_{\mathrm{accept}}$ 由逐行复刻 \texttt{get\_min\_prec} 扫描语义的 Monte Carlo（$2\times10^4$ 样本）计算。修正后
+\[
+T3'(n,h,t)=\bigl(\log_2\tbinom{n}{h}\;-\;\mathrm{loss}(n,h,t)\;-\;\log_2 n\;-\;\delta\bigr)/2,\quad \delta=7.38 .
+\]
+实现的三元密钥采用\textbf{交替符号}（符号熵 1 bit 而非 $h$ bit），已如实计入建模；该层组合安全仍远高于格层，绑定层不变。
+
+\subsection{层安全审计（最终参数下全层达标）}
+
+\begin{table}[htbp]
+\centering
+\caption{逐层审计（min，bit）}
+\label{tab:layers}
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} l l c}
+\toprule
+密钥层 & 形状 & min \\
+\midrule
+输入 & 2048, $h{=}42$, 条件间隙 & \textbf{131.8} \\
+BSK & 2048, 三元 512, $\sigma{=}2^{-50}$ & \textbf{136.2} \\
+packing & 2048, $h{=}256$, $\sigma{=}2^{-44}$ & \textbf{224.3} \\
+HWR-KSK & 输入密钥域样本（并入输入层行） & — \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\subsection{多参数集修正表（逐环推导）}
+
+$h{=}42$ 是 $n{=}2048$ 输入环族（跨精度）的定案，\textbf{非全局常数}：逐环以三联约束 $T3'\ge128\ \wedge\ \mathrm{MITM}\ge128\ \wedge\ \mathrm{BSK}\ge128$ 求解。$n{=}4096$：原 $h{=}32$ 坍至 $117.5$，修正为 $h{=}42@\mathrm{t}8$（$T3'{=}154.1$，实测门测试已通过）；$n{=}8192$：修正为 $h{=}34@\mathrm{t}10$（$146.6$，实测排队）。
+
+\section{实验矩阵（终版数据）}
+
+\subsection{性能主表（对比基准 = 686 同机、同场次、同新安全性）}
+
+\begin{table}[htbp]
+\centering
+\caption{标量（$n{=}2048$ 批，3-bit，中位；dell 静机负载 $\approx 2$）}
+\label{tab:scalar}
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} l cccc c}
+\toprule
+配置 & SQ & 686 & SQ/686 & 噪声 SQ/686 \\
+\midrule
+Final（$h{=}42,\sigma{+}0$） & \textbf{5.74} ms/msg & 6.40 & \textbf{0.897} & 57.60/57.69 \\
+A0 原参数（$39,+0$） & 5.36 & 6.00 & 0.894 & 57.45/57.43 \\
+CAL（$41,+11$） & 5.68 & 6.32 & 0.898 & 57.73/58.72 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{r-lane（$r{=}4$，Final）：同一盲旋转服务 $2048\times4$ 查询}
+\label{tab:rlane}
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} l c c}
+\toprule
+方案 & ms/msg/lut & 内部比值 \\
+\midrule
+stock r-lane（686 矩阵化） & 5.25 & $1.00\times$ \\
+SQ r-lane & 5.29 & $1.01\times$ \\
+\textbf{路径A（7 融合旗标）} & \textbf{4.32} & \textbf{$1.21\times$ vs stock；$1.16\times$ vs SQ} \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+同场次对 $4\times$686 标量（$52.4$ s）：路径A $1.48\times$，SQ 标量 $\times4$ 为 $1.33\times$。\textbf{安全修正的完整代价}（同机同场）：$h$ 由 39 增至 42 仅 $+6.5\%$（stock）/$+7.2\%$（SQ），$\sigma$ 不动。
+
+\subsection{r-扩展性与正确性}
+
+路径A 对 SQ 的逐进程背靠背比值：$r{=}2$: $1.117$（$2.10$ ms/msg/lut）；$r{=}4$: $1.16$；$r{=}6$: $1.10$。每 lane 成本随 $r$ 单调上升，摊销甜点 $r{=}2$--$4$；全部 $r$ 门测试通过（正确性与 $r$ 无关）。$r{=}8$ 静机复测在途。
+
+\subsection{自举后容量（余量作为输出维度）}
+
+三层口径：瞬时余量 $= 60-\log_2(\text{最大相位偏差})$；生命周期 $H_{\mathrm{bits}}=\tfrac12\log_2(V_{\mathrm{cap}}/V_{\mathrm{out}})$；容量曲线（自举后施加 $k$ 次乘一 TRGSW 外积逐次测噪）。电路键 $\sigma_G{=}2^{-25}$ 下 8 步噪声平坦（斜率 $<0.05$ bit/EP，外推深度 $\approx 5\times10^4$ 次 EP）；两个零容量边界案例（SAB 级 gadget 单数位截断；输入键 $\sigma{=}2^{-15}$ 放大至半环面）与外积噪声公式 $\sqrt{\ell N}\,B_g/\sqrt{12}\,\sigma_G$ 的饱和点定量验证（$2^{-1.8}\approx$ 观测 $2^{63}$）。
+
+\subsection{与 TFHE-rs 的同机参照与 occupancy}
+
+同机（dell）TFHE-rs v1.8.0 默认 128-bit 经典参数：\textbf{9.560 ms/PBS}（30 次操作精确计数 330 次 PBS，解密校验通过；其参数未按 2026 攻击修正——已标注）。满占用吞吐对比 $4.32$ vs $9.56$ ms/查询 $= 2.2\times$；临界占用率 $\kappa^\ast = T_{\mathrm{batch}}/(nrT_{\mathrm{pbs}})$：$r{=}4$ 时 $18.4\%$，$r{=}1$ 时 $36.8\%$。
+
+\subsection{失效概率（三层证据）}
+
+解析层：实测最大相位偏差 $57.60$ 对预算 $60$，高斯尾部给出逐槽 $p_{\mathrm{fail}}\lesssim 2^{-100}$ 量级（certified 版待定稿数值化）。实证层：累计 $>10^6$ 次槽解码零失败，Clopper--Pearson 单侧 95\% 上界 $p<3\times10^{-6}\approx 2^{-18.4}$（如实标注实证上界与解析主张的区别）。稀有事件估计列为可选第三层。
+
+\section{否定性结果（对社区有价值）}
+
+SQ 与 7 个融合旗标中作用于分解生命周期的部分\textbf{构建不兼容}（同一输出路径冲突，可复现的冲突矩阵）；$k$-sub 推广被蝶形拓扑排除（证明而非性能猜测）；数位宽度微变体已被 stage314 实测关闭（微核 $1.045\times$ 稀释至全 SAB $0.997\times$）；配对堆叠 EP 因成本模型修正而撤回。
+
+\section{工件与复现索引}
+
+安全：\texttt{scripts/e1\_conditional\_entropy.py}、\texttt{scripts/e4\_v5*.sage}、dell \texttt{e4v5*.log}/\texttt{e3.log}。性能：\texttt{repro/dell\_phase2/}（主表）、\texttt{repro/stage358..367}（σ 梯度、r-扩展、噪声、容量、平衡档）。理论：\texttt{docs/paper\_ccf\_a/theory\_for\_review.md}、\texttt{review\_package.md}。实现：\texttt{src/sab\_sq.c}、\texttt{src/sab\_pvw\_sq.c}、\texttt{src/sab\_pvw.c}、\texttt{src/mosfhet/src/mattrgsw.c}。全部阶段有 git 提交与服务器日志双重溯源。
+
+\end{document}
