@@ -13,6 +13,7 @@
 #include <sab.h>
 #include <benchmark_util.h>
 #include <sab_profile.h>
+#include <time.h>
 
 #define MEASURE_BOOTSTRAP_TIME(NAME, REP, MSG, CODE) \
   do { \
