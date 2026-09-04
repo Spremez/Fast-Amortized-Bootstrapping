@@ -51,6 +51,14 @@
 
 stage369 六节 COMPLETE 且已收割（`7c17b7e`）；V5A2/V5A3 估计器臂完成；无本地/远程等待器。git 干净（本文件与快照更新为最后提交）。dell 上残留 2 个无害父 shell。
 
+## 5b. 2026-09-04 第二轮用户指令（本会话执行，后续会话必须遵守）
+
+1. **F1（MAT-EMPmul）纳入外层完整矩阵自举算法设计范围**：不考虑其原触发条件（"B/C 受阻才启动"作废）——目标是足够完备的矩阵自举算法，应做更多尝试。F1 的 δ=2 多比特选择子步即外层设计清单的 radix>2 蝶形实例；G1 有限检查器（`scripts/check_f1_empmul_equivalence.py`，160 项）可复用，G2 噪声/G3 Amdahl/G4 资源三门为立项前置义务。
+2. **对比口径反转**：一切与 686 的性能对比以 **686 时间 / 我方时间** 呈现（我方为分母），直观显示快多少倍（例：SQ 5.74 ms vs 686 6.40 ms → **1.12× 更快**，不再写 0.897）。
+3. **术语**：凡指 686 原实现的标量路径，直接称 **"686"**（不再用 "stock 标量"）；r-lane 语境的 "stock 构建" 改称 **"矩阵基线构建"**（matrix-base，无优化旗标的矩阵路径），避免与 686 混淆。
+4. **BSK 选项 A 已落地**（用户确认 2026-09-04，commit `3d31f2f`）：probe_sq.c / probe_pvw_sq.c 默认 sigma_shift=1，main.c SET 表 sigma_out=2⁻⁴⁹；stage371 默认复跑 runner = `repro/stage371_bska_default/run_stage371.sh`（dell PID 2275197）。
+5. **0904 PPT（20260904.pptx）第 3-10 页核对结论**：见 `theory_checks/stage372_ppt_0904_slides3_10_audit.md`（若已写入）——结论：第 5-9 页（流水线/MPmul/嵌套外积/bin-SAB）矩阵路径全部满足；第 8 页三变体中 ρ-SAB（一般稀疏）矩阵分支未接入（标量有 `sub_a_ga`）；第 10 页 Mul-LWE 批处理形式与 PVW_TMLWE 逐条对应满足。
+
 ## 6. 新会话开工建议顺序
 
 1. 读本文件 → `SESSION_STATE_SNAPSHOT.md` §21–22 → 两份 rigorous 文档。
