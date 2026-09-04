@@ -515,3 +515,24 @@ D（r 细扫）至 r=6 完成：stock SQ/stock=1.006–1.010 全平价；pathA r
 2. **安全标准简化**：≥128 即可（不追余量）。BSK 建议仍为 A（σ_G→2⁻⁴⁹，实测近免费，130.4）。
 3. **下一阶段指令**：外层完整矩阵自举算法的设计与创新（设计空间清单见 docs/HANDOFF_NEXT_SESSION.md §2：调度最优性/密钥-形式协同/联合尾声/逐lane精度/形式化+BSK落地）。
 4. **迁移**：本会话接近上下文上限。交接入口=docs/HANDOFF_NEXT_SESSION.md（自包含：定案状态/文件索引/机器纪律/开工顺序）；无挂起任务；git 已提交。新会话可另用 ReadSessionContext(sess_d7b9aa13-258a-424a-a042-cd7a05037c0e, strategy=handoff) 拉取原始线程（可选）。
+
+## 二十四、stage371 收官 + stage372 PPT 核对 + 用户二轮指令（2026-09-04，本会话）
+
+### 24.1 用户指令（已写入 HANDOFF §5b，后续必须遵守）
+
+1. F1（MAT-EMPmul）无条件纳入外层完整矩阵自举设计（触发条件作废）；
+2. 对比口径反转：一律 686/我方（我方为分母）；
+3. 术语：stock 标量直接称 686；无旗标矩阵路径称"矩阵基线构建"（matrix-base）。
+
+### 24.2 BSK 选项 A 落地 + stage371 全量复跑收官（dell，UTC 07:32 COMPLETE）
+
+- 落地 commit `3d31f2f`：probe_sq/probe_pvw_sq 默认 sigma_shift=1、main.c SET 表 sigma_out=2⁻⁴⁹；日志验证默认生效（`sigma=2^-49 HARDENED`，无环境变量）。
+- A 主表 n=2048/p=3 ×6：SQ 11.59–11.65s（5.68 ms/msg）vs 686 12.90–13.07s（6.34）→ **686/SQ = 1.117×**；噪声 57.68/57.60（+0.08 bit，与 stage369-E 预测逐位一致）；门 Pass 0/2048 ×6。
+- B r-lane r=4 ×3 构建 ×2 试 ×3 rep（全部 Pass 0 失配）：矩阵基线构建 base 42.7–43.0s / SQ 43.3–43.4s（平价 1.009–1.016）；matflags 构建 40.6–40.9 / 41.0–41.2（平价 1.004–1.009）；pathA 构建 base 34.7–35.6s / pathA 40.3–41.7s（pathA 慢 1.160–1.171，同构建口径）。对 686×4（A 节 12.99s×4≈51.96s 同场）：矩阵基线 **1.21×**、pathA **1.27×**。
+- C 多环：4096 p5（h42/t8）SQ 6.57 vs 686 7.01 ms/msg = **1.068×**，噪声 57.01/56.21，门 0/4096；8192 p3（h34/t10）SQ 6.75 vs 7.26 = **1.075×**，噪声 59.15/58.63，门 0/8192。
+- 结论：**选项 A 在全量尺度确认近免费**（时序与 σ2⁻⁵⁰ 期一致、噪声 +0.08 bit、全门 Pass）；安全 min 130.4 ≥128 定案闭环。
+- 原始日志：dell `~/spz/dell-final-bench/repro_stage371/run.log`；runner：`repro/stage371_bska_default/run_stage371.sh`。
+
+### 24.3 stage372：0904 PPT 第 3-10 页核对（theory_checks/stage372_ppt_0904_slides3_10_audit.md）
+
+结论 **9/10 页满足**：无密文×密文 ✓、五步流水线 ✓、MPmul 蝶形矩阵镜像 ✓、bin-SAB 调度逐行对应 ✓、第 10 页 Mul-LWE 形式与 PVW_TMLWE 逐条对应（"n/r+1" 摊余账 = M3 定律）✓。**唯一结构缺口 G-ρ**：ρ-SAB（一般稀疏/任意取值秘密）矩阵分支未接入（标量 sub_a_ga 已有；矩阵化 = 两次 pvmtmlwe 自同构 + 1 次 MAT 外积 + 系数选择子族物化），建议并入外层设计"密钥—形式协同"章立项。次级缺口：ternary 矩阵分支缺 FINAL 参数性能数据。
