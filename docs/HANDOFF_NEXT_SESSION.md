@@ -64,3 +64,18 @@ stage369 六节 COMPLETE 且已收割（`7c17b7e`）；V5A2/V5A3 估计器臂完
 1. 读本文件 → `SESSION_STATE_SNAPSHOT.md` §21–22 → 两份 rigorous 文档。
 2. 与用户确认 BSK 选项A（一条消息的事，确认即改常数+排 stage371）。
 3. 进入外层算法设计任务（§2 清单），先出设计文档再谈实测（用户纪律：先理论后实测、严禁猜测）。
+
+## 6b. 2026-09-04 第三轮更新（本会话，BSK-A 已落地后的理论轮）
+
+- BSK 选项 A 已确认并落地（`3d31f2f`），stage371 全量收官（`4c7a5ab`）；
+  0904 PPT 第 3-11 页核对完毕（stage372 审计 + slide11 补遗，`bc74708`）。
+- **新入口文档**（按顺序读）：
+  1. `docs/paper_ccf_a/sq_position_narrative.md` —— SQ 与 G⁻¹(c)/矩阵外积
+     关系的正式叙事（L3 两种核、契约抽象、四条贡献排序）；
+  2. `docs/paper_ccf_a/outer_layer_design_v1.md` —— 四层架构与设计空间
+     D1-D4（F1=C1、G-ρ 立项）；
+  3. `docs/paper_ccf_a/outer_layer_execution_plan.md` —— **统筹执行计划**
+     （闭环纪律、T2 种子推导含 radix-δ 胜利条件阶梯与 F1 投影双重计数
+     修正 P-a、WS-A~F 工作流、stage373-377 排期、止损规则）。
+- 下会话动作 = 计划 §4 S2：T1 formalization 定稿 + T2 定稿 + stage373
+  （FINAL 参数组件画像）发出并收割。
