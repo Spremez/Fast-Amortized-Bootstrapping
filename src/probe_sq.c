@@ -135,10 +135,11 @@ int main(){
   printf("Input key: h = %d (fairness point)\n", (int) h_in);
   { const char * e = getenv("SAB_SQ_SIG_IN"); if(e) sigma_in_exp = atof(e); }
   double sigma_in = pow(2, -sigma_in_exp);
-  /* 2026/279 hardening demo: SAB_SQ_SIGMA_SHIFT=<bits> raises the output
-   * key sigma by that many bits (restoring the isometry-hybrid margin).
-   * Expected: SQ(q<=16) keeps the gate, the stock scalar path degrades. */
-  int sigma_shift = 0;
+  /* SAB_SQ_SIGMA_SHIFT=<bits> shifts the BSK/output key sigma from the
+   * -50 base. BSK option A (2026-09-04, user-confirmed): alternating-sign
+   * honest-model dual-hybrid is 127.9 < 128 at 2^-50, 130.4 at 2^-49, so
+   * the committed default is now shift=1; set 0 to reproduce the old arm. */
+  int sigma_shift = 1;
   {
     const char * env = getenv("SAB_SQ_SIGMA_SHIFT");
     if(env != NULL) sigma_shift = atoi(env);

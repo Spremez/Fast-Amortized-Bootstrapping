@@ -460,42 +460,42 @@ void test_sab(){
 #if defined(SET_2_3_2048)
   const uint64_t in_N = 2048, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_in = 39, h_out = 512, msg_prec = 3;
   const double sigma_in = pow(2, -15);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 7;
 #elif defined(SET_2_3_4096)
   const uint64_t in_N = 4096, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_in = 32, h_out = 512, msg_prec = 3;
   const double sigma_in = pow(2, -15);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 8; 
 #elif defined(SET_2_3_8192)
   const uint64_t in_N = 8192, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_in = 25, h_out = 512, msg_prec = 3;
   const double sigma_in = pow(2, -15);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 10; 
 #elif defined(SET_4_5_2048)
   const uint64_t in_N = 2048, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 14, b_ks = 1, h_in = 42, h_out = 512, msg_prec = 5;
   const double sigma_in = pow(2, -17);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 7;
 #elif defined(SET_4_5_4096)
   const uint64_t in_N = 4096, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 14, b_ks = 1, h_in = 34, h_out = 512, msg_prec = 5;
   const double sigma_in = pow(2, -18);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 8;
 #elif defined(SET_4_5_8192)
   const uint64_t in_N = 8192, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 14, b_ks = 1, h_in = 26, h_out = 512, msg_prec = 5;
   const double sigma_in = pow(2, -18);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 10;
 #elif defined(SET_6_7_4096)
   const uint64_t in_N = 4096, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 17, b_ks = 1, h_in = 33, h_out = 512, msg_prec = 7;
   const double sigma_in = pow(2, -21);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 9;
 #elif defined(SET_6_7_8192)
   const uint64_t in_N = 8192, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 17, b_ks = 1, h_in = 27, h_out = 512, msg_prec = 7;
   const double sigma_in = pow(2, -21);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 10;
 #elif defined(SET_8_9_4096)
   const uint64_t in_N = 4096, in_k = 1, out_N = 8192, out_k = 1, l = 1, bg_bit = 22, b_packing = 14, ell_packing = 2, t_ks = 20, b_ks = 1, h_in = 34, h_out = 512, msg_prec = 9;
@@ -510,12 +510,12 @@ void test_sab(){
 #elif defined(SET_8_9_HIGH_FR)
   const uint64_t in_N = 8192, in_k = 1, out_N = 4096, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 17, b_ks = 1, h_in = 28, h_out = 512, msg_prec = 9;
   const double sigma_in = pow(2, -22);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 10;
 #else
   const uint64_t in_N = 2048, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_in = 39, h_out = 512, msg_prec = 3;
   const double sigma_in = pow(2, -15);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 7;
 #endif
   printf("Sparse bootstrapping with binary keys\n");
@@ -579,57 +579,57 @@ void test_sab_tern(){
 #if defined(SET_2_3_2048)
   const uint64_t in_N = 2048, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_in = 35, h_out = 512, msg_prec = 3;
   const double sigma_in = pow(2, -15);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 7;
 #elif defined(SET_2_3_4096)
   const uint64_t in_N = 4096, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_in = 26, h_out = 512, msg_prec = 3;
   const double sigma_in = pow(2, -15);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 9;
 #elif defined(SET_2_3_8192)
   const uint64_t in_N = 8192, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 12, b_ks = 1, h_in = 23, h_out = 512, msg_prec = 3;
   const double sigma_in = pow(2, -16);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 10;
 #elif defined(SET_4_5_2048)
   const uint64_t in_N = 2048, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 14, b_ks = 1, h_in = 38, h_out = 512, msg_prec = 5;
   const double sigma_in = pow(2, -17);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 7;
 #elif defined(SET_4_5_4096)
   const uint64_t in_N = 4096, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 15, b_ks = 1, h_in = 28, h_out = 512, msg_prec = 5;
   const double sigma_in = pow(2, -18);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 9;
 #elif defined(SET_4_5_8192)
   const uint64_t in_N = 8192, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 15, b_ks = 1, h_in = 24, h_out = 512, msg_prec = 5;
   const double sigma_in = pow(2, -18);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 10;
 #elif defined(SET_6_7_4096)
   const uint64_t in_N = 4096, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 17, b_ks = 1, h_in = 30, h_out = 512, msg_prec = 7;
   const double sigma_in = pow(2, -21);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 9;
 #elif defined(SET_6_7_8192)
   const uint64_t in_N = 8192, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 17, b_ks = 1, h_in = 25, h_out = 512, msg_prec = 7;
   const double sigma_in = pow(2, -21);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 10;
 #elif defined(SET_8_9_4096)
   const uint64_t in_N = 4096, in_k = 1, out_N = 8192, out_k = 1, l = 1, bg_bit = 22, b_packing = 14, ell_packing = 2, t_ks = 19, b_ks = 1, h_in = 32, h_out = 512, msg_prec = 9;
   const double sigma_in = pow(2, -24);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 9;
 #elif defined(SET_8_9_8192)
   const uint64_t in_N = 8192, in_k = 1, out_N = 8192, out_k = 1, l = 1, bg_bit = 22, b_packing = 14, ell_packing = 2, t_ks = 19, b_ks = 1, h_in = 26, h_out = 512, msg_prec = 9;
   const double sigma_in = pow(2, -23);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 10;
 #else 
   const uint64_t in_N = 2048, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 10, b_ks = 1, h_in = 17, h_out = 512, msg_prec = 3;
   const double sigma_in = pow(2, -15);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 8;
   #endif
   printf("Sparse bootstrapping with ternary keys\n");
@@ -695,27 +695,27 @@ void test_sab_arbitrary(){
 #if defined(SET_A2)
   const uint64_t in_N = 4096, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 19, b_ks = 1, h_in = 32, h_out = 512, msg_prec = 5;
   const double sigma_in = pow(2, -24);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 9;
 #elif defined(SET_A3)
   const uint64_t in_N = 8192, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 19, b_ks = 1, h_in = 32, h_out = 512, msg_prec = 5;
   const double sigma_in = pow(2, -24);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 10;
 #elif defined(SET_A4)
   const uint64_t in_N = 4096, in_k = 1, out_N = 8192, out_k = 1, l = 1, bg_bit = 22, b_packing = 14, ell_packing = 2, t_ks = 19, b_ks = 1, h_in = 32, h_out = 512, msg_prec = 7;
   const double sigma_in = pow(2, -24);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 9;
 #elif defined(SET_A5)
   const uint64_t in_N = 8192, in_k = 1, out_N = 8192, out_k = 1, l = 1, bg_bit = 22, b_packing = 14, ell_packing = 2, t_ks = 19, b_ks = 1, h_in = 32, h_out = 512, msg_prec = 7;
   const double sigma_in = pow(2, -24);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 10;
 #else 
   const uint64_t in_N = 4096, in_k = 1, out_N = 2048, out_k = 1, l = 1, bg_bit = 23, b_packing = 14, ell_packing = 2, t_ks = 19, b_ks = 1, h_in = 32, h_out = 512, msg_prec = 5;
   const double sigma_in = pow(2, -24);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
   const uint64_t target_r_prec = 9;
 #endif
   printf("Sparse bootstrapping with arbitrary keys\n");
@@ -822,7 +822,7 @@ void test_sab_microbench(){
   const uint64_t target_r_prec = 7;
   const uint64_t ep_reps = 2000, cmux_reps = 2000, monomial_reps = 5;
   const double sigma_in = pow(2, -15);
-  const double sigma_out = pow(2, -50);
+  const double sigma_out = pow(2, -49); /* BSK option A: 2^-50 dual-hybrid 127.9 < 128 */
 
   printf("SAB microbench with binary SET_2_3_2048 shape\n");
   printf("Reps: external_product=%" PRIu64 ", CMUX=%" PRIu64 ", RGSW_monomial_mul=%" PRIu64 "\n",

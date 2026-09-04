@@ -102,8 +102,9 @@ static void run_timing(void){
   const int bg_bit = 23;
   const int ell_packing = 2, b_packing = 14, t_ks = 12, b_ks = 1;
   uint64_t h = 39, r = 4, reps = 3;
-  int sigma_shift = 0;   /* 2026/279 hardening: raises the BSK key sigma,
-                          * mirrors SAB_SQ_SIGMA_SHIFT in probe_sq.c */
+  int sigma_shift = 1;   /* BSK option A default (2^-49): mirrors the
+                          * SAB_SQ_SIGMA_SHIFT default in probe_sq.c; 0
+                          * reproduces the pre-option-A 2^-50 arm */
   {
     const char * e = getenv("SAB_SQ_H");
     if(e) h = strtoull(e, NULL, 0);
