@@ -46,3 +46,33 @@ Mul-LWE 批处理外积形式）。实现锚点：`src/sab_pvw.c`、`src/sab_pvw
   全语义"，F1 扩展"选择子步本身的形式"。
 - 报告口径自本文档起：加速比一律 686/我方；686 原实现直接称 "686"，
   无旗标矩阵路径称"矩阵基线构建"。
+
+## 补遗（2026-09-04 用户指令"关注第 11 页"）：Mul-GSW 与批处理外积定义
+
+第 11 页在第 10 页 Mul-LWE 之上定义**Mul-GSW 密文与外积原语**（OMML 还原）：
+
+```text
+Mul-GSW 密文 C：加密向量 m' = (m'_1, ..., m'_r)
+  C = [KSK₀ ; KSK₁] = [S·A + E ; A] + [M' ··· ; 0 ···]     # KSK 形式，消息在对角体块
+gadget：p ∈ R_q^{(n+r)×(n+r)}
+外积：  ⊡ : Mul-GSW × Mul-LWE → Mul-LWE
+        (C, c) ↦ C ⊡ c = (1/p)·C·c
+结果：  加密 (m'_1·m_1, m'_2·m_2, ..., m'_r·m_r)           # 逐 lane 分量积
+```
+
+与实现逐条对照：
+
+| 第 11 页对象 | 实现 | 判定 |
+|---|---|---|
+| Mul-LWE 密文 c | `PVW_TMLWE`（见上表第 10 页行） | ✓ |
+| Mul-GSW C（KSK 形式 [SA+E; A] + 对角消息） | `MAT_TRGSW`：行为多体钥下的新鲜 PVW_TMLWE 样本 + 对角 gadget 消息放置（`mat_trgsw_monomial_sample`）。KSK 显式矩阵形式与"新鲜样本加密"形式是 GSW 的两种等价生成方式，对象相同 | ✓（生成形式等价） |
+| gadget p ∈ R_q^{(n+r)×(n+r)} | identity⊗g 结构，h_d = 2^{64−(d+1)Bg}；FINAL 为 l=1/Bg=2^23（n=k=1 ⇒ (1+r)×(1+r)） | ✓ |
+| ⊡ = (1/p)·C·c | `mat_trgsw_mul_pvmtmlwe_DFT`：先 G^{-1}(c)（即 1/p 的数字分解实现），再 dense 行积求和 | ✓ |
+| 结果加密 (m'_1m_1, …, m'_r m_r) | M1 定理：φ_q(C ⊡ c) = m'_q·φ_q(c) + ε_q；M2 保证无跨体放大 | ✓ |
+
+**判定：第 11 页满足。** 唯一细化口径与第 10 页相同：实现实例化的是
+**均匀对角**（m'_1 = … = m'_r = 同一选择子 bit，SAB 共享调度所需）；
+一般形式允许每 lane 不同 m'_q，其代数已被 M1 的对角证明覆盖，但
+`mat_trgsw_monomial_sample` 只暴露单一 m 参数——**per-lane 采样器变体
+（消息向量入参）是约 ~10 行的小扩展**，若外层设计的 C6（lane 级混合精度）
+或晚绑定需要每 lane 独立选择子再启用。
