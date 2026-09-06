@@ -122,3 +122,24 @@ ssh dell "cd ~/spz/dell-final-bench && FLAGS='-O2 -g -Isrc/mosfhet/include -Iinc
 3. aut_family 索引/钥生成正确性。
 
 **首选诊断**（下会话第一个动作）：把系数全改 1 跑一次——Pass ⇒ 嫌疑 2（指数≥2），Fail ⇒ 嫌疑 1/3（ga 机制）。注意 dell 上 sed 改 `coeffs[i] = 1` 时 bumped 计数要同步（上次 sed 把计数弄坏报 "support mismatch 1"，是探针自身问题不是钥问题）。本地探针 = `src/probe_grho.c`（系数 {1,2,3} 版，已提交）；dell 的 src 副本已还原同版。
+
+## 6e. G-ρ 调试第二轮（2026-09-05，判别实验完成）
+
+**已定位到侧**：三方对照（PVW-gauss vs PVW-binary，同钥 coeff=1）**478/512
+FAIL** → bug 在多体 `sab_pvw_sub_a_ga` 机制内部（排除：probe 标量 oracle
+接线已修、指数≥2 约定、门基础设施）。coeff=1 时 sub_a_ga 数学上应退化
+为 binary 的明文单项式乘（w_inv·a≡1, X^{(u·inv+1)·a}=X^{u+a}）但不等。
+
+**剩余嫌疑（需读源码级，下会话按序查）**：
+1. `polynomial_permute(out, in, gen)` 的 gen 约定（是否要求指数而非
+   [0,2N) 原值；τ₋₁=2N−1 恰好两种约定一致，小奇数 gen 可能暴露差异）；
+2. `pvmtmlwe_new_KS_key(key, key2, t, base)` 的方向约定与 aut_family
+   钥参数（t=1/base=23 与 aut_minus1 一致——但只在 gen=2N−1 验证过）；
+3. `mat_trgsw_monomial_DFT_sample` e≥1 的消息放置 vs EP 重构（e=0 已验证，
+   e=1 理论上仅系数索引不同）。
+4. **最有效的下一步**：写单步最小复现——trivial PVW 样本 + 单次
+   `sab_pvw_sub_a_ga`（a[0]=1, X^1 选择子）vs `pvmtmlwe_mul_by_xai` 直接
+   对比相位（~20 行 probe 改动，比整自举快三个数量级定位）。
+
+本地状态：probe_grho 三方臂 + coeff_max 旋钮已提交；dell 的 probe_grho
+二进制为最新（3-way 版）。
