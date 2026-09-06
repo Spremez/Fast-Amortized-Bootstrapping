@@ -35,9 +35,20 @@ int main(void){
     if(input_key->s[0]->coeffs[i] == 1)
       input_key->s[0]->coeffs[i] = 1 + (bumped++ % 3);
   if(bumped != h){ printf("support mismatch %d != %d\n", bumped, h); return 1; }
-  const uint64_t r_prec = get_min_prec(input_key);
-  printf("gaussian key: h=%d coeffs in {1,2,3}, r_prec=%lu\n", bumped,
-      (unsigned long) r_prec);
+  /* r_prec must bound interior gaps AND the final wrap gap (keygen checks
+   * previous < 2^r_prec), so derive it from the actual support */
+  uint64_t max_gap = 0, previous = in_N;
+  for (int scan = 0; scan < in_N; scan++){
+    const int current = in_N - scan - 1;
+    if(input_key->s[0]->coeffs[current] == 0) continue;
+    if(previous - current > max_gap) max_gap = previous - current;
+    previous = current;
+  }
+  if(previous > max_gap) max_gap = previous;
+  uint64_t r_prec = 1;
+  while((1ULL << r_prec) <= max_gap) r_prec++;
+  printf("gaussian key: h=%d coeffs in {1,2,3}, max_gap=%lu r_prec=%lu\n",
+      bumped, (unsigned long) max_gap, (unsigned long) r_prec);
 
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(out_N, out_k, r, pow(2, -70));
   SAB_PVW_Key pvw = sab_pvw_new_gaussian_key(input_key, pvw_key, prec, h,
