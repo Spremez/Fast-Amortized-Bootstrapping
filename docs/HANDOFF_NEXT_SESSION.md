@@ -109,3 +109,16 @@ ssh dell "cd ~/spz/dell-final-bench && FLAGS='-O2 -g -Isrc/mosfhet/include -Iinc
 4) 已知坑：dell 玩具 N=16 SIGSEGV（既有环境问题，N≥256 规避）；
 `mod_switch_a` 在 sab_pvw.c 中调用，若未在头文件声明会隐式声明告警
 （上轮 keygen 提交未编译验证——构建时注意）。
+
+## 6d. G-ρ 门调试状态（2026-09-04 深夜，会话末尾）
+
+**基础设施全通**：probe_grho 构建 OK（dell `probe_grho` 二进制在位），双侧盲旋转均运行，相位比较接线正确，r_prec 由完整间隙结构（含环绕间隙）推导。**首结果 FAIL：454/512 失配（~89%）**——bug 在 gaussian 机制内部。
+
+**已排除**：编译/链接/keygen 间隙检查/mod_switch 奇性/比较接线。
+
+**待查嫌疑（按优先级）**：
+1. `pvmtmlwe_eval_automorphism` 任意 gen（≠2N−1）的语义——τ₋₁ 之外的指数从未被多体路径测过；
+2. `mat_trgsw_monomial_DFT_sample(1, coeff)` vs 标量 `RGSW_encrypt(1, coeff)` 的指数约定差异（coeff∈{1,2,3}）；
+3. aut_family 索引/钥生成正确性。
+
+**首选诊断**（下会话第一个动作）：把系数全改 1 跑一次——Pass ⇒ 嫌疑 2（指数≥2），Fail ⇒ 嫌疑 1/3（ga 机制）。注意 dell 上 sed 改 `coeffs[i] = 1` 时 bumped 计数要同步（上次 sed 把计数弄坏报 "support mismatch 1"，是探针自身问题不是钥问题）。本地探针 = `src/probe_grho.c`（系数 {1,2,3} 版，已提交）；dell 的 src 副本已还原同版。
