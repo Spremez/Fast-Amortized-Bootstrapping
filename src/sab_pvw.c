@@ -1024,7 +1024,8 @@ static uint64_t sab_pvw_RGSW_monomial_mul_pairs_state(PVW_TMLWE * p[2],
         }
         mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft, sab->tmp->tmlwe,
             e_pairs[3 * pair + m], sab->tmp->scratch);
-        pvmtmlwe_from_DFT_add(p[out][j], sab->tmp->tmlwe_dft, p[out][j]);
+        pvmtmlwe_from_DFT(sab->tmp->tmlwe, sab->tmp->tmlwe_dft);
+        pvmtmlwe_add(p[out][j], p[out][j], sab->tmp->tmlwe);
       }
     }
   }
