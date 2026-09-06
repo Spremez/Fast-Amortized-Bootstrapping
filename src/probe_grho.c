@@ -26,7 +26,6 @@ int main(void){
   setvbuf(stdout, NULL, _IONBF, 0);
   const int in_N = 256, out_N = 1024, in_k = 1, out_k = 1;
   const int bg_bit = 23, prec = 3, h = 6, r = 2;
-  const uint64_t r_prec = 5;
 
   TRLWE_Key input_key, packing_key;
   RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), 5);
