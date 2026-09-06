@@ -30,10 +30,16 @@ int main(void){
   TRLWE_Key input_key, packing_key;
   RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), 5);
   RS_sparse_binary_key(&packing_key, in_N, in_k, h, pow(2, -44), 5);
+  int coeff_max = 3;
+  {
+    const char * e = getenv("SAB_GRHO_COEFF_MAX");
+    if(e) coeff_max = atoi(e);
+    if(coeff_max < 1) coeff_max = 1;
+  }
   int bumped = 0;
   for (int i = 0; i < in_N; i++)
     if(input_key->s[0]->coeffs[i] == 1)
-      input_key->s[0]->coeffs[i] = 1 + (bumped++ % 3);
+      input_key->s[0]->coeffs[i] = 1 + (bumped++ % coeff_max);
   if(bumped != h){ printf("support mismatch %d != %d\n", bumped, h); return 1; }
   /* r_prec must bound interior gaps AND the final wrap gap (keygen checks
    * previous < 2^r_prec), so derive it from the actual support */
@@ -47,8 +53,8 @@ int main(void){
   if(previous > max_gap) max_gap = previous;
   uint64_t r_prec = 1;
   while((1ULL << r_prec) <= max_gap) r_prec++;
-  printf("gaussian key: h=%d coeffs in {1,2,3}, max_gap=%lu r_prec=%lu\n",
-      bumped, (unsigned long) max_gap, (unsigned long) r_prec);
+  printf("gaussian key: h=%d coeff_max=%d, max_gap=%lu r_prec=%lu\n",
+      bumped, coeff_max, (unsigned long) max_gap, (unsigned long) r_prec);
 
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(out_N, out_k, r, pow(2, -70));
   SAB_PVW_Key pvw = sab_pvw_new_gaussian_key(input_key, pvw_key, prec, h,
