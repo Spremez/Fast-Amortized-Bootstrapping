@@ -79,3 +79,33 @@ stage369 六节 COMPLETE 且已收割（`7c17b7e`）；V5A2/V5A3 估计器臂完
      修正 P-a、WS-A~F 工作流、stage373-377 排期、止损规则）。
 - 下会话动作 = 计划 §4 S2：T1 formalization 定稿 + T2 定稿 + stage373
   （FINAL 参数组件画像）发出并收割。
+
+## 6c. S3/S4 战报与一键续作（2026-09-04 晚，本会话末尾）
+
+**已完成**（提交至 `ca2d656`）：S3 全部（G1' 检查器 232 项 0 失配双控制
+检出；G2 噪声引理 +√(3/2) 界；T4 G-ρ 引理）；S4 的 F1 完整尝试**闭环为
+否定性结果**（正确性门全 Pass、时序 1.38–1.58× 慢、暴露并修正 T2 种子
+公式的分解共享建模错误——形式 A 无共享、形式 B 胜利条件 DFI>2(1+r)A =
+r=1 +18%/r=2 持平/r=4 大负 → G3 失败，用户确认关闭，资产保留）；
+**G-ρ 多体实现落地**（`sab_pvw_new_gaussian_key`/`sub_a_ga`/
+`sparse_mul_gaussian`/`blind_rotate_gaussian`，正系数首门，负指数约定
+核查待做）。
+
+**下会话一键续作（G-ρ 门）**：
+
+```bash
+# 1) 推送（若本地有新改动）
+scp src/sab_pvw.c src/probe_grho.c delld@192.168.107.120:~/spz/dell-final-bench/src/
+scp include/sab_pvw.h delld@192.168.107.120:~/spz/dell-final-bench/include/
+# 2) 构建（probe_grho 无旗标依赖；注意 setup_single_tv/sab_blind_rotate
+#    需为标量公共符号，若链接报缺，在 sab.h 补声明）
+ssh dell "cd ~/spz/dell-final-bench && FLAGS='-O2 -g -Isrc/mosfhet/include -Iinclude -march=native -DMOSFHET_DETERMINISTIC_RNG -DUSE_SHAKE -DUSE_SPQLIOS -DAVX512_OPT -DBINARY' && gcc \$FLAGS -c src/sab_pvw.c -o build_fin/sab_pvw_grho.o && gcc \$FLAGS -c src/probe_grho.c -o build_fin/probe_grho.o && OBJS=\$(ls build_fin/*.o | grep -v 'main\\.o' | grep -v probe_sq | grep -v probe_pvw_sq | grep -v probe_d2 | grep -v mattrgsw | grep -v 'sab_pvw' | grep -v probe_grho | tr '\\n' ' ') && gcc \$FLAGS build_fin/mattrgsw_d2.o build_fin/sab_pvw_grho.o build_fin/probe_grho.o \$OBJS -lm -o probe_grho && ./probe_grho"
+```
+
+3) 门判据：`GRHO GATE: mismatch 0 / 512 -- Pass`。过门后：负系数约定
+核查（`mat_trgsw_monomial_sample` e<0 vs 标量 `RGSW_encrypt` 对照）→
+负系数门 → 噪声对账（2 aut + 1 EP/系数，预测/实测<1.3）→ FINAL A/B +
+钥束实测（G4-ρ：aut 族 (1+r)/2× 标量族，诚实账）。
+4) 已知坑：dell 玩具 N=16 SIGSEGV（既有环境问题，N≥256 规避）；
+`mod_switch_a` 在 sab_pvw.c 中调用，若未在头文件声明会隐式声明告警
+（上轮 keygen 提交未编译验证——构建时注意）。
