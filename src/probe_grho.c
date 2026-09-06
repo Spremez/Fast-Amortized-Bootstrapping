@@ -16,10 +16,10 @@
 
 static void lane_phase(TorusPolynomial out, PVW_TMLWE in, PVW_TMLWE_Key key,
     int lane, int N){
-  /* b_lane - a*s[0][lane] */
-  polynomial_mul_torus_polynomial(out, in->a[0], key->s[0][lane]);
-  for (int i = 0; i < N; i++)
-    out->coeffs[i] = in->b[lane]->coeffs[i] - out->coeffs[i];
+  /* b_lane - a*s[0][lane], mirroring trlwe_phase */
+  memset(out->coeffs, 0, sizeof(out->coeffs[0]) * N);
+  polynomial_mul_addto_torus(out, in->a[0], key->s[0][lane]);
+  polynomial_sub_torus_polynomials(out, in->b[lane], out);
 }
 
 int main(void){

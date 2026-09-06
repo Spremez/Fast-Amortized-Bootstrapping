@@ -27,11 +27,11 @@ typedef struct _SAB_PVW_Key{
    * selectors, layout [3*pair + {0=a,1=b,2=ab}]; the trailing bit when
    * r_prec is odd reuses s[...][r_prec-1]. NULL unless the flag is on. */
   MAT_TRGSW_DFT *** s_pairs;
-  /* G-rho (general sparse, rho-SAB) mode: coefficient selectors 1*X^s_tilde
-   * per (key_idx, step) and the full odd-exponent multi-body automorphism
-   * KS family indexed by (w-1)>>1. NULL/false unless gaussian keygen. */
+  /* G-rho (general sparse, rho-SAB) mode reuses s_coff for the coefficient
+   * selectors 1*X^s_tilde and adds the full odd-exponent multi-body
+   * automorphism KS family indexed by (w-1)>>1. aut_family NULL unless
+   * gaussian keygen. */
   bool gaussian_secret;
-  MAT_TRGSW_DFT ** s_coff;
   PVW_TMLWE_KS_Key * aut_family;
   sab_pvw_tmp_pool tmp;
 } * SAB_PVW_Key;

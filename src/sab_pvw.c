@@ -1,4 +1,6 @@
 #include <sab_pvw.h>
+/* scalar helper reused by blind_rotate_gaussian (defined in sab.c-side TU) */
+void mod_switch_a(uint64_t * out, uint64_t * in, uint64_t prec, uint64_t size, bool round_to_odd);
 #include <inttypes.h>
 #include <string.h>
 #include <sys/time.h>
