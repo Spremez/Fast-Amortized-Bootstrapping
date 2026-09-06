@@ -89,13 +89,14 @@ int main(void){
     memset(tv->a[0]->coeffs, 0, sizeof(tv->a[0]->coeffs[0]) * out_N);
     memcpy(tv->b->coeffs, tv_msg[lane]->coeffs,
         sizeof(tv->b->coeffs[0]) * out_N);
-    TRLWE * sacc = trlwe_alloc_new_sample_array(in_N, in_k, out_N);
     uint64_t * b_mod = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
     const int log_N2 = (int) log2(2 * out_N);
     for (int i = 0; i < in_N; i++)
       b_mod[i] = torus2int(input->b->coeffs[i] + (1ULL << (64 - prec - 1)),
           log_N2);
-    TRLWE * tv_arr = setup_single_tv(b_mod, tv, oracle);
+    TRLWE * sacc = setup_single_tv(b_mod, tv, oracle);
+    /* sab_blind_rotate operates on the accumulator array in place, so the
+     * setup output IS the accumulator (sab_rlwe_bootstrap_wo_extract order) */
     sab_blind_rotate(sacc, input, oracle);
 
     TorusPolynomial ps = polynomial_new_torus_polynomial(out_N);
@@ -111,9 +112,8 @@ int main(void){
     }
     free_polynomial(ps); free_polynomial(pp);
     free(b_mod);
-    free_trlwe_array(tv_arr, in_N);
+    free_trlwe_array(sacc, in_N);
     free_trlwe(tv);
-    free(sacc);
     printf("lane %d oracle done\n", lane);
   }
   printf("GRHO GATE: mismatch %d / %d -- %s\n", mism, r * in_N,
