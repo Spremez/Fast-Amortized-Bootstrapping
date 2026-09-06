@@ -27,6 +27,12 @@ typedef struct _SAB_PVW_Key{
    * selectors, layout [3*pair + {0=a,1=b,2=ab}]; the trailing bit when
    * r_prec is odd reuses s[...][r_prec-1]. NULL unless the flag is on. */
   MAT_TRGSW_DFT *** s_pairs;
+  /* G-rho (general sparse, rho-SAB) mode: coefficient selectors 1*X^s_tilde
+   * per (key_idx, step) and the full odd-exponent multi-body automorphism
+   * KS family indexed by (w-1)>>1. NULL/false unless gaussian keygen. */
+  bool gaussian_secret;
+  MAT_TRGSW_DFT ** s_coff;
+  PVW_TMLWE_KS_Key * aut_family;
   sab_pvw_tmp_pool tmp;
 } * SAB_PVW_Key;
 
@@ -75,6 +81,16 @@ void sab_pvw_extract_pvwtlwe(PVW_TLWE * out, PVW_TMLWE * in, SAB_PVW_Key sab);
 void sab_pvw_bootstrap_binary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
     SAB_PVW_Key sab);
 void sab_pvw_bootstrap_nonbinary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
+    SAB_PVW_Key sab);
+
+SAB_PVW_Key sab_pvw_new_gaussian_key(TRLWE_Key input_key,
+    PVW_TMLWE_Key output_key, uint64_t b_prec, uint64_t h, uint64_t r_prec,
+    uint64_t l, uint64_t bg_bit);
+void sab_pvw_sub_a_ga(PVW_TMLWE * p, const uint64_t * a,
+    MAT_TRGSW_DFT selector, SAB_PVW_Key sab);
+void sab_pvw_sparse_mul_gaussian(PVW_TMLWE * p, const uint64_t * a,
+    uint64_t a_idx, SAB_PVW_Key sab);
+void sab_pvw_blind_rotate_gaussian(PVW_TMLWE * out, TRLWE in,
     SAB_PVW_Key sab);
 
 #ifdef SAB_PVW_DELTA2_SCHEDULE

@@ -386,6 +386,8 @@ SAB_PVW_Key sab_pvw_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key
   res->s_coff = NULL;
   res->s_sign = NULL;
   res->s_pairs = NULL;
+  res->gaussian_secret = false;
+  res->aut_family = NULL;
 
   MAT_TRGSW tmp = mat_trgsw_alloc_new_sample(l, bg_bit, out_k, lanes, out_N);
   res->s = (MAT_TRGSW_DFT ***) safe_malloc(sizeof(MAT_TRGSW_DFT **) * in_k);
@@ -631,6 +633,21 @@ void free_sab_pvw_key(SAB_PVW_Key sab){
       free(sab->s_sign[key_idx]);
     }
     free(sab->s_sign);
+  }
+  if(sab->s_coff != NULL){
+    for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
+      for (size_t step = 0; step < sab->h; step++){
+        free_mat_trgsw_DFT(sab->s_coff[key_idx][step]);
+      }
+      free(sab->s_coff[key_idx]);
+    }
+    free(sab->s_coff);
+  }
+  if(sab->aut_family != NULL){
+    for (size_t w_idx = 0; w_idx < sab->out_N; w_idx++){
+      free_pvmtmlwe_ks_key(sab->aut_family[w_idx]);
+    }
+    free(sab->aut_family);
   }
   if(sab->s_pairs != NULL){
     const uint64_t n_sel = 3 * (sab->r_prec / 2);
@@ -989,6 +1006,144 @@ static uint64_t sab_pvw_RGSW_monomial_mul_state(PVW_TMLWE * p[2],
       &sab_pvw_body_profile.rgsw_monomial_calls, rgsw_begin);
 #endif
   return active;
+}
+
+SAB_PVW_Key sab_pvw_new_gaussian_key(TRLWE_Key input_key,
+    PVW_TMLWE_Key output_key, uint64_t b_prec, uint64_t h, uint64_t r_prec,
+    uint64_t l, uint64_t bg_bit){
+  if(input_key == NULL) sab_pvw_die("input key is NULL");
+  if(output_key == NULL) sab_pvw_die("output key is NULL");
+  if(r_prec == 0) sab_pvw_die("r_prec must be non-zero");
+
+  SAB_PVW_Key res = (SAB_PVW_Key) safe_malloc(sizeof(*res));
+  const uint64_t in_N = input_key->s[0]->N;
+  const uint64_t in_k = input_key->k;
+  const uint64_t out_N = output_key->s[0][0]->N;
+  const uint64_t out_k = output_key->k;
+  const uint64_t lanes = output_key->r;
+  const uint64_t r_max = 1ULL << r_prec;
+
+  res->output_key = output_key;
+  res->mat_key = mat_trgsw_new_key(output_key, l, bg_bit);
+  res->aut_minus1 = pvmtmlwe_new_automorphism_KS_key(output_key,
+      2 * out_N - 1, (int) l, (int) bg_bit);
+  res->packing_keys = NULL;
+  res->hw_reducing_key = NULL;
+  res->include_zeros = false;
+  res->ternary_secret = false;
+  res->s_pairs = NULL;
+  res->gaussian_secret = true;
+  res->s_coff = (MAT_TRGSW_DFT **) safe_malloc(sizeof(MAT_TRGSW_DFT *) * in_k);
+  res->aut_family = (PVW_TMLWE_KS_Key *) safe_malloc(
+      sizeof(PVW_TMLWE_KS_Key) * out_N);
+  for (size_t w_idx = 0; w_idx < out_N; w_idx++){
+    res->aut_family[w_idx] = pvmtmlwe_new_automorphism_KS_key(output_key,
+        2 * w_idx + 1, (int) l, (int) bg_bit);
+  }
+
+  MAT_TRGSW tmp = mat_trgsw_alloc_new_sample(l, bg_bit, out_k, lanes, out_N);
+  res->s = (MAT_TRGSW_DFT ***) safe_malloc(sizeof(MAT_TRGSW_DFT **) * in_k);
+  for (size_t key_idx = 0; key_idx < in_k; key_idx++){
+    res->s[key_idx] = (MAT_TRGSW_DFT **) safe_malloc(
+        sizeof(MAT_TRGSW_DFT *) * (h + 1));
+    res->s_coff[key_idx] =
+        (MAT_TRGSW_DFT *) safe_malloc(sizeof(MAT_TRGSW_DFT) * h);
+    uint64_t cnt_h = 0;
+    uint64_t previous = in_N;
+    for (size_t scan = 0; scan < in_N; scan++){
+      const uint64_t current = in_N - scan - 1;
+      const int64_t coeff = (int64_t) input_key->s[key_idx]->coeffs[current];
+      if(coeff == 0) continue;
+      if(cnt_h >= h) sab_pvw_die("gaussian input key exceeds h");
+      const uint64_t r_diff = previous - current;
+      if(r_diff >= r_max) sab_pvw_die("gaussian key gap exceeds r_prec");
+      res->s[key_idx][cnt_h] = sab_pvw_alloc_selector_bits(r_prec, l,
+          bg_bit, out_k, lanes, out_N);
+      sab_pvw_encrypt_bits(res->s[key_idx][cnt_h], tmp, res->mat_key,
+          r_diff, r_prec);
+      /* first gate uses positive coefficients; negative-exponent convention
+       * check pending before the negative-coefficient gate */
+      if(coeff < 0) sab_pvw_die("gaussian keygen: negative coefficients not yet gated");
+      res->s_coff[key_idx][cnt_h] = mat_trgsw_alloc_new_DFT_sample(
+          (int) l, (int) bg_bit, (int) out_k, (int) lanes, (int) out_N);
+      mat_trgsw_monomial_DFT_sample(res->s_coff[key_idx][cnt_h], 1,
+          (int) coeff, res->mat_key);
+      previous = current;
+      cnt_h++;
+    }
+    if(cnt_h != h) sab_pvw_die("gaussian key has fewer non-zero coefficients than h");
+    if(previous >= r_max) sab_pvw_die("final monomial gap exceeds r_prec");
+    res->s[key_idx][cnt_h] = sab_pvw_alloc_selector_bits(r_prec, l,
+        bg_bit, out_k, lanes, out_N);
+    sab_pvw_encrypt_bits(res->s[key_idx][cnt_h], tmp, res->mat_key,
+        previous, r_prec);
+  }
+  free_mat_trgsw(tmp);
+
+  res->in_N = in_N;
+  res->in_k = in_k;
+  res->out_N = out_N;
+  res->out_k = out_k;
+  res->lanes = lanes;
+  res->h = h;
+  res->r_prec = r_prec;
+  res->b_prec = b_prec;
+
+  res->tmp = (sab_pvw_tmp_pool) safe_malloc(sizeof(*res->tmp));
+  res->tmp->tmlwe_dft = pvmtmlwe_alloc_new_DFT_sample(out_k, lanes, out_N);
+  res->tmp->tmlwe = pvmtmlwe_alloc_new_sample(out_k, lanes, out_N);
+  res->tmp->rotated = pvmtmlwe_alloc_new_sample(out_k, lanes, out_N);
+  res->tmp->tmlwe_poly2 = pvmtmlwe_alloc_new_sample_array(in_N, out_k, lanes, out_N);
+  res->tmp->acc = NULL;
+  res->tmp->extracted = NULL;
+  res->tmp->lane_extracted = NULL;
+  res->tmp->packed = NULL;
+  res->tmp->scratch = mat_trgsw_alloc_mul_scratch((out_k + lanes) * l, out_N);
+  res->tmp->a_mod = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
+  return res;
+}
+
+/* Multi-body rho-SAB step (T4): per coefficient k,
+ * y = Auto_{a_k^{-1}}(C_k); W = V (x) y; C_k = Auto_{a_k}(W), mirroring the
+ * scalar sub_a_ga oracle (sparse_amortized_bootstrap.c:248-259). Requires
+ * odd a_k (round-to-odd mod switch in blind_rotate_gaussian). */
+void sab_pvw_sub_a_ga(PVW_TMLWE * p, const uint64_t * a,
+    MAT_TRGSW_DFT selector, SAB_PVW_Key sab){
+  for (size_t i = 0; i < sab->in_N; i++){
+    const uint64_t w_inv = inverse_mod_2N((uint16_t) a[i],
+        (uint16_t) sab->out_N);
+    pvmtmlwe_eval_automorphism(sab->tmp->tmlwe, p[i], w_inv,
+        sab->aut_family[(w_inv - 1) >> 1]);
+    mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft, sab->tmp->tmlwe,
+        selector, sab->tmp->scratch);
+    pvmtmlwe_from_DFT(sab->tmp->tmlwe, sab->tmp->tmlwe_dft);
+    pvmtmlwe_eval_automorphism(p[i], sab->tmp->tmlwe, a[i],
+        sab->aut_family[(a[i] - 1) >> 1]);
+  }
+}
+
+void sab_pvw_sparse_mul_gaussian(PVW_TMLWE * p, const uint64_t * a,
+    uint64_t a_idx, SAB_PVW_Key sab){
+  if(a_idx >= sab->in_k) sab_pvw_die("gaussian sparse_mul a_idx out of range");
+  if(sab->aut_family == NULL){
+    sab_pvw_die("gaussian sparse_mul requires sab_pvw_new_gaussian_key");
+  }
+  for (size_t step = 0; step < sab->h; step++){
+    sab_pvw_RGSW_monomial_mul(p, sab->s[a_idx][step], sab);
+    sab_pvw_sub_a_ga(p, a, sab->s_coff[a_idx][step], sab);
+  }
+  sab_pvw_RGSW_monomial_mul(p, sab->s[a_idx][sab->h], sab);
+}
+
+void sab_pvw_blind_rotate_gaussian(PVW_TMLWE * out, TRLWE in, SAB_PVW_Key sab){
+  if(sab->in_k != 1) sab_pvw_die("only in_k=1 is supported");
+  const uint64_t log_N2 = (uint64_t) log2(2 * sab->out_N);
+  for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
+    /* odd coefficients are required by the T4 automorphism inverses */
+    mod_switch_a(sab->tmp->a_mod, in->a[key_idx]->coeffs, log_N2,
+        sab->in_N, true);
+    sab_pvw_sparse_mul_gaussian(out, sab->tmp->a_mod, key_idx, sab);
+  }
 }
 
 static inline void sab_pvw_accumulator_normalize(
