@@ -39,6 +39,7 @@ void sab_blind_rotate(TRLWE * out, TRLWE in, SAB_Key sab);
 void sab_rlwe_bootstrap_wo_extract(TRLWE * out, TRLWE in, TRLWE tv, SAB_Key sab);
 uint64_t get_min_prec(TRLWE_Key key);
 TRLWE * setup_single_tv(uint64_t * b, TRLWE tv, SAB_Key sab);
+void mod_switch_a(uint64_t * out, uint64_t * in, uint64_t prec, uint64_t size, bool round_to_odd);
 void setup_tv_xb(TRLWE * acc, uint64_t * b, TRLWE tv, SAB_Key sab);
 void sab_rlwe_to_lwe_bootstrap(TLWE * out, TRLWE in, TRLWE tv, SAB_Key sab);
 void sab_rlwe_bootstrap(TRLWE out, TRLWE in, TRLWE tv, SAB_Key sab);
