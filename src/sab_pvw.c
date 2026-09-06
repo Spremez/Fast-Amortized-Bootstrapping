@@ -998,7 +998,7 @@ static uint64_t sab_pvw_RGSW_monomial_mul_state(PVW_TMLWE * p[2],
  * MV-EPs per slot per pair, the (0,0) digit is the free addend. A trailing
  * odd bit (r_prec odd) runs one standard radix-2 round on e_last_odd. */
 static uint64_t sab_pvw_RGSW_monomial_mul_pairs_state(PVW_TMLWE * p[2],
-    uint64_t active, MAT_TRGSW_DFT * e_pairs, MAT_TRGSW_DFT * e_last_odd,
+    uint64_t active, MAT_TRGSW_DFT * e_pairs, MAT_TRGSW_DFT e_last_odd,
     SAB_PVW_Key sab){
   const uint32_t r_prec = sab->r_prec, in_N = sab->in_N;
   const uint32_t n_pairs = r_prec / 2;
@@ -1043,7 +1043,7 @@ static uint64_t sab_pvw_RGSW_monomial_mul_pairs_state(PVW_TMLWE * p[2],
 }
 
 void sab_pvw_RGSW_monomial_mul_pairs(PVW_TMLWE * p0,
-    MAT_TRGSW_DFT * e_pairs, MAT_TRGSW_DFT * e_last_odd, SAB_PVW_Key sab){
+    MAT_TRGSW_DFT * e_pairs, MAT_TRGSW_DFT e_last_odd, SAB_PVW_Key sab){
   SAB_PVW_Accumulator_State state = sab_pvw_accumulator_state(p0, sab);
   state.active = sab_pvw_RGSW_monomial_mul_pairs_state(state.buffers,
       state.active, e_pairs, e_last_odd, sab);
@@ -1058,11 +1058,11 @@ void sab_pvw_sparse_mul_binary_pairs(PVW_TMLWE * p, const uint64_t * a,
   }
   for (size_t step = 0; step < sab->h; step++){
     sab_pvw_RGSW_monomial_mul_pairs(p, sab->s_pairs[a_idx][step],
-        sab->s[a_idx][sab->r_prec - 1], sab);
+        sab->s[a_idx][step][sab->r_prec - 1], sab);
     sab_pvw_sub_a_binary(p, a, sab);
   }
   sab_pvw_RGSW_monomial_mul_pairs(p, sab->s_pairs[a_idx][sab->h],
-      sab->s[a_idx][sab->r_prec - 1], sab);
+      sab->s[a_idx][sab->h][sab->r_prec - 1], sab);
 }
 
 void sab_pvw_blind_rotate_binary_pairs(PVW_TMLWE * out, TRLWE in,

@@ -79,7 +79,7 @@ void sab_pvw_bootstrap_nonbinary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
 
 #ifdef SAB_PVW_DELTA2_SCHEDULE
 void sab_pvw_RGSW_monomial_mul_pairs(PVW_TMLWE * p0,
-    MAT_TRGSW_DFT * e_pairs, MAT_TRGSW_DFT * e_last_odd, SAB_PVW_Key sab);
+    MAT_TRGSW_DFT * e_pairs, MAT_TRGSW_DFT e_last_odd, SAB_PVW_Key sab);
 void sab_pvw_sparse_mul_binary_pairs(PVW_TMLWE * p, const uint64_t * a,
     uint64_t a_idx, SAB_PVW_Key sab);
 void sab_pvw_blind_rotate_binary_pairs(PVW_TMLWE * out, TRLWE in,
