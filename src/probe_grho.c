@@ -35,6 +35,7 @@ int main(void){
     if(input_key->s[0]->coeffs[i] == 1)
       input_key->s[0]->coeffs[i] = 1 + (bumped++ % 3);
   if(bumped != h){ printf("support mismatch %d != %d\n", bumped, h); return 1; }
+  const uint64_t r_prec = get_min_prec(input_key);
   printf("gaussian key: h=%d coeffs in {1,2,3}, r_prec=%lu\n", bumped,
       (unsigned long) r_prec);
 
