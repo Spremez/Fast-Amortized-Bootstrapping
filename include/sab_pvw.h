@@ -22,6 +22,11 @@ typedef struct _SAB_PVW_Key{
   MAT_TRGSW_DFT *** s;
   MAT_TRGSW_DFT ** s_coff;
   MAT_TRGSW_DFT ** s_sign;
+  /* delta=2 identity-addend schedule (SAB_PVW_DELTA2_SCHEDULE): per
+   * (key_idx, sparse step) an array of 3*(r_prec/2) joint-indicator
+   * selectors, layout [3*pair + {0=a,1=b,2=ab}]; the trailing bit when
+   * r_prec is odd reuses s[...][r_prec-1]. NULL unless the flag is on. */
+  MAT_TRGSW_DFT *** s_pairs;
   sab_pvw_tmp_pool tmp;
 } * SAB_PVW_Key;
 
@@ -71,3 +76,14 @@ void sab_pvw_bootstrap_binary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
     SAB_PVW_Key sab);
 void sab_pvw_bootstrap_nonbinary(TRLWE * out, TRLWE in, PVW_TMLWE tv,
     SAB_PVW_Key sab);
+
+#ifdef SAB_PVW_DELTA2_SCHEDULE
+void sab_pvw_RGSW_monomial_mul_pairs(PVW_TMLWE * p0,
+    MAT_TRGSW_DFT * e_pairs, MAT_TRGSW_DFT * e_last_odd, SAB_PVW_Key sab);
+void sab_pvw_sparse_mul_binary_pairs(PVW_TMLWE * p, const uint64_t * a,
+    uint64_t a_idx, SAB_PVW_Key sab);
+void sab_pvw_blind_rotate_binary_pairs(PVW_TMLWE * out, TRLWE in,
+    SAB_PVW_Key sab);
+void sab_pvw_bootstrap_binary_pairs(TRLWE * out, TRLWE in, PVW_TMLWE tv,
+    SAB_PVW_Key sab);
+#endif

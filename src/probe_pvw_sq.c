@@ -157,6 +157,10 @@ static void run_timing(void){
       (int) r, out_N);
   TRLWE * stock_out = trlwe_alloc_new_sample_array((int) r, in_k, in_N);
   TRLWE * sq_out = trlwe_alloc_new_sample_array((int) r, in_k, in_N);
+#ifdef SAB_PVW_DELTA2_SCHEDULE
+  TRLWE * d2_out = trlwe_alloc_new_sample_array((int) r, in_k, in_N);
+  sab_pvw_bootstrap_binary_pairs(d2_out, input, pvw_tv, stock);
+#endif
 
   /* S2b: warm up both paths (cold pages), then alternate the measurement
    * order per rep to cancel allocation-order / cache-state bias */
@@ -199,5 +203,27 @@ static void run_timing(void){
     printf("TIMING r=%lu h=%lu rep=%d stock=%.0fus sq=%.0fus ratio=%.4f mism=%d %s\n",
            (unsigned long) r, (unsigned long) h, rep, stock_us, sq_us,
            sq_us / stock_us, (int) mism, mism == 0 ? "Pass" : "FAIL");
+#ifdef SAB_PVW_DELTA2_SCHEDULE
+    /* delta=2 arm: same key/input/tv, identity-addend schedule vs per-bit */
+    clock_gettime(CLOCK_MONOTONIC, &t0);
+    sab_pvw_bootstrap_binary_pairs(d2_out, input, pvw_tv, stock);
+    clock_gettime(CLOCK_MONOTONIC, &t1);
+    double d2_us = (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_nsec - t0.tv_nsec) / 1e3;
+    size_t d2_mism = 0;
+    for (int lane = 0; lane < (int) r; lane++){
+      TorusPolynomial ps = polynomial_new_torus_polynomial(in_N);
+      TorusPolynomial pd = polynomial_new_torus_polynomial(in_N);
+      trlwe_phase(ps, stock_out[lane], input_key);
+      trlwe_phase(pd, d2_out[lane], input_key);
+      const int64_t grid = 1LL << (64 - prec);
+      for (int i = 0; i < in_N; i++)
+        if ((((int64_t) ps->coeffs[i] + grid / 2) >> (64 - prec))
+            != (((int64_t) pd->coeffs[i] + grid / 2) >> (64 - prec))) d2_mism++;
+      free_polynomial(ps); free_polynomial(pd);
+    }
+    printf("D2TIMING r=%lu h=%lu rep=%d stock=%.0fus d2=%.0fus d2/stock=%.4f d2mism=%d %s\n",
+           (unsigned long) r, (unsigned long) h, rep, stock_us, d2_us,
+           d2_us / stock_us, (int) d2_mism, d2_mism == 0 ? "Pass" : "FAIL");
+#endif
   }
 }

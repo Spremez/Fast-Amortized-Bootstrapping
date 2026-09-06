@@ -245,6 +245,36 @@ static void sab_pvw_encrypt_bits(MAT_TRGSW_DFT * out, MAT_TRGSW tmp,
   }
 }
 
+#ifdef SAB_PVW_DELTA2_SCHEDULE
+static MAT_TRGSW_DFT * sab_pvw_alloc_pair_indicators(uint64_t r_prec,
+    uint64_t l, uint64_t bg_bit, uint64_t out_k, uint64_t lanes,
+    uint64_t out_N){
+  const uint64_t n_pairs = r_prec / 2;
+  MAT_TRGSW_DFT * res =
+      (MAT_TRGSW_DFT *) safe_malloc(sizeof(MAT_TRGSW_DFT) * 3 * n_pairs);
+  for (size_t i = 0; i < 3 * n_pairs; i++){
+    res[i] = mat_trgsw_alloc_new_DFT_sample((int) l, (int) bg_bit,
+        (int) out_k, (int) lanes, (int) out_N);
+  }
+  return res;
+}
+
+/* Joint indicators of the bit pair (v_{2p}, v_{2p+1}) of d[t]; the (0,0)
+ * case is the free torus addend and needs no selector. */
+static void sab_pvw_encrypt_pair_indicators(MAT_TRGSW_DFT * out,
+    MAT_TRGSW tmp, MAT_TRGSW_Key key, uint64_t in, uint64_t prec){
+  for (size_t pair = 0; pair < prec / 2; pair++){
+    const uint64_t v0 = (in >> (2 * pair)) & 1;
+    const uint64_t v1 = (in >> (2 * pair + 1)) & 1;
+    const uint64_t ind[3] = {v0 & (v1 ^ 1), (v0 ^ 1) & v1, v0 & v1};
+    for (size_t m = 0; m < 3; m++){
+      mat_trgsw_monomial_sample(tmp, (int64_t) ind[m], 0, key);
+      mat_trgsw_to_DFT(out[3 * pair + m], tmp);
+    }
+  }
+}
+#endif
+
 static inline int sab_pvw_coeff_is_minus_one(uint64_t coeff){
   return coeff == (uint64_t) -1;
 }
@@ -355,11 +385,20 @@ SAB_PVW_Key sab_pvw_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key
   res->ternary_secret = false;
   res->s_coff = NULL;
   res->s_sign = NULL;
+  res->s_pairs = NULL;
 
   MAT_TRGSW tmp = mat_trgsw_alloc_new_sample(l, bg_bit, out_k, lanes, out_N);
   res->s = (MAT_TRGSW_DFT ***) safe_malloc(sizeof(MAT_TRGSW_DFT **) * in_k);
+#ifdef SAB_PVW_DELTA2_SCHEDULE
+  res->s_pairs =
+      (MAT_TRGSW_DFT ***) safe_malloc(sizeof(MAT_TRGSW_DFT **) * in_k);
+#endif
   for (size_t key_idx = 0; key_idx < in_k; key_idx++){
     res->s[key_idx] = (MAT_TRGSW_DFT **) safe_malloc(sizeof(MAT_TRGSW_DFT *) * (h + 1));
+#ifdef SAB_PVW_DELTA2_SCHEDULE
+    res->s_pairs[key_idx] =
+        (MAT_TRGSW_DFT **) safe_malloc(sizeof(MAT_TRGSW_DFT *) * (h + 1));
+#endif
     uint64_t cnt_h = 0;
     uint64_t previous = in_N;
     for (size_t scan = 0; scan < in_N; scan++){
@@ -374,6 +413,12 @@ SAB_PVW_Key sab_pvw_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key
           bg_bit, out_k, lanes, out_N);
       sab_pvw_encrypt_bits(res->s[key_idx][cnt_h], tmp, res->mat_key,
           r_diff, r_prec);
+#ifdef SAB_PVW_DELTA2_SCHEDULE
+      res->s_pairs[key_idx][cnt_h] = sab_pvw_alloc_pair_indicators(r_prec,
+          l, bg_bit, out_k, lanes, out_N);
+      sab_pvw_encrypt_pair_indicators(res->s_pairs[key_idx][cnt_h], tmp,
+          res->mat_key, r_diff, r_prec);
+#endif
       previous = current;
       cnt_h++;
     }
@@ -383,6 +428,12 @@ SAB_PVW_Key sab_pvw_new_binary_key(TRLWE_Key input_key, PVW_TMLWE_Key output_key
         bg_bit, out_k, lanes, out_N);
     sab_pvw_encrypt_bits(res->s[key_idx][cnt_h], tmp, res->mat_key,
         previous, r_prec);
+#ifdef SAB_PVW_DELTA2_SCHEDULE
+    res->s_pairs[key_idx][cnt_h] = sab_pvw_alloc_pair_indicators(r_prec,
+        l, bg_bit, out_k, lanes, out_N);
+    sab_pvw_encrypt_pair_indicators(res->s_pairs[key_idx][cnt_h], tmp,
+        res->mat_key, previous, r_prec);
+#endif
   }
   free_mat_trgsw(tmp);
 
@@ -446,6 +497,7 @@ SAB_PVW_Key sab_pvw_new_nonbinary_key(TRLWE_Key input_key,
   res->s_sign = ternary ?
       (MAT_TRGSW_DFT **) safe_malloc(sizeof(MAT_TRGSW_DFT *) * in_k) :
       NULL;
+  res->s_pairs = NULL;
 
   MAT_TRGSW tmp = mat_trgsw_alloc_new_sample(l, bg_bit, out_k, lanes, out_N);
   res->s = (MAT_TRGSW_DFT ***) safe_malloc(sizeof(MAT_TRGSW_DFT **) * in_k);
@@ -579,6 +631,19 @@ void free_sab_pvw_key(SAB_PVW_Key sab){
       free(sab->s_sign[key_idx]);
     }
     free(sab->s_sign);
+  }
+  if(sab->s_pairs != NULL){
+    const uint64_t n_sel = 3 * (sab->r_prec / 2);
+    for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
+      for (size_t step = 0; step <= sab->h; step++){
+        for (size_t i = 0; i < n_sel; i++){
+          free_mat_trgsw_DFT(sab->s_pairs[key_idx][step][i]);
+        }
+        free(sab->s_pairs[key_idx][step]);
+      }
+      free(sab->s_pairs[key_idx]);
+    }
+    free(sab->s_pairs);
   }
   free_mat_trgsw_mul_scratch(sab->tmp->scratch);
   free(sab->tmp->a_mod);
@@ -925,6 +990,109 @@ static uint64_t sab_pvw_RGSW_monomial_mul_state(PVW_TMLWE * p[2],
 #endif
   return active;
 }
+
+#ifdef SAB_PVW_DELTA2_SCHEDULE
+/* delta=2 identity-addend MPmul (Lemma F1-1' / G1' checker / T2 model):
+ * per bit pair, every slot runs out_j = U_j + sum_{m in {a,b,ab}}
+ * (Src_m(j) - U_j) (x) M_m with wrapped sources via tau_{-1}; 2^delta - 1 = 3
+ * MV-EPs per slot per pair, the (0,0) digit is the free addend. A trailing
+ * odd bit (r_prec odd) runs one standard radix-2 round on e_last_odd. */
+static uint64_t sab_pvw_RGSW_monomial_mul_pairs_state(PVW_TMLWE * p[2],
+    uint64_t active, MAT_TRGSW_DFT * e_pairs, MAT_TRGSW_DFT * e_last_odd,
+    SAB_PVW_Key sab){
+  const uint32_t r_prec = sab->r_prec, in_N = sab->in_N;
+  const uint32_t n_pairs = r_prec / 2;
+  for (size_t pair = 0; pair < n_pairs; pair++){
+    const uint64_t off_a = 1ULL << (2 * pair);
+    const uint64_t off_b = 1ULL << (2 * pair + 1);
+    const uint64_t offs[3] = {off_a, off_b, off_a + off_b};
+    const uint64_t in = active ^ (pair & 1);
+    const uint64_t out = in ^ 1;
+    for (size_t j = 0; j < in_N; j++){
+      pvmtmlwe_copy(p[out][j], p[in][j]);
+      for (size_t m = 0; m < 3; m++){
+        const uint64_t off = offs[m];
+        if(j >= off){
+          pvmtmlwe_sub(sab->tmp->tmlwe, p[in][j - off], p[in][j]);
+        }else{
+          pvmtmlwe_eval_automorphism(sab->tmp->rotated,
+              p[in][in_N - off + j], 2 * sab->out_N - 1, sab->aut_minus1);
+          pvmtmlwe_sub(sab->tmp->tmlwe, sab->tmp->rotated, p[in][j]);
+        }
+        mat_trgsw_mul_pvmtmlwe_DFT(sab->tmp->tmlwe_dft, sab->tmp->tmlwe,
+            e_pairs[3 * pair + m], sab->tmp->scratch);
+        pvmtmlwe_from_DFT_add(p[out][j], sab->tmp->tmlwe_dft, p[out][j]);
+      }
+    }
+  }
+  active ^= n_pairs & 1;
+  if(r_prec & 1){
+    const uint64_t power = 1ULL << (r_prec - 1);
+    const uint64_t in = active;
+    const uint64_t out = active ^ 1;
+    for (size_t j = 0; j < power; j++){
+      sab_pvw_NCMUX(p[out][j], p[in][j], p[in][in_N - power + j],
+          e_last_odd, sab);
+    }
+    for (size_t j = power; j < in_N; j++){
+      sab_pvw_CMUX(p[out][j], p[in][j], p[in][j - power], e_last_odd, sab);
+    }
+    active ^= 1;
+  }
+  return active;
+}
+
+void sab_pvw_RGSW_monomial_mul_pairs(PVW_TMLWE * p0,
+    MAT_TRGSW_DFT * e_pairs, MAT_TRGSW_DFT * e_last_odd, SAB_PVW_Key sab){
+  SAB_PVW_Accumulator_State state = sab_pvw_accumulator_state(p0, sab);
+  state.active = sab_pvw_RGSW_monomial_mul_pairs_state(state.buffers,
+      state.active, e_pairs, e_last_odd, sab);
+  sab_pvw_accumulator_normalize(&state, sab);
+}
+
+void sab_pvw_sparse_mul_binary_pairs(PVW_TMLWE * p, const uint64_t * a,
+    uint64_t a_idx, SAB_PVW_Key sab){
+  if(a_idx >= sab->in_k) sab_pvw_die("delta2 sparse_mul a_idx out of range");
+  if(sab->s_pairs == NULL){
+    sab_pvw_die("delta2 sparse_mul requires SAB_PVW_DELTA2_SCHEDULE keygen");
+  }
+  for (size_t step = 0; step < sab->h; step++){
+    sab_pvw_RGSW_monomial_mul_pairs(p, sab->s_pairs[a_idx][step],
+        sab->s[a_idx][sab->r_prec - 1], sab);
+    sab_pvw_sub_a_binary(p, a, sab);
+  }
+  sab_pvw_RGSW_monomial_mul_pairs(p, sab->s_pairs[a_idx][sab->h],
+      sab->s[a_idx][sab->r_prec - 1], sab);
+}
+
+void sab_pvw_blind_rotate_binary_pairs(PVW_TMLWE * out, TRLWE in,
+    SAB_PVW_Key sab){
+  if(sab->in_k != 1) sab_pvw_die("only in_k=1 is supported");
+  const uint64_t log_N2 = (uint64_t) log2(2 * sab->out_N);
+  for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
+    for (size_t idx = 0; idx < sab->in_N; idx++){
+      sab->tmp->a_mod[idx] = torus2int(in->a[key_idx]->coeffs[idx], log_N2);
+    }
+    sab_pvw_sparse_mul_binary_pairs(out, sab->tmp->a_mod, key_idx, sab);
+  }
+}
+
+void sab_pvw_bootstrap_binary_pairs(TRLWE * out, TRLWE in, PVW_TMLWE tv,
+    SAB_PVW_Key sab){
+  if(sab->packing_keys == NULL || sab->hw_reducing_key == NULL){
+    sab_pvw_die("delta2 bootstrap requires sab_pvw_new_binary_full_key");
+  }
+  sab_pvw_setup_tv_xb(sab->tmp->acc, in->b->coeffs, tv, sab);
+  sab_pvw_blind_rotate_binary_pairs(sab->tmp->acc, in, sab);
+  for (size_t lane = 0; lane < sab->lanes; lane++){
+    sab_pvw_extract_tlwe_lane_array(sab->tmp->lane_extracted[lane],
+        sab->tmp->acc, lane, sab);
+    trlwe_full_packing_keyswitch(sab->tmp->packed,
+        sab->tmp->lane_extracted[lane], sab->in_N, sab->packing_keys[lane]);
+    trlwe_keyswitch(out[lane], sab->tmp->packed, sab->hw_reducing_key);
+  }
+}
+#endif
 
 static void sab_pvw_copy_accumulator_array(PVW_TMLWE * out, PVW_TMLWE * in,
     SAB_PVW_Key sab){
