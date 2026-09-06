@@ -991,6 +991,9 @@ static uint64_t sab_pvw_RGSW_monomial_mul_state(PVW_TMLWE * p[2],
   return active;
 }
 
+static inline void sab_pvw_accumulator_normalize(
+    SAB_PVW_Accumulator_State * state, SAB_PVW_Key sab);
+
 #ifdef SAB_PVW_DELTA2_SCHEDULE
 /* delta=2 identity-addend MPmul (Lemma F1-1' / G1' checker / T2 model):
  * per bit pair, every slot runs out_j = U_j + sum_{m in {a,b,ab}}
