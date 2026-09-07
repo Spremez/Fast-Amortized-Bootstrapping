@@ -1,0 +1,10 @@
+BatchBoot input layers T3' conditional-entropy MC (20k samples, E1 methodology
+validated on 686 sets; gap-t per their [33]-strategy keygen, sensitivity shown):
+  Boot2     N=2048 h=39 t=7: T3' = 124.19 (p=0.0043)  FAIL <128
+  Boot4     N=2048 h=42 t=8: T3' = 136.42 (p=0.8350)  PASS
+  Boot6     N=4096 h=33 t=8: T3' = 120.51 (p=0.0001)  FAIL <128
+  Boot8     N=4096 h=34 t=8: T3' = 124.57 (p=0.0003)  FAIL <128
+  Boot8 sensitivity t=9:    T3' = 129.98 (p=0.6315)  PASS (t=9 not used by them)
+  PSI.Boot6 N=2048 h=39 t=7: T3' = 124.19             FAIL <128
+Their own claim (Tab 9): all >128 (lattice-estimator default + dual-hybrid MITM,
+no conditional-entropy correction).
