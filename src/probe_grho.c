@@ -205,6 +205,7 @@ int main(void){
   }
 
   int mism = 0;
+  int64_t max_dev = 0;
   for (int lane = 0; lane < r; lane++){
     TRLWE_Key lane_key = trlwe_alloc_key(out_N, out_k, pvw_key->sigma);
     memcpy(lane_key->s[0]->coeffs, pvw_key->s[0][lane]->coeffs,
@@ -228,6 +229,11 @@ int main(void){
     for (int j = 0; j < in_N; j++){
       trlwe_phase(ps, sacc[j], lane_key);
       lane_phase(pp, acc[j], pvw_key, lane, out_N);
+      {
+        const int64_t d0 = (int64_t) ps->coeffs[0] - (int64_t) pp->coeffs[0];
+        const int64_t ad = d0 < 0 ? -d0 : d0;
+        if(ad > max_dev) max_dev = ad;
+      }
       if((((int64_t) ps->coeffs[0] + grid / 2) >> (64 - prec))
           != (((int64_t) pp->coeffs[0] + grid / 2) >> (64 - prec))){
         if(mism < 5) printf("MISMATCH lane=%d slot=%d\n", lane, j);
@@ -239,7 +245,8 @@ int main(void){
     free_trlwe(tv);
     printf("lane %d oracle done\n", lane);
   }
-  printf("GRHO GATE: mismatch %d / %d -- %s\n", mism, r * in_N,
-      mism == 0 ? "Pass" : "FAIL");
+  printf("GRHO GATE: mismatch %d / %d -- %s; pair noise max dev log2 = %.2f (message budget 2^-%d)\n",
+      mism, r * in_N, mism == 0 ? "Pass" : "FAIL",
+      log2((double) max_dev + 1.0), prec + 1);
   return mism == 0 ? 0 : 1;
 }
