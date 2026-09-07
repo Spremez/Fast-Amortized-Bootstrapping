@@ -24,16 +24,22 @@ def fmt(r):
 
 def run(name, n, secret_dist, sigma_abs):
     P("== %s (n=%d, sigma=2^%.0f) ==" % (name, n, 64 - sigma_abs.log(2)))
-    params = LWE.Parameters(n=n, q=2**64, Xs=secret_dist,
-        Xe=E.nd.DiscreteGaussian(float(sigma_abs)))
+    try:
+        params = LWE.Parameters(n=n, q=2**64, Xs=secret_dist,
+            Xe=E.nd.DiscreteGaussian(float(sigma_abs)))
+    except Exception as ex:
+        P("  params ERR %s %s" % (type(ex).__name__, str(ex)[:120])); return
+    try:
+        r = LWE.estimate.rough(params)
+        P("  rough: %s" % fmt(r))
+    except Exception as ex:
+        P("  rough ERR %s" % str(ex)[:120])
     for alg, tag in [(LWE.primal_usvp, "usvp"), (LWE.dual_hybrid, "dual-hybrid")]:
         try:
-            res = alg.estimate(params)
-            best = min(v["rop"].log(2) for v in res.values()
-                       if isinstance(v, dict) and v.get("rop"))
-            P("  %s = 2^%.1f" % (tag, float(best)))
+            r = alg(params)
+            P("  %s = 2^%.1f" % (tag, float(r["rop"].log(2))))
         except Exception as ex:
-            P("  %s FAILED: %s" % (tag, ex))
+            P("  %s ERR %s %s" % (tag, type(ex).__name__, str(ex)[:120]))
 
 P("=== BatchBoot BSK layers (Tab 9) ===")
 # Boot2/4/6 BSK: h=512 sparse ternary, N=2048, sigma=2^-53
