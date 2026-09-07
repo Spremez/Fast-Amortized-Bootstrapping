@@ -502,6 +502,8 @@ SAB_PVW_Key sab_pvw_new_nonbinary_key(TRLWE_Key input_key,
       (MAT_TRGSW_DFT **) safe_malloc(sizeof(MAT_TRGSW_DFT *) * in_k) :
       NULL;
   res->s_pairs = NULL;
+  res->gaussian_secret = false;
+  res->aut_family = NULL;
 
   MAT_TRGSW tmp = mat_trgsw_alloc_new_sample(l, bg_bit, out_k, lanes, out_N);
   res->s = (MAT_TRGSW_DFT ***) safe_malloc(sizeof(MAT_TRGSW_DFT **) * in_k);
