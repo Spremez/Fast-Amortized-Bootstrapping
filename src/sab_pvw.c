@@ -636,15 +636,6 @@ void free_sab_pvw_key(SAB_PVW_Key sab){
     }
     free(sab->s_sign);
   }
-  if(sab->s_coff != NULL){
-    for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
-      for (size_t step = 0; step < sab->h; step++){
-        free_mat_trgsw_DFT(sab->s_coff[key_idx][step]);
-      }
-      free(sab->s_coff[key_idx]);
-    }
-    free(sab->s_coff);
-  }
   if(sab->aut_family != NULL){
     for (size_t w_idx = 0; w_idx < sab->out_N; w_idx++){
       free_pvmtmlwe_ks_key(sab->aut_family[w_idx]);
