@@ -93,9 +93,12 @@ int main(void){
 
   PVW_TMLWE * acc = pvmtmlwe_alloc_new_sample_array(in_N, out_k, r, out_N);
   const int64_t grid = 1LL << (64 - prec);
+  const clock_t t_br0 = clock();
   sab_pvw_setup_tv_xb(acc, input->b->coeffs, pvw_tv, pvw);
   sab_pvw_blind_rotate_gaussian(acc, input, pvw);
-  printf("pvw gaussian blind rotate done\n");
+  printf("pvw gaussian blind rotate done (%.2fs total, %.3f s/lane)\n",
+      (double)(clock() - t_br0) / CLOCKS_PER_SEC,
+      (double)(clock() - t_br0) / CLOCKS_PER_SEC / r);
 
   /* 3-way arm is opt-in only: the binary path mod-switches a WITHOUT
    * round-to-odd, so its a-vector differs and the comparison is not an
