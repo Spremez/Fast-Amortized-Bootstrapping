@@ -16,7 +16,7 @@ patch_h(){ # set_name orig_h -> sed the h_in inside that set's #elif block
 import sys, re
 setname, orig = sys.argv[1], sys.argv[2]
 s = open('main.c', encoding='utf-8').read()
-blk = '#elif defined(%s)' % setname
+blk = '#elif defined(%s)' % setname if s.find('#elif defined(%s)' % setname) >= 0 else '#if defined(%s)' % setname
 i = s.find(blk)
 assert i >= 0, setname
 j = s.find('#elif', i + 5)
