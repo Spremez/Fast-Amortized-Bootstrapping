@@ -214,15 +214,11 @@ int main(void){
     memset(tv->a[0]->coeffs, 0, sizeof(tv->a[0]->coeffs[0]) * out_N);
     memcpy(tv->b->coeffs, tv_msg[lane]->coeffs,
         sizeof(tv->b->coeffs[0]) * out_N);
-    uint64_t * b_mod = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
-    /* setup_single_tv adds the half-ulp offset internally (mirrors
-     * sab_pvw_setup_tv_xb), so pass the raw b coefficients */
-    for (int i = 0; i < in_N; i++)
-      b_mod[i] = input->b->coeffs[i];
-    TRLWE * sacc = setup_single_tv(b_mod, tv, oracle);
-    /* sab_blind_rotate operates on the accumulator array in place, so the
-     * setup output IS the accumulator (sab_rlwe_bootstrap_wo_extract order) */
-    sab_blind_rotate(sacc, input, oracle);
+    /* canonical scalar pipeline: setup_tv_xb offset (1/(2*2^b_prec))
+     * differs from the legacy setup_single_tv (1/(2*b_prec)) -- use the
+     * library's own wo_extract so the oracle wiring is exactly canonical */
+    TRLWE * sacc = trlwe_alloc_new_sample_array(in_N, in_k, out_N);
+    sab_rlwe_bootstrap_wo_extract(sacc, input, tv, oracle);
 
     TorusPolynomial ps = polynomial_new_torus_polynomial(out_N);
     TorusPolynomial pp = polynomial_new_torus_polynomial(out_N);
@@ -236,7 +232,6 @@ int main(void){
       }
     }
     free_polynomial(ps); free_polynomial(pp);
-    free(b_mod);
     free_trlwe_array(sacc, in_N);
     free_trlwe(tv);
     printf("lane %d oracle done\n", lane);
