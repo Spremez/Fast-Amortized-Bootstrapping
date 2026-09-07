@@ -118,13 +118,20 @@ int main(void){
     TorusPolynomial p1 = polynomial_new_torus_polynomial(out_N);
     TorusPolynomial p2 = polynomial_new_torus_polynomial(out_N);
     uint64_t * a_arr = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
+    const int log_N2s = (int) log2(2 * out_N);
     for (int ai = 0; ai < 3; ai++){
       const uint64_t a0 = (uint64_t)(2 * ai + 1);
       for (int i = 0; i < in_N; i++){
         pvmtmlwe_copy(in_arr[i], base);
-        a_arr[i] = a0;
+        if(ai < 2){
+          a_arr[i] = a0;                    /* uniform mode */
+        }else{
+          uint64_t v = torus2int(input->a[0]->coeffs[i], log_N2s);
+          if(!(v & 1)) v = (v - 1) & (2 * out_N - 1);
+          a_arr[i] = v;                     /* diverse real odd_a */
+        }
       }
-      pvmtmlwe_mul_by_xai(ref, in_arr[0], a0);
+      pvmtmlwe_mul_by_xai(ref, in_arr[0], a_arr[0]);
       pvmtmlwe_copy(got_arr[0], in_arr[0]);
       sab_pvw_sub_a_ga(got_arr, (const uint64_t *) a_arr,
           pvw->s_coff[0][0], pvw);
