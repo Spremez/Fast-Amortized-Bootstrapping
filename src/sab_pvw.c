@@ -1141,9 +1141,11 @@ void sab_pvw_blind_rotate_gaussian(PVW_TMLWE * out, TRLWE in, SAB_PVW_Key sab){
   if(sab->in_k != 1) sab_pvw_die("only in_k=1 is supported");
   const uint64_t log_N2 = (uint64_t) log2(2 * sab->out_N);
   for (size_t key_idx = 0; key_idx < sab->in_k; key_idx++){
-    /* odd coefficients are required by the T4 automorphism inverses */
+    /* odd coefficients are required by the T4 automorphism inverses;
+     * SAB_GRHO_PLAIN_A=1 is a test-only knob to align the a-vector with
+     * the binary path (breaks the inverse, chain-equality debug only) */
     mod_switch_a(sab->tmp->a_mod, in->a[key_idx]->coeffs, log_N2,
-        sab->in_N, true);
+        sab->in_N, getenv("SAB_GRHO_PLAIN_A") == NULL);
     sab_pvw_sparse_mul_gaussian(out, sab->tmp->a_mod, key_idx, sab);
   }
 }
