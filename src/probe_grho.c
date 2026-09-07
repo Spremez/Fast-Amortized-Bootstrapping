@@ -124,7 +124,7 @@ int main(void){
       uint64_t * a_arr = (uint64_t *) safe_malloc(sizeof(uint64_t));
       a_arr[0] = a0;
       sab_pvw_sub_a_ga(&got, (const uint64_t *) a_arr,
-          sab->s_coff[0][0], sab);
+          pvw->s_coff[0][0], pvw);
       int step_mism = 0;
       for (int lane = 0; lane < r; lane++){
         lane_phase(p1, ref, pvw_key, lane, out_N);
