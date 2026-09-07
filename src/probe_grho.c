@@ -149,6 +149,48 @@ int main(void){
     free_array_of_polynomials(msg, r);
   }
 
+  /* chain isolation: gaussian sparse_mul vs a hand-built reference chain
+   * (butterfly + per-slot odd-a monomial mul) -- mathematically equal per
+   * step for coeff=1; isolates sub_a_ga under diverse slot values */
+  if(getenv("SAB_GRHO_CHAINTEST")){
+    const int log_N2c = (int) log2(2 * out_N);
+    uint64_t * odd_a = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
+    for (int i = 0; i < in_N; i++){
+      uint64_t v = torus2int(input->a[0]->coeffs[i], log_N2c);
+      if(!(v & 1)) v = (v - 1) & (2 * out_N - 1);
+      odd_a[i] = v;
+    }
+    PVW_TMLWE * ga = pvmtmlwe_alloc_new_sample_array(in_N, out_k, r, out_N);
+    PVW_TMLWE * rf = pvmtmlwe_alloc_new_sample_array(in_N, out_k, r, out_N);
+    sab_pvw_setup_tv_xb(ga, input->b->coeffs, pvw_tv, pvw);
+    sab_pvw_setup_tv_xb(rf, input->b->coeffs, pvw_tv, pvw);
+    sab_pvw_sparse_mul_gaussian(ga, (const uint64_t *) odd_a, 0, pvw);
+    for (size_t step = 0; step < pvw->h; step++){
+      sab_pvw_RGSW_monomial_mul(rf, pvw->s[0][step], pvw);
+      for (int i = 0; i < in_N; i++)
+        pvmtmlwe_mul_by_xai(rf[i], rf[i], odd_a[i]);
+    }
+    sab_pvw_RGSW_monomial_mul(rf, pvw->s[0][pvw->h], pvw);
+    int chain_mism = 0;
+    TorusPolynomial q1 = polynomial_new_torus_polynomial(out_N);
+    TorusPolynomial q2 = polynomial_new_torus_polynomial(out_N);
+    for (int lane = 0; lane < r; lane++)
+      for (int j = 0; j < in_N; j++){
+        lane_phase(q1, ga[j], pvw_key, lane, out_N);
+        lane_phase(q2, rf[j], pvw_key, lane, out_N);
+        if((((int64_t) q1->coeffs[0] + grid / 2) >> (64 - prec))
+            != (((int64_t) q2->coeffs[0] + grid / 2) >> (64 - prec)))
+          chain_mism++;
+      }
+    free_polynomial(q1); free_polynomial(q2);
+    free_pvmtmlwe_array(ga, in_N);
+    free_pvmtmlwe_array(rf, in_N);
+    free(odd_a);
+    printf("CHAINTEST gauss-vs-reference: mismatch %d / %d -- %s\n",
+        chain_mism, r * in_N,
+        chain_mism == 0 ? "OK(schedule consistent)" : "BAD(schedule bug)");
+  }
+
   int mism = 0;
   for (int lane = 0; lane < r; lane++){
     TRLWE_Key lane_key = trlwe_alloc_key(out_N, out_k, pvw_key->sigma);
