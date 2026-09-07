@@ -76,10 +76,11 @@ int main(void){
   sab_pvw_blind_rotate_gaussian(acc, input, pvw);
   printf("pvw gaussian blind rotate done\n");
 
-  /* 3-way discriminative arm: PVW binary path on the same key (coeff==1
-   * keys are binary) isolates which side diverges */
+  /* 3-way arm is opt-in only: the binary path mod-switches a WITHOUT
+   * round-to-odd, so its a-vector differs and the comparison is not an
+   * equivalence check -- it only demonstrates the parity divergence */
   int bin_mism = -1;
-  if(coeff_max == 1){
+  if(getenv("SAB_GRHO_3WAY") && coeff_max == 1){
     SAB_PVW_Key pvw_bin = sab_pvw_new_binary_key(input_key, pvw_key, prec, h,
         r_prec, 1, bg_bit);
     PVW_TMLWE * accb = pvmtmlwe_alloc_new_sample_array(in_N, out_k, r, out_N);
@@ -162,10 +163,10 @@ int main(void){
     memcpy(tv->b->coeffs, tv_msg[lane]->coeffs,
         sizeof(tv->b->coeffs[0]) * out_N);
     uint64_t * b_mod = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
-    const int log_N2 = (int) log2(2 * out_N);
+    /* setup_single_tv adds the half-ulp offset internally (mirrors
+     * sab_pvw_setup_tv_xb), so pass the raw b coefficients */
     for (int i = 0; i < in_N; i++)
-      b_mod[i] = torus2int(input->b->coeffs[i] + (1ULL << (64 - prec - 1)),
-          log_N2);
+      b_mod[i] = input->b->coeffs[i];
     TRLWE * sacc = setup_single_tv(b_mod, tv, oracle);
     /* sab_blind_rotate operates on the accumulator array in place, so the
      * setup output IS the accumulator (sab_rlwe_bootstrap_wo_extract order) */
