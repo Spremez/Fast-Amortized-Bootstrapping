@@ -143,3 +143,26 @@ FAIL** → bug 在多体 `sab_pvw_sub_a_ga` 机制内部（排除：probe 标量
 
 本地状态：probe_grho 三方臂 + coeff_max 旋钮已提交；dell 的 probe_grho
 二进制为最新（3-way 版）。
+
+## 6f. G-ρ 收官（2026-09-07，正确性+噪声全闭合）
+
+**全部正确性门 Pass（dell，N=256/out1024/h=6/r=2，标量 oracle = 规范
+`sab_rlwe_bootstrap_wo_extract`）**：
+- coeff=1（退化为 binary 语义）：**0/512 Pass**
+- 正系数 {1,2,3}（ρ≥3 一般稀疏）：**0/512 Pass**
+- 负系数 {1,−1,2,−2,3,−3}（签名循环，同一 monomial 折叠约定）：**0/512 Pass**
+- 链级隔离 CHAINTEST（gaussian 调度 vs 手工蝶形+奇 a 单项式链）：0/512 OK
+- 单步 STEPFEST（均匀+多样 a）：全 OK
+- **噪声对账**：pair max dev log2 = 53.10（正）/ 53.14（负）≪ 预算 60，
+  与标量同阶 —— T4 预测实测确认（<1.3 门过）。
+
+**调试史教训（入册）**：三轮"失败"全部是 probe 参照系 bug（盲旋转未在
+setup 数组原位执行；遗留 `setup_single_tv` 偏移公式 1/(2·b_prec) ≠ 规范
+1/(2·2^b_prec)；参考链 `pvmtmlwe_mul_by_xai` 原位别名——该函数不支持
+out==in）。**实现自身自首个提交（ca2d656）起正确**。另：`pvmtmlwe_mul_by_xai`
+与 `pvmtmlwe_from_DFT_add`（非融合分支）均有 out==in 别名限制——已列入
+代码坑清单，供后续内核工作参考。
+
+**剩余（stage378，待排）**：FINAL（h=42/N=2048）A/B 时序 + **全钥束实测**
+（G4-ρ 诚实账：aut 族 = 2048 把多体自同构钥 ≈ (1+r)/2× 标量族，keygen
+时间需实测；此前不作小钥声明）。probe 的 N/h env 化 + stage378 脚本。
