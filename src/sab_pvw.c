@@ -1063,9 +1063,8 @@ SAB_PVW_Key sab_pvw_new_gaussian_key(TRLWE_Key input_key,
           bg_bit, out_k, lanes, out_N);
       sab_pvw_encrypt_bits(res->s[key_idx][cnt_h], tmp, res->mat_key,
           r_diff, r_prec);
-      /* first gate uses positive coefficients; negative-exponent convention
-       * check pending before the negative-coefficient gate */
-      if(coeff < 0) sab_pvw_die("gaussian keygen: negative coefficients not yet gated");
+      /* negative coefficients use the same monomial folding convention as
+       * the scalar RGSW_encrypt path (int two's-complement e&N / e&(N-1)) */
       res->s_coff[key_idx][cnt_h] = mat_trgsw_alloc_new_DFT_sample(
           (int) l, (int) bg_bit, (int) out_k, (int) lanes, (int) out_N);
       mat_trgsw_monomial_DFT_sample(res->s_coff[key_idx][cnt_h], 1,

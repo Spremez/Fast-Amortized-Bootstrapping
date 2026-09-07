@@ -36,10 +36,13 @@ int main(void){
     if(e) coeff_max = atoi(e);
     if(coeff_max < 1) coeff_max = 1;
   }
+  const int signed_cycle[6] = {1, -1, 2, -2, 3, -3};
+  const bool use_neg = getenv("SAB_GRHO_NEG") != NULL;
   int bumped = 0;
   for (int i = 0; i < in_N; i++)
     if(input_key->s[0]->coeffs[i] == 1)
-      input_key->s[0]->coeffs[i] = 1 + (bumped++ % coeff_max);
+      input_key->s[0]->coeffs[i] = use_neg ?
+          signed_cycle[bumped++ % 6] : 1 + (bumped++ % coeff_max);
   if(bumped != h){ printf("support mismatch %d != %d\n", bumped, h); return 1; }
   /* r_prec must bound interior gaps AND the final wrap gap (keygen checks
    * previous < 2^r_prec), so derive it from the actual support */
