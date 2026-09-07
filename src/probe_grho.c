@@ -24,8 +24,19 @@ static void lane_phase(TorusPolynomial out, PVW_TMLWE in, PVW_TMLWE_Key key,
 
 int main(void){
   setvbuf(stdout, NULL, _IONBF, 0);
-  const int in_N = 256, out_N = 1024, in_k = 1, out_k = 1;
-  const int bg_bit = 23, prec = 3, h = 6, r = 2;
+  int in_N = 256, out_N = 1024, h = 6, r = 2;
+  const int in_k = 1, out_k = 1, bg_bit = 23, prec = 3;
+  {
+    const char * e = getenv("SAB_GRHO_N");
+    if(e) in_N = atoi(e);
+    e = getenv("SAB_GRHO_OUTN");
+    if(e) out_N = atoi(e);
+    e = getenv("SAB_GRHO_H");
+    if(e) h = atoi(e);
+    e = getenv("SAB_GRHO_R");
+    if(e) r = atoi(e);
+  }
+  const clock_t t_kg0 = clock();
 
   TRLWE_Key input_key, packing_key;
   RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), 5);
@@ -62,7 +73,8 @@ int main(void){
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(out_N, out_k, r, pow(2, -70));
   SAB_PVW_Key pvw = sab_pvw_new_gaussian_key(input_key, pvw_key, prec, h,
       r_prec, 1, bg_bit);
-  printf("pvw gaussian key built (aut family %d keys)\n", out_N);
+  printf("pvw gaussian key built (aut family %d keys, keygen %.1fs incl. input)\n",
+      out_N, (double)(clock() - t_kg0) / CLOCKS_PER_SEC);
 
   TorusPolynomial input_msg = polynomial_new_torus_polynomial(in_N);
   for (int i = 0; i < in_N; i++) input_msg->coeffs[i] = int2torus(i & 7, prec);
