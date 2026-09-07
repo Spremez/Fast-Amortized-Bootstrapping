@@ -38,10 +38,15 @@ int main(void){
     if(e) r = atoi(e);
   }
   const clock_t t_kg0 = clock();
+  int rs_target = 5;
+  {
+    const char * e = getenv("SAB_GRHO_TARGET");
+    if(e) rs_target = atoi(e);
+  }
 
   TRLWE_Key input_key, packing_key;
-  RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), 5);
-  RS_sparse_binary_key(&packing_key, in_N, in_k, h, pow(2, -44), 5);
+  RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), rs_target);
+  RS_sparse_binary_key(&packing_key, in_N, in_k, h, pow(2, -44), rs_target);
   int coeff_max = 3;
   {
     const char * e = getenv("SAB_GRHO_COEFF_MAX");
