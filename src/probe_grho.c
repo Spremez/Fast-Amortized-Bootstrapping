@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
 static void lane_phase(TorusPolynomial out, PVW_TMLWE in, PVW_TMLWE_Key key,
     int lane, int N){
