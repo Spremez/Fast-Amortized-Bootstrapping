@@ -174,8 +174,11 @@ int main(void){
     sab_pvw_sparse_mul_gaussian(ga, (const uint64_t *) odd_a, 0, pvw);
     for (size_t step = 0; step < pvw->h; step++){
       sab_pvw_RGSW_monomial_mul(rf, pvw->s[0][step], pvw);
-      for (int i = 0; i < in_N; i++)
-        pvmtmlwe_mul_by_xai(rf[i], rf[i], odd_a[i]);
+      for (int i = 0; i < in_N; i++){
+        /* mirror sab_pvw_sub_a_binary: via tmp, not in place */
+        pvmtmlwe_mul_by_xai(pvw->tmp->tmlwe, rf[i], odd_a[i]);
+        pvmtmlwe_copy(rf[i], pvw->tmp->tmlwe);
+      }
     }
     sab_pvw_RGSW_monomial_mul(rf, pvw->s[0][pvw->h], pvw);
     int chain_mism = 0;
