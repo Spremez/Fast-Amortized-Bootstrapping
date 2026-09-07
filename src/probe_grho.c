@@ -103,11 +103,12 @@ int main(void){
   }
 
   /* single-step minimal repro (HANDOFF 6e): one sub_a_ga application vs
-   * the plain monomial multiplication it must equal for coeff=1 */
+   * the plain monomial multiplication it must equal for coeff=1.
+   * sub_a_ga indexes p[i] over in_N coefficients, so use full arrays. */
   if(getenv("SAB_GRHO_STEPTEST")){
-    PVW_TMLWE in = pvmtmlwe_alloc_new_sample(out_k, r, out_N);
+    PVW_TMLWE * in_arr = pvmtmlwe_alloc_new_sample_array(in_N, out_k, r, out_N);
+    PVW_TMLWE * got_arr = pvmtmlwe_alloc_new_sample_array(in_N, out_k, r, out_N);
     PVW_TMLWE ref = pvmtmlwe_alloc_new_sample(out_k, r, out_N);
-    PVW_TMLWE got = pvmtmlwe_alloc_new_sample(out_k, r, out_N);
     TorusPolynomial * msg = polynomial_new_array_of_torus_polynomials(out_N, r);
     for (int lane = 0; lane < r; lane++)
       for (int c = 0; c < out_N; c++)
@@ -115,32 +116,35 @@ int main(void){
     PVW_TMLWE base = pvmtmlwe_new_noiseless_trivial_sample(msg, out_k, r, out_N);
     TorusPolynomial p1 = polynomial_new_torus_polynomial(out_N);
     TorusPolynomial p2 = polynomial_new_torus_polynomial(out_N);
+    uint64_t * a_arr = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
     for (int ai = 0; ai < 3; ai++){
       const uint64_t a0 = (uint64_t)(2 * ai + 1);
-      pvmtmlwe_copy(in, base);
-      pvmtmlwe_mul_by_xai(ref, in, a0);
-      pvmtmlwe_copy(got, in);
-      uint64_t * a_arr = (uint64_t *) safe_malloc(sizeof(uint64_t));
-      a_arr[0] = a0;
-      sab_pvw_sub_a_ga(&got, (const uint64_t *) a_arr,
+      for (int i = 0; i < in_N; i++){
+        pvmtmlwe_copy(in_arr[i], base);
+        a_arr[i] = a0;
+      }
+      pvmtmlwe_mul_by_xai(ref, in_arr[0], a0);
+      pvmtmlwe_copy(got_arr[0], in_arr[0]);
+      sab_pvw_sub_a_ga(got_arr, (const uint64_t *) a_arr,
           pvw->s_coff[0][0], pvw);
       int step_mism = 0;
       for (int lane = 0; lane < r; lane++){
         lane_phase(p1, ref, pvw_key, lane, out_N);
-        lane_phase(p2, got, pvw_key, lane, out_N);
+        lane_phase(p2, got_arr[0], pvw_key, lane, out_N);
         for (int c = 0; c < out_N; c++)
           if((((int64_t) p1->coeffs[c] + grid / 2) >> (64 - prec))
               != (((int64_t) p2->coeffs[c] + grid / 2) >> (64 - prec)))
             step_mism++;
       }
-      free(a_arr);
       printf("STEPTEST a0=%lu: mismatch %d / %d -- %s\n",
           (unsigned long) a0, step_mism, r * out_N,
           step_mism == 0 ? "OK" : "BAD");
     }
+    free(a_arr);
     free_polynomial(p1); free_polynomial(p2);
-    free_pvmtmlwe(base); free_pvmtmlwe(got); free_pvmtmlwe(ref);
-    free_pvmtmlwe(in);
+    free_pvmtmlwe(base); free_pvmtmlwe(ref);
+    free_pvmtmlwe_array(got_arr, in_N);
+    free_pvmtmlwe_array(in_arr, in_N);
     free_array_of_polynomials(msg, r);
   }
 
