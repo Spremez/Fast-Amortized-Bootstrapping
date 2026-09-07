@@ -117,7 +117,6 @@ int main(void){
     TorusPolynomial p2 = polynomial_new_torus_polynomial(out_N);
     for (int ai = 0; ai < 3; ai++){
       const uint64_t a0 = (uint64_t)(2 * ai + 1);
-      uint64_t a_vec[1] = {a0};
       pvmtmlwe_copy(in, base);
       pvmtmlwe_mul_by_xai(ref, in, a0);
       pvmtmlwe_copy(got, in);
@@ -143,7 +142,6 @@ int main(void){
     free_pvmtmlwe(base); free_pvmtmlwe(got); free_pvmtmlwe(ref);
     free_pvmtmlwe(in);
     free_array_of_polynomials(msg, r);
-    (void) a_vec;
   }
 
   int mism = 0;
