@@ -117,8 +117,17 @@ int main(void){
   N_ = out_N; TWO_N = 2 * out_N; stage_in_N = in_N;
   printf("diag: in_N=%d out_N=%d h=%d\n", in_N, out_N, h);
 
-  TRLWE_Key input_key, packing_key;
-  RS_sparse_binary_key(&input_key, in_N, 1, h, pow(2, -15), 6);
+  TRLWE_Key input_key = NULL, packing_key = NULL;
+  for (uint64_t st_ = 1; st_ < 60; st_++){
+    mosfhet_set_deterministic_seed(st_);
+    RS_sparse_binary_key(&input_key, in_N, 1, h, pow(2, -15), 6);
+    int nz_ = 0;
+    for (int i = 0; i < in_N; i++) if(input_key->s[0]->coeffs[i]) nz_++;
+    if(nz_ == h) break;
+    free_trlwe_key(input_key);
+    input_key = NULL;
+  }
+  if(input_key == NULL){ printf("no good key\n"); return 1; }
   RS_sparse_binary_key(&packing_key, in_N, 1, h, pow(2, -44), 6);
   uint64_t max_gap = 0, previous = in_N;
   for (int scan = 0; scan < in_N; scan++){

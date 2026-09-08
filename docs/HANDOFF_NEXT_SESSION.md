@@ -279,11 +279,17 @@ r=2 先行（模数消耗 42 bit 在 64-bit 内），验证后扩展 r=4（需 1
    oracle 用了 d=512。
 
 **未闭合（下会话入口）**：
-- **I-7 门 163/512**（lane0 54/lane1 109，经 4 轮修复自 477 递减）。
-  优先：(a) dell 同构建跑 probe_rinput（本地三缺陷均为
-  MinGW 特有，linux 构建预期直接过或暴露真 bug）；(b) 若仍败，
-  lane1 偏重指向 Ψ/抽取残差交互——用 probe_rinput_diag 在 dell 上
-  逐阶段定位。
+- **I-7 门 163-188/512 波动**（lane0 ~60/lane1 ~110，稀疏槽位 X，
+  pair dev 2^63 类；经 4 轮修复自 477 递减）。关键定位事实：
+  (a) 交织 C vs 明文模型逐阶段噪声级一致（diag@2048，setup 精确）；
+  (b) 我的标量模型 vs oracle 逐阶段噪声级一致（d=1024，setup 精确，
+  probe_scalar_model）；(c) GF(257) 两模型精确等价——但 diag 的比较
+  掩掉 bit63，三方"传递"对 ±2^63 类是盲的。稀疏失败槽 + 2^63 幅度
+  指向伪差抵消定理（HT-7'）某假设在特定数据流下不满足（候选：终
+  蝶形直达槽与 Ψ 槽的交互、或 oracle 侧 dim-1024 亦有本地污染）。
+  优先：(a) dell 同构建跑 probe_rinput（本地三缺陷均 MinGW 特有）；
+  (b) 若仍败，把 probe_rinput_diag 的 stage_dev_masked 换成全值比较
+  （去掩码）在 dell 逐阶段定位首个 2^63 出现阶段。
 - **I-8**：过门后噪声对账（M-HT.4 标定）+ benchmark（本地参考：
   interleaved ≈ 1.33-1.6× of 2×scalar@toy，不可入论文）。
 - 论文侧：stage396 数学全文入 §3.4/新 §3.7；Ψ/HT-7'/HT-8 为本工作

@@ -11,7 +11,7 @@
 
 int main(void){
   setvbuf(stdout, NULL, _IONBF, 0);
-  const int dims[] = {256, 512, 1024};
+  const int dims[] = {256, 512, 1024, 2048};
   for (size_t di = 0; di < sizeof(dims) / sizeof(dims[0]); di++){
     const int d = dims[di];
     mosfhet_set_deterministic_seed(11 + di);

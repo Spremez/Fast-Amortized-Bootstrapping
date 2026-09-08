@@ -210,7 +210,10 @@ int main(void){
       const int64_t v_int =
           (((int64_t) p2->coeffs[lane]) + ((int64_t) 1 << (64 - prec - 1)))
           >> (64 - prec);
-      if(v_scalar != v_int){ mism++; lane_mism[lane]++; }
+      if(v_scalar != v_int){ mism++; lane_mism[lane]++;
+        if(lane == 0 && t < 32) printf("%c", 'X');
+        if(lane == 0 && t == 31) printf("|lane0 slots0-31\n"); }
+      else if(lane == 0 && t < 32) printf("%c", '.');
       if(t < 6 && lane == 0)
         printf("  t%d lane0: v_scalar=%lld v_int=%lld (raw sc=%lld int/2=%lld)\n",
             t, (long long) v_scalar, (long long) v_int,
