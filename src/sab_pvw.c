@@ -1116,6 +1116,27 @@ void sab_pvw_sub_a_ga(PVW_TMLWE * p, const uint64_t * a,
   }
 }
 
+/* Hom-Tr variant (Wang Han 20260908V1 Alg 2 line 9): per-slot homomorphic
+ * rotation X^{-a[i]} via multi-body automorphism + KS, acting on all r
+ * bodies simultaneously. Slower than plaintext sub_a (introduces aut-KS
+ * noise per slot) but natively general for any secret class and any
+ * dual-moduli configuration. */
+void sab_pvw_sub_a_homtr(PVW_TMLWE * p, const uint64_t * a,
+    SAB_PVW_Key sab){
+  if(sab->aut_family == NULL){
+    sab_pvw_die("Hom-Tr requires aut_family (use sab_pvw_new_gaussian_key or extend binary keygen)");
+  }
+  const uint64_t twoN = 2 * sab->out_N;
+  for (size_t i = 0; i < sab->in_N; i++){
+    const uint64_t w = (twoN - a[i]) % twoN; /* -a[i] mod 2N */
+    if(w == 0) continue; /* identity, no-op */
+    /* w is odd because a[i] is odd (round-to-odd mod switch) */
+    pvmtmlwe_eval_automorphism(sab->tmp->tmlwe, p[i], w,
+        sab->aut_family[(w - 1) >> 1]);
+    pvmtmlwe_copy(p[i], sab->tmp->tmlwe);
+  }
+}
+
 void sab_pvw_sparse_mul_gaussian(PVW_TMLWE * p, const uint64_t * a,
     uint64_t a_idx, SAB_PVW_Key sab){
   if(a_idx >= sab->in_k) sab_pvw_die("gaussian sparse_mul a_idx out of range");
@@ -1125,6 +1146,19 @@ void sab_pvw_sparse_mul_gaussian(PVW_TMLWE * p, const uint64_t * a,
   for (size_t step = 0; step < sab->h; step++){
     sab_pvw_RGSW_monomial_mul(p, sab->s[a_idx][step], sab);
     sab_pvw_sub_a_ga(p, a, sab->s_coff[a_idx][step], sab);
+  }
+  sab_pvw_RGSW_monomial_mul(p, sab->s[a_idx][sab->h], sab);
+}
+
+void sab_pvw_sparse_mul_homtr(PVW_TMLWE * p, const uint64_t * a,
+    uint64_t a_idx, SAB_PVW_Key sab){
+  if(a_idx >= sab->in_k) sab_pvw_die("Hom-Tr sparse_mul a_idx out of range");
+  if(sab->aut_family == NULL){
+    sab_pvw_die("Hom-Tr sparse_mul requires aut_family");
+  }
+  for (size_t step = 0; step < sab->h; step++){
+    sab_pvw_RGSW_monomial_mul(p, sab->s[a_idx][step], sab);
+    sab_pvw_sub_a_homtr(p, a, sab);
   }
   sab_pvw_RGSW_monomial_mul(p, sab->s[a_idx][sab->h], sab);
 }

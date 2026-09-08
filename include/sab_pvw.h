@@ -88,7 +88,11 @@ SAB_PVW_Key sab_pvw_new_gaussian_key(TRLWE_Key input_key,
     uint64_t l, uint64_t bg_bit);
 void sab_pvw_sub_a_ga(PVW_TMLWE * p, const uint64_t * a,
     MAT_TRGSW_DFT selector, SAB_PVW_Key sab);
+void sab_pvw_sub_a_homtr(PVW_TMLWE * p, const uint64_t * a,
+    SAB_PVW_Key sab);
 void sab_pvw_sparse_mul_gaussian(PVW_TMLWE * p, const uint64_t * a,
+    uint64_t a_idx, SAB_PVW_Key sab);
+void sab_pvw_sparse_mul_homtr(PVW_TMLWE * p, const uint64_t * a,
     uint64_t a_idx, SAB_PVW_Key sab);
 void sab_pvw_blind_rotate_gaussian(PVW_TMLWE * out, TRLWE in,
     SAB_PVW_Key sab);
