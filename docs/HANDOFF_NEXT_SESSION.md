@@ -251,3 +251,40 @@ r=2 先行（模数消耗 42 bit 在 64-bit 内），验证后扩展 r=4（需 1
 4. `theory_checks/stage391_homtr_agent_correction.md`（agent 数学推导）
 5. Wang Han `20260908V1.pdf`（理论草稿）
 6. 独立 agent 分析（`HomTr_WangHan_Fusion_Analysis.md`，258 行）
+
+## 6j. r-Input Batching + Hom-Tr 执行战报（2026-09-08 本会话）
+
+**已完成（提交见 git log）**：
+1. **数学（M-HT.1-6，theory_checks/stage396_rinput_homtr_math.md）**：
+   HT-1/HT-2 迹提取与 U_a 恒等式（含一般嵌入偏移形式）；**换位扭曲
+   否定性结果**（HT-4'：任何预因子/单自同构都无法修复 σ₋₁ 对 lane 1
+   的奇数次 Y-扭曲——奇偶性障碍）；**Ψ 微修正**（HT-4：
+   Ψ = U_{(0,1)}∘σ₋₁ 使换位作用 lane 一致，第二自同构与 sub_a 共钥）；
+   HT-5 提升定理；**伪差抵消定理 HT-7'**（±迹权重使 ±2^63 重缩放伪差
+   在下一 U_a 处 mod 2^64 严格消失）与**终恒等倍增协议 HT-8**（全
+   重缩放 + 末尾 ×2 + 抽取端 ÷2——2-幂 torus 上封闭，替代旧
+   h·log₂r 模数账目，HT-9 记旧模型出处并证其噪声指数放大不可行）。
+2. **GF(257) 机械验证（M-HT.7-8，scripts/check_rinput_homtr_gf257.py）
+   ALL PASS**：C1-C6 + C4 决定性（Ψ 修正交织管线 vs 2 独立输入标量
+   oracle：2560/2560 全等）+ 负对照（裸 σ₋₁：1280/2560 失配=lane 1
+   全部——扭曲存在的机械证据）。
+3. **C 实现（I-1..I-6）**：include/sab_rinput.h + src/sab_rinput.c
+   （keygen/交织 setup/Ψ/Hom-Tr sub_a/蝶形/盲旋转含终倍增）；
+   probe_rinput.c（G0 setup 门本地 Pass + oracle 门 + min_oracle_key）；
+   probe_rinput_diag.c（逐阶段锁步：**交织实现 vs 明文模型全阶段
+   噪声级一致**，setup 精确）；probe_cmux_dims.c（维度隔离）。
+4. **本地构建负结果（入册 §10.2）**：dim=512 TRLWE 外积本地损坏
+   （裸 CMUX dev 2^63；256/1024 正常）；确定性 RNG 间歇失效；
+   packing KS 构造本地部分维度段错误。I-7 初败 477/512 的根因即
+   oracle 用了 d=512。
+
+**未闭合（下会话入口）**：
+- **I-7 门 163/512**（lane0 54/lane1 109，经 4 轮修复自 477 递减）。
+  优先：(a) dell 同构建跑 probe_rinput（本地三缺陷均为
+  MinGW 特有，linux 构建预期直接过或暴露真 bug）；(b) 若仍败，
+  lane1 偏重指向 Ψ/抽取残差交互——用 probe_rinput_diag 在 dell 上
+  逐阶段定位。
+- **I-8**：过门后噪声对账（M-HT.4 标定）+ benchmark（本地参考：
+  interleaved ≈ 1.33-1.6× of 2×scalar@toy，不可入论文）。
+- 论文侧：stage396 数学全文入 §3.4/新 §3.7；Ψ/HT-7'/HT-8 为本工作
+  独立贡献（Wang Han 草稿未含），与 8 问一并发 Wang Han。
