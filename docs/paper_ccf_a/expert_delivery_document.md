@@ -64,7 +64,7 @@ binary 明文单项式 / ternary s_sign / 一般稀疏 sub_a_ga = 双多体自�
 | Thm 3 | 无回绕不变量与 p 域：p≤5@q16（实测边界闭环 p7 门 46/2048） | 常数待升格 | §6 勘误清单 |
 | M1 | MV-EP lane 正确性（分块对角，掩码共享耦合重组合法结构） | **待升格**（审稿人 A7：现含解释性论证） | r=1..8 全门 |
 | M2 | 无跨体噪声放大 | **待升格**（≲ 记号） | S7 81,920 点 pair 0 |
-| M3 | 行积摊销定律（**勘误后**：行工作上限 2(k+1)r/(1+r)=1.6×@r4；实测总时 1.81× 的超限 = 旗标消除的非行开销，与 stage373 分量账自洽） | 投稿级（勘误后） | stage373/380 |
+| M3+M3' | 行积摊销定律 + **总账推论（stage384）**：Speedup = 2r/(1+r) × Φ(r,θ)；六行对账 ≤1.004 | **投稿级**（含推论） | stage373/380/382 |
 | T4 | G-ρ 多体正确性（对角单项式 M1 + 指数线性） | 投稿级 | FINAL 0/4096 + 噪声同阶 |
 | Prop 2.2/Thm 3.1 | 逐 lane 相位不变式归纳 + 确定性输出等价 | 投稿级 | 全域门 |
 | E1 方法 | RS 条件熵修正（−log2 p_accept 的 MC；20k 样本） | 方法论（CI 待报） | 686 全族复算 |
@@ -260,3 +260,15 @@ docs/paper_ccf_a/{sq,matrix}_theory_rigorous.md、
 outer_algorithm_formalization.md、stage374/375（G2/T4）；等价门：
 scripts/check_f1_delta2_identity_addend.py、src/probe_grho.c；
 演变：number_evolution_reconciliation.md；本档为单一事实源 v5。
+
+## 术语冻结（v5.1 生效，写作与所有下游文档必须遵守）
+
+| 冻结术语 | 含义 | 禁止用法 |
+|---|---|---|
+| **686** | Guimarães–Pereira CCS'25 稀疏摊销自举的原实现（= 本仓标量路径） | "stock 标量"、"scalar 基线" |
+| **矩阵基线** | 无优化旗标的 PVW 矩阵路径（sab_pvw_bootstrap_binary/include_zero 不带旗标） | "stock r-lane"、"stock 构建" |
+| **我方** | include-zero + 全 7 融合旗标的完整矩阵系统 | "pathA"、"SQ r-lane"（仅在 binary 口径副表中使用） |
+| **SQ** | 尺度量化外积核（源自 1711，本工作实例化+证明） | — |
+| **lane (r)** | 共享同一输入密文与调度的独立 LUT 求值流 | "body"（正文统一用 lane） |
+| **修正安全** | CRYPTO'26 环同构混合攻击修正口径下的参数定案 | "硬化"、"安全修正"（口语可用但正文统一） |
+| **686/我方** | 加速比一律以 686 时间为分子 | SQ/686（禁止 <1 比值） |
