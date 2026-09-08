@@ -206,3 +206,48 @@ double-free、nonbinary keygen aut_family 未初始化）。
 G-ρ 语义完备 + 完整理论链（定理 1-3、M1-M3 勘误后、T4）+ 三组否定性
 结果。评审 agent 的 A1/A3 攻击点已被本轮数据实质削弱；Top-5 剩余
 （证明升格、第二平台、DFR certified、v5 单源化）照旧。
+
+## 6i. 终极任务：r-Input Batching + Hom-Tr 完整实现 + 论文撰写（2026-09-08 用户最终指令）
+
+**用户决策**：r-input batching 是论文必须项（"Combining Packing and Batching"
+标题要求）；数学与算法部分必须达到世界最顶尖审稿人标准。
+
+### 必须完成的数学工作（投稿级）
+
+| # | 内容 | 当前状态 | Eurocrypt 要求 |
+|---|---|---|---|
+| M-HT.1 | 交织打包的形式化定义（N=r·d, Y=X^r, 环扩张 R/A） | Agent 参考变体 | 完整定义 + 与 body-packing 的等价性证明 |
+| M-HT.2 | 固定子群 H 的迹算子 T_H 的性质 | Agent 推导 | 完整证明（线性性、提取公式、与 H 的关系） |
+| M-HT.3 | Hom-Tr 的正确性（per-lane 相位不变式） | **未证明** | 完整归纳证明（逐步骤：蝶形 + Hom-Tr 交替） |
+| M-HT.4 | Hom-Tr 的噪声分析 | **未推导** | 次高斯参数界（aut-KS + 公开权重乘 + 舍入 + 模数消耗） |
+| M-HT.5 | 模数消耗的严格分析 | Agent 方案（方案 C） | 证明每步消耗 log₂(r) bit 的下界 + 最终精度 |
+| M-HT.6 | 与 r-LUT batching 的正交性证明 | 定性论证 | 形式化证明两个维度可独立组合 |
+| M-HT.7 | 总复杂度分析 | 未做 | 结合两个维度的完整复杂度 |
+| M-HT.8 | GF(257) 机械验证 | 未做 | 交织打包 + 迹提取 + Hom-Tr 的机器检查 |
+
+### 必须完成的实现工作
+
+| # | 组件 | 依赖 |
+|---|---|---|
+| I-1 | 交织打包/解包（body ↔ interleaved 转换） | M-HT.1 |
+| I-2 | 迹操作 T_H（复用 aut_family） | M-HT.2 |
+| I-3 | 权重多项式 P_w 计算 | M-HT.2 |
+| I-4 | 尺度管理（q 位跟踪 + 右移 + 舍入） | M-HT.5 |
+| I-5 | Hom-Tr 版 sub_a | M-HT.3 |
+| I-6 | multi-input setup + bootstrap wrapper | I-1..I-5 |
+| I-7 | 正确性门（vs r 个独立标量 oracle） | I-6 |
+| I-8 | 噪声对账 + benchmark | M-HT.4 + I-7 |
+
+### 建议路径
+
+r=2 先行（模数消耗 42 bit 在 64-bit 内），验证后扩展 r=4（需 128-bit
+中间精度或周期性降尺度）。预估 5-7 个专注会话。
+
+### 新会话入口文件
+
+1. `docs/HANDOFF_NEXT_SESSION.md`（本文件，含全部历史决策）
+2. `docs/paper_ccf_a/unified_status_document.md`（当前状态 + 待对齐）
+3. `theory_checks/stage395_rinput_implementation_plan.md`（实现计划）
+4. `theory_checks/stage391_homtr_agent_correction.md`（agent 数学推导）
+5. Wang Han `20260908V1.pdf`（理论草稿）
+6. 独立 agent 分析（`HomTr_WangHan_Fusion_Analysis.md`，258 行）
