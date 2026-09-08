@@ -297,3 +297,52 @@ scripts/check_f1_delta2_identity_addend.py、src/probe_grho.c；
 | **lane (r)** | 共享同一输入密文与调度的独立 LUT 求值流 | "body"（正文统一用 lane） |
 | **修正安全** | CRYPTO'26 环同构混合攻击修正口径下的参数定案 | "硬化"、"安全修正"（口语可用但正文统一） |
 | **686/我方** | 加速比一律以 686 时间为分子 | SQ/686（禁止 <1 比值） |
+
+## 附录 A：2026-09-08 增量更新（Wang Han PDF 分析 + Hom-Tr + 论文草稿）
+
+### A.1 Wang Han 20260908V1 全文分析（stage389）
+
+Wang Han 的 PDF "Combining Packing and Batching" 提供了：
+- **§1.3 密码系统**：Mat-MGSW/Vec-MLWE 双模数形式化 + 尺度化外积 ⊡ = ⌊C·c·Q/T⌉
+- **Lemma 1.7**：完整次高斯噪声界（Q²/T² 抑制 + 四项分解）
+- **Corollary 1.8**：自举场景特化（monomial + 三元 + 均匀）
+- **Algorithm 1 P-MPMUL**：r-lane 蝶形（= 我们的 sab_pvw_RGSW_monomial_mul_state）
+- **Algorithm 2 Packing BIN-SAB**：含 Hom-Tr 的完整自举
+
+**判定**：内容高度互补，应融合为一篇投 Eurocrypt（用户已决策）。
+
+### A.2 Hom-Tr 实现尝试与失败（stage390, 5a336c6）
+
+朴素自同构实现（sab_pvw_sub_a_homtr）**语义错误**：
+- 环自同构 σ_w(X^i)=X^{wi} 置换指数 ≠ 单项式乘法 M_v(X^i)=X^{i-v} 移位指数
+- 实测：FAIL 452/512，noise 2^63（全 torus）
+- 计时：18,911μs（错误语义） vs 明文 2,454μs → 7.71× 为**负对照**比值
+
+### A.3 独立 agent 修正（stage391, e529b28）
+
+三个关键纠正 + 正确 Hom-Tr 数学结构：
+- **固定子群 H = {σ_{1+2dℓ}}** 不随 a_j 变化（≤ r-1 次 aut-KS，非每旋转一把钥）
+- **交织打包** m = Σⱼ X^j·mⱼ(Y)，Y = X^r，N = r·d
+- **Torus 上 r^{-1} 问题**：预置 Q_in = r·Q_out，每步消耗 log₂(r) 模数比特
+- 8 个精确问题待 Wang Han 确认（stage391 §四）
+
+### A.4 论文完整草稿（bc64aac）
+
+`paper_full_v1.md`：7 节 Eurocrypt 正文（Abstract→Conclusion，~2400 词），
+写作风格模仿 686 CCS'25 + Wang Han 形式化 + BatchBoot 评估纪律。
+§3.4 sub_a 设计空间表已按 agent 修正更新（4 后端含负对照）。
+
+### A.5 融合论文架构（已确定）
+
+| 论文节 | Wang Han 提供 | 我们提供 |
+|---|---|---|
+| §2 Preliminaries | 记号/MLWE/次高斯工具/Lemma 1-2 | — |
+| §3.1 密码系统 | Mat-MGSW/Vec-MLWE 定义 + ⊡ + Lemma 3 | 实现验证 |
+| §3.2 蝶形 | Algorithm 1 框架 | DualSubCMUX + k=2 证明 + 实现 |
+| §3.3 完整自举 | Algorithm 2 框架 | G-ρ/ternary/include-zero + 实现 |
+| §3.4 sub_a 空间 | Hom-Tr 理论 | 明文/sub_a_ga 实现 + 负对照 + 参考变体 |
+| §3.5 噪声 | Lemma 1.7/Cor 1.8 主引理 | Thm 2 实测标定 + Thm 4-5 |
+| §3.6-3.9 | — | M3/M3'/Thm 6-7/Prop 2/Thm 3/G-ρ |
+| §4 Security | — | 全部（修正定案 + BatchBoot 重评 + DFR） |
+| §5 Experiments | — | 全部（六行矩阵 + r 选值 + 竞品 + 否定性） |
+| §6-7 | — | Related work + Conclusion |
