@@ -315,13 +315,17 @@ Output: n·r LWE ciphertexts encrypting f_q(mᵢ) for each lane q
 
 Three variants of the subtraction step trade speed against generality:
 
-| Variant | Mechanism | Noise | Overhead | Applicability |
-|---|---|---|---|---|
-| Plaintext multiply | torus coefficient rotation | zero | ~2.5 ms per h=6 step | binary, ternary |
-| Double aut. + EP | sub_a_ga [BDF18] | 2 KS + 1 EP | ~19 ms per h=6 step | general sparse |
-| Hom-Tr | homomorphic transform [WLL25] | KS per slot | ~19 ms (naive aut.) | theoretical |
+| Backend | Mechanism | Input error action | Measured |
+|---|---|---|---|
+| Plaintext monomial | public coefficient rotation | signed permutation, no new arithmetic error | 2,454 μs (h=6 step) |
+| Double aut. + EP | sub_a_ga [BDF18] | aut-KS + EP noise | implemented, verified |
+| Hom-Tr relative trace | fixed subgroup H, weights P_w, modulus consumption | KS + rounding; consumes log₂(r) bits per step | reference variant derived; not yet in C |
+| Naive automorphism | single σ_w (incorrect semantics) | completely wrong output | negative control: 18,911 μs |
 
-The measured ratio (ii)/(i) ≈ 7.7× quantifies the cost of generality.
+The naive single-automorphism variant conflates ring automorphism
+(σ_w(X^i) = X^{wi}) with monomial multiplication (M_v(X^i) = X^{i-v});
+these are distinct operations (consider f = 1). Its 18,911 μs timing is
+recorded as a negative control, not as a valid Hom-Tr benchmark.
 
 ### 3.5 Correctness
 
@@ -562,6 +566,11 @@ Three optimization candidates are formally closed:
 3. **σ-only hardening**: increasing σ alone causes both SQ and standard
    kernels to fail (the KS noise grows linearly with σ); the correction
    must adjust σ and key-switching parameters together.
+4. **Naive Hom-Tr (single automorphism)**: produces completely incorrect
+   output (noise at full torus range) because ring automorphism permutes
+   coefficients while sub_a requires monomial shift. The correct Hom-Tr
+   is a relative-trace operation whose reference implementation has been
+   derived but not yet integrated into the C codebase.
 
 ### 5.7 Resource usage
 
