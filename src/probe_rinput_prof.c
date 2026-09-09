@@ -601,9 +601,22 @@ static int run_trial(int trial, int reps, trial_res_t * res){
   printf("== trial %d/%d: in_N=%d out_N=%d (d=%d) h=%d ==\n", trial + 1,
       reps, in_N, out_N, d, h);
 
-  TRLWE_Key input_key, packing_key;
-  RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), 6);
-  RS_sparse_binary_key(&packing_key, in_N, in_k, h, pow(2, -44), 6);
+  TRLWE_Key input_key = NULL, packing_key = NULL;
+  { /* target_r_prec = FINAL rho (7): at n=2048/h=42 the typical max gap
+     * is ~2^7.5, so target 6 exhausts the internal 2^15-attempt loop and
+     * leaves the key pointer garbage (observed SIGSEGV). 7 succeeds with
+     * ~1/22 acceptance. */
+    const uint64_t rs_target = 7;
+    RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), rs_target);
+    RS_sparse_binary_key(&packing_key, in_N, in_k, h, pow(2, -44), rs_target);
+    if(input_key == NULL || input_key->s[0] == NULL
+        || packing_key == NULL || packing_key->s[0] == NULL){
+      printf("RS keygen FAILED (target_r_prec=%lu) -- abort\n",
+          (unsigned long) rs_target);
+      res->gate_bad = -1;
+      return 1;
+    }
+  }
   uint64_t max_gap = 0, previous = in_N;
   for (int scan = 0; scan < in_N; scan++){
     const int current = in_N - scan - 1;

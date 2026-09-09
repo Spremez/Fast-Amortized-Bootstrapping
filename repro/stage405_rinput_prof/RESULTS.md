@@ -80,3 +80,28 @@ for the paper's implementation notes + future rerun.
   SAB_RINPUT_MICRO=1; AES-operand mode: SAB_RINPUT_AES=1)
 - Build (dell): canonical FLAGS + link with -Wl,--allow-multiple-definition
   and trailing spqlios-fft-impl-avx512.o (same as stage403)
+
+## I-6 FINAL-parameter closure (dell, 2026-09-09 late; closes review attack N-5)
+
+Run: n=2048, h=42, rho=7, sigma_G=2^-49, out 2048, coarse measurement
+(suba + final stages), 1 trial. RS keygen bug fixed first: the 6th arg
+of RS_sparse_binary_key is target_r_prec (not a gap bound); target 6
+exhausts the internal 2^15-attempt loop at n=2048/h=42 (acceptance
+~1/81000) leaving a garbage pointer (SIGSEGV) -- target = 7 (the FINAL
+design rho, acceptance ~1/22) + null-guard added.
+
+| Quantity | Value |
+|---|---|
+| Gate | **0/4096 PASS** |
+| Primitives | eps 40.22; ks_h 44.09; ks_m1 44.24; ep1 49.15; ep0 43.43; psi 44.56; suba 43.46; ep_s 43.66 |
+| DCWALK | hw=984, w_rms **49.15** (= derived mu*N/sqrt12 49.20 within 0.05 bit) |
+| FINAL (doubled, even class) | meas 2^54.57 = pred 2^54.57 (**-0.00 bit**; extrapolation band was 2^55-56) |
+| PAIR | 2^53.60 vs pred 2^53.57 (**+0.03 bit**) |
+| Stage gate | worst 0.020 |
+| Mirror vs stock | bit-identical |
+| Bench | interleaved 14.43 s vs 2x-scalar 11.71 s = 1.232x |
+
+sigma_kg note: with sigma_G = 2^-49 the selector-keygen noise stays at
+the ~2^16 empirical floor (ep0 43.43 unchanged vs toy 43.37-43.51), so
+the toy-calibrated primitives carry over; the noise master theorem
+closes at FINAL parameters with the same constants.
