@@ -1,5 +1,12 @@
 # I-2/I-3: r-input noise reconciliation + benchmark (dell, 2026-09-09)
 
+> **勘误（2026-09-09，stage405）**：本文的 reconciliation 括号为临时
+> 模型，已被 stage405 紧对账取代（见 `../stage405_rinput_prof/RESULTS.md`
+> 与 `theory_checks/stage405_noise_master_theorem.md`）。两个已知问题：
+> (1) 上界模型的 σ_EP 合成标定把**消息差**当成噪声（选择子 bit=1 时
+> phase(R)−phase(A) ≈ msg_B−msg_A ~ 2^61，正确参照应为被选输入相位）；
+> (2) 下界模型缺 EP 项。门（0/512、0/1024）与 benchmark 数字不受影响。
+
 Machine: dell (AVX-512, spqlios), same-build pairing, 6 trials each point.
 Probe: probe_rinput (REPS loop + KS/EP calibration + M-HT.4 reconciliation).
 
