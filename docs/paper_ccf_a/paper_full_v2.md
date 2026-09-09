@@ -252,13 +252,18 @@ calibers). BatchBoot [BB26]: fastest reported amortized numbers
 (2.2–2.4× over SAB) but all four published parameter sets fail the
 corrected 128-bit bar (§6.3); no public implementation.
 
-**Inner primitive.** Wang et al. [ePrint 2025/1711] provide the
-scale-based Mat-MGSW/Vec-MLWE framework with the Δ = Q²/T suppression
-(Lemma 1.7 domain), which we adopt as the inner kernel of the outer
-bootstrapping algorithm; the complete outer algorithm (Ψ/U_a/final-
-doubling, noise domain management, corrected-security instantiation)
-is the contribution of this work. [Ber25] instantiate shared-mask
-bootstrapping in the dense GLWE domain. TFHE-rs [Zam22]: fastest
+**Inner primitive.** Bergerat et al. [TCHES'25] implement shared-mask
+batch bootstrapping with CM ciphertexts in the dense GLWE domain;
+SAB [GP25] gives the amortized MPmul scheduling in the sparse-key
+domain; Wang et al. [ePrint 2025/1711] provide the scale-based
+Mat-MGSW/Vec-MLWE framework (Δ = Q²/T suppression, Lemma 1.7 domain).
+This work instantiates the shared-mask matrix external product —
+formally isomorphic to both — in the **sparse small-key domain**,
+contributing the complete (h+1)ρn-step adaptation, gap-conditioned RS
+keys, the Ψ/U_a/final-doubling corrections for combined packing and
+batching, the DualSubCMUX butterfly with its k=2 topology bound, the
+corrected-security parameter derivation, and full measurements — none
+of which exist in either prior line. TFHE-rs [Zam22]: fastest
 non-amortized baseline (dense keys, unaffected by this attack class).
 
 **Conclusion.** Under corrected ring-isomorphism hybrid attacks the
