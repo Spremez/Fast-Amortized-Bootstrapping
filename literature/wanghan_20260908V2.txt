@@ -1,0 +1,565 @@
+     Combining Packing and Batching: Faster
+    Amortized Bootstrapping with Polynomial
+
+                               Errors
+
+                                         No Author Given
+
+                                             No Institute Given
+
+         Abstract. This work introduces a new bootstrapping algorithm which
+         bootstrapping several messages with polynomial errors growing.
+
+1 Preliminary
+
+1.1 Notations
+
+Denote the set of integers by Z, the set of rational numbers by Q, the set of real
+numbers by R, and the set of complex numbers by C. For a positive k  Z, let [k]
+be the set of integers {0, ..., k -1}. We denote [a, b] as the set {a, a+1, . . . , b}  Z
+for any integers a  b. For a set S and a positive integer n, we denote Sn as the
+set of all n dimensional vectors with each component belonging to S. A vector
+is always a column vector by default and is denoted by a bold lower-case letter,
+e.g., a. We use a[i] to denote the i-th element of a. For a vector a  Zn, let
+a2, a be its 2,  norm, respectively.
+
+Cyclotomic Ring and Quotient Ring In this work, we only consider the
+cyclotomic rings with dimension N being two's power, which is widely used in
+lattice-based cryptography. In this case, the ring is isomorphic to the polynomial
+ring R = Z[x]/(xN + 1), where each element a  R can be expressed as a
+polynomial in the coefficient representation as a = a0+a1x+a2x · · ·+aN-1xN-1,
+or (a0, . . . , aN-1) in the vector form. We use a2, a to denote the vector's
+2,  norms.
+
+    For a positive integer Q, let RQ = R/(Q · R) and ZQ = Z/(Q · Z). We use
+the balanced integer set [-Q/2, Q/2] as a complete set of representatives for
+coefficients of RQ and the quotient ring ZQ.
+
+Sampling Notations In this work, we use the following notion for the sam-
+pling random process: x   denotes sampling a random element x from the
+distribution , and x  S denotes sampling uniformly from the set S. For the
+ring setting, a  (R) means that every coefficient of a  R is sampled from
+distribution . If the context is clear, we may simply write a  .
+Gaussian Distribution For any real number s > 0 and an n-dimensional
+
+vector c, let s,c(x) := exp(-x - c2/s2) be the Gaussian density function
+
+with parameter s and centered at c. The discrete gaussian distribution over a
+
+lattice  coset  +u  is  defined  as  D+u,s,c(x)  =   . s,c (x)  When  c  and  u  are  both
+
+                                                    s,c (+u)
+
+set to be the zero vector and the lattice is clear from the context, we write Ds
+
+for short and s is the deviation. In addition, the Gaussian distribution satisfies
+
+the Pythagorean additivity for the deviation.
+
+Subgaussian For  > 0, we call a random variable X over R is -subgaussian
+with parameter s > 0, if for all t  R, the (scaled) moment-generating function
+satisfies: E[e2tX ]  e ·es2t2 . If X is a -subgaussian with parameter s, then cX
+is -subgaussian with parameter cs for any positive c  R. Any B-bounded sym-
+metric random variable X (i.e., |X|  B always) is 0-subgaussian with parameter
+B 2. Specifically, the uniform distribution over [-b, b] is 0-subgaussian with
+parameter b 2. The gaussian with deviation s is subgaussian with parameter
+s 2. Subgaussians satisfy Pythagorean additivity as follow.
+
+Lemma 1.1 ( [9]) For i, si  0, and random variables Xi for i  [k], if Xi
+is i-subgaussian with parameter si conditioning on any values of X1, ..., Xi-1,
+then i[k] Xi is ( i[k] i)-subgaussian with parameter ( i[k] si2)1/2.
+
+    The notion of subgaussianity can be extended to vectors: a random real vec-
+tor x is -subgaussian with parameter r if for all fixed real unit vectors u, the
+marginal u, x  R is -subgaussian with parameter r. It is clear from the defi-
+nition that the concatenation of -subgaussian variables or vectors, each of which
+has a parameter s and is independent of the prior one, is also -subgaussian with
+parameter s. Homogeneity and Pythagorean additivity also hold from linearity
+of vectors. It is known that the Euclidean norm of the subgaussian random vec-
+tor has the following upper bound. In this paper, we only need  to be 0, and
+thus we write 0-subgaussian simply as subgaussian.
+
+Lemma 1.2 ( [6]) For any subgaussian random variable X with parameter s,
+we have
+
+                                Pr[|X| > t] < 2 · exp(-t2/s2).
+
+1.2 MLWE
+
+Our new cryptosystem is based on the module learning with errors, namely
+MLWE assumption as studied extensively [11]. To describe the problem, we first
+define the distribution As,,q over Rqk ×Rq. The distribution is parameterized by
+a secret vector s  Rk, an error distribution  over R, and a modulus q. A sample
+from the distribution As, is of the form (b, a)  Rkq+1 with b = -s, a + e
+mod q where a  Rkq and e  .
+
+Definition 1.3 (MLWE) For a security parameter , let N := N () be the
+degree of the ring, k = k()  1 be the rank, q = q()  2 be an integer modu-
+lus, and  = () be an error distribution over R. Given an arbitrary number
+
+                                     2
+of independent samples from As,,q, the decision version of MLWE, denoted by
+M-DLWEN,k,q,, is to distinguish whether the samples come from As,,q or the
+uniform distribution over Rkq+1.
+
+    The MLWE problem captures the following two special cases: traditional LWE
+(N = 1) [12] and RLWE(k = 1) [8].
+
+    The concrete hardness of MLWE can be estimated using the estimator of [2].
+We refer the readers to [1] for further details.
+
+1.3 The Batching Algorithm
+
+In this section, we introduce a novel configuration of the underlying cryptosys-
+tems for FHEW-like bootstrapping [10], but with notable performance improve-
+ments compared to existing state-of-the-art libraries, such as OpenFHE [3, 10]
+and tfhe [4,5]. We provide extensive experimental results in Sections ?? and ??
+to demonstrate the concrete performance enhancements.
+
+    Our proposed variant can be viewed as a squared-gadget matrix version of the
+GSW scheme presented in TFHE [4], specifically by setting  = 1 as described
+in their Section 3.2. However, previous works did not recognize the potential
+advantages of this configuration. Consequently, they considered different values
+for  and optimized accordingly, such as TFHE with  = 3 and FHEW with
+ = 3. This work identifies how to set FHE parameters along with a faster
+implementation under this specific configuration.
+
+    Rather than using the torus representation, we choose to describe the scheme
+in the integer setting, which offers easier readability and understanding. As we
+later aim to optimize the FHE parameters, we provide a detailed analysis of
+the noise growth and computational complexity of the homomorphic operations
+within the scheme. Interestingly, this configuration of the scheme can be viewed
+as a scale-based GSW/LWE system utilizing two moduli. This bears some con-
+ceptual similarities to the second generation BFV [7], while benefiting from the
+noise growth advantage of the third generation (e.g., GSW).
+
+    Now we present our variant based on the module learning with errors, with
+two basic encryption schemes called Mat-MGSW and Vec-MLWE. Our new insight
+is to identify that our scale-based external product can be implemented more
+efficiently than the prior configurations. For this work, the symmetric-key version
+of the cryptosystem suffices to present our insights and applications, and we
+notice that the public-key version just works analogously.
+
+Parameters Let k be the module rank of MLWE and T > Q be two moduli.
+
+Our basic scheme includes a variant of MGSW system under modulus T and a
+variant of MLWE system. Let R = Z[x]/(xN + 1) be a cyclotomic ring, where N
+is a two's power.
+
+Construction The cryptosystem works as follow.
+
+­ KeyGen(1): Choose randomly S  k×r and set sk :=  I   R(k+r)×r.
+                                                   S
+
+3
+­ Mat-MGSW.Enc(sk, M  Rr×r): Given input sk and message M, the al-
+
+   gorithm performs the following steps. Sample a uniformly random matrix
+   A  RTk×(k+r) and a small noise matrix E  , where  is a distribution
+   over Rr×(k+r). The ciphertext C is set as
+
+-SA + E                          T        M M · S       mod T.
+      A                     +·            00
+
+                                 Q
+
+­ Vec-MLWE.Enc(sk, m  Rr, t): Given input sk, message m, and an additional
+
+   parameter t, the algorithm does the following. Sample a uniformly random
+   vector a  RkQ, and compute
+
+c :=  b  =                  -S · a + e + m · Q/t        mod Q.
+      a                                  a
+
+   Then output ct as c  RTk+r whose coefficients are in [-Q/2, Q/2].
+
+­ Scale-based External Product. Given a Mat-MGSW ciphertext C 
+   R(Tk+r)×(k+r) and a Vec-MLWE ciphertext c  RkT+r (whose coefficients are
+   in [-Q/2, Q/2]) as input, the external product works as follow:
+
+         C c= C·c·                           Q  mod Q,
+
+                                             T
+
+where C · c is computed under modulo T , and the division and rounding
+
+are applied coefficient-wise. That is, Q · a/T  is computed by first inter-
+preting a in the coefficient embedding, i.e., aixi, and then outputting
+a = Q · ai/T xi.
+
+Note: The result of the external product is still stored as a vector in RTk+r,
+but note that the coefficients are in [-Q/2, Q/2].
+
+­ Vec-MLWE.Dec(sk, c  RkT+r, t): Given input sk, ciphertext c, and an addi-
+
+tional parameter t, output  t  ·  (sk  ·  c  mod Q)  mod t.
+                            Q
+
+Remark 1.4 The Mat-MGSW/Vec-MLWE ciphertext is stored by matrices/vectors
+over RT , respectively. Each ring element of Vec-MLWE ciphertexts has coeffi-
+cients represented in [-Q/2, Q/2].
+
+The CPA-security of the encryption scheme follows directly from the hardness of
+MLWE as analyzed in many prior works [11]. The correctness of the Mat-MGSW
+scheme is with respect to modulo Q, and that of Vec-MLWE is with respect to
+modulo t specified in the input to the decryption algorithm. Using this addi-
+tional parameter t allows the integration with the FHEW [6] framework, where
+NAND can be computed by using only homomorphic addition, but the underly-
+ing modulus would be changed. This idea has been used before [6], so we refer
+the readers the prior work for further intuitions. The plaintext computation of
+
+                                                   4
+external product takes each entry of M1, m2  R and outputs M1 · m2 mod t.
+As setting t|Q suffices for our next applications of bootstrapping (Section ??),
+we just consider this case in this section for ease of the analysis. Next we formally
+analyze the correctness and noise growth of the scale-based external product.
+
+    We notice that even though the plaintext moduli of the Mat-MGSW and
+Vec-MLWE are different, their conjunction suffices to improve the FHEW-like
+bootstrapping as the message space required is only the monomials, i.e., {1, x, x2, . . . , x2N-1}.
+This is clearly supported by both the Mat-MGSW and Vec-MLWE systems. We
+present more details in Section ??.
+
+    To analyze correctness and error growth, we first re-define the following no-
+tions for the error terms of Mat-MGSW/Vec-MLWE ciphertexts under our scale-
+based scheme.
+
+Definition 1.5 We use the symbols Mat-MGSW(M1) and Vec-MLWEt(m2) to
+present the set of all valid Mat-MGSW ciphertexts encrypting M1 and the set
+of all valid Vec-MLWE ciphertexts encrypting m2 mod t, respectively. We put
+a subscript s, i.e., Vec-MLWEts(m) to indicate the secret key associated with the
+ciphertext. If the context is clear, we may omit the subscript for simplicity.
+
+    Note that for Vec-MLWE encryption and decryption, there is an additional
+parameter t specified in the input.
+
+Definition 1.6 Let C be a Mat-MGSW ciphertext encrypting M1 and c be a
+
+Vec-MLWE ciphertext encrypting m2. Define the error function Err(·, ·) that
+works as follow: on input a Mat-MGSW ciphertext C  RT(k+r)×(k+r) and the
+message M1 (or a Vec-MLWE ciphertext c  R(Tk+r) and the message m2)
+outputs the error term E1 = sk · (C - M1 · T /Q) mod T (or respectively,
+e2 = sk · (c - (Q/t · m2, 0, . . . , 0)) mod Q).
+
+    Note that we use the input type to differentiate whether Err(·, ·) should output
+
+a Mat-MGSW error term or a Vec-MLWE error term.
+
+    Now, we analyze the correctness and the noise growth of the external product
+in the following lemma. We adopt the notations from the construction.
+
+Lemma 1.7 Let C1  Mat-MGSW(M1) with error term E1 = Err(C1, M1),
+c2  Vec-MLWEt(m2) with error term e2 = Err(c2, m2), and c = C1 c2 be
+the external product (all under the same secret key ). Then we have:
+
+ ­ Correctness. c  Vec-MLWEt(M1 · m2 mod t) (i.e., by treating each
+     entry of M1, m2  R and then outputting M1 · m2 mod t), with an error
+     term e whose norm can be upper bounded as follows.
+
+ ­ Noise growth. For the noise term e , we have:
+       · Worst case: The infinity norm can be bounded as below.
+
+         e   B1 + B2 + Bsk
+
+where the auxiliary parameters are defined as follows:
+
+  B1 :=  (k+r)N Q2E1
+                    2T
+
+                        5
+ B2 := M1 · e2
+
+  Bsk :=  kN Q2+Q2N  +  kN sk+1
+                 4T             2
+
+· Average case: Suppose each coefficient of E1 is subgaussian distribution
+   with parameter 1, each coefficient of e2 is subgaussian distribution with
+   parameter 2, and E1 is independent of e2. Then, we have that e is a
+   subgaussian distribution with parameter less than:
+
+                     Q2    · 12  + 22  +  Q2  · 32  + 42
+                     T2                   T2
+
+where the auxiliary parameters are defined as follows:
+   1 := Q1 (k + r)N /2;
+                          
+   2 := M12 kN ;
+
+   3 := 2kN Q2 + 2N Q2/4;
+
+   4 := 2kN sk2 + 2/2.
+
+Application-based Optimizations In our application of the FHEW-like boot-
+strapping, we can use the following facts to simplify and optimize the bound.
+(1) The parameters are set such that  · Q2 < T for some integer . (2) In the
+bootstrapping process, the message M 1 is always a diagonal matrix with mono-
+mial non-zero entries, and thus M1 = 1. (3) We use the uniform ternary
+secret. (4) The distribution of C1 is uniformly random (computationally), and
+that of c2 can be assumed uniformly random, empirically [6].
+
+    Adding these conditions in the above lemma results in the following corollary.
+
+Corollary 1.8 Adopt the notions from Lemma 1.7. Suppose that each coefficient
+of C1 is uniform over [-T /2, T /2] and each coefficient of c2 is uniform over
+[-Q/2, Q/2]. If the diagonal matrix M1 has only monomial non-zero entries
+and  · Q2  T , then e is subgaussian with parameter less than:
+
+  (k  + r)N 12  +  22   +  3  +  2kN      + 122     +  8kN 2
+       42                                   722                    .
+
+1.4 RNS-Operations for homomorphic encryption
+                                             ModUp(c)
+
+                                            ModDown(c)
+
+2 Batch Bootstrapping with algebraic base
+
+We start with "Packing Monomial Polynomial MULtiplication":
+                                                   6
+Algorithm    1  Packing         MPMUL­P         -     MPMUL(-c ,  -   KSK)
+                                                                  C,
+
+Input:
+1: A list -c = (c0, ..., cn-1), where for each 0  i  n - 1, ci 
+
+    RLWE(    r    X uj [i]   ·  j );
+             j=1
+
+Input:
+              -
+
+ 2: A list C = (C1, ..., Clog B-1), where for each 1  i  log B - 1, Ci  RGSW(vi),
+
+    v=  log B-1   vi  ·  2i  and  v     B;
+        i=0
+
+Input:
+
+3: some necessary key-switch key KSK.
+Output: A list -c = (c1, ..., cn-1), where for each 0  i  n - 1, ci 
+
+    RLWE(    r    X wj [i]·j ),   wj  =  uj  ·  Y  v
+             j=1
+
+4: for i = 1 to log B - 1 do
+5: for j = 0 to 2i - 1 do
+
+6:      cj  (EvalAuto(cn-2i+j , -1) - cj ) Ci + cj
+
+7: end for
+
+8: for j = 2i to n - 1 do
+
+9:      cj  (cj-2i - cj ) Ci + cj
+
+10: end for
+
+        (c0, ..., cn-1) = (c0, ..., cn-1)
+
+11: end for
+
+12: return (c0, ..., cn-1)
+
+    The following is the packing "BIN-SAB"
+                                                   7
+Algorithm 2 Packing BIN-SAB
+
+Input:
+
+1: r RLWE ciphertexts (a1, b1), ..., (ar, br), for each 1  i  r, (ai, bi) encrypting mi
+
+     with error ei under the same secret s
+
+Input:
+
+2: RGSW ciphertexts encrypting the binary decomposition of d = diff(s): Ci,j 
+
+     RGSW(di,j), for 0  i  h, 0  h  log B - 1,                                   log B-1      di,j  ·  2j  =  d[i]    diff (s)
+                                                                                 j=0
+
+Input:
+
+ 3: Some necessary key-switch key KSK and test vectors {tij}
+Output: A list -c = (c1, ..., cn-1), where for each 0  i  n - 1, ci 
+
+     RLWE(      r    tij  ·  X mj [i]+ej [i]    ·  j ).
+                j=1
+
+4: -c = (c0, ..., cn-1), where ci  RLWE(                            r    tij  ·  X bj [i]  ·  j )
+                                                                    j=1
+
+5: for i = -1 to h - 1 do
+6:      Let C   =    (MCPi,M1,U..L.,(C-ci,,l-oCg ,nK-S1)K)
+7:      -c = P  -
+
+8: for k = 0 to n - 1 do
+
+9:      Hom-Tr(ci ·          r                  X -aj [k]  ·  j  ·  j )
+                             j=1
+
+10: end for
+11: -c = (c1, ..., cn-1)
+
+12: end-for     (MCPhM,1,U.L..(,-Cc h, ,-Clog,
+13:  Let C   =                                  n-1 )
+14:  -c = P  -                                  KSK)
+
+15: return (c0, ..., cn-1)
+
+3 Batch Bootstrapping with Vec-LWE - Mat-MGSW
+
+Parameters We begin with a description of the parameters:
+
+ ­ n: degree of input RLWE, the underlying ring is Zq[Y ]/(Y n + 1).
+ ­ r: the number of messages of one input RLWE ciphertext.
+ ­ q: the modulus of the input RLWE scheme.
+ ­ R: Z[x]/(xN + 1) for some power-of-two N , the underlying ring for BTS.
+ ­ k: the rank of the Vec-MLWE and Mat-MGSW scheme.
+ ­ T : the modulus of the scale-based Mat-MGSW scheme.
+ ­ Q: the modulus of the Vec-MLWE scheme in the scale-based external product.
+
+     We set  · Q2 < T for some integer .
+
+                                                   8
+Algorithm    3  Packing     MPMUL­P            -  MPMUL(-c ,      -   KSK)
+                                                                  C,
+
+Input:
+ 1: A list -c = (c0, ..., cn-1), where for each 0  i  n - 1, ci 
+
+     Vec-MLWE(Xu1[i], ..., Xur[i]);
+
+Input:
+         -
+
+ 2: A C = (C1, ..., Clog B-1), where for each 1  i  log B - 1, Ci 
+
+    Mat-MGSW(v0i, ..., vri), vi =       log B-1         vij  and  max1ir vi    B;
+                                        j=0
+
+Input:
+
+3: some necessary key-switch key KSK.
+Output: A list -c = (c1, ..., cn-1), where for each 0  i  n - 1, ci 
+
+    RLWE(    r    X wj [i]·j ),  wj  =  uj  ·  Y  vj .
+             j=1
+
+4: for i = 1 to log B - 1 do
+5: for j = 0 to 2i - 1 do
+
+6:      cj  (EvalAuto(cn-2i+j , -1) - cj ) Ci + cj
+
+7: end for
+
+8: for j = 2i to n - 1 do
+
+9:      cj  (cj-2i - cj ) Ci + cj
+
+10: end for
+
+        (c0, ..., cn-1) = (c0, ..., cn-1)
+
+11: end for
+
+12: return (c0, ..., cn-1)
+
+    The following is the packing "BIN-SAB"
+                                                   9
+Algorithm 4 Packing BIN-SAB
+
+Input:
+
+1: r RLWE ciphertexts (a1, b1), ..., (ar, br), for each 1  j  r, (a, bj) encrypting mj
+
+     with error ej under the secret sj
+
+Input:
+
+2: RGSW ciphertexts encrypting the binary decomposition of d(j) = diff(sj): Ci, 
+
+     RGSW(Diag(di(,1), ..., di(,r))), for 0  i  h, 1  j  r, 0    log B - 1,
+
+     log B-1    d(i,j)  ·  2  =  d(j)[i]          diff (sj )
+     =0
+
+Input:
+
+ 3: Some necessary key-switch key KSK and test vectors {tij}
+Output: A list -c = (c1, ..., cn-1), where for each 0  i  n - 1, ci  Vec-MLWE(ti1 ·
+
+     X m1[i]+e1[i], ..., tir · X mr[i]+er[i]).
+ 4: -c = (c0, ..., cn-1), where ci  Vec-MLWE(ti1 · Xb1[i], ..., tir · Xbr[i])
+
+5: for i = -1 to h - 1 do
+6:      Let C   =       (MCPi,M1,U..L.,(C-ci,,l-oCg ,nK-S1)K)
+7:      -c = P  -
+
+8: for k = 0 to n - 1 do
+
+9:      ck = ck · Xak
+
+10: end for
+11: -c = (c1, ..., cn-1)
+
+12: end-for     (MCPhM,1,U.L..(,-Cc h, ,-Clog,
+13:  Let C   =                                  n-1 )
+14:  -c = P  -                                  KSK)
+
+15: return (c0, ..., cn-1)
+
+References
+
+ 1. M. Albrecht, M. Chase, H. Chen, J. Ding, S. Goldwasser, S. Gorbunov, S. Halevi,
+     J. Hoffstein, K. Laine, K. Lauter, et al. Homomorphic encryption standard. In
+     Protecting Privacy through Homomorphic Encryption, pages 31­62. Springer, 2021.
+
+ 2. M. R. Albrecht, R. Player, and S. Scott. On the concrete hardness of learning with
+     errors. J. Mathematical Cryptology, 9(3):169­203, 2015.
+
+ 3. A. A. Badawi, J. Bates, F. Bergamaschi, D. B. Cousins, S. Erabelli, N. Genise,
+     S. Halevi, H. Hunt, A. Kim, Y. Lee, Z. Liu, D. Micciancio, I. Quah, Y. Polyakov,
+     S. R.V., K. Rohloff, J. Saylor, D. Suponitsky, M. Triplett, V. Vaikuntanathan, and
+     V. Zucca. Openfhe: Open-source fully homomorphic encryption library. Cryptology
+     ePrint Archive, Paper 2022/915, 2022. https://eprint.iacr.org/2022/915.
+
+ 4. I. Chillotti, N. Gama, M. Georgieva, and M. Izabach`ene. TFHE: Fast fully ho-
+     momorphic encryption over the torus. Journal of Cryptology, 33(1):34­91, Jan.
+     2020.
+
+ 5. I. Chillotti, N. Gama, M. Georgieva, and M. Izabach`ene. Tfhe: Fast fully homo-
+     morphic encryption library. Github, 2023. https://github.com/tfhe/tfhe.
+
+ 6. L. Ducas and D. Micciancio. FHEW: Bootstrapping homomorphic encryption in
+     less than a second. In E. Oswald and M. Fischlin, editors, EUROCRYPT 2015,
+     Part I, volume 9056 of LNCS, pages 617­640. Springer, Berlin, Heidelberg, Apr.
+     2015.
+
+                                                   10
+ 7. J. Fan and F. Vercauteren. Somewhat practical fully homomorphic encryption.
+     Cryptology ePrint Archive, Paper 2012/144, 2012. https://eprint.iacr.org/
+     2012/144.
+
+ 8. V. Lyubashevsky, C. Peikert, and O. Regev. On ideal lattices and learning with
+     errors over rings. In H. Gilbert, editor, EUROCRYPT 2010, volume 6110 of LNCS,
+     pages 1­23. Springer, Berlin, Heidelberg, May / June 2010.
+
+ 9. V. Lyubashevsky, C. Peikert, and O. Regev. A toolkit for ring-LWE cryptography.
+     In T. Johansson and P. Q. Nguyen, editors, EUROCRYPT 2013, volume 7881 of
+     LNCS, pages 35­54. Springer, Berlin, Heidelberg, May 2013.
+
+10. D. Micciancio and Y. Polyakov. Bootstrapping in fhew-like cryptosystems. In
+     WAHC '21: Proceedings of the 9th on Workshop on Encrypted Computing & Ap-
+     plied Homomorphic Cryptography, Virtual Event, Korea, 15 November 2021, pages
+     17­28. WAHC@ACM, 2021.
+
+11. C. Peikert and Z. Pepin. Algebraically structured LWE, revisited. In D. Hofheinz
+     and A. Rosen, editors, TCC 2019, Part I, volume 11891 of LNCS, pages 1­23.
+     Springer, Cham, Dec. 2019.
+
+12. O. Regev. On lattices, learning with errors, random linear codes, and cryptography.
+     In H. N. Gabow and R. Fagin, editors, 37th ACM STOC, pages 84­93. ACM Press,
+     May 2005.
+
+                                                   11
+
