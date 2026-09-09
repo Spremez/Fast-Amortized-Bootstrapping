@@ -34,7 +34,10 @@ static double now_us(void){
   return ts.tv_sec * 1e6 + ts.tv_nsec / 1e3;
 }
 
-int main(void){
+static int run_single(int trial, int reps,
+    double *t_int_out, double *t_or_out, uint64_t *pair_out,
+    int *gate_bad, double *sig_s_out, double *sig_ks_out,
+    double *sig_ep_out){
   setvbuf(stdout, NULL, _IONBF, 0);
   int in_N = 256, out_N = 2048, h = 6, prec = 3, bg_bit = 23, l = 1;
   {
@@ -250,6 +253,7 @@ int main(void){
   TorusPolynomial p2 = polynomial_new_torus_polynomial(out_N);
   double t_or = 0;
   int mism = 0, lane_mism[2] = {0, 0};
+  double sig_s_acc = 0; long sig_s_cnt = 0;
   int mism_int_vs_mdl = 0, mism_sc_vs_mdl = 0;
   uint64_t pair_dev_max = 0;
   for (int lane = 0; lane < 2; lane++){
@@ -275,16 +279,20 @@ int main(void){
       const int64_t v_int =
           (((int64_t) p2->coeffs[lane]) + ((int64_t) 1 << (62 - prec)))
           >> (62 - prec + 1);
+      { const int64_t grid = (int64_t) 1 << (62 - prec - 1);
+        int64_t r = ((int64_t) p1->coeffs[0]) % grid;
+        if(r < 0) r = -r; if(r > grid/2) r = grid - r;
+        sig_s_acc += (double) r * (double) r; sig_s_cnt++; }
       if(v_scalar != v_int){ mism++; lane_mism[lane]++;
-        if(lane == 0 && t < 32) printf("%c", 'X');
+        if(lane == 0 && t < 32 && trial == 0 && reps == 1) printf("%c", 'X');
         if(lane == 0 && t == 31) printf("|lane0 slots0-31\n"); }
-      else if(lane == 0 && t < 32) printf("%c", '.');
+      else if(lane == 0 && t < 32 && trial == 0 && reps == 1) printf("%c", '.');
       const int64_t v_mdl =
           (((int64_t) mdl[t][lane]) + ((int64_t) 1 << (64 - prec - 1)))
           >> (64 - prec);
       if(v_int != v_mdl) mism_int_vs_mdl++;
       if(v_scalar != v_mdl) mism_sc_vs_mdl++;
-      if(t < 6 && lane == 0)
+      if(t < 6 && lane == 0 && trial == 0 && reps == 1)
         printf("  t%d l0: sc=%lld int=%lld mdl=%lld (raw sc=%lld int2=%lld mdlraw=%lld)\n",
             t, (long long) v_scalar, (long long) v_int, (long long) v_mdl,
             (long long) (((int64_t) p1->coeffs[0]) >> (63 - prec)),
@@ -308,8 +316,72 @@ int main(void){
       mism_int_vs_mdl, mism_sc_vs_mdl, 2 * in_N);
   printf("RINPUT NOISE: pair max dev log2 = %.2f (extra vs scalar path)\n",
       log2((double) pair_dev_max + 1.0));
-  printf("RINPUT TIMING: interleaved=%.0f us  2x-scalar=%.0f us  "
-      "ratio(inter/2xscalar)=%.2fx\n", t_int, t_or, t_int / t_or);
+    *sig_s_out = sqrt(sig_s_acc / (double) (sig_s_cnt > 0 ? sig_s_cnt : 1));
+  /* I-2: single aut-KS noise: one eval_automorphism(aut_h) on trivial */
+  {
+    PVW_TMLWE triv = pvmtmlwe_alloc_new_sample(1, 1, out_N);
+    PVW_TMLWE rot = pvmtmlwe_alloc_new_sample(1, 1, out_N);
+    TorusPolynomial known = polynomial_new_torus_polynomial(out_N);
+    for (int i = 0; i < out_N; i++)
+      known->coeffs[i] = int2torus((3 * i + 1) & 7, prec + 2);
+    memcpy(triv->b[0]->coeffs, known->coeffs,
+        sizeof(known->coeffs[0]) * out_N);
+    /* KS error comes from decomposing the MASK: give it a deterministic
+     * non-trivial mask (torus ramp), then expected phase = flip-odd of
+     * the input phase (computable via rinput_phase). */
+    uint64_t lcg = 0x9E3779B97F4A7C15ULL;
+    for (int i = 0; i < out_N; i++){
+      lcg = lcg * 6364136223846793005ULL + 1442695040888963407ULL;
+      triv->a[0]->coeffs[i] = lcg; /* full 64-bit entropy: realistic
+         decomposition residual (a mod 2^41) for the KS error */
+    }
+
+    double acc2 = 0;
+    pvmtmlwe_eval_automorphism(rot, triv, 1 + out_N, ri->aut_h);
+    int64_t want_arr[8192];
+    rinput_phase(p2, triv, pvw_key); /* INPUT phase first */
+    for (int i = 0; i < out_N; i++)
+      want_arr[i] = (i & 1) ? -(int64_t) p2->coeffs[i]
+                            : (int64_t) p2->coeffs[i];
+    rinput_phase(p2, rot, pvw_key);
+    for (int i = 0; i < out_N; i++){
+      /* expected: sigma_{1+N}(phase) = flip odd of the input phase */
+      int64_t want = want_arr[i];
+      int64_t dv = (int64_t) p2->coeffs[i] - want;
+      acc2 += (double) dv * (double) dv;
+    }
+    *sig_ks_out = sqrt(acc2 / out_N);
+    /* EP calibration: one CMUX with the bit-0 selector (message 0 or 1);
+     * phase dev of out vs the selected input = external-product noise */
+    {
+      PVW_TMLWE A = pvmtmlwe_alloc_new_sample(1, 1, out_N);
+      PVW_TMLWE B = pvmtmlwe_alloc_new_sample(1, 1, out_N);
+      PVW_TMLWE R = pvmtmlwe_alloc_new_sample(1, 1, out_N);
+      uint64_t lcg2 = 0x2545F4914F6CDD1DULL;
+      for (int i = 0; i < out_N; i++){
+        lcg2 = lcg2 * 6364136223846793005ULL + 1442695040888963407ULL;
+        A->a[0]->coeffs[i] = lcg2;
+        A->b[0]->coeffs[i] = int2torus((3*i+1)&7, prec+2);
+        lcg2 = lcg2 * 6364136223846793005ULL + 1442695040888963407ULL;
+        B->a[0]->coeffs[i] = lcg2;
+        B->b[0]->coeffs[i] = int2torus((5*i+2)&7, prec+2);
+      }
+      sab_rinput_CMUX(R, A, B, ri->s[0][0][0], ri);
+      rinput_phase(p2, A, pvw_key);
+      for (int i = 0; i < out_N; i++) want_arr[i] = (int64_t) p2->coeffs[i];
+      rinput_phase(p2, R, pvw_key);
+      double acc3 = 0;
+      for (int i = 0; i < out_N; i++){
+        int64_t dv = (int64_t) p2->coeffs[i] - want_arr[i];
+        acc3 += (double) dv * (double) dv;
+      }
+      *sig_ep_out = sqrt(acc3 / out_N);
+      free_pvmtmlwe(R); free_pvmtmlwe(B); free_pvmtmlwe(A);
+    }
+    free_polynomial(known); free_pvmtmlwe(rot); free_pvmtmlwe(triv);
+  }
+*t_int_out = t_int; *t_or_out = t_or; *pair_out = pair_dev_max;
+  *gate_bad = mism;
 
   free_polynomial(p1); free_polynomial(p2);
   free_pvmtmlwe_array(acc, in_N);
@@ -320,4 +392,68 @@ int main(void){
   free_polynomial(msg0); free_polynomial(msg1);
   free_trlwe_key(input_key); free_trlwe_key(packing_key);
   return 0;
+}
+/* ---- I-2/I-3 driver: REP trials + summary (KS calibration separate) */
+int main(void){
+  setvbuf(stdout, NULL, _IONBF, 0);
+  int reps = 6;
+  { const char *e = getenv("SAB_RINPUT_REPS");
+    if(e) reps = atoi(e); if(reps < 1) reps = 1; if(reps > 64) reps = 64; }
+  double t_ints[64], t_ors[64];
+  double sig_s_arr[64], sig_ks_arr[64], sig_ep_arr[64];
+  uint64_t pairs[64];
+  int bads[64];
+  for (int rep = 0; rep < reps; rep++){
+    printf("== trial %d/%d ==\n", rep + 1, reps);
+    double sig_s = 0, sig_ks = 0, sig_ep = 0;
+    int rc = run_single(rep, reps, &t_ints[rep], &t_ors[rep],
+        &pairs[rep], &bads[rep], &sig_s, &sig_ks, &sig_ep);
+    sig_s_arr[rep] = sig_s; sig_ks_arr[rep] = sig_ks;
+    sig_ep_arr[rep] = sig_ep;
+    if(rc != 0){ printf("trial %d aborted (rc=%d)\n", rep, rc); return 1; }
+  }
+  int all_ok = 1;
+  uint64_t max_pair = 0;
+  double sum_sq_pair = 0;
+  for (int rep = 0; rep < reps; rep++){
+    if(bads[rep] != 0) all_ok = 0;
+    if(pairs[rep] > max_pair) max_pair = pairs[rep];
+    double d = (double) pairs[rep];
+    sum_sq_pair += d * d;
+  }
+  for (int i = 1; i < reps; i++){
+    double k = t_ints[i], k2 = t_ors[i]; int j = i - 1;
+    while (j >= 0 && t_ints[j] > k){ t_ints[j+1] = t_ints[j]; t_ors[j+1] = t_ors[j]; j--; }
+    t_ints[j+1] = k; t_ors[j+1] = k2;
+  }
+  double rms = sqrt(sum_sq_pair / reps);
+  printf("SUMMARY: gates %s (%d trials), pair max log2 = %.2f, pair rms log2 = %.2f\n",
+      all_ok ? "ALL PASS" : "FAIL", reps,
+      log2((double) max_pair + 1.0), log2(rms + 1.0));
+  printf("BENCH(median of %d): interleaved = %.0f us, 2x-scalar = %.0f us, ratio = %.3fx\n",
+      reps, t_ints[reps/2], t_ors[reps/2], t_ints[reps/2] / t_ors[reps/2]);
+  /* M-HT.4 reconciliation: predicted pair rms = sqrt(2*sig_s^2 + h*sig_ks^2/2) */
+  {
+    double s_s = 0, s_k = 0;
+    for (int rep = 0; rep < reps; rep++){ s_s += sig_s_arr[rep]; s_k += sig_ks_arr[rep]; }
+    s_s /= reps; s_k /= reps;
+    int h_ = 6;
+    { const char *e = getenv("SAB_RINPUT_H"); if(e) h_ = atoi(e); }
+    double s_e = 0;
+    for (int rep = 0; rep < reps; rep++) s_e += sig_ep_arr[rep];
+    s_e /= reps;
+    int rho_ = 7;
+    { const char *e = getenv("SAB_RINPUT_RPREC"); if(e) rho_ = atoi(e); }
+    /* per-slot EP count = (h+1)*rho on each path; pair = two independent
+     * chains: pair^2 ~ 2*sig_s^2 + h*sig_KS^2/2 + 2*(h+1)*rho*sig_EP^2 */
+    double n_ep = (double) (h_ + 1) * rho_;
+    double pred = sqrt(2.0 * s_s * s_s + (double) h_ * s_k * s_k / 2.0
+        + 2.0 * n_ep * s_e * s_e);
+    printf("NOISE-RECON: sig_s log2 = %.2f, sig_KS log2 = %.2f, sig_EP log2 = %.2f, predicted log2 = %.2f, measured log2 = %.2f, ratio = %.3f -- %s\n",
+        log2(s_s + 1.0), log2(s_k + 1.0), log2(s_e + 1.0),
+        log2(pred + 1.0), log2(rms + 1.0),
+        log2(rms + 1.0) / log2(pred + 1.0),
+        (rms <= 1.3 * pred) ? "Pass" : "FAIL");
+  }
+  return all_ok ? 0 : 1;
 }
