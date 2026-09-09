@@ -201,8 +201,9 @@ Two parameter points (n=256/h=6/rp=7 and n=512/h=8/rp=9, out ring
 
 | Point | Gate | Pair noise rms | Reconciliation | Bench (2×scalar caliber) |
 |---|---|---|---|---|
-| n=256/h=6 | 6/6 (0/512) | 2^52.6 | per-stage ≤0.17 bit; final −0.01; pair **+0.28** | 1.23× |
-| n=512/h=8 | 6/6 (0/1024) | 2^52.7 | per-stage ≤0.19 bit; final −0.00; pair **+0.24** | 1.32× |
+| n=256/h=6 (toy) | 6/6 (0/512) | 2^52.6 | per-stage ≤0.17 bit; final −0.01; pair **+0.28** | 1.23× |
+| n=512/h=8 (toy) | 6/6 (0/1024) | 2^52.7 | per-stage ≤0.19 bit; final −0.00; pair **+0.24** | 1.32× |
+| **FINAL n=2048/h=42/ρ=7/σ_G=2^−49** | **1/1 (0/4096)** | **2^53.6** | stage ≤0.020; final **−0.00** (2^54.57 = pred); pair **+0.03** | 1.23× |
 
 The absolute amortized claim for r-input is **semantic** (two distinct
 inputs per blind rotation with per-lane oracle equality), not a
@@ -215,9 +216,13 @@ Primitive closure (derived vs measured, all ≤0.3 bit): ε rms 40.26 vs
 40.22; σ_KS 44.19 vs 44.30–44.44; **DC-walk 49.20 vs 49.18–49.21**;
 σ_EP(0) 43.4 vs 43.37–43.43; Ψ 44.63 vs 44.40–44.45; sub_a (ks/√2)
 vs 43.73–43.76. Pipeline-level: the coherent DC track + white
-quadratic track predict every stage of both points within 0.19 bits
-(worst |log₂ ratio| over 6×57 stages = 0.186); the mirror pipeline is
-asserted bit-identical to the stock rotation (12/12 trials).
+quadratic track predict every stage of both toy points within 0.19 bits
+(worst |log₂ ratio| over 6×57 stages = 0.186) and the **FINAL
+parameters** (n=2048, h=42, ρ=7, σ_G=2^−49) to **0.00 bits** at the
+final state (measured 2^54.57 = predicted 2^54.57, inside the
+2^55-56 a-priori band; pair +0.03) — the noise master theorem holds at
+submission parameters with unchanged constants; the mirror pipeline is
+asserted bit-identical to the stock rotation (13/13 trials).
 
 ### 7.6 Component profile and negative results
 
