@@ -158,8 +158,9 @@ zero-failure observations, Clopper-Pearson 95% upper limit 2^{-18.4}.
 
 Single machine (dual Xeon Gold 6230R, AVX-512 + VAES, spqlios backend;
 load-gated <10). All speedups are **same-binary paired comparisons**
-(cross-build drift measured at −7%…+23%, declared invalid); ≥3 runs
-per point (6 for the noise gates); zero-mismatch correctness is a
+(cross-build drift measured at −7%…+23%, declared invalid); 6 trials
+per point for the main matrix and noise gates (medians reported;
+means±ranges in the raw logs); zero-mismatch correctness is a
 prerequisite for any timing. Baseline = SAB's official CCS'25 artifact
 (this repository); TFHE-rs v1.8.0 same-machine; BatchBoot has no public
 implementation (parameter-level re-evaluation only, §6.3).

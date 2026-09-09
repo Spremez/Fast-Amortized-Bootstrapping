@@ -620,3 +620,19 @@ D-1/D-2/D-3 全部 CLOSED。
   I-5（r₁⊗r₂ 玩具门）、I-6（FINAL profiler + σ_kg 重标定）。**
   paper_full_v2 已为全结构投稿草（正文 §1-8 + 附录 A-D 就位，
   §3-5 按单一来源指针嵌入，打包时展开为连续正文）。
+
+## 6z. D-4 内审两轮 + I-6 启动（2026-09-09 续）
+
+- **D-4（stage411_internal_review.md）双轮 PASS**：数学轮 10 原项
+  全 HOLD + 新素材 8 项 7 HOLD + 1 行动项（N-5：FINAL 参数噪声外推
+  → I-6）；实验轮 10/10（修正 v2 §7.1 试次数口径 3→6）。三表即
+  回应信预置弹药。
+- **I-6 已启动（后台）**：probe_rinput_prof 加 σ 旋钮
+  （SAB_RINPUT_SIGMA=-49）与粗测模式（SAB_RINPUT_COARSE=1：仅测
+  suba/终态，301 bit 级只算不测，压到 ~1-2h/试）；dell 后台跑
+  n=2048/h=42/rp=7/σ_G=2^-49/1 试 → repro_stage405/final_h42.log，
+  完成标志 DONE_FINAL。**下一会话收割**：σ_kg 重标定值 + FINAL
+  的 N1 终态闭合（预期 even 类 ~2^55-56 ≪ 守卫 2^62；若闭合则
+  N-5 攻击关闭、论文 §4/§7.5 补 FINAL 行）。
+- stage400 进度 21/22（+D-4）。剩余：I-6 收割（在途）+ 端到端打包
+  （BibTeX/sed/两版 diff 实操）+ 可选 I-5。

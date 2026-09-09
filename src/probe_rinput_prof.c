@@ -38,6 +38,8 @@
 #include <time.h>
 
 static int G_in_N = 256, G_out_N = 2048, G_h = 6, G_prec = 3;
+static double G_sigma_exp = -70;
+static int G_coarse = 0; /* 1: measure only suba/final stages */
 static uint64_t G_rprec = 0;
 
 static void rinput_phase(TorusPolynomial out, PVW_TMLWE in,
@@ -641,8 +643,12 @@ static int run_trial(int trial, int reps, trial_res_t * res){
     tv1->coeffs[q] = int2torus((5 * q + 2) & 7, prec + 2);
   }
 
+  { double sg = -70;
+    const char * e = getenv("SAB_RINPUT_SIGMA");
+    if(e) sg = atof(e);
+    G_sigma_exp = sg; }
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(out_N, out_k, 1,
-      pow(2, -70));
+      pow(2, G_sigma_exp));
   SAB_RINPUT_Key ri = sab_rinput_new_key(input_key, pvw_key, prec, h,
       r_prec, l, bg_bit);
 
@@ -918,10 +924,12 @@ static int run_trial(int trial, int reps, trial_res_t * res){
           memcpy(mdtmp[j], mdl[j - power], sizeof(uint64_t) * out_N);
         uint64_t ** swp = mdl; mdl = mdtmp; mdtmp = swp;
       }
-      { char tag[32]; snprintf(tag, sizeof tag, "bit p%d.b%llu m=%d", step,
-          (unsigned long long) bit, m);
+      if(!G_coarse){
+        char tag[32]; snprintf(tag, sizeof tag, "bit p%d.b%llu m=%d", step,
+            (unsigned long long) bit, m);
         cur_power = power;
-        MEASURE_STAGE(tag); }
+        MEASURE_STAGE(tag);
+      } else n_stages++;
     }
     if(step < h){
       sab_rinput_sub_a_homtr_opt(buf[active], a_mod0, a_mod1, ri, 1);
@@ -1128,7 +1136,8 @@ int main(void){
     if((e = getenv("SAB_RINPUT_OUT_N"))) G_out_N = atoi(e);
     if((e = getenv("SAB_RINPUT_H"))) G_h = atoi(e);
     if((e = getenv("SAB_RINPUT_RPREC"))) G_rprec = (uint64_t) atoi(e);
-    if((e = getenv("SAB_RINPUT_AES"))) G_lcg_triv = !atoi(e); }
+    if((e = getenv("SAB_RINPUT_AES"))) G_lcg_triv = !atoi(e);
+    if((e = getenv("SAB_RINPUT_COARSE"))) G_coarse = atoi(e); }
 
   int all_ok = 1;
   double worst_stage = 0;
