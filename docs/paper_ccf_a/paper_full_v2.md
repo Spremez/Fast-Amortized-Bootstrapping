@@ -274,10 +274,75 @@ optimal row constant. A catalog of negative results delimits the
 design space. Full open-source implementation and reproducible
 experiments accompany the paper.
 
-## Appendices（P-4）
+## Appendices（P-4 装配完成；全文指针 + 关键表格内嵌）
 
-A 证明全文（S1/HT-4'/Ψ-Nec/N-DC/HT-7'7'8/L2 三层/L4/LB-F 组装）；
-B GF(257) 方法论（检查器清单 + 输出日志 + 工件化）；C 否定性结果
-目录（OS-MPMUL M1/M2、朴素自同构、裸 σ₋₁、δ=2、联合 packing
-plain-嵌入、F1）；D 实现细节（7 旗标、DualSubCMUX k=2、参数表、
-记号-代码映射）。
+### Appendix A: Proofs（全文 = 各定理单一来源文档）
+
+A.1 S1 蝶形语义分解（stage398 §1.3 + stage406 定理 3.2：M0 机器
+证实 + 归纳）；A.2 HT-4' 奇偶障碍 + Ψ-Nec 不可吸收（stage396 §3.4
++ stage408：明文层/密文层两路穷尽）；A.3 HT-2' U_a 恒等式（stage396
+§2.2）；A.4 HT-7/7'/8 重缩放伪差与终倍增（stage396 §5，含两位守卫
+推论）；A.5 C1' 逐步归纳（stage406 §3.4）；A.6 N-ε/N-EP/N-DC/
+N-KS/N1（stage405 §2–3：恒等式整数裁决 + DC-游走均方推导 + 双轨
+递推）；A.7 L2 三层 + L4 + LB-F 组装（stage401/409）；A.8 HT-10
+正交组合（stage407 §三）。
+
+### Appendix B: GF(257) machine-verification methodology
+
+**Method class**: semantic-level oracle equivalence (exhaustive property
+checks over small parameters), not statistical gates. The checked
+identities are statements about the group/ring structure (H-orbits,
+negacyclic permutations, trace extraction, ±weight cancellation),
+whose parameter-independence makes small-parameter exhaustion a proof
+of the algebraic identity class; torus-arithmetic effects (rescaling
+pseudos, gadget residuals) are separately covered by the integer-exact
+micro adjudication and the per-step profiler (§4, §7.5).
+
+**Artifacts** (anonymized packaging per D-3):
+
+| Checker | Verifies | Result |
+|---|---|---|
+| check_rinput_homtr_gf257.py C1a/b | H subgroup; R^H = A | PASS |
+| C2 | trace extraction | PASS (50×all λ) |
+| C3b/C3c | bare σ₋₁ vs Ψ lane action | PASS / PASS |
+| C5/C6 | U_a identity; exact ÷2 | PASS |
+| C4-neg | bare-σ₋₁ pipeline | expected FAIL 1280/2560 |
+| **C4** | **Ψ pipeline vs 2×scalar oracle** | **2560/2560** |
+| check_osmpmul_gf257.py M0/M1/M2 | butterfly semantics | PASS/FAIL/FAIL (240 each) |
+
+### Appendix C: Negative-results catalog
+
+| # | Result | One-line reason | Evidence |
+|---|---|---|---|
+| C-1 | OS-MPMUL single-shot monomial move | semantics = relabel + crossing σ₋₁, not monomial | GF(257) M1/M2 240/240 fail, M0 pass |
+| C-2 | ρ elimination (fixed key budget) | secret permutation needs Θ(log n) selector levels | S2 |
+| C-3 | Time-key tradeoff as separation axis | symmetric, applies to 686 equally | S3'/LB-F F2-F3 |
+| C-4 | N as separation axis | grouping circumvents unit divisibility | S4 |
+| C-5 | Bare σ₋₁ wrap for interleaved packing | odd Y-twist on lane 1 | HT-4'; 1280/2560 |
+| C-6 | Selector absorption of the twist | multiplication commutes with shifts, J doesn't | Ψ-Nec two-line proof |
+| C-7 | Naive single-automorphism Hom-Tr | coefficient permutation ≠ monomial shift | full-torus noise |
+| C-8 | δ=2 multi-bit scheduling | identity-addend loses decomposition sharing | 1.38–1.58× slower |
+| C-9 | Joint r-output packing | epilogue 3.0% ≪ threshold | stage-373 profile |
+| C-10 | σ-only hardening | KS noise grows with σ jointly | gates fail |
+| C-11 | Plain-embed joint packing | lane-1 transposition twist | GF(257) |
+
+### Appendix D: Implementation details（参数表 + 记号-代码映射）
+
+**Parameters（FINAL, corrected）**: n=2048, h=42, t=7, σ_in=2^{-15};
+out ring N=2048 (8192 for 8-bit), k=1, ℓ=1, Bg=2^{23}, σ_G=2^{-49};
+ρ=7; TV two-guard quantization q ≥ p+2. Multi-ring: 4096=h42/t8
+(gate 0/4096), 8192=h34/t10 (gate 0/8192), both ≥128.
+
+**Notation-code map**（仅此附录出现代码名）: PVW_TMLWE=Vec-MLWE;
+MAT_TRGSW=Mat-MGSW; ⊡=mat_trgsw_mul_pvmtmlwe_DFT; sab_rinput_*
+=Alg 1'/2' instances; probe_rinput_prof=per-step profiler;
+sub_a_homtr=U_a; wrap_psi=Ψ; rescale2=R₂; min_oracle_key=scalar
+oracle. Build: gcc -O2 -march=native, AVX-512+VAES, spqlios backend,
+MOSFHET_DETERMINISTIC_RNG; link with --allow-multiple-definition and
+trailing spqlios-ifft object.
+
+**Artifact packaging (D-3 rules)**: scripts/*.py + run logs + repro
+shell drivers; scrub D:\ paths, hostnames, usernames, git history;
+theory_checks/ and internal docs excluded; anonymized header per
+script. Two frozen versions: anonymous submission body == ePrint body
+(diff of author blocks only).
