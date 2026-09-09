@@ -75,12 +75,13 @@ int main(void){
   TRLWE in0 = trlwe_new_sample(msg0, input_key);
   TRLWE in1 = trlwe_new_sample(msg1, input_key);
 
-  /* TVs: distinct LUTs per lane, 1 guard bit (v << (63 - p) = int2torus(.,p+1)) */
+  /* TVs: distinct LUTs per lane. HT-8 guard: |mu| < 2^62 (TWO guard bits)
+   * so the final doubling never wraps signed 2^64; quantize v*2^(62-p). */
   TorusPolynomial tv0 = polynomial_new_torus_polynomial(d);
   TorusPolynomial tv1 = polynomial_new_torus_polynomial(d);
   for (int q = 0; q < d; q++){
-    tv0->coeffs[q] = int2torus(q & 7, prec + 1);
-    tv1->coeffs[q] = int2torus((5 * q + 2) & 7, prec + 1);
+    tv0->coeffs[q] = int2torus(q & 7, prec + 2);
+    tv1->coeffs[q] = int2torus((5 * q + 2) & 7, prec + 2);
   }
 
   /* Arm A: interleaved accumulator (single-body PVW_TMLWE) */
@@ -267,13 +268,13 @@ int main(void){
     for (int t = 0; t < in_N; t++){
       trlwe_phase(p1, sacc[t], lane_key);
       rinput_phase(p2, acc[t], pvw_key);
-      /* scalar message at v*2^(60); interleaved final keeps the x2: 2v*2^(60) */
+      /* scalar message at v*2^(62-p-1); interleaved doubled = v*2^(62-p) */
       const int64_t v_scalar =
-          (((int64_t) p1->coeffs[0]) + ((int64_t) 1 << (63 - prec - 1)))
-          >> (63 - prec);
+          (((int64_t) p1->coeffs[0]) + ((int64_t) 1 << (62 - prec - 1)))
+          >> (62 - prec);
       const int64_t v_int =
-          (((int64_t) p2->coeffs[lane]) + ((int64_t) 1 << (64 - prec - 1)))
-          >> (64 - prec);
+          (((int64_t) p2->coeffs[lane]) + ((int64_t) 1 << (62 - prec)))
+          >> (62 - prec + 1);
       if(v_scalar != v_int){ mism++; lane_mism[lane]++;
         if(lane == 0 && t < 32) printf("%c", 'X');
         if(lane == 0 && t == 31) printf("|lane0 slots0-31\n"); }

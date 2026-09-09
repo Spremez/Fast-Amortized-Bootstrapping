@@ -72,7 +72,19 @@ static void psi_expected(uint64_t * out, const uint64_t * src,
   rshift2(out, out);
 }
 
-static int stage_in_N = 0;
+static int dump_stage_no = 0;
+static void dump_exp(uint64_t ** exp, int n, int N, const char *tag){
+  char fn[128];
+  snprintf(fn, sizeof(fn), "/tmp/exp_%s.txt", tag);
+  FILE *f = fopen(fn, "w");
+  for (int t = 0; t < n; t++){
+    for (int q = 0; q < N; q++) fprintf(f, "%llu ", (unsigned long long) exp[t][q]);
+    fprintf(f, "\n");
+  }
+  fclose(f);
+}
+
+int stage_in_N = 0;
 
 static double stage_dev(PVW_TMLWE * acc, uint64_t ** exp,
     PVW_TMLWE_Key pvw_key, TorusPolynomial ph){
@@ -205,6 +217,7 @@ int main(void){
     am1[t] = torus2int(in1->a[0]->coeffs[t], log_2d);
   }
   printf("stage setup: max dev log2 = %.2f\n", stage_dev(acc, exp, pvw_key, ph));
+  dump_exp(exp, in_N, out_N, "setup");
 
   for (int step = 0; step <= h; step++){
     /* ciphertext butterfly */
@@ -220,7 +233,9 @@ int main(void){
         uint64_t **sw = exp; exp = ex2; ex2 = sw;
       }
     }
-    printf("stage bfly %d: max dev log2 = %.2f\n", step,
+    { char tag[32]; snprintf(tag, sizeof(tag), "bfly%d", step);
+    dump_exp(exp, in_N, out_N, tag); }
+printf("stage bfly %d: max dev log2 = %.2f\n", step,
         stage_dev_masked(acc, exp, pvw_key, ph, 1));
     if(step < h){
       sab_rinput_sub_a_homtr_opt(acc, am0, am1, ri, step + 1 < h);
@@ -228,6 +243,8 @@ int main(void){
         suba_expected(exp[t], exp[t], am0[t], am1[t], t_h, sp, sm, step + 1 < h);
       /* note: intermediate rescales keep their harmless +-2^63 quirks on
        * both sides identically; masked in stage_dev */
+      { char tag[32]; snprintf(tag, sizeof(tag), "suba%d", step);
+      dump_exp(exp, in_N, out_N, tag); }
       printf("stage suba %d: max dev log2 = %.2f\n", step,
           stage_dev_masked(acc, exp, pvw_key, ph, step + 1 < h));
     }
@@ -240,6 +257,7 @@ int main(void){
       c->b[0]->coeffs[q] += c->b[0]->coeffs[q];
     }
     for (int q = 0; q < out_N; q++) exp[t][q] += exp[t][q];
+  dump_exp(exp, in_N, out_N, "final2x");
   }
   printf("stage FINAL2x: max dev log2 = %.2f\n",
       stage_dev_masked(acc, exp, pvw_key, ph, 0));
@@ -304,6 +322,14 @@ int main(void){
         if((uint64_t) dv > dev) dev = (uint64_t) dv;
       }
     }
+    { FILE *of = fopen("/tmp/oracle_out.txt", "w");
+      for (int t = 0; t < in_N; t++){
+        trlwe_phase(ph, sacc[t], lane_key);
+        for (int q = 0; q < d; q++)
+          fprintf(of, "%llu ", (unsigned long long) ph->coeffs[q]);
+        fprintf(of, "\n");
+      }
+      fclose(of); }
     printf("MODEL-VS-ORACLE: mism %d / %d, max dev log2 = %.2f\n", mism,
         in_N * d, log2((double) dev + 1.0));
     /* in-diag QUANTIZED GATE REPLICA (actual RINPUT GATE comparison) */
