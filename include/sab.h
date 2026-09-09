@@ -1,3 +1,4 @@
+#pragma once
 #include <mosfhet.h>
 
 typedef struct _tmp_pool{

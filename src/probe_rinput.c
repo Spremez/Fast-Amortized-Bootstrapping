@@ -34,55 +34,6 @@ static double now_us(void){
   return ts.tv_sec * 1e6 + ts.tv_nsec / 1e3;
 }
 
-/* Minimal wo-extract oracle key: selectors + aut_minus1 + tmp pool only
- * (avoids new_sparse_amortized_bootstrapping's packing/hw KS construction,
- * which is not exercised by sab_rlwe_bootstrap_wo_extract and which crashes
- * in the LOCAL MinGW build for some dims). Semantics identical to the
- * stock binary-key oracle path. */
-static SAB_Key min_oracle_key(TRLWE_Key input_key, TRGSW_Key skey,
-    uint64_t b_prec, uint64_t h, uint64_t r_prec){
-  SAB_Key res = (SAB_Key) calloc(1, sizeof(*res));
-  res->in_N = input_key->s[0]->N;
-  res->in_k = input_key->k;
-  res->out_N = skey->trlwe_key->s[0]->N;
-  res->out_k = skey->trlwe_key->k;
-  res->h = h;
-  res->r_prec = r_prec;
-  res->b_prec = b_prec;
-  uint64_t gens[1] = {2 * res->out_N - 1};
-  res->aut_minus1 = trlwe_new_automorphism_KS_keyset_2(skey->trlwe_key, gens,
-      1, skey->l, skey->Bg_bit)[0];
-  TRGSW tmp = trgsw_alloc_new_sample(skey->l, skey->Bg_bit, (int) res->out_k,
-      (int) res->out_N);
-  res->s = (TRGSW_DFT ***) safe_malloc(sizeof(TRGSW_DFT **) * res->in_k);
-  for (size_t ki = 0; ki < res->in_k; ki++){
-    res->s[ki] = (TRGSW_DFT **) safe_malloc(sizeof(TRGSW_DFT *) * (h + 1));
-    uint64_t cnt = 0, prev = res->in_N;
-    for (size_t scan = 0; scan < res->in_N; scan++){
-      const uint64_t cur = res->in_N - scan - 1;
-      if(input_key->s[ki]->coeffs[cur] == 0) continue;
-      res->s[ki][cnt] = trgsw_alloc_new_DFT_sample_array((int) r_prec,
-          skey->l, skey->Bg_bit, (int) res->out_k, (int) res->out_N);
-      RGSW_encrypt_bits(res->s[ki][cnt], tmp, skey, prev - cur, r_prec);
-      prev = cur;
-      cnt++;
-    }
-    res->s[ki][cnt] = trgsw_alloc_new_DFT_sample_array((int) r_prec, skey->l,
-        skey->Bg_bit, (int) res->out_k, (int) res->out_N);
-    RGSW_encrypt_bits(res->s[ki][cnt], tmp, skey, prev, r_prec);
-  }
-  free_trgsw(tmp);
-  res->tmp = (tmp_pool) calloc(1, sizeof(*res->tmp));
-  res->tmp->rlwe_dft = trlwe_alloc_new_DFT_sample((int) res->out_k,
-      (int) res->out_N);
-  res->tmp->rlwe = trlwe_alloc_new_sample((int) res->out_k, (int) res->out_N);
-  res->tmp->rlwe_poly1 = trlwe_alloc_new_sample_array((int) res->in_N,
-      (int) res->out_k, (int) res->out_N);
-  res->tmp->rlwe_poly2 = trlwe_alloc_new_sample_array((int) res->in_N,
-      (int) res->out_k, (int) res->out_N);
-  return res;
-}
-
 int main(void){
   setvbuf(stdout, NULL, _IONBF, 0);
   int in_N = 256, out_N = 2048, h = 6, prec = 3, bg_bit = 23, l = 1;
@@ -181,11 +132,124 @@ int main(void){
   sab_rinput_bootstrap_wo_extract(acc, in0, in1, tv0, tv1, ri);
   double t_int = now_us() - t0;
   printf("arm A (interleaved, 2 inputs): %.0f us\n", t_int);
+  /* Arm M: plaintext model on the SAME data (interleaved semantics with
+   * U_a sub_a + Psi wraps + final doubling), for three-way adjudication */
+  uint64_t **mdl = (uint64_t **) malloc(sizeof(uint64_t *) * in_N);
+  uint64_t **mdtmp = (uint64_t **) malloc(sizeof(uint64_t *) * in_N);
+  uint64_t *m_t1 = calloc(out_N, sizeof(uint64_t));
+  uint64_t *m_th = calloc(out_N, sizeof(uint64_t));
+  uint64_t *m_sp = calloc(out_N, sizeof(uint64_t));
+  uint64_t *m_sm = calloc(out_N, sizeof(uint64_t));
+  for (int t = 0; t < in_N; t++){
+    mdl[t] = calloc(out_N, sizeof(uint64_t));
+    mdtmp[t] = calloc(out_N, sizeof(uint64_t));
+  }
+  {
+    const int log_2d_m = (int) log2(2 * d);
+    const uint64_t po_m = 1ULL << (64 - prec - 1);
+    for (int t = 0; t < in_N; t++){
+      for (int lane = 0; lane < 2; lane++){
+        TRLWE in = lane == 0 ? in0 : in1;
+        TorusPolynomial tv = lane == 0 ? tv0 : tv1;
+        const uint64_t bbar = torus2int(in->b->coeffs[t] + po_m, log_2d_m);
+        for (int q = 0; q < d; q++){
+          const uint64_t pos = (q + bbar) % (2 * d);
+          if(pos < (uint64_t) d) mdl[t][lane + 2 * pos] += tv->coeffs[q];
+          else mdl[t][lane + 2 * (pos - d)] -= tv->coeffs[q];
+        }
+      }
+    }
+  }
+  uint64_t am0m[in_N], am1m[in_N];
+  {
+    const int log_2d_m = (int) log2(2 * d);
+    for (int t = 0; t < in_N; t++){
+      am0m[t] = torus2int(in0->a[0]->coeffs[t], log_2d_m);
+      am1m[t] = torus2int(in1->a[0]->coeffs[t], log_2d_m);
+    }
+  }
+  uint64_t gaps_m[h + 1];
+  {
+    uint64_t prev = in_N, gi = 0;
+    for (int scan = 0; scan < in_N; scan++){
+      const int cur = in_N - scan - 1;
+      if(input_key->s[0]->coeffs[cur] == 0) continue;
+      gaps_m[gi++] = prev - cur;
+      prev = cur;
+    }
+    gaps_m[gi] = prev;
+  }
+  {
+    const int twoN_m = 2 * out_N;
+    for (int step = 0; step <= h; step++){
+      for (size_t bit = 0; bit < r_prec; bit++){
+        const uint64_t power = 1ULL << bit;
+        if((gaps_m[step] >> bit) & 1){
+          for (int j = 0; j < (int) power; j++){
+            const uint64_t *src = mdl[in_N - power + j];
+            memset(mdtmp[j], 0, sizeof(uint64_t) * out_N);
+            for (int i = 0; i < out_N; i++){
+              uint64_t e = ((uint64_t)(-(uint64_t) i)) % twoN_m;
+              if(e < (uint64_t) out_N) mdtmp[j][e] += src[i];
+              else mdtmp[j][e - out_N] -= src[i];
+            }
+            /* then U_(0,1): (t+sh)+(t-sh) with Y-shift on the minus part */
+            for (int i = 0; i < out_N; i++){
+              m_th[i] = (i & 1) ? (uint64_t)(-(int64_t) mdtmp[j][i]) : mdtmp[j][i];
+              m_sp[i] = mdtmp[j][i] + m_th[i];
+              m_sm[i] = mdtmp[j][i] - m_th[i];
+            }
+            memset(m_t1, 0, sizeof(uint64_t) * out_N);
+            for (int i = 0; i < out_N; i++){
+              m_t1[i] = m_sp[i];
+              uint64_t e = ((uint64_t) i + 2) % twoN_m;
+              if(e < (uint64_t) out_N) m_t1[e] += m_sm[i];
+              else m_t1[e - out_N] -= m_sm[i];
+            }
+            for (int i = 0; i < out_N; i++)
+              mdtmp[j][i] = (m_t1[i] + 1) >> 1;
+          }
+          for (int j = power; j < in_N; j++)
+            memcpy(mdtmp[j], mdl[j - power], sizeof(uint64_t) * out_N);
+          uint64_t **sw = mdl; mdl = mdtmp; mdtmp = sw;
+        }
+      }
+      if(step < h){
+        for (int t = 0; t < in_N; t++){
+          /* U_a = Y^{a0}(C+sh C) + Y^{a1}(C-sh C), /2 */
+          for (int i = 0; i < out_N; i++){
+            m_th[i] = (i & 1) ? (uint64_t)(-(int64_t) mdl[t][i]) : mdl[t][i];
+            m_sp[i] = mdl[t][i] + m_th[i];
+            m_sm[i] = mdl[t][i] - m_th[i];
+          }
+          memset(m_t1, 0, sizeof(uint64_t) * out_N);
+          for (int i = 0; i < out_N; i++){
+            uint64_t e0 = ((uint64_t) i + 2 * am0m[t]) % twoN_m;
+            if(e0 < (uint64_t) out_N) m_t1[e0] += m_sp[i];
+            else m_t1[e0 - out_N] -= m_sp[i];
+            uint64_t e1 = ((uint64_t) i + 2 * am1m[t]) % twoN_m;
+            if(e1 < (uint64_t) out_N) m_t1[e1] += m_sm[i];
+            else m_t1[e1 - out_N] -= m_sm[i];
+          }
+          for (int i = 0; i < out_N; i++) mdl[t][i] = (m_t1[i] + 1) >> 1;
+        }
+      }
+    }
+    for (int t = 0; t < in_N; t++)
+      for (int q = 0; q < out_N; q++) mdl[t][q] += mdl[t][q];
+  }
+  { /* dump model slot 1 lane columns for cross-binary diff */
+    printf("MDL1:");
+    for (int i = 0; i < 8; i++)
+      printf(" %lld", (long long) (((int64_t) mdl[1][i] + ((int64_t) 1 << 60)) >> 61));
+    printf("\n");
+  }
   /* Arm B: two independent scalar oracles (out ring d, granularity 2d) */
   TorusPolynomial p1 = polynomial_new_torus_polynomial(d);
   TorusPolynomial p2 = polynomial_new_torus_polynomial(out_N);
   double t_or = 0;
   int mism = 0, lane_mism[2] = {0, 0};
+  int mism_int_vs_mdl = 0, mism_sc_vs_mdl = 0;
   uint64_t pair_dev_max = 0;
   for (int lane = 0; lane < 2; lane++){
     TRLWE in = lane == 0 ? in0 : in1;
@@ -214,11 +278,17 @@ int main(void){
         if(lane == 0 && t < 32) printf("%c", 'X');
         if(lane == 0 && t == 31) printf("|lane0 slots0-31\n"); }
       else if(lane == 0 && t < 32) printf("%c", '.');
+      const int64_t v_mdl =
+          (((int64_t) mdl[t][lane]) + ((int64_t) 1 << (64 - prec - 1)))
+          >> (64 - prec);
+      if(v_int != v_mdl) mism_int_vs_mdl++;
+      if(v_scalar != v_mdl) mism_sc_vs_mdl++;
       if(t < 6 && lane == 0)
-        printf("  t%d lane0: v_scalar=%lld v_int=%lld (raw sc=%lld int/2=%lld)\n",
-            t, (long long) v_scalar, (long long) v_int,
+        printf("  t%d l0: sc=%lld int=%lld mdl=%lld (raw sc=%lld int2=%lld mdlraw=%lld)\n",
+            t, (long long) v_scalar, (long long) v_int, (long long) v_mdl,
             (long long) (((int64_t) p1->coeffs[0]) >> (63 - prec)),
-            (long long) ((((int64_t) p2->coeffs[lane]) + ((int64_t) 1 << 60)) >> 61));
+            (long long) ((((int64_t) p2->coeffs[lane]) + ((int64_t) 1 << 60)) >> 61),
+            (long long) ((((int64_t) mdl[t][0]) + ((int64_t) 1 << 60)) >> 61));
       /* pair noise: de-double the interleaved side before comparing */
       const int64_t dev = (int64_t) p1->coeffs[0]
           - (((int64_t) p2->coeffs[lane]) >> 1);
@@ -233,6 +303,8 @@ int main(void){
   printf("arm B (2x scalar oracle): %.0f us\n", t_or);
   printf("RINPUT GATE: mismatch %d / %d (lane0 %d, lane1 %d) -- %s\n", mism,
       2 * in_N, lane_mism[0], lane_mism[1], mism == 0 ? "Pass" : "FAIL");
+  printf("ADJUDICATION: int-vs-model %d, scalar-vs-model %d (of %d)\n",
+      mism_int_vs_mdl, mism_sc_vs_mdl, 2 * in_N);
   printf("RINPUT NOISE: pair max dev log2 = %.2f (extra vs scalar path)\n",
       log2((double) pair_dev_max + 1.0));
   printf("RINPUT TIMING: interleaved=%.0f us  2x-scalar=%.0f us  "

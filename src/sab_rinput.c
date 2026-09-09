@@ -7,6 +7,7 @@
  * guard bit (HT-7/HT-8). Lift theorem HT-5: lane l of slot t equals the
  * scalar pipeline (out ring d, granularity 2d) for input l. */
 #include <sab_rinput.h>
+#include <sab.h>
 #include <inttypes.h>
 #include <string.h>
 #include <stdlib.h>
@@ -204,6 +205,55 @@ void sab_rinput_sub_a_homtr_opt(PVW_TMLWE * p, const uint64_t * a0,
 void sab_rinput_sub_a_homtr(PVW_TMLWE * p, const uint64_t * a0,
     const uint64_t * a1, SAB_RINPUT_Key sab){
   sab_rinput_sub_a_homtr_opt(p, a0, a1, sab, 1);
+}
+
+/* Minimal wo-extract oracle key: selectors + aut_minus1 + tmp pool only
+ * (avoids new_sparse_amortized_bootstrapping's packing/hw KS construction,
+ * which is not exercised by sab_rlwe_bootstrap_wo_extract and which crashes
+ * in the LOCAL MinGW build for some dims). Semantics identical to the
+ * stock binary-key oracle path. */
+SAB_Key min_oracle_key(TRLWE_Key input_key, TRGSW_Key skey,
+    uint64_t b_prec, uint64_t h, uint64_t r_prec){
+  SAB_Key res = (SAB_Key) calloc(1, sizeof(*res));
+  res->in_N = input_key->s[0]->N;
+  res->in_k = input_key->k;
+  res->out_N = skey->trlwe_key->s[0]->N;
+  res->out_k = skey->trlwe_key->k;
+  res->h = h;
+  res->r_prec = r_prec;
+  res->b_prec = b_prec;
+  uint64_t gens[1] = {2 * res->out_N - 1};
+  res->aut_minus1 = trlwe_new_automorphism_KS_keyset_2(skey->trlwe_key, gens,
+      1, skey->l, skey->Bg_bit)[0];
+  TRGSW tmp = trgsw_alloc_new_sample(skey->l, skey->Bg_bit, (int) res->out_k,
+      (int) res->out_N);
+  res->s = (TRGSW_DFT ***) safe_malloc(sizeof(TRGSW_DFT **) * res->in_k);
+  for (size_t ki = 0; ki < res->in_k; ki++){
+    res->s[ki] = (TRGSW_DFT **) safe_malloc(sizeof(TRGSW_DFT *) * (h + 1));
+    uint64_t cnt = 0, prev = res->in_N;
+    for (size_t scan = 0; scan < res->in_N; scan++){
+      const uint64_t cur = res->in_N - scan - 1;
+      if(input_key->s[ki]->coeffs[cur] == 0) continue;
+      res->s[ki][cnt] = trgsw_alloc_new_DFT_sample_array((int) r_prec,
+          skey->l, skey->Bg_bit, (int) res->out_k, (int) res->out_N);
+      RGSW_encrypt_bits(res->s[ki][cnt], tmp, skey, prev - cur, r_prec);
+      prev = cur;
+      cnt++;
+    }
+    res->s[ki][cnt] = trgsw_alloc_new_DFT_sample_array((int) r_prec, skey->l,
+        skey->Bg_bit, (int) res->out_k, (int) res->out_N);
+    RGSW_encrypt_bits(res->s[ki][cnt], tmp, skey, prev, r_prec);
+  }
+  free_trgsw(tmp);
+  res->tmp = (tmp_pool) calloc(1, sizeof(*res->tmp));
+  res->tmp->rlwe_dft = trlwe_alloc_new_DFT_sample((int) res->out_k,
+      (int) res->out_N);
+  res->tmp->rlwe = trlwe_alloc_new_sample((int) res->out_k, (int) res->out_N);
+  res->tmp->rlwe_poly1 = trlwe_alloc_new_sample_array((int) res->in_N,
+      (int) res->out_k, (int) res->out_N);
+  res->tmp->rlwe_poly2 = trlwe_alloc_new_sample_array((int) res->in_N,
+      (int) res->out_k, (int) res->out_N);
+  return res;
 }
 
 /* Psi = U_(0,1) o sigma_{-1} (HT-4): t = sigma_{-1}(in);

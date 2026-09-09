@@ -1,5 +1,6 @@
 #pragma once
 #include <mosfhet.h>
+#include <sab.h>
 
 /* r-input batching + Hom-Tr (stage396): interleaved accumulator over
  * R = Z[X]/(X^N+1) with N = r*d, r = 2 lanes packed at X-exponent residues
@@ -44,6 +45,9 @@ void sab_rinput_sub_a_homtr_opt(PVW_TMLWE * p, const uint64_t * a0,
 
 /* Psi = U_(0,1) o sigma_{-1}: wrapped-source correction (lemma HT-4). */
 void sab_rinput_wrap_psi(PVW_TMLWE out, PVW_TMLWE in, SAB_RINPUT_Key sab);
+
+SAB_Key min_oracle_key(TRLWE_Key input_key, TRGSW_Key skey,
+    uint64_t b_prec, uint64_t h, uint64_t r_prec);
 
 /* CMUX primitive (exposed for unit testing). */
 void sab_rinput_CMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,

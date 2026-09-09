@@ -369,3 +369,32 @@ r=2 先行（模数消耗 42 bit 在 64-bit 内），验证后扩展 r=4（需 1
 消息范数恒 1）；(h+1) 因子显式绑定 H1（引理 L4，循环依赖论证）。
 下会话执行序：OB-2（五族类成员）+ OB-3（LB-F 成稿）；并行发 I-1
 （dell r-input 门）。
+
+## 6o. PI 执行轮战报（2026-09-09 晚，stage402 + I-1 深挖）
+
+**OB-2 完成**：stage402_class_membership.md —— 五族（686/TFHE/FHEW/
+BatchBoot/本工作）C0 类成员解释引理 + 覆盖定理 CM + 诚实边界注记。
+
+**I-1 dell 判定执行**（真 bug 确认 + 三层定位到最后一层）：
+1. dell 构建/运行 OK；门失败 176/512（同本地）——**排除本地缺陷假设**。
+2. 逐步诊断：setup 精确 0；终倍增后 C↔模型 dev 55.64（噪声级）——
+   C 实现正确跟踪其模型。
+3. probe_scalar_model 强制门间隙 [30,57,36,24,18,5,86]：stock oracle
+   ↔ 标量模型全阶段 ≤48.3、min↔stock 0 失配——**oracle 侧正确**。
+4. GF(257) 在门形状（N=2048/d=1024/n=256/h=6/rp=7/同间隙表）随机数据
+   全等 524288/524288——**语义在该形状正确**（scripts/repro_gate_shape_gf257.py）。
+5. **门在诊断器内复现**（GATE-REPLICA 130/256，同签名 sc/int 差
+   ≈8-9 个 LUT 级）——关键裁决：**exp（明文交织模型）量化值 == C
+   密文（int0==exp）但 ≠ oracle**：模型携带非-2^63-纯类差异
+   （差 ~1.25·2^63 = 10·2^60）。
+6. **最后一层定位**：我的 python 重放模型（replay_gate_data.py，用
+   导出的精确 uint64 数据）与标量模型 mod-2^63 全阶段一致；而诊断器
+   的 C 模型与 oracle 差 10·2^60 ⟹ **python 模型 ≠ 诊断器 C 模型**
+   （同为"相同公式"的两个转录存在分歧）——下一会话第一动作：
+   逐阶段 diff 导出的 exp vs 重放 acc_i，找到分叉阶段与系数。
+   **首要嫌疑**：mod-switch 的 uint64 舍入边界（torus2int 的 +off 溢出/
+   舍入方向）被 GF(257) 抽象掩盖；或 psi/suba 的指数取模次序差异。
+   工件：repro/rinput_gate_data.txt（精确数据）、scripts/replay_gate_data.py
+   （重放+掩码比较）、诊断器内 GATE-REPLICA + 数据导出。
+
+**修复后即达 I-7 门**（其余全部就绪：oracle/实现/语义三侧单独验证过）。

@@ -44,6 +44,19 @@ int main(void){
   if(previous > max_gap) max_gap = previous;
   while((1ULL << r_prec) <= max_gap) r_prec++;
   uint64_t gaps[h + 1];
+  { const char *fg = getenv("FORCED_GAPS");
+    if(fg){
+      uint64_t gi2 = 0; const char *s = fg;
+      while (*s && gi2 <= (uint64_t) h){
+        gaps[gi2++] = strtoull(s, (char **)&s, 10);
+        if (*s == ',') s++;
+      }
+      if(gi2 == (uint64_t) h + 1)
+        printf("forced gaps:");
+      for (uint64_t k = 0; k < gi2; k++) printf(" %lu", (unsigned long) gaps[k]);
+      printf("\n");
+      goto gaps_done;
+    } }
   { uint64_t prev = in_N, gi = 0;
     for (int scan = 0; scan < in_N; scan++){
       const int cur = in_N - scan - 1;
@@ -53,6 +66,7 @@ int main(void){
     }
     gaps[gi] = prev;
   }
+  gaps_done:;
   printf("r_prec=%lu gaps:", (unsigned long) r_prec);
   for (int i = 0; i <= h; i++) printf(" %lu", (unsigned long) gaps[i]);
   printf("\n");
@@ -198,6 +212,33 @@ int main(void){
       }
     }
     stage_no++;
+  }
+  /* min_oracle vs stock oracle on the same data */
+  {
+    extern SAB_Key min_oracle_key(TRLWE_Key input_key, TRGSW_Key skey,
+        uint64_t b_prec, uint64_t h, uint64_t r_prec);
+    TRLWE *sacc2 = trlwe_alloc_new_sample_array(in_N, 1, d);
+    SAB_Key oracle2 = min_oracle_key(input_key, skey, prec, h, r_prec);
+    sab_rlwe_bootstrap_wo_extract(sacc2, in0, tv_rlwe, oracle2);
+    uint64_t dev = 0;
+    int mism = 0;
+    {
+      TorusPolynomial ph2 = polynomial_new_torus_polynomial(d);
+      for (int t = 0; t < in_N; t++){
+        trlwe_phase(sph, st[t], lane_key);
+        trlwe_phase(ph2, sacc2[t], lane_key);
+        for (int q = 0; q < d; q++){
+          int64_t dv = (int64_t) sph->coeffs[q] - (int64_t) ph2->coeffs[q];
+          if(dv < 0) dv = -dv;
+          if((uint64_t) dv > (1ULL << 55)) mism++;
+          if((uint64_t) dv > dev) dev = (uint64_t) dv;
+        }
+      }
+      printf("MIN-VS-STOCK: mism %d, max dev log2 = %.2f\n", mism,
+          log2((double) dev + 1.0));
+      free_polynomial(ph2);
+    }
+    free_trlwe_array(sacc2, in_N);
   }
   return 0;
 }

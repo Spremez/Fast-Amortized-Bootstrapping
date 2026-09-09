@@ -232,5 +232,109 @@ int main(void){
           stage_dev_masked(acc, exp, pvw_key, ph, step + 1 < h));
     }
   }
+  /* final identity doubling + adjudication + data export (rebuilt tail) */
+  for (int t = 0; t < in_N; t++){
+    PVW_TMLWE c = acc[t];
+    for (int q = 0; q < out_N; q++){
+      c->a[0]->coeffs[q] += c->a[0]->coeffs[q];
+      c->b[0]->coeffs[q] += c->b[0]->coeffs[q];
+    }
+    for (int q = 0; q < out_N; q++) exp[t][q] += exp[t][q];
+  }
+  printf("stage FINAL2x: max dev log2 = %.2f\n",
+      stage_dev_masked(acc, exp, pvw_key, ph, 0));
+  {
+    FILE *df = fopen("/tmp/rinput_data.txt", "w");
+    fprintf(df, "N %d d %d n %d h %d rp %lu\n", out_N, d, in_N, h,
+        (unsigned long) r_prec);
+    fprintf(df, "gaps");
+    for (int q = 0; q <= h; q++)
+      fprintf(df, " %lu", (unsigned long) gaps[q]);
+    fprintf(df, "\n");
+    fprintf(df, "a0");
+    for (int i = 0; i < in_N; i++)
+      fprintf(df, " %llu", (unsigned long long) in0->a[0]->coeffs[i]);
+    fprintf(df, "\n");
+    fprintf(df, "b0");
+    for (int i = 0; i < in_N; i++)
+      fprintf(df, " %llu", (unsigned long long) in0->b->coeffs[i]);
+    fprintf(df, "\n");
+    fprintf(df, "a1");
+    for (int i = 0; i < in_N; i++)
+      fprintf(df, " %llu", (unsigned long long) in1->a[0]->coeffs[i]);
+    fprintf(df, "\n");
+    fprintf(df, "b1");
+    for (int i = 0; i < in_N; i++)
+      fprintf(df, " %llu", (unsigned long long) in1->b->coeffs[i]);
+    fprintf(df, "\n");
+    fprintf(df, "tv0");
+    for (int i = 0; i < d; i++)
+      fprintf(df, " %llu", (unsigned long long) tv0->coeffs[i]);
+    fprintf(df, "\n");
+    fprintf(df, "tv1");
+    for (int i = 0; i < d; i++)
+      fprintf(df, " %llu", (unsigned long long) tv1->coeffs[i]);
+    fprintf(df, "\n");
+    fclose(df);
+    printf("DATA EXPORTED\n");
+  }
+  {
+    TRLWE_Key lane_key = trlwe_new_binary_key(d, 1, pow(2, -70));
+    TRGSW_Key skey = trgsw_new_key(lane_key, 1, 23);
+    SAB_Key oracle = min_oracle_key(input_key, skey, 3, h, r_prec);
+    TRLWE tv_rlwe = trlwe_alloc_new_sample(1, d);
+    memset(tv_rlwe->a[0]->coeffs, 0, sizeof(tv_rlwe->a[0]->coeffs[0]) * d);
+    memcpy(tv_rlwe->b->coeffs, tv0->coeffs, sizeof(tv0->coeffs[0]) * d);
+    TRLWE *sacc = trlwe_alloc_new_sample_array(in_N, 1, d);
+    sab_rlwe_bootstrap_wo_extract(sacc, in0, tv_rlwe, oracle);
+    uint64_t dev = 0;
+    int mism = 0;
+    for (int t = 0; t < in_N; t++){
+      trlwe_phase(ph, sacc[t], lane_key);
+      for (int q = 0; q < d; q++){
+        int64_t dv = (int64_t) ph->coeffs[q] - (((int64_t) exp[t][q]) >> 1);
+        if(dv < 0) dv = -dv;
+        if((uint64_t) dv > (1ULL << 55)){
+          mism++;
+          if(mism <= 6)
+            printf("  BAD t=%d q=%d: oracle=%lld model2=%lld\n", t, q,
+                (long long) ph->coeffs[q],
+                (long long)(((int64_t) exp[t][q]) >> 1));
+        }
+        if((uint64_t) dv > dev) dev = (uint64_t) dv;
+      }
+    }
+    printf("MODEL-VS-ORACLE: mism %d / %d, max dev log2 = %.2f\n", mism,
+        in_N * d, log2((double) dev + 1.0));
+    /* in-diag QUANTIZED GATE REPLICA (actual RINPUT GATE comparison) */
+    {
+      TorusPolynomial ph2 = polynomial_new_torus_polynomial(out_N);
+      int gmism = 0;
+      for (int t = 0; t < in_N; t++){
+        trlwe_phase(ph, sacc[t], lane_key);
+        phase_of(acc[t], pvw_key, ph2);
+        const int64_t v_scalar =
+            (((int64_t) ph->coeffs[0]) + ((int64_t) 1 << 59)) >> 60;
+        const int64_t v_int0 =
+            (((int64_t) ph2->coeffs[0]) + ((int64_t) 1 << 60)) >> 61;
+        const int64_t v_exp =
+            (((int64_t) exp[t][0]) + ((int64_t) 1 << 60)) >> 61;
+        const int64_t v_int1 =
+            (((int64_t) ph2->coeffs[1]) + ((int64_t) 1 << 60)) >> 61;
+        if(v_scalar != v_int0) gmism++;
+        if(gmism <= 4 && v_scalar != v_int0)
+          printf("  GQ t=%d: sc=%lld int0=%lld exp=%lld rawsc=%lld rawi=%lld rawexp=%lld\n", t,
+              (long long) v_scalar, (long long) v_int0,
+              (long long) v_exp,
+              (long long) (((int64_t) ph->coeffs[0]) >> 60),
+              (long long) (((int64_t) ph2->coeffs[0]) >> 61),
+              (long long) (((int64_t) exp[t][0]) >> 60));
+      }
+      printf("GATE-REPLICA(lane0): mism %d / %d\n", gmism, in_N);
+      free_polynomial(ph2);
+    }
+    free_trlwe_array(sacc, in_N); free_trlwe(tv_rlwe);
+    free_trlwe_key(lane_key); free_trgsw_key(skey);
+  }
   return 0;
 }
