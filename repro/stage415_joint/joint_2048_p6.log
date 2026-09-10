@@ -1,0 +1,8 @@
+joint trial 1/1: in_N=2048 out_N=4096 (d=2048) h=42 r1=2 r2=2
+GATE: mismatch 1700 / 8192 (per-channel 424,472,382,422) -- FAIL
+  ch(l=0,j=0): pair max 62.99 rms 58.28
+  ch(l=0,j=1): pair max 56.50 rms 54.73
+  ch(l=1,j=0): pair max 56.18 rms 54.56
+  ch(l=1,j=1): pair max 56.21 rms 54.64
+timing: joint = 64600469 us, 0x-scalar = 50810537 us, ratio = 1.271x
+JOINT FAIL (1 trials); mean joint 64600469 us, mean 617011728x-scalar 50810537 us, ratio 1.271x

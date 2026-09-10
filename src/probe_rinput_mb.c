@@ -37,14 +37,24 @@ static int run_trial(int trial, int reps, double * t_joint, double * t_or){
   { const char *e;
     if((e = getenv("SAB_RINPUT_IN_N"))) in_N = atoi(e);
     if((e = getenv("SAB_RINPUT_OUT_N"))) out_N = atoi(e);
-    if((e = getenv("SAB_RINPUT_H"))) h = atoi(e); }
+    if((e = getenv("SAB_RINPUT_H"))) h = atoi(e);
+    if((e = getenv("SAB_RINPUT_PREC"))) prec = atoi(e); }
   const int d = out_N / LANES, in_k = 1, out_k = 1, l = 1, bg = 23;
   printf("joint trial %d/%d: in_N=%d out_N=%d (d=%d) h=%d r1=%d r2=%d\n",
       trial + 1, reps, in_N, out_N, d, h, LANES, BODIES);
 
   TRLWE_Key input_key = NULL, packing_key = NULL;
-  RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), 7);
-  RS_sparse_binary_key(&packing_key, in_N, in_k, h, pow(2, -44), 7);
+  { /* RS target scales with n/h: n=2048/h=42 needs ~7, n=4096 needs ~9 */
+    uint64_t rs_t = 7;
+    { const char *e = getenv("SAB_RINPUT_RS_TARGET");
+      if(e) rs_t = (uint64_t) atoi(e);
+      else {
+        uint64_t est = in_N / h;
+        while((1ULL << rs_t) < est * 4) rs_t++; /* ~4x mean gap for tail */
+      }
+    }
+    RS_sparse_binary_key(&input_key, in_N, in_k, h, pow(2, -15), rs_t);
+    RS_sparse_binary_key(&packing_key, in_N, in_k, h, pow(2, -44), rs_t); }
   if(input_key == NULL || input_key->s[0] == NULL){
     printf("RS keygen FAILED\n"); return 1; }
   uint64_t max_gap = 0, prev = in_N, r_prec = 1;
@@ -64,7 +74,7 @@ static int run_trial(int trial, int reps, double * t_joint, double * t_or){
   for (int l_ = 0; l_ < LANES; l_++){
     msg[l_] = polynomial_new_torus_polynomial(in_N);
     for (int i = 0; i < in_N; i++)
-      msg[l_]->coeffs[i] = int2torus((i + 3 * l_) & 7, prec);
+      msg[l_]->coeffs[i] = int2torus((i + 3 * l_) & ((1 << prec) - 1), prec);
     ins[l_] = trlwe_new_sample(msg[l_], input_key);
   }
   /* tv[lane*bodies + body], two guard bits (HT-8) */
@@ -72,7 +82,8 @@ static int run_trial(int trial, int reps, double * t_joint, double * t_or){
   for (int x = 0; x < LANES * BODIES; x++){
     tv[x] = polynomial_new_torus_polynomial(d);
     for (int q = 0; q < d; q++)
-      tv[x]->coeffs[q] = int2torus((5 * x + 2 * q + 1) & 7, prec + 2);
+      tv[x]->coeffs[q] = int2torus((5 * x + 2 * q + 1) & ((1 << prec) - 1),
+          prec + 2);
   }
 
   /* joint pipeline: multi-body output key (r = BODIES) */

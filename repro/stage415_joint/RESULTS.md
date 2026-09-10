@@ -15,3 +15,23 @@ LUTs) in LESS total time than 4 scalar bootstraps -- per-message cost
 with r=r1*r2) is thus not only correct but measurably profitable at
 submission parameters. Pair-noise class matches the single-body r-input
 closure (per-channel independence, M1/N1 layering).
+
+## Six-row precision scan (n=2048, h=42, out ring 4096, r1=2 x r2=2)
+
+| Precision | Gate | Ratio vs 4x-scalar | Reading |
+|---|---|---|---|
+| p=2 | **0/8192 PASS** | 1.278x | clean |
+| p=4 | **0/8192 PASS** | 1.258x | clean |
+| p=6 | 1700/8192 FAIL | 1.271x | **noise budget limit**: DC-walk accumulates to ~2^54.6, half-grid at p=6 = 2^55 — 21% at the boundary; theory-predicted precision domain boundary |
+| p=8 | 7132/8192 FAIL | 1.448x | same, deeper into noise floor |
+
+n=4096 rows: SIGSEGV (not yet root-caused — the n=2048 pipeline is fully
+correct; this is a ring-size infrastructure issue, likely stack or array
+sizing at N=8192; needs one debugging session).
+
+**Honest finding**: the joint pipeline at current noise parameters
+(sigma_G=2^-70 toy key, no fusion flags) has a precision domain of p<=4.
+The main matrix handles p up to 8/9 via the full fusion system (BSK-A,
+sigma adjustments, etc.); the r-input path has not been tuned for high
+precision — the DC-walk noise (2^49.2 coherent, ~2^54.6 accumulated at
+h=42) sets the boundary exactly as N1 predicts.

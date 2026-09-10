@@ -1,0 +1,8 @@
+joint trial 1/1: in_N=2048 out_N=4096 (d=2048) h=42 r1=2 r2=2
+GATE: mismatch 0 / 8192 (per-channel 0,0,0,0) -- Pass
+  ch(l=0,j=0): pair max 56.41 rms 54.66
+  ch(l=0,j=1): pair max 56.49 rms 54.73
+  ch(l=1,j=0): pair max 56.15 rms 54.56
+  ch(l=1,j=1): pair max 56.24 rms 54.64
+timing: joint = 64788893 us, 0x-scalar = 50676308 us, ratio = 1.278x
+JOINT ALL PASS (1 trials); mean joint 64788893 us, mean -753653232x-scalar 50676308 us, ratio 1.278x
