@@ -35,3 +35,36 @@ The main matrix handles p up to 8/9 via the full fusion system (BSK-A,
 sigma adjustments, etc.); the r-input path has not been tuned for high
 precision — the DC-walk noise (2^49.2 coherent, ~2^54.6 accumulated at
 h=42) sets the boundary exactly as N1 predicts.
+
+## n=4096 rows (out ring 8192, joint r1=2 x r2=2, adaptive RS target)
+
+The earlier SIGSEGV was the RS keygen target hardcoded at 7 — n=4096/h=42
+needs ~9 (mean gap 97, tail ~400). With adaptive scaling the rows run.
+
+| Row | Gate | Ratio vs 4x-scalar |
+|---|---|---|
+| n=4096/h=42/p=2 | **0/16384 PASS** | 1.371x |
+| n=4096/h=42/p=4 | 418/16384 | 1.383x |
+| n=4096/h=34/p=2 | **0/16384 PASS** | 1.403x |
+| n=4096/h=34/p=4 | 501/16384 | 1.392x |
+
+Precision domain at n=4096 is p<=2 clean, p=4 marginal (2.5-3.1%
+mismatch — same DC-walk budget mechanism as the n=2048 p=6 row,
+shifted down one precision step because the ring doubles (more slots =
+more coherent DC accumulation per rotation) while the LUT grid
+structure stays 2-level guard). All mismatches are the theory-predicted
+noise-budget boundary, not code defects.
+
+**Joint six-row summary (precision x ring):**
+| n | h | p | Gate | Ratio |
+|---|---|---|---|---|
+| 2048 | 42 | 2 | 0/8192 PASS | 1.278x |
+| 2048 | 42 | 4 | 0/8192 PASS | 1.258x |
+| 2048 | 42 | 6 | noise budget | — |
+| 2048 | 42 | 8 | noise budget | — |
+| 4096 | 42 | 2 | 0/16384 PASS | 1.371x |
+| 4096 | 34 | 2 | 0/16384 PASS | 1.403x |
+
+The precision domain can be extended by importing the BSK-A sigma
+adjustment into the r-input path (the main matrix achieves 8/9-bit via
+the full fusion system); this is the next algorithmic improvement item.
