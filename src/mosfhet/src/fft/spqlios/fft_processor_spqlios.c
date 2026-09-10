@@ -79,18 +79,23 @@ void execute_reverse_torus32(double *res, const uint32_t *a, FFT_Processor_Spqli
 }
 
 void execute_reverse_torus64(double* res, const uint64_t* a, FFT_Processor_Spqlios proc) {
+    /* AVX512_OPT path: external torus buffers (a, res) are safe_malloc'd
+     * (16B alignment) -- UNALIGNED vector access is mandatory; the former
+     * __m512i/__m512d pointer casts emitted aligned loads and segfaulted
+     * whenever malloc layout gave <64B alignment (layout-dependent crash,
+     * e.g. from trlwe_new_sparse_binary_key at N=2048). */
     #ifdef AVX512_OPT
     __m512d * ri512 = (__m512d *) proc->real_inout_rev;
-    __m512i * aa = (__m512i *) a;
-    for (size_t i = 0; i < proc->N/8; i++) ri512[i] = _mm512_cvtepi64_pd (aa[i]);
+    for (size_t i = 0; i < proc->N/8; i++)
+        ri512[i] = _mm512_cvtepi64_pd (_mm512_loadu_si512(a + 8*i));
     #else
     int64_t *aa = (int64_t *)a;
     for (int i=0; i<proc->N; i++) proc->real_inout_rev[i]=(double)aa[i];
     #endif
     ifft(proc->tables_reverse,proc->real_inout_rev);
     #ifdef AVX512_OPT
-    __m512d * resv = (__m512d *) res;
-    for (int i=0; i<proc->N/8; i++) resv[i] = ri512[i];
+    for (int i=0; i<proc->N/8; i++)
+        _mm512_storeu_pd(res + 8*i, ri512[i]);
     #else
     for (int i=0; i<proc->N; i++) res[i]=proc->real_inout_rev[i];
     #endif
@@ -165,13 +170,12 @@ void execute_direct_torus64(uint64_t* res, const double* a, FFT_Processor_Spqlio
     // mod 2^64
     #ifdef AVX512_OPT
     __m512d * ri512 = (__m512d *) proc->real_inout_direct;
-    __m512i * res512 = (__m512i *) res;
     const __m512d modc = {64, 64, 64, 64, 64, 64, 64, 64};
     for (size_t i = 0; i < proc->N/8; i++) {
         const __m512d _1 = _mm512_scalef_pd (ri512[i], -modc);
         const __m512d _2 = _mm512_reduce_pd (_1, 0);
         const __m512d _3 = _mm512_scalef_pd (_2, modc);
-        res512[i] = _mm512_cvtpd_epi64 (_3);
+        _mm512_storeu_si512(res + 8*i, _mm512_cvtpd_epi64 (_3));
     }
     #else
     const uint64_t* const vals = (const uint64_t*) proc->real_inout_direct;
@@ -197,14 +201,14 @@ void execute_direct_torus64_add(uint64_t* res, const double* a,
     fft(proc->tables_direct,proc->real_inout_direct);
     #ifdef AVX512_OPT
     __m512d * ri512 = (__m512d *) proc->real_inout_direct;
-    __m512i * res512 = (__m512i *) res;
-    const __m512i * add512 = (const __m512i *) addend;
     const __m512d modc = {64, 64, 64, 64, 64, 64, 64, 64};
     for (size_t i = 0; i < proc->N/8; i++) {
         const __m512d _1 = _mm512_scalef_pd (ri512[i], -modc);
         const __m512d _2 = _mm512_reduce_pd (_1, 0);
         const __m512d _3 = _mm512_scalef_pd (_2, modc);
-        res512[i] = _mm512_add_epi64(_mm512_cvtpd_epi64 (_3), add512[i]);
+        const __m512i v = _mm512_add_epi64(_mm512_cvtpd_epi64 (_3),
+            _mm512_loadu_si512(addend + 8*i));
+        _mm512_storeu_si512(res + 8*i, v);
     }
     #else
     const uint64_t* const vals = (const uint64_t*) proc->real_inout_direct;

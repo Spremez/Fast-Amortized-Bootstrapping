@@ -43,6 +43,11 @@ static int run_trial(int trial, int reps){
   const int trace = getenv("SAB_PA_TRACE") != NULL;
   const int func = getenv("SAB_PA_FUNC") != NULL;
   const int inc0 = getenv("SAB_PA_INCLUDE_ZERO") != NULL;
+  const int realks = getenv("SAB_PA_REALKS") != NULL;
+  int ks_t = 12, ks_bb = 1;
+  { const char *e;
+    if((e = getenv("SAB_PA_KS_T"))) ks_t = atoi(e);
+    if((e = getenv("SAB_PA_KS_BB"))) ks_bb = atoi(e); }
   if(r1 > MAX_R1) r1 = MAX_R1; if(r2 > MAX_R2) r2 = MAX_R2;
   const int bodies = r1 * r2;
   /* trace state (SAB_PA_TRACE): terminal-exponent extraction */
@@ -80,8 +85,16 @@ static int run_trial(int trial, int reps){
       uint64_t lcg = 0x123456789ABCDEFULL;
       for(int i=0;i<in_N;i++){ lcg = lcg*6364136223846793005ULL+1442695040888963407ULL;
         a_common_raw[i] = lcg; } } }
-  /* Pre-aligned b'_l = b_l + (a_common - a_l)·s_in (plaintext simulation) */
+  /* Pre-aligned b'_l = b_l + (a_common - a_l)·s_in. Two realizations:
+   * - default: plaintext simulation (corr = negacyclic convolution, exact)
+   * - SAB_PA_REALKS: REAL keyswitch -- d = (a_common - a_l, 0) under s,
+   *   trlwe_keyswitch transports the phase with genuine KS noise; this is
+   *   the cryptographic pre-alignment the real system would run (one KS
+   *   per input, additive cost measured separately). */
   uint64_t bpa[MAX_R1][8192]; /* pre-aligned b values */
+  double t_prealign = 0;
+  TRLWE_KS_Key ksk = NULL;
+  if(realks) ksk = trlwe_new_KS_key(input_key, input_key, ks_t, ks_bb);
   /* SAB_PA_FUNC: functional mode -- library convention (main.c): messages in
    * the half domain [0, 2^(prec-1)), LUT values likewise, TV built per
    * sab_LUT_packing. Expected decoded value = LUT_ch[value(m_l[t])]. */
@@ -94,6 +107,45 @@ static int run_trial(int trial, int reps){
              : int2torus((i + 3*l)&7, prec);
     ins[l] = trlwe_new_sample(msgs[l], input_key);
     /* compute b'_l[t] = b_l[t] + Σ_i (a_common[i]-a_l[i])·s_in[t-i] */
+    if(realks){
+      double tk0 = now_us();
+      TRLWE dv = trlwe_alloc_new_sample(1, in_N);
+      TRLWE ko = trlwe_alloc_new_sample(1, in_N);
+      for(int i=0;i<in_N;i++){
+        dv->a[0]->coeffs[i] = a_common_raw[i] - ins[l]->a[0]->coeffs[i];
+        dv->b->coeffs[i] = 0;
+      }
+      trlwe_keyswitch(ko, dv, ksk); /* ko = (mask, phase-transported) */
+      t_prealign += now_us() - tk0;
+      TorusPolynomial kph = polynomial_new_torus_polynomial(in_N);
+      trlwe_phase(kph, ko, input_key); /* kph = -d⊗s + KS noise */
+      for(int t=0;t<in_N;t++)
+        bpa[l][t] = ins[l]->b->coeffs[t] - kph->coeffs[t];
+      free_polynomial(kph);
+      if(l == 0){ /* WS-6 diagnostic: KS vs exact-simulation bpa delta */
+        uint64_t dmax = 0; double dsq = 0;
+        for(int t=0;t<in_N;t++){
+          /* exact corr (same loop as the simulation branch) */
+          uint64_t corr = 0;
+          for(int i=0;i<in_N;i++){
+            int j = (t - i + 2*in_N) % (2*in_N);
+            int sign;
+            if(j >= in_N){ j -= in_N; sign = -1; } else { sign = 1; }
+            if(!input_key->s[0]->coeffs[j]) continue;
+            uint64_t diff = a_common_raw[i] - ins[l]->a[0]->coeffs[i];
+            if(sign > 0) corr += diff; else corr -= diff;
+          }
+          uint64_t exact = ins[l]->b->coeffs[t] + corr;
+          uint64_t dd = bpa[l][t] - exact;
+          if(dd > 0x8000000000000000ULL) dd = (uint64_t)0 - dd;
+          if(dd > dmax) dmax = dd;
+          dsq += (double)dd * (double)dd;
+        }
+        printf("REALKS-CHK: bpa delta vs exact: max log2=%.1f rms=%.1f\n",
+            log2((double)dmax + 1.0), log2(sqrt(dsq / in_N) + 1.0));
+      }
+      free_trlwe(dv); free_trlwe(ko);
+    } else
     for(int t=0;t<in_N;t++){
       /* Accumulate in uint64_t (torus wrap-around semantics).
        * int64_t overflow: h+1 terms each ~2^63 sum past int64 range. */
@@ -484,13 +536,17 @@ static int run_trial(int trial, int reps){
         n_A_o, in_N, n_A_j, in_N, n_nA_o, in_N, n_nA_j, in_N,
         n_A257_o, in_N, n_A257_j, in_N, n_R0, in_N);
   }
-  printf("timing: setup=%.0f us, joint(bfly)=%.0f us, joint_total=%.0f us, "
-      "%dx-scalar=%.0f us, speedup(sep/joint_total)=%.3fx\n",
-      t_setup, t_joint, t_setup + t_joint, bodies, t_or,
-      t_or / (t_setup + t_joint));
+  printf("timing: prealign=%s%.0f us, setup=%.0f us, joint(bfly)=%.0f us, "
+      "joint_total=%.0f us, %dx-scalar=%.0f us, speedup(sep/joint_total)=%.3fx"
+      " (incl prealign %.3fx)\n",
+      realks ? "KS:" : "sim:", t_prealign, t_setup, t_joint,
+      t_setup + t_joint, bodies, t_or,
+      t_or / (t_setup + t_joint),
+      t_or / (t_prealign + t_setup + t_joint));
 
   for(int x=0;x<bodies;x++) free_polynomial(tvs[x]);
   free_polynomial(p1); free_trlwe(virtual_in);
+  if(ksk) free_trlwe_ks_key(ksk);
   free_pvmtmlwe_array(acc, in_N);
   free_pvmtmlwe_key(pvw_key);
   for(int l=0;l<r1;l++){ free_trlwe(ins[l]); free_polynomial(msgs[l]); }
