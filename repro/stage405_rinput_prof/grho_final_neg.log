@@ -1,0 +1,6 @@
+gaussian key: h=42 coeff_max=3, max_gap=124 r_prec=7
+pvw gaussian key built (aut family 2048 keys, keygen 0.7s incl. input)
+pvw gaussian blind rotate done (25.83s total, 12.916 s/lane)
+lane 0 oracle done
+lane 1 oracle done
+GRHO GATE: mismatch 0 / 4096 -- Pass; pair noise max dev log2 = 55.49 (message budget 2^-4)
