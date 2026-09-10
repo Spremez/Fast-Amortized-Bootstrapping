@@ -124,6 +124,7 @@ static int run_trial(int trial, int reps){
       }
     }
   }
+  const double t_setup0 = now_us();
   for(int t=0;t<in_N;t++){
     /* mask AND all bodies = 0 */
     memset(acc[t]->a[0]->coeffs, 0, sizeof(uint64_t)*out_N);
@@ -145,6 +146,8 @@ static int run_trial(int trial, int reps){
       }
     }
   }
+
+  const double t_setup = now_us() - t_setup0;
 
   /* Run the packing butterfly (uses input 0 for the selector schedule;
    * the SELECTORS depend only on the key's gap structure, not on which
@@ -386,8 +389,10 @@ static int run_trial(int trial, int reps){
         n_A_o, in_N, n_A_j, in_N, n_nA_o, in_N, n_nA_j, in_N,
         n_A257_o, in_N, n_A257_j, in_N, n_R0, in_N);
   }
-  printf("timing: joint=%.0f us, %dx-scalar=%.0f us\n",
-      t_joint, bodies, t_or);
+  printf("timing: setup=%.0f us, joint(bfly)=%.0f us, joint_total=%.0f us, "
+      "%dx-scalar=%.0f us, speedup(sep/joint_total)=%.3fx\n",
+      t_setup, t_joint, t_setup + t_joint, bodies, t_or,
+      t_or / (t_setup + t_joint));
 
   for(int x=0;x<bodies;x++) free_polynomial(tvs[x]);
   free_polynomial(p1); free_trlwe(virtual_in);
