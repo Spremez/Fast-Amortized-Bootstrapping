@@ -119,3 +119,35 @@ CRT 打包到一个大多项式中。盲旋转的每步操作（单项式乘/条
 - [MS18]: Micciancio-Sorrell, ring packing and amortized bootstrapping
 - [PKC'24 De Micheli et al.]: Faster amortized FHEW via ring automorphisms
 - [Strix MICRO'23]: hardware single-blind-rotation multi-ciphertext
+
+## 七、方向 B 否定性结果（2026-09-10 子 agent 完成分析）
+
+### 新数学发现：含 sub_a 的终态闭式
+
+**定理（子 agent 机器验证，2400/2400 slots）**：
+```
+E_full(t) = −(b̄[t] + Σ_{m<m*(t)} ā[p_m(t)]) + Σ_{m*≤m<h} ā[p_m(t)]  (mod 2N)
+```
+其中 m*(t) 为该内容的秘密穿越相位（V=n 时每个内容恰穿越边界一次）。
+
+**含义**：sub_a 修正不是简单总量 Σā ≈ a⊗s，而是按秘密分裂点 m*(t)
+带 ± 号的站点累加。± 号的分裂点本身是秘密信息。
+
+### 否定理由（三层）
+
+1. **末端校正值不可公开计算**：Δ_l(t) = Σ_m ±ā_l[p_m(t)]（±由秘密
+   m*(t) 决定）。若 Δ_l 可公开计算，取 a_l 为 delta 脉冲可解出密钥
+   （矛盾）。机器验证：同一 (a,b) 不同秘密 s 给出不同 Δ。
+2. **TRGSW 同态校正是循环的**：产生 Enc(X^{Δ_l(t)}) 需要以秘密稀疏
+   钥为指针的盲旋转 = 正是 butterfly+sub_a 本身。成本 ≥ 重跑管线。
+3. **与 packing 轴不兼容**：per-body 明文乘法破坏共享 mask。
+
+### 与其他负结果的关系
+
+此否定与 S2-S4（下界定理族）属同一家族：秘密置换信息只能由路由
+消耗，不能事后廉价注入。入负结果目录 **C-12**。
+
+### 对方向 A（轨迹感知预对齐）的启示
+
+A 必须让 b' 的站点累加精确匹配上述秘密 ±分裂——比 stage417 §八
+原证明更强。子 agent A 的分析正在检验这一点。
