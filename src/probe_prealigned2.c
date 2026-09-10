@@ -30,15 +30,19 @@ static double now_us(void){
 static int run_trial(int trial, int reps){
   setvbuf(stdout, NULL, _IONBF, 0);
   int in_N = 256, out_N = 2048, h = 6, prec = 3;
-  int r1 = 2, r2 = 2, rprec = 7;
+  int r1 = 2, r2 = 2, rprec = 7, orprec = 0;
   { const char *e;
     if((e = getenv("SAB_PA_IN_N"))) in_N = atoi(e);
     if((e = getenv("SAB_PA_OUT_N"))) out_N = atoi(e);
     if((e = getenv("SAB_PA_H"))) h = atoi(e);
     if((e = getenv("SAB_PA_R1"))) r1 = atoi(e);
     if((e = getenv("SAB_PA_R2"))) r2 = atoi(e);
-    if((e = getenv("SAB_PA_RPREC"))) rprec = atoi(e); }
+    if((e = getenv("SAB_PA_RPREC"))) rprec = atoi(e);
+    if((e = getenv("SAB_PA_ORACLE_RPREC"))) orprec = atoi(e); }
+  if(orprec <= 0) orprec = rprec;
   const int trace = getenv("SAB_PA_TRACE") != NULL;
+  const int func = getenv("SAB_PA_FUNC") != NULL;
+  const int inc0 = getenv("SAB_PA_INCLUDE_ZERO") != NULL;
   if(r1 > MAX_R1) r1 = MAX_R1; if(r2 > MAX_R2) r2 = MAX_R2;
   const int bodies = r1 * r2;
   /* trace state (SAB_PA_TRACE): terminal-exponent extraction */
@@ -48,10 +52,24 @@ static int run_trial(int trial, int reps){
   printf("== PA2 trial %d/%d: in_N=%d out_N=%d h=%d r1=%d r2=%d rprec=%d ==\n",
       trial + 1, reps, in_N, out_N, h, r1, r2, rprec);
 
-  /* sparse input key */
+  /* sparse input key: retry until ALL gaps (incl. the final wrap gap,
+   * which RS_sparse_binary_key's retry loop does not check) fit rprec */
   TRLWE_Key input_key = NULL;
-  RS_sparse_binary_key(&input_key, in_N, 1, h, pow(2, -15), rprec);
-  if(!input_key || !input_key->s[0]){ printf("keygen FAIL\n"); return 1; }
+  for(int attempt = 0; attempt < 4096; attempt++){
+    RS_sparse_binary_key(&input_key, in_N, 1, h, pow(2, -15), rprec);
+    if(!input_key || !input_key->s[0]){ printf("keygen FAIL\n"); return 1; }
+    uint64_t previous = in_N; int ok = 1;
+    for(int scan = 0; scan < in_N; scan++){
+      const int current = in_N - scan - 1;
+      if(!input_key->s[0]->coeffs[current]) continue;
+      if(previous - current >= (1ULL << rprec)){ ok = 0; break; }
+      previous = current;
+    }
+    if(ok && previous >= (1ULL << rprec)) ok = 0;
+    if(ok) break;
+    free_trlwe_key(input_key); input_key = NULL;
+  }
+  if(!input_key){ printf("keygen FAIL (no key fits rprec)\n"); return 1; }
 
   /* r1 inputs + common mask */
   TRLWE ins[MAX_R1];
@@ -64,9 +82,16 @@ static int run_trial(int trial, int reps){
         a_common_raw[i] = lcg; } } }
   /* Pre-aligned b'_l = b_l + (a_common - a_l)·s_in (plaintext simulation) */
   uint64_t bpa[MAX_R1][8192]; /* pre-aligned b values */
+  /* SAB_PA_FUNC: functional mode -- library convention (main.c): messages in
+   * the half domain [0, 2^(prec-1)), LUT values likewise, TV built per
+   * sab_LUT_packing. Expected decoded value = LUT_ch[value(m_l[t])]. */
+  static uint64_t lutv[MAX_BODIES][16];
+  const uint64_t fmask = (1ULL << (prec - 1)) - 1;
   for(int l=0;l<r1;l++){
     msgs[l] = polynomial_new_torus_polynomial(in_N);
-    for(int i=0;i<in_N;i++) msgs[l]->coeffs[i] = int2torus((i+3*l)&7, prec);
+    for(int i=0;i<in_N;i++) msgs[l]->coeffs[i] =
+        func ? int2torus((i + 3*l) & fmask, prec)
+             : int2torus((i + 3*l)&7, prec);
     ins[l] = trlwe_new_sample(msgs[l], input_key);
     /* compute b'_l[t] = b_l[t] + Σ_i (a_common[i]-a_l[i])·s_in[t-i] */
     for(int t=0;t<in_N;t++){
@@ -90,7 +115,9 @@ static int run_trial(int trial, int reps){
 
   /* Build TV pack: body (l*r2+j) carries TV_{l,j} */
   PVW_TMLWE_Key pvw_key = pvmtmlwe_new_binary_key(out_N, 1, bodies, pow(2,-70));
-  SAB_PVW_Key pvw = sab_pvw_new_binary_key(input_key, pvw_key, prec, h, rprec, 1, 23);
+  SAB_PVW_Key pvw = inc0
+      ? sab_pvw_new_nonbinary_key(input_key, pvw_key, prec, h, rprec, 1, 23, true, false)
+      : sab_pvw_new_binary_key(input_key, pvw_key, prec, h, rprec, 1, 23);
 
   /* Custom setup: per-body-group rotation by b̄'_l */
   const int log_2N = (int)log2(2*out_N);
@@ -108,6 +135,24 @@ static int run_trial(int trial, int reps){
     const int fine = getenv("SAB_PA_LUT_FINE") != NULL;
     const int nlev = 1 << prec;         /* 2^prec LUT levels */
     const int block = out_N / nlev;      /* coefficients per level */
+    if(func){
+      /* library functional convention (sab_LUT_packing): random LUT over
+       * the half domain, negacyclic test polynomial b[0]=v[0],
+       * b[N-i]=-v[i/(N/size)], size = 2^(prec-1). */
+      const uint64_t size = 1ULL << (prec - 1);
+      for(int x=0;x<bodies;x++){
+        uint64_t lcg = 0x9E3779B97F4A7C15ULL * (uint64_t)(x + 1);
+        for(int v=0;v<(int)size;v++){
+          lcg = lcg*6364136223846793005ULL + 1442695040888963407ULL;
+          lutv[x][v] = (lcg >> 32) & fmask; }
+        tvs[x] = polynomial_new_torus_polynomial(out_N);
+        memset(tvs[x]->coeffs, 0, sizeof(uint64_t)*out_N);
+        tvs[x]->coeffs[0] = int2torus(lutv[x][0], prec);
+        for(int i=1;i<out_N;i++)
+          tvs[x]->coeffs[out_N - i] =
+              (uint64_t)0 - int2torus(lutv[x][i/(out_N/size)], prec);
+      }
+    } else {
     for(int x=0;x<bodies;x++){
       tvs[x] = polynomial_new_torus_polynomial(out_N);
       for(int q=0;q<out_N;q++){
@@ -122,6 +167,7 @@ static int run_trial(int trial, int reps){
         const int val = (level + 3*x + 1) & (nlev - 1);
         tvs[x]->coeffs[q] = int2torus(val, prec);
       }
+    }
     }
   }
   const double t_setup0 = now_us();
@@ -194,7 +240,8 @@ static int run_trial(int trial, int reps){
       for(int t=0;t<in_N;t++)
         ac_mod[t] = torus2int(a_common_raw[t], log2_2N);
     }
-    sab_pvw_sparse_mul_binary(acc, ac_mod, 0, pvw);
+    if(inc0) sab_pvw_sparse_mul_nonbinary(acc, ac_mod, 0, pvw);
+    else sab_pvw_sparse_mul_binary(acc, ac_mod, 0, pvw);
 
     /* ---- SAB_PA_TRACE: extract terminal exponents, compare with bpa ----
      * Empirically arbitrates the +/- sign-split of the sub_a station sum
@@ -265,6 +312,11 @@ static int run_trial(int trial, int reps){
 
   /* Oracle gate: scalar SAB per (l,j) */
   int mism = 0, mism_ch[MAX_BODIES] = {0};
+  int mismf_o = 0, mismf_j = 0;
+  uint64_t fmax_o = 0, fmax_j = 0;
+  double fsq_o = 0, fsq_j = 0;
+  int demo_l[12], demo_jj[12], demo_tt[12], demo_n = 0;
+  uint64_t demo_exp[12], demo_o[12], demo_jd[12];
   double t_or = 0;
   TorusPolynomial p1 = polynomial_new_torus_polynomial(out_N);
   for(int l=0;l<r1;l++)
@@ -272,7 +324,7 @@ static int run_trial(int trial, int reps){
       int ch = l*r2+j;
       TRLWE_Key lk = trlwe_new_binary_key(out_N, 1, pow(2,-70));
       TRGSW_Key sk = trgsw_new_key(lk, 1, 23);
-      SAB_Key orc = min_oracle_key(input_key, sk, prec, h, rprec);
+      SAB_Key orc = min_oracle_key(input_key, sk, prec, h, orprec);
       TRLWE tvr = trlwe_alloc_new_sample(1, out_N);
       memset(tvr->a[0]->coeffs, 0, sizeof(uint64_t)*out_N);
       memcpy(tvr->b->coeffs, tvs[ch]->coeffs, sizeof(uint64_t)*out_N);
@@ -321,6 +373,30 @@ static int run_trial(int trial, int reps){
                 log2(fabs((double)((int64_t)ph->coeffs[0]
                   - (int64_t)p1->coeffs[0]))+1.0),
                 Eo_g[t], Ej_g[t]); }
+        /* functional check (SAB_PA_FUNC): both sides must decode the
+         * PLAINTEXT-expected LUT value; margins measured against the
+         * exact target phase (decision boundary at 2^60 = level half) */
+        if(func){
+          const uint64_t expv = lutv[ch][(t + 3*l) & fmask];
+          const uint64_t target = int2torus(expv, prec);
+          uint64_t doo = p1->coeffs[0] - target;
+          uint64_t djj = ph->coeffs[0] - target;
+          if(doo > 0x8000000000000000ULL) doo = (uint64_t)0 - doo;
+          if(djj > 0x8000000000000000ULL) djj = (uint64_t)0 - djj;
+          if(doo > fmax_o) fmax_o = doo;
+          if(djj > fmax_j) fmax_j = djj;
+          fsq_o += (double)doo * (double)doo;
+          fsq_j += (double)djj * (double)djj;
+          if(torus2int(p1->coeffs[0], prec) != expv) mismf_o++;
+          if(torus2int(ph->coeffs[0], prec) != expv) mismf_j++;
+          if(trial == 0 && t < 2 && demo_n < 12){
+            demo_l[demo_n] = l; demo_jj[demo_n] = j; demo_tt[demo_n] = t;
+            demo_exp[demo_n] = expv;
+            demo_o[demo_n] = torus2int(p1->coeffs[0], prec);
+            demo_jd[demo_n] = torus2int(ph->coeffs[0], prec);
+            demo_n++;
+          }
+        }
         free_polynomial(ph);
       }
       free_trlwe_array(sa,in_N); free_trlwe(tvr);
@@ -331,6 +407,25 @@ static int run_trial(int trial, int reps){
       mism==0 ? "Pass" : "FAIL");
   if(mism) for(int x=0;x<bodies;x++) if(mism_ch[x])
     printf("  ch(l=%d,j=%d): %d\n", x/r2, x%r2, mism_ch[x]);
+  if(func){
+    const int tot = bodies*in_N;
+    printf("FUNC-GATE: oracle %d / %d, joint %d / %d -- %s | "
+        "margin max log2: o=%.1f j=%.1f, rms log2: o=%.1f j=%.1f "
+        "(boundary 2^%.0f)\n",
+        mismf_o, tot, mismf_j, tot,
+        (mismf_o == 0 && mismf_j == 0) ? "Pass" : "FAIL",
+        log2((double)fmax_o+1.0), log2((double)fmax_j+1.0),
+        log2(sqrt(fsq_o/tot)+1.0), log2(sqrt(fsq_j/tot)+1.0),
+        64.0 - (double)prec);
+    printf("FUNC-DEMO (l,j,t) | msg_val | expected | oracle_dec | joint_dec\n");
+    for(int i=0;i<demo_n;i++)
+      printf("  (%d,%d,%-3d) | %llu | %llu | %llu | %llu\n",
+          demo_l[i], demo_jj[i], demo_tt[i],
+          (unsigned long long)((demo_tt[i] + 3*demo_l[i]) & fmask),
+          (unsigned long long)demo_exp[i],
+          (unsigned long long)demo_o[i],
+          (unsigned long long)demo_jd[i]);
+  }
 
   /* ---- trace verdict: which +/- convention does the pipeline implement? ----
    * Direction A: E(t) = sum_{p<=t} a[t-p] - b[t] - sum_{p>t} a[t-p]

@@ -2,13 +2,15 @@
 
 > **给新会话的第一份文件。** 本文档由上一会话（已接近上下文上限）在全部工作提交后生成。深度细节见 `docs/SESSION_STATE_SNAPSHOT.md`（§十三起为近期阶段，§二十一/二十二为最近两轮）；本文件只放"继续工作所需的最小完备集"。
 >
-> **⚠️ 2026-09-10 晚更新（stage419/420，当前最新）**：多输入批处理方向已定案——
+> **⚠️ 2026-09-10 晚更新（stage419/420/421，当前最新）**：多输入批处理方向已定案——
 > **预对齐（pre-aligned）联合 packing+batching 为唯一主路径**，理论完全正确且实测闭合。
 > 入口文件（按序）：
 > 1. `theory_checks/stage419_prealigned_root_cause.md` — 107/256 根因闭合（探针 LUT 网格缺陷，机制本身正确）+ 方向 A 闭式机器裁决 `E(t)=−b̄+Σ_{p≤t}ā[t−p]−Σ_{p>t}ā[t−p]+257`（双路径全槽精确成立）；
 > 2. `theory_checks/stage420_pack_batch_joint_cost_model.md` — 行计数成本模型 + pack/batch/联合三张实测表 + 理论-实测对账；
-> 3. 本文档 §6ae。
+> 3. `theory_checks/stage421_avx512_evidence_plan.md` — AVX-512 七旗标实测 + **完备正确性证据目录 E1-E9**（功能门/调度无关/include-zero/余量）+ 后续流程 WS-1..10 总规划；
+> 4. 本文档 §6ae-§6af。
 > **被取代的旧状态**：§6i-6j 的 interleaved Hom-Tr 不再是联合设计主路径（保留为已验证备选；玩具实测 0.78× 负收益）；stage417 RESULTS.md 的数字出自旧探针（ramp TV），根因与修复见 stage419；stage418 的四方向调查已裁决（方向 A 胜出）。
+> **环境结论**：本机 WSL = 正确性层（七旗标门全过，但 AVX-512 内核在本机更慢、spqlios avx512 FFT 汇编段错误）——**AVX-512 权威数字必须 dell 实测（WS-7，最高优先后续项）**。
 
 ## 0. 项目一句话与最新叙事（2026-09-04 用户指令后）
 
@@ -743,3 +745,35 @@ pair +0.03；stage 0.020；镜像逐位一致。σ_kg 经验地板不随 σ_G �
 4. **dell 性能口径复跑**三表（WSL 数字仅相对口径）。
 5. 论文侧：stage419/420 并入 §3/§7（combined packing+batching 章）；
    旧 §6i-6j 叙事按"interleaved = 已验证备选、预对齐 = 主路径"改写。
+
+## 6af. AVX-512 实测 + 完备证据链 + 总流程规划（2026-09-10 深夜）
+
+### 本轮新增（stage421，全部门 PASS）
+
+1. **功能性门（E2/E6）**：库约定锚定（半域消息 + sab_LUT_packing
+   负循环 TV + 明文期望对拍）。oracle 与联合**双侧解码全部等于期望
+   LUT 值**（9 配置模式 0 失配，含 4-reps、toy h=1、include-zero、
+   调度无关功能模式）。余量：joint max 2^54.4 vs 判决边界 2^61（余
+   ≥6.6 bit；比 oracle 高 ~6 bit = 预对齐 h+1 次 modswitch 舍入，
+   与理论一致）。FUNC-DEMO 输出消息→解码实例表。
+2. **调度无关性（E4）**：joint 六级蝶形 vs oracle 七级（同钥不同
+   调度）：等价 + 功能双 PASS——终端语义只依赖密钥支撑。
+3. **include-zero 执行路径（E5）**：接入探针（SAB_PA_INCLUDE_ZERO），
+   plain/七旗标/功能三模式全 PASS（1.8× 同族代码路径语义不变）。
+4. **AVX-512 七旗标实测（WS-1）**：FMA FFT + pathA 栈稳定、门全过。
+   玩具尺度旗标无增量（同会话交替 A/B）；FINAL 同会话配对：plain
+   **1.204×**、旗标 1.030×——**本机 AVX-512 内核更慢（客户端 CPU
+   降频），spqlios avx512 FFT 汇编在本机段错误**。旗标栈为 dell
+   Xeon 调优 → AVX-512 权威数字归 WS-7（dell），本机定位于正确性层。
+5. **keygen 健壮性**：RS_sparse_binary_key 不查最终环绕间隙——探针
+   侧加全间隙重试环（入册，库侧修复候选）。
+6. **证据目录 E1-E9 + 后续流程 WS-1..10**：见 stage421 §七 + §〇
+   （WS-1..5 本轮完成；WS-7 dell 为最高优先后续项）。
+
+### 复现
+
+```bash
+SAB_PA_FUNC=1 ./build_wsl/pa2/probe_prealigned2            # 功能门+余量+demo
+SAB_PA_INCLUDE_ZERO=1 ... ; SAB_PA_RPREC=6 SAB_PA_ORACLE_RPREC=7 ...
+# dell：stage371 FLAGS/PATHA + 本探针（pa2_avx 构建配方）
+```
