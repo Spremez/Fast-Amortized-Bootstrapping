@@ -68,3 +68,28 @@ noise-budget boundary, not code defects.
 The precision domain can be extended by importing the BSK-A sigma
 adjustment into the r-input path (the main matrix achieves 8/9-bit via
 the full fusion system); this is the next algorithmic improvement item.
+
+## r2 scaling (FINAL n=2048/h=42, r1=2 inputs)
+
+| r2 | Messages | Gate | Joint | r1r2×scalar | Ratio | Per-msg joint | Per-msg scalar |
+|---|---|---|---|---|---|---|---|
+| 2 | 4 | 0/8192 | 25.5s | 26.6s | **0.960×** | 6.4s | 6.7s |
+| 8 | 16 | 0/32768 | 133.6s | 102.3s | 1.307× | 8.4s | 6.4s |
+
+**Finding**: r2=2 achieves joint < separate (0.960×). At r2=8, the EP
+cost scales quadratically ((k+r)² polynomial multiplies in the generic
+path — 81 for r=8 vs 9 for r=2, a 9× increase matching the observed
+10.9× butterfly growth). The sub_a tax (14.6s fixed) is only 11% of the
+133.6s total at r2=8 — **the dominant cost at large r2 is the quadratic
+EP, not sub_a**.
+
+**Root cause of the quadratic scaling**: the generic mattrgsw EP does
+all (k+r)² polynomial multiplies even for block-diagonal selectors.
+The AVX512 specialized kernels (r=2,4,6,8) exist in the codebase but
+may not be triggering for the rinput_mb build (missing flag or code
+path). Fixing this = linear EP at large r2 → joint should approach
+the theoretical (1+k/(r1r2)) amortization.
+
+**Action item**: verify AVX512 kernel activation for the joint build;
+if the specialized kernels fire, the r2=8 ratio should drop from
+1.307× to ~1.05× (linear EP: 9× → 4× growth instead of 9× → 9×).

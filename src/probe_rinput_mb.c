@@ -15,7 +15,7 @@
 #include <time.h>
 
 #define LANES 2
-#define BODIES 2
+static int BODIES = 2;
 
 static void mb_phase(TorusPolynomial out, PVW_TMLWE in, PVW_TMLWE_Key key,
     int body){
@@ -38,7 +38,9 @@ static int run_trial(int trial, int reps, double * t_joint, double * t_or){
     if((e = getenv("SAB_RINPUT_IN_N"))) in_N = atoi(e);
     if((e = getenv("SAB_RINPUT_OUT_N"))) out_N = atoi(e);
     if((e = getenv("SAB_RINPUT_H"))) h = atoi(e);
-    if((e = getenv("SAB_RINPUT_PREC"))) prec = atoi(e); }
+    if((e = getenv("SAB_RINPUT_PREC"))) prec = atoi(e);
+    if((e = getenv("SAB_RINPUT_R2"))) BODIES = atoi(e);
+    if(BODIES < 1 || BODIES > 8) BODIES = 2; }
   const int d = out_N / LANES, in_k = 1, out_k = 1, l = 1, bg = 23;
   printf("joint trial %d/%d: in_N=%d out_N=%d (d=%d) h=%d r1=%d r2=%d\n",
       trial + 1, reps, in_N, out_N, d, h, LANES, BODIES);
@@ -78,7 +80,7 @@ static int run_trial(int trial, int reps, double * t_joint, double * t_or){
     ins[l_] = trlwe_new_sample(msg[l_], input_key);
   }
   /* tv[lane*bodies + body], two guard bits (HT-8) */
-  TorusPolynomial tv[LANES * BODIES];
+  TorusPolynomial tv[16];
   for (int x = 0; x < LANES * BODIES; x++){
     tv[x] = polynomial_new_torus_polynomial(d);
     for (int q = 0; q < d; q++)
@@ -101,10 +103,10 @@ static int run_trial(int trial, int reps, double * t_joint, double * t_or){
   /* oracles: (lane, body) scalar bootstraps + gate + pair noise */
   TorusPolynomial ph = polynomial_new_torus_polynomial(out_N);
   TorusPolynomial p1 = polynomial_new_torus_polynomial(d);
-  int mism = 0, mism_ch[LANES * BODIES] = {0};
-  uint64_t pair_max[LANES * BODIES] = {0};
-  double pair_sq[LANES * BODIES] = {0};
-  long pair_cnt[LANES * BODIES] = {0};
+  int mism = 0, mism_ch[16] = {0};
+  uint64_t pair_max[16] = {0};
+  double pair_sq[16] = {0};
+  long pair_cnt[16] = {0};
   double t_or_all = 0;
   *t_or = 0;
   for (int l_ = 0; l_ < LANES; l_++)
