@@ -32,7 +32,9 @@ SAB_RINPUT_Key sab_rinput_new_key(TRLWE_Key input_key,
     uint64_t l, uint64_t bg_bit){
   if(input_key == NULL) sab_rinput_die("input key is NULL");
   if(output_key == NULL) sab_rinput_die("output key is NULL");
-  if(output_key->r != 1) sab_rinput_die("r-input accumulator needs r=1 output key");
+  /* r=1: pure r-input; r=r2>1: JOINT r1-input x r2-LUT (HT-10): every
+   * operator below (sub_a U_a, Psi, CMUX, butterfly, doubling) is
+   * body-generic; only the setup fills bodies. */
   if(r_prec == 0) sab_rinput_die("r_prec must be non-zero");
 
   SAB_RINPUT_Key res = (SAB_RINPUT_Key) safe_malloc(sizeof(*res));
@@ -40,6 +42,7 @@ SAB_RINPUT_Key sab_rinput_new_key(TRLWE_Key input_key,
   const uint64_t in_k = input_key->k;
   const uint64_t out_N = output_key->s[0][0]->N;
   const uint64_t out_k = output_key->k;
+  const int out_r = output_key->r;
   const uint64_t r_max = 1ULL << r_prec;
   if(out_N % 2) sab_rinput_die("out_N must be even (r=2 interleave)");
 
@@ -54,7 +57,7 @@ SAB_RINPUT_Key sab_rinput_new_key(TRLWE_Key input_key,
       (int) l, (int) bg_bit);
 
   MAT_TRGSW tmp = mat_trgsw_alloc_new_sample((int) l, (int) bg_bit,
-      (int) out_k, 1, (int) out_N);
+      (int) out_k, out_r, (int) out_N);
   res->s = (MAT_TRGSW_DFT ***) safe_malloc(sizeof(MAT_TRGSW_DFT **) * in_k);
   for (size_t key_idx = 0; key_idx < in_k; key_idx++){
     res->s[key_idx] =
@@ -72,7 +75,7 @@ SAB_RINPUT_Key sab_rinput_new_key(TRLWE_Key input_key,
           sizeof(MAT_TRGSW_DFT) * r_prec);
       for (size_t bit = 0; bit < r_prec; bit++){
         res->s[key_idx][cnt_h][bit] = mat_trgsw_alloc_new_DFT_sample(
-            (int) l, (int) bg_bit, (int) out_k, 1, (int) out_N);
+            (int) l, (int) bg_bit, (int) out_k, out_r, (int) out_N);
       }
       sab_rinput_encrypt_bits(res->s[key_idx][cnt_h], tmp, res->mat_key,
           r_diff, r_prec);
@@ -85,7 +88,7 @@ SAB_RINPUT_Key sab_rinput_new_key(TRLWE_Key input_key,
         sizeof(MAT_TRGSW_DFT) * r_prec);
     for (size_t bit = 0; bit < r_prec; bit++){
       res->s[key_idx][cnt_h][bit] = mat_trgsw_alloc_new_DFT_sample(
-          (int) l, (int) bg_bit, (int) out_k, 1, (int) out_N);
+          (int) l, (int) bg_bit, (int) out_k, out_r, (int) out_N);
     }
     sab_rinput_encrypt_bits(res->s[key_idx][cnt_h], tmp, res->mat_key,
         previous, r_prec);
@@ -102,16 +105,17 @@ SAB_RINPUT_Key sab_rinput_new_key(TRLWE_Key input_key,
   res->b_prec = b_prec;
 
   res->tmp = (SAB_RINPUT_Tmp) safe_malloc(sizeof(*res->tmp));
-  res->tmp->t0 = pvmtmlwe_alloc_new_sample((int) out_k, 1, (int) out_N);
-  res->tmp->t1 = pvmtmlwe_alloc_new_sample((int) out_k, 1, (int) out_N);
-  res->tmp->t2 = pvmtmlwe_alloc_new_sample((int) out_k, 1, (int) out_N);
-  res->tmp->s_plus = pvmtmlwe_alloc_new_sample((int) out_k, 1, (int) out_N);
-  res->tmp->s_minus = pvmtmlwe_alloc_new_sample((int) out_k, 1, (int) out_N);
-  res->tmp->dft = pvmtmlwe_alloc_new_DFT_sample((int) out_k, 1, (int) out_N);
-  res->tmp->scratch = mat_trgsw_alloc_mul_scratch((int) ((out_k + 1) * l),
-      (int) out_N);
+  res->tmp->t0 = pvmtmlwe_alloc_new_sample((int) out_k, out_r, (int) out_N);
+  res->tmp->t1 = pvmtmlwe_alloc_new_sample((int) out_k, out_r, (int) out_N);
+  res->tmp->t2 = pvmtmlwe_alloc_new_sample((int) out_k, out_r, (int) out_N);
+  res->tmp->s_plus = pvmtmlwe_alloc_new_sample((int) out_k, out_r, (int) out_N);
+  res->tmp->s_minus = pvmtmlwe_alloc_new_sample((int) out_k, out_r, (int) out_N);
+  res->tmp->dft = pvmtmlwe_alloc_new_DFT_sample((int) out_k, out_r, (int) out_N);
+  /* decompose writes l*(k+r) rows: scratch must cover the body count */
+  res->tmp->scratch = mat_trgsw_alloc_mul_scratch(
+      (int) ((out_k + out_r) * l), (int) out_N);
   res->tmp->buf2 = pvmtmlwe_alloc_new_sample_array((int) in_N, (int) out_k,
-      1, (int) out_N);
+      out_r, (int) out_N);
   res->tmp->a_mod0 = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
   res->tmp->a_mod1 = (uint64_t *) safe_malloc(sizeof(uint64_t) * in_N);
   return res;
@@ -306,26 +310,38 @@ void sab_rinput_RGSW_monomial_mul(PVW_TMLWE * p, MAT_TRGSW_DFT * e,
   }
 }
 
-/* I-1: interleaved plaintext setup (granularity 2d mod switch on b). */
+/* I-1: interleaved plaintext setup (granularity 2d mod switch on b).
+ * r=1 form: one TV per input lane. */
 void sab_rinput_setup_tv(PVW_TMLWE * acc, TRLWE in0, TRLWE in1,
     TorusPolynomial tv0, TorusPolynomial tv1, SAB_RINPUT_Key sab){
+  TRLWE ins[2] = {in0, in1};
+  const TorusPolynomial tv[2] = {tv0, tv1};
+  sab_rinput_setup_tv_mb(acc, ins, tv, 1, sab);
+}
+
+/* joint form: r2 bodies, tv[lane][body]; body b carries LUT b for both
+ * inputs (same bbar placement per input lane, per body). */
+void sab_rinput_setup_tv_mb(PVW_TMLWE * acc, TRLWE * ins,
+    const TorusPolynomial * tv /* [lane][body] */, uint64_t bodies,
+    SAB_RINPUT_Key sab){
   const int log_2d = (int) log2(2 * sab->d);
   const uint64_t prec_offset = 1ULL << (64 - sab->b_prec - 1);
   const uint64_t two_d = 2 * sab->d;
   for (size_t t = 0; t < sab->in_N; t++){
     PVW_TMLWE c = acc[t];
     sab_rinput_zero(c);
-    TorusPolynomial tv[2] = {tv0, tv1};
-    TRLWE ins[2] = {in0, in1};
     for (size_t lane = 0; lane < 2; lane++){
       const uint64_t bbar = torus2int(
           ins[lane]->b->coeffs[t] + prec_offset, log_2d);
       for (size_t q = 0; q < sab->d; q++){
         const uint64_t pos = (q + bbar) % two_d;
-        if(pos < sab->d){
-          c->b[0]->coeffs[lane + 2 * pos] += tv[lane]->coeffs[q];
-        }else{
-          c->b[0]->coeffs[lane + 2 * (pos - sab->d)] -= tv[lane]->coeffs[q];
+        for (size_t body = 0; body < bodies && body < (size_t) c->r;
+            body++){
+          const TorusPolynomial tvb = tv[lane * bodies + body];
+          if(pos < sab->d)
+            c->b[body]->coeffs[lane + 2 * pos] += tvb->coeffs[q];
+          else
+            c->b[body]->coeffs[lane + 2 * (pos - sab->d)] -= tvb->coeffs[q];
         }
       }
     }

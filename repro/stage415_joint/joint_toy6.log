@@ -1,0 +1,43 @@
+joint trial 1/6: in_N=256 out_N=2048 (d=1024) h=6 r1=2 r2=2
+GATE: mismatch 0 / 1024 (per-channel 0,0,0,0) -- Pass
+  ch(l=0,j=0): pair max 53.91 rms 52.51
+  ch(l=0,j=1): pair max 53.92 rms 52.55
+  ch(l=1,j=0): pair max 53.93 rms 52.40
+  ch(l=1,j=1): pair max 53.94 rms 52.43
+timing: joint = 440319 us, 0x-scalar = 429482 us, ratio = 1.025x
+joint trial 2/6: in_N=256 out_N=2048 (d=1024) h=6 r1=2 r2=2
+GATE: mismatch 0 / 1024 (per-channel 0,0,0,0) -- Pass
+  ch(l=0,j=0): pair max 53.58 rms 52.11
+  ch(l=0,j=1): pair max 53.60 rms 52.09
+  ch(l=1,j=0): pair max 53.70 rms 52.00
+  ch(l=1,j=1): pair max 53.68 rms 51.98
+timing: joint = 429496 us, 0x-scalar = 428760 us, ratio = 1.002x
+joint trial 3/6: in_N=256 out_N=2048 (d=1024) h=6 r1=2 r2=2
+GATE: mismatch 0 / 1024 (per-channel 0,0,0,0) -- Pass
+  ch(l=0,j=0): pair max 54.01 rms 52.46
+  ch(l=0,j=1): pair max 53.93 rms 52.40
+  ch(l=1,j=0): pair max 53.95 rms 52.35
+  ch(l=1,j=1): pair max 53.89 rms 52.30
+timing: joint = 429406 us, 0x-scalar = 432722 us, ratio = 0.992x
+joint trial 4/6: in_N=256 out_N=2048 (d=1024) h=6 r1=2 r2=2
+GATE: mismatch 0 / 1024 (per-channel 0,0,0,0) -- Pass
+  ch(l=0,j=0): pair max 53.60 rms 52.45
+  ch(l=0,j=1): pair max 53.59 rms 52.42
+  ch(l=1,j=0): pair max 53.95 rms 52.56
+  ch(l=1,j=1): pair max 53.94 rms 52.53
+timing: joint = 352314 us, 0x-scalar = 349861 us, ratio = 1.007x
+joint trial 5/6: in_N=256 out_N=2048 (d=1024) h=6 r1=2 r2=2
+GATE: mismatch 0 / 1024 (per-channel 0,0,0,0) -- Pass
+  ch(l=0,j=0): pair max 54.00 rms 52.56
+  ch(l=0,j=1): pair max 54.02 rms 52.58
+  ch(l=1,j=0): pair max 53.64 rms 52.44
+  ch(l=1,j=1): pair max 53.64 rms 52.46
+timing: joint = 428585 us, 0x-scalar = 430034 us, ratio = 0.997x
+joint trial 6/6: in_N=256 out_N=2048 (d=1024) h=6 r1=2 r2=2
+GATE: mismatch 0 / 1024 (per-channel 0,0,0,0) -- Pass
+  ch(l=0,j=0): pair max 53.48 rms 51.91
+  ch(l=0,j=1): pair max 53.53 rms 51.95
+  ch(l=1,j=0): pair max 53.20 rms 51.89
+  ch(l=1,j=1): pair max 53.16 rms 51.93
+timing: joint = 431700 us, 0x-scalar = 429771 us, ratio = 1.004x
+JOINT ALL PASS (6 trials); mean joint 418637 us, mean 1656286352x-scalar 416772 us, ratio 1.004x

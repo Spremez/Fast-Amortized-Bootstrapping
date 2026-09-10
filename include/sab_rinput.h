@@ -59,6 +59,11 @@ void sab_rinput_CMUX(PVW_TMLWE out, PVW_TMLWE in1, PVW_TMLWE in2,
 void sab_rinput_setup_tv(PVW_TMLWE * acc, TRLWE in0, TRLWE in1,
     TorusPolynomial tv0, TorusPolynomial tv1, SAB_RINPUT_Key sab);
 
+/* joint r1-input x r2-LUT setup (HT-10): bodies LUTs, tv[lane*bodies+body];
+ * every other operator (U_a/Psi/CMUX/butterfly/doubling) is body-generic. */
+void sab_rinput_setup_tv_mb(PVW_TMLWE * acc, TRLWE * ins,
+    const TorusPolynomial * tv, uint64_t bodies, SAB_RINPUT_Key sab);
+
 /* butterfly with Psi-corrected wrapped sources (direct CMUX identical to
  * the matrix path). */
 void sab_rinput_RGSW_monomial_mul(PVW_TMLWE * p, MAT_TRGSW_DFT * e,
