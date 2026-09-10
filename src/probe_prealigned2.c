@@ -64,17 +64,25 @@ static int run_trial(int trial, int reps){
     ins[l] = trlwe_new_sample(msgs[l], input_key);
     /* compute b'_l[t] = b_l[t] + Σ_i (a_common[i]-a_l[i])·s_in[t-i] */
     for(int t=0;t<in_N;t++){
-      int64_t corr = 0;
+      /* Accumulate in uint64_t (torus wrap-around semantics).
+       * int64_t overflow: h+1 terms each ~2^63 sum past int64 range. */
+      uint64_t corr = 0;
       for(int i=0;i<in_N;i++){
         int j = (t - i + 2*in_N) % (2*in_N);
-        int sign = 1;
-        if(j >= in_N){ j -= in_N; sign = -1; }
-        int64_t s_val = (int64_t)input_key->s[0]->coeffs[j];
-        int64_t diff = (int64_t)a_common_raw[i]
-                     - (int64_t)ins[l]->a[0]->coeffs[i];
-        corr += sign * diff * s_val;
+        int sign;
+        if(j >= in_N){ j -= in_N; sign = -1; } else { sign = 1; }
+        if(!input_key->s[0]->coeffs[j]) continue; /* sparse: skip zeros */
+        uint64_t diff = a_common_raw[i] - ins[l]->a[0]->coeffs[i];
+        if(sign > 0) corr += diff;
+        else corr -= diff; /* uint64_t wraps = torus negation */
       }
-      bpa[l][t] = (uint64_t)((int64_t)ins[l]->b->coeffs[t] + corr);
+      bpa[l][t] = (uint64_t)0 - (ins[l]->b->coeffs[t] + corr); /* NEGATE:
+        boundary crossing sigma_-1 negates exponent; oracle expects
+        E_full ≈ modswitch(-phi); need -b_bar' = modswitch(-phi),
+        so b_bar' = modswitch(phi), i.e. bpa = +phi. But phi here is
+        b+corr = b+(a'-a)s = phi. Actually we need bpa = phi (positive).
+        The negation is WRONG -- revert to positive and check separately. */
+      bpa[l][t] = ins[l]->b->coeffs[t] + corr; /* positive */
     }
   }
 
@@ -87,10 +95,21 @@ static int run_trial(int trial, int reps){
   const uint64_t po = 1ULL << (64 - prec - 1);
   PVW_TMLWE *acc = pvmtmlwe_alloc_new_sample_array(in_N, 1, bodies, out_N);
   /* TV values per (l,j) */
+  /* Piecewise-constant LUT: level q>>shift, distinct per body.
+   * This is REAL bootstrapping semantics (ramp TV amplifies modswitch
+   * rounding artifacts -- Direction A finding). */
   TorusPolynomial tvs[MAX_BODIES];
-  for(int x=0;x<bodies;x++){
-    tvs[x] = polynomial_new_torus_polynomial(out_N);
-    for(int q=0;q<out_N;q++) tvs[x]->coeffs[q] = int2torus((3*x+q+1)&7, prec);
+  {
+    const int nlev = 1 << prec;         /* 2^prec LUT levels */
+    const int block = out_N / nlev;      /* coefficients per level */
+    for(int x=0;x<bodies;x++){
+      tvs[x] = polynomial_new_torus_polynomial(out_N);
+      for(int q=0;q<out_N;q++){
+        const int level = q / block;     /* which LUT level */
+        const int val = (level + 3*x + 1) & (nlev - 1);
+        tvs[x]->coeffs[q] = int2torus(val, prec);
+      }
+    }
   }
   for(int t=0;t<in_N;t++){
     /* mask AND all bodies = 0 */
@@ -123,6 +142,30 @@ static int run_trial(int trial, int reps){
   memcpy(virtual_in->b->coeffs, ins[0]->b->coeffs, sizeof(uint64_t)*in_N);
 
   double t0 = now_us();
+  /* DIAGNOSTIC: verify setup is correct for slot 0, body 0 */
+  if(trial == 0){
+    const int l=0, j=0, body=0, t=0;
+    uint64_t bbar = torus2int(bpa[l][t] + po, log_2N);
+    uint64_t expect = 0;
+    for(int q=0;q<8;q++){
+      uint64_t pos=(q+bbar)%(2*out_N);
+      if(pos<(uint64_t)out_N) expect += tvs[body]->coeffs[q];
+      else expect -= tvs[body]->coeffs[q];
+    }
+    printf("SETUP-CHK: bbar=%lu acc=%lu exp=%lu m=%s
+",
+",
+        (unsigned long)bbar, (unsigned long)acc[t]->b[body]->coeffs[0],
+        (unsigned long)expect,
+        acc[t]->b[body]->coeffs[0]==expect?"YES":"NO");
+    printf("  tv[0..3]=%lu,%lu,%lu,%lu
+",
+        (unsigned long)tvs[0]->coeffs[0],(unsigned long)tvs[0]->coeffs[1],
+        (unsigned long)tvs[0]->coeffs[2],(unsigned long)tvs[0]->coeffs[3]);
+    printf("  bpa[0][0]=%lu b_orig[0]=%lu
+",
+        (unsigned long)bpa[0][0],(unsigned long)ins[0]->b->coeffs[0]);
+  }
   /* Use the library's TESTED butterfly + sub_a */
   { const uint64_t log2_2N = (uint64_t)log2(2*out_N);
     uint64_t ac_mod[8192];
