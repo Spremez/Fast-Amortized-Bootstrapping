@@ -5,14 +5,21 @@
 [eprint 2025/686](https://eprint.iacr.org/2025/686)
 
 ```
-@misc{guimaraes_fast_2025,
- author = {Guimarães, Antonio and Pereira, Hilder V. L.},
- keywords = {Amortized bootstrapping, Bootstrapping, Fully homomorphic encryption, Lattice-based Cryptography},
- note = {Publication info: Preprint - To appear at CCS 2025},
- title = {Fast amortized bootstrapping with small keys and polynomial noise overhead},
- url = {https://eprint.iacr.org/2025/686},
- urldate = {2025-04-19},
- year = {2025}
+@inproceedings{guimaraes_fast_2025,
+author = {Guimar{\~a}es, Antonio and Pereira, Hilder V. L.},
+title = {Fast Amortized Bootstrapping with Small Keys and Polynomial Noise Overhead},
+year = {2025},
+isbn = {9798400715259},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3719027.3765181},
+doi = {10.1145/3719027.3765181},
+booktitle = {Proceedings of the 2025 ACM SIGSAC Conference on Computer and Communications Security},
+pages = {2967–2981},
+numpages = {15},
+keywords = {amortized bootstrapping, fully homomorphic encryption, rlwe},
+location = {Taipei, Taiwan},
+series = {CCS '25}
 }
 ```
 
