@@ -38,7 +38,8 @@ static int run_trial(int trial, int reps){
     if((e = getenv("SAB_PA_R1"))) r1 = atoi(e);
     if((e = getenv("SAB_PA_R2"))) r2 = atoi(e);
     if((e = getenv("SAB_PA_RPREC"))) rprec = atoi(e);
-    if((e = getenv("SAB_PA_ORACLE_RPREC"))) orprec = atoi(e); }
+    if((e = getenv("SAB_PA_ORACLE_RPREC"))) orprec = atoi(e);
+    if((e = getenv("SAB_PA_PREC"))){ prec = atoi(e); if(prec<2) prec=2; if(prec>6) prec=6; } }
   if(orprec <= 0) orprec = rprec;
   const int trace = getenv("SAB_PA_TRACE") != NULL;
   const int func = getenv("SAB_PA_FUNC") != NULL;
@@ -486,6 +487,10 @@ static int run_trial(int trial, int reps){
    *   on the station sum. Pre-alignment needs A to hold for BOTH paths. */
   if(trace){
     const int N2 = 2*out_N;
+    /* WS-8: the closed-form constant law C = 2^(log2(2N)-prec-1) + 1
+     * (= modswitch(po) + structural 1; 257 at out_N=2048/prec=3).
+     * Verified exact under SAB_PA_LUT_FINE (unique extraction). */
+    const int predC = (int)((1ULL << ((uint64_t)log2(2*out_N) - prec - 1)) + 1);
     int n_A_o = 0, n_A_j = 0, n_nA_o = 0, n_nA_j = 0, n_R0 = 0;
     int n_A257_o = 0, n_A257_j = 0;    int slots = in_N;
     { const char *e = getenv("SAB_PA_TRACE_SLOTS");
@@ -517,9 +522,10 @@ static int run_trial(int trial, int reps){
       if(Ej_g[t] == predNA_j) n_nA_j++;
       /* the standard LUT (value spans = 2N/2^prec units) makes the
        * extracted exponent well-defined only mod (2N/2^prec)=512;
-       * compare the closed form at that granularity */
-      if((((Eo_g[t] - predA_o - 257) % 512) + 512) % 512 == 0) n_A257_o++;
-      if((((Ej_g[t] - predA_j - 257) % 512) % 512 + 512) % 512 == 0) n_A257_j++;
+       * compare the closed form at that granularity; exact mode (FINE)
+       * uses predC per the WS-8 law */
+      if((((Eo_g[t] - predA_o - predC) % 512) + 512) % 512 == 0) n_A257_o++;
+      if((((Ej_g[t] - predA_j - predC) % 512) + 512) % 512 == 0) n_A257_j++;
       { const int R512 = (((Ej_g[t] - Eo_g[t]) % 512) + 512) % 512;
         const int R512m = R512 > 256 ? R512 - 512 : R512;
         if(R512m >= -(h+2) && R512m <= h+2) n_R0++; }
@@ -532,9 +538,9 @@ static int run_trial(int trial, int reps){
     }
     printf("TRACE verdict: E_o==predA %d/%d, E_j==predA %d/%d, "
         "E_o==predNegA %d/%d, E_j==predNegA %d/%d, "
-        "E==predA+257 o:%d/%d j:%d/%d, |E_j-E_o|<=h+2 %d/%d\n",
+        "E==predA+C(law=%d) o:%d/%d j:%d/%d, |E_j-E_o|<=h+2 %d/%d\n",
         n_A_o, in_N, n_A_j, in_N, n_nA_o, in_N, n_nA_j, in_N,
-        n_A257_o, in_N, n_A257_j, in_N, n_R0, in_N);
+        predC, n_A257_o, in_N, n_A257_j, in_N, n_R0, in_N);
   }
   printf("timing: prealign=%s%.0f us, setup=%.0f us, joint(bfly)=%.0f us, "
       "joint_total=%.0f us, %dx-scalar=%.0f us, speedup(sep/joint_total)=%.3fx"
